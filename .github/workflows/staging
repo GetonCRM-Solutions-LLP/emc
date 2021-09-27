@@ -6,7 +6,7 @@ name: 'Push request check'
 on:
   # Triggers the workflow on push or pull request events but only for the master branch
   push:
-    branches: [ master, fullcopy, devops ]
+    branches: [ preproduction, fullcopy, devops ]
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
@@ -55,9 +55,9 @@ jobs:
         if: ${{ env.BRANCH_NAME == 'fullcopy' }}
         run: sfdx auth:jwt:grant --clientid=${{secrets.FULLCOPY_CONSUMER_KEY}} --username=${{secrets.FULLCOPY_USERNAME}} --instanceurl=${{secrets.SFDC_LOGIN_SANDBOX_URL}} --jwtkeyfile server.key --setdefaultdevhubusername --setalias=hub-org
 
-      # Authorize master
-      - name: 'Authorize master'
-        if: ${{ env.BRANCH_NAME == 'master'}}
+      # Authorize preproduction
+      - name: 'Authorize preproduction'
+        if: ${{ env.BRANCH_NAME == 'preproduction'}}
         run: sfdx auth:jwt:grant --clientid=${{secrets.PRODUCTION_CONSUMER_KEY}} --username=${{secrets.PRODUCTION_USERNAME}} --instanceurl=${{secrets.SFDC_LOGIN_PRODUCTION_URL}} --jwtkeyfile server.key --setdefaultdevhubusername --setalias=hub-org
 
       # Create Delta for devops branch
@@ -78,19 +78,19 @@ jobs:
           sudo npm install sfdx-git-delta@latest -g
           git config remote.origin.fetch '+refs/heads/*:refs/remotes/origin/*'
           git fetch --all
-          git --no-pager diff --name-status fullcopy origin/master
-          sgd --to fullcopy --from origin/master --repo . --output .
+          git --no-pager diff --name-status fullcopy origin/preproduction
+          sgd --to fullcopy --from origin/preproduction --repo . --output .
           cat package/package.xml
 
-      # Create Delta for master branch
-      - name: 'Install App and Create Delta for master'
-        if: ${{ env.BRANCH_NAME == 'master'}}
+      # Create Delta for preproduction branch
+      - name: 'Install App and Create Delta for preproduction'
+        if: ${{ env.BRANCH_NAME == 'preproduction'}}
         run: |
           sudo npm install sfdx-git-delta@latest -g
           git config remote.origin.fetch '+refs/heads/*:refs/remotes/origin/*'
           git fetch --all
-          git --no-pager diff --name-status master origin/preproduction
-          sgd --to master --from origin/preproduction --repo . --output .
+          git --no-pager diff --name-status preproduction origin/master
+          sgd --to preproduction --from origin/master --repo . --output .
           cat package/package.xml
       
       # convert
