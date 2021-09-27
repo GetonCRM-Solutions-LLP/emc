@@ -1,0 +1,1980 @@
+<apex:page sidebar="false" showHeader="false" lightningStylesheets="true" controller="ManageNotificationController">
+    <!-- Begin Default Content REMOVE THIS -->
+    <html xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" lang="en">
+
+    <head>
+        <!-- Required meta tags -->
+        <meta charset="utf-8" />
+        <meta http-equiv="x-ua-compatible" content="ie=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <!-- EMC Common Head -->
+        <apex:include pageName="EMC_Common_Head" />
+        <!-- Title of the page -->
+        <title>Communications</title>
+        <apex:slds />
+        <!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script> -->
+        <link href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css" rel='stylesheet' />
+        <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+        <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+        <script src="{!URLFOR($Resource.EMC_Header_Scripts,'EMC_Header_Scripts/js/angular.js')}"></script>
+        <!--Toaster -->
+
+        <script src="{!URLFOR($Resource.EMC_Header_Scripts,'EMC_Header_Scripts/js/toastr.min.js')}"></script>
+        <link href="{!URLFOR($Resource.EMC_Header_Scripts,'EMC_Header_Scripts/css/toastr.min.css')}" rel="stylesheet" />
+        <!-- Css Part Start -->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/fontawesome.min.css" />
+        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.3/css/all.css" />
+
+        <!-- read xl or csv files -->
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.15.6/xlsx.full.min.js"></script>
+        <!-- Pagination -->
+        <script src="{!URLFOR($Resource.dirPagination)}"></script>
+        <script>
+            function isEllipsisActive(element) {
+                if (element.offsetWidth < element.scrollWidth) {
+                    element.title = element.innerText;
+                }
+                //return element.offsetWidth < element.scrollWidth;
+            }
+            // Array.from(document.querySelectorAll('.notify-para'))
+            //     .forEach(element => {
+            //         if (isEllipsisActive(element)) {
+            //             element.title = element.innerText;
+            //         }
+            //     });
+            $(document).ready(function () {
+                // debugger
+                // $('tr').each(function(index) {
+                //     var x = $($(this).find('td')[6]).text();
+                //     if (isEllipsisActive($(this).find('.notify-para'))) {
+                //         debugger
+                //         $($(this).find('.notify-para')).prop('title', x);
+                //     }
+                // });
+
+                $(function () {
+                    $("#notifyTable").tooltip({
+                        classes: {
+                            "ui-tooltip": "tWarning",
+                        },
+                        show: { effect: "slideDown", duration: 800 },
+                        open: function (event, ui) {
+                            ui.tooltip.hover(function () {
+                                $(this).fadeTo("slow", 0.5);
+                            });
+                        }
+                    });
+                });
+            });
+        </script>
+        <style>
+            /* Desktops and laptops ----------- */
+
+            @media only screen and (min-width: 1224px) {
+                /* Styles */
+                .resendCheck {
+                    width: 2.7em;
+                }
+
+            }
+
+            /* Large screens ----------- */
+
+            @media only screen and (min-width: 1824px) {
+                /* Styles */
+                .resendCheck {
+                    width: 2.8em;
+                }
+                .custom-check {
+                    width: 17px !important;
+                    height: 17px !important;
+                }
+                /* .vw-12 {
+                    width: 8vw !important;
+                } */
+                .n-width {
+                    width: 34rem !important;
+                }
+                .notify-para-width {
+                    width: 42rem !important;
+                }
+                .notification-space{
+                    width: 83% !important;
+                }
+            }
+
+            @media (min-width: 2000px) and (max-width: 2399px) {
+                .resendCheck {
+                    width: 2.8em;
+                }
+                .custom-check {
+                    width: 17px !important;
+                    height: 17px !important;
+                }
+                .vw-12 {
+                    width: 9.5em !important;
+                }
+                .n-width {
+                    width: 34rem !important;
+                }
+                .notify-para-width {
+                    width: 42rem !important;
+                }
+                .notification-space{
+                    width: 83% !important;
+                }
+                .em-10 {
+                    width: 9.5em !important;
+                }
+            }
+            @media (min-width: 2400px) and (max-width: 2700px) {
+                .resendCheck {
+                    width: 2.8em;
+                }
+                /* .vw-12 {
+                    width: 5.62vw !important;
+                } */
+                .notify-para-width {
+                    width: 76rem !important;
+                }
+                .n-width {
+                    width: 67rem !important;
+                }
+                .notification-space{
+                    width: 89% !important;
+                }
+            }
+
+            /* custom width's */
+            .em-8{
+                width: 8.2em;
+            }
+            .em-2{
+                width: 2.7em;
+            }
+            .em-10{
+                width: 10em;
+            }
+            .em-20{
+                width: 20em;
+            }
+            .em-15{
+                width: 15em;
+            }
+            .em-18{
+                width: 18em;
+            }
+            body {
+                font-family: 'Proxima Nova';
+                font-size: 1rem !important;
+            }
+
+            nav {
+                display: flex !important;
+            }
+
+            .nav-link:focus,
+            .nav-link:hover {
+                text-decoration: none !important;
+            }
+
+            textarea {
+                font-family: 'Proxima Nova' !important;
+            }
+            table tbody tr {
+                display: table;
+                table-layout: fixed;
+                width: 100%;
+            }
+            .table-thead{
+                flex: 0 0 auto;
+                width: calc(100% - 0em);
+                display: table;
+                table-layout: fixed;
+                z-index: 1;
+            }
+            .table-scroll {
+                flex: 1 1 auto;
+                display: block;
+                overflow-y: scroll;
+                z-index: 1;
+            }
+
+            /* .slds-table th {
+                background-color: #a7c8e8 !important;
+            }
+
+            .slds-table th:nth-child(2) {
+                border-left: none !important;
+            }
+
+            .slds-table td:nth-child(2) {
+                border-left: none !important;
+            } */
+            /* .slds-table td+td,  .slds-table th+th{
+                border-left: none !important;
+            } */
+            .slds-table_bordered,  .slds-table--bordered {
+                border-top: none !important;
+            }
+            .slds-table td:nth-child(2) {
+                border-left: none !important;
+            }
+            .slds-table tbody tr:nth-of-type(odd) {
+                background-color: rgba(0,0,0,.05);
+            }
+            .slds-table_striped tbody tr:nth-of-type(even)>td  {
+                background-color: #ffffff !important;
+            }
+            .slds-table td {
+                border-top: 1px solid #dee2e6 !important;
+            }
+            .slds-table thead th{
+                border-bottom: 2px solid #78bc42 !important;
+                color: #78bc42 !important;
+                /* border-top: 1px solid rgb(217, 219, 221) !important; */
+            }
+            table th {
+                font-family: 'Proxima Nova' !important;
+                font-size: 15px !important;
+            }
+            .slds-table{
+                width: 100%;
+                display: flex !important;
+                flex-flow: column !important;
+                height: 100% !important;
+            }
+
+            .slds-table td {
+                font-family: 'Proxima Nova' !important;
+                font-size: 15px;
+            }
+
+            .slds-table thead th {
+                line-height: 2 !important;
+            }
+
+            .slds-table_cell-buffer tr>th:first-child,
+            .slds-scope .slds-table_cell-buffer tr>td:first-child,
+            .slds-scope .slds-table--cell-buffer tr>th:first-child,
+            .slds-scope .slds-table--cell-buffer tr>td:first-child {
+                padding-left: 0.5rem !important;
+            }
+
+            .name-td {
+                white-space: pre-wrap !important;
+            }
+
+            .table_filter_input:focus {
+                /* border: 2px solid #4285f4; */
+                border: 2px solid #dee2e6;
+                background-color: #efefef;
+                border-radius: 0;
+                outline: 0;
+                -webkit-box-shadow: none;
+                box-shadow: none !important
+            }
+
+            .table_filter_input {
+                background-color: #efefef;
+                border: 1px solid #dee2e6;
+                border-radius: 0;
+                outline: 0;
+                -webkit-box-shadow: none;
+                box-shadow: none;
+            }
+
+            /* .date-td {
+                width: 9vw;
+            } */
+
+            .m-0{
+                margin : 0 !important;
+            }
+            .error-text {
+                text-align: center;
+            }
+
+            .waves-effect:focus {
+                outline: none !important;
+            }
+
+            .waves-effect:hover {
+                opacity: 0.6;
+            }
+
+            .tWarning {
+                font-family: 'Proxima Nova';
+                font-size: 12px;
+                color: #fff;
+                background: rgb(3, 45, 96);
+                box-shadow: 0 2px 5px 0 rgb(0 0 0 / 26%), 0 2px 10px 0 rgb(0 0 0 / 22%);
+            }
+
+            .tWarning:before {
+                content: '';
+                border: 10px solid transparent;
+                border-bottom-color: rgb(3, 45, 96);
+                position: absolute;
+                left: 2.8em;
+                bottom: 100%
+            }
+
+            #filtericon {
+                padding: 10px;
+                right: 0;
+                position: absolute;
+                display: block;
+                z-index: 4;
+                cursor: pointer;
+            }
+
+            #cancelicon {
+                padding: 10px;
+                right: 0;
+                position: absolute;
+                display: block;
+                z-index: 4;
+                cursor: pointer;
+            }
+
+            #search_filter {
+                margin-bottom: 14px;
+                margin-top: 0.375rem;
+            }
+
+            .w-search {
+                width: 23%;
+            }
+
+            .custom-check {
+                width: 14px;
+                height: 14px;
+            }
+
+            .align-text {
+                text-align: center !important;
+            }
+
+            .tagquestion {
+                top: -8px;
+                position: relative;
+                right: 5px;
+                font-size: 14px;
+            }
+
+            .notify-edit {
+                width: 31vw;
+            }
+
+            .pagination {
+                display: inline-block;
+                padding-left: 0;
+                margin: 20px 0;
+                border-radius: 4px;
+            }
+
+            .pagination>li {
+                display: inline;
+            }
+
+            .pagination>li>a,
+            .pagination>li>span {
+                position: relative;
+                float: left;
+                padding: 6px 12px;
+                margin-left: -1px;
+                line-height: 1.42857143;
+                color: #78bc42;
+                text-decoration: none;
+                background-color: #fff;
+                border: 1px solid #ddd;
+            }
+
+            .pagination>li:first-child>a,
+            .pagination>li:first-child>span {
+                margin-left: 0;
+                border-top-left-radius: 4px;
+                border-bottom-left-radius: 4px;
+            }
+
+            .pagination>.disabled>a,
+            .pagination>.disabled>a:focus,
+            .pagination>.disabled>a:hover,
+            .pagination>.disabled>span,
+            .pagination>.disabled>span:focus,
+            .pagination>.disabled>span:hover {
+                color: rgb(167, 162, 162);
+                cursor: not-allowed;
+                background-color: #fff;
+                border-color: #ddd;
+            }
+
+            .pagination>.disabled>a,
+            .pagination>.disabled>a:focus,
+            .pagination>.disabled>a:hover,
+            .pagination>.disabled>span,
+            .pagination>.disabled>span:focus,
+            .pagination>.disabled>span:hover {
+                color: #78bc42;
+                cursor: not-allowed;
+                background-color: #fff;
+                border-color: #ddd;
+            }
+
+            .pagination>.active>a,
+            .pagination>.active>a:focus,
+            .pagination>.active>a:hover,
+            .pagination>.active>span,
+            .pagination>.active>span:focus,
+            .pagination>.active>span:hover {
+                z-index: 3;
+                color: #fff;
+                cursor: default;
+                background-color: #78bc42;
+                border-color: #78bc42;
+                /*#0176d3*/
+            }
+
+            .spinner-background {
+                width: 100%;
+                height: 100%;
+                background: #000;
+                opacity: 0.4;
+                top: 0px;
+                left: 0px;
+                position: fixed;
+                z-index: 1000000;
+            }
+
+            .spinner-load {
+                position: fixed;
+                top: 49%;
+                left: 49%;
+                z-index: 1000000;
+            }
+
+            .margin-left {
+                margin-left: .5rem !important;
+            }
+
+            .slds-context-bar_tab {
+                background-color: #94cc67 !important;
+                border-bottom: 3px solid #78b642 !important;
+                color: rgb(255 255 255) !important;
+                font-family: 'Proxima Nova Bold' !important;
+            }
+
+            .insurance-label {
+                padding-right: 1rem !important;
+            }
+
+            th {
+                position: sticky !important;
+                top: 0px;
+                z-index: 9;
+            }
+
+            #style-2::-webkit-scrollbar-track {
+                -webkit-box-shadow: inset 0 0 6px rgb(25 49 220 / 87%);
+                background-color: #F5F5F5;
+            }
+
+            #style-2::-webkit-scrollbar {
+                width: 6px;
+                background-color: #F5F5F5;
+            }
+
+            #style-2::-webkit-scrollbar-thumb {
+                /* background-color: #0ae; */
+                background-color: #78bc42
+            }
+
+            textarea:-moz-placeholder { /* Firefox 18- */
+                color: rgb(206, 210, 211) !important;
+            }
+
+            textarea::-moz-placeholder {  /* Firefox 19+ */
+                color: rgb(206, 210, 211) !important;
+            }
+
+            textarea:-ms-input-placeholder {
+                color: rgb(206, 210, 211) !important;
+            }
+
+            textarea::placeholder {
+                color: rgb(206, 210, 211) !important;
+            }
+            .cursor-pointer {
+                cursor: pointer;
+            }
+
+            .slds-selected {
+                font-weight: 600;
+            }
+
+            .slds-table .slds-cell-edit td {
+                box-shadow: rgb(0 68 135) 0 0 0 1px inset;
+            }
+
+            .slds-modal__close {
+                position: relative !important;
+                top: 0 !important;
+                right: -38.5rem !important;
+            }
+
+            .mt-20 {
+                margin-top: 20px !important;
+            }
+
+            .mb-15 {
+                margin-bottom: 15px !important;
+            }
+
+            .name-info-link{
+                color: #404e5e !important;
+                text-decoration: underline !important;
+            }
+            .slds-col-label {
+                padding-bottom: calc(.175rem + 1px);
+                margin-bottom: 0;
+                font-size: inherit;
+                line-height: 1.5;
+                font-size: 16px;
+                padding-top: calc(.175rem + 1px);
+            }
+
+            .slds-form-element__label {
+                color: #000 !important;
+                font-size: 14px !important;
+            }
+
+            .slds-button_confirm {
+                background-color: #ecf0f1 !important;
+                color: #000 !important;
+                text-shadow: none;
+                text-transform: uppercase !important;
+                font-weight: 500 !important;
+                font-size: 15px !important;
+                border-radius: 4px !important;
+                min-height: 1em;
+                border: none !important;
+            }
+
+            .d-none {
+                display: none;
+            }
+
+            .d-block {
+                display: block;
+            }
+
+            .align-content {
+                text-align: center;
+                margin-top: 35px;
+            }
+
+            .mleft-0 {
+                margin-left: 0rem;
+            }
+
+            .slds-container {
+                width: 100%;
+                padding-right: 40px;
+                padding-left: 40px;
+            }
+
+            .td-text {
+                text-align: center;
+            }
+
+            .pd-2 {
+                padding-top: 2px;
+            }
+
+            .file-td {
+                white-space: normal !important;
+            }
+
+            .span-error {
+                color: rgb(255, 0, 0);
+            }
+
+            .border-error {
+                border: 2px solid rgb(255, 0, 0) !important;
+            }
+
+            .float {
+                z-index: 1;
+                box-shadow: 2px 2px 3px #999 !important;
+                text-align: center;
+            }
+
+            .notification-space{
+                float:left;
+                width: 68%;
+            }
+            .btn-neutral-padding {
+                padding-top: 0.45rem !important;
+                padding-bottom: 0.45rem !important;
+                padding-right: 0.45rem !important;
+                padding-left: 0.45rem !important;
+            }
+
+            .btn-brand-padding {
+                padding-top: 0.45rem !important;
+                padding-bottom: 0.45rem !important;
+                padding-right: 0.6rem !important;
+                padding-left: 0.6rem !important;
+            }
+
+            .slds-button_brand {
+                background-color: #919496!important;
+                border-color: #919496!important;
+                color: #fff !important;
+            }
+
+            .slds-modal__header {
+                margin-bottom: 0px !important;
+                padding-bottom: 0 !important;
+            }
+
+            .sort-icon{
+                cursor: pointer;
+            }
+
+            .m-icon{
+                margin-left: .3em;
+            }
+
+            .notify-td {
+
+                padding-right: 1rem !important;
+            }
+
+            .confirm-title {
+                display: block;
+                font-size: 22px;
+                line-height: 20px;
+                -webkit-user-select: none;
+                -moz-user-select: none;
+                -ms-user-select: none;
+                user-select: none;
+                cursor: default;
+                padding-bottom: 15px;
+            }
+
+            .confirm-icon {
+                display: inline-block;
+                vertical-align: middle;
+                color: #f1c40f;
+                margin-right: 8px;
+            }
+
+            .confirm-title-message {
+                display: inline-block;
+                vertical-align: middle;
+                font-family: 'Proxima Nova';
+                font-weight: bold;
+            }
+
+            .confirm-content {
+                display: inline-block;
+                width: 100%;
+                position: relative;
+                overflow-x: hidden;
+                font-size: 20px;
+                font-family: 'Proxima Nova';
+                color: #000;
+            }
+
+            .slds-float-right {
+                float: right;
+            }
+
+            .slds-float-left {
+                float: left;
+            }
+
+            .pd-right {
+                padding-right: 20px;
+            }
+
+            .slds-popover__body {
+                padding: .25rem .25rem .25rem .25rem !important;
+            }
+
+            .sd-form {
+                position: relative;
+            }
+
+            .sy-3 {
+                margin-bottom: 1rem !important;
+                margin-top: 1rem !important;
+            }
+
+            .file-field {
+                position: relative;
+                display: inline-flex;
+                flex-flow: column;
+            }
+
+            .slds-btn-sm {
+                padding: .5rem 1.6rem;
+                font-size: .64rem;
+            }
+
+            .slds-btn-primary {
+                color: #fff;
+                background-color: #919496;
+            }
+
+            .slds-btn {
+                margin: .375rem;
+                text-transform: uppercase;
+                word-wrap: break-word;
+                white-space: normal;
+                cursor: pointer;
+                border: 0;
+                border-radius: .125rem;
+                -webkit-box-shadow: 0 2px 5px 0 rgb(0 0 0 / 16%), 0 2px 10px 0 rgb(0 0 0 / 12%);
+                box-shadow: 0 2px 5px 0 rgb(0 0 0 / 16%), 0 2px 10px 0 rgb(0 0 0 / 12%);
+            }
+
+            .slds-button_neutral{
+                background-color: #78bc42 !important;
+                border-color: #78bc42 !important;
+            }
+            .file-field .file-path-wrapper {
+                /* height: 2.5rem; */
+                padding-left: 10px;
+                /* overflow: hidden; */
+            }
+            .not-status{
+                text-transform: uppercase;
+                border: 1px solid rgb(217, 219, 221);
+                padding: .5rem .6rem;
+                font-size: 12px;
+                color: #000;
+                font-family: 'Proxima Nova' !important;
+            }
+            .not-meeting-status{
+                text-transform: uppercase;
+                white-space: break-spaces;
+                font-size: 12px;
+                color: #000;
+                font-family: 'Proxima Nova' !important;
+            }
+            .dot {
+                height: 15px;
+                width: 15px;
+                border-radius: 50%;
+                display: inline-block;
+            }
+            .red-bg{
+                background-color: rgb(167, 6, 6);
+            }
+            .green-bg{
+                background-color: #78bc42;
+            }
+            .vw-12 {
+                width: 10em;
+            }
+
+            .w-19 {
+                width: 19rem;
+            }
+            .w-14 {
+                width: 14rem;
+            }
+
+            .file-path:hover{
+                overflow: visible;
+            }
+            .file-path {
+                /* word-break: break-all; */
+                overflow: hidden;
+                text-overflow: ellipsis;
+                width: 7em;
+                border-left: 0 !important;
+                border-right: 0 !important;
+                border-top: 0 !important;
+                border-bottom: 1px solid #00c851;
+                -webkit-box-shadow: 0 1px 0 0 #00c851;
+                box-shadow: 0 1px 0 0 #00c851;
+            }
+
+            .file-field input[type="file"] {
+                position: absolute;
+                top: 12px;
+                right: 0;
+                left: -7px;
+                width: 100%;
+                padding: 0;
+                margin: 0;
+                cursor: pointer;
+                filter: alpha(opacity=0);
+                opacity: 0;
+            }
+
+            .bc-blue {
+                background: none !important;
+                background-color: #404e5e !important;
+            }
+            .bc-grey {
+                background: none !important;
+                color: #fff !important;
+                background-color: #919496 !important;
+            }
+            .bc-black {
+                background: none !important;
+                background-color: #212121 !important;
+                font-family: 'Proxima Nova Bold' !important;
+            }
+
+            .bc-green {
+                background: none !important;
+                background-color: #00c851 !important;
+                font-family: 'Proxima Nova Bold' !important;
+            }
+
+            .waves-effect {
+                text-transform: uppercase !important;
+                color: #fff !important;
+                font-size: .74rem !important;
+            }
+
+            .mtop-1 {
+                margin-top: 1rem;
+            }
+
+            .mleft {
+                margin: .375rem !important;
+            }
+
+            .mleft-0 {
+                margin: .375rem .375rem .375rem 0 !important;
+            }
+
+            .notify-para {
+                position: relative;
+                cursor: pointer;
+                overflow-x: hidden;
+                text-overflow: ellipsis;
+            }
+
+            .notify-para-width {
+                width: 15rem;
+            }
+
+            .n-width {
+                width: 7rem;
+            }
+
+            .notify-date {
+                color: #78b642;
+            }
+
+            .form-gray-divider-notify {
+                border-top: 2px solid #d8d8d8;
+                margin-bottom: 6px;
+            }
+
+            .slds-radio__label {
+                margin-bottom: 0 !important;
+            }
+
+           .process-container{
+                width:100%;
+                display: flex;
+                justify-content: space-between;
+            }
+            .slds-textarea{
+                border-radius: 0 !important;
+            }
+        </style>
+        <!-- Common script -->
+        <script type="text/javascript">
+            var app = angular.module('manageNotificationModule', ['angularUtils.directives.dirPagination']);
+            app.controller('manageNotificationController', ['$scope',
+                function ($scope) {
+                    $scope.driverInfo = {!conWrapper}
+                    $scope.role = '{!role}'
+                    $scope.manRole = '{!managerrole}'
+                    $scope.mburseUrl = ($scope.role === 'Admin') ? 'admindashboard' : ($scope.role === 'Driver/Manager') ? 'drivermanagerdashboard' : ($scope.role === 'Manager') ? 'managerdashboard' : 'admindriverdashboard';
+                    console.log("role->", $scope.role, $scope.manRole);
+                    if ($scope.driverInfo.length > 10) {
+                            var elmHeight = document.getElementById("tableWrap").offsetHeight;
+                            var screenHeight = window.screen.height;
+                            var scrollHeight = screenHeight - elmHeight;
+                            // console.log("scroll", scrollHeight, document.getElementById('style-2'));
+                            document.getElementById('style-2').style.height = scrollHeight + "px";
+                            // console.log("window.screen.height", window.screen.height);
+                            // console.log("document.body.clientHeight", document.body.clientHeight);
+                            // console.log("table", table);
+                            // console.log("tableWrap", document.getElementById("tableWrap").offsetHeight , document.getElementById("tableWrap").clientHeight);
+                            var nTable = document.getElementById('style-2').offsetHeight;
+                    }
+                    var url_string = $(location).attr("href");
+                    var url = new URL(url_string);
+                    $scope.id = url.searchParams.get("id");
+                    $scope.accid = url.searchParams.get("accid");
+                    $scope.showteam = url.searchParams.get("showteam");
+                    $scope.managerid = url.searchParams.get("managerid");
+                    $scope.admindriver = false;
+                    $scope.admindriver = url.searchParams.get("admindriver");
+                    if ($scope.admindriver == undefined || $scope.admindriver == '') {
+                        $scope.admindriver = false;
+                    }
+                    $('#spinner').hide();
+                    $scope.search = {};
+                    $scope.searchTerm = "fullname";
+                    $scope.search[$scope.searchTerm] = "";
+                    $scope.currentPage = 1;
+                    $scope.pageSize = 34;
+                    $scope.maxPage = 0;
+                    console.log("Driver Information  : ", $scope.driverInfo);
+                    $scope.lengthofrecord = $scope.driverInfo.length;
+                    $scope.maxPage = Math.ceil($scope.lengthofrecord / $scope.pageSize);
+                    $scope.radioIndex;
+                    $scope.notification = [];
+                    $scope.driverInfoList;
+                    $scope.driverEmailList = [];
+
+                    /* action for resend insurance */
+                    $scope.showResendBtn = true;
+                    $scope.showLocationBtn = true;
+                    $scope.showEmailBtn = false;
+                    $scope.showCancelProBtn = false;
+                    $scope.checkboxShow = false;
+                    /* Toaster Option */
+                    this.setOptions = function () {
+                        toastr.options.positionClass = "toast-top-right";
+                        toastr.options.closeButton = true;
+                        toastr.options.progressBar = true;
+                        toastr.options.fadeOut = 3000;
+                    };
+
+                    this.setOptions();
+                    this.clear = function () {
+                        toastr.clear();
+                    };
+
+                    /* Toaster Option Complete with clear funtion */
+
+                      /* Sorting For table */
+                    $scope.sortKey = 'name';
+                    $scope.reverse = true;
+                    $scope.sort = function (keyname) {
+
+                        $scope.reverse = ($scope.sortKey === keyname) ? !$scope.reverse : false;
+                        $scope.sortKey = keyname;
+                        if (keyname === 'name' || keyname === 'insurance') {
+                            $scope.driverInfo.sort(function (a, b) {
+
+                                var nameA = (a[keyname] === null) ? '' : a[keyname].toLowerCase(),
+                                    nameB = (b[keyname] === null) ? '' : b[keyname].toLowerCase()
+                                if ($scope.reverse) {
+                                    if (nameA < nameB) //sort string ascending
+                                        return -1
+                                    if (nameA > nameB)
+                                        return 1
+                                    return 0 //default return value (no sorting)
+                                } else {
+                                    if (nameA < nameB) //sort string ascending
+                                        return 1
+                                    if (nameA > nameB)
+                                        return -1
+                                    return 0 //default return value (no sorting)
+                                }
+                            })
+                        }
+                        if (keyname === 'expirationDate') {
+                            $scope.driverInfo.sort(function (a, b) {
+
+                                var nameA = (a[keyname] === null) ? '' : new Date(a[keyname].toLowerCase()),
+                                    nameB = (b[keyname] === null) ? '' : new Date(b[keyname].toLowerCase())
+                                if ($scope.reverse) {
+                                    if (nameA < nameB) //sort string ascending
+                                        return -1
+                                    if (nameA > nameB)
+                                        return 1
+                                    return 0 //default return value (no sorting)
+                                } else {
+                                    if (nameA < nameB) //sort string ascending
+                                        return 1
+                                    if (nameA > nameB)
+                                        return -1
+                                    return 0 //default return value (no sorting)
+                                }
+                            })
+
+                        }
+                    }
+
+                    /* Download location template */
+
+                    $scope.exportToCsv = function () {
+                            var sampleData = [{
+                                    "Name (optional)": "The White House",
+                                    "Address": "1600 Pennsylvania Ave NW, Washington, DC 20500",
+                                    "Latitude (optional)": 38.683885,
+                                    "Longitude (optional)": -8.6109719,
+                                    "Default Activity (optional)": "Business"
+                                }
+                            ]
+
+                            // Building the CSV from the Data
+                            // Each column is separated by ";" and new line "\n" for next row
+                            let rowData = new Set();
+                            let rowEnd = '\n';
+                            var csvContent = '';
+                            sampleData.forEach(function (info) {
+                                Object.keys(info).forEach(function (key) {
+                                    rowData.add(key);
+                                });
+                            });
+
+                            rowData = Array.from(rowData);
+                            csvContent += rowData.join(',');
+                            csvContent += rowEnd;
+
+                            sampleData.forEach(function (data) {
+                                let colVal = 0;
+                                rowData.forEach((row, ind) => {
+                                    // Key value
+                                    // Ex: Id, Name
+                                    let rowKey = row;
+                                    //  console.log(rowKey)
+                                    // add , after every value except the first.
+                                    if (colVal > 0) {
+                                        csvContent += ',';
+                                    }
+                                    // If the column is undefined, it as blank in the CSV file.
+                                    //  console.log(this.csvFiledata[ind],filedata);
+                                    let value = data[rowKey] === (undefined || null) ? '' : data[rowKey];
+                                    if (value != null || value != '') {
+                                        csvContent += '"' + value + '"';
+                                    }
+                                    colVal++;
+                                })
+                                csvContent += rowEnd;
+                            });
+                            // The download function takes a CSV string, the filename and mimeType as parameters
+                            // Scroll/look down at the bottom of this snippet to see how download is called
+                            var download = function (content, fileName, mimeType) {
+                                var a = document.createElement('a');
+                                mimeType = mimeType || 'application/octet-stream';
+
+                                if (navigator.msSaveBlob) { // IE10
+                                    navigator.msSaveBlob(new Blob([content], {
+                                        type: mimeType
+                                    }), fileName);
+                                } else if (URL && 'download' in a) { //html5 A[download]
+                                    a.href = URL.createObjectURL(new Blob([content], {
+                                        type: mimeType
+                                    }));
+                                    a.setAttribute('download', fileName);
+                                    document.body.appendChild(a);
+                                    a.click();
+                                    document.body.removeChild(a);
+                                } else {
+                                    location.href = 'data:application/octet-stream,' + encodeURIComponent(content); // only this mime type is supported
+                                }
+                            }
+
+                            download(csvContent, 'sample_location_import.csv', 'text/csv;encoding:utf-8');
+                        }
+                    /*  Search input event */
+
+                    $scope.keyPressed = function (keyEvent, len) {
+                        if (keyEvent.keyCode == 13 || ((keyEvent.keyCode == 32 || keyEvent.keyCode == 39) && !len) || !(keyEvent.keyCode >= 65 && keyEvent.keyCode <= 90 || keyEvent.keyCode >= 97 && keyEvent.keyCode <= 122 || keyEvent.keyCode == 39 || keyEvent.keyCode == 32)) {
+                            event.preventDefault();
+                        }
+                        // return keyEvent.which !== 32;
+                    }
+
+                    $scope.resetSearch = function () {
+                        $scope.search[$scope.searchTerm] = "";
+                    }
+
+                    $scope.openProfile = function (profile) {
+                        var hidden = document.getElementById('hidden_user_id');
+                        hidden.value = JSON.stringify(profile);
+                        var url_locate;
+                        if($scope.admindriver){
+                            url_locate = "/app/roster?accid=" + $scope.accid + "&id=" + $scope.id + "&showteam=" + $scope.showteam + "&admindriver=true";
+                        }else{
+                            url_locate = "/app/roster?accid=" + $scope.accid + "&id=" + $scope.id + "&showteam=" + $scope.showteam;
+                        }
+                            
+                        window.open(url_locate);
+
+                    }
+                    /*  Search input event ends */
+                    $scope.sendNotification = function (notifyObj, index) {
+                        //  console.log("Sending notification", notifyObj, document.getElementById(`message-area${index}`).value);
+                        var textInput = document.getElementById(`message-area${index}`).value;
+                        if (notifyObj.notiMessage === null || notifyObj.notiMessage === "" || textInput === "") {
+                            $(`#span-error${index}`).removeClass("d-none");
+                            $(`#message-area${index}`).addClass("border-error");
+                        } else {
+                            $(`#span-error${index}`).addClass("d-none");
+                            $(`#message-area${index}`).removeClass("border-error");
+                            $scope.notification.push(notifyObj);
+                            var notifyMessage = angular.copy($scope.notification);
+                            Visualforce.remoting.Manager.invokeAction('{!$RemoteAction.ManageNotificationController.editInlineNewEmployee}', JSON.stringify(notifyMessage), $scope.id,
+                                function (result, event) {
+                                    if (event.status) {
+                                        if (result === 'Success') {
+                                            toastr.success("Notification is send successfully to " + notifyObj.name + ' ' + notifyObj.lastname);
+                                            angular.forEach($scope.notification, function (n) {
+                                                n.isEditable = false;
+                                            });
+                                            $scope.notification = [];
+                                            $scope.refreshEmployees();
+                                            $scope.$apply();
+                                        }
+                                    }
+                                }
+                            );
+                        }
+                    }
+                    $scope.pageChangeHandler = function (num) {
+                        if ($scope.driverInfo.length > 10) {
+                            if (num === $scope.maxPage) {
+                               //  document.getElementById('style-2').style.height = nTable + "px";
+                                document.getElementById('style-2').style.height = "";
+                                document.getElementById('style-2').style.overflow = "hidden";
+                            } else {
+                                document.getElementById('style-2').style.height = nTable + "px";
+                                document.getElementById('style-2').style.overflow = '';
+                            }
+                        }
+
+                    //         var eheight = document.getElementById("tableWrap").offsetHeight;
+                    //         //console.log("tableWrap", document.getElementById("tableWrap").offsetHeight, document.getElementById("tableWrap").clientHeight);
+                    //         var scHeight = window.screen.height;
+                    //         var scroll = scHeight - eheight;
+                    //         console.log("scroll", scrollHeight, document.getElementById('notifyTable').offsetHeight);
+                    //         document.getElementById('style-2').style.height = scroll + "px";
+                    //         console.log("offsetHeight", eheight, num);
+                     }
+                    $scope.refreshEmployees = function () {
+                        Visualforce.remoting.Manager.invokeAction(
+                            '{!$RemoteAction.ManageNotificationController.NewEmployeeData}', $scope.accid,
+                            function (result, event) {
+                                if (event.status) {
+                                    $scope.$apply(function () {
+                                        $scope.driverInfo = JSON.parse(result);
+                                        //console.log('added->', JSON.parse(result));
+                                    });
+                                } else {
+                                    $scope.$apply(function () {
+                                        $scope.driverInfo = [];
+                                        //console.log('error in method NewEmployeeData ->', result);
+                                    });
+                                }
+                            },
+                            { escape: false })
+                    }
+
+                    $scope.errorValidate = function (index) {
+                        var span = $(`#span-error${index}`);
+                        var messageArea = $(`#message-area${index}`);
+                        if (!(span[0].className.includes("d-none"))) {
+                            $(`#span-error${index}`).addClass("d-none");
+                        }
+                        if (messageArea[0].className.includes("border-error")) {
+                            $(`#message-area${index}`).removeClass("border-error")
+                        }
+                        document.getElementById(`message-area${index}`).value = "";
+                        document.getElementById(`notify-date${index}`).innerHTML = "";
+                    }
+
+
+
+                    $scope.endProcess = function () {
+                        $scope.showCancelProBtn = false;
+                        if ($scope.checkboxobj) {
+                            if ($scope.checkboxobj.isCheckedAllForEmail) {
+                                $scope.checkboxobj.isCheckedAllForEmail = false;
+                            }
+                        }
+                        $scope.showEmailBtn = false;
+                        $scope.checkboxShow = false;
+                        $scope.showResendBtn = true;
+                        angular.forEach($scope.driverInfo, function (detail) {
+                            detail.massEmail = false;
+                        });
+                    }
+
+                    $scope.sendMassEmail = function () {
+                        var driverEmailInfo = angular.copy($scope.driverEmailList);
+                        $('#spinner').show();
+                        Visualforce.remoting.Manager.invokeAction('{!$RemoteAction.ManageNotificationController.sendAllInsuranceEmail}', JSON.stringify(driverEmailInfo), $scope.id,
+                            function (result, event) {
+                                if (event.status) {
+                                    toastr.success('Email Sent Successfully');
+                                    $('#spinner').hide();
+                                    setTimeout(function () {
+                                        location.reload();
+                                    }, 2000);
+                                }
+                                else {
+                                    toastr.error('Some error has occur');
+                                    $('#spinner').hide();
+                                }
+                                $scope.$apply();
+                            }, { escape: false }
+                        );
+                    }
+
+                    $scope.displayCheckboxForEmail = function () {
+                        $scope.checkboxShow = true;
+                        $scope.showCancelProBtn = true;
+                        $scope.checkboxobj = {};
+                        $scope.checkboxobj.isCheckedAllForEmail = false;
+                    }
+
+                    $scope.CheckUncheckAllForEmail = function (CheckUncheckAllForEmail) {
+                        $scope.driverEmailList = [];
+                        $scope.checkboxobj.isCheckedAllForEmail = CheckUncheckAllForEmail;
+                        if ($scope.checkboxobj.isCheckedAllForEmail) {
+                            $scope.showResendBtn = false;
+                            $scope.showCancelProBtn = true;
+                            $scope.showEmailBtn = true;
+                        }
+                        else {
+                            $scope.checkboxShow = false;
+                            $scope.showResendBtn = true;
+                            $scope.showCancelProBtn = false;
+                            $scope.showEmailBtn = false;
+                        }
+                        angular.forEach($scope.driverInfo, function (detail) {
+                            detail.massEmail = $scope.checkboxobj.isCheckedAllForEmail;
+                            $scope.driverEmailList.push(detail);
+                        });
+                        // console.log($scope.driverEmailList);
+                    }
+
+                    $scope.CheckUncheckForEmail = function (detail) {
+                        $scope.recordfoundindex = -1;
+                        var total = $scope.driverInfo.length;
+                        var count = 0;
+                        angular.forEach($scope.driverInfo, function (item) {
+                            if (item.massEmail) {
+                                count++;
+                            }
+                        });
+                        if (count > 0) {
+                            $scope.showResendBtn = false;
+                            $scope.showCancelProBtn = true;
+                            $scope.showEmailBtn = true;
+                        }
+                        else {
+                            $scope.showResendBtn = true;
+                            $scope.showCancelProBtn = false;
+                            $scope.showEmailBtn = false;
+                            $scope.checkboxShow = false;
+                        }
+
+                        if (total == count && (total != 0)) {
+                            if($scope.checkboxobj){
+                                $scope.checkboxobj.isCheckedAllForEmail = true;
+                            }
+                        }
+                        else {
+                            if ($scope.checkboxobj != undefined) {
+                                $scope.checkboxobj.isCheckedAllForEmail = false;
+                            }
+                        }
+
+                        if ($scope.driverEmailList.length > 0) {
+                            for (var i = 0; i < $scope.driverEmailList.length; i++) {
+                                if ($scope.driverEmailList[i].contactId === detail.contactId) {
+                                    $scope.recordfoundindex = i;
+                                    break;
+                                }
+                            }
+
+                            if ($scope.recordfoundindex != -1) {
+                                $scope.driverEmailList.remove($scope.recordfoundindex);
+                            }
+
+                            else {
+                                $scope.driverEmailList.push(detail);
+                            }
+                        } else {
+                            $scope.driverEmailList.push(detail);
+                        }
+                        // console.log($scope.driverEmailList);
+                    }
+
+
+                    /* For File Upload*/
+                    $scope.filedata = '';
+                    $scope.locationdata = '';
+                    $scope.filesChoose = [];
+                    $scope.locationChoose = [];
+                    var maxStringSize = 6000000;    //Maximum String size is 6,000,000 characters
+                    var maxFileSize = 4350000;      //After Base64 Encoding, this is the max file size
+                    var chunkSize = 950000;         //Maximum Javascript Remoting message size is 1,000,000
+                    var attachment;
+                    var attachmentName;
+                    var fileSize;
+                    var fileIndex;
+                    var choosefile;
+                    var choosenfileType = '';
+                    var chooseFileName = '';
+                    var idOfContact = '';
+                    $scope.file_changed = function (element) {
+                        chooseFileName = '';
+                        attachment = '';
+                        choosefile = '';
+                        $scope.filedata = '';
+                        choosefile = element;
+                        fileIndex = parseInt(element.name);
+                        var findex = (element.files[0].name).lastIndexOf(".");
+                        var photofile = element.files[0];
+                        chooseFileName = photofile.name;
+                        //console.log('file size :- '+choosefile.files[0].size);
+                        var strsubstring = (element.files[0].name).substring(findex, (element.files[0].name).length);
+                        var notiElement = document.querySelectorAll('#notifyColumn');
+                        var fileElement = document.querySelectorAll('#file-column');
+                        if (strsubstring == '.pdf' || strsubstring == '.docx' || strsubstring == '.xls' || strsubstring == '.xlsx' || strsubstring == '.doc') {
+                            $(`#file-path-wrap-${fileIndex}`).removeClass('d-none');
+                            document.getElementById(`file-name-${fileIndex}`).innerHTML = chooseFileName;
+                            if (choosefile.files[0].size > 0 && choosefile.files[0].size < 4350000) {
+                                $(`#fileBtn-${fileIndex}`).addClass('d-none');
+                                $(`#uploadBtn-${fileIndex}`).removeClass('d-none');
+                                if ($('#file-column')[0].classList.length > 1) {
+                                    $("#insurance-thead").removeClass('em-10');
+                                    $("#insurance-thead").addClass('em-20');
+                                    // $('#file-column').removeClass('vw-12');
+                                    // $('#file-column').addClass('w-19');
+                                    angular.forEach(fileElement, function (n) {
+                                        if (n.className.includes('vw-12')) {
+                                            n.classList.remove('vw-12');
+                                            n.classList.add('w-19');
+                                        }
+                                    })
+                                    angular.forEach(notiElement, function (n) {
+                                        if (n.className.includes('notify-para-width')) {
+                                            n.classList.remove('notify-para-width');
+                                            n.classList.add('n-width');
+                                        }
+                                    })
+                                    // $('#notifyColumn').removeClass('notify-para-width')
+                                    // $('#notifyColumn').addClass('n-width');
+                                }
+                                //console.log($('#file-column')[0].classList)
+                                choosefile = element;
+                                $scope.filesChoose.push(element);
+                            }
+                            else {
+                                // $scope.IsVisiblebtn = false;
+                                $(`#file-path-wrap-${fileIndex}`).addClass('d-none');
+                                document.getElementById(`file-name-${fileIndex}`).innerHTML = "";
+                                toastr.error('Base 64 Encoded file is too large.  Maximum size is 4 MB .');
+                            }
+                        }
+                        else {
+                            $(`#file-path-wrap-${fileIndex}`).addClass('d-none');
+                            document.getElementById(`file-name-${fileIndex}`).innerHTML = "";
+                            toastr.error('Please upload correct File. File extension should be .pdf, .doc , .docx or .xls');
+                        }
+
+                        var fl = choosefile.files[0].size;
+
+
+                        $scope.$apply(function (scope) {
+                            choosenfileType = photofile.type;
+                            var reader = new FileReader();
+                            $scope.fsize = element.files[0].size;
+                            reader.onload = function (e) {
+                                $scope.filedata = reader.result;
+                            };
+                            reader.readAsDataURL(photofile);
+                        });
+                    };
+
+                    $scope.uploadFileInChunk = function (element, insuranceId, conId, contact) {
+                        var file;
+                        idOfContact = conId;
+                        if (element.currentTarget != null || element.currentTarget != undefined) {
+                            angular.forEach($scope.filesChoose, function (f) {
+                                if (f.name === element.currentTarget.name) {
+                                    file = f.files[0];
+                                    fileIndex = parseInt(element.currentTarget.name);
+                                }
+                            })
+                        }
+
+                        console.log(file);
+                        //var file = choosefile.files[0];
+                        if (file != undefined) {
+                            if (file.size <= maxFileSize) {
+                                attachmentName = file.name;
+                                var fileReader = new FileReader();
+                                fileReader.onloadend = function (e) {
+                                    e.preventDefault();
+                                    attachment = window.btoa(this.result);
+                                    positionIndex = 0;
+                                    fileSize = attachment.length;
+                                    doneUploading = false;
+                                    if (fileSize < maxStringSize) {
+                                        uploadAttachment(null, insuranceId, conId, contact);
+                                    } else {
+                                        toastr.error('Base 64 Encoded file is too large.  Maximum size is " + maxStringSize + " your file is " + fileSize + "."');
+                                    }
+                                }
+
+                                fileReader.onerror = function (e) {
+                                    toastr.error('There was an error reading the file.  Please try again.');
+                                }
+                                fileReader.onabort = function (e) {
+                                    toastr.error('There was an error reading the file.  Please try again.');
+                                }
+
+                                fileReader.readAsBinaryString(file);
+                            }
+                            else {
+                                toastr.error('File must be under 4.3 MB in size.  Your file is too large.  Please try again.');
+                            }
+                        }
+                        else {
+                            $(`#uploadBtn-${fileIndex}`).addClass('d-none');
+                            toastr.error('You must choose a file before trying to upload it');
+                        }
+                    }
+
+                    function uploadAttachment(fileId, insuranceId, contactId, contact) {
+                        $('#spinner').show();
+                        var attachmentBody = "";
+
+                        if (insuranceId != '' && insuranceId != null && insuranceId != undefined) {
+                            $scope.attachmentid = insuranceId;
+                            console.log("attachment-id", $scope.attachmentid);
+                        }
+                        else {
+                            $scope.attachmentid = "";
+                        }
+                        if (fileSize <= positionIndex + chunkSize) {
+                            attachmentBody = attachment.substring(positionIndex);
+                            doneUploading = true;
+                        } else {
+                            attachmentBody = attachment.substring(positionIndex, positionIndex + chunkSize);
+                        }
+                        Visualforce.remoting.Manager.invokeAction('{!$RemoteAction.ManageNotificationController.readFromFileInchunk}', attachmentBody, attachmentName, fileId, contactId, $scope.accid, $scope.attachmentid,
+                            function (result, event) {
+                                if (event.status) {
+                                    if (event.type === 'exception') {
+                                        console.log("exception");
+                                        console.log(event);
+                                        $('#spinner').hide();
+                                    }
+                                    else if (event.status) {
+                                        if (doneUploading == true) {
+                                            var notiDiv = document.querySelectorAll('#notifyColumn');
+                                            var filecolumn = document.querySelectorAll('#file-column');
+                                            toastr.success("We have received your upload, the data will be processed and made available within 72 work hours");
+                                            document.getElementById(`file-${fileIndex}`).value = '';
+                                            document.getElementById(`file-name-${fileIndex}`).innerHTML = '';
+                                            $(`#file-path-wrap-${fileIndex}`).addClass('d-none');
+                                            $(`#uploadBtn-${fileIndex}`).addClass('d-none');
+                                            $(`#fileBtn-${fileIndex}`).removeClass('d-none');
+                                            $("#insurance-thead").addClass('em-10');
+                                            $("#insurance-thead").removeClass('em-20');
+                                            // $('#file-column').addClass('vw-12');
+                                            // $('#file-column').removeClass('w-19');
+                                            angular.forEach(filecolumn, function (n) {
+                                                if (n.className.includes('w-19')) {
+                                                    n.classList.remove('w-19');
+                                                    n.classList.add('vw-12');
+                                                }
+                                            })
+                                            angular.forEach(notiDiv, function (n) {
+                                                if (n.className.includes('n-width')) {
+                                                    n.classList.remove('n-width');
+                                                    n.classList.add('notify-para-width');
+                                                }
+                                            })
+                                            if ($scope.filesChoose.length > 0) {
+                                                angular.forEach($scope.filesChoose, function (fl) {
+                                                    if (fl.name === fileIndex.toString()) {
+                                                        const findex = $scope.filesChoose.indexOf(fl);
+                                                        if (findex !== -1) $scope.filesChoose.splice(findex, 1);
+                                                    }
+                                                })
+                                            }
+                                        }
+                                        else {
+                                            positionIndex += chunkSize;
+                                            uploadAttachment(result, insuranceId, idOfContact, contact);
+                                        }
+                                    } else {
+                                        console.log(event.message);
+                                        $('#spinner').hide();
+                                    }
+                                }
+                                else {
+                                    toastr.error('Some error has occur');
+                                    $('#spinner').hide();
+                                }
+                                $('#spinner').hide();
+                                $scope.$apply();
+                            },
+                            { buffer: true, escape: true, timeout: 120000 }
+                        );
+                    }
+
+                    $scope.location_file_changed = function (element) {
+                        chooseFileName = '';
+                        attachment = '';
+                        choosefile = '';
+                        $scope.locationdata = '';
+                        choosefile = element;
+                        fileIndex = parseInt(element.name);
+                        var findex = (element.files[0].name).lastIndexOf(".");
+                        var photofile = element.files[0];
+                        chooseFileName = photofile.name;
+                        //console.log('file size :- '+choosefile.files[0].size);
+                        var strsubstring = (element.files[0].name).substring(findex, (element.files[0].name).length);
+                        var locationElement = document.querySelectorAll('#location-file-column');
+                        if (strsubstring == '.xls' || strsubstring == '.xlsx' || strsubstring == '.csv') {
+                            $(`#location-path-wrap-${fileIndex}`).removeClass('d-none');
+                            document.getElementById(`location-file-name-${fileIndex}`).innerHTML = chooseFileName;
+                            if (choosefile.files[0].size > 0 && choosefile.files[0].size < 4350000) {
+                                $(`#locationFileBtn-${fileIndex}`).addClass('d-none');
+                                $(`#uploadLocationBtn-${fileIndex}`).removeClass('d-none');
+                                if ($('#location-file-column')[0].classList.length > 1) {
+                                    // $('#file-column').removeClass('vw-12');
+                                    // $('#file-column').addClass('w-19');
+                                    $("#locate-thead").removeClass('em-10');
+                                    $("#locate-thead").addClass('em-15');
+                                    angular.forEach(locationElement, function (n) {
+                                        if (n.className.includes('vw-12')) {
+                                            n.classList.remove('vw-12');
+                                            n.classList.add('w-14');
+                                        }
+                                    })
+                                }
+                                //console.log($('#file-column')[0].classList)
+                                choosefile = element;
+                                $scope.locationChoose.push(element);
+                            }
+                            else {
+                                // $scope.IsVisiblebtn = false;
+                                $(`#location-path-wrap-${fileIndex}`).addClass('d-none');
+                                document.getElementById(`location-file-name-${fileIndex}`).innerHTML = "";
+                                toastr.error('Base 64 Encoded file is too large.  Maximum size is 4 MB .');
+                            }
+                        }
+                        else {
+                            $(`#location-path-wrap-${fileIndex}`).addClass('d-none');
+                            document.getElementById(`location-file-name-${fileIndex}`).innerHTML = "";
+                            toastr.error('Please upload correct File. File extension should be .csv or .xls');
+                        }
+
+                        var fl = choosefile.files[0].size;
+
+
+                        $scope.$apply(function (scope) {
+                            choosenfileType = photofile.type;
+                            var reader = new FileReader();
+                            $scope.locationfsize = element.files[0].size;
+                            reader.onload = function (e) {
+                                $scope.locationdata = reader.result;
+                            };
+                            reader.readAsDataURL(photofile);
+                        });
+                    }
+
+                    $scope.uploadLocationInChunk = function (element,  contact) {
+                        var lfile;
+                        if (element.currentTarget != null || element.currentTarget != undefined) {
+                            angular.forEach($scope.locationChoose, function (fl) {
+                                if (fl.name === element.currentTarget.name) {
+                                    lfile = fl.files[0];
+                                    fileIndex = parseInt(element.currentTarget.name);
+                                }
+                            })
+                        }
+
+                        if (lfile != undefined) {
+                            var selectedFile = lfile;
+                            var reader = new FileReader();
+                            reader.onload = function (event) {
+                                var data = this.result;
+                                var workbook = XLSX.read(data, {
+                                    type: 'binary'
+                                });
+                                workbook.SheetNames.forEach(function (sheetName) {
+                                    var XL_row_object = XLSX.utils.sheet_to_row_object_array(workbook.Sheets[sheetName]);
+                                    var json_object = JSON.stringify(XL_row_object);
+                                    uploadLocationAttachment(json_object, contact.triploguserid, fileIndex);
+                                })
+                            };
+
+                            reader.onerror = function (event) {
+                                console.error("File could not be read! Code " + event.target.error.code);
+                            };
+
+                            reader.readAsBinaryString(selectedFile);
+                        }
+                        console.log("from location file", lfile);
+                    }
+
+                    const changeKeyObjects = (arr, replaceKeys) => {
+                            return arr.map(item => {
+                                const newItem = {};
+                                Object.keys(item).forEach(key => {
+                                    newItem[replaceKeys[key]] = item[[key]];
+                                });
+                                return newItem;
+                            });
+                    };
+                    function uploadLocationAttachment(json, usertriplogId, findexV) {
+                            $('#spinner').show();
+                            var newArray;
+                            var locationcolumn = document.querySelectorAll('#location-file-column');
+                            var replaceKeys = { "Default Activity (optional)": "activity", "Latitude (optional)": "latitude", "Longitude (optional)": "longitude", "Name (optional)": "name", "Address": "address" };
+                            var locationBody = JSON.parse(json);
+                            if (locationBody[0] != null || locationBody[0] != undefined) {
+                                var locationKeys = Object.keys(locationBody[0]);
+                                if (locationKeys.includes("Default Activity (optional)") || locationKeys.includes("Latitude (optional)")
+                                    || locationKeys.includes("Longitude (optional)") || locationKeys.includes("Name (optional)")
+                                    || locationKeys.includes("Address")) {
+                                    newArray = changeKeyObjects(locationBody, replaceKeys);
+                                    newArray.forEach(ob => {
+                                        ob.userId = usertriplogId
+                                    });
+                                    if (newArray.length > 100) {
+                                        $('#spinner').hide();
+                                        toastr.error("You can upload 100 locations at a time.");
+                                        $(`locationFile-${fileIndex}`).value = '';
+                                        $(`location-file-name-${fileIndex}`).innerHTML = '';
+                                        $(`#location-path-wrap-${fileIndex}`).addClass('d-none');
+                                        $(`#uploadLocationBtn-${fileIndex}`).addClass('d-none');
+                                        $(`#locationFileBtn-${fileIndex}`).removeClass('d-none');
+                                        $("#locate-thead").addClass('em-10');
+                                        $("#locate-thead").removeClass('em-15');
+                                        angular.forEach(locationcolumn, function (n) {
+                                            if (n.className.includes('w-14')) {
+                                                n.classList.remove('w-14');
+                                                n.classList.add('vw-12');
+                                            }
+                                        })
+                                    } else {
+                                        $scope.locationAttachment = JSON.stringify(newArray);
+                                        Visualforce.remoting.Manager.invokeAction('{!$RemoteAction.ManageNotificationController.UploadLocation}', $scope.locationAttachment, $scope.accid,
+                                            function (result, event) {
+                                                if (event.status) {
+                                                    $('#spinner').hide();
+                                                    toastr.success("We have received your upload, the data will be processed and made available within 72 work hours");
+                                                    $(`locationFile-${fileIndex}`).value = '';
+                                                    $(`location-file-name-${fileIndex}`).innerHTML = '';
+                                                    $(`#location-path-wrap-${fileIndex}`).addClass('d-none');
+                                                    $(`#uploadLocationBtn-${fileIndex}`).addClass('d-none');
+                                                    $(`#locationFileBtn-${fileIndex}`).removeClass('d-none');
+                                                    $("#locate-thead").addClass('em-10');
+                                                    $("#locate-thead").removeClass('em-15');
+                                                    angular.forEach(locationcolumn, function (n) {
+                                                        if (n.className.includes('w-14')) {
+                                                            n.classList.remove('w-14');
+                                                            n.classList.add('vw-12');
+                                                        }
+                                                    })
+                                                }
+                                                else {
+                                                    toastr.error('Some error has occur');
+                                                    $('#spinner').hide();
+                                                }
+                                                $('#spinner').hide();
+                                                $scope.$apply();
+                                            },
+                                            { buffer: true, escape: true, timeout: 120000 }
+                                        );
+                                     //   console.log(newArray);
+
+                                    }
+
+                                } else {
+                                    $('#spinner').hide();
+                                    toastr.error("The file you have uploaded is not valid for location");
+                                    $(`locationFile-${fileIndex}`).value = '';
+                                    $(`location-file-name-${fileIndex}`).innerHTML = '';
+                                    $(`#location-path-wrap-${fileIndex}`).addClass('d-none');
+                                    $(`#uploadLocationBtn-${fileIndex}`).addClass('d-none');
+                                    $(`#locationFileBtn-${fileIndex}`).removeClass('d-none');
+                                    $("#locate-thead").addClass('em-10');
+                                    $("#locate-thead").removeClass('em-15');
+                                    angular.forEach(locationcolumn, function (n) {
+                                        if (n.className.includes('w-14')) {
+                                            n.classList.remove('w-14');
+                                            n.classList.add('vw-12');
+                                        }
+                                    })
+                                }
+                            } else {
+                                $('#spinner').hide();
+                                toastr.error("The file you have uploaded is not valid for location");
+                                $(`locationFile-${fileIndex}`).value = '';
+                                $(`location-file-name-${fileIndex}`).innerHTML = '';
+                                $(`#location-path-wrap-${fileIndex}`).addClass('d-none');
+                                $(`#uploadLocationBtn-${fileIndex}`).addClass('d-none');
+                                $(`#locationFileBtn-${fileIndex}`).removeClass('d-none');
+                                $("#locate-thead").addClass('em-10');
+                                $("#locate-thead").removeClass('em-15');
+                                angular.forEach(locationcolumn, function (n) {
+                                    if (n.className.includes('w-14')) {
+                                        n.classList.remove('w-14');
+                                        n.classList.add('vw-12');
+                                    }
+                                })
+                            }
+                    }
+            }]);
+                </script>
+            </head>
+
+            <body class="slds-scope" ng-app="manageNotificationModule" ng-controller="manageNotificationController" ng-cloak="true">
+                <header>
+                    <div class="main-header sticky" id="myHeader">
+                        <div class="container-fluid">
+                            <div class="row">
+                                <div class="col-md-12 p-0">
+                                    <nav class="navbar navbar-expand-md my-0 my-md-1 px-0">
+                                        <a class="navbar-brand col-6 col-sm-6 col-md-3 col-lg-3 col-xl-3 px-0" ng-show="!admindriver" href="/app/{{mburseUrl}}?accid={{accid}}&id={{id}}&showteam={{showteam}}">
+                                            <img src="{!URLFOR($Resource.EmcCSS,'emc-design/assets/images/logo/mBurse-logo_rev.png')}" class="img-fluid" href="javascript:void(0)"
+                                                alt="logo" />
+                                        </a>
+                                        <a class="navbar-brand col-6 col-sm-6 col-md-3 col-lg-3 col-xl-3 px-0" ng-show="admindriver" href="/app/{{mburseUrl}}?accid={{accid}}&id={{id}}&showteam={{showteam}}&admindriver={{admindriver}}">
+                                            <img src="{!URLFOR($Resource.EmcCSS,'emc-design/assets/images/logo/mBurse-logo_rev.png')}" class="img-fluid" href="javascript:void(0)"
+                                                alt="logo" />
+                                        </a>
+                                        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsibleNavbar">
+                                            <span class="navbar-toggler-icon">
+                                                <i class="fa fa-bars"></i>
+                                            </span>
+                                        </button>
+                                        <div class="collapse navbar-collapse flex-column col-12 col-sm-6 col-md-9 col-lg-9 col-xl-9 ml-3 ml-sm-0 ml-lg-0 align-items-end"
+                                            id="collapsibleNavbar">
+                                            <ul class="navbar-nav flex-row alignitemscenter">
+                                                <li class="nav-item">
+                                                    <a class="nav-link text-white" ng-if="role === 'Admin' && manRole != 'Driver/Manager' && manRole != 'Manager'" href="/app/admindashboard?accid={{accid}}&id={{id}}&showteam={{showteam}}">Dashboard</a>
+                                                    <a class="nav-link text-white" ng-if="manRole != 'Manager' && manRole != 'Driver/Manager'" ng-show="admindriver" href="/app/admindriverdashboard?accid={{accid}}&id={{id}}&showteam={{showteam}}&admindriver=true">Dashboard</a>
+                                                    <a class="nav-link text-white" ng-if="role === 'Driver/Manager'" href="/app/drivermanagerdashboard?accid={{accid}}&id={{id}}&showteam={{showteam}}">Dashboard</a>
+                                                    <a class="nav-link text-white" ng-if="role === 'Manager'" href="/app/managerdashboard?accid={{accid}}&id={{id}}&showteam={{showteam}}">Dashboard</a>
+                                                    <a class="nav-link text-white" ng-if="manRole === 'Driver/Manager' || manRole === 'Manager'" ng-show="!admindriver" href="/app/managerdashboardfromadmin?managerid={{managerid}}&accid={{accid}}&id={{id}}&showteam={{showteam}}">Dashboard</a>
+                                                    <a class="nav-link text-white" ng-if="manRole === 'Manager' || manRole === 'Driver/Manager'" ng-show="admindriver" href="/app/managerdashboardfromadmindriver?managerid={{managerid}}&accid={{accid}}&id={{id}}&showteam={{showteam}}&admindriver=true">Dashboard</a>
+                                                    <!-- <a class="nav-link text-white" ng-if="manRole === 'Manager'" ng-show="!admindriver" href="/app/managerdashboardfromadmindriver?managerid={{managerid}}&accid={{accid}}&id={{id}}&showteam={{showteam}}">Dashboard</a> -->
+                                                </li>
+                                                <li class="nav-item" ng-if="manRole != 'Manager' && manRole != 'Driver/Manager'">
+                                                    <a class="nav-link text-white" ng-show="admindriver" href="/app/MileageDashboard?accid={{accid}}&id={{id}}&showteam={{showteam}}&admindriver={{admindriver}}">Mileage</a>
+                                                    <a class="nav-link text-white" ng-show="!admindriver" href="/app/MileageDashboard?accid={{accid}}&id={{id}}&showteam={{showteam}}">Mileage</a>
+                                                </li>
+                                                <li class="nav-item" ng-if="role != 'Driver/Manager' && role != 'Manager' ">
+                                                    <a class="nav-link text-white" ng-show="admindriver" href="/app/roster?accid={{accid}}&id={{id}}&showteam={{showteam}}&admindriver={{admindriver}}">Drivers</a>
+                                                    <a class="nav-link text-white" ng-show="!admindriver" href="/app/roster?accid={{accid}}&id={{id}}&showteam={{showteam}}">Drivers</a>
+                                                </li>
+                                                <li class="nav-item active">
+                                                    <a class="nav-link text-white active" ng-show="admindriver" href="/app/ManageNotification?accid={{accid}}&id={{id}}&showteam={{showteam}}&admindriver={{admindriver}}">Communications</a>
+                                                    <a class="nav-link text-white active" ng-show="!admindriver" href="/app/ManageNotification?accid={{accid}}&id={{id}}&showteam={{showteam}}">Communications</a>
+                                                </li>
+                                                <li class="nav-item" ng-if=" role != 'Driver/Manager' && role != 'Manager' ">
+                                                    <a class="nav-link text-white" ng-show="admindriver" href="/app/reportlist?accid={{accid}}&id={{id}}&showteam={{showteam}}&admindriver={{admindriver}}">Reports</a>
+                                                    <a class="nav-link text-white" ng-show="!admindriver" href="/app/reportlist?accid={{accid}}&id={{id}}&showteam={{showteam}}">Reports</a>
+                                                </li>
+                                                <li class="nav-item">
+                                                    <a class="nav-link text-white" ng-show="admindriver" href="/app/driveradminmanagermydetail?accid={{accid}}&id={{id}}&showteam={{showteam}}&admindriver={{admindriver}}">My Details</a>
+                                                    <a class="nav-link text-white" ng-if="role === 'Driver/Manager'  " href="/app/driveradminmanagermydetail?accid={{accid}}&id={{id}}&showteam={{showteam}}">My Details</a>
+                                                </li>
+                                                <li class="nav-item">
+                                                    <a class="nav-link text-white" href="/app/secur/logout.jsp">Logout</a>
+                                                </li>
+                                            </ul>
+                                        </div>
+
+                                    </nav>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </header>
+                <div id="spinner">
+                    <div class="spinner-background"></div>
+                    <div class="spinner-load">
+                        <div class="spinner-border text-light" role="status">
+                            <span class="sr-only">Loading...</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="slds-container">
+                    <div class="report-link">
+                        <h3 class="mb-15 d-block">Communications</h3>
+                    </div>
+                    <div class="form-gray-divider-notify mt-20"></div>
+                    <div class="slds-fluid-container">
+                        <div class="process-container">
+                             <input type="hidden" id="hidden_user_id" />
+                            <div>
+                                <button class="slds-btn slds-btn-primary slds-btn-sm waves-effect bc-blue waves-light mleft-0" ng-show="showResendBtn" ng-click="displayCheckboxForEmail()">
+                                    Resend Insurance Reminder
+                                </button>
+                                <button class="slds-btn slds-btn-primary slds-btn-sm waves-effect bc-grey waves-light mleft-0" ng-show="showLocationBtn" ng-click="exportToCsv()">
+                                    <i class="fa fa-download slds-p-right_xx-small"></i> Download Location Template
+                                </button>
+                                <button class="slds-btn slds-btn-primary slds-btn-sm waves-effect bc-green waves-light mleft-0" ng-show="showEmailBtn" ng-click="sendMassEmail()">
+                                    Send Email
+                                </button>
+                                <button class="slds-btn slds-btn-primary slds-btn-sm waves-effect bc-black waves-light mleft" ng-show="showCancelProBtn"
+                                    ng-click="endProcess()">
+                                    Cancel Process
+                                </button>
+                            </div>
+                            <div ng-if="lengthofrecord > 30" style="margin-top: 0.375rem;">
+                                <dir-pagination-controls max-size="1" direction-links="true" boundary-links="true" responsive="true" auto-hide="false" on-page-change="pageChangeHandler(newPageNumber)" ></dir-pagination-controls>
+                            </div>
+                            <div class="d-block w-search" id="search_filter">
+                                <div class="input-group">
+                                    <i class="fa fa-search" id="filtericon" ng-if="(search[searchTerm]).length===0"></i>
+                                    <i class="fa fa-times" id="cancelicon" ng-if="(search[searchTerm]).length>0" ng-click="resetSearch()"></i>
+                                    <input aria-controls="example" class="form-control py-2 table_filter_input" placeholder="Search by name" type="search" ng-model="search[searchTerm]"
+                                        ng-keypress="keyPressed($event, search[searchTerm].length)" />
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mtop-1 slds-p-bottom_x-large" id="tableWrap">
+                            <!-- <input type="text" id="currentLevelDate" /> -->
+                            <div style="padding: 0.3em;">
+                                <table class="slds-table slds-table_cell-buffer slds-table_striped"
+                                    id="notifyTable">
+                                    <thead class="table-thead">
+                                        <tr class="slds-line-height_reset">
+                                            <th ng-show="checkboxShow" class="align-text resendCheck">
+                                                <input class="custom-check" type="checkbox" ng-model="checkboxobj.isCheckedAllForEmail" ng-click="CheckUncheckAllForEmail(checkboxobj.isCheckedAllForEmail,info);"
+                                                />
+                                            </th>
+                                            <th ng-click="sort('name')" class="em-10">Name
+                                                <span class="sort-icon m-icon" ng-show="sortKey=='name'" ng-class="{'fa fa-chevron-up':reverse,'fa fa-chevron-down':!reverse}"></span>
+                                            </th>
+                                            <th ng-click="sort('insurance')" class="em-10">Insurance Status
+                                                <span class="sort-icon m-icon" ng-show="sortKey=='insurance'" ng-class="{'fa fa-chevron-up':reverse,'fa fa-chevron-down':!reverse}"></span>
+                                            </th>
+                                            <th class="em-10" id="insurance-thead">Insurance
+                                            </th>
+                                            <th ng-click="sort('expirationDate')" class="em-8">Expires
+                                                <span class="sort-icon m-icon" ng-show="sortKey=='expirationDate'" ng-class="{'fa fa-chevron-up':reverse,'fa fa-chevron-down':!reverse}"></span>
+                                            </th>
+                                            <th class="em-10" id="locate-thead">Location</th>
+                                            <th>Notification Message</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody ng-class="{'table-scroll' : driverInfo.length > 10}" id="style-2">
+                                        <tr dir-paginate="info in driverInfo | filter:search | itemsPerPage: pageSize" current-page="currentPage">
+                                            <td ng-model="info.check" ng-show="checkboxShow" class="align-text em-2">
+                                                <input class="custom-check" type="checkbox" ng-model="info.massEmail" ng-change="CheckUncheckForEmail(info);" />
+                                            </td>
+                                            <td class="name-td em-10" ng-if="role != 'Admin' && role != 'Driver/Admin' ">{{info.name + ' ' + info.lastname}}</td>
+                                            <td class="name-td em-10"  ng-if="role === 'Admin' || role === 'Driver/Admin' "><a ng-click="openProfile(info)" class="name-info-link">{{info.name + ' ' + info.lastname}}</a></td>
+                                            <td ng-model="info.insurance" class="em-10" ng-if="info.role != 'Manager'">
+                                               <!-- {{info.insurance}} -->
+                                               <span class="dot" ng-class="{'red-bg' : info.insurance == 'No', 'green-bg' : info.insurance == 'Yes'}" ng-if="info.insurance != 'Not Submitted' && info.insurance != 'Insurance Card' && info.insurance != 'Not Meeting Plan Minimum' && info.insurance != 'Expired' && info.insurance != null "></span>
+                                               <span class="not-meeting-status" ng-if="info.insurance == 'Not Submitted' || info.insurance == 'Insurance Card' || info.insurance == 'Expired' ">{{info.insurance}}</span>
+                                               <span class="not-meeting-status" ng-if="info.insurance == 'Not Meeting Plan Minimum'">{{info.insurance}}</span>
+                                            </td>
+                                            <td ng-model="info.insurance" class="em-10" ng-if="info.role == 'Manager'">
+                                            </td>
+                                            <td class="file-td vw-12" id="file-column">
+                                                <section class="section-preview" ng-if="info.role != 'Manager'">
+                                                    <form class="sd-form">
+                                                        <div class="file-field">
+                                                            <div class="slds-btn slds-btn-primary slds-btn-sm float-left waves-light m-0" id="fileBtn-{{$index}}">
+                                                                <span>Choose file</span>
+                                                                <input type="file" name="{{$index}}" id="file-{{$index}}" multiple="false" accept="application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+                                                                    onchange="angular.element(this).scope().file_changed(this)" />
+                                                            </div>
+                                                            <button class="slds-btn slds-btn-primary slds-btn-sm float-left waves-effect bc-blue mleft waves-light d-none" name="{{$index}}"
+                                                                id="uploadBtn-{{$index}}" ng-click="uploadFileInChunk($event, info.insuranceId, info.contactId, info)">
+                                                                <!--ng-click="uploadFileInChunk($event, info.insuranceId, info.contactId, info)"-->
+                                                                Upload
+                                                            </button>
+                                                            <div class="file-path-wrapper d-none" id="file-path-wrap-{{$index}}">
+                                                                <label class="file-path" id="file-name-{{$index}}"></label>
+                                                            </div>
+                                                        </div>
+                                                    </form>
+                                                </section>
+                                            </td>
+                                            <td class="date-td em-8" ng-model="info.expirationDate" ng-if="info.role != 'Manager'">{{info.expirationDate | date:"MM/dd/yyyy"}}</td>
+                                            <td class="date-td em-8" ng-model="info.expirationDate" ng-if="info.role == 'Manager'"></td>
+                                            <!-- <td class="notify-td" ng-model="info.notiMessage" ng-show="!info.isEditable">
+                                                <div class="slds-float-left notify-para notify-para-width" onmouseover="isEllipsisActive(this)" id="notifyColumn">
+                                                    {{info.notiMessage}}
+                                                </div>
+                                                <div class="slds-float-right">
+                                                    <div ng-if="info.notificationDate != null" class="slds-float-left slds-p-right_small notify-date">{{info.notificationDate | date:"MM/dd/yyyy"}}</div>
+                                                    <a ng-click="info.isEditable = !info.isEditable" class="slds-float-right pd-2">
+                                                        <i class="fa fa-edit"></i>
+                                                    </a>
+                                                </div>
+                                            </td> -->
+                                            <td class="file-td vw-12" id="location-file-column">
+                                                <section class="section-preview"  ng-if="info.triploguserid != null || info.triploguserid != undefined">
+                                                    <form class="sd-form">
+                                                        <div class="file-field">
+                                                            <div class="slds-btn slds-btn-primary slds-btn-sm float-left waves-light m-0" id="locationFileBtn-{{$index}}">
+                                                                <span>Choose file</span>
+                                                                <input type="file" name="{{$index}}" id="locationFile-{{$index}}" multiple="false"  accept=".xls, .xlsx, .csv"
+                                                                    onchange="angular.element(this).scope().location_file_changed(this)" />
+                                                            </div>
+                                                            <button class="slds-btn slds-btn-primary slds-btn-sm float-left waves-effect bc-blue mleft waves-light d-none" name="{{$index}}"
+                                                                id="uploadLocationBtn-{{$index}}" ng-click="uploadLocationInChunk($event, info)">
+                                                                <!--ng-click="uploadFileInChunk($event, info.insuranceId, info.contactId, info)"-->
+                                                                Upload
+                                                            </button>
+                                                            <div class="file-path-wrapper d-none" id="location-path-wrap-{{$index}}">
+                                                                <label class="file-path" id="location-file-name-{{$index}}"></label>
+                                                            </div>
+                                                        </div>
+                                                    </form>
+                                                </section>
+                                            </td>
+
+                                            <td ng-model="info.notiMessage" class="notify-td">
+                                                <div class="notification-space"><!-- 75%; -->
+                                                    <textarea ng-model="info.notiMessage" placeholder="Type a short message here" class="slds-textarea" id="message-area{{$index}}"></textarea>
+                                                    <div class="span-error slds-p-top_x-small d-none error-text" id="span-error{{$index}}">
+                                                        <i class="fa fa-exclamation-triangle"></i>
+                                                        Please enter a short message</div>
+                                                </div>
+                                                <div class="slds-float-right slds-p-top_medium">
+                                                    <div id="notify-date{{$index}}" ng-if="info.notificationDate != null" class="slds-float-left slds-p-right_small slds-p-top_xx-small notify-date">{{info.notificationDate | date:"MM/dd/yyyy"}}</div>
+                                                    <a class="slds-button float btn-neutral-padding slds-button_neutral slds-button_dual-stateful slds-is-pressed slds-p-right_small"
+                                                        ng-click="sendNotification(info, $index);">
+                                                        <i class="fa fa-paper-plane"></i>
+                                                    </a><!-- info.isEditable = !info.isEditable;-->
+                                                    <a class="slds-button float  btn-brand-padding slds-button_brand slds-button_dual-stateful slds-is-pressed" ng-click="errorValidate($index)">
+                                                        <i class="fa fa-times"></i>
+                                                    </a>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr ng-if="(driverInfo | filter:search).length == 0">
+                                            <td colspan="6" class="align-text" style="font-size:16px">No Results Found</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </body>
+            <!-- End Default Content REMOVE THIS -->
+
+            </html>
+        </apex:page>
