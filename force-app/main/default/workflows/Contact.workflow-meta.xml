@@ -1,0 +1,320 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Workflow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <alerts>
+        <fullName>Deactivated_Date_Before_zero_hour</fullName>
+        <ccEmails>driverservices@askemc.com</ccEmails>
+        <description>Deactivated Date Before zero hour</description>
+        <protected>false</protected>
+        <senderType>CurrentUser</senderType>
+        <template>unfiled$public/Deactivated_Date_Before_zero_hour</template>
+    </alerts>
+    <alerts>
+        <fullName>Deactivated_Date_Email_Alert</fullName>
+        <ccEmails>driverservices@askemc.com</ccEmails>
+        <description>Deactivated Date Email Alert</description>
+        <protected>false</protected>
+        <senderType>CurrentUser</senderType>
+        <template>unfiled$public/Deactivated_Date_Alert</template>
+    </alerts>
+    <alerts>
+        <fullName>Send_email_notification_to_admin</fullName>
+        <ccEmails>jocelyn.rivera@valetliving.com</ccEmails>
+        <ccEmails>hr@valetliving.com</ccEmails>
+        <ccEmails>driverservices@mburse.com</ccEmails>
+        <description>Send email notification to admin</description>
+        <protected>false</protected>
+        <senderAddress>driverservices@mburse.com</senderAddress>
+        <senderType>OrgWideEmailAddress</senderType>
+        <template>unfiled$public/Fixed_Amount_Notification_for_Valetwaste</template>
+    </alerts>
+    <alerts>
+        <fullName>Sending_the_reminder_notifications</fullName>
+        <ccEmails>sfdcdev321@gmail.com</ccEmails>
+        <description>Sending the reminder notifications</description>
+        <protected>false</protected>
+        <recipients>
+            <field>Email</field>
+            <type>email</type>
+        </recipients>
+        <senderAddress>driverservices@askemc.com</senderAddress>
+        <senderType>OrgWideEmailAddress</senderType>
+        <template>unfiled$public/Log_your_mileage_reminder</template>
+    </alerts>
+    <alerts>
+        <fullName>Thank_you</fullName>
+        <ccEmails>ahmedmustafa102@gmail.com</ccEmails>
+        <description>Thank you</description>
+        <protected>false</protected>
+        <recipients>
+            <field>Email</field>
+            <type>email</type>
+        </recipients>
+        <senderType>CurrentUser</senderType>
+        <template>unfiled$public/Thanks_Email</template>
+    </alerts>
+    <alerts>
+        <fullName>X15Jan_Send_Email</fullName>
+        <description>15Jan Send Email</description>
+        <protected>false</protected>
+        <recipients>
+            <field>Email</field>
+            <type>email</type>
+        </recipients>
+        <senderType>CurrentUser</senderType>
+        <template>unfiled$public/X15Jan_Template</template>
+    </alerts>
+    <alerts>
+        <fullName>X15July_Send_Email</fullName>
+        <description>15July Send Email</description>
+        <protected>false</protected>
+        <recipients>
+            <field>Email</field>
+            <type>email</type>
+        </recipients>
+        <senderType>CurrentUser</senderType>
+        <template>unfiled$public/X15July_Template</template>
+    </alerts>
+    <alerts>
+        <fullName>send_email_to_notify_contact_changes_happen</fullName>
+        <ccEmails>sanket.goswami@getoncrm.com</ccEmails>
+        <description>send email to notify contact changes happen</description>
+        <protected>false</protected>
+        <recipients>
+            <recipient>will.hanson@blaisetech.com</recipient>
+            <type>user</type>
+        </recipients>
+        <senderAddress>driverservices@askemc.com</senderAddress>
+        <senderType>OrgWideEmailAddress</senderType>
+        <template>unfiled$public/email_notify_contact_changes_happen_Template</template>
+    </alerts>
+    <fieldUpdates>
+        <fullName>Contact_July2_Field_Update</fullName>
+        <field>X15July2__c</field>
+        <formula>DATE(YEAR(TODAY()), MONTH(TODAY()), DAY(TODAY()))</formula>
+        <name>Contact July2 Field Update</name>
+        <notifyAssignee>false</notifyAssignee>
+        <operation>Formula</operation>
+        <protected>false</protected>
+        <reevaluateOnChange>false</reevaluateOnChange>
+    </fieldUpdates>
+    <fieldUpdates>
+        <fullName>Jan_Date_Update</fullName>
+        <field>X15Jan__c</field>
+        <formula>DATE(YEAR(TODAY()),1,15)</formula>
+        <name>Jan Date Update</name>
+        <notifyAssignee>false</notifyAssignee>
+        <operation>Formula</operation>
+        <protected>false</protected>
+        <reevaluateOnChange>false</reevaluateOnChange>
+    </fieldUpdates>
+    <fieldUpdates>
+        <fullName>Jan_Field_False</fullName>
+        <field>Jan__c</field>
+        <literalValue>0</literalValue>
+        <name>Jan Field False</name>
+        <notifyAssignee>false</notifyAssignee>
+        <operation>Literal</operation>
+        <protected>false</protected>
+        <reevaluateOnChange>false</reevaluateOnChange>
+    </fieldUpdates>
+    <fieldUpdates>
+        <fullName>July_Field_False</fullName>
+        <field>July__c</field>
+        <literalValue>0</literalValue>
+        <name>July Field False</name>
+        <notifyAssignee>false</notifyAssignee>
+        <operation>Literal</operation>
+        <protected>false</protected>
+        <reevaluateOnChange>false</reevaluateOnChange>
+    </fieldUpdates>
+    <fieldUpdates>
+        <fullName>July_Field_Update</fullName>
+        <field>X15July__c</field>
+        <formula>DATE(YEAR(TODAY()), MONTH(TODAY()), DAY(TODAY()))</formula>
+        <name>July Field Update</name>
+        <notifyAssignee>false</notifyAssignee>
+        <operation>Formula</operation>
+        <protected>false</protected>
+        <reevaluateOnChange>false</reevaluateOnChange>
+    </fieldUpdates>
+    <fieldUpdates>
+        <fullName>Update_Deactivated_by_fileld</fullName>
+        <field>Deactivated_By__c</field>
+        <formula>LastModifiedBy.FirstName +&apos; &apos;+  LastModifiedBy.LastName</formula>
+        <name>Update Deactivated by fileld</name>
+        <notifyAssignee>false</notifyAssignee>
+        <operation>Formula</operation>
+        <protected>false</protected>
+        <reevaluateOnChange>false</reevaluateOnChange>
+    </fieldUpdates>
+    <fieldUpdates>
+        <fullName>email_update</fullName>
+        <field>Email</field>
+        <formula>External_Email__c</formula>
+        <name>email update</name>
+        <notifyAssignee>false</notifyAssignee>
+        <operation>Formula</operation>
+        <protected>false</protected>
+        <reevaluateOnChange>false</reevaluateOnChange>
+    </fieldUpdates>
+    <rules>
+        <fullName>Deactivated Date Workflow</fullName>
+        <actions>
+            <name>Deactivated_Date_Email_Alert</name>
+            <type>Alert</type>
+        </actions>
+        <active>true</active>
+        <criteriaItems>
+            <field>Contact.Deactivated_Date__c</field>
+            <operation>notEqual</operation>
+        </criteriaItems>
+        <triggerType>onCreateOrTriggeringUpdate</triggerType>
+        <workflowTimeTriggers>
+            <actions>
+                <name>Deactivated_Date_Before_zero_hour</name>
+                <type>Alert</type>
+            </actions>
+            <offsetFromField>Contact.Deactivated_Date__c</offsetFromField>
+            <timeLength>0</timeLength>
+            <workflowTimeTriggerUnit>Hours</workflowTimeTriggerUnit>
+        </workflowTimeTriggers>
+    </rules>
+    <rules>
+        <fullName>Jan is True</fullName>
+        <active>true</active>
+        <formula>Jan__c = false</formula>
+        <triggerType>onCreateOrTriggeringUpdate</triggerType>
+        <workflowTimeTriggers>
+            <actions>
+                <name>July_Field_Update</name>
+                <type>FieldUpdate</type>
+            </actions>
+            <offsetFromField>Contact.X15Jan__c</offsetFromField>
+            <timeLength>7</timeLength>
+            <workflowTimeTriggerUnit>Days</workflowTimeTriggerUnit>
+        </workflowTimeTriggers>
+        <workflowTimeTriggers>
+            <actions>
+                <name>July_Field_Update</name>
+                <type>FieldUpdate</type>
+            </actions>
+            <offsetFromField>Contact.X15Jan__c</offsetFromField>
+            <timeLength>14</timeLength>
+            <workflowTimeTriggerUnit>Days</workflowTimeTriggerUnit>
+        </workflowTimeTriggers>
+        <workflowTimeTriggers>
+            <actions>
+                <name>July_Field_Update</name>
+                <type>FieldUpdate</type>
+            </actions>
+            <offsetFromField>Contact.X15Jan__c</offsetFromField>
+            <timeLength>21</timeLength>
+            <workflowTimeTriggerUnit>Days</workflowTimeTriggerUnit>
+        </workflowTimeTriggers>
+    </rules>
+    <rules>
+        <fullName>July is true</fullName>
+        <active>true</active>
+        <formula>July__c = false</formula>
+        <triggerType>onCreateOrTriggeringUpdate</triggerType>
+        <workflowTimeTriggers>
+            <actions>
+                <name>Contact_July2_Field_Update</name>
+                <type>FieldUpdate</type>
+            </actions>
+            <offsetFromField>Contact.X15Jan__c</offsetFromField>
+            <timeLength>202</timeLength>
+            <workflowTimeTriggerUnit>Days</workflowTimeTriggerUnit>
+        </workflowTimeTriggers>
+        <workflowTimeTriggers>
+            <actions>
+                <name>Contact_July2_Field_Update</name>
+                <type>FieldUpdate</type>
+            </actions>
+            <offsetFromField>Contact.X15Jan__c</offsetFromField>
+            <timeLength>188</timeLength>
+            <workflowTimeTriggerUnit>Days</workflowTimeTriggerUnit>
+        </workflowTimeTriggers>
+        <workflowTimeTriggers>
+            <actions>
+                <name>Contact_July2_Field_Update</name>
+                <type>FieldUpdate</type>
+            </actions>
+            <offsetFromField>Contact.X15Jan__c</offsetFromField>
+            <timeLength>195</timeLength>
+            <workflowTimeTriggerUnit>Days</workflowTimeTriggerUnit>
+        </workflowTimeTriggers>
+    </rules>
+    <rules>
+        <fullName>Reminder Notification</fullName>
+        <actions>
+            <name>Sending_the_reminder_notifications</name>
+            <type>Alert</type>
+        </actions>
+        <active>false</active>
+        <formula>ISBLANK(Monthly_Mileage__c  )</formula>
+        <triggerType>onCreateOrTriggeringUpdate</triggerType>
+    </rules>
+    <rules>
+        <fullName>SendnotificationtoAdmin</fullName>
+        <actions>
+            <name>Send_email_notification_to_admin</name>
+            <type>Alert</type>
+        </actions>
+        <active>true</active>
+        <formula>IF(AND(!ISNULL(Fixed_Amount__c),  UPPER(Account.Name)=&apos;COMMUNITY ACCOUNT&apos;) ,true, false)</formula>
+        <triggerType>onCreateOrTriggeringUpdate</triggerType>
+    </rules>
+    <rules>
+        <fullName>Thank you email</fullName>
+        <actions>
+            <name>Thank_you</name>
+            <type>Alert</type>
+        </actions>
+        <active>false</active>
+        <booleanFilter>1 OR 2</booleanFilter>
+        <criteriaItems>
+            <field>Contact.Jan__c</field>
+            <operation>equals</operation>
+            <value>True</value>
+        </criteriaItems>
+        <criteriaItems>
+            <field>Contact.July__c</field>
+            <operation>equals</operation>
+            <value>True</value>
+        </criteriaItems>
+        <triggerType>onCreateOrTriggeringUpdate</triggerType>
+    </rules>
+    <rules>
+        <fullName>Update Deactivated by filed</fullName>
+        <actions>
+            <name>Update_Deactivated_by_fileld</name>
+            <type>FieldUpdate</type>
+        </actions>
+        <active>true</active>
+        <criteriaItems>
+            <field>Contact.Deactivated_Date__c</field>
+            <operation>notEqual</operation>
+        </criteriaItems>
+        <criteriaItems>
+            <field>Contact.isActive__c</field>
+            <operation>equals</operation>
+            <value>No</value>
+        </criteriaItems>
+        <description>If any one can deactivate any driver at that time we are to display person name who is deactivate the driver</description>
+        <triggerType>onCreateOrTriggeringUpdate</triggerType>
+    </rules>
+    <rules>
+        <fullName>update email field</fullName>
+        <actions>
+            <name>email_update</name>
+            <type>FieldUpdate</type>
+        </actions>
+        <active>false</active>
+        <criteriaItems>
+            <field>Contact.External_Email__c</field>
+            <operation>notEqual</operation>
+        </criteriaItems>
+        <triggerType>onAllChanges</triggerType>
+    </rules>
+</Workflow>
