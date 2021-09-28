@@ -5,6 +5,8 @@ public with sharing class DemoClass {
         Decimal a = 6+6;
         /* debug log  */
         //test
+        // commented by megha
+        //test1
         System.debug('Test class: ' + a);
     }
 }
