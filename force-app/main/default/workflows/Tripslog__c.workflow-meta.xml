@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Workflow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <alerts>
+        <fullName>failnotification</fullName>
+        <ccEmails>natvar.goc@gmail.com,</ccEmails>
+        <ccEmails>sanket.goc@gmail.com</ccEmails>
+        <description>failnotification</description>
+        <protected>false</protected>
+        <recipients>
+            <recipient>will.hanson@blaisetech.com</recipient>
+            <type>user</type>
+        </recipients>
+        <senderAddress>driverservices@mburse.com</senderAddress>
+        <senderType>OrgWideEmailAddress</senderType>
+        <template>unfiled$public/failnotifications</template>
+    </alerts>
+    <rules>
+        <fullName>failnotifications</fullName>
+        <actions>
+            <name>failnotification</name>
+            <type>Alert</type>
+        </actions>
+        <active>false</active>
+        <criteriaItems>
+            <field>Tripslog__c.Status__c</field>
+            <operation>equals</operation>
+            <value>Fail</value>
+        </criteriaItems>
+        <triggerType>onCreateOrTriggeringUpdate</triggerType>
+    </rules>
+</Workflow>
