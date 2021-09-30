@@ -1,0 +1,125 @@
+<template>
+    <div class="slds-modal__content slds-p-around_medium slds-scrollable" id="modal-content-id-1">
+        <c-custom-hr></c-custom-hr>
+        <div class="slds-float_left">
+            <div class="slds-grid slds-gutters">
+                <!-- data table seach start -->
+                <!-- <div class="slds-col slds-size_6-of-12">
+                    <div class="slds-input-has-icon  slds-m-bottom_medium slds-input-has-icon_right">
+                   
+                        <lightning-icon icon-name="utility:close" onclick={removeSearch}  class="slds-icon slds-input__icon slds-input__icon_right slds-icon-text-default" style="pointer-events: auto !important;"   size="x-small" if:true={search} ></lightning-icon> 
+                        <lightning-icon class="slds-icon slds-input__icon slds-input__icon_right slds-icon-text-default" aria-hidden="true"  icon-name="utility:search" size="x-small" if:false={search} ></lightning-icon>
+                        <lightning-input type="text" onchange={searchData} id="text-input-id-1" value={search} placeholder="Search..."  class="" > </lightning-input>
+                </div>
+                </div> -->
+                <!-- end data table seach -->
+
+                <!-- Start per page dropdown   -->
+                <div class="slds-col slds-size_6-of-12">
+                    <span class="slds-grid">
+                    <label>Per Page</label>
+                        <div class="slds-form-element slds-m-left_medium ">
+                        
+                            <div class="slds-form-element__control">
+                              <div class="slds-select_container">
+                                <select class="slds-select" onchange={handlePageSize} id="select-01">
+                                  <option value="10" selected>10</option>
+                                  <option value="20" >20</option>
+                                  <option value="50" >50</option>
+                                </select>
+                              </div>
+                            </div>
+                          </div>
+                    </span>
+                   
+                </div>
+                <!-- End per page dropdown  -->
+            </div>          
+        </div>
+        <!-- data table start -->
+        <table class="slds-table slds-table_cell-buffer slds-table_striped" id="tableSel" >
+            <!-- table header start -->
+            <thead class="slds-border_bottom">
+                <tr class="slds-line-height_reset">
+                    <template if:true={headers}>
+                        <template for:each={headers} for:item="head">
+                            <th class="" scope="col" key={head.label}>
+                                <div  title={head.label}>
+                                    <a onclick={sort} name={head.name}>
+                                        {head.label}
+                                    </a>
+                                    <span>
+                                        <lightning-icon icon-name="utility:chevronup" size="x-small" if:true={head.arrUp}></lightning-icon>
+                                        <lightning-icon icon-name="utility:chevrondown" size="x-small" if:true={head.arrDown}></lightning-icon>
+                                    </span>
+                                </div>
+                            </th>
+                        </template>
+                    </template>
+                </tr>
+            </thead>
+            <!-- table header end -->
+            <!-- table body start -->
+            <tbody >
+                <template if:true={body}>
+                    <template for:each={body} for:item="rowData">
+                        <tr key={rowData}>
+                            <template for:each={rowData} for:item="row">
+                                <td key={row.key} >{row.key}</td>
+                            </template>
+                        </tr>
+                    </template>
+                </template>
+                <template if:true={norecord}>
+                    <tr class="slds-align_absolute-center">
+                        <td colspan="100%">No Data Available</td>
+                    </tr>
+                </template>
+                
+            </tbody>
+            <!-- table body end -->
+        </table> 
+
+        <!-- pagination start -->
+        <!-- <template if:true={pagedData}>
+            <div class="slds-clearfix slds-m-top_large">
+                <p class="slds-float_left">
+                    Page {currentPage} of {maxPages}
+                </p>
+                <span class="slds-float_right">
+                    <ul class="slds-list_horizontal slds-border_top slds-border_bottom slds-has-block-links_space">
+                        <li class="slds-item slds-border_left slds-border_right">
+                            <a 
+                            name="buttonBackwards" tripdata
+                            label="Previous" 
+                            title="" 
+                            onclick={handleButtonPrevious}  
+                            class="" 
+                            disabled={disabledPreviousButton}>
+                            Previous
+                            </a>
+                        </li>
+                        <li class="slds-item slds-border_right">
+                            <div class="slds-m-left_small slds-m-top_x-small slds-m-right_small">
+                                {currentPage}
+                            </div>
+                        </li>
+                        <li class="slds-item slds-border_right">
+                            <a 
+                            name="buttonForwards" 
+                            label="Next" 
+                            title="" 
+                            onclick={handleButtonNext} 
+                            class="" 
+                            disabled={disabledNextButton}>
+                            Next
+                            </a>
+                        </li>
+                    </ul>
+                </span>
+            </div>
+        </template> -->
+        <!-- pagination end -->
+        <c-custom-hr></c-custom-hr>
+    </div>
+</template>
