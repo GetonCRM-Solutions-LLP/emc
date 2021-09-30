@@ -1,0 +1,53 @@
+table thead th { color: #78bc42; font-size:10pt; }
+table tfoot tr th { color: #78bc42; font-size:10pt; font-weight: bold; }
+.slds-button_success {
+    background-color: #78bc42 !important;
+    border-radius: 0%;
+    font-weight: bold;
+    color: white;
+}
+table thead.slds-border_bottom{
+    border-color: var(--sds-c-thead-color-background, #78bc42);
+    border-radius: var(--sds-c-thead-radius-border, 50rem);
+    border-bottom-width: 2px !important;
+}
+table tfoot.slds-border_top{
+    border-color: var(--sds-c-thead-color-background, #78bc42);
+    border-radius: var(--sds-c-thead-radius-border, 50rem);
+}
+a {
+    color: #78bc42 !important;;
+    text-decoration: none;
+ }
+ .slds-button_neutral {
+    background-color: #545b62 !important;
+    font-weight: bold;
+    color: white;
+ }
+ .slds-scope .slds-icon-action-close {
+    fill: var(--sds-c-icon-color-background, #78bc42);
+}
+.greenfill svg{
+    fill:#78bc42;
+}
+.green__icon{
+    --sds-c-icon-color-foreground: #FFFFFF;
+    --sds-c-icon-color-background: #78bc42;
+}
+
+.btnIconOverlay {
+    /* pointer-events: var(--sds-c-icon-events-pointer, auto); */
+    --sds-c-icon-pointer-events: auto !important;
+}
+
+svg{
+    fill: #78bc42 !important;
+}
+
+hr {
+    border-color: #78bc42;
+}
+
+li > a {
+    font-weight: bold;
+}
