@@ -33,6 +33,14 @@
 		<name>CommunityTemplateDefinition</name>
 	</types>
 	<types>
+		<members>*</members>
+		<name>CustomApplication</name>
+	</types>
+	<types>
+		<members>*</members>
+		<name>CustomApplicationComponent</name>
+	</types>
+	<types>
 		<members>AISAccount</members>
 		<members>AccIdForMonthlyReimStatements</members>
 		<members>AccountName</members>
