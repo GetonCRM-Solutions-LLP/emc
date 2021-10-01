@@ -1,1 +1,1 @@
-JSONMilList_Test,ManageNotificationControllerTest
+JSONMilList_Test,ManageNotificationControllerTest,DemoClassTest
