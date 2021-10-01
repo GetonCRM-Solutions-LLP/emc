@@ -1,1 +1,1 @@
-DemoClassTest
+DemoClassTest,ManageNotificationControllerTest
