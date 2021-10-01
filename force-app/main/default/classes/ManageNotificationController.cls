@@ -8,6 +8,8 @@ public with sharing class ManageNotificationController {
     public static String contactDataAsString {get; set;}
     public static String logoDocument_id {get;set;}
     public string conWrapper {get; set;}
+    public string milWrapper {get; set;}
+    
     public ManageNotificationController() {
         accId = ApexPages.currentPage().getParameters().get('accId');
         adminId = ApexPages.currentPage().getParameters().get('id');
@@ -247,7 +249,95 @@ public with sharing class ManageNotificationController {
            
         return null;
     }
-
+    @RemoteAction
+    public static String UploadMileage(string mileage,string  accId) { 
+        System.debug('mileage'+mileage);
+        List<JSONMilList> MilJson = JSONMilList.parse(mileage);
+        set<string> employeeIdList = new set<string>(); 
+        set<string> monthList = new set<String>();
+        for(JSONMilList objJson : MilJson ){
+            if(objJson.EmployeeId != null){
+                employeeIdList.add(string.valueOf(objJson.EmployeeId));
+            }
+            if(objJson.Trip_Date != null && objJson.Trip_Date.contains('/')){
+                String ExtractedDate = objJson.Trip_Date;
+                list<String> lstSplitDate = ExtractedDate.split('/');
+                monthList.add(lstSplitDate[0]+'-'+ lstSplitDate[2]); 
+            }
+        }
+        map<string, string> empIdvsEmailMap = new map<string, string>();
+        map<string, Id> reimIdMap = new map<string, Id>();
+        map<string, Decimal> empIdvsMPGMap = new map<string, Decimal>();
+        map<string, Decimal> empIdvsMaintireMap = new map<string, Decimal>();
+        for(Employee_Reimbursement__c reimList : [select id,name,Contact_Id__r.External_Email__c,Month__c,MPG__c,Maintenance_and_Tires__c, Contact_Id__r.Employee_ID__c
+                                                  from Employee_Reimbursement__c 
+                                                  where Contact_Id__r.Employee_ID__c IN: employeeIdList and Month__C IN: monthList]) {
+                                                      if(reimList.Contact_Id__r.Employee_ID__c != null) {
+                                                          reimIdMap.put(reimList.Contact_Id__r.Employee_ID__c +':'+reimList.Month__c, reimList.Id);
+                                                          empIdvsEmailMap.put(reimList.Contact_Id__r.Employee_ID__c +':'+reimList.Month__c, reimList.Contact_Id__r.External_Email__c);
+                                                          if(reimList.MPG__c != null){
+                                                              empIdvsMPGMap.put(reimList.Contact_Id__r.Employee_ID__c+':'+reimList.Month__c,reimList.MPG__c); 
+                                                          } else {
+                                                              empIdvsMPGMap.put(reimList.Contact_Id__r.Employee_ID__c+':'+reimList.Month__c,0);  
+                                                          }
+                                                          if(reimList.Maintenance_and_Tires__c != 0){
+                                                              empIdvsMaintireMap.put(reimList.Contact_Id__r.Employee_ID__c+':'+reimList.Month__c,reimList.Maintenance_and_Tires__c);     
+                                                          } else {
+                                                              empIdvsMaintireMap.put(reimList.Contact_Id__r.Employee_ID__c+':'+reimList.Month__c,0);      
+                                                          }  
+                                                      }
+                                                  }
+        List<Employee_Mileage__c> empMilList = new List<Employee_Mileage__c>();
+        for(JSONMilList objJson : MilJson){ 
+            if(objJson.Contact_Email != null ){
+                list<String> tripDateSplit = new list<String>();
+                string mapKey;
+                Employee_Mileage__c mil = new Employee_Mileage__c();
+                if(objJson.Trip_Date != null && objJson.Trip_Date.contains('/')){
+                    tripDateSplit = objJson.Trip_Date.split('/');
+                	mapKey = objJson.EmployeeId+':'+tripDateSplit[0]+'-'+tripDateSplit[2];
+                }
+                if(tripDateSplit.size() > 0){	
+                    mil.Trip_Date__c = date.valueof(Date.parse(tripDateSplit[0]+'/'+tripDateSplit[1] +'/'+tripDateSplit[2]));
+                    mil.ConvertedStartTime__c = date.valueof(Date.parse(tripDateSplit[0]+'/'+tripDateSplit[1] +'/'+tripDateSplit[2]));
+                }
+                mil.Trip_Origin__c = objJson.Trip_Origin;
+                mil.Trip_Destination__c = objJson.Trip_Destination;
+                mil.Trip_Status__c = objJson.Trip_Status;
+                if(objJson.Trip_Status == 'Approved' || objJson.Trip_Status == 'Rejected') {
+                    if(objJson.Approved_Date != null && objJson.Approved_Date.contains('/') ){
+                        list<String> approvedDateSplit = objJson.Approved_Date.split('/'); 
+                        mil.Approved_Date__c = date.valueof(Date.parse(approvedDateSplit[0]+'/'+approvedDateSplit[1] +'/'+approvedDateSplit[2]));
+                    } else {
+                        mil.Approved_Date__c = system.today();
+                    }
+                } else {
+                    mil.Approved_Date__c = null;
+                }
+                mil.Day_Of_Week__c = objJson.Day_Of_Week;
+                mil.Notes__c = objJson.Notes;
+                mil.EMP_Mileage__c = objJson.Actual_Mileage;
+                mil.Activity__c = objJson.Activity;
+                mil.Contact_Email_Id__c = objJson.Contact_Email;
+                mil.Tag__c = objJson.Tag;
+                mil.Employee_ID__c = objJson.EmployeeId;
+                if(empIdvsMPGMap.containsKey(mapKey)) {
+                    mil.MPG__c = empIdvsMPGMap.get(mapKey);
+                }
+                if(empIdvsMaintireMap.containsKey(mapKey)) {
+                    mil.Maintenance_and_Tires__c = empIdvsMaintireMap.get(mapKey);
+                }
+                if(reimIdMap.containsKey(mapKey)) {
+                    mil.EmployeeReimbursement__c = string.valueOf(reimIdMap.get(mapKey));
+                    empMilList.add(mil);
+                }
+            }
+        }
+        if(empMilList.size() != 0){
+            insert empMilList;
+        }
+        return 'Success';
+    }
     public class ContactWrapper {
         public string contactId { get; set; }
         public string triploguserid{ get; set; }
