@@ -12,6 +12,10 @@
 # LWC Jest coverage reports
 coverage/
 
+#staging file
+.github/workflows
+.yml
+
 # Logs
 logs
 *.log
