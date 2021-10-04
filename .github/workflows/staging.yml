@@ -48,12 +48,12 @@ jobs:
       # Authorize devops
       - name: 'Authorize devops'
         if: ${{ env.BRANCH_NAME == 'devops' }}
-        run: sfdx auth:jwt:grant --clientid=${{secrets.PARTIALDEV_CONSUMER_KEY}} --username=${{secrets.PARTIALDEV_USERNAME}} --instanceurl=${{secrets.SFDC_LOGIN_SANDBOX_URL}} --jwtkeyfile server.key --setdefaultdevhubusername --setalias=hub-org
+        run: sfdx auth:jwt:grant --clientid=${{secrets.PRODUCTION_CONSUMER_KEY}} --username=${{secrets.PARTIALDEV_USERNAME}} --instanceurl=${{secrets.SFDC_LOGIN_SANDBOX_URL}} --jwtkeyfile server.key --setdefaultdevhubusername --setalias=hub-org
 
       # Authorize fullcopy
       - name: 'Authorize fullcopy'
         if: ${{ env.BRANCH_NAME == 'fullcopy' }}
-        run: sfdx auth:jwt:grant --clientid=${{secrets.FULLCOPY_CONSUMER_KEY}} --username=${{secrets.FULLCOPY_USERNAME}} --instanceurl=${{secrets.SFDC_LOGIN_SANDBOX_URL}} --jwtkeyfile server.key --setdefaultdevhubusername --setalias=hub-org
+        run: sfdx auth:jwt:grant --clientid=${{secrets.PRODUCTION_CONSUMER_KEY}} --username=${{secrets.FULLCOPY_USERNAME}} --instanceurl=${{secrets.SFDC_LOGIN_SANDBOX_URL}} --jwtkeyfile server.key --setdefaultdevhubusername --setalias=hub-org
 
       # Authorize preproduction
       - name: 'Authorize preproduction'
