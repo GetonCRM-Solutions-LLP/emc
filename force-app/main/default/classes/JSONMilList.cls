@@ -5,7 +5,7 @@ public class JSONMilList {
     public String Trip_Status;
     public String Approved_Date;
     public String Day_Of_Week;
-    public Integer Actual_Mileage;
+    public Double Actual_Mileage;
     public String Activity;
     public String Contact_Email;
     public Integer EmployeeId;
