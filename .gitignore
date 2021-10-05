@@ -13,8 +13,8 @@
 coverage/
 
 #staging file
-.github/workflows
-.yml
+.github/workflows/*.yml
+*.yml
 
 # Logs
 logs
