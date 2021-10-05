@@ -110,76 +110,51 @@ public with sharing class WrapperUtils
                
         } else {
             currentEmployeeDetail.cellphone= '';
-            
-        }
-        if(currentContact.App__c!=null)
-        {
+         }
+        if(currentContact.App__c!=null) {
             currentEmployeeDetail.appVersion = currentContact.App__c;
-        }
-        else
-        {
+        } else {
             currentEmployeeDetail.appVersion ='';
         }
-        if(currentContact.compliancestatus__c!=null)
-        {
+        if(currentContact.compliancestatus__c!=null) {
             currentEmployeeDetail.compliancestatus = currentContact.compliancestatus__c;
-        }
-        else {
+        } else {
             currentEmployeeDetail.compliancestatus ='';
         }
 
-        if(String.isNotBlank(String.valueOf(currentContact.Monthly__c)))
-        {
+        if(String.isNotBlank(String.valueOf(currentContact.Monthly__c))) {
             currentEmployeeDetail.monthlymileage = String.valueOf(currentContact.Monthly__c);
-        }
-        else {
+        } else {
             currentEmployeeDetail.monthlymileage ='';
         }
 
-        if(currentContact.Sage_100_ID__c!=null)
-        {
+        if(currentContact.Sage_100_ID__c!=null) {
             currentEmployeeDetail.sage100ID = currentContact.Sage_100_ID__c;
-        }
-        else {
+        } else {
             currentEmployeeDetail.sage100ID ='';
         }
 
-        if(currentContact.GL_Code__c != null)
-        {
+        if(currentContact.GL_Code__c != null) {
             currentEmployeeDetail.glcode = currentContact.GL_Code__c;
-        }
-        else {
+        } else {
             currentEmployeeDetail.glcode ='';
         }
-        if(currentContact.Territory__c != null)
-        {
+        if(currentContact.Territory__c != null) {
             currentEmployeeDetail.territory = currentContact.Territory__c;
-        }
-        else {
+        } else {
             currentEmployeeDetail.territory ='';
         }
-        if(currentContact.Code__c != null)
-        {
+        if(currentContact.Code__c != null) {
             currentEmployeeDetail.code = currentContact.Code__c;
-        }
-        else {
+        } else {
             currentEmployeeDetail.code ='';
         }
-        if(currentContact.District__c != null)
-        {
+        if(currentContact.District__c != null) {
             currentEmployeeDetail.district = currentContact.District__c;
-        }
-        else {
+        } else {
             currentEmployeeDetail.district ='';
         }
-        // if(currentContact.Total_Reimbursement__c!=null)
-        // {
             currentEmployeeDetail.totalreimbursement = String.valueOf(avgReim);//String.valueOf(currentContact.Total_Reimbursement__c);
-        // }
-        // else 
-        // {
-        //     currentEmployeeDetail.totalreimbursement='';
-        // }
         if(String.isNotBlank(String.valueOf(currentContact.Monthly_Mileage_Limit__c)))
         {
             currentEmployeeDetail.monthlymileageLimit = String.valueOf(currentContact.Monthly_Mileage_Limit__c);
@@ -258,15 +233,11 @@ public with sharing class WrapperUtils
         else {
             currentEmployeeDetail.freeze = '';
         }
-        currentEmployeeDetail.managerId = currentContact.Manager__c;    
-        //currentEmployeeDetail.managerId=currentContact.Manager__c;    
+        currentEmployeeDetail.managerId = currentContact.Manager__c;     
         
-        if(currentContact.email != null)
-        {
+        if(currentContact.email != null) {
             currentEmployeeDetail.email =currentContact.email;
-        }
-        else
-        {
+        } else {
             currentEmployeeDetail.email =currentContact.External_Email__c;
         }
         
@@ -278,57 +249,62 @@ public with sharing class WrapperUtils
 
         currentEmployeeDetail.activationDate = currentContact.Activation_Date__c  !=  null ? currentContact.Activation_Date__c.format() : '';
         currentEmployeeDetail.vehicalType =currentContact.Vehicle_Type__c;
-        if(currentContact.Deactivated_Date__c  !=  null)
-        {
+        if(currentContact.Deactivated_Date__c  !=  null) {
             currentEmployeeDetail.deactivaedDate = String.valueOf(currentContact.Deactivated_Date__c.month())+'/'+String.valueOf(currentContact.Deactivated_Date__c.day())+'/'+String.valueOf(currentContact.Deactivated_Date__c.year());
-        }
-        else
-        {
+        } else {
             currentEmployeeDetail.deactivaedDate = null;
         }
-        if(currentContact.Last_Pay_Date__c  !=  null)
-        {
+        if(currentContact.Last_Pay_Date__c  !=  null) {
             currentEmployeeDetail.lastPayDate = String.valueOf(currentContact.Last_Pay_Date__c.month())+'/'+String.valueOf(currentContact.Last_Pay_Date__c.day())+'/'+String.valueOf(currentContact.Last_Pay_Date__c.year());
-        }
-        else
-        {
+        } else {
             currentEmployeeDetail.lastPayDate = null;
         }
 
-        if(currentContact.Added_Date__c  !=  null)
-        {
+        if(currentContact.Added_Date__c  !=  null) {
             currentEmployeeDetail.addedDate = String.valueOf(currentContact.Added_Date__c.month())+'/'+String.valueOf(currentContact.Added_Date__c.day())+'/'+String.valueOf(currentContact.Added_Date__c.year());
-        }
-        else
-        {
+        } else {
             currentEmployeeDetail.addedDate = null;
         }
 
-        // if(String.isNotBlank(String.valueOf(currentContact.Monthly_Mileage_Limit__c) ))
-        // {
-        //     currentEmployeeDetail.approvalThreshold = String.valueOf(currentContact.Monthly_Mileage_Limit__c);
-        // }
-        if(currentContact.Driving_States__c != null)
-        {
+        if(currentContact.Driving_States__c != null) {
             List<String> drivingStatesSplitted = new list<String>();
-            if(currentContact.Driving_States__c.contains(';'))
-            {                   
-                for(String objdrivingstate:currentContact.Driving_States__c.split(';'))
-                {
+            if(currentContact.Driving_States__c.contains(';')) {                   
+                for(String objdrivingstate:currentContact.Driving_States__c.split(';')) {
                     drivingStatesSplitted.add(objdrivingstate.trim());
                 }
-            }
-            else
-            {                   
+            } else {                   
                 drivingStatesSplitted.add(currentContact.Driving_States__c);
             }
             currentEmployeeDetail.drivingStates = drivingStatesSplitted; 
-        }
-        else
-        {
+        } else {
             currentEmployeeDetail.drivingStates =null;
         }
-        currentEmployeeDetail.resetReimbursementLink=false;
+        
+        if(currentContact.LOA_Start_Date__c !=  null) {
+            currentEmployeeDetail.loaStartDate = String.valueOf(currentContact.LOA_Start_Date__c.month())+'/'+String.valueOf(currentContact.LOA_Start_Date__c.day())+'/'+String.valueOf(currentContact.LOA_Start_Date__c.year());
+        } else {
+            currentEmployeeDetail.loaStartDate = null;
+        }
+        
+        if(currentContact.LOA_End_Date__c !=  null) {
+            currentEmployeeDetail.loaEndDate = String.valueOf(currentContact.LOA_End_Date__c.month())+'/'+String.valueOf(currentContact.LOA_End_Date__c.day())+'/'+String.valueOf(currentContact.LOA_End_Date__c.year());
+        } else {
+            currentEmployeeDetail.loaEndDate = null;
+        }
+        
+        if(currentContact.LOA_Fixed_Amount__c !=  null) {
+            currentEmployeeDetail.loaFixedAmount = String.valueOf(currentContact.LOA_Fixed_Amount__c);
+        } else {
+            currentEmployeeDetail.loaFixedAmount = null;
+        }
+        
+        if(currentContact.Payroll_Period__c != null) {
+            currentEmployeeDetail.payRollPeriod = String.valueOf(currentContact.Payroll_Period__c);
+        } else {
+            currentEmployeeDetail.payRollPeriod = null;
+        }
+        currentEmployeeDetail.isleaveofabsence = false;
+        currentEmployeeDetail.resetReimbursementLink = false;
         return currentEmployeeDetail;       
     }
 
@@ -492,6 +468,47 @@ public with sharing class WrapperUtils
                 }
             }
             currentContact.Driving_States__c =state; 
+        }
+        if(String.isNotBlank(String.valueOf(currentEmployeeDetail.loaFixedAmount )))
+        {
+            currentContact.LOA_Fixed_Amount__c = Decimal.valueOf(currentEmployeeDetail.loaFixedAmount );
+            System.debug('currentContact.LOA_Fixed_Amount__c='+currentContact.LOA_Fixed_Amount__c);
+        }
+        if(currentEmployeeDetail.loaStartDate !=  null) {
+            List<String> lastPaydateSplitted = new List<String>();
+            if((String.valueOf(currentEmployeeDetail.loaStartDate).contains('-')))
+            {
+                lastPaydateSplitted = String.valueOf(currentEmployeeDetail.loaStartDate).split('-');                
+            }
+            else if(String.valueOf(currentEmployeeDetail.loaStartDate).contains('/'))
+            {
+                lastPaydateSplitted = String.valueOf(currentEmployeeDetail.loaStartDate).split('/');                
+            }
+            currentContact.LOA_Start_Date__c = Date.newInstance(Integer.valueOf(lastPaydateSplitted[2]), Integer.valueOf(lastPaydateSplitted[0]), Integer.valueOf(lastPaydateSplitted[1]));       
+          
+        }
+        else {
+            currentContact.LOA_Start_Date__c = null;
+        }
+        if(currentEmployeeDetail.loaEndDate !=  null) {
+            List<String> lastPaydateSplitted = new List<String>();
+            if((String.valueOf(currentEmployeeDetail.loaEndDate).contains('-')))
+            {
+                lastPaydateSplitted = String.valueOf(currentEmployeeDetail.loaEndDate).split('-');                
+            }
+            else if(String.valueOf(currentEmployeeDetail.loaEndDate).contains('/'))
+            {
+                lastPaydateSplitted = String.valueOf(currentEmployeeDetail.loaEndDate).split('/');                
+            }
+            currentContact.LOA_End_Date__c = Date.newInstance(Integer.valueOf(lastPaydateSplitted[2]), Integer.valueOf(lastPaydateSplitted[0]), Integer.valueOf(lastPaydateSplitted[1]));       
+          
+        }
+        else {
+            currentContact.LOA_End_Date__c = null;
+        }
+        if(String.isNotBlank(String.valueOf(currentEmployeeDetail.payRollPeriod)))
+        {
+            currentContact.Payroll_Period__c = String.valueOf(currentEmployeeDetail.payRollPeriod);
         }
         return currentContact;      
     }
