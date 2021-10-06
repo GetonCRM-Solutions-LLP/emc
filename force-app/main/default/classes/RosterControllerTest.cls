@@ -20,33 +20,6 @@ public class RosterControllerTest {
         veh2.Year__c = '2020';
         insert veh2;
         
-        UserRole userRole_1 = [SELECT Id FROM UserRole WHERE DeveloperName = 'EMD' LIMIT 1];
-        Profile profile_1 = [SELECT Id FROM Profile WHERE Name = 'Customer Community Login User' LIMIT 1];
-        User admin = [SELECT Id, Username, UserRoleId FROM User WHERE Profile.Name = 'System Administrator' AND UserRoleId = :userRole_1.Id LIMIT 1];
-        User user_1;
-        System.runAs(admin) {
-            Account account_1 = new Account( Name = 'Community'  );
-            insert account_1;
-            
-            Contact contact_1 = new Contact(AccountId = account_1.Id, LastName = 'xgeek',External_Email__c= 'abc@gmail.com');
-            insert contact_1;
-          
-          user_1 = new User( 
-            Email = 'yourusername@gmail.com',
-            ProfileId = profile_1.Id, 
-            UserName = 'yourusername@gmail.com', 
-            Alias = 'Test',
-            TimeZoneSidKey = 'America/New_York',
-            EmailEncodingKey = 'ISO-8859-1',
-            LocaleSidKey = 'en_US', 
-            LanguageLocaleKey = 'en_US',
-            ContactId = contact_1.Id,
-            PortalRole = 'Manager',
-            FirstName = 'Firstname',
-            LastName = 'Lastname'
-          );
-          insert user_1;
-        }
         Account obj_Account = RecordUtilityClass.buildAccount();
         obj_Account.Vehicle_Types__c ='2020 Dodge Charger';
         insert obj_Account;
@@ -69,6 +42,22 @@ public class RosterControllerTest {
         
         Contact obj_Manager_list1 = new Contact();
         obj_Manager_list1 = RecordUtilityClass.getManagerContact();
+
+        Profile p = [SELECT Id FROM Profile WHERE Name='Customer Community Login User - Driver']; 
+        User user = new User(Alias = 'standt', 
+                            Email='standarduser1@testorg.com', 
+                            EmailEncodingKey='UTF-8', 
+                            LastName='Testing', 
+                            LanguageLocaleKey='en_US', 
+                            LocaleSidKey='en_US', 
+                            ProfileId = p.Id, 
+                            TimeZoneSidKey='America/Los_Angeles', 
+                            UserName='standarduser2@testorg.com',
+                            Contactid = obj_Manager_list[0].id,
+                            IsActive = True
+                        );
+        insert user;
+
         EmployeeDetails empDetail = WrapperUtils.getEmployeeDetails(obj_Driver_list1[0],120.34,230.43);
         EmployeeDetails empDetail1 = WrapperUtils.getEmployeeDetails(obj_Contact2,120.34,230.43);
          String str = 'Employee_ID__c,Firstname,LastName,External_Email__c,' + 
@@ -88,64 +77,60 @@ public class RosterControllerTest {
         List<EmployeeDetails> obj_list_EmployeeDetails = new List<EmployeeDetails>();
         obj_list_EmployeeDetails.add(empDetail);
         Test.startTest();
-        System.runAs(user_1) {
-            Test.setCurrentPage(Page.roster);
-            String conId = ApexPages.currentPage().getParameters().put('id',obj_admincontact.Id);
-            String accId = ApexPages.currentPage().getParameters().put('accid',obj_Account.Id);
-            RosterController ros = new RosterController();
-            RosterController.getAccountid();
-            RosterController.getContactid();
-            RosterController.getRedirected();
-            RosterController.editInlineNewEmployee(JSON.serialize(obj_list_EmployeeDetails),String.valueOf(obj_Account.Id),String.valueOf(obj_admincontact.Id));
-            RosterController.getAllManagers();
-            RosterController.getlistAllEmployees(obj_Account.Id,obj_admincontact.Id);
-            RosterController.getRoles();
-            RosterController.getDriverType();
-            RosterController.getJobTitle();
-            RosterController.getDepartment();
-            RosterController.getDrivingStates();
-            RosterController.resetPassword(obj_admincontact.Id);
-            RosterController.getUser(obj_admincontact.Id);
-            RosterController.sendExceptionMails('Insert Failed','1');
-            RosterController.getCustomExceptionMessage('1');
-            RosterController.readFromFile(csvAsString,accId);
-            RosterController.editEmployeeDetails    (obj_Manager_list[0].Id);
-            RosterController.getContactByEmailAddress(obj_Manager_list[0].External_Email__c);
-            RosterController.manageEmployee(JSON.serialize(obj_list_EmployeeDetails),String.valueOf(obj_Account.id),String.valueOf(obj_admincontact.Id));
-            RosterController.getCountryStateCity('36310');
-            RosterController.getCity('Abbeville','36310');
-            RosterController.getPickListValuesIntoList();
-            List<String> conIdList = new List<String>();
-            for(contact cont:obj_Manager_list){
-                conIdList.add(cont.Id);
-            }
-            RosterController.massFreeze(JSON.serialize(conIdList),true);
-            RosterController.editInlineNewEmployee(NULL,'','');
-            empDetail.lastname='sdhshdgsag21212';
-            empDetail1.userid =NULL;
-            empDetail.email ='rghgfhgf21212@gmail.com';
-            System.debug('empDetail' + empDetail);
-            List<EmployeeDetails> obj_list_EmployeeDetails1 = new List<EmployeeDetails>();
-            obj_list_EmployeeDetails1.add(empDetail1);
-            RosterController.manageEmployee(JSON.serialize(obj_list_EmployeeDetails1),String.valueOf(obj_Account.id),String.valueOf(obj_admincontact.Id));
-            List<id> insertedContactIDList = new List<id>();
-            for(Contact currentcontact:obj_Driver_list1)
-            {
-                insertedContactIDList.add(currentcontact.id);
-            }        
-            RosterController.postHTTPCreateNewUserTriplog(insertedContactIDList);
-            RosterController.getExcetionTypes('System.DmlException','[UPDATE FAILED]',12);
-            RosterController.getExcetionTypes('TypeException','Invalid decimal: .',12);
-            RosterController.getExcetionTypes('QueryException','[List has no rows]',12);
-            RosterController.getExcetionTypes('NullPointerException','Attempt to de-reference',12);
-            RosterController.putHTTP(String.valueOf(obj_Account.id),'test1932434230@testing.com');
-            RosterController.massResetPassword(JSON.serialize(insertedContactIDList));
-            RosterController.massEnableUser(JSON.serialize(insertedContactIDList));
-            RosterController.updateLockDate(String.valueOf(obj_Account.id),'12/21/20','03-2021');
-            RosterController.putHTTPConcurConnect(obj_Account.Id,JSON.serialize(insertedContactIDList));
-            RosterController.deleteTrips(obj_Account.Id,'09-2021');
-            RosterController.getLoginAsData(obj_Account.Id);
+        Test.setCurrentPage(Page.roster);
+        String conId = ApexPages.currentPage().getParameters().put('id',obj_admincontact.Id);
+        String accId = ApexPages.currentPage().getParameters().put('accid',obj_Account.Id);
+        RosterController ros = new RosterController();
+        RosterController.getAccountid();
+        RosterController.getContactid();
+        RosterController.getRedirected();
+        RosterController.editInlineNewEmployee(JSON.serialize(obj_list_EmployeeDetails),String.valueOf(obj_Account.Id),String.valueOf(obj_admincontact.Id));
+        RosterController.getAllManagers();
+        RosterController.getlistAllEmployees(obj_Account.Id,obj_admincontact.Id);
+        RosterController.getRoles();
+        RosterController.getDriverType();
+        RosterController.getJobTitle();
+        RosterController.getDepartment();
+        RosterController.getDrivingStates();
+        RosterController.resetPassword(obj_admincontact.Id);
+        RosterController.getUser(obj_admincontact.Id);
+        RosterController.sendExceptionMails('Insert Failed','1');
+        RosterController.getCustomExceptionMessage('1');
+        RosterController.readFromFile(csvAsString,accId);
+        RosterController.editEmployeeDetails    (obj_Manager_list[0].Id);
+        RosterController.getContactByEmailAddress(obj_Manager_list[0].External_Email__c);
+        RosterController.manageEmployee(JSON.serialize(obj_list_EmployeeDetails),String.valueOf(obj_Account.id),String.valueOf(obj_admincontact.Id));
+        RosterController.getCountryStateCity('36310');
+        RosterController.getCity('Abbeville','36310');
+        RosterController.getPickListValuesIntoList();
+        List<String> conIdList = new List<String>();
+        for(contact cont:obj_Manager_list){
+            conIdList.add(cont.Id);
         }
+        RosterController.massFreeze(JSON.serialize(conIdList),true);
+        RosterController.editInlineNewEmployee(NULL,'','');
+        empDetail.lastname='sdhshdgsag21212';
+        empDetail1.userid =NULL;
+        empDetail.email ='rghgfhgf21212@gmail.com';
+        System.debug('empDetail' + empDetail);
+        List<EmployeeDetails> obj_list_EmployeeDetails1 = new List<EmployeeDetails>();
+        obj_list_EmployeeDetails1.add(empDetail1);
+        RosterController.manageEmployee(JSON.serialize(obj_list_EmployeeDetails1),String.valueOf(obj_Account.id),String.valueOf(obj_admincontact.Id));
+        List<id> insertedContactIDList = new List<id>();
+        for(Contact currentcontact:obj_Driver_list1)
+        {
+            insertedContactIDList.add(currentcontact.id);
+        }        
+        RosterController.postHTTPCreateNewUserTriplog(insertedContactIDList);
+        RosterController.getExcetionTypes('System.DmlException','[UPDATE FAILED]',12);
+        RosterController.getExcetionTypes('TypeException','Invalid decimal: .',12);
+        RosterController.getExcetionTypes('QueryException','[List has no rows]',12);
+        RosterController.getExcetionTypes('NullPointerException','Attempt to de-reference',12);
+        RosterController.putHTTP(String.valueOf(obj_Account.id),'test1932434230@testing.com');
+        RosterController.massResetPassword(JSON.serialize(insertedContactIDList));
+        RosterController.massEnableUser(JSON.serialize(insertedContactIDList));
+        RosterController.updateLockDate(String.valueOf(obj_Account.id),'12/21/20','03-2021');
+        RosterController.putHTTPConcurConnect(obj_Account.Id,JSON.serialize(insertedContactIDList));
         Test.stopTest();
     }
     public static testmethod void RosterControllerTestMethod1(){

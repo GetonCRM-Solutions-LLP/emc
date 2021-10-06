@@ -27,7 +27,6 @@
 
         <!-- read xl or csv files -->
         <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.15.6/xlsx.full.min.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.0/FileSaver.min.js" integrity="sha512-csNcFYJniKjJxRWRV1R7fvnXrycHP6qDR21mgz1ZP55xY5d+aHLfo9/FcGDQLfn2IfngbAHd8LdfsagcCqgTcQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
         <!-- Pagination -->
         <script src="{!URLFOR($Resource.dirPagination)}"></script>
         <script>
@@ -455,12 +454,6 @@
                 z-index: 1000000;
             }
 
-            .custom-loading-text{
-                text-align: center;
-                color: #fff;
-                font-weight: 700;
-                font-size: 15px;
-            }
             .margin-left {
                 margin-left: .5rem !important;
             }
@@ -903,8 +896,8 @@
         <!-- Common script -->
         <script type="text/javascript">
             var app = angular.module('manageNotificationModule', ['angularUtils.directives.dirPagination']);
-            app.controller('manageNotificationController', ['$scope', '$filter',
-                function ($scope, $filter) {
+            app.controller('manageNotificationController', ['$scope',
+                function ($scope) {
                     $scope.driverInfo = {!conWrapper}
                     $scope.role = '{!role}'
                     $scope.manRole = '{!managerrole}'
@@ -926,7 +919,6 @@
                     var url = new URL(url_string);
                     $scope.id = url.searchParams.get("id");
                     $scope.accid = url.searchParams.get("accid");
-                    $scope.PLMarketing = '{!($Label.PL_Marketing)}';
                     $scope.showteam = url.searchParams.get("showteam");
                     $scope.managerid = url.searchParams.get("managerid");
                     $scope.admindriver = false;
@@ -948,31 +940,6 @@
                     $scope.notification = [];
                     $scope.driverInfoList;
                     $scope.driverEmailList = [];
-                    $scope.nameOfLocationFile = 'sample_location_import.csv';
-                    $scope.nameOfMileageFile = 'sample_mileage_import.csv';
-                    $scope.locationTemplate = [{
-                            "Name (optional)": "The White House",
-                            "Address": "1600 Pennsylvania Ave NW, Washington, DC 20500",
-                            "Latitude (optional)": 38.683885,
-                            "Longitude (optional)": -8.6109719,
-                            "Default Activity (optional)": "Business"
-                        }
-                        ]
-                    $scope.mileageTemplate = [{
-                            "Trip_Date": "",
-                            "Trip_Origin": "",
-                            "Trip_Destination": "",
-                            "Trip_Status": "",
-                            "Approved_Date": "",
-                            "Day_Of_Week": "",
-                            "Notes": "",
-                            "Actual_Mileage": 0.00,
-                            "Activity": "",
-                            "Contact_Email": "",
-                            "Tag": "",
-                            "EmployeeId": ""
-                        }
-                    ];
 
                     /* action for resend insurance */
                     $scope.showResendBtn = true;
@@ -1045,26 +1012,18 @@
                         }
                     }
 
-                    $scope.export = function (sampleData) {
-                            /* make the worksheet */
-                            var ws = XLSX.utils.json_to_sheet(sampleData);
-
-                            /* write workbook (use type 'binary') */
-                            var csv = XLSX.utils.sheet_to_csv(ws, {raw: false, dateNF: 'yyyy-mm-dd HH:mm:ss'});
-
-                            /* generate a download */
-                            function s2ab(s) {
-                                var buf = new ArrayBuffer(s.length);
-                                var view = new Uint8Array(buf);
-                                for (var i = 0; i != s.length; ++i) view[i] = s.charCodeAt(i) & 0xFF;
-                                return buf;
-                            }
-
-                            saveAs(new Blob([s2ab(csv)], { type: "application/octet-stream" }), "sheetjs.csv");
-                        }
                     /* Download location template */
 
-                    $scope.exportToCsv = function (sampleData, csvName) {
+                    $scope.exportToCsv = function () {
+                            var sampleData = [{
+                                    "Name (optional)": "The White House",
+                                    "Address": "1600 Pennsylvania Ave NW, Washington, DC 20500",
+                                    "Latitude (optional)": 38.683885,
+                                    "Longitude (optional)": -8.6109719,
+                                    "Default Activity (optional)": "Business"
+                                }
+                            ]
+
                             // Building the CSV from the Data
                             // Each column is separated by ";" and new line "\n" for next row
                             let rowData = new Set();
@@ -1113,8 +1072,7 @@
                                     }), fileName);
                                 } else if (URL && 'download' in a) { //html5 A[download]
                                     a.href = URL.createObjectURL(new Blob([content], {
-                                        type: mimeType,
-                                        cellDates: true, dateNF: 'yyyy/mm/dd;@'
+                                        type: mimeType
                                     }));
                                     a.setAttribute('download', fileName);
                                     document.body.appendChild(a);
@@ -1125,7 +1083,7 @@
                                 }
                             }
 
-                            download(csvContent, csvName, 'text/csv;encoding:utf-8');
+                            download(csvContent, 'sample_location_import.csv', 'text/csv;encoding:utf-8');
                         }
                     /*  Search input event */
 
@@ -1357,10 +1315,8 @@
                     /* For File Upload*/
                     $scope.filedata = '';
                     $scope.locationdata = '';
-                    $scope.data="";
                     $scope.filesChoose = [];
                     $scope.locationChoose = [];
-                    $scope.mileageChoose = [];
                     var maxStringSize = 6000000;    //Maximum String size is 6,000,000 characters
                     var maxFileSize = 4350000;      //After Base64 Encoding, this is the max file size
                     var chunkSize = 950000;         //Maximum Javascript Remoting message size is 1,000,000
@@ -1571,182 +1527,6 @@
                             },
                             { buffer: true, escape: true, timeout: 120000 }
                         );
-                    }
-
-                    /* convert excel date to js date */
-                    function ExcelDateToJSDate(serial) {
-                            var utc_days = Math.floor(serial - 25569);
-                            var utc_value = utc_days * 86400;
-                            var date_info = new Date(utc_value * 1000);
-                            var fractional_day = serial - Math.floor(serial) + 0.0000001;
-                            var total_seconds = Math.floor(86400 * fractional_day);
-                            var seconds = total_seconds % 60;
-                            total_seconds -= seconds;
-                            var hours = Math.floor(total_seconds / (60 * 60));
-                            var minutes = Math.floor(total_seconds / 60) % 60;
-                            return new Date(date_info.getFullYear(), date_info.getMonth(), date_info.getDate(), hours, minutes, seconds);
-                    }
-
-                    /* check for date is valid */
-                    function DateIsValid(date) {
-                        if(date != undefined) {
-                            var timestamp = Date.parse(date);
-                            return timestamp
-                        }else{
-                            return 1
-                        }
-                    }
-
-                    function TripDateIsValid(date) {
-                            var stamp = Date.parse(date);
-                            return stamp
-                    }
-
-                    function ValidateField(field) {
-                        if(field === undefined){
-                            return false
-                        }else{
-                            return true
-                        }
-                    }
-                    $scope.mileage_file_changed = function (element) {
-                        $('#spinner').show();
-                        $('#loading').text("Uploading...");
-                        chooseFileName = '';
-                        attachment = '';
-                        choosefile = '';
-                        $scope.data = '';
-                        choosefile = element;
-                        var findex = (element.files[0].name).lastIndexOf(".");
-                        var photofile = element.files[0];
-                        chooseFileName = photofile.name;
-                        //console.log('file size :- '+choosefile.files[0].size);
-                        var strsubstring = (element.files[0].name).substring(findex, (element.files[0].name).length);
-                        if (strsubstring == '.xls' || strsubstring == '.xlsx' || strsubstring == '.csv') {
-                            if (choosefile.files[0].size > 0 && choosefile.files[0].size < 4350000) {
-                                //console.log($('#file-column')[0].classList)
-                                choosefile = element;
-                                $scope.mileageChoose.push(element);
-                            }
-                            else {
-                                toastr.error('Base 64 Encoded file is too large.  Maximum size is 4 MB .');
-                                $('#loading').text("");
-                                $('#spinner').hide();
-                            }
-                        }
-                        else {
-                            toastr.error('Please upload correct File. File extension should be .csv or .xls');
-                            $('#loading').text("");
-                            $('#spinner').hide();
-                        }
-
-                        var fl = choosefile.files[0].size;
-
-
-                        $scope.$apply(function (scope) {
-                            choosenfileType = photofile.type;
-                            var reader = new FileReader();
-                            $scope.mileagefsize = element.files[0].size;
-                            reader.onload = function (e) {
-                                $scope.data = reader.result;
-                            };
-                            reader.readAsDataURL(photofile);
-                            $scope.uploadMileageInChunk(element);
-                        });
-                    }
-
-                    $scope.uploadMileageInChunk = function (element) {
-                        var lfile;
-                        if (element != null || element != undefined) {
-                            angular.forEach($scope.mileageChoose, function (fl) {
-                                    lfile = fl.files[0];
-                            })
-                        }
-
-                        if (lfile != undefined) {
-                            var selectedFile = lfile;
-                            var reader = new FileReader();
-                            reader.onload = function (event) {
-                                var data = this.result;
-                                var workbook = XLSX.read(data, {
-                                    type: 'binary',
-                                    cellDates: true,
-                                    dateNF : 'mm/dd/yyyy'
-                                });
-                                workbook.SheetNames.forEach(function (sheetName) {
-                                    var XL_row_object = XLSX.utils.sheet_to_row_object_array(workbook.Sheets[sheetName],{raw: false});
-                                    var isValidApprove, isValidTrip, isTripStatus, isEmployeeId,  countApprove = 0, countTrip = 0, countStatus = 0, countID = 0;
-                                    for(var R = 0; R < XL_row_object.length; R++) {
-                                        isValidApprove = DateIsValid(XL_row_object[R].Approved_Date);
-                                        isValidTrip = TripDateIsValid(XL_row_object[R].Trip_Date);
-                                        isTripStatus = ValidateField(XL_row_object[R].Trip_Status);
-                                        isEmployeeId = ValidateField(XL_row_object[R].EmployeeId);
-                                        if (isNaN(isValidApprove) === true) countApprove++;
-                                        if (isNaN(isValidTrip) === true) countTrip++;
-                                        if(isTripStatus === false) countStatus++; 
-                                        if(isEmployeeId === false) countID++;
-                                    }
-                                    if(countApprove === 0 && countTrip === 0 && countID === 0 && countStatus === 0){
-                                        var json_object = JSON.stringify(XL_row_object);
-                                        uploadMileageAttachment(json_object);
-                                    }else {
-                                        $('#spinner').hide();
-                                        if(countTrip > 0) { toastr.error('Please enter valid trip date. Date format should be mm/dd/yyyy or m/dd/yyyy or m/dd/yy') }
-                                        if(countApprove > 0) { toastr.error('Please enter valid approval date. Date format should be mm/dd/yyyy or m/dd/yyyy or m/dd/yy') }
-                                        if(countStatus > 0) { toastr.error('Please enter trip status.')}
-                                        if(countID > 0) { toastr.error('Please enter Employee Id.')}
-                                    }
-                                   
-                                })
-                            };
-
-                            reader.onerror = function (event) {
-                                console.error("File could not be read! Code " + event.target.error.code);
-                            };
-
-                            reader.readAsBinaryString(selectedFile);
-                        }
-                        console.log("from mileage file", lfile);
-                    }
-
-                    function uploadMileageAttachment(json) {
-                            $('#loading').text("");
-                            $('#spinner').show();
-                            var mileagelist;
-                            var jsonBody = JSON.parse(json);
-                            if (jsonBody[0] != null || jsonBody[0] != undefined) {
-                                var mileageKeys = Object.keys(jsonBody[0]);
-                                if (mileageKeys.includes("Trip_Date") || mileageKeys.includes("Trip_Origin")
-                                    || mileageKeys.includes("Trip_Destination") || mileageKeys.includes("Trip_Status")
-                                    || mileageKeys.includes("Approved_Date") || mileageKeys.includes("Day_Of_Week") || mileageKeys.includes("Notes")
-                                    || mileageKeys.includes("Actual_Mileage") || mileageKeys.includes("Activity") || mileageKeys.includes("Contact_Email") 
-                                    || mileageKeys.includes("Tag") || mileageKeys.includes("EmployeeId")) {
-                                        mileagelist = jsonBody;
-                                        $scope.mileageAttachment = JSON.stringify(mileagelist);
-                                        Visualforce.remoting.Manager.invokeAction('{!$RemoteAction.ManageNotificationController.UploadMileage}', $scope.mileageAttachment, $scope.accid,
-                                            function (result, event) {
-                                                if (event.status) {
-                                                    $('#spinner').hide();
-                                                    toastr.success("We have received your upload, the data will be processed and made available within 72 work hours");
-                                                    location.reload();
-                                                }
-                                                else {
-                                                    toastr.error('Some error has occur');
-                                                    $('#spinner').hide();
-                                                }
-                                                $('#spinner').hide();
-                                                $scope.$apply();
-                                            },
-                                            { buffer: true, escape: true, timeout: 120000 }
-                                        );
-                                    }else {
-                                    $('#spinner').hide();
-                                    toastr.error("The file you have uploaded is not valid for mileage");
-                                }
-                            } else {
-                                $('#spinner').hide();
-                                toastr.error("The file you have uploaded is not valid for mileage");
-                            }
                     }
 
                     $scope.location_file_changed = function (element) {
@@ -2029,8 +1809,6 @@
                         <div class="spinner-border text-light" role="status">
                             <span class="sr-only">Loading...</span>
                         </div>
-                        <div class="custom-loading-text" id="loading">
-                        </div>
                     </div>
                 </div>
                 <div class="slds-container">
@@ -2045,7 +1823,7 @@
                                 <button class="slds-btn slds-btn-primary slds-btn-sm waves-effect bc-blue waves-light mleft-0" ng-show="showResendBtn" ng-click="displayCheckboxForEmail()">
                                     Resend Insurance Reminder
                                 </button>
-                                <button class="slds-btn slds-btn-primary slds-btn-sm waves-effect bc-grey waves-light mleft-0" ng-show="showLocationBtn" ng-click="exportToCsv(locationTemplate, nameOfLocationFile)">
+                                <button class="slds-btn slds-btn-primary slds-btn-sm waves-effect bc-grey waves-light mleft-0" ng-show="showLocationBtn" ng-click="exportToCsv()">
                                     <i class="fa fa-download slds-p-right_xx-small"></i> Download Location Template
                                 </button>
                                 <button class="slds-btn slds-btn-primary slds-btn-sm waves-effect bc-green waves-light mleft-0" ng-show="showEmailBtn" ng-click="sendMassEmail()">
@@ -2068,21 +1846,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div>
-                            <div class="file-field" ng-if="accid === PLMarketing">
-                                <div class="slds-btn slds-btn-primary slds-btn-sm waves-effect bc-blue waves-light mleft-0" id="locationFileBtn-{{$index}}">
-                                    <i class="fa fa-upload slds-p-right_xx-small"></i><span>Upload Mileage</span>
-                                    <input type="file"  multiple="false"  accept=".xls, .xlsx, .csv"
-                                        onchange="angular.element(this).scope().mileage_file_changed(this)" />
-                                </div>
-                            </div>
-                            <!-- <button class="slds-btn slds-btn-primary slds-btn-sm waves-effect bc-blue waves-light mleft-0">
-                                <i class="fa fa-upload slds-p-right_xx-small"></i> Upload Mileage
-                            </button> -->
-                            <button ng-if="accid === PLMarketing" class="slds-btn slds-btn-primary slds-btn-sm waves-effect bc-grey waves-light mleft-0"  ng-click="exportToCsv(mileageTemplate, nameOfMileageFile)">
-                                <i class="fa fa-download slds-p-right_xx-small"></i> Download Mileage Template
-                            </button>
-                        </div>
+
                         <div class="mtop-1 slds-p-bottom_x-large" id="tableWrap">
                             <!-- <input type="text" id="currentLevelDate" /> -->
                             <div style="padding: 0.3em;">

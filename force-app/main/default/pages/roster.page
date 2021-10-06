@@ -172,10 +172,6 @@
                 margin-bottom: 86px;
             }
 
-            .popup-close-btn:disabled {
-                opacity: .65 !important;
-                cursor: not-allowed !important;
-            }
             .span-error {
                 float: right;
                 color: red;
@@ -183,34 +179,23 @@
             }
 
             .dropdown {
-                background: #78bc42;
                 position: absolute;
                 top: 0px;
                 left: 30rem;
             }
 
-            .dropdown-toggle:focus {
-                box-shadow: none !important;
-            }
-
             .dropdown-toggle {
                 font-size: 1rem !important;
-                background: none !important;
-                font-family: 'Proxima Nova Bold' !important;
-                color: #fff !important;
-                background-image: none !important;
-                /* border-radius: .25rem !important; */
+                border-radius: .25rem !important;
                 width: 100%;
             }
 
-            .mt-14 {
-                margin-top: 14px;
+            .mt-14{
+                margin-top: 14px; 
             }
-
-            .end-text {
+            .end-text{
                 text-align: end;
             }
-
             .submitBtn {
                 box-shadow: 0 2px 5px 0 rgb(0 0 0 / 16%), 0 2px 10px 0 rgb(0 0 0 / 12%);
             }
@@ -574,12 +559,10 @@
                 right: 0;
                 bottom: 0;
             }
-
-            .fontStyle {
+            .fontStyle{
                 font-family: 'Proxima Nova Bold' !important;
                 color: #ffffff !important;
             }
-
             .pagination {
                 display: inline-block;
                 padding-left: 0;
@@ -657,9 +640,6 @@
                 width: 3rem;
             }
 
-            .loaChkth {
-                width: 27pt;
-            }
             .freezeChkth {
                 width: 3rem;
 
@@ -732,9 +712,8 @@
             }
 
             .sync-button:disabled {
-                cursor: not-allowed;
+                cursor : not-allowed;
             }
-
             input[type=text]:disabled {
                 background: #dddddd;
             }
@@ -1186,111 +1165,6 @@
                 };
             }]);
 
-
-            /* Model Directive Initalization For LOA Date */
-            var EditLOADateModel = function () {
-                this.visible = false;
-            };
-
-            EditLOADateModel.prototype.open = function (emp) {
-                this.emp = emp;
-                this.visible = true;
-            };
-            EditLOADateModel.prototype.close = function () {
-                this.visible = false;
-            };
-
-            /* Model Directive For LOA Date*/
-            app.directive('editLoaDate', [function () {
-                return {
-                    restrict: 'E',
-                    scope: {
-                        model: '='
-                    },
-                    link: function (scope, element, attributes) {
-                        scope.$watch('model.visible', function (newValue) {
-                            var modalElement = element.find('.modal');
-                            modalElement.modal(newValue ? 'show' : 'hide');
-                        });
-
-                        element.on('shown.bs.modal', function () {
-                            scope.$apply(function () {
-                                scope.model.visible = true;
-                            });
-                        });
-
-                        element.on('hidden.bs.modal', function () {
-                            scope.$apply(function () {
-                                scope.model.visible = false;
-                            });
-                        });
-                    },
-                    template: '<div class="modal fade show" tabindex="-1" role="dialog"><div class="modal-dialog modal-dialog-centered"><div class="modal-content rounded-0"> <button type="button" class="close popup-close-btn" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span> </button><div class="modal-body"><form name="signup" class="form" novalidate="true"><div class="form-group-theme row"> <label for="inputActivationdate:" class="col-xl-5 col-lg-5 col-md-5 col-sm-5 col-form-label form-lable">LOA Start Date:</label><div class="col-xl-7 col-lg-7 col-md-7 col-sm-7"><div class="input-group"><input id="adminroster-deactivationdatepicker" class="form-control rounded-0 adminroster-loadate" placeholder="Select LOA Start Date"  ng-model="model.emp.loaStartDate" /><div class="input-group-prepend" id=""><span class="input-group-text"><i class="fas fa-calendar-alt"></i></span></div></div></div></div><div class="form-group justify-content-center text-center"> <button type="button" class="btn btn-primary" data-dismiss="modal">Select</button> <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button></div></form></div></div></div></div>'
-                };
-            }]);
-
-            var EditLOAEndDateModel = function () {
-                this.visible = false;
-            };
-
-            EditLOAEndDateModel.prototype.open = function (emp) {
-                this.emp = emp;
-                this.visible = true;
-            };
-            EditLOAEndDateModel.prototype.close = function () {
-                this.visible = false;
-            };
-
-            /* Model Directive For LOA Date*/
-            app.directive('editLoaEndDate', [function () {
-                return {
-                    restrict: 'E',
-                    scope: {
-                        model: '='
-                    },
-                    link: function (scope, element, attributes) {
-                        scope.$watch('model.visible', function (newValue) {
-                            var modalElement = element.find('.modal');
-                            modalElement.modal(newValue ? 'show' : 'hide');
-                        });
-                        scope.isSelectedValid = true;
-                        scope.isSelectValid = true;
-                        scope.showPicker = function(dt) {
-                            var selected = scope.model.emp.loaStartDate;
-                            if(selected){
-                                if(new Date(selected) <= new Date(dt)){
-                                    scope.isSelectedValid = false;
-                                    scope.isSelectValid = false;
-                                }else{
-                                    toastr.error("LOA End Date must be greater than or equal to LOA Start Date");
-                                    scope.isSelectValid = true;
-                                    scope.isSelectedValid = true;
-                                }
-                            }else{
-                                toastr.error("Please enter LOA Start Date");
-                                scope.isSelectedValid = false;
-                                scope.isSelectValid = true;
-                                scope.model.emp.loaEndDate = "";
-                                //$('.ad-loa-date').val("");
-                            }
-                        }
-
-                        element.on('shown.bs.modal', function () {
-                            scope.$apply(function () {
-                                scope.model.visible = true;
-                            });
-                        });
-
-                        element.on('hidden.bs.modal', function () {
-                            scope.$apply(function () {
-                                scope.model.visible = false;
-                            });
-                        });
-                    },
-                    template: '<div class="modal fade show" tabindex="-1" role="dialog"  data-backdrop="static" data-keyboard="false"><div class="modal-dialog modal-dialog-centered"><div class="modal-content rounded-0"> <button type="button" class="close popup-close-btn" data-dismiss="modal" aria-label="Close" ng-disabled="isSelectedValid"><span aria-hidden="true">&times;</span> </button><div class="modal-body"><form name="signup" class="form" novalidate="true"><div class="form-group-theme row"> <label for="inputActivationdate:" class="col-xl-5 col-lg-5 col-md-5 col-sm-5 col-form-label form-lable">LOA End Date:</label><div class="col-xl-7 col-lg-7 col-md-7 col-sm-7"><div class="input-group"><input id="adminroster-deactivationdatepicker" class="form-control rounded-0 ad-loa-date" placeholder="Select LOA End Date"  ng-model="model.emp.loaEndDate"  ng-change="showPicker(model.emp.loaEndDate)"/><div class="input-group-prepend" id=""><span class="input-group-text"><i class="fas fa-calendar-alt"></i></span></div></div></div></div><div class="form-group justify-content-center text-center"> <button type="button" class="btn btn-primary" data-dismiss="modal" ng-disabled="isSelectValid">Select</button> <button type="button" class="btn btn-secondary" data-dismiss="modal" ng-disabled="isSelectValid">Cancel</button></div></form></div></div></div></div>'
-                };
-            }]);
-
             var EditLockDateModel = function () {
                 this.visible = false;
             };
@@ -1334,7 +1208,7 @@
                         var cuMonth = $filter('date')(myDate, 'MM-yyyy');
                         scope.dateObjArr.push(preMonth);
                         scope.dateObjArr.push(cuMonth);
-                        scope.onreimbursementChange = function (reimb) {
+                        scope.onreimbursementChange = function(reimb){
                             scope.reimbursement = reimb;
                         }
                         scope.updateLockDate = function () {
@@ -1344,11 +1218,11 @@
                                 function (result, event) {
                                     if (event.status) {
                                         toastr.success("All the mileages are locked successfully.")
-                                        setTimeout(() => {
-                                            $('.lockdateModal').hide();
-                                            //location.reload();
-                                        }, 4000);
-
+                                       setTimeout(()=>{
+                                        $('.lockdateModal').hide();
+                                        //location.reload();
+                                       }, 4000);
+                                       
                                     }
                                     else {
                                         $('.lockdateModal').show();
@@ -1392,7 +1266,7 @@
                 $scope.manVisible = false;
                 if ($scope.manId == undefined || $scope.manId == '') {
                     $scope.manVisible = false;
-                } else {
+                }else{
                     $scope.manVisible = true;
                 }
                 var freezeProperty = false;
@@ -1411,7 +1285,6 @@
                 $scope.drivingStatesList = {!DrivingStates
             };
             $scope.accountId = '0013r00002EkwWMAAZ';
-            $scope.isPlAccountAbsence = false;
             $scope.search = "";
             $scope.size = '10mb';
             $scope.employeeslist = [];
@@ -1419,18 +1292,14 @@
             $scope.IsDisplay = false;
             $scope.editDialog = new EditDrivingStatesModel();
             $scope.editDateModel = new EditDeactivationDateModel();
-            $scope.editLOAModel = new EditLOADateModel();
-            $scope.editEndLOAModel = new EditLOAEndDateModel();
             $scope.editLockDateModel = new EditLockDateModel();
             $scope.backButton = false;
             $scope.showCancelProBtn = false;
             $scope.checkboxobjDeactivateShow = false;
-            $scope.checkboxobjLoaShow = false;
             $scope.checkboxobjEnableUserShow = false;
             $scope.checkboxobjConcurShow = false;
             $scope.checkboxobjFreezeShow = false;
             $scope.showMassDeactivatebtn = false;
-            $scope.showSaveLOABtn = false;
             $scope.showMassEnablebtn = false;
             $scope.showMassConcurbtn = false;
             $scope.showResetPasswordbtn = false;
@@ -1469,7 +1338,7 @@
             };
 
             console.log("window", window);
-            // console.log(window.opener.parent.document.getElementById('hidden_user_id') )
+           // console.log(window.opener.parent.document.getElementById('hidden_user_id') )
             /* Trip Status For Sync Mileages */
             // $scope.tripStatus = [];
             // $scope.tripStatus[0] = "Choose Trip Status...";
@@ -1503,6 +1372,7 @@
                 loaddatepicker(deactivateDate); /*, lastPayDate*/
             }
 
+            
             /* For Hide Tab*/
             $scope.Hide = function () {
                 $scope.IsVisible = false;
@@ -1523,7 +1393,6 @@
 
             }
             $scope.editSyncAllMileageModel = function (emp) {
-                $scope.isPlAccountAbsence = false;
                 $('.modal-backdrop').show();
                 $('.synAllModal').show();
             }
@@ -1543,12 +1412,10 @@
                 $("#dropdownMenuButton").text('Activity');
                 $scope.showCancelProBtn = false;
                 $scope.checkboxobjDeactivateShow = false;
-                $scope.checkboxobjLoaShow = false;
                 $scope.checkboxobjEnableUserShow = false;
                 $scope.checkboxobjConcurShow = false;
                 $scope.checkboxobjFreezeShow = false;
                 $scope.showMassDeactivatebtn = false;
-                $scope.showSaveLOABtn = false;
                 $scope.showMassEnablebtn = false;
                 $scope.showMassConcurbtn = false;
                 $scope.showResetPasswordbtn = false;
@@ -1556,7 +1423,6 @@
                 $scope.showMultipleAction = true;
                 $scope.showMassFreezeEmployeebtn = false;
                 $scope.showMassUnFreezeEmployeebtn = false;
-                $scope.isPlAccountAbsence = false;
                 freezeProperty = false;
                 unfreezebtnproperty = false;
                 enabledUser = false;
@@ -1574,9 +1440,6 @@
                                 $scope.$apply(function () {
                                     $scope.employeeslist = JSON.parse(result);
                                     console.log('added->', $scope.employeeslist);
-                                    angular.forEach($scope.employeeslist, function (e) {
-                                        e.loaLabel = '';
-                                    })
                                     //formatDateForEmployeeList($scope.employeeslist);
                                     $scope.addfordownload();
                                 });
@@ -1597,10 +1460,10 @@
 
             }
 
-            //  if(window.opener === null) {
-            $scope.refreshEmployees();
-            //   }
-
+          //  if(window.opener === null) {
+                $scope.refreshEmployees();
+         //   }
+           
 
 
 
@@ -1673,7 +1536,7 @@
                     });
                 }
                 else if ($scope.accid === $scope.PLMarketing) {
-                    $scope.emplistfordownload.push(["First Name", "Last name", "EmployeeID", "Email", "City", "State", "Zip Code", "Cell Phone", "Driving States", "Activation Date", "Frozen Date", "Deactivation Date", "Role", "Manager", "Standard Vehicle", "Fixed Amount", "Compliance", "Average Monthly Reimbursement", "Average Monthly Mileage", "App Version", "Division", "Job Title", "Department"]);
+                    $scope.emplistfordownload.push(["First Name", "Last name", "EmployeeID", "Email", "City", "State", "Zip Code", "Cell Phone", "Driving States", "Activation Date", "Frozen Date", "Deactivation Date", "Role", "Manager", "Standard Vehicle", "Fixed Amount", "Compliance", "Average Monthly Reimbursement", "Average Monthly Mileage", "App Version", "Division" ,"Job Title", "Department"]);
                     $scope.employeeslist
 
                     angular.forEach(empToUpdate, function (item, key) {
@@ -1883,7 +1746,6 @@
 
             // AI-000460 Starts -->
             $scope.displayCheckboxForMassResetPassword = function () {
-                $scope.isPlAccountAbsence = false;
                 massResetPassword = true;
                 $scope.checkboxobjDeactivateShow = true;
                 $scope.checkboxobjFreezeShow = false;
@@ -1922,7 +1784,6 @@
 
 
             $scope.displayCheckboxForEnableUser = function () {
-                $scope.isPlAccountAbsence = false;
                 $scope.checkboxobjEnableUserShow = true;
                 $scope.checkboxobjDeactivateShow = false;
                 $scope.checkboxobjConcurShow = false;
@@ -2042,17 +1903,17 @@
             //     $scope.isCheckedForSync = check;
             //     console.log("Check", $scope.isCheckedForSync);
             // }
-            $scope.handleStatus = function (status) {
-                if (status != 'Choose Trip Status...') {
+            $scope.handleStatus = function(status){
+                if(status != 'Choose Trip Status...'){
                     $scope.isSync = false;
-                } else {
+                }else{
                     $scope.isSync = true;
                 }
             }
-            $scope.handleMonth = function (mon) {
-                if (mon != 'Choose Syn Month...') {
+            $scope.handleMonth = function(mon){
+                if(mon != 'Choose Syn Month...'){
                     $scope.isSync = false;
-                } else {
+                }else{
                     $scope.isSync = true;
                 }
             }
@@ -2087,13 +1948,12 @@
                                         }, 2000);
                                     }
                                 })
-                        }
-                    },
+                            }
+                        },
                     { escape: false }
                 );
             }
             $scope.displayCheckboxForConcur = function () {
-                $scope.isPlAccountAbsence = false;
                 $scope.checkboxobjConcurShow = true;
                 $scope.checkboxobjEnableUserShow = false;
                 $scope.checkboxobjDeactivateShow = false;
@@ -2204,10 +2064,7 @@
                     { escape: false }
                 );
             }
-
-
             $scope.displayCheckboxForDeactivation = function () {
-                $scope.isPlAccountAbsence = false;
                 $scope.checkboxobjDeactivateShow = true;
                 $scope.checkboxobjFreezeShow = false;
                 $scope.checkboxobjEnableUserShow = false;
@@ -2300,7 +2157,6 @@
             }
 
             $scope.displayCheckboxForFreeze = function () {
-                $scope.isPlAccountAbsence = false;
                 $scope.checkboxobjDeactivateShow = false;
                 $scope.checkboxobjEnableUserShow = false;
                 $scope.checkboxobjConcurShow = false;
@@ -2407,7 +2263,6 @@
 
             $scope.displayCheckboxForUnFreeze = function () {
                 unfreezebtnproperty = true;
-                $scope.isPlAccountAbsence = false;
                 $scope.checkboxobjDeactivateShow = false;
                 $scope.checkboxobjEnableUserShow = false;
                 $scope.checkboxobjConcurShow = false;
@@ -2457,103 +2312,10 @@
 
             }
 
-            //* EMC - 129 : "LOA" amount and "pay period" for PL marketing account on Driver Page */
-            $scope.showLeaveOfAbsence = function () {
-                $scope.IsVisibleUpdatebtn = false;
-                $scope.isPlAccountAbsence = true;
-                $scope.checkboxobjLoaShow = true;
-                $scope.checkboxobj.isCheckedAllForLOA = ($scope.checkboxobj.isCheckedAllForLOA == true) ? false : false;
-            }
-
-            $scope.CheckUncheckAllForLOA = function(CheckUncheckAllForLOA){
-                $scope.checkboxobj.isCheckedAllForLOA = CheckUncheckAllForLOA;
-                if ($scope.checkboxobj.isCheckedAllForLOA == true) {
-                    $scope.showCancelProBtn = true;
-                    $scope.showSaveLOABtn = true;
-                    $scope.showMultipleAction = false;
-                    
-                }
-                else {
-                    $scope.showCancelProBtn = false;
-                    $scope.showSaveLOABtn = false;
-                    $scope.showMultipleAction = true;
-                    $scope.checkboxobjLoaShow = false;
-                }
-                angular.forEach($scope.employeeslist, function (emp) {
-                    emp.isleaveofabsence = $scope.checkboxobj.isCheckedAllForLOA;
-                    $scope.empupdatelist.push(emp);
-                });
-            }
-            $scope.CheckUncheckForLOA = function(emp){
-                var emplistlen = $scope.employeeslist.length;
-                var count = 0;
-                angular.forEach($scope.employeeslist, function (item) {
-                    if (item.isleaveofabsence) {
-                        count++;
-                    }
-                });
-
-                if (count > 0) {
-                    $scope.showMultipleAction = false;
-                    $scope.showSaveLOABtn = true;
-                    $scope.showCancelProBtn = true;
-                }
-                else {
-                    $scope.showCancelProBtn = false;
-                    $scope.showSaveLOABtn = false;
-                    $scope.showMultipleAction = true;
-                }
-
-                $scope.empupdatelist.push(emp);
-            }
-
-            $scope.validateFixedAmount = function(amount) {
-                var fixedValue = amount.emp.loaFixedAmount;
-                if(fixedValue){
-                    amount.emp.loaFixedAmount = amount.emp.loaFixedAmount
-                        .replace(/[^\d.]/g, '')             // numbers and decimals only
-                        .replace(/(^\.*)\./g, '$1')          // single dot retricted
-                        .replace(/(\..*)\./g, '$1')          // decimal can't exist more than once
-                        .replace(/(\.[\d]{2})./g, '$1');
-                } else{
-                    amount.emp.loaFixedAmount = 0;
-                }
-            }
-
-            $scope.saveLOA = function(){
-                angular.forEach($scope.empupdatelist, function (employee){
-                    employee.loaStartDate = (employee.loaStartDate != null) ? $filter('date')(new Date(employee.loaStartDate), 'MM/dd/yyyy') : null;
-                    employee.loaEndDate = (employee.loaEndDate != null) ? $filter('date')(new Date(employee.loaEndDate), 'MM/dd/yyyy') : null;
-                })
-                var listToUpdate = angular.copy($scope.empupdatelist);
-                $('#spinner').show();
-                Visualforce.remoting.Manager.invokeAction('{!$RemoteAction.RosterController.editInlineNewEmployee}', JSON.stringify(listToUpdate), $scope.accid, $scope.id,
-                    function (result, event) {
-                        if (event.status) {
-                            toastr.success('Records Updated Successfully.');
-                            angular.forEach($scope.empupdatelist, function (employee) {
-                                employee.iseditable = false;
-                            });
-
-                            $scope.empupdatelist = [];
-                            $scope.selectedRow = '';
-                            $('#spinner').hide();
-                            location.reload();
-                        }
-                        else {
-                            $('#spinner').hide();
-                        }
-                        $scope.$apply();
-                    },
-                    { escape: false }
-                );
-            }
-
-            //* EMC - 129 : Ends */
             // AI-000460 Ends -->
             $scope.edit = function (emp, userid) {
                 $scope.selectedRow = userid;
-                $scope.IsVisibleUpdatebtn = ($scope.isPlAccountAbsence === true) ? false : true;
+                $scope.IsVisibleUpdatebtn = true;
                 $scope.managerlist = {!AllManagers
             }
             $scope.managerlist.sort(function (a, b) {
@@ -2567,43 +2329,7 @@
                 }
             })
 
-             // Format date in yyyy-MM-dd format
-                function FormatDate(elDate) {
-                    var today = new Date(elDate);
-                    var dd = String(today.getDate()).padStart(2, '0');
-                    var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
-                    var year = today.getFullYear();
-                    var yy = year.toString().substr(-2);
-                    // today = yyyy + '-' + mm + '-' + dd;
-                    today = mm + '/' + dd + '/' + yy
-                    return today;
-                }
-            function payDate(date) {
-                var st = new Date(date);
-                var today = new Date();
-                var i = 0;
-                var dateArr = [];
-                var end;
-                var currentYear = (new Date()).getFullYear();
-                if (date) {
-                    for (i = 0; i <= dateArr.length; i++) {
-                        if (currentYear === st.getFullYear()) {
-                            if (st < today) {
-                                end = new Date(st);
-                                end = new Date(end.setDate(end.getDate() + 13));
-                                let finaldate = FormatDate(st) + ' to ' + FormatDate(end)
-                                dateArr.push(finaldate);
-                                st = new Date(end.setDate(end.getDate() + 1));
-                            }
-
-                        }
-                    }
-                    return dateArr;
-                    console.log("List->", dateArr);
-                }
-            }
             $scope.rolelist = {!Roles}
-            $scope.biweeklylist = payDate('07/25/21');
             $scope.driverType = {!DriverType}
             $scope.recordfoundindex = -1;
             if (beforeUpdateEmployees.length == 0)
@@ -2966,7 +2692,7 @@
                 if (role == 'Driver' || role == 'Driver/Manager' || role == 'Manager' || role == 'Driver/Admin') {
                     $scope.showmanagervalidation = true;
                 }
-                if (role == 'Driver' || role == 'Driver/Manager' || role == 'Driver/Admin') {
+                if (role == 'Driver' || role == 'Driver/Manager' || role == 'Driver/Admin'){
                     $scope.showvalidation = true;
                     $scope.isFieldRequired = true;
                 }
@@ -2993,7 +2719,6 @@
                 $scope.IsShow = true;
                 $scope.IsShowLinkBtn = true;
                 // $scope.showMassFreezebtn = false;
-                $scope.showSaveLOABtn = false;
                 $scope.showMassFreezeEmployeebtn = false;
                 $scope.showMassUnFreezebtn = false;
                 $scope.showMassUnFreezeEmployeebtn = false;
@@ -3033,7 +2758,7 @@
                 $scope.Role = empId.role;
                 $scope.showmanagervalidation = true;
             }
-            else if (empId.role === 'Driver/Manager') {
+            else if(empId.role === 'Driver/Manager'){
                 $scope.IsVisibleLoginDriver = false;
                 $scope.IsVisibleLoginManager = true;
                 $scope.showvalidation = true;
@@ -3042,7 +2767,7 @@
                 $scope.isFieldRequired = true;
                 $scope.showmanagervalidation = true;
             }
-            else if (empId.role === valueofreport) {
+            else if(empId.role === valueofreport){
                 $scope.isFieldRequired = true;
                 $scope.showvalidation = true;
                 $scope.showmanagervalidation = true;
@@ -3127,156 +2852,156 @@
                 }, { escape: false }
             );
                 }
+               
 
+                $scope.passInfoData = function (empId) {
+                        $('#spinner').show();
+                        window.opener = null;
+                        $scope.IsShow = true;
+                        $scope.IsShowLinkBtn = true;
+                        // $scope.showMassFreezebtn = false;
+                        $scope.showMassFreezeEmployeebtn = false;
+                        $scope.showMassUnFreezebtn = false;
+                        $scope.showMassUnFreezeEmployeebtn = false;
+                        $scope.showMassEnablebtn = false;
+                        $scope.showMassConcurbtn = false;
+                        $scope.showCancelProBtn = false;
+                        $scope.showMassDeactivatebtn = false;
+                        $scope.showResetPasswordbtn = false;
+                        $scope.showMultipleAction = false;
+                        $scope.managerlist = {!AllManagers
+                    }
+                    $scope.managerlist.sort(function (a, b) {
+                        var nameA = a.Name.toLowerCase(), nameB = b.Name.toLowerCase();
+                        if (nameA < nameB) { //sort string ascending
+                            return -1;
+                        } else if (nameA > nameB) {
+                            return 1;
+                        } else {
+                            return 0; //default return value (no sorting)
+                        }
+                    })
 
-            $scope.passInfoData = function (empId) {
-                $('#spinner').show();
-                window.opener = null;
-                $scope.IsShow = true;
-                $scope.IsShowLinkBtn = true;
-                // $scope.showMassFreezebtn = false;
-                $scope.showSaveLOABtn = false;
-                $scope.showMassFreezeEmployeebtn = false;
-                $scope.showMassUnFreezebtn = false;
-                $scope.showMassUnFreezeEmployeebtn = false;
-                $scope.showMassEnablebtn = false;
-                $scope.showMassConcurbtn = false;
-                $scope.showCancelProBtn = false;
-                $scope.showMassDeactivatebtn = false;
-                $scope.showResetPasswordbtn = false;
-                $scope.showMultipleAction = false;
-                $scope.managerlist = {!AllManagers
-            }
-            $scope.managerlist.sort(function (a, b) {
-                var nameA = a.Name.toLowerCase(), nameB = b.Name.toLowerCase();
-                if (nameA < nameB) { //sort string ascending
-                    return -1;
-                } else if (nameA > nameB) {
-                    return 1;
-                } else {
-                    return 0; //default return value (no sorting)
+                    // AI-000179 Edited By Megha -->
+                    if (empId.role === 'Driver') {
+                            $scope.IsVisibleLoginDriver = true;
+                            $scope.IsVisibleLoginManager = false;
+                            $scope.isFieldRequired = true;
+                            $scope.showvalidation = true;
+                            $scope.showmanagervalidation = true;
+                            $scope.userid = empId.contactId;
+                            $scope.Role = empId.role;
+                    }
+                    else if (empId.role === 'Manager') {
+                            $scope.IsVisibleLoginDriver = false;
+                            $scope.IsVisibleLoginManager = true;
+                            $scope.showmanagervalidation = true;
+                            $scope.userid = empId.userid;
+                            $scope.Role = empId.role;
+                    }
+                    else if (empId.role === 'Driver/Manager') {
+                            $scope.IsVisibleLoginDriver = false;
+                            $scope.IsVisibleLoginManager = true;
+                            $scope.showvalidation = true;
+                            $scope.showmanagervalidation = true;
+                            $scope.userid = empId.userid;
+                            $scope.Role = empId.role;
+                            $scope.isFieldRequired = true;
+                    }
+                    else if (empId.role === valueofreport) {
+                            $scope.isFieldRequired = true;
+                            $scope.showvalidation = true;
+                            $scope.showmanagervalidation = true;
+                    }
+                    else {
+                            $scope.isFieldRequired = false;
+                            $scope.showvalidation = false;
+                            $scope.IsVisibleLoginDriver = false;
+                            $scope.IsVisibleLoginManager = false;
+                    }
+                    
+                    // AI-000179 Edited By Megha -->
+                    $scope.rolelist = {!Roles}
+                    $scope.jobTitleList = {!JobTitle}
+                    $scope.driverType = {!DriverType}
+                    $scope.departmentList = {!Department}
+                    $scope.Hide();
+                    $scope.tabs[1].active = true;
+
+                    $scope.editUserID = empId.contactId;
+                    console.log($scope.editUserID);
+                    let dateAndVehicleList = {!PickListValuesIntoList}
+                    let tempaccdate = dateAndVehicleList[0];
+                    let tempdt = new Date(tempaccdate);
+                    let d = $filter('date')(tempdt, "MM/dd/yy")
+                    var splicevehiclelist = dateAndVehicleList.splice(1, 1);
+                    $scope.vehiclelist = splicevehiclelist[0].split(";");
+
+                    Visualforce.remoting.Manager.invokeAction('{!$RemoteAction.RosterController.editEmployeeDetails}', $scope.editUserID,
+                        function (result, event) {
+                            $scope.contactData = [];
+                            $scope.relatedcitylist = [];
+                            /*$scope.statelist = [];*/
+                            $scope.contactData = JSON.parse(result);
+                            console.log('contact->', $scope.contactData);
+
+                            angular.forEach($scope.contactData, function (item) {
+                                c('item:--' + item.role);
+                                if (item.IsMassDeactivated == "" || item.IsMassDeactivated == null) {
+                                    item.IsMassDeactivated = false;
+                                }
+                                if (item.IsMassFreeze == "" || item.IsMassFreeze == null) {
+                                    item.IsMassFreeze = false;
+                                }
+                                if (item.addedDate != null && item.addedDate != '') {
+                                    item.addedDate = $scope.formateDate(item.addedDate);
+                                }
+                                else {
+                                    item.addedDate = $filter('date')(new Date(), "MM/dd/yy");
+                                }
+
+                                if (item.activationDate != null && item.activationDate != '') {
+                                    item.activationDate = $scope.formateDate(item.activationDate);
+                                }
+                                if (item.city != null && item.city != '') {
+                                    $scope.relatedcitylist.push(item.city);
+                                }
+                                if (item.role == 'Admin' || item.role == 'Manager') {
+                                    $scope.showrequiredfield = false;
+                                }
+                                if (item.role == 'Driver/Manager' || item.role == 'Driver' || item.role == valueofreport) {
+                                    $scope.showrequiredfield = true;
+                                }
+                            });
+                           
+                            $scope.showcitycountryedit($scope.contactData[0].zipCode, $scope.contactData[0].role)
+                            $scope.backButton = true;
+                            angular.element(document.querySelector("#pills-addadminroster-tab")).addClass(" active");
+                            angular.element(document.querySelector("#pills-addadminroster")).addClass("active");
+                            setTimeout(() => {
+                                $('#spinner').hide();
+                            }, 2000) 
+                            $scope.$apply();
+                            $("#drivingstateContact").tagsinput('destroy');
+                            $("#drivingstateContact").tagsinput('refresh');
+
+                        }, { escape: false }
+                    );
                 }
-            })
 
-            // AI-000179 Edited By Megha -->
-            if (empId.role === 'Driver') {
-                $scope.IsVisibleLoginDriver = true;
-                $scope.IsVisibleLoginManager = false;
-                $scope.isFieldRequired = true;
-                $scope.showvalidation = true;
-                $scope.showmanagervalidation = true;
-                $scope.userid = empId.contactId;
-                $scope.Role = empId.role;
-            }
-            else if (empId.role === 'Manager') {
-                $scope.IsVisibleLoginDriver = false;
-                $scope.IsVisibleLoginManager = true;
-                $scope.showmanagervalidation = true;
-                $scope.userid = empId.userid;
-                $scope.Role = empId.role;
-            }
-            else if (empId.role === 'Driver/Manager') {
-                $scope.IsVisibleLoginDriver = false;
-                $scope.IsVisibleLoginManager = true;
-                $scope.showvalidation = true;
-                $scope.showmanagervalidation = true;
-                $scope.userid = empId.userid;
-                $scope.Role = empId.role;
-                $scope.isFieldRequired = true;
-            }
-            else if (empId.role === valueofreport) {
-                $scope.isFieldRequired = true;
-                $scope.showvalidation = true;
-                $scope.showmanagervalidation = true;
-            }
-            else {
-                $scope.isFieldRequired = false;
-                $scope.showvalidation = false;
-                $scope.IsVisibleLoginDriver = false;
-                $scope.IsVisibleLoginManager = false;
-            }
-
-            // AI-000179 Edited By Megha -->
-            $scope.rolelist = {!Roles}
-            $scope.jobTitleList = {!JobTitle}
-            $scope.driverType = {!DriverType}
-            $scope.departmentList = {!Department}
-            $scope.Hide();
-            $scope.tabs[1].active = true;
-
-            $scope.editUserID = empId.contactId;
-            let dateAndVehicleList = {!PickListValuesIntoList}
-            let tempaccdate = dateAndVehicleList[0];
-            let tempdt = new Date(tempaccdate);
-            let d = $filter('date')(tempdt, "MM/dd/yy")
-            var splicevehiclelist = dateAndVehicleList.splice(1, 1);
-            $scope.vehiclelist = splicevehiclelist[0].split(";");
-
-            Visualforce.remoting.Manager.invokeAction('{!$RemoteAction.RosterController.editEmployeeDetails}', $scope.editUserID,
-                function (result, event) {
-                    $scope.contactData = [];
-                    $scope.relatedcitylist = [];
-                    /*$scope.statelist = [];*/
-                    $scope.contactData = JSON.parse(result);
-                    console.log('contact->', $scope.contactData);
-
-                    angular.forEach($scope.contactData, function (item) {
-                        c('item:--' + item.role);
-                        if (item.IsMassDeactivated == "" || item.IsMassDeactivated == null) {
-                            item.IsMassDeactivated = false;
+                if(window.opener != null){
+                    if(window.opener.location.pathname === "/app/ManageNotification"){
+                        angular.element(document.querySelector("#pills-alldrivers-tab")).removeClass("active");
+                        angular.element(document.querySelector("#pills-alldrivers")).removeClass("active");
+                        angular.element(document.querySelector("#pills-alldrivers-tab-back")).removeClass("active");
+                     
+                        var userEmpId = window.opener.parent.document.getElementById('hidden_user_id').value;
+                        var userEmpObj = JSON.parse(userEmpId);
+                       // console.log("user emp id: " + userEmpObj);
+                        $scope.passInfoData(userEmpObj);
+                       
                         }
-                        if (item.IsMassFreeze == "" || item.IsMassFreeze == null) {
-                            item.IsMassFreeze = false;
-                        }
-                        if (item.addedDate != null && item.addedDate != '') {
-                            item.addedDate = $scope.formateDate(item.addedDate);
-                        }
-                        else {
-                            item.addedDate = $filter('date')(new Date(), "MM/dd/yy");
-                        }
-
-                        if (item.activationDate != null && item.activationDate != '') {
-                            item.activationDate = $scope.formateDate(item.activationDate);
-                        }
-                        if (item.city != null && item.city != '') {
-                            $scope.relatedcitylist.push(item.city);
-                        }
-                        if (item.role == 'Admin' || item.role == 'Manager') {
-                            $scope.showrequiredfield = false;
-                        }
-                        if (item.role == 'Driver/Manager' || item.role == 'Driver' || item.role == valueofreport) {
-                            $scope.showrequiredfield = true;
-                        }
-                    });
-
-                    $scope.showcitycountryedit($scope.contactData[0].zipCode, $scope.contactData[0].role)
-                    $scope.backButton = true;
-                    angular.element(document.querySelector("#pills-addadminroster-tab")).addClass(" active");
-                    angular.element(document.querySelector("#pills-addadminroster")).addClass("active");
-                    setTimeout(() => {
-                        $('#spinner').hide();
-                    }, 2000)
-                    $scope.$apply();
-                    $("#drivingstateContact").tagsinput('destroy');
-                    $("#drivingstateContact").tagsinput('refresh');
-
-                }, { escape: false }
-            );
                 }
-
-            if (window.opener != null) {
-                if (window.opener.location.pathname === "/app/ManageNotification") {
-                    angular.element(document.querySelector("#pills-alldrivers-tab")).removeClass("active");
-                    angular.element(document.querySelector("#pills-alldrivers")).removeClass("active");
-                    angular.element(document.querySelector("#pills-alldrivers-tab-back")).removeClass("active");
-
-                    var userEmpId = window.opener.parent.document.getElementById('hidden_user_id').value;
-                    var userEmpObj = JSON.parse(userEmpId);
-                    // console.log("user emp id: " + userEmpObj);
-                    $scope.passInfoData(userEmpObj);
-
-                }
-            }
 
             /* Contact Insert Before Check Is already available or not */
             $scope.createUpdateContact = function (con, elementId, sourceId, suffix, form, update) {
@@ -3290,7 +3015,7 @@
 
                 if (con.role == 'Driver' || con.role == 'Driver/Manager' || con.role == 'Manager' || con.role == valueofreport) {
                     $scope.showmanagervalidation = true;
-
+                  
                 }
                 if (con.role == 'Admin') /*Mobio*/ {
                     $scope.showmanagervalidation = false;
@@ -3655,7 +3380,7 @@
 
                 $scope.reverse = ($scope.sortKey === keyname) ? !$scope.reverse : false;
                 $scope.sortKey = keyname;
-                if (keyname === 'firstName' || keyname === 'managerName' || keyname === 'role' || keyname === 'email' || keyname === 'appVersion' || keyname === 'district' || keyname === 'territory' || keyname === 'employeeId' || keyname === 'driverType' || keyname === 'deactivationBy' || keyname === 'payRollPeriod') {
+                if (keyname === 'firstName' || keyname === 'managerName' || keyname === 'role' || keyname === 'email' || keyname === 'appVersion' || keyname === 'district' || keyname === 'territory' || keyname === 'employeeId' || keyname === 'driverType' || keyname === 'deactivationBy') {
                     $scope.employeeslist.sort(function (a, b) {
 
                         var nameA = (a[keyname] === null) ? '' : a[keyname].toLowerCase(),
@@ -3695,7 +3420,7 @@
                         }
                     })
                 }
-                if (keyname === 'zipCode' || keyname === 'code' || keyname === 'loaFixedAmount') {
+                if (keyname === 'zipCode' || keyname === 'code') {
                     $scope.employeeslist.sort(function (a, b) {
 
                         var nameA = (a[keyname] === null) ? '' : parseInt(a[keyname]),
@@ -3715,7 +3440,7 @@
                         }
                     })
                 }
-                if (keyname === 'deactivaedDate' || keyname === 'freeze' || keyname === 'loaStartDate' || keyname === 'loaEndDate') {
+                if (keyname === 'deactivaedDate' || keyname === 'freeze') {
                     $scope.employeeslist.sort(function (a, b) {
 
                         var nameA = (a[keyname] === null) ? '' : new Date(a[keyname].toLowerCase()),
@@ -3792,8 +3517,8 @@
                                             <a class="nav-link text-white" ng-show="admindriver" href="/app/roster?managerid={{manId}}&accid={{accid}}&id={{id}}&showteam={{showteam}}&admindriver=true">Drivers</a>
                                         </li>
                                         <li class="nav-item" ng-show="!manVisible">
-                                            <a class="nav-link text-white" ng-show="!admindriver" href="/app/ManageNotification?accid={{accid}}&id={{id}}&showteam={{showteam}}">Communications</a>
-                                            <a class="nav-link text-white" ng-show="admindriver" href="/app/ManageNotification?accid={{accid}}&id={{id}}&showteam={{showteam}}&admindriver=true">Communications</a>
+                                            <a class="nav-link text-white" ng-show="!admindriver"  href="/app/ManageNotification?accid={{accid}}&id={{id}}&showteam={{showteam}}">Communications</a>
+                                            <a class="nav-link text-white" ng-show="admindriver"  href="/app/ManageNotification?accid={{accid}}&id={{id}}&showteam={{showteam}}&admindriver=true">Communications</a>
                                         </li>
                                         <li class="nav-item" ng-show="!manVisible">
                                             <a class="nav-link text-white" ng-show="!admindriver" href="/app/reportlist?accid={{accid}}&id={{id}}&showteam={{showteam}}">Reports</a>
@@ -3878,15 +3603,10 @@
                             data-target="#pills-massadminroster" ng-attr-active="tabs[9].active" ng-click="ConcurConnect()">Concur Connect
                         </a>
                     </li>
-                    <li class="nav-item mb-2 mb-sm-0 mb-md-0 loaroster ml-10" ng-show="showSaveLOABtn">
-                        <a class="nav-link" id="pills-addadminroster-tab" data-toggle="pill" href="#pills-loaadminroster" role="tab" aria-controls="pills-addadminroster"
-                            data-target="#pills-loaadminroster" ng-attr-active="tabs[10].active" ng-click="saveLOA()">Save LOA
-                        </a>
-                    </li>
                     <!-- AI-000179 Edited By Megha -->
                     <li class="nav-item mb-2 mb-sm-0 mb-md-0" ng-show="IsVisibleLoginManager">
                         <a class="nav-link" id="pills-loginadminroster-tab" href="/app/drivermanagerdriverdetails?accid={{accid}}&id={{userid}}&manid={{id}}&showteam={{showteam}}&loginAS=true"
-                            role="tab" ng-attr-active="tabs[9].active">Login As</a>
+                        role="tab" ng-attr-active="tabs[9].active">Login As</a>
                         <!-- <a class="nav-link" id="pills-loginadminroster-tab" href="/app/managerdashboardfromadmin?managerid={{userid}}&accid={{accid}}&id={{id}}&showteam={{showteam}}&loginAS=true"
                             role="tab" ng-attr-active="tabs[9].active">Login As</a> -->
                     </li>
@@ -3899,17 +3619,18 @@
 
                 <!-- AI-000460 -->
                 <div class="dropdown" ng-show="showMultipleAction">
-                    <button class="btn dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true"
+                        aria-expanded="false">
                         Activity
                     </button>
                     <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                         <a class="dropdown-item" ng-click="displayCheckboxForDeactivation()">Mass Deactivate</a>
                         <a class="dropdown-item" ng-click="displayCheckboxForFreeze()">Freeze</a>
                         <a class="dropdown-item" ng-click="displayCheckboxForUnFreeze()">UnFreeze</a>
-                        <a class="dropdown-item" ng-click="showLeaveOfAbsence()">Leave of Absence</a>
+
                         <div class="dropdown-divider"></div>
                         <a class="dropdown-item" ng-click="displayCheckboxForConcur()" ng-if="accid === SPBSAcc || accid === EngGypAcc">Concur Connect</a>
-                        <a class="dropdown-item" ng-click="editSyncAllMileageModel()" ng-if="accid === accountERMI">Sync All</a>
+                        <a class="dropdown-item" ng-click="editSyncAllMileageModel()" ng-if="accid === accountERMI">Sync All</a>    
                         <a class="dropdown-item" ng-click="displayCheckboxForMassResetPassword()">Mass Reset Password</a>
                         <a class="dropdown-item" ng-click="displayCheckboxForEnableUser()">Enable User</a>
                         <a class="dropdown-item" ng-click="editLockDateModel.open();">Mileage Lock Date</a>
@@ -3934,7 +3655,7 @@
                                 <!-- AI-000206 - Start-->
 
                                 <div id="example_filter" class="dataTables_filter pull-left d-block">
-
+                                  
                                     <div class="input-group w-85">
                                         <i id="filtericon" class="fa fa-search" ng-if="search.length===0"></i>
                                         <input class="form-control py-2 border-right-0 border" type="search" ng-model="search" placeholder="Search" aria-controls="example"
@@ -3947,8 +3668,8 @@
                                         <i class="fa fa-expand" aria-hidden="true"></i>
                                     </button>
                                 </div>
-                                <table id="example" ng-show="!isPlAccountAbsence" class="table table-striped dt-responsive nowrap dataTable sticky-header"
-                                    cellspacing="0" width="100%" ng-cloak="true">
+                                <table id="example" class="table table-striped dt-responsive nowrap dataTable sticky-header" cellspacing="0" width="100%"
+                                    ng-cloak="true">
                                     <!-- height : 375px -->
                                     <thead>
                                         <tr>
@@ -4184,112 +3905,6 @@
                                         </tr>
                                     </tbody>
                                 </table>
-
-                                <table id="example" ng-show="isPlAccountAbsence" class="table table-striped dt-responsive nowrap dataTable sticky-header"
-                                    cellspacing="0" width="100%" ng-cloak="true">
-                                    <!-- height : 375px -->
-                                    <thead>
-                                        <tr>
-                                            <th class="loaChkth" ng-show="checkboxobjLoaShow">
-                                                <input type="checkbox" ng-model="checkboxobj.isCheckedAllForLOA" class="loaCheck ml-10" ng-click="CheckUncheckAllForLOA(checkboxobj.isCheckedAllForLOA,emp);"
-                                                />
-                                            </th>
-                                            <th ng-click="sort('firstName')">Name
-                                                <span class="sort-icon pull-right" ng-show="sortKey=='firstName'" ng-class="{'fa fa-chevron-up':reverse,'fa fa-chevron-down':!reverse}"></span>
-                                            </th>
-                                            <th ng-click="sort('email')">Email
-                                                <span class="sort-icon pull-right" ng-show="sortKey=='email'" ng-class="{'fa fa-chevron-up':reverse,'fa fa-chevron-down':!reverse}">
-                                                </span>
-                                            </th>
-                                            <th ng-click="sort('loaStartDate')" style="padding-left: 24px;">LOA Start Date
-                                                <span class="sort-icon pull-right" ng-show="sortKey=='loaStartDate'" ng-class="{'fa fa-chevron-up':reverse,'fa fa-chevron-down':!reverse}"></span>
-                                            </th>
-                                            <th ng-click="sort('loaEndDate')" style="padding-left: 21px;">LOA End Date
-                                                <span class="sort-icon pull-right" ng-show="sortKey=='loaEndDate'" ng-class="{'fa fa-chevron-up':reverse,'fa fa-chevron-down':!reverse}"></span>
-                                            </th>
-                                            <th ng-click="sort('payRollPeriod')">Payroll period
-                                                <span class="sort-icon pull-right" ng-show="sortKey=='payRollPeriod'" ng-class="{'fa fa-chevron-up':reverse,'fa fa-chevron-down':!reverse}"></span>
-                                            </th>
-                                            <th ng-click="sort('loaFixedAmount')">LOA Fixed Amount
-                                                <span class="sort-icon pull-right" ng-show="sortKey=='loaFixedAmount'" ng-class="{'fa fa-chevron-up':reverse,'fa fa-chevron-down':!reverse}"></span>
-                                            </th>
-
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <!-- height : 350px -->
-                                        <tr dir-paginate="emp in employeeslist|filter:search |itemsPerPage: itemPerPage" ng-class="{'selected':emp.userid == selectedRow}"
-                                            ng-model="emp" pagination-id="employees">
-                                            <td ng-model="emp.loacheck"  ng-show="checkboxobjLoaShow" class="deactivateChktd">
-                                                <input type="checkbox" ng-model="emp.isleaveofabsence" class="loaCheck" ng-change="CheckUncheckForLOA(emp);" />
-                                            </td>
-                                            <td ng-model="emp.name" class="name_td">
-                                                <a data-toggle="pill" class="a-setcolor-pointer name_link" data-target="#pills-addadminroster" ng-click="passData(emp)">{{emp.firstName}} {{emp.lastName}}</a>
-                                            </td>
-                                            <td ng-show="!emp.iseditable" ng-click="edit(emp,emp.userid);emp.iseditable = !emp.iseditable" class="a-hover-pointer emailId_td"
-                                                id="email_td">
-                                                {{emp.email}}
-                                            </td>
-                                            <td ng-show="emp.iseditable" class="emailId_td">
-                                                <input type="email" name="email_{{emp.userid}}" class="form-control rounded-0 a-hover-pointer" ng-model="emp.email" pattern="^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,12})+$"
-                                                    required="true" />
-                                            </td>
-                                            <td ng-show="emp.iseditable">
-                                                <!-- <a ng-click="editDateModel.open(emp);loadDatePicker(emp.deactivaedDate,emp.lastPayDate);" class="a-hover-pointer a_link">
-                                                    <i class="fa fa-edit a-hover-pointer"></i>
-                                                    {{formateDate(emp.deactivaedDate)}}
-                                                </a> -->
-                                                <a ng-click="editLOAModel.open(emp, 'loaStartDate');loadDatePicker(emp.loaStartDate);" class="a-hover-pointer a_link">
-                                                    <i class="fa fa-edit a-hover-pointer"></i>
-                                                    {{formateDate(emp.loaStartDate)}}
-                                                </a>
-                                            </td>
-                                            <td ng-model="emp.loaStartDate" ng-show="!emp.iseditable">
-                                                <!-- <a ng-click="edit(emp,emp.userid);editDateModel.open(emp);loadDatePicker(emp.deactivaedDate,emp.lastPayDate);" class="a_link">
-                                                    <i class="fa fa-edit a-hover-pointer"></i>
-                                                    {{formateDate(emp.deactivaedDate)}}
-                                                </a> -->
-                                                <a ng-click="edit(emp,emp.userid);editLOAModel.open(emp);loadDatePicker(emp.loaStartDate);" class="a_link">
-                                                    <i class="fa fa-edit a-hover-pointer"></i>
-                                                    {{formateDate(emp.loaStartDate)}}
-                                                </a>
-                                            </td>
-                                            <td ng-show="emp.iseditable">
-                                                <a ng-click="editEndLOAModel.open(emp);loadDatePicker(emp.loaEndDate);" class="a-hover-pointer a_link" data-backdrop="static" data-keyboard="false">
-                                                    <i class="fa fa-edit a-hover-pointer"></i>
-                                                    {{formateDate(emp.loaEndDate)}}
-                                                </a>
-                                            </td>
-                                            <td ng-model="emp.loaEndDate" ng-show="!emp.iseditable">
-                                                <a ng-click="edit(emp,emp.userid);editEndLOAModel.open(emp);loadDatePicker(emp.loaEndDate);" class="a_link">
-                                                    <i class="fa fa-edit a-hover-pointer"></i>
-                                                    {{formateDate(emp.loaEndDate)}}
-                                                </a>
-                                            </td>
-                                            <td ng-model="emp.payRollPeriod" ng-show="emp.iseditable">
-                                                <select ng-model="emp.payRollPeriod" name="payRollPeriod_{{emp.userid}}" class="form-control rounded-0 a-hover-pointer">
-                                                    <option ng-selected="{{emp.payRollPeriod == pay}}" ng-repeat="pay in biweeklylist" value="{{pay}}">{{pay}}</option>
-                                                </select>
-                                            </td>
-                                            <td ng-model="emp.payRollPeriod" ng-show="!emp.iseditable" ng-click="edit(emp,emp.userid);emp.iseditable = !emp.iseditable"
-                                                class="a-hover-pointer">
-                                                <!-- <select ng-model="emp.payRollPeriod" name="payRollPeriod_{{emp.userid}}" class="form-control rounded-0 a-hover-pointer">
-                                                    <option ng-selected="{{emp.payRollPeriod == pay}}" ng-repeat="pay in biweeklylist" value="{{pay}}">{{pay}}</option>
-                                                </select> -->
-                                                <span>{{emp.payRollPeriod}}</span>
-                                            </td>
-                                            <td ng-model="emp.loaFixedAmount" ng-show="emp.iseditable">
-                                                <input type="text" ng-model="emp.loaFixedAmount" id="numberinput" class="numdivisioninput form-control rounded-0 col-md-12" ng-change="validateFixedAmount(this)" onkeydown="if(event.keyCode === 32) return false;" />
-                                            </td>
-                                            <td ng-model="emp.loaFixedAmount" ng-show="!emp.iseditable" ng-click="edit(emp,emp.userid);emp.iseditable = !emp.iseditable">
-                                                <span class="manager_td">{{emp.loaFixedAmount}}</span>
-                                            </td>
-                                        </tr>
-                                        <tr ng-show="(employeeslist|filter:search).length==0">
-                                            <td colspan="6" class="table-nodata">No Data Available</td>
-                                        </tr>
-                                    </tbody>
-                                </table>
                                 <div class="row my-4 tfooter-wrapper">
                                     <div class="col-12 d-flex justify-content-between align-items-center tfooter">
                                         <div class="d-flex align-items-center">
@@ -4313,8 +3928,6 @@
 
                                 <edit-Driving-States model="editDialog"></edit-Driving-States>
                                 <edit-Deactivation-Date model="editDateModel"></edit-deactivation-date>
-                                <edit-Loa-Date model="editLOAModel"></edit-Loa-Date>
-                                <edit-Loa-End-Date model="editEndLOAModel"></edit-Loa-End-Date>
                                 <edit-lock-Date model="editLockDateModel"></edit-lock-Date>
                                 <!-- <edit-Bulk-Deactivation-Date model="editBulkDateModel"></edit-bulk-deactivation-date>    -->
                             </div>
@@ -4399,7 +4012,7 @@
                                                     <span class="span-validation" data-toggle="tooltip" data-placement="top" title="Required field" ng-if="showmanagervalidation">*</span>
                                                     <select id="managerid" class="form-control rounded-0" ng-model="contactData[0].managerId" ng-show="IsShow" ng-required="showmanagervalidation"
                                                         name="manager_0">
-                                                        <option value=""></option>
+                                                        <option  value=""></option>
                                                         <option ng-selected="{{contactData[0].managerId == manager.Id}}" ng-repeat="manager in managerlist" value="{{manager.Id}}">{{manager.Name}}</option>
                                                     </select>
                                                     <select id="managerid" class="form-control rounded-0" ng-model="contactData.managerId" ng-show="!IsShow" ng-required="showmanagervalidation"
@@ -4434,28 +4047,27 @@
                                                 <div class="col-xl-8 col-lg-8 col-md-8 col-sm-8 validate-div">
                                                     <span class="span-validation" data-toggle="tooltip" data-placement="top" title="Required field" ng-if="isFieldRequired">*</span>
                                                     <input type="text" id="divison" ng-model="contactData[0].divison" ng-show="IsShow" class="numdivisioninput form-control rounded-0 divison"
-                                                        ng-required="isFieldRequired" placeholder="" name="divison_0" />
+                                                       ng-required="isFieldRequired" placeholder=""  name="divison_0"/>
                                                     <input type="text" id="divison" ng-model="contactData.divison" ng-show="!IsShow" class="numdivisioninput form-control rounded-0 divison"
-                                                        ng-required="isFieldRequired" placeholder="" name="divison_1" />
+                                                       ng-required="isFieldRequired"  placeholder=""  name="divison_1"/>
                                                 </div>
                                             </div>
                                             <div class="form-group-theme row" ng-if="accid === designAIR || accid === PLMarketing">
                                                 <label for="inputjobTitle" class="col-xl-4 col-lg-3 col-md-3 col-sm-3 col-form-label form-lable">Job Title:</label>
                                                 <div class="col-xl-8 col-lg-8 col-md-8 col-sm-8 validate-div">
                                                     <span class="span-validation" data-toggle="tooltip" data-placement="top" title="Required field" ng-if="isFieldRequired">*</span>
-                                                    <select id="job_name" ng-model="contactData[0].jobtitle" ng-show="IsShow" class="form-control rounded-0" name="jobtitle_0"
-                                                        ng-required="isFieldRequired">
+                                                    <select id="job_name" ng-model="contactData[0].jobtitle" ng-show="IsShow" class="form-control rounded-0"
+                                                        name="jobtitle_0" ng-required="isFieldRequired">
                                                         <option value=""></option>
                                                         <option ng-repeat="jobtitle in jobTitleList" ng-selected="{{contactData[0].jobtitle}}" value="{{jobtitle}}">{{jobtitle}}</option>
                                                     </select>
-                                                    <select id="job_name" ng-model="contactData.jobtitle" ng-show="!IsShow" class="form-control rounded-0" ng-required="isFieldRequired"
-                                                        name="jobtitle_1">
+                                                    <select id="job_name" ng-model="contactData.jobtitle" ng-show="!IsShow" class="form-control rounded-0" ng-required="isFieldRequired" name="jobtitle_1">
                                                         <option value=""></option>
                                                         <option ng-repeat="jobtitle in jobTitleList" value="{{jobtitle}}">{{jobtitle}}</option>
                                                     </select>
                                                 </div>
                                             </div>
-
+                                         
                                             <div class="form-group-theme row">
                                                 <label for="inputCellphone" class="col-xl-4 col-lg-3 col-md-3 col-sm-3 col-form-label form-lable">Cell Phone:</label>
                                                 <div class="col-xl-8 col-lg-8 col-md-8 col-sm-8">
@@ -4552,7 +4164,7 @@
 
                                             <div class="form-group-theme row">
                                                 <label for="inputActivationdate:" class="col-xl-4 col-lg-3 col-md-3 col-sm-3 col-form-label form-lable">Activation Date:
-
+                                 
                                                 </label>
                                                 <div class="col-xl-8 col-lg-8 col-md-8 col-sm-8 validate-div">
                                                     <span class="span-validation" data-toggle="tooltip" data-placement="top" title="Required field">*</span>
@@ -4725,15 +4337,15 @@
                                                 </div>
 
                                             </div>
-
+                                           
                                             <div class="form-group-theme row" ng-if="accid === PLMarketing">
                                                 <label for="inputdeptPL" class="col-xl-4 col-lg-3 col-md-3 col-sm-3 col-form-label form-lable">Department:</label>
                                                 <div class="col-xl-8 col-lg-8 col-md-8 col-sm-8 validate-div">
                                                     <span class="span-validation" data-toggle="tooltip" data-placement="top" title="Required field" ng-if="isFieldRequired">*</span>
                                                     <input type="text" id="deptPL" ng-model="contactData[0].deptPL" ng-show="IsShow" class="form-control rounded-0 numinput deptPL"
-                                                        ng-required="isFieldRequired" placeholder="" name="deptPL_0" />
+                                                       ng-required="isFieldRequired" placeholder="" name="deptPL_0"/>
                                                     <input type="text" id="deptPL" ng-model="contactData.deptPL" ng-show="!IsShow" class="form-control rounded-0 numinput deptPL"
-                                                        ng-required="isFieldRequired" placeholder="" name="deptPL_1" />
+                                                      ng-required="isFieldRequired"  placeholder="" name="deptPL_1"/>
                                                 </div>
                                             </div>
                                             <div class="form-group-theme row" ng-if="accid === designAIR">
@@ -5081,15 +4693,11 @@
 
                 // $('#adminroster-deactivationdatepicker').datepicker('setStartDate',day60today);
                 $('#adminroster-deactivationdatepicker').datepicker();
-
                 //$('#adminroster-lastpaydatepicker').datepicker('setStartDate', new Date());
 
                 var drivingStates = JSON.parse('{!DrivingStates}');
                 var isFirst = true;
 
-                $('.adminroster-loadate').datepicker().bind('dateSelected', function (e, selectedDate, $td) {
-                            alert(selectedDate);
-                        });
                 $('input').on('beforeItemAdd', function (event) {
 
                     if (drivingStates.indexOf(event.item.toUpperCase()) == -1) {
@@ -5123,8 +4731,6 @@
                     $('#file').siblings()[1].innerHTML = files[0].name;
                 })
             });
-
-
 
             function loaddatepicker(deactivateDate) { /* , lastPayDate */
                 if (deactivateDate != null) {
@@ -5177,7 +4783,7 @@
                         .replace(/(\..*)\./g, '$1')          // decimal can't exist more than once
                         .replace(/(\.[\d]{2})./g, '$1');    // not more than 2 digits after decimal
                 });
-
+                
                 $('.numinput').on('input', function () {
                     this.value = this.value
                         .replace(/[^\d.]/g, '')             // numbers and decimals only
