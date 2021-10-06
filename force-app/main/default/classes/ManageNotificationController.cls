@@ -295,9 +295,9 @@ public with sharing class ManageNotificationController {
                 Employee_Mileage__c mil = new Employee_Mileage__c();
                 if(objJson.Trip_Date != null && objJson.Trip_Date.contains('/')){
                     tripDateSplit = objJson.Trip_Date.split('/');
-                	mapKey = objJson.EmployeeId+':'+tripDateSplit[0]+'-'+tripDateSplit[2];
+                  mapKey = objJson.EmployeeId+':'+tripDateSplit[0]+'-'+tripDateSplit[2];
                 }
-                if(tripDateSplit.size() > 0){	
+                if(tripDateSplit.size() > 0){  
                     mil.Trip_Date__c = date.valueof(Date.parse(tripDateSplit[0]+'/'+tripDateSplit[1] +'/'+tripDateSplit[2]));
                     mil.ConvertedStartTime__c = date.valueof(Date.parse(tripDateSplit[0]+'/'+tripDateSplit[1] +'/'+tripDateSplit[2]));
                 }
