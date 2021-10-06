@@ -115,5 +115,10 @@ public with sharing class EmployeeDetails
     public String deactivationBy {get;set;}
     public string deptPL {get;set;}
     public string divison {get;set;}
-    
+    public string loaStartDate {get;set;}
+    public string loaEndDate {get;set;}
+    public string payRollPeriod {get;set;}
+    public string loaFixedAmount {get;set;}
+    public boolean isleaveofabsence{get;set;}
+
 }
