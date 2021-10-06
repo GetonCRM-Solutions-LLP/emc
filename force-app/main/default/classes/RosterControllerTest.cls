@@ -24,12 +24,33 @@ public class RosterControllerTest {
         Profile profile_1 = [SELECT Id FROM Profile WHERE Name = 'Customer Community Login User' LIMIT 1];
         User admin = [SELECT Id, Username, UserRoleId FROM User WHERE Profile.Name = 'System Administrator' AND UserRoleId = :userRole_1.Id LIMIT 1];
         User user_1;
+        Account obj_Account;
+        Contact obj_admincontact;
+        List<Contact> obj_Manager_list;
+        List<Contact> obj_Driver_list;
+        Contact obj_Contact2;
+        List<Contact> obj_Driver_list1;
         System.runAs(admin) {
-            Account account_1 = new Account( Name = 'Community'  );
-            insert account_1;
-            
-            Contact contact_1 = new Contact(AccountId = account_1.Id, LastName = 'xgeek',External_Email__c= 'abc@gmail.com');
+            obj_Account = RecordUtilityClass.buildAccount();
+            obj_Account.Vehicle_Types__c ='2020 Dodge Charger';
+            insert obj_Account;
+            Contact contact_1 = new Contact(AccountId = obj_Account.Id, LastName = 'xgeek',External_Email__c='abc@gmail.com');
             insert contact_1;
+            obj_admincontact = RecordUtilityClass.buildAdminContact(obj_Account);
+            insert obj_admincontact;
+
+            obj_Manager_list = RecordUtilityClass.buildManagerContact(obj_Account,obj_admincontact);
+            insert obj_Manager_list;
+
+            obj_Driver_list = RecordUtilityClass.buildDriverContact(obj_Account,obj_Manager_list[0]);
+            obj_Contact2 = obj_Driver_list[0];
+            obj_Driver_list1 = new List<Contact>();
+
+            for(Integer i=1;i<obj_Driver_list.size();i++)
+            {
+            obj_Driver_list1.add(obj_Driver_list[i]);
+            }
+            insert obj_Driver_list1;
           
           user_1 = new User( 
             Email = 'yourusername@gmail.com',
@@ -47,25 +68,6 @@ public class RosterControllerTest {
           );
           insert user_1;
         }
-        Account obj_Account = RecordUtilityClass.buildAccount();
-        obj_Account.Vehicle_Types__c ='2020 Dodge Charger';
-        insert obj_Account;
-
-        Contact obj_admincontact = RecordUtilityClass.buildAdminContact(obj_Account);
-        insert obj_admincontact;
-        
-        List<Contact> obj_Manager_list = RecordUtilityClass.buildManagerContact(obj_Account,obj_admincontact);
-        insert obj_Manager_list;
-        
-        List<Contact> obj_Driver_list = RecordUtilityClass.buildDriverContact(obj_Account,obj_Manager_list[0]);
-        Contact obj_Contact2 = obj_Driver_list[0];
-        List<Contact> obj_Driver_list1 = new List<Contact>();
-
-        for(Integer i=1;i<obj_Driver_list.size();i++)
-        {
-            obj_Driver_list1.add(obj_Driver_list[i]);
-        }
-        insert obj_Driver_list1;
         
         Contact obj_Manager_list1 = new Contact();
         obj_Manager_list1 = RecordUtilityClass.getManagerContact();
@@ -155,17 +157,22 @@ public class RosterControllerTest {
         customEmailSetting.ContactTriCommunityReimCreate__c = true;
         insert customEmailSetting;
         
-         List<IRS_Mileage_Rate__c> obj_IRS_Mileage_Rate =  RecordUtilityClass.insertIrsRate();
-         
-        RecordUtilityClass.exceptionEmail();
-        RecordUtilityClass.createRecordsAdminDashboardController();
-        RecordUtilityClass.sendEmailforCompliance();
-        RecordUtilityClass.enableMappingGasPriceTrigger();
+        SendEmail__c customSetting =  new SendEmail__c();
+        customSetting.Name = 'Send Email For Compliance';
+        customSetting.Send_email_from_code__c= true;
+        insert customSetting;
+
+        List<IRS_Mileage_Rate__c> obj_IRS_Mileage_Rate =  RecordUtilityClass.insertIrsRate();
         Test.startTest();
-        RosterController ros = new RosterController();
-        RosterController.getAccountid();
-        RosterController.getContactid();
-        RosterController.getRedirected();    
+            RecordUtilityClass.exceptionEmail();
+            RecordUtilityClass.createRecordsAdminDashboardController();
+            RecordUtilityClass.sendEmailforCompliance();
+            RecordUtilityClass.enableMappingGasPriceTrigger();
+        
+            RosterController ros = new RosterController();
+            RosterController.getAccountid();
+            RosterController.getContactid();
+            RosterController.getRedirected();    
         
         Test.stopTest();
     }
