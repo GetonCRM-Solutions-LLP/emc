@@ -41,6 +41,10 @@ public class EmployeeDetailTest {
         empDetail.freeze = 'asc';
         empDetail.sage100ID = 'asc';
         empDetail.glcode = 'asc';
-       
+        empDetail.loaStartDate = '20/3/2019';
+        empDetail.loaEndDate = '20/3/2019';
+        empDetail.payRollPeriod = 'asc';
+        empDetail.loaFixedAmount = '450';
+        empDetail.isleaveofabsence = false;
     }
 }
