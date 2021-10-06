@@ -164,10 +164,10 @@ public class RosterControllerTest {
 
         List<IRS_Mileage_Rate__c> obj_IRS_Mileage_Rate =  RecordUtilityClass.insertIrsRate();
         Test.startTest();
-            RecordUtilityClass.exceptionEmail();
-            RecordUtilityClass.createRecordsAdminDashboardController();
-            RecordUtilityClass.sendEmailforCompliance();
-            RecordUtilityClass.enableMappingGasPriceTrigger();
+        //     RecordUtilityClass.exceptionEmail();
+        //     RecordUtilityClass.createRecordsAdminDashboardController();
+        //     RecordUtilityClass.sendEmailforCompliance();
+        //     RecordUtilityClass.enableMappingGasPriceTrigger();
         
             RosterController ros = new RosterController();
             RosterController.getAccountid();
