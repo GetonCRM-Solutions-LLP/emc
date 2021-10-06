@@ -3,10 +3,7 @@ public with sharing class DemoClass {
     /* constructor */
     public DemoClass() {
         Decimal a = 6+6;
-        /* debug log  */
-        //test
-        // commented by megha
-        //test5
-        System.debug('Test class: ' + a);
+        /* debug log */
+        System.debug(' Test class: ' + a);
     }
 }

@@ -1,1 +1,1 @@
-RosterControllerTest,WrapperUtils_Test,EmployeeDetailTest
+DemoClassTest,RosterControllerTest,WrapperUtils_Test,EmployeeDetailTest,JSONMilList_Test,ManageNotificationControllerTest
