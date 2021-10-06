@@ -6,11 +6,6 @@
 global without sharing class RosterController 
 {
     public static String query;
-    /*public static Contact currentLoggedInContact{get;set;}*/
-    /*public static String file;*/
-    /*public static EmployeeDetails wrapperEmployeeDetails {get;set;}*/
-    /*public static String contactDataAsString {get; set;}*/
-    /*public static Blob csvFileBody {get;set;}*/
     /**
     @author Natavar Ghodasara
     @date 26th Feb 2019
@@ -41,7 +36,6 @@ global without sharing class RosterController
         if (getContactid() != '' && getAccountid() != '') {
             return null;
         } else {
-// redirect to error page
             return null;
         }
 
@@ -67,22 +61,25 @@ global without sharing class RosterController
             employeeList = (List<EmployeeDetails>)Json.deserialize(listofemployee,List<EmployeeDetails>.class);
             List<Contact> updateEmployeeList = new List<Contact>();
             List<String> deactivatedEmployees = new List<String>();
-            for(EmployeeDetails currentEmployee:employeeList)
+             MAP<Id,Contact> contactMap = new MAP<Id,Contact>();
+            for(EmployeeDetails currentEmployee : employeeList)
             {
+             System.debug('currentEmployee '+currentEmployee );
                 Contact currentContact = new Contact();
                 currentContact = WrapperUtils.getContact(currentEmployee);
-               
                 if(currentContact.Deactivated_Date__c != null && currentContact.IsDeactivated__c!=true && currentContact.Deactivated_Date__c.date()<=System.today())
                 {
                     deactivatedEmployees.add(currentContact.id);
                 }
+                System.debug('currentContact='+currentContact);
                 updateEmployeeList.add(currentContact);
             }
-            if(updateEmployeeList.size()>0)
+            contactMap.putall(updateEmployeeList);
+            if(contactMap.size()>0)
             {
                  try{
                     System.debug('updateEmployeeList'+updateEmployeeList);
-                    update updateEmployeeList;
+                    update contactMap.values();
                 } catch (System.DmlException e){
                     //string type = name;
                     result.hasError = true;
@@ -98,7 +95,6 @@ global without sharing class RosterController
                     }
                     return result;
                 }
-                //result.result = getlistAllEmployees(accid,contactid);  
             }
             
             if(deactivatedEmployees.size()>0)
@@ -184,20 +180,16 @@ global without sharing class RosterController
               
                 if(employeeList[0].userid != null)
                 {
-                    //update
                     newContact.id = employeeList[0].userid;
                     try
                     {   
                         update newContact;
                     }
                     catch(System.DmlException e)
-                    {
-                        // return getExcetionTypes(e.getTypeName(),e.getMessage(),e.getlinenumber());
-                        result.hasError = true;
-                        //result.message = getExcetionTypes(e.getTypeName(),e.getMessage(),e.getlinenumber());
+                    {                        
+                        result.hasError = true;                      
                         result.message = e.getDmlMessage(0);
-                        return result;
-                        //sendExceptionMails(e.getMessage()+String.valueOf(e.getlinenumber()),getCustomExceptionMessage('2'));
+                        return result;                       
                     }
                     if(employeeList[0].resetReimbursementLink==true)
                     {
@@ -213,12 +205,10 @@ global without sharing class RosterController
                        insert newContact; 
                     }
                     catch(System.DmlException e)
-                    {
-                        // return getExcetionTypes(e.getTypeName(),e.getMessage(),e.getlinenumber());
+                    {                        
                         result.hasError = true;
                         result.message = e.getDmlMessage(0);
-                        return result;
-                        //return getExcetionTypes(e);                        
+                        return result;                                     
                     }
                     // New Code added by natavar on 21/11/2019
                     List<id> newListContactids = new List<id>();
@@ -230,62 +220,11 @@ global without sharing class RosterController
                     if(newListContactids.size()>0 && !Test.isRunningTest())
                     {
                         postHTTPCreateNewUserTriplog(newListContactids); 
-                    }
-                    /*List<User> createUser = new List<User>();
-                    list<Profile> profileList = new list<Profile>();
-                    if(newContact.Role__c!=null && newContact.Role__c=='Driver')
-                    {
-                        profileList = [SELECT Id,Name FROM Profile WHERE Name = 'Customer Community Login User - Driver'];                        
-                    }
-                    else if(newContact.Role__c!=null &&newContact.Role__c=='Manager')
-                    {
-                        profileList = [SELECT Id,Name FROM Profile WHERE Name = 'Customer Community Login User - Manager'];
-                    }
-                    else if(newContact.Role__c!=null &&newContact.Role__c=='Driver/Manager')
-                    {
-                        profileList = [SELECT Id,Name FROM Profile WHERE Name = 'Customer Community Login User - Manager/Driver'];
-                    }
-                    else if(newContact.Role__c!=null &&newContact.Role__c=='Admin')
-                    {
-                        profileList = [SELECT Id,Name FROM Profile WHERE Name = 'Customer Community Login User - Super Manager'];
-                    }
-                    if(profileList.size()>0)
-                    {
-                        User newuser = new user();
-                        newuser.FirstName = newContact.FirstName; 
-                        newuser.LastName = newContact.LastName; 
-                        newuser.Email = newContact.External_Email__c; 
-                        newuser.EmailEncodingKey = 'UTF-8'; 
-                        newuser.LanguageLocaleKey = 'en_US';
-                        newuser.LocaleSidKey = 'en_US'; 
-                        newuser.TimeZoneSidKey = 'America/Los_Angeles'; 
-                        newuser.UserName = newContact.External_Email__c; 
-                        newuser.ProfileId = profileList[0].Id;
-                        if(!Test.isRunningTest()) 
-                        {
-                            newuser.Alias = newContact.External_Email__c.left(8);     
-                        }
-                        else
-                        {
-                            newuser.Alias = 'testi';        
-                        }
-                        newuser.ContactId = newContact.id;
-                        createUser.add(newuser);  
-                    }                  
-                    if(createUser.Size() > 0 && !Test.isRunningTest())
-                    {
-                        Insert createUser;
-                        List<id> newListContactids = new List<id>();
-                        newListContactids.add(newContact.id);
-                        postHTTPCreateNewUserTriplog(newListContactids);
-                        
-                    }*/  
+                    }                   
                 }
-                system.debug('outside');
-                // return getlistAllEmployees(accid,contactid);
+                system.debug('outside');                
                 result.result = getlistAllEmployees(accid,contactid); 
-            }
-        // return 'Fail';
+            }       
         return result;
     }
 
@@ -454,7 +393,7 @@ global without sharing class RosterController
                                             Freeze__c,Driver_Type__c,Territory__c,Code__c,District__c,
                                             Department__c,Job_Title__c,Employee_Netchex_Id__c,Dept__c,
                                             Average_Mileage__c,Average_Reimbursement__c,Deactivated_By__c,
-                                            Division__c,Department
+                                            Division__c,Department,LOA_Start_Date__c,LOA_End_Date__c,LOA_Fixed_Amount__c,Payroll_Period__c
                                         FROM Contact 
                                         WHERE Accountid=:accid]) //Branch_Number__c,Branch_Name__c 
         {                
@@ -684,9 +623,7 @@ global without sharing class RosterController
                    
                     try{
                         insert finalInsertContact;
-                    } catch (Exception e){
-                        //string type = name;
-                        //String messageOfException = return getExcetionTypes(e.getTypeName(),e.getMessage(),e.getlinenumber());
+                    } catch (Exception e){                        
                         return getExcetionTypes(e.getTypeName(),e.getMessage(),e.getlinenumber());
                     }
                 }
@@ -716,19 +653,14 @@ global without sharing class RosterController
                     sucessDocument[0].Body = Blob.valueOf(sucessFile);
                      try{
                        update sucessDocument;
-                    } catch (Exception e){
-                        //string type = name;
-                        //String messageOfException = return getExcetionTypes(e.getTypeName(),e.getMessage(),e.getlinenumber());
+                    } catch (Exception e){                        
                         return getExcetionTypes(e.getTypeName(),e.getMessage(),e.getlinenumber());
                     }
                     
                 }
                 isSuccessFile = true;
-                postHTTPCreateNewUserTriplog(contactListId);
-                //ApexPages.Message errorMessage = new ApexPages.Message(ApexPages.severity.INFO, Label.msg_after_succes+finalInsertContact.size());
-                //ApexPages.addMessage(errorMessage);
-                result = 'Success::' + Label.msg_after_succes + finalInsertContact.size() + '<br/>';
-                //resultMessage = 'true';
+                postHTTPCreateNewUserTriplog(contactListId);               
+                result = 'Success::' + Label.msg_after_succes + finalInsertContact.size() + '<br/>';            
         }
         if(finalDuplicateContact.size() > 0 || Test.isRunningTest()) {
            
@@ -759,8 +691,7 @@ global without sharing class RosterController
             result += Label.msg_After_Fail + finalDuplicateContact.size();
             
         }
-        if(finalDuplicateContact.size() > 0 || finalInsertContact.size() > 0) {
-            //senEmailToAdminWithCsv(sucessDocument,duplicateDocument);
+        if(finalDuplicateContact.size() > 0 || finalInsertContact.size() > 0) {          
             Messaging.EmailFileAttachment attach = new Messaging.EmailFileAttachment();
             List<Messaging.EmailFileAttachment> emailFileAttachments = new List<Messaging.EmailFileAttachment>();
             if(sucessDocument.size() > 0 && sucessDocument[0].Body != null) {
@@ -816,26 +747,7 @@ global without sharing class RosterController
                 }
             }
         }
-        /*System.debug('===contactDataAsString==='+contactDataAsString);
-        System.debug('===file==='+file);
-        contactDataLines = file*/
-        /*String[] contactDataLines = new String[] {};
-        contactDataLines = */
-        
-        /*Attachment newInsuranceFile = new Attachment();
-        newInsuranceFile.Body = EncodingUtil.base64Decode(file);
-        newInsuranceFile.parentId=*/
-        /*try {
-            contactDataAsString = 'Success';    
-            //contactDataAsString = csvFileBody.toString();
-            System.debug('===contactDataAsString==='+contactDataAsString);
-        //    readCSVFile();
-        } catch(exception e) {
-            ApexPages.Message errorMessage = new ApexPages.Message(ApexPages.Severity.ERROR,'Error In reading CSV file');
-            ApexPages.addMessage(errorMessage);
-            contactDataAsString = 'fail';   
-        }*/
-
+       
         String resultMessage = '';
         if(finalInsertContact.size() == 0) {
                 resultMessage = 'Error::No drivers have been created.<br/><br/>';
@@ -855,30 +767,6 @@ global without sharing class RosterController
             if(!fileErrors.isEmpty())
                 return resultMessage + '::Duplicate::' + String.escapeSingleQuotes(JSON.serialize(fileErrors) ); 
         }
-
-        /*if(finalInsertContact.size() == 0 && finalInsertContact.isEmpty()) {
-            resultMessage = '';
-            //resultMessage += 'No drivers have been created.<br/><br/>';     
-            //resultMessage += 'errors with your data upload. Please correct and resubmit by uploading again.<br/><br/>';
-            
-
-
-            //resultMessage += 'Unfortunately there were <b>' + finalDuplicateContact.size() + 
-              //          '</b> errors with your data upload. Please correct and resubmit by uploading again.<br/><br/>';          
-        } else {
-            resultMessage = 'true';
-            //resultMessage += ' ' + finalInsertContact.size() +' new drivers have been successfully created.<br/><br/>';  
-            //resultMessage += 'Your Import process successfully.'  ;         
-           
-
-
-           // resultMessage += 'Unfortunately there were <b>' + finalDuplicateContact.size() + 
-        //'</b> errors with your data upload. Please correct and resubmit by uploading again.<br/><br/>';         
-        }
-        */
-
-        //resultMessage += 'Please review the attached files in email.<br/><br/>';
-
         return resultMessage;
     }
 
@@ -976,66 +864,11 @@ global without sharing class RosterController
             }
         }
     }
-    //Send Email to Admin
-    /*public void senEmailToAdminWithCsv(List<Document> successDoc, List<Document> duplicateDoc) {
-        Messaging.EmailFileAttachment attach = new Messaging.EmailFileAttachment();
-        if(successDoc.size() > 0) {
-            attach.setContentType(successDoc[0].contentType);
-            attach.setFileName(successDoc[0].developerName + '.' + successDoc[0].type);
-            attach.setInline(false);
-            attach.Body = test.isRunningtest() ? blob.valueof('test') : successDoc[0].Body;
-        }
-        Messaging.EmailFileAttachment attach2 = new Messaging.EmailFileAttachment();
-        if(duplicateDoc.size() > 0) {    
-            attach2.setContentType(duplicateDoc[0].contentType);
-            attach2.setFileName(duplicateDoc[0].developerName + '.' + duplicateDoc[0].type);
-            attach2.setInline(false);
-            attach2.Body = test.isRunningtest() ? blob.valueof('test') : duplicateDoc[0].Body;
-        }
-        Messaging.SingleEmailMessage mail = new Messaging.SingleEmailMessage();
-        string htmlBodycsv = 'Hi ' + currentuser.Contact.FirstName + ',<br/><br/>';        
-        if(finalInsertContact.size() == 0) {
-            htmlBodycsv += 'No drivers have been created.<br/><br/>';
-        } else {
-            htmlBodycsv += '<b>' + finalInsertContact.size() + 
-                            '</b> new drivers have been successfully created.<br/><br/>';        
-                }
-        htmlBodycsv += 'Unfortunately there were <b>' + finalDuplicateContact.size() + 
-                        '</b> errors with your data upload. Please correct and resubmit by uploading again.<br/><br/>';
-
-        htmlBodycsv += 'Please review the attached files.<br/><br/>';
-        if(finalInsertContact.size()>0) {
-            htmlBodycsv += 'The system will update in 48 business hours and newly created drivers will be notified then for training.';
-        }
-        mail.setUseSignature(false);if(Test.isRunningTest()) {
-                mail.setToAddresses(new String[] { 'minkesh.patel@gmail.com' });
-            }
-            else {
-                mail.setToAddresses(new String[] { currentuser.contact.External_Email__c});
-            }
-        mail.setSubject('New driver create using Csv');
-        mail.setHtmlBody(htmlBodycsv);
-        if(!test.isRunningtest()) {
-            if(attach != null && attach2 != null) {
-                mail.setFileAttachments(new Messaging.EmailFileAttachment[] { attach, attach2 });
-            } else if(attach != null) {
-                mail.setFileAttachments(new Messaging.EmailFileAttachment[] { attach });
-            } else if(attach2 != null) {
-                mail.setFileAttachments(new Messaging.EmailFileAttachment[] { attach2 });
-            }
-            
-            SendEmail__c  objSendEmail1 = SendEmail__c.getValues('RG_CreateNewUserPageClass1');
-            if(objSendEmail1.Send_email_from_code__c==true  &&(objSendEmail1!=null))
-            {
-               Messaging.sendEmail(new Messaging.SingleEmailMessage[] { mail });            
-            }
-        }
-    }*/
 
     @RemoteAction
     public static String editEmployeeDetails(String editUserID) {
         Contact loggedinContact = new Contact();
-        query = 'Select id,Name,FirstName,Lastname,Email,External_Email__c, Division__c,Department,Deactivated_Date__c,Role__c,Manager__c,Manager__r.Name,MailingPostalCode,Driving_States__c,MailingState,MailingCity,Employee_ID__c,Activation_Date__c,Vehicle_Type__c,Last_Pay_Date__c,Monthly_Mileage_Limit__c,Added_Date__c,Fixed_Amount__c,compliancestatus__c,Total_Reimbursement__c,IsDeactivated__c,Monthly__c,Sage_100_ID__c,GL_Code__c,App__c,MobilePhone,Phone,Branch_Name__c,Branch_Number__c,Freeze__c,Driver_Type__c,Territory__c,Code__c,District__c,Department__c,Dept__c,Job_Title__c,Employee_Netchex_Id__c,Deactivated_By__c from Contact where id=\''+editUserID+'\''; 
+        query = 'Select id,Name,FirstName,Lastname,Email,External_Email__c, Division__c,Department,Deactivated_Date__c,Role__c,Manager__c,Manager__r.Name,MailingPostalCode,Driving_States__c,MailingState,MailingCity,Employee_ID__c,Activation_Date__c,Vehicle_Type__c,Last_Pay_Date__c,Monthly_Mileage_Limit__c,Added_Date__c,Fixed_Amount__c,compliancestatus__c,Total_Reimbursement__c,IsDeactivated__c,Monthly__c,Sage_100_ID__c,GL_Code__c,App__c,MobilePhone,Phone,Branch_Name__c,Branch_Number__c,Freeze__c,Driver_Type__c,Territory__c,Code__c,District__c,Department__c,Dept__c,Job_Title__c,Employee_Netchex_Id__c,Deactivated_By__c,LOA_Start_Date__c,LOA_End_Date__c,LOA_Fixed_Amount__c,Payroll_Period__c from Contact where id=\''+editUserID+'\''; 
         List<EmployeeDetails> employeeList = new List<EmployeeDetails>();
         List<Contact> managerlist = (List<Contact>)ExecuteQueryUtil.getRecordListFromsObject(query);
         
