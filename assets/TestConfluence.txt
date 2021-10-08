@@ -1,1 +1,2 @@
-DemoClassTest,BiweeklyPayPeriodTest
+DemoClassTest,BiweeklyPayPeriodTest,RosterControllerTest,WrapperUtils_Test,EmployeeDetailTest,JSONMilList_Test,ManageNotificationControllerTest
+
