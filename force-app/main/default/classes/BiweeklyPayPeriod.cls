@@ -201,10 +201,17 @@ public with sharing class BiweeklyPayPeriod {
         List<String> startEnddate = new List<String>();
         List<BiweeklyWrap> timeWrapList = new List<BiweeklyWrap>();
         BiweeklyWrap obj;
-        List <Contact> conList = [SELECT id,Deactivated_Date__c FROM Contact WHERE Id =: contactid];
+        String startDate;
+        date activationdate;
+        List <Contact> conList = [SELECT id,Activation_Date__c,Deactivated_Date__c,Account.Pay_Period_Start_Date__c 
+                                        FROM Contact 
+                                        WHERE Id =: contactid ];
         List<String> dateRange = new List<String>();
-        String startDate = '2021-07-25';
-        for(integer i=0; i<=dateRange.size(); i++ ){      
+        if(conList[0].Account.Pay_Period_Start_Date__c != null && conList[0].Activation_Date__c != null){
+            startDate = String.valueOf(conList[0].Account.Pay_Period_Start_Date__c);
+            activationdate = date.valueOf(conList[0].Activation_Date__c);
+        }
+        /*for(integer i=0; i<=dateRange.size(); i++ ){      
             if(years == date.valueof(startDate).year()){                
                 String enddate = String.valueof(date.valueof(startDate).addDays(13));
                 // if(date.valueof(startdate) < Date.today()) {
@@ -218,6 +225,24 @@ public with sharing class BiweeklyPayPeriod {
                     System.debug('dateRange2'+dateRange);
                 }
                 startDate = String.valueof(date.valueof(enddate).addDays(1));   
+            }
+        }*/
+        for(integer i=0; i<=27; i++ ) {  						
+            if(years == date.valueof(startDate).year()) {                
+                String enddate = String.valueof(date.valueof(startDate).addDays(13));			
+                if(	conList.size() > 0 && conList[0].Deactivated_Date__c != null && activationdate != null && ( date.valueof(startdate) < date.valueOf(conList[0].Deactivated_Date__c) ) ) {	
+                    //if(date.valueof(startdate) <= activationdate && date.valueof(enddate) >= activationdate){
+                    if(activationdate <  date.valueof(enddate)) {
+                        dateRange.add(startDate+' to '+ enddate);
+                        System.debug('dateRange1'+dateRange);
+                    }                    
+                } else if (conList.size() > 0 && conList[0].Deactivated_Date__c == null && (date.valueof(startdate) < Date.today()) ){
+                    if(activationdate <  date.valueof(enddate)) {
+                        dateRange.add(startDate+' to '+ enddate);
+                        System.debug('dateRange2'+dateRange);
+                    }
+                }												
+                startDate = String.valueof(date.valueof(enddate).addDays(1));  													
             }
         }
     
