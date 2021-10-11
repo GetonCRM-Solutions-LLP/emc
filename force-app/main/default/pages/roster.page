@@ -1561,6 +1561,11 @@
                 unfreezebtnproperty = false;
                 enabledUser = false;
                 massResetPassword = false;
+                $scope.checkboxobj.isCheckedAllForLOA = ($scope.checkboxobj.isCheckedAllForLOA != undefined) ? false : undefined;
+                $scope.checkboxobj.isCheckedAllForEnableUser = ($scope.checkboxobj.isCheckedAllForEnableUser != undefined) ? false : undefined;
+                $scope.checkboxobj.isCheckedAllForConcur = ($scope.checkboxobj.isCheckedAllForConcur != undefined) ? false : undefined;
+                $scope.checkboxobj.isCheckedAllForDeactivate = ($scope.checkboxobj.isCheckedAllForDeactivate != undefined) ? false : undefined;
+                $scope.checkboxobj.isCheckedAllForFreeze = ($scope.checkboxobj.isCheckedAllForFreeze != undefined) ? false : undefined;
             }
             $scope.refreshEmployees = function () {
 
@@ -2005,7 +2010,13 @@
                     $scope.checkboxobjDeactivateShow = false;
                     $scope.showResetPasswordbtn = false;
                 }
-
+                /* EMC - 133 Select all functionality of Checkbox is not working on "Activity" on Driver Page */
+                if(count === mylistlen){
+                    $scope.checkboxobj.isCheckedAllForEnableUser = true;
+                }else{
+                    $scope.checkboxobj.isCheckedAllForEnableUser = false;
+                }
+                /* EMC - 133 ends */
                 $scope.empupdatelist.push(emp);
             }
 
@@ -2176,6 +2187,13 @@
                     $scope.showResetPasswordbtn = false;
                 }
 
+                 /* EMC - 133 Select all functionality of Checkbox is not working on "Activity" on Driver Page */
+                if(count === concurlistlen){
+                    $scope.checkboxobj.isCheckedAllForConcur = true;
+                }else{
+                    $scope.checkboxobj.isCheckedAllForConcur = false;
+                }
+                 /* EMC - 133 ends */
                 $scope.empupdatelist.push(emp);
             }
 
@@ -2285,6 +2303,13 @@
                     $scope.showResetPasswordbtn = false;
                 }
 
+                 /* EMC - 133 Select all functionality of Checkbox is not working on "Activity" on Driver Page */
+                if(count === mylistlen){
+                    $scope.checkboxobj.isCheckedAllForDeactivate = true;
+                }else{
+                    $scope.checkboxobj.isCheckedAllForDeactivate = false;
+                }
+                 /* EMC - 133 ends */
                 $scope.empupdatelist.push(emp);
             }
 
@@ -2370,8 +2395,13 @@
                     $scope.showMassFreezeEmployeebtn = false;
                     $scope.showMassUnFreezeEmployeebtn = false;
                 }
-
-
+                 /* EMC - 133 Select all functionality of Checkbox is not working on "Activity" on Driver Page */
+                if(count === mylistlen){
+                    $scope.checkboxobj.isCheckedAllForFreeze = true;
+                }else{
+                    $scope.checkboxobj.isCheckedAllForFreeze = false;
+                }
+                 /* EMC - 133 ends */
             }
 
             $scope.FreezeEmployees = function () {
@@ -2481,7 +2511,7 @@
                 }
                 angular.forEach($scope.employeeslist, function (emp) {
                     emp.isleaveofabsence = $scope.checkboxobj.isCheckedAllForLOA;
-                    $scope.empupdatelist.push(emp);
+                 //   $scope.empupdatelist.push(emp);
                 });
             }
             $scope.CheckUncheckForLOA = function(emp){
@@ -2504,7 +2534,14 @@
                     $scope.showMultipleAction = true;
                 }
 
-                $scope.empupdatelist.push(emp);
+                 /* EMC - 133 Select all functionality of Checkbox is not working on "Activity" on Driver Page */
+                if(count === emplistlen){
+                    $scope.checkboxobj.isCheckedAllForLOA = true;
+                }else{
+                    $scope.checkboxobj.isCheckedAllForLOA = false;
+                }
+                /* EMC - 133 ends */
+               // $scope.empupdatelist.push(emp);
             }
 
             $scope.validateFixedAmount = function(amount) {
@@ -2521,21 +2558,27 @@
             }
 
             $scope.saveLOA = function(){
-                angular.forEach($scope.empupdatelist, function (employee){
+                $scope.saveLOAUserList = [];
+                angular.forEach($scope.employeeslist, function (emp) {
+                    if (emp.isleaveofabsence === true) {
+                        $scope.saveLOAUserList.push(emp);
+                    }
+                });
+                angular.forEach($scope.saveLOAUserList, function (employee){
                     employee.loaStartDate = (employee.loaStartDate != null) ? $filter('date')(new Date(employee.loaStartDate), 'MM/dd/yyyy') : null;
                     employee.loaEndDate = (employee.loaEndDate != null) ? $filter('date')(new Date(employee.loaEndDate), 'MM/dd/yyyy') : null;
                 })
-                var listToUpdate = angular.copy($scope.empupdatelist);
+                var listToUpdate = angular.copy($scope.saveLOAUserList);
                 $('#spinner').show();
                 Visualforce.remoting.Manager.invokeAction('{!$RemoteAction.RosterController.editInlineNewEmployee}', JSON.stringify(listToUpdate), $scope.accid, $scope.id,
                     function (result, event) {
                         if (event.status) {
                             toastr.success('Records Updated Successfully.');
-                            angular.forEach($scope.empupdatelist, function (employee) {
+                            angular.forEach($scope.employeeslist, function (employee) {
                                 employee.iseditable = false;
                             });
 
-                            $scope.empupdatelist = [];
+                            $scope.saveLOAUserList = [];
                             $scope.selectedRow = '';
                             $('#spinner').hide();
                             location.reload();
@@ -2795,8 +2838,6 @@
             $scope.driverType = {!DriverType}
             $scope.jobTitleList = {!JobTitle}
             $scope.departmentList = {!Department}
-            console.log("job-title", $scope.jobTitleList);
-            console.log("department", $scope.departmentList);
             $scope.managerlist.sort(function (a, b) {
                 var nameA = a.Name.toLowerCase(), nameB = b.Name.toLowerCase();
                 if (nameA < nameB) { //sort string ascending
@@ -3066,7 +3107,6 @@
             $scope.tabs[1].active = true;
 
             $scope.editUserID = empId.userid;
-            console.log($scope.editUserID);
             let dateAndVehicleList = {!PickListValuesIntoList}
             let tempaccdate = dateAndVehicleList[0];
             let tempdt = new Date(tempaccdate);
@@ -4239,7 +4279,7 @@
                                                     <i class="fa fa-edit a-hover-pointer"></i>
                                                     {{formateDate(emp.deactivaedDate)}}
                                                 </a> -->
-                                                <a ng-click="editLOAModel.open(emp, 'loaStartDate');loadDatePicker(emp.loaStartDate);" class="a-hover-pointer a_link">
+                                                <a ng-click="editLOAModel.open(emp);loadDatePicker(emp.loaStartDate);" class="a-hover-pointer a_link">
                                                     <i class="fa fa-edit a-hover-pointer"></i>
                                                     {{formateDate(emp.loaStartDate)}}
                                                 </a>
