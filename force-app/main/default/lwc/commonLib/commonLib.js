@@ -41,7 +41,7 @@ const formatData = (data, pID, aID) => {
     data.forEach((row) => {
         var dayOfWeek;
         let rowData = {};
-        let formatDate = fullDateFormat(row);
+        let formatDate = fullDateFormat(row, pID, aID);
         let userDate = dateFormat(row);
         if (row.Day_Of_Week__c != undefined) {
             dayOfWeek = row.Day_Of_Week__c.toString().slice(0, 3);
@@ -219,23 +219,43 @@ const yearMonthDate = (ydt) => {
   return yearDateReturn;
 }
    // function to format date with week day
-  const fullDateFormat=(rowObj) => {
-    if (rowObj.ConvertedStartTime__c != undefined) {
-      let newdate = new Date(rowObj.ConvertedStartTime__c);
-      let dayofweek;
-      let dd = newdate.getDate();
-      let mm = newdate.getMonth() + 1;
-      let yy = newdate.getFullYear();
-      if (rowObj.Day_Of_Week__c != undefined) {
-        dayofweek = rowObj.Day_Of_Week__c.toString().slice(0, 3);
+  const fullDateFormat=(rowObj, plmarketing, accountId) => {
+    if(plmarketing === accountId) {
+      if (rowObj.Trip_Date__c != undefined) {
+        let newdate = new Date(rowObj.Trip_Date__c);
+        let dayofweek;
+        let dd = newdate.getDate();
+        let mm = newdate.getMonth() + 1;
+        let yy = newdate.getFullYear();
+        if (rowObj.Day_Of_Week__c != undefined) {
+          dayofweek = rowObj.Day_Of_Week__c.toString().slice(0, 3);
+        } else {
+          dayofweek = "";
+          dayofweek = dayofweek.toString();
+        }
+        return mm + "/" + ("0" + dd).slice(-2) + "/" + yy + " " + dayofweek;
       } else {
-        dayofweek = "";
-        dayofweek = dayofweek.toString();
+        return "";
       }
-      return mm + "/" + ("0" + dd).slice(-2) + "/" + yy + " " + dayofweek;
-    } else {
-      return "";
+    }else{
+      if (rowObj.ConvertedStartTime__c != undefined) {
+        let newdate = new Date(rowObj.ConvertedStartTime__c);
+        let dayofweek;
+        let dd = newdate.getDate();
+        let mm = newdate.getMonth() + 1;
+        let yy = newdate.getFullYear();
+        if (rowObj.Day_Of_Week__c != undefined) {
+          dayofweek = rowObj.Day_Of_Week__c.toString().slice(0, 3);
+        } else {
+          dayofweek = "";
+          dayofweek = dayofweek.toString();
+        }
+        return mm + "/" + ("0" + dd).slice(-2) + "/" + yy + " " + dayofweek;
+      } else {
+        return "";
+      }
     }
+    
   }
   // function to format date
   const dateFormat = (rowObj) => {
