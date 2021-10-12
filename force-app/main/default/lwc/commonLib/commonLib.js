@@ -218,22 +218,32 @@ const yearMonthDate = (ydt) => {
   var yearDateReturn = yyy + "-" + ymm + "-" + ydd;
   return yearDateReturn;
 }
+
+const dateString = (dt) =>{
+  var dateArr = dt.split('-');
+  var yyyy, mm, dd
+  if(dateArr.length === 3){
+    yyyy = dateArr[0];
+    mm = dateArr[1].replace(/^0+/, '');
+    dd = dateArr[2];
+  }
+
+  return mm + '/' + dd + '/' + yyyy;
+}
    // function to format date with week day
   const fullDateFormat=(rowObj, plmarketing, accountId) => {
     if(plmarketing === accountId) {
       if (rowObj.Trip_Date__c != undefined) {
-        let newdate = new Date(rowObj.Trip_Date__c);
+        let tripDate = dateString(rowObj.Trip_Date__c);
         let dayofweek;
-        let dd = newdate.getDate();
-        let mm = newdate.getMonth() + 1;
-        let yy = newdate.getFullYear();
         if (rowObj.Day_Of_Week__c != undefined) {
           dayofweek = rowObj.Day_Of_Week__c.toString().slice(0, 3);
         } else {
           dayofweek = "";
           dayofweek = dayofweek.toString();
         }
-        return mm + "/" + ("0" + dd).slice(-2) + "/" + yy + " " + dayofweek;
+
+        return tripDate + " " + dayofweek;
       } else {
         return "";
       }
