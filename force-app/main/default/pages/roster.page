@@ -1249,7 +1249,8 @@
                                 }else{
                                     toastr.error("LOA Start Date must be less than or equal to LOA End Date");
                                     scope.isSelectValid = true;
-                                    scope.isSelectedValid = true;
+                                    scope.isSelectedValid = false;
+                                    scope.model.emp.loaStartDate = "";
                                 }
                             }else{
                                 scope.isSelectedValid = false;
@@ -1298,7 +1299,7 @@
                             var modalElement = element.find('.modal');
                             modalElement.modal(newValue ? 'show' : 'hide');
                         });
-                        scope.isSelectedValid = true;
+                        scope.isSelectedValid = false;
                         scope.isSelectValid = true;
                         scope.showPicker = function(dt) {
                             var selected = scope.model.emp.loaStartDate;
@@ -1309,7 +1310,8 @@
                                 }else{
                                     toastr.error("LOA End Date must be greater than or equal to LOA Start Date");
                                     scope.isSelectValid = true;
-                                    scope.isSelectedValid = true;
+                                    scope.isSelectedValid = false;
+                                    scope.model.emp.loaEndDate = "";
                                 }
                             }else{
                                 toastr.error("Please enter LOA Start Date");
@@ -3813,10 +3815,10 @@
                         }
                     })
                 }
-                if (keyname === 'zipCode' || keyname === 'code' || keyname === 'loaFixedAmount') {
+                if (keyname === 'zipCode' || keyname === 'code' || keyname === 'loaFixedAmount' || keyname === 'divison' || keyname === 'fixedamount') {
                     $scope.employeeslist.sort(function (a, b) {
 
-                        var nameA = (a[keyname] === null) ? '' : parseInt(a[keyname]),
+                        var nameA = (a[keyname] === null)  ? '' : parseInt(a[keyname]),
                             nameB = (b[keyname] === null) ? '' : parseInt(b[keyname])
                         if ($scope.reverse) {
                             if (nameA < nameB) //sort string ascending
@@ -4312,7 +4314,7 @@
                                                 <input type="checkbox" ng-model="checkboxobj.isCheckedAllForLOA" class="loaCheck ml-10" ng-click="CheckUncheckAllForLOA(checkboxobj.isCheckedAllForLOA,emp);"
                                                 />
                                             </th>
-                                            <th ng-click="sort('employeeId')">Employee ID
+                                            <th ng-click="sort('employeeId')">EmployeeID
                                                 <span class="sort-icon pull-right" ng-show="sortKey=='employeeId'" ng-class="{'fa fa-chevron-up':reverse,'fa fa-chevron-down':!reverse}"></span>
                                             </th>
                                             <th ng-click="sort('firstName')">Name
