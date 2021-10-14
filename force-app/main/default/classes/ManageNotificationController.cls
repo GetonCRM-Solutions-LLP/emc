@@ -250,7 +250,7 @@ public with sharing class ManageNotificationController {
         return null;
     }
     @RemoteAction
-    public static String UploadMileage(string mileage,string  accId) { 
+    public static String UploadMileage(string mileage,string  accId,String adminId) { 
         System.debug('mileage'+mileage);
         List<JSONMilList> MilJson = JSONMilList.parse(mileage);
         set<string> employeeIdList = new set<string>(); 
@@ -269,27 +269,29 @@ public with sharing class ManageNotificationController {
         map<string, Id> reimIdMap = new map<string, Id>();
         map<string, Decimal> empIdvsMPGMap = new map<string, Decimal>();
         map<string, Decimal> empIdvsMaintireMap = new map<string, Decimal>();
-        for(Employee_Reimbursement__c reimList : [select id,name,Contact_Id__r.External_Email__c,Month__c,MPG__c,Maintenance_and_Tires__c, Contact_Id__r.Employee_ID__c
-                                                  from Employee_Reimbursement__c 
-                                                  where Contact_Id__r.Employee_ID__c IN: employeeIdList and Month__C IN: monthList]) {
-                                                      if(reimList.Contact_Id__r.Employee_ID__c != null) {
-                                                          reimIdMap.put(reimList.Contact_Id__r.Employee_ID__c +':'+reimList.Month__c, reimList.Id);
-                                                          empIdvsEmailMap.put(reimList.Contact_Id__r.Employee_ID__c +':'+reimList.Month__c, reimList.Contact_Id__r.External_Email__c);
-                                                          if(reimList.MPG__c != null){
-                                                              empIdvsMPGMap.put(reimList.Contact_Id__r.Employee_ID__c+':'+reimList.Month__c,reimList.MPG__c); 
-                                                          } else {
-                                                              empIdvsMPGMap.put(reimList.Contact_Id__r.Employee_ID__c+':'+reimList.Month__c,0);  
-                                                          }
-                                                          if(reimList.Maintenance_and_Tires__c != 0){
-                                                              empIdvsMaintireMap.put(reimList.Contact_Id__r.Employee_ID__c+':'+reimList.Month__c,reimList.Maintenance_and_Tires__c);     
-                                                          } else {
-                                                              empIdvsMaintireMap.put(reimList.Contact_Id__r.Employee_ID__c+':'+reimList.Month__c,0);      
-                                                          }  
-                                                      }
+        List<Employee_Mileage__c> empNotSendMilList = new List<Employee_Mileage__c>();
+        for(Employee_Reimbursement__c reimList : [SELECT id,name,Contact_Id__r.External_Email__c,Month__c,MPG__c,Maintenance_and_Tires__c, Contact_Id__r.Employee_ID__c
+                                                  FROM Employee_Reimbursement__c 
+                                                  WHERE Contact_Id__r.Employee_ID__c IN: employeeIdList 
+                                                  AND Month__C IN: monthList]) {
+                                                    if(reimList.Contact_Id__r.Employee_ID__c != null) {
+                                                        reimIdMap.put(reimList.Contact_Id__r.Employee_ID__c +':'+reimList.Month__c, reimList.Id);
+                                                        empIdvsEmailMap.put(reimList.Contact_Id__r.Employee_ID__c +':'+reimList.Month__c, reimList.Contact_Id__r.External_Email__c);
+                                                        if(reimList.MPG__c != null){
+                                                            empIdvsMPGMap.put(reimList.Contact_Id__r.Employee_ID__c+':'+reimList.Month__c,reimList.MPG__c); 
+                                                        } else {
+                                                            empIdvsMPGMap.put(reimList.Contact_Id__r.Employee_ID__c+':'+reimList.Month__c,0);  
+                                                        }
+                                                        if(reimList.Maintenance_and_Tires__c != 0){
+                                                            empIdvsMaintireMap.put(reimList.Contact_Id__r.Employee_ID__c+':'+reimList.Month__c,reimList.Maintenance_and_Tires__c);     
+                                                        } else {
+                                                            empIdvsMaintireMap.put(reimList.Contact_Id__r.Employee_ID__c+':'+reimList.Month__c,0);      
+                                                        }  
+                                                    }
                                                   }
         List<Employee_Mileage__c> empMilList = new List<Employee_Mileage__c>();
         for(JSONMilList objJson : MilJson){ 
-            if(objJson.Contact_Email != null ){
+            if(objJson.Contact_Email != null ) {
                 list<String> tripDateSplit = new list<String>();
                 string mapKey;
                 Employee_Mileage__c mil = new Employee_Mileage__c();
@@ -297,7 +299,7 @@ public with sharing class ManageNotificationController {
                     tripDateSplit = objJson.Trip_Date.split('/');
                   mapKey = objJson.EmployeeId+':'+tripDateSplit[0]+'-'+tripDateSplit[2];
                 }
-                if(tripDateSplit.size() > 0){  
+                if(tripDateSplit.size() > 0) {  
                     mil.Trip_Date__c = date.valueof(Date.parse(tripDateSplit[0]+'/'+tripDateSplit[1] +'/'+tripDateSplit[2]));
                     mil.ConvertedStartTime__c = date.valueof(Date.parse(tripDateSplit[0]+'/'+tripDateSplit[1] +'/'+tripDateSplit[2]));
                 }
@@ -318,9 +320,11 @@ public with sharing class ManageNotificationController {
                 mil.Notes__c = objJson.Notes;
                 mil.EMP_Mileage__c = objJson.Actual_Mileage;
                 mil.Activity__c = objJson.Activity;
-                mil.Contact_Email_Id__c = objJson.Contact_Email;
                 mil.Tag__c = objJson.Tag;
                 mil.Employee_ID__c = objJson.EmployeeId;
+                if(empIdvsEmailMap.containsKey(mapKey)) {
+                    mil.Contact_Email_Id__c = empIdvsEmailMap.get(mapKey);
+                }
                 if(empIdvsMPGMap.containsKey(mapKey)) {
                     mil.MPG__c = empIdvsMPGMap.get(mapKey);
                 }
@@ -330,11 +334,82 @@ public with sharing class ManageNotificationController {
                 if(reimIdMap.containsKey(mapKey)) {
                     mil.EmployeeReimbursement__c = string.valueOf(reimIdMap.get(mapKey));
                     empMilList.add(mil);
+                } else {
+                    empNotSendMilList.add(mil);
                 }
             }
         }
-        if(empMilList.size() != 0){
-            insert empMilList;
+        Database.SaveResult[] srList = Database.insert(empMilList, false);
+        Map<Integer,String> errorMap = new Map<Integer,String>();
+        Integer tripcount= 0;
+        if(srList.size() > 0){
+            for (Database.SaveResult sr : srList) {
+                System.debug('sr' + sr);
+                if (sr.isSuccess() == false) {
+                    for(Database.Error objErr : sr.getErrors()) {
+                        errorMap.put(tripcount, objErr.getMessage());
+                    }
+                }
+                tripcount++;
+            }
+        }
+        Messaging.EmailFileAttachment attach = new Messaging.EmailFileAttachment();
+        if(errorMap.keySet().size() > 0 || empNotSendMilList.size() > 0){
+            blob excel;
+            if(errorMap.keySet().size() > 0){
+                string header ='Trip_Date'+'\t'+'Trip_Origin'+'\t'+'Trip_Destination'+'\t'+ 'Trip_Status'+'\t'+'Approved_Date'+'\t'+'Day_Of_Week'+'\t'+'Notes'+'\t'+'Actual_Mileage'+'\t'+'Activity'+'\t'+'Contact_Email'+'\t'+'Tag'+'\t'+'EmployeeId'+'\t'+'Error Message'+' \n';
+                String finalstr = header;
+                for(Integer mapkey : errorMap.keySet()){
+                    String Recordstring = empMilList.get(mapkey).Trip_Date__c+'\t'+empMilList.get(mapkey).Trip_Origin__c+'\t'+empMilList.get(mapkey).Trip_Destination__c+'\t'+empMilList.get(mapkey).Trip_Status__c+'\t'+empMilList.get(mapkey).Approved_Date__c+'\t'+empMilList.get(mapkey).Day_Of_Week__c+'\t'+empMilList.get(mapkey).Notes__c+'\t'+empMilList.get(mapkey).EMP_Mileage__c+'\t'+empMilList.get(mapkey).Activity__c+'\t'+empMilList.get(mapkey).Contact_Email_Id__c+'\t'+empMilList.get(mapkey).Tag__c+'\t'+empMilList.get(mapkey).Employee_ID__c+'\t'+errorMap.get(mapkey)+'    \n';
+                    finalstr = finalstr + Recordstring;
+                }
+                attach.setFileName('Not Inserted Trips.xls');
+                excel = blob.valueOf(finalstr);
+                
+            }
+            attach.setBody(excel);
+            List<Contact> conList = [SELECT id,FirstName,External_Email__c
+                                    FROM Contact 
+                                    WHERE id =:adminId];
+            EmailTemplate templateId = [SELECT Id, Subject,HtmlValue, body FROM EmailTemplate WHERE developerName = 'Bi_weekly_Not_Inserted_Trips' Limit 1];
+            OrgWideEmailAddress[] owea = [SELECT Id,Address from OrgWideEmailAddress where Address = 'driverservices@mburse.com'];
+            List<String> toAddress = new List<String>();
+            SendEmail__c  sendEmailObj = SendEmail__c.getValues('ManageNotificationController');
+            List<Messaging.SingleEmailMessage> emails = new List<Messaging.SingleEmailMessage>();
+            String newemailBody = templateId.HtmlValue;
+            Date todayDate = system.today();
+            newemailBody = newemailBody.replace('{!$Label.Driver_Forword_Logo}', System.Label.Driver_Forword_Logo);
+            newemailBody = newemailBody.replace('{Contact.Name}', conList[0].FirstName);
+            toAddress.add(conList[0].External_Email__c);
+            //toAddress.add('Sanket.goswami@getoncrm.com');
+            Messaging.EmailFileAttachment attach2 = new Messaging.EmailFileAttachment();
+            attach2.setFileName('Wrong Employee Id.xls');
+            blob excel2;
+            if(empNotSendMilList.size() > 0){
+                string header1 ='Trip_Date'+'\t'+'Trip_Origin'+'\t'+'Trip_Destination'+'\t'+ 'Trip_Status'+'\t'+'Approved_Date'+'\t'+'Day_Of_Week'+'\t'+'Notes'+'\t'+'Actual_Mileage'+'\t'+'Activity'+'\t'+'Contact_Email'+'\t'+'Tag'+'\t'+'EmployeeId'+'\t'+'Error Message'+' \n';
+                String finalstr1 = header1;
+                for(Employee_Mileage__c objMil : empNotSendMilList){
+                    String Recordstring = objMil.Trip_Date__c+'\t'+objMil.Trip_Origin__c+'\t'+objMil.Trip_Destination__c+'\t'+objMil.Trip_Status__c+'\t'+objMil.Approved_Date__c+'\t'+objMil.Day_Of_Week__c+'\t'+objMil.Notes__c+'\t'+objMil.EMP_Mileage__c+'\t'+objMil.Activity__c+'\t'+objMil.Contact_Email_Id__c+'\t'+objMil.Tag__c+'\t'+objMil.Employee_ID__c+'\t'+'Please check Employee Id,Trip date,Contact Email and Deactivation Date'+'    \n';
+                    finalstr1 = finalstr1 + Recordstring;
+                }
+                excel2 = blob.valueOf(finalstr1);
+            }
+            attach2.setBody(excel2);
+            messaging.singleEmailMessage email = Utils.CreateEmail('Not Inserted Trips From Communication Page',newemailBody,toAddress,null,null,null);
+            if(attach.getBody()  != null && attach2.getBody() != null){
+                email.setFileAttachments(new Messaging.EmailFileAttachment[]{attach,attach2});
+            } else if(attach.getBody() != null){
+                email.setFileAttachments(new Messaging.EmailFileAttachment[]{attach});
+            } else if(attach2.getBody() != null){
+                email.setFileAttachments(new Messaging.EmailFileAttachment[]{attach2});
+            }
+            //email.setFileAttachments(new Messaging.EmailFileAttachment[]{attach,attach2});
+            email.setOrgWideEmailAddressId(owea.get(0).Id);
+            emails.add(email);  
+            if(!emails.isEmpty() && !Test.IsRunningTest() && sendEmailObj.Send_email_from_code__c == true) {                    
+                Messaging.SendEmailResult [] result = Messaging.sendEmail(emails, false);
+                System.debug('send email=========='+result);
+            }
         }
         return 'Success';
     }
