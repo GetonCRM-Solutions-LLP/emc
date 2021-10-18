@@ -6,4 +6,8 @@ public class JSONMilList_Test {
 		List<JSONMilList> obj = JSONMilList.parse(json);
 		System.assert(obj != null);
 	}
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> 23d15e014b76ce594205833d4b868697b34d67c7
