@@ -29,7 +29,6 @@ public with sharing class BiWeeklyComplianceReportController {
                     startEnddate = s.split('to');
                     startdate2 = startEnddate[0];
                     enddate2 = startEnddate[1];
-                    //String contactid = '0033r00003f3UaKAAU';
                     Date d1 = Date.today();
                     Date d2 = date.valueof(startdate2);
                     if(d2 < d1){

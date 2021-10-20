@@ -1,10 +1,8 @@
 @isTest
 public class BiweeklyPayPeriodTest {
     public BiweeklyPayPeriodTest() {
-
     }
     public static testmethod void test1(){
-     //Insert Custom setting data
         TriggerConfig__c customEmailSetting =  new TriggerConfig__c();
         customEmailSetting.Name = 'Defaulttrigger';
         customEmailSetting.ContactTriggersendEmailForNewContact__c = true;

@@ -251,7 +251,6 @@ public with sharing class ManageNotificationController {
     }
     @RemoteAction
     public static String UploadMileage(string mileage,string  accId,String adminId) { 
-        System.debug('mileage'+mileage);
         List<JSONMilList> MilJson = JSONMilList.parse(mileage);
         set<string> employeeIdList = new set<string>(); 
         set<string> monthList = new set<String>();

@@ -50,8 +50,6 @@ public class BiWeeklyComplianceReportControllerTest {
             con.Fixed_Amount__c = 322.00;
             con.Maintenance_and_Tires__c = 1.2;
             con.MPG__c= 10.00;
-            
-            //con.Time_Zone__c = 'America/Chicago';
             con.Monthly_Mileage_Limit__c = 100.00;
             insert con;
             

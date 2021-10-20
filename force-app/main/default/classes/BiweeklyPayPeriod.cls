@@ -164,7 +164,6 @@ public with sharing class BiweeklyPayPeriod {
             } else {
                 objWrap.mileage = String.valueof(0);
             }
-            System.debug(' objWrap.mileage'+ objWrap.mileage);
             if(variableMap.containskey(contactid)){
                 objWrap.variable = String.valueof(variableMap.get(contactid));
             } else {

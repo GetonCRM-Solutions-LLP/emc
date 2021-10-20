@@ -1,6 +1,1 @@
-<<<<<<< HEAD
-ManageNotificationControllerTest,JSONMilList_Test
-=======
-DemoClassTest,ManageNotificationControllerTest,WrapperUtils_Test,EmployeeDetailTest,BiweeklyPayPeriodTest,RosterControllerTest
-
->>>>>>> 23d15e014b76ce594205833d4b868697b34d67c7
+DemoClassTest,ManageNotificationControllerTest,EmployeeDetailTest,BiweeklyPayPeriodTest,WrapperUtilsTest

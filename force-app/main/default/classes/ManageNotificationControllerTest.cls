@@ -80,7 +80,6 @@ public class ManageNotificationControllerTest {
         con2.Employee_ID__c = '123456';
         insert con2;
         
-          
         con3.FirstName = 'Priyanka';
         con3.LastName = 'Gajera';
         con3.AccountId = acc.Id;
