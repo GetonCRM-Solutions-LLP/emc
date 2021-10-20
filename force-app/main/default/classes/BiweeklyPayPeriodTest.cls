@@ -1,10 +1,8 @@
 @isTest
 public class BiweeklyPayPeriodTest {
     public BiweeklyPayPeriodTest() {
-
     }
     public static testmethod void test1(){
-     //Insert Custom setting data
         TriggerConfig__c customEmailSetting =  new TriggerConfig__c();
         customEmailSetting.Name = 'Defaulttrigger';
         customEmailSetting.ContactTriggersendEmailForNewContact__c = true;
@@ -58,8 +56,6 @@ public class BiweeklyPayPeriodTest {
         con.Fixed_Amount__c = 322.00;
         con.Maintenance_and_Tires__c = 1.2;
         con.MPG__c= 10.00;
-        
-        //con.Time_Zone__c = 'America/Chicago';
         con.Monthly_Mileage_Limit__c = 100.00;
         insert con;
         
