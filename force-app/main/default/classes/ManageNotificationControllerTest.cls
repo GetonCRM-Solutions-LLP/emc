@@ -56,6 +56,7 @@ public class ManageNotificationControllerTest {
         Contact con = new Contact();        
         con.FirstName = 'Priyanka';
         con.LastName = 'Gajera';
+        con.Employee_ID__c = '123456';
         con.AccountId = acc.Id;
         con.External_Email__c = 'minkfesh.patel1478'+ i + '@gmail.com';
         con.Deactivated_Date__c = Null;
@@ -65,7 +66,6 @@ public class ManageNotificationControllerTest {
            
             conList.add(con);
         }
-        
         insert conList;
         
             
@@ -79,7 +79,6 @@ public class ManageNotificationControllerTest {
         con2.Employee_ID__c = '123456';
         insert con2;
         
-          
         con3.FirstName = 'Priyanka';
         con3.LastName = 'Gajera';
         con3.AccountId = acc.Id;
@@ -130,8 +129,9 @@ public class ManageNotificationControllerTest {
         reim.Month__c = '09-2021';
         reim.MPG__c = 12.50;
         reim.Maintenance_and_Tires__c = 0.123;
+        reim.Fuel_Price__c = 1.9;
         insert reim;
-
+   
         Attachment attach=new Attachment(); 
         attach.Name='Unit Test Attachment'; 
         Blob bodyBlob=Blob.valueOf('Unit Test Attachment Body'); 

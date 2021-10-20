@@ -1,2 +1,1 @@
-DemoClassTest,ManageNotificationControllerTest,WrapperUtils_Test,EmployeeDetailTest,BiweeklyPayPeriodTest,RosterControllerTest
-
+DemoClassTest,ManageNotificationControllerTest,EmployeeDetailTest,BiweeklyPayPeriodTest,WrapperUtilsTest,JSONMilList_Test
