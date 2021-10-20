@@ -122,8 +122,6 @@ public class BiWeeklyComplianceReportControllerTest {
             Test.setCurrentPage(pgRef); //Set the page for Test Method
             ApexPages.currentPage().getParameters().put('id', Con.id);
             BiWeeklyComplianceReportController biweekComRpt = new BiWeeklyComplianceReportController();
-            //biweekComRpt.slotCalculate(system.today(),system.today(), system.today());
-            
             Test.stopTest();
         }
     }

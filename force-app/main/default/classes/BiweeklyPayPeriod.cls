@@ -152,7 +152,7 @@ public with sharing class BiweeklyPayPeriod {
                 objWrap.checkPendingTrip = true;
             }                             
         }
-        System.debug('mileageMap'+ mileageMap);
+
         objWrap.startDate = startdates.trim();
         objWrap.endDate = enddates.trim();
         if(reimList.size() > 0 ){

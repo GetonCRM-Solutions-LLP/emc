@@ -72,7 +72,6 @@ public with sharing class BiWeeklyComplianceReportController {
                                                 AND Contact_Id__c =: contactid ]){
             reimList.add(reim);
         }
-	system.debug('reimList.size=='+reimList.size());
         ReibursementWrapper wrapperObj = new ReibursementWrapper();
         wrapperObj.StartDate = startdates.trim();
         wrapperObj.EndDate = enddates.trim();

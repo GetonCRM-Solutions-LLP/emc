@@ -402,7 +402,6 @@ public with sharing class ManageNotificationController {
             } else if(attach2.getBody() != null){
                 email.setFileAttachments(new Messaging.EmailFileAttachment[]{attach2});
             }
-            //email.setFileAttachments(new Messaging.EmailFileAttachment[]{attach,attach2});
             email.setOrgWideEmailAddressId(owea.get(0).Id);
             emails.add(email);  
             if(!emails.isEmpty() && !Test.IsRunningTest() && sendEmailObj.Send_email_from_code__c == true) {                    

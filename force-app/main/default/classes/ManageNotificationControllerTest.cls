@@ -66,7 +66,6 @@ public class ManageNotificationControllerTest {
            
             conList.add(con);
         }
-        
         insert conList;
         
             
