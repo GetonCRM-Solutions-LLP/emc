@@ -56,6 +56,7 @@ public class ManageNotificationControllerTest {
         Contact con = new Contact();        
         con.FirstName = 'Priyanka';
         con.LastName = 'Gajera';
+        con.Employee_ID__c = '123456';
         con.AccountId = acc.Id;
         con.External_Email__c = 'minkfesh.patel1478'+ i + '@gmail.com';
         con.Deactivated_Date__c = Null;
@@ -102,8 +103,6 @@ public class ManageNotificationControllerTest {
         con1.Vehicle_Type__c = '2019 Ford Escape';
         insert con1;
         
-<<<<<<< HEAD
-=======
       user_1 = new User( 
         Email = 'yourusername@gmail.com',
         ProfileId = profile_1.Id, 
@@ -125,7 +124,6 @@ public class ManageNotificationControllerTest {
         
         
         
->>>>>>> 23d15e014b76ce594205833d4b868697b34d67c7
         Employee_Reimbursement__c reim = new Employee_Reimbursement__c();
         reim.Approved_Date__c = system.today();
         reim.Contact_Id__c = con2.id;
@@ -133,8 +131,9 @@ public class ManageNotificationControllerTest {
         reim.Month__c = '09-2021';
         reim.MPG__c = 12.50;
         reim.Maintenance_and_Tires__c = 0.123;
+        reim.Fuel_Price__c = 1.9;
         insert reim;
-
+   
         Attachment attach=new Attachment(); 
         attach.Name='Unit Test Attachment'; 
         Blob bodyBlob=Blob.valueOf('Unit Test Attachment Body'); 
@@ -143,11 +142,7 @@ public class ManageNotificationControllerTest {
         insert attach;
     
         String json = '[{\"name\":\"The White House\",\"address\":\"1600 Pennsylvania Ave NW, Washington, DC 20500\",\"activity\":\"Business\",\"userId\":\"20000649\"},{\"name\":\"The White House\",\"address\":\"1600 Pennsylvania Ave NW, Washington, DC 20500\",\"latitude\":38.683885,\"longitude\":-8.6109719,\"activity\":\"Business\",\"userId\":\"20000649\"}]';
-<<<<<<< HEAD
-        String json2 = '[{\"Trip_Date\":\"08/31/2021\",\"Trip_Origin\":\"6810 Chimney Hill Rd, Crestwood, KY  40014\",\"Trip_Destination\":\"1610 Deer Run Dr, Burlington, KY 41005\",\"Trip_Status\":\"rejected\",\"Approved_Date\":\"09/30/2021\",\"Actual_Mileage\":\"33\",\"Activity\":\"Business\",\"Contact_Email\":\"jayshah3796@gmail.com\",\"EmployeeId\":\"223344\"},{\"Trip_Date\":\"08/30/2021\",\"Trip_Origin\":\"6810 Chimney Hill Rd, Crestwood, KY  40014\",\"Trip_Destination\":\"1610 Deer Run Dr, Burlington, KY 41005\",\"Trip_Status\":\"Approved\",\"Approved_Date\":\"09/30/2021\",\"Actual_Mileage\":\"22\",\"Activity\":\"Business\",\"Contact_Email\":\"jayshah3796@gmail.com\",\"EmployeeId\":\"223344\"},{\"Trip_Date\":\"08/30/2021\",\"Trip_Origin\":\"6810 Chimney Hill Rd, Crestwood, KY  40014\",\"Trip_Destination\":\"1610 Deer Run Dr, Burlington, KY 41005\",\"Approved_Date\":\"09/30/2021\",\"Actual_Mileage\":\"26\",\"Activity\":\"Business\",\"Contact_Email\":\"jayshah3796@gmail.com\",\"EmployeeId\":\"223344\"}]';
-=======
         String json2 = '[{\"name\":\"The White House\",\"Trip_Date\":\"08/31/2021\",\"Trip_Origin\":\"6810 Chimney Hill Rd, Crestwood, KY  40014\",\"Trip_Destination\":\"1610 Deer Run Dr, Burlington, KY 41005\",\"Trip_Status\":\"rejected\",\"Approved_Date\":\"09/30/2021\",\"Actual_Mileage\":\"33\",\"Activity\":\"Business\",\"Contact_Email\":\"jayshah3796@gmail.com\",\"EmployeeId\":\"223344\"},{\"name\":\"The White House\",\"Trip_Date\":\"08/30/2021\",\"Trip_Origin\":\"6810 Chimney Hill Rd, Crestwood, KY  40014\",\"Trip_Destination\":\"1610 Deer Run Dr, Burlington, KY 41005\",\"Trip_Status\":\"Approved\",\"Approved_Date\":\"09/30/2021\",\"Actual_Mileage\":\"22\",\"Activity\":\"Business\",\"Contact_Email\":\"jayshah3796@gmail.com\",\"EmployeeId\":\"223344\"},{\"name\":\"The White House\",\"Trip_Date\":\"08/30/2021\",\"Trip_Origin\":\"6810 Chimney Hill Rd, Crestwood, KY  40014\",\"Trip_Destination\":\"1610 Deer Run Dr, Burlington, KY 41005\",\"Approved_Date\":\"09/30/2021\",\"Actual_Mileage\":\"26\",\"Activity\":\"Business\",\"Contact_Email\":\"jayshah3796@gmail.com\",\"EmployeeId\":\"223344\"}]';
->>>>>>> 23d15e014b76ce594205833d4b868697b34d67c7
         String json1 = '[{\"contactId\":\" '+con1.id + ' \",\"name\":\"Business\",\"notiMessage\":\"1600 Pennsylvania Ave NW, Washington, DC 20500\"}]';
         String json3 = '[{\"triploguserid\":\"20000339\",\"role\":\"Driver/Admin\",\"notiMessage\":\"Test123gdd\",\"notificationDate\":\"2021-06-30\",\"name\":\"Jaytik\",\"massEmail\":false,\"lastname\":\"Luhar\",\"isEditable\":false,\"insuranceId\":\"00P6s0000077Rj9EAE\",\"insurance\":null,\"fullname\":\"Jaytik Luhar\",\"expirationDate\":null}]';        
         Test.startTest();
@@ -157,11 +152,7 @@ public class ManageNotificationControllerTest {
         ManageNotificationController.NewEmployeeData(Acc.Id,con2.id);
         ManageNotificationController.NewEmployeeData(Acc.Id,con3.id);
         ManageNotificationController.UploadLocation(json,Acc.Id);
-<<<<<<< HEAD
-        ManageNotificationController.UploadMileage(json2,Acc.Id);
-=======
         ManageNotificationController.UploadMileage(json2,Acc.Id,con2.Id);
->>>>>>> 23d15e014b76ce594205833d4b868697b34d67c7
         
        ManageNotificationController.sendAllInsuranceEmail(json2, con2.id);
        ManageNotificationController.UploadLocation(json ,Acc.Id);

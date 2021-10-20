@@ -250,11 +250,7 @@ public with sharing class ManageNotificationController {
         return null;
     }
     @RemoteAction
-<<<<<<< HEAD
-    public static String UploadMileage(string mileage,string  accId) { 
-=======
     public static String UploadMileage(string mileage,string  accId,String adminId) { 
->>>>>>> 23d15e014b76ce594205833d4b868697b34d67c7
         System.debug('mileage'+mileage);
         List<JSONMilList> MilJson = JSONMilList.parse(mileage);
         set<string> employeeIdList = new set<string>(); 
@@ -273,29 +269,6 @@ public with sharing class ManageNotificationController {
         map<string, Id> reimIdMap = new map<string, Id>();
         map<string, Decimal> empIdvsMPGMap = new map<string, Decimal>();
         map<string, Decimal> empIdvsMaintireMap = new map<string, Decimal>();
-<<<<<<< HEAD
-        for(Employee_Reimbursement__c reimList : [select id,name,Contact_Id__r.External_Email__c,Month__c,MPG__c,Maintenance_and_Tires__c, Contact_Id__r.Employee_ID__c
-                                                  from Employee_Reimbursement__c 
-                                                  where Contact_Id__r.Employee_ID__c IN: employeeIdList and Month__C IN: monthList]) {
-                                                      if(reimList.Contact_Id__r.Employee_ID__c != null) {
-                                                          reimIdMap.put(reimList.Contact_Id__r.Employee_ID__c +':'+reimList.Month__c, reimList.Id);
-                                                          empIdvsEmailMap.put(reimList.Contact_Id__r.Employee_ID__c +':'+reimList.Month__c, reimList.Contact_Id__r.External_Email__c);
-                                                          if(reimList.MPG__c != null){
-                                                              empIdvsMPGMap.put(reimList.Contact_Id__r.Employee_ID__c+':'+reimList.Month__c,reimList.MPG__c); 
-                                                          } else {
-                                                              empIdvsMPGMap.put(reimList.Contact_Id__r.Employee_ID__c+':'+reimList.Month__c,0);  
-                                                          }
-                                                          if(reimList.Maintenance_and_Tires__c != 0){
-                                                              empIdvsMaintireMap.put(reimList.Contact_Id__r.Employee_ID__c+':'+reimList.Month__c,reimList.Maintenance_and_Tires__c);     
-                                                          } else {
-                                                              empIdvsMaintireMap.put(reimList.Contact_Id__r.Employee_ID__c+':'+reimList.Month__c,0);      
-                                                          }  
-                                                      }
-                                                  }
-        List<Employee_Mileage__c> empMilList = new List<Employee_Mileage__c>();
-        for(JSONMilList objJson : MilJson){ 
-            if(objJson.Contact_Email != null ){
-=======
         List<Employee_Mileage__c> empNotSendMilList = new List<Employee_Mileage__c>();
         for(Employee_Reimbursement__c reimList : [SELECT id,name,Contact_Id__r.External_Email__c,Month__c,MPG__c,Maintenance_and_Tires__c, Contact_Id__r.Employee_ID__c
                                                   FROM Employee_Reimbursement__c 
@@ -319,21 +292,14 @@ public with sharing class ManageNotificationController {
         List<Employee_Mileage__c> empMilList = new List<Employee_Mileage__c>();
         for(JSONMilList objJson : MilJson){ 
             if(objJson.Contact_Email != null ) {
->>>>>>> 23d15e014b76ce594205833d4b868697b34d67c7
                 list<String> tripDateSplit = new list<String>();
                 string mapKey;
                 Employee_Mileage__c mil = new Employee_Mileage__c();
                 if(objJson.Trip_Date != null && objJson.Trip_Date.contains('/')){
                     tripDateSplit = objJson.Trip_Date.split('/');
-<<<<<<< HEAD
-                	mapKey = objJson.EmployeeId+':'+tripDateSplit[0]+'-'+tripDateSplit[2];
-                }
-                if(tripDateSplit.size() > 0){	
-=======
                   mapKey = objJson.EmployeeId+':'+tripDateSplit[0]+'-'+tripDateSplit[2];
                 }
                 if(tripDateSplit.size() > 0) {  
->>>>>>> 23d15e014b76ce594205833d4b868697b34d67c7
                     mil.Trip_Date__c = date.valueof(Date.parse(tripDateSplit[0]+'/'+tripDateSplit[1] +'/'+tripDateSplit[2]));
                     mil.ConvertedStartTime__c = date.valueof(Date.parse(tripDateSplit[0]+'/'+tripDateSplit[1] +'/'+tripDateSplit[2]));
                 }
@@ -354,17 +320,11 @@ public with sharing class ManageNotificationController {
                 mil.Notes__c = objJson.Notes;
                 mil.EMP_Mileage__c = objJson.Actual_Mileage;
                 mil.Activity__c = objJson.Activity;
-<<<<<<< HEAD
-                mil.Contact_Email_Id__c = objJson.Contact_Email;
-                mil.Tag__c = objJson.Tag;
-                mil.Employee_ID__c = objJson.EmployeeId;
-=======
                 mil.Tag__c = objJson.Tag;
                 mil.Employee_ID__c = objJson.EmployeeId;
                 if(empIdvsEmailMap.containsKey(mapKey)) {
                     mil.Contact_Email_Id__c = empIdvsEmailMap.get(mapKey);
                 }
->>>>>>> 23d15e014b76ce594205833d4b868697b34d67c7
                 if(empIdvsMPGMap.containsKey(mapKey)) {
                     mil.MPG__c = empIdvsMPGMap.get(mapKey);
                 }
@@ -374,13 +334,6 @@ public with sharing class ManageNotificationController {
                 if(reimIdMap.containsKey(mapKey)) {
                     mil.EmployeeReimbursement__c = string.valueOf(reimIdMap.get(mapKey));
                     empMilList.add(mil);
-<<<<<<< HEAD
-                }
-            }
-        }
-        if(empMilList.size() != 0){
-            insert empMilList;
-=======
                 } else {
                     empNotSendMilList.add(mil);
                 }
@@ -410,7 +363,7 @@ public with sharing class ManageNotificationController {
                     String Recordstring = empMilList.get(mapkey).Trip_Date__c+'\t'+empMilList.get(mapkey).Trip_Origin__c+'\t'+empMilList.get(mapkey).Trip_Destination__c+'\t'+empMilList.get(mapkey).Trip_Status__c+'\t'+empMilList.get(mapkey).Approved_Date__c+'\t'+empMilList.get(mapkey).Day_Of_Week__c+'\t'+empMilList.get(mapkey).Notes__c+'\t'+empMilList.get(mapkey).EMP_Mileage__c+'\t'+empMilList.get(mapkey).Activity__c+'\t'+empMilList.get(mapkey).Contact_Email_Id__c+'\t'+empMilList.get(mapkey).Tag__c+'\t'+empMilList.get(mapkey).Employee_ID__c+'\t'+errorMap.get(mapkey)+'    \n';
                     finalstr = finalstr + Recordstring;
                 }
-                attach.setFileName('Not Inserted Trips.xls');
+                attach.setFileName('Trips not inserted.xls');
                 excel = blob.valueOf(finalstr);
                 
             }
@@ -430,7 +383,7 @@ public with sharing class ManageNotificationController {
             toAddress.add(conList[0].External_Email__c);
             //toAddress.add('Sanket.goswami@getoncrm.com');
             Messaging.EmailFileAttachment attach2 = new Messaging.EmailFileAttachment();
-            attach2.setFileName('Wrong Employee Id.xls');
+            attach2.setFileName('Wrong employee ID.xls');
             blob excel2;
             if(empNotSendMilList.size() > 0){
                 string header1 ='Trip_Date'+'\t'+'Trip_Origin'+'\t'+'Trip_Destination'+'\t'+ 'Trip_Status'+'\t'+'Approved_Date'+'\t'+'Day_Of_Week'+'\t'+'Notes'+'\t'+'Actual_Mileage'+'\t'+'Activity'+'\t'+'Contact_Email'+'\t'+'Tag'+'\t'+'EmployeeId'+'\t'+'Error Message'+' \n';
@@ -457,7 +410,6 @@ public with sharing class ManageNotificationController {
                 Messaging.SendEmailResult [] result = Messaging.sendEmail(emails, false);
                 System.debug('send email=========='+result);
             }
->>>>>>> 23d15e014b76ce594205833d4b868697b34d67c7
         }
         return 'Success';
     }
