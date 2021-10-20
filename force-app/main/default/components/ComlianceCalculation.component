@@ -154,6 +154,28 @@
                 }
             };
         });
+
+        app.directive('excelExportCustomFile',function () {
+            return {
+                restrict: 'A',
+                scope: {
+                },
+                replace: true,
+                template: '<button class="btn btn-primary float-right" ng-click="download()">Download </button>',
+                link: function (scope, element) {
+                    var url_string = $(location).attr("href");
+                    var url = new URL(url_string);
+                    var host = url.host;
+                    scope.accid = url.searchParams.get("accid");
+                    scope.id = url.searchParams.get("id");
+                    scope.download = function() {
+                        var window_url;
+                        window_url = 'https://' + host + '/app/BiWeeklyComplianceReport?id=' + scope.id;
+                        window.open(window_url, '_blank');
+                    }
+                }
+            };
+        });
     </script>
     <div class="col-12 col-lg-12 col-xl-12 col-md-12 col-sm-12 ml-16 mt-35">
         <div class="row">
@@ -228,6 +250,17 @@
                             <td class="font-weight-bold p-10">Annual Tax Liability Summary Report</td>
                             <td class="p-0">
                             <div excel-export-file="true" export-data="summaryreportfordownload" file-name="{{fileNameforsummary}}"/> </td>
+                        </tr>
+
+                        <tr ng-if="accid === PLMarketing">
+                            <td class="p-23"></td>
+                            <td class="pd-0"></td>
+                        </tr>
+                        
+                        <tr style="height:49px" ng-if="accid === PLMarketing">
+                            <td class="font-weight-bold p-10">Bi-Weekly Tax Liability Detail Report</td>
+                            <td class="p-0">
+                            <div excel-export-custom-file="true" /> </td>
                         </tr>
                     </tbody>
                 </table>
