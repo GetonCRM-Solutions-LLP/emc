@@ -251,7 +251,6 @@ public with sharing class ManageNotificationController {
     }
     @RemoteAction
     public static String UploadMileage(string mileage,string  accId,String adminId) { 
-        System.debug('mileage'+mileage);
         List<JSONMilList> MilJson = JSONMilList.parse(mileage);
         set<string> employeeIdList = new set<string>(); 
         set<string> monthList = new set<String>();
@@ -363,7 +362,7 @@ public with sharing class ManageNotificationController {
                     String Recordstring = empMilList.get(mapkey).Trip_Date__c+'\t'+empMilList.get(mapkey).Trip_Origin__c+'\t'+empMilList.get(mapkey).Trip_Destination__c+'\t'+empMilList.get(mapkey).Trip_Status__c+'\t'+empMilList.get(mapkey).Approved_Date__c+'\t'+empMilList.get(mapkey).Day_Of_Week__c+'\t'+empMilList.get(mapkey).Notes__c+'\t'+empMilList.get(mapkey).EMP_Mileage__c+'\t'+empMilList.get(mapkey).Activity__c+'\t'+empMilList.get(mapkey).Contact_Email_Id__c+'\t'+empMilList.get(mapkey).Tag__c+'\t'+empMilList.get(mapkey).Employee_ID__c+'\t'+errorMap.get(mapkey)+'    \n';
                     finalstr = finalstr + Recordstring;
                 }
-                attach.setFileName('Not Inserted Trips.xls');
+                attach.setFileName('Trips not inserted.xls');
                 excel = blob.valueOf(finalstr);
                 
             }
@@ -383,7 +382,7 @@ public with sharing class ManageNotificationController {
             toAddress.add(conList[0].External_Email__c);
             //toAddress.add('Sanket.goswami@getoncrm.com');
             Messaging.EmailFileAttachment attach2 = new Messaging.EmailFileAttachment();
-            attach2.setFileName('Wrong Employee Id.xls');
+            attach2.setFileName('Wrong employee ID.xls');
             blob excel2;
             if(empNotSendMilList.size() > 0){
                 string header1 ='Trip_Date'+'\t'+'Trip_Origin'+'\t'+'Trip_Destination'+'\t'+ 'Trip_Status'+'\t'+'Approved_Date'+'\t'+'Day_Of_Week'+'\t'+'Notes'+'\t'+'Actual_Mileage'+'\t'+'Activity'+'\t'+'Contact_Email'+'\t'+'Tag'+'\t'+'EmployeeId'+'\t'+'Error Message'+' \n';
@@ -403,7 +402,6 @@ public with sharing class ManageNotificationController {
             } else if(attach2.getBody() != null){
                 email.setFileAttachments(new Messaging.EmailFileAttachment[]{attach2});
             }
-            //email.setFileAttachments(new Messaging.EmailFileAttachment[]{attach,attach2});
             email.setOrgWideEmailAddressId(owea.get(0).Id);
             emails.add(email);  
             if(!emails.isEmpty() && !Test.IsRunningTest() && sendEmailObj.Send_email_from_code__c == true) {                    
