@@ -1,115 +1,5 @@
 public with sharing class BiweeklyPayPeriod {
-    public BiweeklyPayPeriod() {
-        
-        //getEmployeeMileages();
-    }
-
-    /*public static List<MileageWrap> getEmployeeMileages() {
-        List<String> dateRange = new List<String>();
-        List<String> startEnddate = new List<String>();
-        List<MileageWrap> milWrapList = new List<MileageWrap>();
-        MileageWrap obj;
-        if(System.Label.PayPeriodDate!=null)
-        {
-            if(System.Label.PayPeriodDate.contains(','))
-            {
-                dateRange = System.Label.PayPeriodDate.split(',');
-            }
-            Integer i=0;    
-            for(String s : dateRange)
-            {
-                String startdate;
-                String enddate;
-                s = s.trim();
-                if(s.contains('to'))
-                {
-                    startEnddate = s.split('to');
-                    startdate = startEnddate[0].trim();
-                    enddate = startEnddate[1].trim();
-                    String contactid = '0033r00003f3UaKAAU';
-                    Date d1 = Date.today();
-                    Date d2 = date.valueof(startdate);
-                    if(d2 < d1){
-                        obj = calculateReim(startdate,enddate,contactid);
-                        milWrapList.add(obj);
-                    }
-                    
-                }
-                
-            }
-        }
-        System.debug('milWrapList=='+milWrapList);
-        return milWrapList;
-    }*/
-
-    /*public static MileageWrap calculateReim (String startdate,String enddate,String contactid){
-        List<mileageWrap> milWrapList = new List<mileageWrap>();
-        Map<Id, Decimal> mileageMap = new Map<Id, Decimal>();
-        Map<Id, Decimal> fixedAmountMap = new Map<Id, Decimal>();
-        //Map<Id, Decimal> totalVariAmountMap = new Map<Id, Decimal>();
-        Decimal fuelprice ;
-        Decimal fixed;
-        Decimal totalVariableRate;
-        Decimal monthlyVariableAmount;
-        for(Employee_Mileage__c objMil : [SELECT EmployeeReimbursement__r.Contact_Id__c,
-                                                    EmployeeReimbursement__r.Fixed_Amount__c, 
-                                                    EmployeeReimbursement__r.Total_Variable_Rate__c,
-                                                    EmployeeReimbursement__r.Fuel_Price__c,
-                                                    Mileage__c
-                                            FROM Employee_Mileage__c 
-                                            WHERE   EmployeeReimbursement__r.Contact_Id__c =: contactid
-                                                    AND Trip_Date__c >= : Date.valueOf(startDate)
-                                                    AND Trip_Date__c <= : Date.valueOf(endDate)
-                                                    //AND Trip_Status__c = 'Approved' 
-                                                    //AND Approved_Date__c != null
-                                          ]) {
-
-            
-            fuelprice = objMil.EmployeeReimbursement__r.Fuel_Price__c;
-            
-            fixed = objMil.EmployeeReimbursement__r.Fixed_Amount__c;
-            totalVariableRate = objMil.EmployeeReimbursement__r.Total_Variable_Rate__c;
-
-            if(mileageMap.size() > 0 && mileageMap.containsKey(objMil.EmployeeReimbursement__r.Contact_Id__c)){
-                double mileage = mileageMap.get(objMil.EmployeeReimbursement__r.Contact_Id__c);
-                mileage = mileage + objMil.Mileage__c ;
-                mileageMap.put(objMil.EmployeeReimbursement__r.Contact_Id__c, mileage);
-            } else {
-                mileageMap.put(objMil.EmployeeReimbursement__r.Contact_Id__c, objMil.Mileage__c);
-            }
-
-        }
-        
-        MileageWrap milObj = new MileageWrap();
-        milObj.dates = startdate +' to '+ enddate;
-        if(fuelprice == null){
-            fuelprice = 0;
-        }
-        milObj.fuel = fuelprice;
-        System.debug('mileageMap=='+mileageMap);
-        if(mileageMap.containsKey(contactid)){
-            milObj.approvemileage = mileageMap.get(contactid);
-           
-        } else {
-           
-            milObj.approvemileage = 0;
-        }
-        if(totalVariableRate == null){
-            totalVariableRate = 0;
-        }
-        milObj.totalvariable = totalVariableRate;
-        milObj.fixedamount = fixed;
-        monthlyVariableAmount = milObj.approvemileage * milObj.totalvariable;
-        if(monthlyVariableAmount == null){
-            monthlyVariableAmount = 0;
-        }
-        if(milObj.fixedamount == null){
-            milObj.fixedamount = 0;
-        }
-        milObj.totalReim = monthlyVariableAmount + milObj.fixedamount;
-        System.debug(milObj);
-        return milObj;
-    }*/
+    public BiweeklyPayPeriod() { }
 
     public static List<TimeAttedanceWrap> getTimeAndAttendance(String contactid,String year) {
         List<String> dateRange = new List<String>();
@@ -177,16 +67,6 @@ public with sharing class BiweeklyPayPeriod {
         objWrap.totalTime = Utils.ConvertMinuteToHours(Integer.valueOf(tripTotalTimeMap.get(contactid)));
         return objWrap;
     }
-    //Total Variable Rate    * Total Approved   = Monthly Variable Amount
-    //Monthly Variable Amount + Fixed Amount = Total Monthly Reimbursement
-    /*public class MileageWrap {
-        public string dates { get; set; }
-        public decimal fuel { get; set; }
-        public Decimal approvemileage { get; set; }
-        public decimal totalvariable { get; set; }
-        public decimal fixedamount { get; set; }
-        public decimal totalReim { get; set; }
-    }*/
 
     public class TimeAttedanceWrap {
         public string startDate { get; set; }
@@ -197,55 +77,11 @@ public with sharing class BiweeklyPayPeriod {
     }
     
     public static List<BiweeklyWrap> getBiweeklyMileage(String contactid,Integer years) {
-        List<String> newDateRange = new List<String>();
         List<String> startEnddate = new List<String>();
         List<BiweeklyWrap> timeWrapList = new List<BiweeklyWrap>();
         BiweeklyWrap obj;
-        String startDate;
-        date activationdate;
-        List <Contact> conList = [SELECT id,Activation_Date__c,Deactivated_Date__c,Account.Pay_Period_Start_Date__c 
-                                        FROM Contact 
-                                        WHERE Id =: contactid ];
         List<String> dateRange = new List<String>();
-        if(conList[0].Account.Pay_Period_Start_Date__c != null && conList[0].Activation_Date__c != null){
-            startDate = String.valueOf(conList[0].Account.Pay_Period_Start_Date__c);
-            activationdate = date.valueOf(conList[0].Activation_Date__c);
-        }
-        /*for(integer i=0; i<=dateRange.size(); i++ ){      
-            if(years == date.valueof(startDate).year()){                
-                String enddate = String.valueof(date.valueof(startDate).addDays(13));
-                // if(date.valueof(startdate) < Date.today()) {
-                //                 dateRange.add(startDate+' to '+ enddate);
-                // }
-                if(conList.size() > 0 && conList[0].Deactivated_Date__c != null && ((date.valueof(startdate) < date.valueOf(conList[0].Deactivated_Date__c))) ) {
-                    dateRange.add(startDate+' to '+ enddate);
-                    System.debug('dateRange1'+dateRange);
-                } else if (conList.size() > 0 && conList[0].Deactivated_Date__c == null && (date.valueof(startdate) < Date.today()) ){
-                    dateRange.add(startDate+' to '+ enddate);
-                    System.debug('dateRange2'+dateRange);
-                }
-                startDate = String.valueof(date.valueof(enddate).addDays(1));   
-            }
-        }*/
-        for(integer i=0; i<=27; i++ ) {  						
-            if(years == date.valueof(startDate).year()) {                
-                String enddate = String.valueof(date.valueof(startDate).addDays(13));			
-                if(	conList.size() > 0 && conList[0].Deactivated_Date__c != null && activationdate != null && ( date.valueof(startdate) < date.valueOf(conList[0].Deactivated_Date__c) ) ) {	
-                    //if(date.valueof(startdate) <= activationdate && date.valueof(enddate) >= activationdate){
-                    if(activationdate <  date.valueof(enddate)) {
-                        dateRange.add(startDate+' to '+ enddate);
-                        System.debug('dateRange1'+dateRange);
-                    }                    
-                } else if (conList.size() > 0 && conList[0].Deactivated_Date__c == null && (date.valueof(startdate) < Date.today()) ){
-                    if(activationdate <  date.valueof(enddate)) {
-                        dateRange.add(startDate+' to '+ enddate);
-                        System.debug('dateRange2'+dateRange);
-                    }
-                }												
-                startDate = String.valueof(date.valueof(enddate).addDays(1));  													
-            }
-        }
-    
+        dateRange = getPayPeriodDates (contactid,years);
         if(!dateRange.isEmpty())
         {
             Integer i = 0;    
@@ -280,26 +116,23 @@ public with sharing class BiweeklyPayPeriod {
         String reimStartMonth,reimEndMonth;
         if(startdate.month() < 10 ) {
            reimStartMonth = '0'+String.valueOf(startdate.month())+'-'+startdate.year();
+        } else {
+            reimStartMonth = String.valueOf(startdate.month())+'-'+startdate.year();
         }
         if(enddate.month() < 10 ) {
            reimEndMonth = '0'+String.valueOf(enddate.month())+'-'+enddate.year();
+        } else {
+            reimEndMonth = String.valueOf(enddate.month())+'-'+enddate.year();
         }
         for(AggregateResult ar : [SELECT EmployeeReimbursement__r.Contact_Id__c cid,
-                                     SUM(Variable__c) vtotal
+                                     SUM(Variable__c) vtotal,SUM(Mileage__c) rtotal
                                     FROM Employee_Mileage__c 
                                     WHERE EmployeeReimbursement__r.Contact_Id__c =: contactid 
                                     AND Trip_Date__c >= : Date.valueOf(startdates)
                                     AND Trip_Date__c <= : Date.valueOf(enddates) 
                                     AND Trip_Status__c = 'Approved' 
                                     AND Approved_Date__c != null group by EmployeeReimbursement__r.Contact_Id__c ]) {
-                                        variableMap.put((Id)ar.get('cid'),(Decimal)ar.get('vtotal'));                      
-        }
-        for(AggregateResult ar : [SELECT EmployeeReimbursement__r.Contact_Id__c cid, SUM(Mileage__c) rtotal
-                                    FROM Employee_Mileage__c 
-                                    WHERE EmployeeReimbursement__r.Contact_Id__c =: contactid 
-                                    AND Trip_Date__c >= : Date.valueOf(startdates)
-                                    AND Trip_Date__c <= : Date.valueOf(enddates)  
-                                    group by EmployeeReimbursement__r.Contact_Id__c ]) {
+                                        variableMap.put((Id)ar.get('cid'),(Decimal)ar.get('vtotal'));  
                                         mileageMap.put((Id)ar.get('cid'),(Decimal)ar.get('rtotal'));                     
         }
         List<Employee_Reimbursement__c> reimList = new List<Employee_Reimbursement__c>();
@@ -323,7 +156,7 @@ public with sharing class BiweeklyPayPeriod {
                 objWrap.checkPendingTrip = true;
             }                             
         }
-        System.debug('mileageMap'+ mileageMap);
+
         objWrap.startDate = startdates.trim();
         objWrap.endDate = enddates.trim();
         if(reimList.size() > 0 ){
@@ -335,7 +168,6 @@ public with sharing class BiweeklyPayPeriod {
             } else {
                 objWrap.mileage = String.valueof(0);
             }
-            System.debug(' objWrap.mileage'+ objWrap.mileage);
             if(variableMap.containskey(contactid)){
                 objWrap.variable = String.valueof(variableMap.get(contactid));
             } else {
@@ -434,4 +266,38 @@ public with sharing class BiweeklyPayPeriod {
         }
         return 'sucess';
     }
+    
+     public static List<String> getPayPeriodDates (String contactid,Integer years){
+         List<String> dateRange = new List<String>();
+        String startDate;
+        date activationdate;
+        List <Contact> conList = [SELECT id,Activation_Date__c,Deactivated_Date__c,Account.Pay_Period_Start_Date__c 
+                                        FROM Contact 
+                                        WHERE Id =: contactid ];
+        
+        if(conList[0].Account.Pay_Period_Start_Date__c != null && conList[0].Activation_Date__c != null){
+            startDate = String.valueOf(conList[0].Account.Pay_Period_Start_Date__c);
+            activationdate = date.valueOf(conList[0].Activation_Date__c);
+        }
+        
+        for(integer i=0; i<=27; i++ ) {              
+            if(years == date.valueof(startDate).year()) {                
+                String enddate = String.valueof(date.valueof(startDate).addDays(13));      
+                if(  conList.size() > 0 && conList[0].Deactivated_Date__c != null && activationdate != null && ( date.valueof(startdate) < date.valueOf(conList[0].Deactivated_Date__c) ) ) {  
+                    //if(date.valueof(startdate) <= activationdate && date.valueof(enddate) >= activationdate){
+                    if(activationdate <  date.valueof(enddate)) {
+                        dateRange.add(startDate+' to '+ enddate);
+                        System.debug('dateRange1'+dateRange);
+                    }                    
+                } else if (conList.size() > 0 && conList[0].Deactivated_Date__c == null && (date.valueof(startdate) < Date.today()) ){
+                    if(activationdate <  date.valueof(enddate)) {
+                        dateRange.add(startDate+' to '+ enddate);
+                        System.debug('dateRange2'+dateRange);
+                    }
+                }                        
+                startDate = String.valueof(date.valueof(enddate).addDays(1));                            
+            }
+        }
+        return dateRange;
+     }
 }

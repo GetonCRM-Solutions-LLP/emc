@@ -6,7 +6,7 @@ name: 'Push request check'
 on:
   # Triggers the workflow on push or pull request events but only for the master branch
   push:
-    branches: [ preproduction, fullcopy, devops ]
+    branches: [ preproduction, fullcopy, devops,devops-new ]
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
@@ -50,6 +50,11 @@ jobs:
         if: ${{ env.BRANCH_NAME == 'devops' }}
         run: sfdx auth:jwt:grant --clientid=${{secrets.PRODUCTION_CONSUMER_KEY}} --username=${{secrets.PARTIALDEV_USERNAME}} --instanceurl=${{secrets.SFDC_LOGIN_SANDBOX_URL}} --jwtkeyfile server.key --setdefaultdevhubusername --setalias=hub-org
 
+      # Authorize devops-new
+      - name: 'Authorize devops-new'
+        if: ${{ env.BRANCH_NAME == 'devops-new' }}
+        run: sfdx auth:jwt:grant --clientid=${{secrets.PRODUCTION_CONSUMER_KEY}} --username=${{secrets.PARTIALDEV_USERNAME}} --instanceurl=${{secrets.SFDC_LOGIN_SANDBOX_URL}} --jwtkeyfile server.key --setdefaultdevhubusername --setalias=hub-org
+
       # Authorize fullcopy
       - name: 'Authorize fullcopy'
         if: ${{ env.BRANCH_NAME == 'fullcopy' }}
@@ -69,6 +74,17 @@ jobs:
           git fetch --all
           git --no-pager diff --name-status devops origin/fullcopy
           sgd --to devops --from origin/fullcopy --repo . --output .
+          cat package/package.xml
+
+      # Create Delta for devops-new branch
+      - name: 'Install App and Create Delta for devops-new'
+        if: ${{ env.BRANCH_NAME == 'devops-new'}}
+        run: |
+          sudo npm install sfdx-git-delta@latest -g
+          git config remote.origin.fetch '+refs/heads/*:refs/remotes/origin/*'
+          git fetch --all
+          git --no-pager diff --name-status devops-new origin/fullcopy
+          sgd --to devops-new --from origin/fullcopy --repo . --output .
           cat package/package.xml
 
       # Create Delta for fullcopy branch
