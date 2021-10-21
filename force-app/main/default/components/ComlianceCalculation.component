@@ -61,7 +61,7 @@
             padding: 10px;
         }
         .p-23{
-            padding: 24px !important;
+            padding: 10px !important;
         }
     </style>
     <script>
@@ -256,7 +256,7 @@
                             <td class="p-23"></td>
                             <td class="pd-0"></td>
                         </tr>
-                        
+                        <!-- Biweekly Report For Pl Marketing -->
                         <tr style="height:49px" ng-if="accid === PLMarketing">
                             <td class="font-weight-bold p-10">Bi-Weekly Tax Liability Detail Report</td>
                             <td class="p-0">
