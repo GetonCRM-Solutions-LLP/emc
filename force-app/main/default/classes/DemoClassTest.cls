@@ -1,7 +1,7 @@
 /* DemoClass Test class */
 @isTest
 Private class DemoClassTest {
-    /* Testmethod */
+    /* Testmethod  */
     @isTest static void doValidate() { 
         //tested
         DemoClass a = new DemoClass();

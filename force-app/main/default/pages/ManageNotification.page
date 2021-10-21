@@ -1677,7 +1677,10 @@
                                     var XL_row_object = XLSX.utils.sheet_to_row_object_array(workbook.Sheets[sheetName],{raw: false});
                                     var isValidApprove, isValidTrip, isTripStatus, isEmployeeId,  countApprove = 0, countTrip = 0, countStatus = 0, countID = 0;
                                     for(var R = 0; R < XL_row_object.length; R++) {
+<<<<<<< HEAD
+=======
                                         XL_row_object[R].Actual_Mileage = (XL_row_object[R].Actual_Mileage != "" || XL_row_object[R].Actual_Mileage != undefined) ? parseFloat(XL_row_object[R].Actual_Mileage) : 0;
+>>>>>>> 23d15e014b76ce594205833d4b868697b34d67c7
                                         isValidApprove = DateIsValid(XL_row_object[R].Approved_Date);
                                         isValidTrip = TripDateIsValid(XL_row_object[R].Trip_Date);
                                         isTripStatus = ValidateField(XL_row_object[R].Trip_Status);
@@ -1724,7 +1727,11 @@
                                     || mileageKeys.includes("Tag") || mileageKeys.includes("EmployeeId")) {
                                         mileagelist = jsonBody;
                                         $scope.mileageAttachment = JSON.stringify(mileagelist);
+<<<<<<< HEAD
+                                        Visualforce.remoting.Manager.invokeAction('{!$RemoteAction.ManageNotificationController.UploadMileage}', $scope.mileageAttachment, $scope.accid,
+=======
                                         Visualforce.remoting.Manager.invokeAction('{!$RemoteAction.ManageNotificationController.UploadMileage}', $scope.mileageAttachment, $scope.accid,$scope.id,
+>>>>>>> 23d15e014b76ce594205833d4b868697b34d67c7
                                             function (result, event) {
                                                 if (event.status) {
                                                     $('#spinner').hide();
