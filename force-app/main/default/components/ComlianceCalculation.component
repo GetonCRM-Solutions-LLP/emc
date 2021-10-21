@@ -61,7 +61,7 @@
             padding: 10px;
         }
         .p-23{
-            padding: 24px !important;
+            padding: 10px !important;
         }
     </style>
     <script>
