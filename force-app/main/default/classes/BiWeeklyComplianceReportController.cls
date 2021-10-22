@@ -80,7 +80,6 @@ public with sharing class BiWeeklyComplianceReportController {
         wrapperObj.StartDate = startdates.trim();
         wrapperObj.EndDate = enddates.trim();
         if(reimList.size() > 0 ){      
-            
             wrapperObj.GasPrices = reimList[0].Fuel_Price__c;
             wrapperObj.FixedTotal = reimList[0].Half_Fixed_Amount__c;
             if(variableMap.containskey(contactid)){
