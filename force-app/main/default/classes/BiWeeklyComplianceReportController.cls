@@ -94,7 +94,12 @@ public with sharing class BiWeeklyComplianceReportController {
             } else {
                 wrapperObj.Mileage = 0;
             }
-            wrapperObj.IRSRate = reimList[0].IRS_Mileage_Rate__r.IRS_Rate__c;
+            if(reimList[0].IRS_Mileage_Rate__r.IRS_Rate__c != null){
+                wrapperObj.IRSRate = reimList[0].IRS_Mileage_Rate__r.IRS_Rate__c;
+            } else {
+                wrapperObj.IRSRate = 0;
+            }
+            
             wrapperObj.MaxAllowable = (wrapperObj.Mileage * wrapperObj.IRSRate).setScale(2);
             wrapperObj.ImputedIncome = (wrapperObj.TotalReimbursement - wrapperObj.MaxAllowable).setScale(2);
         }
