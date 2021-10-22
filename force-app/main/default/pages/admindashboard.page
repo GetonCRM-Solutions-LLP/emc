@@ -1,4 +1,4 @@
-<apex:page showHeader="false" title="Admin - My Team's Records" sidebar="false" docType="html-5.0" controller="AdminDashboardController"
+<apex:page showHeader="false" title="Admin Dashboard" sidebar="false" docType="html-5.0" controller="AdminDashboardController"
     action="{!getRedirected}">
 
     <head>
@@ -2376,6 +2376,7 @@
                 document.getElementById("example-search-input")
                 $scope.clickedMonth = "";
                 $scope.unapprovereimbursements = unapprovereimbursements;
+                console.log("unapprovereimbursements", unapprovereimbursements);
                 $scope.driverid = driverid;
                 $scope.name = name;
                 $scope.managerName = managerName;
