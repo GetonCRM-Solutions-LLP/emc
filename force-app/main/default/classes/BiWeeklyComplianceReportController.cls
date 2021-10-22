@@ -48,9 +48,13 @@ public with sharing class BiWeeklyComplianceReportController {
         String reimStartMonth,reimEndMonth;
         if(startdate.month() < 10 ) {
            reimStartMonth = '0'+String.valueOf(startdate.month())+'-'+startdate.year();
+        } else {
+            reimStartMonth = String.valueOf(startdate.month())+'-'+startdate.year();
         }
         if(enddate.month() < 10 ) {
            reimEndMonth = '0'+String.valueOf(enddate.month())+'-'+enddate.year();
+        } else {
+            reimEndMonth = String.valueOf(enddate.month())+'-'+enddate.year();
         }
         for(AggregateResult ar : [SELECT EmployeeReimbursement__r.Contact_Id__c cid,
                                      SUM(Variable__c) vtotal,SUM(Mileage__c) rtotal
