@@ -1,4 +1,4 @@
-<apex:page showHeader="false" title="Driver Details" sidebar="false" lightningStylesheets="false" controller="DriverManagerDriverDetailsController" action="{!getRedirected}">
+<apex:page showHeader="false" title="Manager Driver Details" sidebar="false" lightningStylesheets="false" controller="DriverManagerDriverDetailsController" action="{!getRedirected}">
     <html lang="en">
     <head>
         <apex:include pageName="EMC_Common_Head" />
