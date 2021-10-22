@@ -48,9 +48,13 @@ public with sharing class BiWeeklyComplianceReportController {
         String reimStartMonth,reimEndMonth;
         if(startdate.month() < 10 ) {
            reimStartMonth = '0'+String.valueOf(startdate.month())+'-'+startdate.year();
+        } else {
+            reimStartMonth = String.valueOf(startdate.month())+'-'+startdate.year();
         }
         if(enddate.month() < 10 ) {
            reimEndMonth = '0'+String.valueOf(enddate.month())+'-'+enddate.year();
+        } else {
+            reimEndMonth = String.valueOf(enddate.month())+'-'+enddate.year();
         }
         for(AggregateResult ar : [SELECT EmployeeReimbursement__r.Contact_Id__c cid,
                                      SUM(Variable__c) vtotal,SUM(Mileage__c) rtotal
@@ -76,7 +80,6 @@ public with sharing class BiWeeklyComplianceReportController {
         wrapperObj.StartDate = startdates.trim();
         wrapperObj.EndDate = enddates.trim();
         if(reimList.size() > 0 ){      
-            
             wrapperObj.GasPrices = reimList[0].Fuel_Price__c;
             wrapperObj.FixedTotal = reimList[0].Half_Fixed_Amount__c;
             if(variableMap.containskey(contactid)){
@@ -90,7 +93,12 @@ public with sharing class BiWeeklyComplianceReportController {
             } else {
                 wrapperObj.Mileage = 0;
             }
-            wrapperObj.IRSRate = reimList[0].IRS_Mileage_Rate__r.IRS_Rate__c;
+            if(reimList[0].IRS_Mileage_Rate__r.IRS_Rate__c != null){
+                wrapperObj.IRSRate = reimList[0].IRS_Mileage_Rate__r.IRS_Rate__c;
+            } else {
+                wrapperObj.IRSRate = 0;
+            }
+            
             wrapperObj.MaxAllowable = (wrapperObj.Mileage * wrapperObj.IRSRate).setScale(2);
             wrapperObj.ImputedIncome = (wrapperObj.TotalReimbursement - wrapperObj.MaxAllowable).setScale(2);
         }
