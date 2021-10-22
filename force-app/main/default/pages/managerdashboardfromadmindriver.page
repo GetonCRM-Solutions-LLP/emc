@@ -1,4 +1,4 @@
-<apex:page showHeader="false" title="Manager - My Team's Records" sidebar="false" controller="ManagerDashboardFromAdminController"
+<apex:page showHeader="false" title="Manager Dashboard" sidebar="false" controller="ManagerDashboardFromAdminController"
     action="{!getRedirected}">
     <html lang="en">
 
