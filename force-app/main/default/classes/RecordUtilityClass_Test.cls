@@ -106,7 +106,11 @@ public with sharing class RecordUtilityClass_Test {
         insert listContactDriver;
         List<Employee_Reimbursement__c> listemp = RecordUtilityClass.buildPendingEmployee_Reimbursement(listContactDriver);
         insert listemp;
-        List<Employee_Mileage__c> obj_Employee_Mileage_list = RecordUtilityClass.buildNoApprovedYetEmployeeMileages(listemp);
+        
+        list<Bi_Weekly_Reimbursement__c> empBIweekReimbursementList1 = RecordUtilityClass.buildPendingBiReimbursement(listContactDriver);
+        insert empBIweekReimbursementList1;
+        
+        List<Employee_Mileage__c> obj_Employee_Mileage_list = RecordUtilityClass.buildNoApprovedYetEmployeeMileages(listemp,empBIweekReimbursementList1[0].Id);
         obj_Employee_Mileage_list[0].Approved_Date__c = Date.today();
         obj_Employee_Mileage_list[0].Trip_Status__c = StaticValues.noApprovedYet;
         insert obj_Employee_Mileage_list;
