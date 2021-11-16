@@ -120,5 +120,6 @@ public with sharing class EmployeeDetails
     public string payRollPeriod {get;set;}
     public string loaFixedAmount {get;set;}
     public boolean isleaveofabsence{get;set;}
-
+    public string finalPayrollAmount {get;set;}
+    public string firstPayrollPer {get;set;}
 }
