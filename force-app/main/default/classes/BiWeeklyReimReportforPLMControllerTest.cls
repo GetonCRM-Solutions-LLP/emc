@@ -117,13 +117,15 @@ public class BiWeeklyReimReportforPLMControllerTest {
         insert emp;
         
         Test.startTest();
-        string ConId = contact.Id;
-        //String startDate = '2021-07-28';
-        //String endDate = '2021-08-11';
-        //String conId = ApexPages.currentPage().getParameters().put('id',contact.Id);
-        String startDate = ApexPages.currentPage().getParameters().put('startDate','2020-01-22');
-        String endDate = ApexPages.currentPage().getParameters().put('endDate','2020-08-22');
-        BiWeeklyReimReportforPLMController objClass = new BiWeeklyReimReportforPLMController();
+        System.runAs(user_1) {
+            string ConId = contact.Id;
+            //String startDate = '2021-07-28';
+            //String endDate = '2021-08-11';
+            //String conId = ApexPages.currentPage().getParameters().put('id',contact.Id);
+            String startDate = ApexPages.currentPage().getParameters().put('startDate','2020-01-22');
+            String endDate = ApexPages.currentPage().getParameters().put('endDate','2020-08-22');
+            BiWeeklyReimReportforPLMController objClass = new BiWeeklyReimReportforPLMController();
+        }
         Test.stopTest();
     }
     

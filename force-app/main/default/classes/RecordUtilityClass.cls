@@ -85,30 +85,64 @@ public with sharing class RecordUtilityClass
         sendEmailforCompliance();
         enableMappingGasPriceTrigger();
         vehicleUrlMapping();
-        Account obj_Account = buildAccount();
-        insert obj_Account;
+        UserRole userRole_1 = [SELECT Id FROM UserRole WHERE DeveloperName = 'EMD' LIMIT 1];
+        Profile profile_1 = [SELECT Id FROM Profile WHERE Name = 'Customer Community Login User' LIMIT 1];
+        User admin = [SELECT Id, Username, UserRoleId FROM User WHERE Profile.Name = 'System Administrator' AND UserRoleId = :userRole_1.Id LIMIT 1];
+        User user_1;
 
-        Contact obj_admincontact = buildAdminContact(obj_Account);
-        insert obj_admincontact;
+        Account obj_Account;
+        Contact obj_admincontact;
+        List<Contact> obj_Manager_list;
+        List<Contact> obj_Driver_list;
+        System.runAs(admin) {
+            Account account_1 = new Account( Name = 'Community'  );
+            insert account_1;
+            
+            Contact contact_1 = new Contact(AccountId = account_1.Id, LastName = 'xgeek',External_Email__c= 'abc@gmail.com');
+            insert contact_1;
 
-        List<Contact> obj_Manager_list = buildManagerContact(obj_Account,obj_admincontact);
-        insert obj_Manager_list;
+            obj_Account = RecordUtilityClass.buildAccount();
+            insert obj_Account;
+    
+            obj_admincontact = RecordUtilityClass.buildAdminContact(obj_Account);
+            insert obj_admincontact;       
+    
+            obj_Manager_list = RecordUtilityClass.buildManagerContact(obj_Account,obj_admincontact);
+            insert obj_Manager_list;
+    
+            obj_Driver_list = RecordUtilityClass.buildDriverContact(obj_Account,obj_Manager_list[0]);
+            insert obj_Driver_list;
+            user_1 = new User( 
+                Email = 'yourusername@gmail.com',
+                ProfileId = profile_1.Id, 
+                UserName = 'yourusername@gmail.com', 
+                Alias = 'Test',
+                TimeZoneSidKey = 'America/New_York',
+                EmailEncodingKey = 'ISO-8859-1',
+                LocaleSidKey = 'en_US', 
+                LanguageLocaleKey = 'en_US',
+                ContactId = contact_1.Id,
+                PortalRole = 'Manager',
+                FirstName = 'Firstname',
+                LastName = 'Lastname'
+            );
+            insert user_1;
+        }
+        Test.startTest();
+        System.runAs(user_1) {
+            list<Gas_Prices__c> gaslist = buildGasPrice();
+            insert gaslist;
 
-        List<Contact> obj_Driver_list = buildDriverContact(obj_Account,obj_Manager_list[0]);
-        insert obj_Driver_list;
-
-        list<Gas_Prices__c> gaslist = buildGasPrice();
-        insert gaslist;
-
-        list<Employee_Reimbursement__c> obj_Employee_Reimbursement_list = buildPendingEmployee_Reimbursement(obj_Driver_list);
-        insert obj_Employee_Reimbursement_list;
-        
-        list<Bi_Weekly_Reimbursement__c> empBIweekReimbursementList1 = buildPendingBiReimbursement(obj_Driver_list);
-        insert empBIweekReimbursementList1;
-        
-        List<Employee_Mileage__c> obj_Employee_Mileage_list = buildNoApprovedYetEmployeeMileages(obj_Employee_Reimbursement_list,empBIweekReimbursementList1[0].Id);
-        insert obj_Employee_Mileage_list;
-        
+            list<Employee_Reimbursement__c> obj_Employee_Reimbursement_list = buildPendingEmployee_Reimbursement(obj_Driver_list);
+            insert obj_Employee_Reimbursement_list;
+            
+            list<Bi_Weekly_Reimbursement__c> empBIweekReimbursementList1 = buildPendingBiReimbursement(obj_Driver_list);
+            insert empBIweekReimbursementList1;
+            
+            List<Employee_Mileage__c> obj_Employee_Mileage_list = buildNoApprovedYetEmployeeMileages(obj_Employee_Reimbursement_list,empBIweekReimbursementList1[0].Id);
+            insert obj_Employee_Mileage_list;
+        }
+        Test.stopTest(); 
     }
     public static void createRecordsAdminManagerDriverDashboardCon()
     {

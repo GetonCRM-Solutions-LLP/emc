@@ -54,13 +54,6 @@ public with sharing class RecordUtilityClass_Test {
           );
           insert user_1;
         }
-        
-      /*  Account acc = RecordUtilityClass.buildAccount();
-        insert acc;
-        Contact con = RecordUtilityClass.buildAdminContact(acc);
-        insert con;
-        RecordUtilityClass.buildDriverManagerContact(acc,con);
-      */  
     }
     public static Testmethod void RecordUtilityClass_TestMethod2()
     {
@@ -133,12 +126,14 @@ public with sharing class RecordUtilityClass_Test {
           );
           insert user_1;
         }
-        
-        List<Employee_Reimbursement__c> listEmp = RecordUtilityClass.buildPendingEmployee_Reimbursement(listContactDriver);
-        insert listEmp;
+        Test.startTest();
+        System.runAs(user_1) {
+            List<Employee_Reimbursement__c> listEmp = RecordUtilityClass.buildPendingEmployee_Reimbursement(listContactDriver);
+            insert listEmp;
 
-        RecordUtilityClass.getListofEmployeeReimbursementDetailsAdmin(listEmp);
-        
+            RecordUtilityClass.getListofEmployeeReimbursementDetailsAdmin(listEmp);
+        }
+        Test.stopTest(); 
     }
     
 
@@ -200,9 +195,13 @@ public with sharing class RecordUtilityClass_Test {
             );
             insert user_1;
         }
-        List<Employee_Reimbursement__c> listemp = RecordUtilityClass.buildPendingEmployee_Reimbursement(listContactDriver);
-        insert listemp;
-        RecordUtilityClass.getEmployeeReimbursements(listemp);
+        Test.startTest();
+        System.runAs(user_1) {
+            List<Employee_Reimbursement__c> listemp = RecordUtilityClass.buildPendingEmployee_Reimbursement(listContactDriver);
+            insert listemp;
+            RecordUtilityClass.getEmployeeReimbursements(listemp);
+        }		
+        Test.stopTest(); 
     }
 
     public static Testmethod void RecordUtilityClass_TestMethod6(){
@@ -263,18 +262,21 @@ public with sharing class RecordUtilityClass_Test {
             );
             insert user_1;
         }
-        
-        List<Employee_Reimbursement__c> listemp = RecordUtilityClass.buildPendingEmployee_Reimbursement(listContactDriver);
-        insert listemp;
-        
-        list<Bi_Weekly_Reimbursement__c> empBIweekReimbursementList1 = RecordUtilityClass.buildPendingBiReimbursement(listContactDriver);
-        insert empBIweekReimbursementList1;
-        
-        List<Employee_Mileage__c> obj_Employee_Mileage_list = RecordUtilityClass.buildNoApprovedYetEmployeeMileages(listemp,empBIweekReimbursementList1[0].Id);
-        obj_Employee_Mileage_list[0].Approved_Date__c = Date.today();
-        obj_Employee_Mileage_list[0].Trip_Status__c = StaticValues.noApprovedYet;
-        insert obj_Employee_Mileage_list;
-        RecordUtilityClass.getMileagesOfReimbursement(obj_Employee_Mileage_list[0]);
+        Test.startTest();
+        System.runAs(user_1) {
+            List<Employee_Reimbursement__c> listemp = RecordUtilityClass.buildPendingEmployee_Reimbursement(listContactDriver);
+            insert listemp;
+            
+            list<Bi_Weekly_Reimbursement__c> empBIweekReimbursementList1 = RecordUtilityClass.buildPendingBiReimbursement(listContactDriver);
+            insert empBIweekReimbursementList1;
+            
+            List<Employee_Mileage__c> obj_Employee_Mileage_list = RecordUtilityClass.buildNoApprovedYetEmployeeMileages(listemp,empBIweekReimbursementList1[0].Id);
+            obj_Employee_Mileage_list[0].Approved_Date__c = Date.today();
+            obj_Employee_Mileage_list[0].Trip_Status__c = StaticValues.noApprovedYet;
+            insert obj_Employee_Mileage_list;
+            RecordUtilityClass.getMileagesOfReimbursement(obj_Employee_Mileage_list[0]);
+        }
+        Test.stopTest(); 
     }
 
 }
