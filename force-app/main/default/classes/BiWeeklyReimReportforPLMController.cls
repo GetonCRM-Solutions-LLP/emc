@@ -16,7 +16,7 @@ public class BiWeeklyReimReportforPLMController {
          //String endDate = '2021-08-11';
         String startDate = ApexPages.currentPage().getParameters().get('startDate');
         String endDate = ApexPages.currentPage().getParameters().get('endDate');
-        String[] month = startDate.split('-');
+        String[] month = endDate.split('-');
         String monthValue = month[1]+ '-' +month[0];
          System.debug('monthValue==' +monthValue);
         BiweeklyWrapperList = new List<ReibursementWrapper>();
