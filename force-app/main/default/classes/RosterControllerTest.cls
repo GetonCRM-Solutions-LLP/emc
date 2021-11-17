@@ -30,6 +30,7 @@ public class RosterControllerTest {
         List<Contact> obj_Driver_list;
         Contact obj_Contact2;
         List<Contact> obj_Driver_list1;
+        Contact obj_Manager_list1;
         System.runAs(admin) {
             obj_Account = RecordUtilityClass.buildAccount();
             obj_Account.Vehicle_Types__c ='2020 Dodge Charger';
@@ -51,26 +52,27 @@ public class RosterControllerTest {
             obj_Driver_list1.add(obj_Driver_list[i]);
             }
             insert obj_Driver_list1;
-          
-          user_1 = new User( 
-            Email = 'yourusername@gmail.com',
-            ProfileId = profile_1.Id, 
-            UserName = 'yourusername@gmail.com', 
-            Alias = 'Test',
-            TimeZoneSidKey = 'America/New_York',
-            EmailEncodingKey = 'ISO-8859-1',
-            LocaleSidKey = 'en_US', 
-            LanguageLocaleKey = 'en_US',
-            ContactId = contact_1.Id,
-            PortalRole = 'Manager',
-            FirstName = 'Firstname',
-            LastName = 'Lastname'
-          );
-          insert user_1;
+
+            obj_Manager_list1 = new Contact();
+            obj_Manager_list1 = RecordUtilityClass.getManagerContact();
+
+            user_1 = new User( 
+                Email = 'yourusername@gmail.com',
+                ProfileId = profile_1.Id, 
+                UserName = 'yourusername@gmail.com', 
+                Alias = 'Test',
+                TimeZoneSidKey = 'America/New_York',
+                EmailEncodingKey = 'ISO-8859-1',
+                LocaleSidKey = 'en_US', 
+                LanguageLocaleKey = 'en_US',
+                ContactId = contact_1.Id,
+                PortalRole = 'Manager',
+                FirstName = 'Firstname',
+                LastName = 'Lastname'
+                );
+            insert user_1;
         }
-        
-        Contact obj_Manager_list1 = new Contact();
-        obj_Manager_list1 = RecordUtilityClass.getManagerContact();
+         
         EmployeeDetails empDetail = WrapperUtils.getEmployeeDetails(obj_Driver_list1[0],120.34,230.43);
         EmployeeDetails empDetail1 = WrapperUtils.getEmployeeDetails(obj_Contact2,120.34,230.43);
          String str = 'Employee_ID__c,Firstname,LastName,External_Email__c,' + 
@@ -164,19 +166,10 @@ public class RosterControllerTest {
 
         List<IRS_Mileage_Rate__c> obj_IRS_Mileage_Rate =  RecordUtilityClass.insertIrsRate();
         Test.startTest();
-        //     RecordUtilityClass.exceptionEmail();
-        //     RecordUtilityClass.createRecordsAdminDashboardController();
-        //     RecordUtilityClass.sendEmailforCompliance();
-        //     RecordUtilityClass.enableMappingGasPriceTrigger();
-        //
-
-        
-
             RosterController ros = new RosterController();
             RosterController.getAccountid();
             RosterController.getContactid();
             RosterController.getRedirected();    
-        
         Test.stopTest();
     }
 }
