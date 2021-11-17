@@ -30,28 +30,56 @@ public class BiWeeklyReimReportforPLMControllerTest {
         
         insert irs;
         
-        Account acc = new Account();  
-        acc.Name = 'PL Marketing';
-        acc.Vehicle_Types__c = veh.name;
-        acc.Triplog_API__c = '8e0ac6d1e82a439faaef1fdf0dc707b1';
-        Acc.Triplog_Status__c = 'U';
-        insert Acc;
-        
-        Contact contact = new Contact();
-        contact.lastname = 'Test Contact';
-        contact.AccountId = System.Label.PLMarketing;
-        contact.Vehicle_Type__c = '2019 Mileage Rate';
-        contact.External_Email__c = 'minkesh.patel1478@gmail.com';
-        contact.compliancestatus__c = 'Yes';
-        contact.Deactivated_Date__c = null;
-        contact.Time_Zone__c = 'America/Chicago';
-        contact.MailingCity = 'Abilene';
-        contact.MailingState = 'TX';
-        contact.Driving_States__c = 'TX';
-        contact.Role__c = 'Driver';
-        contact.isCommunityUser__c = true;
-        contact.Fixed_Amount__c = 201.12;
-        insert contact;
+        UserRole userRole_1 = [SELECT Id FROM UserRole WHERE DeveloperName = 'EMD' LIMIT 1];
+        Profile profile_1 = [SELECT Id FROM Profile WHERE Name = 'Customer Community Login User' LIMIT 1];
+        User admin = [SELECT Id, Username, UserRoleId FROM User WHERE Profile.Name = 'System Administrator' AND UserRoleId = :userRole_1.Id LIMIT 1];
+        User user_1;
+
+        Account acc ;
+        Contact contact ;
+        System.runAs(admin) {
+            acc = new Account();  
+            acc.Name = 'PL Marketing';
+            acc.Vehicle_Types__c = veh.name;
+            acc.Triplog_API__c = '8e0ac6d1e82a439faaef1fdf0dc707b1';
+            Acc.Triplog_Status__c = 'U';
+            insert Acc;
+            
+            Contact contact_1 = new Contact(AccountId = Acc.Id, LastName = 'xgeek',External_Email__c= 'abc@gmail.com');
+            insert contact_1;
+
+            contact = new Contact();
+            contact.lastname = 'Test Contact';
+            contact.AccountId = System.Label.PLMarketing;
+            contact.Vehicle_Type__c = '2019 Mileage Rate';
+            contact.External_Email__c = 'minkesh.patel1478@gmail.com';
+            contact.compliancestatus__c = 'Yes';
+            contact.Deactivated_Date__c = null;
+            contact.Time_Zone__c = 'America/Chicago';
+            contact.MailingCity = 'Abilene';
+            contact.MailingState = 'TX';
+            contact.Driving_States__c = 'TX';
+            contact.Role__c = 'Driver';
+            contact.isCommunityUser__c = true;
+            contact.Fixed_Amount__c = 201.12;
+            insert contact;
+
+            user_1 = new User( 
+                Email = 'yourusername@gmail.com',
+                ProfileId = profile_1.Id, 
+                UserName = 'yourusername@gmail.com', 
+                Alias = 'Test',
+                TimeZoneSidKey = 'America/New_York',
+                EmailEncodingKey = 'ISO-8859-1',
+                LocaleSidKey = 'en_US', 
+                LanguageLocaleKey = 'en_US',
+                ContactId = contact_1.Id,
+                PortalRole = 'Manager',
+                FirstName = 'Firstname',
+                LastName = 'Lastname'
+            );
+            insert user_1;
+        }        
         
         Employee_Reimbursement__c er = new Employee_Reimbursement__c();
         er.Contact_Id__c = contact.Id;

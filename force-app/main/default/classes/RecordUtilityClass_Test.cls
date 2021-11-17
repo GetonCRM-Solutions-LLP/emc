@@ -88,8 +88,11 @@ public with sharing class RecordUtilityClass_Test {
         User user_1;
         Account acc;
         Contact con;
-        List<Contact> obj_Manager_list;
-        List<Contact> obj_Driver_list;
+        // List<Contact> obj_Manager_list;
+        // List<Contact> obj_Driver_list;
+        List<Contact> listContactManager;
+        List<Contact> listContactDriver;
+
         System.runAs(admin) {
             Account account_1 = new Account( Name = 'Community'  );
             insert account_1;
@@ -103,11 +106,17 @@ public with sharing class RecordUtilityClass_Test {
             con = RecordUtilityClass.buildAdminContact(acc);
             insert con;       
     
-            obj_Manager_list = RecordUtilityClass.buildManagerContact(acc,con);
-            insert obj_Manager_list;
+            // obj_Manager_list = RecordUtilityClass.buildManagerContact(acc,con);
+            // insert obj_Manager_list;
     
-            obj_Driver_list = RecordUtilityClass.buildDriverContact(acc,obj_Manager_list[0]);
-            insert obj_Driver_list;
+            // obj_Driver_list = RecordUtilityClass.buildDriverContact(acc,obj_Manager_list[0]);
+            // insert obj_Driver_list;
+            
+            listContactManager = RecordUtilityClass.buildManagerContact(acc,con);
+            insert listContactManager;
+
+            listContactDriver = RecordUtilityClass.buildDriverContact(acc,listContactManager[0]);
+            insert listContactDriver;
           user_1 = new User( 
             Email = 'yourusername@gmail.com',
             ProfileId = profile_1.Id, 
@@ -125,21 +134,6 @@ public with sharing class RecordUtilityClass_Test {
           insert user_1;
         }
         
-        
-        /*
-        Account acc = RecordUtilityClass.buildAccount();
-        insert acc;
-
-        Contact con = RecordUtilityClass.buildAdminContact(acc);
-        insert con;
-		*/
-        
-        List<Contact> listContactManager = RecordUtilityClass.buildManagerContact(acc,con);
-        insert listContactManager;
-
-        List<Contact> listContactDriver = RecordUtilityClass.buildDriverContact(acc,listContactManager[0]);
-        insert listContactDriver;
-
         List<Employee_Reimbursement__c> listEmp = RecordUtilityClass.buildPendingEmployee_Reimbursement(listContactDriver);
         insert listEmp;
 
@@ -155,18 +149,16 @@ public with sharing class RecordUtilityClass_Test {
         RecordUtilityClass.enableMappingGasPriceTrigger();
         RecordUtilityClass.vehicleUrlMapping();
         
-        /*
-         * 
-         */
-        
         UserRole userRole_1 = [SELECT Id FROM UserRole WHERE DeveloperName = 'EMD' LIMIT 1];
         Profile profile_1 = [SELECT Id FROM Profile WHERE Name = 'Customer Community Login User' LIMIT 1];
         User admin = [SELECT Id, Username, UserRoleId FROM User WHERE Profile.Name = 'System Administrator' AND UserRoleId = :userRole_1.Id LIMIT 1];
         User user_1;
         Account acc;
         Contact con;
-        List<Contact> obj_Manager_list;
-        List<Contact> obj_Driver_list;
+        // List<Contact> obj_Manager_list;
+        // List<Contact> obj_Driver_list;
+        List<Contact> listContactManager;
+        List<Contact> listContactDriver;
         System.runAs(admin) {
             Account account_1 = new Account( Name = 'Community'  );
             insert account_1;
@@ -180,12 +172,19 @@ public with sharing class RecordUtilityClass_Test {
             con = RecordUtilityClass.buildAdminContact(acc);
             insert con;       
     
-            obj_Manager_list = RecordUtilityClass.buildManagerContact(acc,con);
-            insert obj_Manager_list;
+            // obj_Manager_list = RecordUtilityClass.buildManagerContact(acc,con);
+            // insert obj_Manager_list;
     
-            obj_Driver_list = RecordUtilityClass.buildDriverContact(acc,obj_Manager_list[0]);
-            insert obj_Driver_list;
-          user_1 = new User( 
+            // obj_Driver_list = RecordUtilityClass.buildDriverContact(acc,obj_Manager_list[0]);
+            // insert obj_Driver_list;
+
+            listContactManager = RecordUtilityClass.buildManagerContact(acc,con);
+            insert listContactManager;
+
+            listContactDriver = RecordUtilityClass.buildDriverContact(acc,listContactManager[0]);
+            insert listContactDriver;
+
+            user_1 = new User( 
             Email = 'yourusername@gmail.com',
             ProfileId = profile_1.Id, 
             UserName = 'yourusername@gmail.com', 
@@ -198,34 +197,12 @@ public with sharing class RecordUtilityClass_Test {
             PortalRole = 'Manager',
             FirstName = 'Firstname',
             LastName = 'Lastname'
-          );
-          insert user_1;
+            );
+            insert user_1;
         }
-        
-        
-
-       /*
-         Account acc = RecordUtilityClass.buildAccount();
-        insert acc;
-
-        Contact con = RecordUtilityClass.buildAdminContact(acc);
-        insert con;
-
-		*/
-        
-        List<Contact> listContactManager = RecordUtilityClass.buildManagerContact(acc,con);
-        insert listContactManager;
-
-        List<Contact> listContactDriver = RecordUtilityClass.buildDriverContact(acc,listContactManager[0]);
-        insert listContactDriver;
-            List<Employee_Reimbursement__c> listemp = RecordUtilityClass.buildPendingEmployee_Reimbursement(listContactDriver);
-            insert listemp;
-
-            RecordUtilityClass.getEmployeeReimbursements(listemp);
-            //RecordUtilityClass.getallEmployeeMileages(obj_Employee_Mileage_list);
-            //RecordUtilityClass.createRecordsAdminManagerDriverDashboardCon();
-            //RecordUtilityClass.createRecordsforDriverDashboardFromAdminManager();
-            //RecordUtilityClass.getManagerContact();
+        List<Employee_Reimbursement__c> listemp = RecordUtilityClass.buildPendingEmployee_Reimbursement(listContactDriver);
+        insert listemp;
+        RecordUtilityClass.getEmployeeReimbursements(listemp);
     }
 
     public static Testmethod void RecordUtilityClass_TestMethod6(){
@@ -235,18 +212,16 @@ public with sharing class RecordUtilityClass_Test {
         RecordUtilityClass.enableMappingGasPriceTrigger();
         RecordUtilityClass.vehicleUrlMapping();
 
-       /*
-        */
-        
-        
         UserRole userRole_1 = [SELECT Id FROM UserRole WHERE DeveloperName = 'EMD' LIMIT 1];
         Profile profile_1 = [SELECT Id FROM Profile WHERE Name = 'Customer Community Login User' LIMIT 1];
         User admin = [SELECT Id, Username, UserRoleId FROM User WHERE Profile.Name = 'System Administrator' AND UserRoleId = :userRole_1.Id LIMIT 1];
         User user_1;
         Account acc;
         Contact con;
-        List<Contact> obj_Manager_list;
-        List<Contact> obj_Driver_list;
+        // List<Contact> obj_Manager_list;
+        // List<Contact> obj_Driver_list;
+        List<Contact> listContactManager;
+        List<Contact> listContactDriver;
         System.runAs(admin) {
             Account account_1 = new Account( Name = 'Community'  );
             insert account_1;
@@ -260,41 +235,35 @@ public with sharing class RecordUtilityClass_Test {
             con = RecordUtilityClass.buildAdminContact(acc);
             insert con;       
     
-            obj_Manager_list = RecordUtilityClass.buildManagerContact(acc,con);
-            insert obj_Manager_list;
+            // obj_Manager_list = RecordUtilityClass.buildManagerContact(acc,con);
+            // insert obj_Manager_list;
     
-            obj_Driver_list = RecordUtilityClass.buildDriverContact(acc,obj_Manager_list[0]);
-            insert obj_Driver_list;
-          user_1 = new User( 
-            Email = 'yourusername@gmail.com',
-            ProfileId = profile_1.Id, 
-            UserName = 'yourusername@gmail.com', 
-            Alias = 'Test',
-            TimeZoneSidKey = 'America/New_York',
-            EmailEncodingKey = 'ISO-8859-1',
-            LocaleSidKey = 'en_US', 
-            LanguageLocaleKey = 'en_US',
-            ContactId = contact_1.Id,
-            PortalRole = 'Manager',
-            FirstName = 'Firstname',
-            LastName = 'Lastname'
-          );
-          insert user_1;
+            // obj_Driver_list = RecordUtilityClass.buildDriverContact(acc,obj_Manager_list[0]);
+            // insert obj_Driver_list;
+
+            listContactManager = RecordUtilityClass.buildManagerContact(acc,con);
+            insert listContactManager;
+
+            listContactDriver = RecordUtilityClass.buildDriverContact(acc,listContactManager[0]);
+            insert listContactDriver;
+
+            user_1 = new User( 
+                Email = 'yourusername@gmail.com',
+                ProfileId = profile_1.Id, 
+                UserName = 'yourusername@gmail.com', 
+                Alias = 'Test',
+                TimeZoneSidKey = 'America/New_York',
+                EmailEncodingKey = 'ISO-8859-1',
+                LocaleSidKey = 'en_US', 
+                LanguageLocaleKey = 'en_US',
+                ContactId = contact_1.Id,
+                PortalRole = 'Manager',
+                FirstName = 'Firstname',
+                LastName = 'Lastname'
+            );
+            insert user_1;
         }
         
-        /*
-       Account acc = RecordUtilityClass.buildAccount();
-        insert acc;
-
-        Contact con = RecordUtilityClass.buildAdminContact(acc);
-        insert con;
-		*/
-        
-        List<Contact> listContactManager = RecordUtilityClass.buildManagerContact(acc,con);
-        insert listContactManager;
-
-        List<Contact> listContactDriver = RecordUtilityClass.buildDriverContact(acc,listContactManager[0]);
-        insert listContactDriver;
         List<Employee_Reimbursement__c> listemp = RecordUtilityClass.buildPendingEmployee_Reimbursement(listContactDriver);
         insert listemp;
         
@@ -305,11 +274,7 @@ public with sharing class RecordUtilityClass_Test {
         obj_Employee_Mileage_list[0].Approved_Date__c = Date.today();
         obj_Employee_Mileage_list[0].Trip_Status__c = StaticValues.noApprovedYet;
         insert obj_Employee_Mileage_list;
-
-        
         RecordUtilityClass.getMileagesOfReimbursement(obj_Employee_Mileage_list[0]);
-        //RecordUtilityClass.getMileagesList();
-            
     }
 
 }
