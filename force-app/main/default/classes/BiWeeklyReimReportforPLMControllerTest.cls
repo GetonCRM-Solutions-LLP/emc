@@ -69,6 +69,11 @@ public class BiWeeklyReimReportforPLMControllerTest {
         er.IRS_Mileage_Rate__c = irs.Id;
         insert er;
         
+        Bi_Weekly_Reimbursement__c  biReim = new Bi_Weekly_Reimbursement__c();
+        biReim.Name = '10/17/2021 to 10/30/2021';
+        biReim.Contact__c = contact.Id;
+        insert biReim;
+        
         Employee_Mileage__c emp = new Employee_Mileage__c();
         emp.EmployeeReimbursement__c = er.id;
         emp.Contact_Email_Id__c = contact.External_Email__c;
@@ -80,6 +85,7 @@ public class BiWeeklyReimReportforPLMControllerTest {
         emp.Trip_Date__c = system.today()-10;
         emp.StartTime__c = system.now()-10;
         emp.EndTime__c =  system.now()-10;
+        emp.Bi_Weekly_Reimbursement__c   = biReim.Id;
         insert emp;
         
         Test.startTest();

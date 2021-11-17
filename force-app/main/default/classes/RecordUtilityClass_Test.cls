@@ -11,12 +11,56 @@ public with sharing class RecordUtilityClass_Test {
         RecordUtilityClass.enableMappingGasPriceTrigger();
         RecordUtilityClass.vehicleUrlMapping();
         
-        Account acc = RecordUtilityClass.buildAccount();
+        
+        UserRole userRole_1 = [SELECT Id FROM UserRole WHERE DeveloperName = 'EMD' LIMIT 1];
+        Profile profile_1 = [SELECT Id FROM Profile WHERE Name = 'Customer Community Login User' LIMIT 1];
+        User admin = [SELECT Id, Username, UserRoleId FROM User WHERE Profile.Name = 'System Administrator' AND UserRoleId = :userRole_1.Id LIMIT 1];
+        User user_1;
+        Account obj_Account;
+        Contact obj_admincontact;
+        List<Contact> obj_Manager_list;
+        List<Contact> obj_Driver_list;
+        System.runAs(admin) {
+            Account account_1 = new Account( Name = 'Community'  );
+            insert account_1;
+            
+            Contact contact_1 = new Contact(AccountId = account_1.Id, LastName = 'xgeek',External_Email__c= 'abc@gmail.com');
+            insert contact_1;
+
+            obj_Account = RecordUtilityClass.buildAccount();
+            insert obj_Account;
+    
+            obj_admincontact = RecordUtilityClass.buildAdminContact(obj_Account);
+            insert obj_admincontact;       
+    
+            obj_Manager_list = RecordUtilityClass.buildManagerContact(obj_Account,obj_admincontact);
+            insert obj_Manager_list;
+    
+            obj_Driver_list = RecordUtilityClass.buildDriverContact(obj_Account,obj_Manager_list[0]);
+            insert obj_Driver_list;
+          user_1 = new User( 
+            Email = 'yourusername@gmail.com',
+            ProfileId = profile_1.Id, 
+            UserName = 'yourusername@gmail.com', 
+            Alias = 'Test',
+            TimeZoneSidKey = 'America/New_York',
+            EmailEncodingKey = 'ISO-8859-1',
+            LocaleSidKey = 'en_US', 
+            LanguageLocaleKey = 'en_US',
+            ContactId = contact_1.Id,
+            PortalRole = 'Manager',
+            FirstName = 'Firstname',
+            LastName = 'Lastname'
+          );
+          insert user_1;
+        }
+        
+      /*  Account acc = RecordUtilityClass.buildAccount();
         insert acc;
         Contact con = RecordUtilityClass.buildAdminContact(acc);
         insert con;
         RecordUtilityClass.buildDriverManagerContact(acc,con);
-        
+      */  
     }
     public static Testmethod void RecordUtilityClass_TestMethod2()
     {
@@ -38,12 +82,58 @@ public with sharing class RecordUtilityClass_Test {
         RecordUtilityClass.enableMappingGasPriceTrigger();
         RecordUtilityClass.vehicleUrlMapping();
         
+        UserRole userRole_1 = [SELECT Id FROM UserRole WHERE DeveloperName = 'EMD' LIMIT 1];
+        Profile profile_1 = [SELECT Id FROM Profile WHERE Name = 'Customer Community Login User' LIMIT 1];
+        User admin = [SELECT Id, Username, UserRoleId FROM User WHERE Profile.Name = 'System Administrator' AND UserRoleId = :userRole_1.Id LIMIT 1];
+        User user_1;
+        Account acc;
+        Contact con;
+        List<Contact> obj_Manager_list;
+        List<Contact> obj_Driver_list;
+        System.runAs(admin) {
+            Account account_1 = new Account( Name = 'Community'  );
+            insert account_1;
+            
+            Contact contact_1 = new Contact(AccountId = account_1.Id, LastName = 'xgeek',External_Email__c= 'abc@gmail.com');
+            insert contact_1;
+
+            acc = RecordUtilityClass.buildAccount();
+            insert acc;
+    
+            con = RecordUtilityClass.buildAdminContact(acc);
+            insert con;       
+    
+            obj_Manager_list = RecordUtilityClass.buildManagerContact(acc,con);
+            insert obj_Manager_list;
+    
+            obj_Driver_list = RecordUtilityClass.buildDriverContact(acc,obj_Manager_list[0]);
+            insert obj_Driver_list;
+          user_1 = new User( 
+            Email = 'yourusername@gmail.com',
+            ProfileId = profile_1.Id, 
+            UserName = 'yourusername@gmail.com', 
+            Alias = 'Test',
+            TimeZoneSidKey = 'America/New_York',
+            EmailEncodingKey = 'ISO-8859-1',
+            LocaleSidKey = 'en_US', 
+            LanguageLocaleKey = 'en_US',
+            ContactId = contact_1.Id,
+            PortalRole = 'Manager',
+            FirstName = 'Firstname',
+            LastName = 'Lastname'
+          );
+          insert user_1;
+        }
+        
+        
+        /*
         Account acc = RecordUtilityClass.buildAccount();
         insert acc;
 
         Contact con = RecordUtilityClass.buildAdminContact(acc);
         insert con;
-
+		*/
+        
         List<Contact> listContactManager = RecordUtilityClass.buildManagerContact(acc,con);
         insert listContactManager;
 
@@ -64,13 +154,65 @@ public with sharing class RecordUtilityClass_Test {
         RecordUtilityClass.sendEmailforCompliance();
         RecordUtilityClass.enableMappingGasPriceTrigger();
         RecordUtilityClass.vehicleUrlMapping();
+        
+        /*
+         * 
+         */
+        
+        UserRole userRole_1 = [SELECT Id FROM UserRole WHERE DeveloperName = 'EMD' LIMIT 1];
+        Profile profile_1 = [SELECT Id FROM Profile WHERE Name = 'Customer Community Login User' LIMIT 1];
+        User admin = [SELECT Id, Username, UserRoleId FROM User WHERE Profile.Name = 'System Administrator' AND UserRoleId = :userRole_1.Id LIMIT 1];
+        User user_1;
+        Account acc;
+        Contact con;
+        List<Contact> obj_Manager_list;
+        List<Contact> obj_Driver_list;
+        System.runAs(admin) {
+            Account account_1 = new Account( Name = 'Community'  );
+            insert account_1;
+            
+            Contact contact_1 = new Contact(AccountId = account_1.Id, LastName = 'xgeek',External_Email__c= 'abc@gmail.com');
+            insert contact_1;
 
-        Account acc = RecordUtilityClass.buildAccount();
+            acc = RecordUtilityClass.buildAccount();
+            insert acc;
+    
+            con = RecordUtilityClass.buildAdminContact(acc);
+            insert con;       
+    
+            obj_Manager_list = RecordUtilityClass.buildManagerContact(acc,con);
+            insert obj_Manager_list;
+    
+            obj_Driver_list = RecordUtilityClass.buildDriverContact(acc,obj_Manager_list[0]);
+            insert obj_Driver_list;
+          user_1 = new User( 
+            Email = 'yourusername@gmail.com',
+            ProfileId = profile_1.Id, 
+            UserName = 'yourusername@gmail.com', 
+            Alias = 'Test',
+            TimeZoneSidKey = 'America/New_York',
+            EmailEncodingKey = 'ISO-8859-1',
+            LocaleSidKey = 'en_US', 
+            LanguageLocaleKey = 'en_US',
+            ContactId = contact_1.Id,
+            PortalRole = 'Manager',
+            FirstName = 'Firstname',
+            LastName = 'Lastname'
+          );
+          insert user_1;
+        }
+        
+        
+
+       /*
+         Account acc = RecordUtilityClass.buildAccount();
         insert acc;
 
         Contact con = RecordUtilityClass.buildAdminContact(acc);
         insert con;
 
+		*/
+        
         List<Contact> listContactManager = RecordUtilityClass.buildManagerContact(acc,con);
         insert listContactManager;
 
@@ -93,12 +235,61 @@ public with sharing class RecordUtilityClass_Test {
         RecordUtilityClass.enableMappingGasPriceTrigger();
         RecordUtilityClass.vehicleUrlMapping();
 
-        Account acc = RecordUtilityClass.buildAccount();
+       /*
+        */
+        
+        
+        UserRole userRole_1 = [SELECT Id FROM UserRole WHERE DeveloperName = 'EMD' LIMIT 1];
+        Profile profile_1 = [SELECT Id FROM Profile WHERE Name = 'Customer Community Login User' LIMIT 1];
+        User admin = [SELECT Id, Username, UserRoleId FROM User WHERE Profile.Name = 'System Administrator' AND UserRoleId = :userRole_1.Id LIMIT 1];
+        User user_1;
+        Account acc;
+        Contact con;
+        List<Contact> obj_Manager_list;
+        List<Contact> obj_Driver_list;
+        System.runAs(admin) {
+            Account account_1 = new Account( Name = 'Community'  );
+            insert account_1;
+            
+            Contact contact_1 = new Contact(AccountId = account_1.Id, LastName = 'xgeek',External_Email__c= 'abc@gmail.com');
+            insert contact_1;
+
+            acc = RecordUtilityClass.buildAccount();
+            insert acc;
+    
+            con = RecordUtilityClass.buildAdminContact(acc);
+            insert con;       
+    
+            obj_Manager_list = RecordUtilityClass.buildManagerContact(acc,con);
+            insert obj_Manager_list;
+    
+            obj_Driver_list = RecordUtilityClass.buildDriverContact(acc,obj_Manager_list[0]);
+            insert obj_Driver_list;
+          user_1 = new User( 
+            Email = 'yourusername@gmail.com',
+            ProfileId = profile_1.Id, 
+            UserName = 'yourusername@gmail.com', 
+            Alias = 'Test',
+            TimeZoneSidKey = 'America/New_York',
+            EmailEncodingKey = 'ISO-8859-1',
+            LocaleSidKey = 'en_US', 
+            LanguageLocaleKey = 'en_US',
+            ContactId = contact_1.Id,
+            PortalRole = 'Manager',
+            FirstName = 'Firstname',
+            LastName = 'Lastname'
+          );
+          insert user_1;
+        }
+        
+        /*
+       Account acc = RecordUtilityClass.buildAccount();
         insert acc;
 
         Contact con = RecordUtilityClass.buildAdminContact(acc);
         insert con;
-
+		*/
+        
         List<Contact> listContactManager = RecordUtilityClass.buildManagerContact(acc,con);
         insert listContactManager;
 
