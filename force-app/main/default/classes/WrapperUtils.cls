@@ -127,12 +127,12 @@ public with sharing class WrapperUtils
         } else {
             currentEmployeeDetail.monthlymileage ='';
         }
-        if(String.isNotBlank(String.valueOf(currentContact.Monthly__c))) {
+        if(String.isNotBlank(String.valueOf(currentContact.Final_Payroll_Amount__c))) {
             currentEmployeeDetail.finalPayrollAmount = String.valueOf(currentContact.Final_Payroll_Amount__c);
         } else {
             currentEmployeeDetail.finalPayrollAmount ='';
         }
-        if(String.isNotBlank(String.valueOf(currentContact.Monthly__c))) {
+        if(String.isNotBlank(String.valueOf(currentContact.First_Payroll__c))) {
             currentEmployeeDetail.firstPayrollPer = String.valueOf(currentContact.First_Payroll__c);
         } else {
             currentEmployeeDetail.firstPayrollPer ='';
@@ -376,7 +376,8 @@ public with sharing class WrapperUtils
         currentContact.Vehicle_Type__c = currentEmployeeDetail.vehicalType;
         if(String.isNotBlank(currentEmployeeDetail.finalPayrollAmount)){
             currentContact.Final_Payroll_Amount__c = Decimal.valueOf(currentEmployeeDetail.finalPayrollAmount);
-            system.debug('currentEmployeeDetail.Final_Payroll_Amount__c'+ currentContact.Final_Payroll_Amount__c);
+        } else {
+            currentContact.Final_Payroll_Amount__c = null;
         }
         if(String.isNotBlank(currentEmployeeDetail.firstPayrollPer)){
             currentContact.First_Payroll__c = currentEmployeeDetail.firstPayrollPer;
@@ -828,10 +829,8 @@ public with sharing class WrapperUtils
         if(String.isNotBlank(currentEmployeeDetail.divison)){
          currentContact.Division__c = Decimal.valueOf(currentEmployeeDetail.divison) ;
         }
-        system.debug('currentEmployeeDetail.finalPayrollAmount');
         if(String.isNotBlank(currentEmployeeDetail.finalPayrollAmount)){
             currentContact.Final_Payroll_Amount__c = Decimal.valueOf(currentEmployeeDetail.finalPayrollAmount);
-            system.debug('currentEmployeeDetail.Final_Payroll_Amount__c'+ currentContact.Final_Payroll_Amount__c);
         }
        
         if(String.isNotBlank(currentEmployeeDetail.firstPayrollPer)){
