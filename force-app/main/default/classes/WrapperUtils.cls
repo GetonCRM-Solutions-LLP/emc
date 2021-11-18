@@ -127,7 +127,16 @@ public with sharing class WrapperUtils
         } else {
             currentEmployeeDetail.monthlymileage ='';
         }
-
+        if(String.isNotBlank(String.valueOf(currentContact.Final_Payroll_Amount__c))) {
+            currentEmployeeDetail.finalPayrollAmount = String.valueOf(currentContact.Final_Payroll_Amount__c);
+        } else {
+            currentEmployeeDetail.finalPayrollAmount ='';
+        }
+        if(String.isNotBlank(String.valueOf(currentContact.First_Payroll__c))) {
+            currentEmployeeDetail.firstPayrollPer = String.valueOf(currentContact.First_Payroll__c);
+        } else {
+            currentEmployeeDetail.firstPayrollPer ='';
+        }
         if(currentContact.Sage_100_ID__c!=null) {
             currentEmployeeDetail.sage100ID = currentContact.Sage_100_ID__c;
         } else {
@@ -365,6 +374,14 @@ public with sharing class WrapperUtils
         currentContact.Job_Title__c = currentEmployeeDetail.jobtitle;
         currentContact.Manager__c = currentEmployeeDetail.managerId;
         currentContact.Vehicle_Type__c = currentEmployeeDetail.vehicalType;
+        if(String.isNotBlank(currentEmployeeDetail.finalPayrollAmount)){
+            currentContact.Final_Payroll_Amount__c = Decimal.valueOf(currentEmployeeDetail.finalPayrollAmount);
+        } else {
+            currentContact.Final_Payroll_Amount__c = null;
+        }
+        if(String.isNotBlank(currentEmployeeDetail.firstPayrollPer)){
+            currentContact.First_Payroll__c = currentEmployeeDetail.firstPayrollPer;
+        }
         if(currentEmployeeDetail.lastPayDate  !=  null)
         {
             List<String> lastPaydateSplitted = new List<String>();
@@ -720,6 +737,7 @@ public with sharing class WrapperUtils
     }
     public static Contact getNewContact(EmployeeDetails currentEmployeeDetail)
     {
+        system.debug('getNewContact');
         Contact currentContact = new Contact();       
         currentContact.firstname=currentEmployeeDetail.firstName;
         currentContact.lastname = currentEmployeeDetail.lastName;
@@ -745,16 +763,13 @@ public with sharing class WrapperUtils
         {
             currentContact.Branch_Name__c ='';
         }
-         if(String.IsNotBlank(currentEmployeeDetail.branchNumber))
+        if(String.IsNotBlank(currentEmployeeDetail.branchNumber))
         {
             currentContact.Branch_Number__c = String.valueOf(currentEmployeeDetail.branchNumber);
-        }
-        else 
-        {
+        } else {
             currentContact.Branch_Number__c ='';
         } 
-        if(currentEmployeeDetail.cellphone!=null)
-        {
+        if(currentEmployeeDetail.cellphone!=null) {
             currentContact.Phone = currentEmployeeDetail.cellphone;
             currentContact.MobilePhone = currentEmployeeDetail.cellphone;
         }
@@ -813,6 +828,13 @@ public with sharing class WrapperUtils
         currentContact.Department = currentEmployeeDetail.deptPL ;
         if(String.isNotBlank(currentEmployeeDetail.divison)){
          currentContact.Division__c = Decimal.valueOf(currentEmployeeDetail.divison) ;
+        }
+        if(String.isNotBlank(currentEmployeeDetail.finalPayrollAmount)){
+            currentContact.Final_Payroll_Amount__c = Decimal.valueOf(currentEmployeeDetail.finalPayrollAmount);
+        }
+       
+        if(String.isNotBlank(currentEmployeeDetail.firstPayrollPer)){
+            currentContact.First_Payroll__c = currentEmployeeDetail.firstPayrollPer;
         }
         currentContact.Driver_Type__c = currentEmployeeDetail.driverType;
         currentContact.Employee_Netchex_Id__c = currentEmployeeDetail.netchexEmployeeID;

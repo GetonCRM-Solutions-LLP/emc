@@ -16,7 +16,7 @@ public class BiWeeklyReimReportforPLMController {
          //String endDate = '2021-08-11';
         String startDate = ApexPages.currentPage().getParameters().get('startDate');
         String endDate = ApexPages.currentPage().getParameters().get('endDate');
-        String[] month = startDate.split('-');
+        String[] month = endDate.split('-');
         String monthValue = month[1]+ '-' +month[0];
          System.debug('monthValue==' +monthValue);
         BiweeklyWrapperList = new List<ReibursementWrapper>();
@@ -27,7 +27,6 @@ public class BiWeeklyReimReportforPLMController {
         for(AggregateResult ar : [SELECT EmployeeReimbursement__r.Contact_Id__c rid, SUM(Variable__c) rtotal 
                                 FROM Employee_Mileage__c 
                                 WHERE EmployeeReimbursement__r.Contact_Id__r.AccountId =: System.Label.PLMarketing
-                                        AND EmployeeReimbursement__r.Contact_Id__r.Deactivated_Date__c = null
                                         AND Trip_Status__c = 'Approved'
                                         AND Trip_Date__c >= : Date.valueOf(startDate)
                                         AND Trip_Date__c <= : Date.valueOf(endDate) group by EmployeeReimbursement__r.Contact_Id__c]) {

@@ -65,7 +65,10 @@ public class WrapperUtils_Test {
         list<Employee_Reimbursement__c> obj_Employee_Reimbursement_list = RecordUtilityClass.buildPendingEmployee_Reimbursement(obj_Driver_list);
         insert obj_Employee_Reimbursement_list;       
         
-        List<Employee_Mileage__c> obj_Employee_Mileage_list = RecordUtilityClass.buildNoApprovedYetEmployeeMileages(obj_Employee_Reimbursement_list);
+        list<Bi_Weekly_Reimbursement__c> empBIweekReimbursementList1 = RecordUtilityClass.buildPendingBiReimbursement(obj_Driver_list);
+        insert empBIweekReimbursementList1;
+        
+        List<Employee_Mileage__c> obj_Employee_Mileage_list = RecordUtilityClass.buildNoApprovedYetEmployeeMileages(obj_Employee_Reimbursement_list, empBIweekReimbursementList1[0].id);
         insert obj_Employee_Mileage_list;
 
         List<Employee_Reimbursement__c> obj_newreimbursements = new List<Employee_Reimbursement__c>();
@@ -122,7 +125,9 @@ public class WrapperUtils_Test {
             
         }
         insert obj_newreimbursements;
-        List<Employee_Mileage__c> obj_Employee_Mileage_list1 = RecordUtilityClass.buildNoApprovedYetEmployeeMileages(obj_newreimbursements);
+        
+        
+        List<Employee_Mileage__c> obj_Employee_Mileage_list1 = RecordUtilityClass.buildNoApprovedYetEmployeeMileages(obj_newreimbursements, empBIweekReimbursementList1[0].Id);
         insert obj_Employee_Mileage_list1;
 
         List<Employee_Reimbursement__c> obj_Employee_Reimbursement_List3 = RecordUtilityClass.getEmployee_Reimbursement(obj_Account.id);
@@ -323,7 +328,10 @@ public class WrapperUtils_Test {
         empClass = WrapperUtils.getEmployeeReimbursementDetails(obj_Employee_Reimbursement_list[0]); 
         WrapperUtils.getMonthNamefromno(11);
         
-        List<Employee_Mileage__c> obj_Employee_Mileage_list = RecordUtilityClass.buildNoApprovedYetEmployeeMileages(obj_Employee_Reimbursement_list);
+        list<Bi_Weekly_Reimbursement__c> empBIweekReimbursementList2 = RecordUtilityClass.buildPendingBiReimbursement(obj_Driver_list);
+        insert empBIweekReimbursementList2;
+        
+        List<Employee_Mileage__c> obj_Employee_Mileage_list = RecordUtilityClass.buildNoApprovedYetEmployeeMileages(obj_Employee_Reimbursement_list, empBIweekReimbursementList2[0].Id);
         insert obj_Employee_Mileage_list;
 
         List<Employee_Reimbursement__c> obj_newreimbursements = new List<Employee_Reimbursement__c>();
@@ -381,7 +389,10 @@ public class WrapperUtils_Test {
         }
         insert obj_newreimbursements;
     
-        List<Employee_Mileage__c> obj_Employee_Mileage_list1 = RecordUtilityClass.buildNoApprovedYetEmployeeMileages(obj_newreimbursements);
+        list<Bi_Weekly_Reimbursement__c> empBIweekReimbursementList3 = RecordUtilityClass.buildPendingBiReimbursement(obj_Driver_list);
+        insert empBIweekReimbursementList3;
+        
+        List<Employee_Mileage__c> obj_Employee_Mileage_list1 = RecordUtilityClass.buildNoApprovedYetEmployeeMileages(obj_newreimbursements , empBIweekReimbursementList3[0].Id);
         insert obj_Employee_Mileage_list1;
 
         List<Employee_Reimbursement__c> obj_Employee_Reimbursement_List3 = RecordUtilityClass.getEmployee_Reimbursement(obj_Account.id);
@@ -571,9 +582,12 @@ public class WrapperUtils_Test {
         insert gaslist;
 
         list<Employee_Reimbursement__c> obj_Employee_Reimbursement_list = RecordUtilityClass.buildPendingEmployee_Reimbursement(obj_Driver_list);
-        insert obj_Employee_Reimbursement_list;       
+        insert obj_Employee_Reimbursement_list;  
         
-        List<Employee_Mileage__c> obj_Employee_Mileage_list = RecordUtilityClass.buildNoApprovedYetEmployeeMileages(obj_Employee_Reimbursement_list);
+        list<Bi_Weekly_Reimbursement__c> empBIweekReimbursementList4 = RecordUtilityClass.buildPendingBiReimbursement(obj_Driver_list);
+        insert empBIweekReimbursementList4;
+        
+        List<Employee_Mileage__c> obj_Employee_Mileage_list = RecordUtilityClass.buildNoApprovedYetEmployeeMileages(obj_Employee_Reimbursement_list, empBIweekReimbursementList4[0].id);
         insert obj_Employee_Mileage_list;
 
         List<Employee_Reimbursement__c> obj_newreimbursements = new List<Employee_Reimbursement__c>();
@@ -630,8 +644,11 @@ public class WrapperUtils_Test {
             
         }
         insert obj_newreimbursements;
+        
+         list<Bi_Weekly_Reimbursement__c> empBIweekReimbursementList5 = RecordUtilityClass.buildPendingBiReimbursement(obj_Driver_list);
+        insert empBIweekReimbursementList5;
     
-        List<Employee_Mileage__c> obj_Employee_Mileage_list1 = RecordUtilityClass.buildNoApprovedYetEmployeeMileages(obj_newreimbursements);
+        List<Employee_Mileage__c> obj_Employee_Mileage_list1 = RecordUtilityClass.buildNoApprovedYetEmployeeMileages(obj_newreimbursements, empBIweekReimbursementList5[0].id);
         insert obj_Employee_Mileage_list1;
 
         List<Employee_Reimbursement__c> obj_Employee_Reimbursement_List3 = RecordUtilityClass.getEmployee_Reimbursement(obj_Account.id);
@@ -749,6 +766,8 @@ public class WrapperUtils_Test {
                 WrapperUtils.approveReimbursements('2019',obj_Driver_list[0].id,obj_Account.id,JSON.serialize(obj_EmployeeReimbursements_list2));
                 WrapperUtils.updateLockDate(obj_Account.id,obj_Driver_list[0].id);
                 WrapperUtils.readFromFileInchunk('test',att.Name,String.valueOf(att.Id),String.valueOf(obj_Driver_list[0].Id),String.valueOf(obj_Account.Id),null);
+                WrapperUtils.getUnapprovedReimbursements(String.valueOf(obj_Driver_list[0].Id), String.valueOf(obj_Account.Id), true, 'Driver');
+                //WrapperUtils.approveMileagesClone1(String.valueOf(obj_list_mileages[0].Id));
             }
         Test.stopTest();   
     }
