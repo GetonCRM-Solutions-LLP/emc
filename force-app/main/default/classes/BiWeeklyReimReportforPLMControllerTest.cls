@@ -26,8 +26,7 @@ public class BiWeeklyReimReportforPLMControllerTest {
         
         IRS_Mileage_Rate__c irs = new IRS_Mileage_Rate__c();
         irs.year__c = '2021';
-        irs.IRS_Rate__c = 0.85;
-        
+        irs.IRS_Rate__c = 0.85;        
         insert irs;
         
         UserRole userRole_1 = [SELECT Id FROM UserRole WHERE DeveloperName = 'EMD' LIMIT 1];
