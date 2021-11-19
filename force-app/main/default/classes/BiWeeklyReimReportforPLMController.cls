@@ -21,19 +21,25 @@ public class BiWeeklyReimReportforPLMController {
          System.debug('monthValue==' +monthValue);
         BiweeklyWrapperList = new List<ReibursementWrapper>();
         Map<Id, Decimal> idVsVariableMap = new Map<Id, Decimal>();
+        Map<Id, Decimal> idVsMileageMap = new Map<Id, Decimal>();
         Map<Id, Decimal> idVsHalfFixedAmountMap = new Map<Id, Decimal>();
         Map<Id, Decimal> idVsHalfReimMap = new Map<Id, Decimal>();
+        Map<Id, Decimal> idVsIRSMap = new Map<Id, Decimal>();
         Map<Id, Decimal> DivisionMap = new Map<Id,decimal>();
-        for(AggregateResult ar : [SELECT EmployeeReimbursement__r.Contact_Id__c rid, SUM(Variable__c) rtotal 
+        for(AggregateResult ar : [SELECT EmployeeReimbursement__r.Contact_Id__c rid, SUM(Variable__c) rtotal,
+                                        SUM(Mileage__c) mtotal
                                 FROM Employee_Mileage__c 
                                 WHERE EmployeeReimbursement__r.Contact_Id__r.AccountId =: System.Label.PLMarketing
                                         AND Trip_Status__c = 'Approved'
                                         AND Trip_Date__c >= : Date.valueOf(startDate)
                                         AND Trip_Date__c <= : Date.valueOf(endDate) group by EmployeeReimbursement__r.Contact_Id__c]) {
                                             idVsVariableMap.put((Id)ar.get('rid'), (Decimal) ar.get('rtotal')); 
+                                            idVsMileageMap.put((Id)ar.get('rid'), (Decimal) ar.get('mtotal')); 
         }
         System.debug('idVsVariableMap=='+ idVsVariableMap);
-        for(Employee_Reimbursement__c reimHalfFixedAmount : [SELECT id,Fixed_Amount__c,Half_Fixed_Amount__c,Contact_Id__c,Contact_Id__r.Division__c 
+        for(Employee_Reimbursement__c reimHalfFixedAmount : [SELECT id,Fixed_Amount__c,Half_Fixed_Amount__c,
+                                                                    Contact_Id__c,Contact_Id__r.Division__c,
+                                                                    IRS_Mileage_Rate__r.IRS_Rate__c 
                                         FROM  Employee_Reimbursement__c
                                         WHERE 
                                             Contact_Id__r.AccountId =: System.Label.PLMarketing
@@ -41,6 +47,9 @@ public class BiWeeklyReimReportforPLMController {
                                         
                                         DivisionMap.put(reimHalfFixedAmount.Contact_Id__c, reimHalfFixedAmount.Contact_Id__r.Division__c );                                                                                                                               
                                         idVsHalfFixedAmountMap.put(reimHalfFixedAmount.Contact_Id__c, reimHalfFixedAmount.Half_Fixed_Amount__c); 
+                                        if(reimHalfFixedAmount.IRS_Mileage_Rate__r.IRS_Rate__c != null){
+                                            idVsIRSMap.put(reimHalfFixedAmount.Contact_Id__c, reimHalfFixedAmount.IRS_Mileage_Rate__r.IRS_Rate__c); 
+                                        }                                        
                                         if(idVsVariableMap.containsKey(reimHalfFixedAmount.Contact_Id__c)){
                                             idVsHalfReimMap.put(reimHalfFixedAmount.Contact_Id__c, idVsVariableMap.get(reimHalfFixedAmount.Contact_Id__c) + reimHalfFixedAmount.Half_Fixed_Amount__c); 
                                         } else {
@@ -51,7 +60,7 @@ public class BiWeeklyReimReportforPLMController {
                                        System.debug('idVsHalfFixedAmountMap=='+ idVsHalfFixedAmountMap);
          System.debug('DivisionMap=='+ DivisionMap);
             System.debug('idVsHalfReimMap=='+ idVsHalfReimMap);
-         for(Contact currentContact : [SELECT id,Employee_ID__c,Name,
+         for(Contact currentContact : [SELECT id,Employee_ID__c,Name,Job_Title__c,
                                                 External_Email__c,Division__c,
                                                 Fixed_Amount__c,Deactivated_Date__c
                                        FROM Contact 
@@ -63,10 +72,16 @@ public class BiWeeklyReimReportforPLMController {
             objWrapper.Name = currentContact.Name;
             objWrapper.EmployeeId = currentContact.Employee_ID__c;
             objWrapper.Email = currentContact.External_Email__c;
+            objWrapper.JobTitle = currentContact.Job_Title__c;
             if(idVsVariableMap.containsKey(currentContact.Id)){
                 objWrapper.BiWeeklyVariableAmount = (idVsVariableMap.get(currentContact.Id)).setScale(2);
             } else {
                 objWrapper.BiWeeklyVariableAmount = 0;
+            }
+            if(idVsMileageMap.containsKey(currentContact.Id)){
+                objWrapper.BiWeeklyMileage = (idVsMileageMap.get(currentContact.Id)).setScale(2);
+            } else {
+                objWrapper.BiWeeklyMileage = 0;
             }
             if(idVsHalfFixedAmountMap.containsKey(currentContact.Id)){
                 objWrapper.BiWeeklyFixedAmount = (idVsHalfFixedAmountMap.get(currentContact.Id)).setScale(2);
@@ -78,7 +93,15 @@ public class BiWeeklyReimReportforPLMController {
             } else {
                 objWrapper.BiWeeklyTotalReim = 0;
             }
-            
+            Decimal IRSRate;
+            if(idVsIRSMap.containsKey(currentContact.Id)){
+                IRSRate = (idVsIRSMap.get(currentContact.Id)).setScale(2);
+            } else {
+                IRSRate = 0;
+            }
+            objWrapper.payPeriodDate = startDate +' to '+ endDate;
+            Decimal MaxAllowable = (objWrapper.BiWeeklyMileage * IRSRate).setScale(2);
+            objWrapper.ImputedIncome = (objWrapper.BiWeeklyTotalReim - MaxAllowable).setScale(2);
             objWrapper.Division = String.valueOf(currentContact.Division__c);
             if(currentContact.Deactivated_Date__c != null && Date.valueOf(startDate) < date.valueOf(currentContact.Deactivated_Date__c)){
                 BiweeklyWrapperList.add(objWrapper); 
@@ -94,10 +117,14 @@ public class BiWeeklyReimReportforPLMController {
         public string Name { get; set; }
         public string EmployeeId { get; set; }
         public string Email { get; set; }
+        public string JobTitle { get; set; }
+        public string payPeriodDate { get; set; }
         public Decimal BiWeeklyFixedAmount { get; set; }
         public Decimal BiWeeklyVariableAmount { get; set; }
         public Decimal BiWeeklyTotalReim { get; set; }
+        public Decimal BiWeeklyMileage { get; set; }
         public String Division {get; set;} 
+        public Decimal ImputedIncome {get; set;} 
         public ReibursementWrapper(){
         }
     }
