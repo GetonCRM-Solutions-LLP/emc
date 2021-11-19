@@ -1170,6 +1170,10 @@
                             modalElement.modal(newValue ? 'show' : 'hide');
                         });
 
+
+                        scope.cancelModal = function () {
+                            location.reload();
+                        }
                         element.on('shown.bs.modal', function () {
                             scope.$apply(function () {
                                 scope.model.visible = true;
@@ -1182,7 +1186,7 @@
                             });
                         });
                     },
-                    template: '<div class="modal fade show" tabindex="-1" role="dialog"><div class="modal-dialog modal-dialog-centered"><div class="modal-content rounded-0"> <button type="button" class="close popup-close-btn" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span> </button><div class="modal-body"><form name="signup" class="form" novalidate="true"><div class="form-group-theme row"><label for="inputActivationdate:" class="col-xl-5 col-lg-5 col-md-5 col-sm-5 col-form-label form-lable">Deactivation Date:</label><div class="col-xl-7 col-lg-7 col-md-7 col-sm-7"><div class="input-group"> <input id="adminroster-deactivationdatepicker" class="form-control rounded-0" placeholder="Select Deactivation Date" required="true" ng-model="model.emp.deactivaedDate" /><div class="input-group-prepend" id=""><span class="input-group-text"><i class="fas fa-calendar-alt"></i></span></div></div></div></div><div class="form-group-theme row" ng-if="accid === PLMarketing"><label for="inputActivationdate:" class="col-xl-5 col-lg-5 col-md-5 col-sm-5 col-form-label form-lable">Final Payroll Amount:</label><div class="col-xl-7 col-lg-7 col-md-7 col-sm-7"><input class="form-control rounded-0 numinput" ng-model="model.emp.finalPayrollAmount" /></div></div></div><div class="form-group justify-content-center text-center"> <button type="button" class="btn btn-primary" data-dismiss="modal">Select</button> <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button></div></form></div></div></div></div>'
+                    template: '<div class="modal fade show" tabindex="-1" role="dialog"><div class="modal-dialog modal-dialog-centered"><div class="modal-content rounded-0"> <button type="button" class="close popup-close-btn" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span> </button><div class="modal-body"><form name="signup" class="form" novalidate="true"><div class="form-group-theme row"><label for="inputActivationdate:" class="col-xl-5 col-lg-5 col-md-5 col-sm-5 col-form-label form-lable">Deactivation Date:</label><div class="col-xl-7 col-lg-7 col-md-7 col-sm-7"><div class="input-group"> <input id="adminroster-deactivationdatepicker" class="form-control rounded-0" placeholder="Select Deactivation Date" required="true" ng-model="model.emp.deactivaedDate" /><div class="input-group-prepend" id=""><span class="input-group-text"><i class="fas fa-calendar-alt"></i></span></div></div></div></div><div class="form-group-theme row" ng-if="accid === PLMarketing"><label for="inputActivationdate:" class="col-xl-5 col-lg-5 col-md-5 col-sm-5 col-form-label form-lable">Final Payroll Amount:</label><div class="col-xl-7 col-lg-7 col-md-7 col-sm-7"><input class="form-control rounded-0 numinput" ng-model="model.emp.finalPayrollAmount" /></div></div></div><div class="form-group justify-content-center text-center"> <button type="button" class="btn btn-primary" data-dismiss="modal">Select</button> <button type="button" class="btn btn-secondary" data-dismiss="modal" ng-click="cancelModal()">Cancel</button></div></form></div></div></div></div>'
                 };
             }]);
 
@@ -1502,6 +1506,9 @@
             $scope.loadDatePicker = function (deactivateDate) { /*, lastPayDate*/
                 c(deactivateDate);
                 loaddatepicker(deactivateDate); /*, lastPayDate*/
+                setTimeout(function () {
+                    refreshForm();
+                }, 10)
             }
 
             /* For Hide Tab*/
@@ -1532,7 +1539,7 @@
                 location.reload();
             }
 
-            $scope.hideErrorModal = function () {
+            $scope.hideErrorModal = function () {       
                 $('.modal-backdrop').hide();
                 $('.error-log').hide();
                 $('.duplicate-log').hide();
@@ -2758,13 +2765,10 @@
                 );
             }
             function refreshForm() {
-
                 var forms = document.getElementsByClassName('needs-validation');
                 angular.forEach(forms, function (form) {
                     $(form).removeClass('was-validated');
                 })
-
-
             }
 
             /* Export Excel Tab Hide */
@@ -3280,322 +3284,329 @@
             }
 
             /* Contact Insert Before Check Is already available or not */
-            $scope.createUpdateContact = function (con, elementId, sourceId, suffix, form, update) {
-                $('#spinner').show();
-                if (con.role == 'Driver' || con.role == 'Driver/Manager' || con.role == valueofreport) {
-                    $scope.showrequiredfield = true;
-                    $scope.isFieldRequired = true;
-                    $scope.showvalidation = true;
-                }
-
-                if (con.role == 'Driver' || con.role == 'Driver/Manager' || con.role == 'Manager' || con.role == valueofreport) {
-                    $scope.showmanagervalidation = true;
-
-                }
-                if (con.role == 'Admin') /*Mobio*/ {
-                    $scope.showmanagervalidation = false;
-                }
-
-                if (con.role == 'Admin' || con.role == 'Manager') {
-                    $scope.showrequiredfield = false;
-                    $scope.isFieldRequired = false;
-                    $scope.showvalidation = false;
-                }
-
-                /* if($scope.showrequiredfield == true) {
-                     if(con.city == '') {
-                         angular.element(document.querySelector("#city")).addClass("city-invalid");
-                         angular.element(document.querySelector("#city")).addClass("city-invalid");
-                     }
-                 }*/
-                $scope.addfilds = '';
-                document.getElementById(elementId).value = $("#" + sourceId).tagsinput('items');
-                $scope.cont = con;
-                con.drivingStates = $("#" + sourceId).tagsinput('items');
-                let inputtovalidate;
-                if ($scope.accid === $scope.designAIR) {
-                    if (con.role == 'Driver' || con.role == 'Driver/Manager' || con.role == valueofreport) {
-                        inputtovalidate = ["firstname", "lastname", "email", "city", "state", "zip", "role", "jobtitle", "department", "deptDesign", "manager", "vehicalType", "activedate"];
-                    }
-                }
-                else if ($scope.accid === $scope.PLMarketing) {
-                    if (con.role == 'Driver' || con.role == 'Driver/Manager' || con.role == valueofreport) {
-                        inputtovalidate = ["firstname", "lastname", "email", "city", "state", "zip", "role", "jobtitle", "divison", "deptPL", "manager", "vehicalType","firstPayrollPer","activedate"];
-                    }
-                }
-                else if ($scope.accid === $scope.accountERMI) {
-                    if (con.role == 'Driver' || con.role == 'Driver/Manager' || con.role == valueofreport) {
-                        inputtovalidate = ["firstname", "lastname", "email", "city", "state", "zip", "role", "netchexEmployeeID", "code", "district", "territory", "manager", "vehicalType", "activedate"];
-                    }
-                }
-                else {
-                    if (con.role == 'Driver' || con.role == 'Driver/Manager' || con.role == valueofreport) {
-                        inputtovalidate = ["firstname", "lastname", "email", "city", "state", "zip", "role", "manager", "vehicalType", "activedate"];
-                    }
-                }
-
-                if ($scope.accid === $scope.designAIR) {
-                    if (con.role == 'Admin' || con.role == 'Manager') {
-                        inputtovalidate = ["firstname", "lastname", "email", "role", "jobtitle", "department", "deptDesign", "activedate"];
-                    }
-                }
-                else if ($scope.accid === $scope.PLMarketing) {
-                    if (con.role == 'Admin' || con.role == 'Manager') {
-                        inputtovalidate = ["firstname", "lastname", "email", "role", "jobtitle", "deptPL", "divison", "activedate"];
-                    }
-                }
-                else if ($scope.accid === $scope.accountERMI) {
-                    if (con.role == 'Admin' || con.role == 'Manager') {
-                        inputtovalidate = ["firstname", "lastname", "email", "role", "activedate"];
-                    }
-                }
-                else {
-                    if (con.role == 'Admin' || con.role == 'Manager') {
-                        inputtovalidate = ["firstname", "lastname", "email", "role", "activedate"];
-                    }
-                }
-
-                let count = 0;
-                angular.forEach(inputtovalidate, function (item) {
-                    if (form[item + suffix].$invalid) {
-                        count++;
-                        if (count < 10)
-                            if($scope.addfilds == ''){
-                                $scope.addfilds = ((item === 'deptPL') ? 'department' : item);
-                            }
-                            else{
-                                $scope.addfilds = $scope.addfilds + ', ' + ((item === 'deptPL') ? 'department' : (item === 'firstPayrollPer') ? 'first payroll' : item);
-                            }
-                        else
-                            $scope.addfilds = '';
-                    }
-                });
-                if (count > 0) {
-                    $('#spinner').hide();
-                    let message = count > 1 ? 'Please complete ' + $scope.addfilds + ' required fields.' : 'Please complete required field.';
-                    toastr.error(message);
-                    return;
-                }
-
-                if (con == "" || con.length == 0) {
-                    toastr.error('Please fill the required field');
-                    $('#spinner').hide();
-                }
-                else {
-                    if ((con.firstName != '' && con.firstName != undefined && con.firstName != null) && (con.lastName != '' && con.lastName != undefined && con.lastName != null) && (con.email != '' && con.email != undefined && con.email != null) && (con.role != '' && con.role != undefined && con.role != null)) {
+                $scope.createUpdateContact = function (con, elementId, sourceId, suffix, form, update) {
+                    if (form.$dirty != true) {
+                        toastr.error("There is no change to update");
+                        setTimeout(function () {
+                            refreshForm();
+                        }, 10)
+                    } else {
+                        $('#spinner').show();
                         if (con.role == 'Driver' || con.role == 'Driver/Manager' || con.role == valueofreport) {
-                            if ((con.zipCode != '' && con.zipCode != undefined && con.zipCode != null) && (con.city != '' && con.city != undefined && con.city != null) && (con.state != '' && con.state != undefined && con.state != null) && (con.activationDate != '' && con.activationDate != undefined && con.activationDate != null) && (con.addedDate != '' && con.addedDate != undefined && con.addedDate != null) && (con.role != '' && con.role != undefined && con.role != null) && (con.managerId != '' && con.managerId != undefined && con.managerId != null) && (con.vehicalType != '' && con.vehicalType != undefined && con.vehicalType != null)) {
-                                $scope.showrequiredfield = true;
-                                $scope.editUserEmail = con.email;
-                                $scope.conForUpdateInsertfordateformate = [];
-                                $scope.conForUpdateInsertfordateformate.push(con);
-
-                                $scope.contactListForUpdateInsert = '';
-                                $scope.contactListForUpdateInsert = formatFulllDateForEmployeeList(angular.copy($scope.conForUpdateInsertfordateformate));
-
-                                /*c('Before:--'+JSON.stringify($scope.contactListForUpdateInsert));*/
-
-                                Visualforce.remoting.Manager.invokeAction('{!$RemoteAction.RosterController.getContactByEmailAddress}', $scope.editUserEmail,
-                                    function (result, event) {
-                                        if (event.status && result != null) {
-                                            if (result != "Fail") {
-
-                                                $scope.contactListForUpdateInsert.userid = result;
-
-                                                Visualforce.remoting.Manager.invokeAction('{!$RemoteAction.RosterController.manageEmployee}', JSON.stringify($scope.contactListForUpdateInsert), $scope.accid, $scope.id,
-                                                    function (result, event) {
-                                                        if (event.status && result != null) {
-                                                            if (!result.hasError) {
-                                                                if (update)
-                                                                    $scope.contactData[0].userid = $scope.contactListForUpdateInsert.userid;
-                                                                else
-                                                                    $scope.contactData.userid = $scope.contactListForUpdateInsert.userid;
-
-                                                                //  $scope.employeeslist = JSON.parse(result); 
-
-                                                                $scope.employeesList = angular.copy($scope.employeeslist);
-
-                                                                $scope.updateContact();
-                                                                $scope.$apply();
-                                                            }
-                                                            else {
-                                                                // toastr.error('Something went wrong.');
-                                                                //toastr.error(errorMsg);
-                                                                toastr.error(result.message);
-                                                            }
-                                                        }
-                                                        else {
-                                                            $('#spinner').hide();
-
-                                                        }
-                                                    },
-                                                    { escape: false }
-                                                );
-                                            }
-                                            else {
-                                                Visualforce.remoting.Manager.invokeAction('{!$RemoteAction.RosterController.manageEmployee}', JSON.stringify($scope.contactListForUpdateInsert), $scope.accid, $scope.id,
-                                                    function (result, event) {
-                                                        if (event.status && result != null) {
-                                                            if (!result.hasError) {
-                                                                $scope.IsShow = false;
-                                                                $scope.employeeslist = JSON.parse(result.result);
-                                                                $scope.employeesList = angular.copy($scope.employeeslist);
-                                                                if ($scope.contactListForUpdateInsert.userid != undefined && $scope.contactListForUpdateInsert.userid != '')
-                                                                    $scope.updateContact();
-                                                                else
-                                                                    $scope.insertContact(form);
-
-                                                                let conData = update ? $scope.contactData[0] : $scope.contactData;
-                                                                angular.forEach($scope.employeeslist, function (value, key) {
-
-                                                                    if (value.email === conData.email) {
-                                                                        if (update)
-                                                                            $scope.contactData[0].userid = value.userid;
-                                                                        else
-                                                                            $scope.contactData.userid = value.userid;
-                                                                    }
-                                                                });
-                                                                $('#spinner').hide();
-                                                                $scope.contactData = {};
-                                                                $scope.contactData = obj_contactnew();
-                                                                $scope.contactData.addedDate = $filter('date')(new Date(), "MM/dd/yy");
-                                                                form.$setPristine();
-                                                                form.$setValidity();
-                                                                $scope.$apply();
-                                                            }
-                                                            else {
-                                                                $('#spinner').hide();
-                                                                // toastr.error('Something went wrong.');    
-                                                                // toastr.error(errorMsg);
-                                                                toastr.error(result.message);
-                                                            }
-                                                        } else {
-                                                            $('#spinner').hide();
-                                                            //toastr.error('Something went wrong.');
-                                                            toastr.error(errorMsg);
-                                                        }
-                                                    },
-                                                    { escape: false }
-                                                );
-                                            }
-                                        } else {
-                                            $('#spinner').hide();
-                                            toastr.error('Something went wrong. ');
-                                        }
-                                    }, { escape: false });
-                            }
-                            else {
-                                $('#spinner').hide();
-                                toastr.error('Please fill the required field ');
-                            }
+                            $scope.showrequiredfield = true;
+                            $scope.isFieldRequired = true;
+                            $scope.showvalidation = true;
                         }
+
+                        if (con.role == 'Driver' || con.role == 'Driver/Manager' || con.role == 'Manager' || con.role == valueofreport) {
+                            $scope.showmanagervalidation = true;
+
+                        }
+                        if (con.role == 'Admin') /*Mobio*/ {
+                            $scope.showmanagervalidation = false;
+                        }
+
                         if (con.role == 'Admin' || con.role == 'Manager') {
-                            if ((con.activationDate != '' && con.activationDate != undefined && con.activationDate != null) && (con.addedDate != '' && con.addedDate != undefined && con.addedDate != null) && (con.role != '' && con.role != undefined && con.role != null)) {
-                                $scope.showmanagervalidation = false;
-                                $scope.isFieldRequired = false;
-                                $scope.showrequiredfield = false;
-                                $scope.editUserEmail = con.email;
-                                $scope.conForUpdateInsertfordateformate = [];
-                                $scope.conForUpdateInsertfordateformate.push(con);
-                                $scope.contactListForUpdateInsert = '';
-                                $scope.contactListForUpdateInsert = formatFulllDateForEmployeeList(angular.copy($scope.conForUpdateInsertfordateformate));
-                                Visualforce.remoting.Manager.invokeAction('{!$RemoteAction.RosterController.getContactByEmailAddress}', $scope.editUserEmail,
-                                    function (result, event) {
-                                        if (event.status && result != null) {
-                                            if (result != "Fail") {
-                                                $scope.contactListForUpdateInsert.userid = result;
-                                                Visualforce.remoting.Manager.invokeAction('{!$RemoteAction.RosterController.manageEmployee}', JSON.stringify($scope.contactListForUpdateInsert), $scope.accid, $scope.id,
-                                                    function (result, event) {
-                                                        if (event.status && result != null) {
-                                                            if (!result.hasError) {
-                                                                if (update)
-                                                                    $scope.contactData[0].userid = $scope.contactListForUpdateInsert.userid;
-                                                                else
-                                                                    $scope.contactData.userid = $scope.contactListForUpdateInsert.userid;
-                                                                // $scope.employeeslist = JSON.parse(result); 
-                                                                $scope.updateContact();
-                                                                $scope.$apply();
-                                                            }
-                                                            else {
-                                                                // toastr.error('Something went wrong.');
-                                                                //  toastr.error(errorMsg);
-                                                                toastr.error(result.message);
-                                                            }
-                                                        }
-                                                        else {
-                                                            $('#spinner').hide();
+                            $scope.showrequiredfield = false;
+                            $scope.isFieldRequired = false;
+                            $scope.showvalidation = false;
+                        }
 
-                                                        }
-                                                    },
-                                                    { escape: false }
-                                                );
-                                            }
-                                            else {
-                                                Visualforce.remoting.Manager.invokeAction('{!$RemoteAction.RosterController.manageEmployee}', JSON.stringify($scope.contactListForUpdateInsert), $scope.accid, $scope.id,
-                                                    function (result, event) {
+                        /* if($scope.showrequiredfield == true) {
+                             if(con.city == '') {
+                                 angular.element(document.querySelector("#city")).addClass("city-invalid");
+                                 angular.element(document.querySelector("#city")).addClass("city-invalid");
+                             }
+                         }*/
+                        $scope.addfilds = '';
+                        document.getElementById(elementId).value = $("#" + sourceId).tagsinput('items');
+                        $scope.cont = con;
+                        con.drivingStates = $("#" + sourceId).tagsinput('items');
+                        let inputtovalidate;
+                        if ($scope.accid === $scope.designAIR) {
+                            if (con.role == 'Driver' || con.role == 'Driver/Manager' || con.role == valueofreport) {
+                                inputtovalidate = ["firstname", "lastname", "email", "city", "state", "zip", "role", "jobtitle", "department", "deptDesign", "manager", "vehicalType", "activedate"];
+                            }
+                        }
+                        else if ($scope.accid === $scope.PLMarketing) {
+                            if (con.role == 'Driver' || con.role == 'Driver/Manager' || con.role == valueofreport) {
+                                inputtovalidate = ["firstname", "lastname", "email", "city", "state", "zip", "role", "jobtitle", "divison", "deptPL", "manager", "vehicalType", "firstPayrollPer", "activedate"];
+                            }
+                        }
+                        else if ($scope.accid === $scope.accountERMI) {
+                            if (con.role == 'Driver' || con.role == 'Driver/Manager' || con.role == valueofreport) {
+                                inputtovalidate = ["firstname", "lastname", "email", "city", "state", "zip", "role", "netchexEmployeeID", "code", "district", "territory", "manager", "vehicalType", "activedate"];
+                            }
+                        }
+                        else {
+                            if (con.role == 'Driver' || con.role == 'Driver/Manager' || con.role == valueofreport) {
+                                inputtovalidate = ["firstname", "lastname", "email", "city", "state", "zip", "role", "manager", "vehicalType", "activedate"];
+                            }
+                        }
 
-                                                        if (event.status && result != null) {
-                                                            if (!result.hasError) {
-                                                                $scope.IsShow = false;
-                                                                $scope.employeeslist = JSON.parse(result.result);
-                                                                if ($scope.contactListForUpdateInsert.userid != undefined && $scope.contactListForUpdateInsert.userid != '')
-                                                                    $scope.updateContact();
-                                                                else
-                                                                    $scope.insertContact(form);
+                        if ($scope.accid === $scope.designAIR) {
+                            if (con.role == 'Admin' || con.role == 'Manager') {
+                                inputtovalidate = ["firstname", "lastname", "email", "role", "jobtitle", "department", "deptDesign", "activedate"];
+                            }
+                        }
+                        else if ($scope.accid === $scope.PLMarketing) {
+                            if (con.role == 'Admin' || con.role == 'Manager') {
+                                inputtovalidate = ["firstname", "lastname", "email", "role", "jobtitle", "deptPL", "divison", "activedate"];
+                            }
+                        }
+                        else if ($scope.accid === $scope.accountERMI) {
+                            if (con.role == 'Admin' || con.role == 'Manager') {
+                                inputtovalidate = ["firstname", "lastname", "email", "role", "activedate"];
+                            }
+                        }
+                        else {
+                            if (con.role == 'Admin' || con.role == 'Manager') {
+                                inputtovalidate = ["firstname", "lastname", "email", "role", "activedate"];
+                            }
+                        }
 
-                                                                let conData = update ? $scope.contactData[0] : $scope.contactData;
-                                                                angular.forEach($scope.employeeslist, function (value, key) {
+                        let count = 0;
+                        angular.forEach(inputtovalidate, function (item) {
+                            if (form[item + suffix].$invalid) {
+                                count++;
+                                if (count < 10)
+                                    if ($scope.addfilds == '') {
+                                        $scope.addfilds = ((item === 'deptPL') ? 'department' : item);
+                                    }
+                                    else {
+                                        $scope.addfilds = $scope.addfilds + ', ' + ((item === 'deptPL') ? 'department' : (item === 'firstPayrollPer') ? 'first payroll' : item);
+                                    }
+                                else
+                                    $scope.addfilds = '';
+                            }
+                        });
+                        if (count > 0) {
+                            $('#spinner').hide();
+                            let message = count > 1 ? 'Please complete ' + $scope.addfilds + ' required fields.' : 'Please complete required field.';
+                            toastr.error(message);
+                            return;
+                        }
 
-                                                                    if (value.email === conData.email) {
+                        if (con == "" || con.length == 0) {
+                            toastr.error('Please fill the required field');
+                            $('#spinner').hide();
+                        }
+                        else {
+                            if ((con.firstName != '' && con.firstName != undefined && con.firstName != null) && (con.lastName != '' && con.lastName != undefined && con.lastName != null) && (con.email != '' && con.email != undefined && con.email != null) && (con.role != '' && con.role != undefined && con.role != null)) {
+                                if (con.role == 'Driver' || con.role == 'Driver/Manager' || con.role == valueofreport) {
+                                    if ((con.zipCode != '' && con.zipCode != undefined && con.zipCode != null) && (con.city != '' && con.city != undefined && con.city != null) && (con.state != '' && con.state != undefined && con.state != null) && (con.activationDate != '' && con.activationDate != undefined && con.activationDate != null) && (con.addedDate != '' && con.addedDate != undefined && con.addedDate != null) && (con.role != '' && con.role != undefined && con.role != null) && (con.managerId != '' && con.managerId != undefined && con.managerId != null) && (con.vehicalType != '' && con.vehicalType != undefined && con.vehicalType != null)) {
+                                        $scope.showrequiredfield = true;
+                                        $scope.editUserEmail = con.email;
+                                        $scope.conForUpdateInsertfordateformate = [];
+                                        $scope.conForUpdateInsertfordateformate.push(con);
+
+                                        $scope.contactListForUpdateInsert = '';
+                                        $scope.contactListForUpdateInsert = formatFulllDateForEmployeeList(angular.copy($scope.conForUpdateInsertfordateformate));
+
+                                        /*c('Before:--'+JSON.stringify($scope.contactListForUpdateInsert));*/
+
+                                        Visualforce.remoting.Manager.invokeAction('{!$RemoteAction.RosterController.getContactByEmailAddress}', $scope.editUserEmail,
+                                            function (result, event) {
+                                                if (event.status && result != null) {
+                                                    if (result != "Fail") {
+
+                                                        $scope.contactListForUpdateInsert.userid = result;
+
+                                                        Visualforce.remoting.Manager.invokeAction('{!$RemoteAction.RosterController.manageEmployee}', JSON.stringify($scope.contactListForUpdateInsert), $scope.accid, $scope.id,
+                                                            function (result, event) {
+                                                                if (event.status && result != null) {
+                                                                    if (!result.hasError) {
                                                                         if (update)
-                                                                            $scope.contactData[0].userid = value.userid;
+                                                                            $scope.contactData[0].userid = $scope.contactListForUpdateInsert.userid;
                                                                         else
-                                                                            $scope.contactData.userid = value.userid;
-                                                                    }
-                                                                });
-                                                                $scope.contactData = {};
-                                                                $scope.contactData = obj_contactnew();
-                                                                $scope.contactData.addedDate = $filter('date')(new Date(), "MM/dd/yy");
-                                                                form.$setPristine();
-                                                                form.$setValidity();
+                                                                            $scope.contactData.userid = $scope.contactListForUpdateInsert.userid;
 
-                                                                $scope.$apply();
-                                                            }
-                                                            else {
-                                                                $('#spinner').hide();
-                                                                //   toastr.error('Something went wrong. result'+result);    
-                                                                // toastr.error(errorMsg + result);
-                                                                toastr.error(result.message);
-                                                            }
-                                                        } else {
-                                                            $('#spinner').hide();
-                                                            //toastr.error('Something went wrong.');
-                                                            toastr.error(errorMsg);
-                                                        }
-                                                    },
-                                                    { escape: false }
-                                                );
-                                            }
-                                        } else {
-                                            $('#spinner').hide();
-                                            //  toastr.error('Something went wrong. ');
-                                            toastr.error(errorMsg);
-                                        }
-                                    }, { escape: false });
+                                                                        //  $scope.employeeslist = JSON.parse(result); 
+
+                                                                        $scope.employeesList = angular.copy($scope.employeeslist);
+
+                                                                        $scope.updateContact();
+                                                                        $scope.$apply();
+                                                                    }
+                                                                    else {
+                                                                        // toastr.error('Something went wrong.');
+                                                                        //toastr.error(errorMsg);
+                                                                        toastr.error(result.message);
+                                                                    }
+                                                                }
+                                                                else {
+                                                                    $('#spinner').hide();
+
+                                                                }
+                                                            },
+                                                            { escape: false }
+                                                        );
+                                                    }
+                                                    else {
+                                                        Visualforce.remoting.Manager.invokeAction('{!$RemoteAction.RosterController.manageEmployee}', JSON.stringify($scope.contactListForUpdateInsert), $scope.accid, $scope.id,
+                                                            function (result, event) {
+                                                                if (event.status && result != null) {
+                                                                    if (!result.hasError) {
+                                                                        $scope.IsShow = false;
+                                                                        $scope.employeeslist = JSON.parse(result.result);
+                                                                        $scope.employeesList = angular.copy($scope.employeeslist);
+                                                                        if ($scope.contactListForUpdateInsert.userid != undefined && $scope.contactListForUpdateInsert.userid != '')
+                                                                            $scope.updateContact();
+                                                                        else
+                                                                            $scope.insertContact(form);
+
+                                                                        let conData = update ? $scope.contactData[0] : $scope.contactData;
+                                                                        angular.forEach($scope.employeeslist, function (value, key) {
+
+                                                                            if (value.email === conData.email) {
+                                                                                if (update)
+                                                                                    $scope.contactData[0].userid = value.userid;
+                                                                                else
+                                                                                    $scope.contactData.userid = value.userid;
+                                                                            }
+                                                                        });
+                                                                        $('#spinner').hide();
+                                                                        $scope.contactData = {};
+                                                                        $scope.contactData = obj_contactnew();
+                                                                        $scope.contactData.addedDate = $filter('date')(new Date(), "MM/dd/yy");
+                                                                        form.$setPristine();
+                                                                        form.$setValidity();
+                                                                        $scope.$apply();
+                                                                    }
+                                                                    else {
+                                                                        $('#spinner').hide();
+                                                                        // toastr.error('Something went wrong.');    
+                                                                        // toastr.error(errorMsg);
+                                                                        toastr.error(result.message);
+                                                                    }
+                                                                } else {
+                                                                    $('#spinner').hide();
+                                                                    //toastr.error('Something went wrong.');
+                                                                    toastr.error(errorMsg);
+                                                                }
+                                                            },
+                                                            { escape: false }
+                                                        );
+                                                    }
+                                                } else {
+                                                    $('#spinner').hide();
+                                                    toastr.error('Something went wrong. ');
+                                                }
+                                            }, { escape: false });
+                                    }
+                                    else {
+                                        $('#spinner').hide();
+                                        toastr.error('Please fill the required field ');
+                                    }
+                                }
+                                if (con.role == 'Admin' || con.role == 'Manager') {
+                                    if ((con.activationDate != '' && con.activationDate != undefined && con.activationDate != null) && (con.addedDate != '' && con.addedDate != undefined && con.addedDate != null) && (con.role != '' && con.role != undefined && con.role != null)) {
+                                        $scope.showmanagervalidation = false;
+                                        $scope.isFieldRequired = false;
+                                        $scope.showrequiredfield = false;
+                                        $scope.editUserEmail = con.email;
+                                        $scope.conForUpdateInsertfordateformate = [];
+                                        $scope.conForUpdateInsertfordateformate.push(con);
+                                        $scope.contactListForUpdateInsert = '';
+                                        $scope.contactListForUpdateInsert = formatFulllDateForEmployeeList(angular.copy($scope.conForUpdateInsertfordateformate));
+                                        Visualforce.remoting.Manager.invokeAction('{!$RemoteAction.RosterController.getContactByEmailAddress}', $scope.editUserEmail,
+                                            function (result, event) {
+                                                if (event.status && result != null) {
+                                                    if (result != "Fail") {
+                                                        $scope.contactListForUpdateInsert.userid = result;
+                                                        Visualforce.remoting.Manager.invokeAction('{!$RemoteAction.RosterController.manageEmployee}', JSON.stringify($scope.contactListForUpdateInsert), $scope.accid, $scope.id,
+                                                            function (result, event) {
+                                                                if (event.status && result != null) {
+                                                                    if (!result.hasError) {
+                                                                        if (update)
+                                                                            $scope.contactData[0].userid = $scope.contactListForUpdateInsert.userid;
+                                                                        else
+                                                                            $scope.contactData.userid = $scope.contactListForUpdateInsert.userid;
+                                                                        // $scope.employeeslist = JSON.parse(result); 
+                                                                        $scope.updateContact();
+                                                                        $scope.$apply();
+                                                                    }
+                                                                    else {
+                                                                        // toastr.error('Something went wrong.');
+                                                                        //  toastr.error(errorMsg);
+                                                                        toastr.error(result.message);
+                                                                    }
+                                                                }
+                                                                else {
+                                                                    $('#spinner').hide();
+
+                                                                }
+                                                            },
+                                                            { escape: false }
+                                                        );
+                                                    }
+                                                    else {
+                                                        Visualforce.remoting.Manager.invokeAction('{!$RemoteAction.RosterController.manageEmployee}', JSON.stringify($scope.contactListForUpdateInsert), $scope.accid, $scope.id,
+                                                            function (result, event) {
+                                                                if (event.status && result != null) {
+                                                                    if (!result.hasError) {
+                                                                        $scope.IsShow = false;
+                                                                        $scope.employeeslist = JSON.parse(result.result);
+                                                                        if ($scope.contactListForUpdateInsert.userid != undefined && $scope.contactListForUpdateInsert.userid != '')
+                                                                            $scope.updateContact();
+                                                                        else
+                                                                            $scope.insertContact(form);
+
+                                                                        let conData = update ? $scope.contactData[0] : $scope.contactData;
+                                                                        angular.forEach($scope.employeeslist, function (value, key) {
+
+                                                                            if (value.email === conData.email) {
+                                                                                if (update)
+                                                                                    $scope.contactData[0].userid = value.userid;
+                                                                                else
+                                                                                    $scope.contactData.userid = value.userid;
+                                                                            }
+                                                                        });
+                                                                        $scope.contactData = {};
+                                                                        $scope.contactData = obj_contactnew();
+                                                                        $scope.contactData.addedDate = $filter('date')(new Date(), "MM/dd/yy");
+                                                                        form.$setPristine();
+                                                                        form.$setValidity();
+
+                                                                        $scope.$apply();
+                                                                    }
+                                                                    else {
+                                                                        $('#spinner').hide();
+                                                                        //   toastr.error('Something went wrong. result'+result);    
+                                                                        // toastr.error(errorMsg + result);
+                                                                        toastr.error(result.message);
+                                                                    }
+                                                                } else {
+                                                                    $('#spinner').hide();
+                                                                    //toastr.error('Something went wrong.');
+                                                                    toastr.error(errorMsg);
+                                                                }
+                                                            },
+                                                            { escape: false }
+                                                        );
+                                                    }
+                                                } else {
+                                                    $('#spinner').hide();
+                                                    //  toastr.error('Something went wrong. ');
+                                                    toastr.error(errorMsg);
+                                                }
+                                            }, { escape: false });
+                                    }
+                                    else {
+                                        $('#spinner').hide();
+                                        toastr.error('Please fill the required field ');
+                                    }
+                                }
                             }
                             else {
                                 $('#spinner').hide();
                                 toastr.error('Please fill the required field ');
                             }
                         }
-                    }
-                    else {
-                        $('#spinner').hide();
-                        toastr.error('Please fill the required field ');
+                        /*$('#spinner').hide();*/
+
                     }
                 }
-                /*$('#spinner').hide();*/
-            }
 
 
             $scope.sendEmailContact = function (con) {
@@ -4747,12 +4758,12 @@
                                                     <span class="span-validation" data-toggle="tooltip" data-placement="top" title="Required field" ng-if="isFieldRequired">*</span>
                                                     <select id="firstPayrollPer" ng-model="contactData[0].firstPayrollPer" class="form-control rounded-0"  ng-show="IsShow"
                                                         name="firstPayrollPer_0" ng-required="isFieldRequired">
-                                                        <option value=""></option>
+                                                        <option value="" disabled="true"></option>
                                                         <option ng-selected="{{payroll == contactData[0].firstPayrollPer}}" ng-repeat="payroll in firstPayroll" value="{{payroll}}">{{payroll}}</option>
                                                     </select>
                                                     <select id="firstPayrollPer" ng-model="contactData.firstPayrollPer" class="form-control rounded-0" ng-show="!IsShow" ng-required="isFieldRequired"
                                                         name="firstPayrollPer_1">
-                                                        <option value=""></option>
+                                                        <option value="" disabled="true"></option>
                                                         <option ng-selected="{{payroll == contactData.firstPayrollPer}}" ng-repeat="payroll in firstPayroll" value="{{payroll}}">{{payroll}}</option>
                                                     </select>
                                                 </div>
@@ -5190,6 +5201,7 @@
             function c(msg) {
 
             }
+
             $(function () {
                 $('.numdivisioninput').on('input', function () {
                     this.value = this.value
