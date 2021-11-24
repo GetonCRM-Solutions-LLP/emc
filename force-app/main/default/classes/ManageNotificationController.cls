@@ -269,10 +269,13 @@ public with sharing class ManageNotificationController {
         map<string, Decimal> empIdvsMPGMap = new map<string, Decimal>();
         map<string, Decimal> empIdvsMaintireMap = new map<string, Decimal>();
         List<Employee_Mileage__c> empNotSendMilList = new List<Employee_Mileage__c>();
-        for(Employee_Reimbursement__c reimList : [SELECT id,name,Contact_Id__r.External_Email__c,Month__c,MPG__c,Maintenance_and_Tires__c, Contact_Id__r.Employee_ID__c
+        for(Employee_Reimbursement__c reimList : [SELECT id,name,Contact_Id__r.External_Email__c,Month__c,
+                                                            MPG__c,Maintenance_and_Tires__c,
+                                                            Contact_Id__r.Employee_ID__c,Contact_Id__r.AccountId
                                                   FROM Employee_Reimbursement__c 
                                                   WHERE Contact_Id__r.Employee_ID__c IN: employeeIdList 
-                                                  AND Month__C IN: monthList]) {
+                                                  AND Month__C IN: monthList
+                                                  AND Contact_Id__r.AccountId =: accId]) {
                                                     if(reimList.Contact_Id__r.Employee_ID__c != null) {
                                                         reimIdMap.put(reimList.Contact_Id__r.Employee_ID__c +':'+reimList.Month__c, reimList.Id);
                                                         empIdvsEmailMap.put(reimList.Contact_Id__r.Employee_ID__c +':'+reimList.Month__c, reimList.Contact_Id__r.External_Email__c);
