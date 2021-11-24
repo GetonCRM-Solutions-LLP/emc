@@ -157,7 +157,6 @@ public class ManageNotificationControllerTest {
        ManageNotificationController.getdriverInsurance(attach.id);
        ManageNotificationController.editInlineNewEmployee(json3 ,con2.id);
             
-        //
        }
     }
 }
