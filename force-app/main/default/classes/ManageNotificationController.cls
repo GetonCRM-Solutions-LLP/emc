@@ -231,9 +231,7 @@ public with sharing class ManageNotificationController {
                                             AND Id =: accId];
         apiToken = accountList[0].Triplog_API__c;
         String baseURL = !MLOGACCOUNT.Contains(apiToken) ? StaticValues.TRIPLOG_BASEURL : StaticValues.MLOG_BASEURL; 
-        baseURL = (baseURL + '/api/locations');
-        system.debug('baseURL'+baseURL);
-        
+        baseURL = (baseURL + '/api/locations');        
         List<JSONLocation> LocationJson = JSONLocation.parse(location);
         for(JSONLocation obj : LocationJson ){
            system.debug(obj);
