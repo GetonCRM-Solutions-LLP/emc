@@ -40,6 +40,7 @@ public class BiWeeklyReimReportforPLMControllerTest {
             acc = new Account();  
             acc.Name = 'PL Marketing';
             acc.Vehicle_Types__c = veh.name;
+            acc.Pay_Period_Start_Date__c = System.today().addDays(-100);
             acc.Triplog_API__c = '8e0ac6d1e82a439faaef1fdf0dc707b1';
             Acc.Triplog_Status__c = 'U';
             insert Acc;
@@ -49,7 +50,9 @@ public class BiWeeklyReimReportforPLMControllerTest {
 
             contact = new Contact();
             contact.lastname = 'Test Contact';
-            contact.AccountId = System.Label.PLMarketing;
+            //contact.AccountId = System.Label.PLMarketing;
+            contact.AccountId = Acc.id;
+            contact.Activation_Date__c = System.today().addDays(-90);
             contact.Vehicle_Type__c = '2019 Mileage Rate';
             contact.External_Email__c = 'minkesh.patel1478@gmail.com';
             contact.compliancestatus__c = 'Yes';
@@ -96,12 +99,33 @@ public class BiWeeklyReimReportforPLMControllerTest {
         er.IRS_Mileage_Rate__c = irs.Id;
         insert er;
         
+        Employee_Reimbursement__c er1 = new Employee_Reimbursement__c();
+        er1.Contact_Id__c = contact.Id;
+        er1.month__c = '11-2021';
+        er1.Name = contact.lastname+':'+er1.month__c;
+        er1.Status__c = 'Pending';
+        er1.Fuel_Price__c = 1;  
+        er1.MPG__c = 10.00;
+        er1.Maintenance_and_Tires__c = 24;
+        er1.Fuel_Price__c = 1;
+        er1.MPG__c = 10;
+        er1.Maintenance_and_Tires__c = 10;
+        er1.Fixed_Amount__c = 10.10;
+        er1.Triplog_Status__c = 'U';
+        er1.IRS_Mileage_Rate__c = irs.Id;
+        insert er1;
+        
         Bi_Weekly_Reimbursement__c  biReim = new Bi_Weekly_Reimbursement__c();
         biReim.Name = '10/17/2021 to 10/30/2021';
         biReim.Contact__c = contact.Id;
         insert biReim;
         
-        Employee_Mileage__c emp = new Employee_Mileage__c();
+        Bi_Weekly_Reimbursement__c  biReim1 = new Bi_Weekly_Reimbursement__c();
+        biReim1.Name = '11/14/2021 to 11/27/2021';
+        biReim1.Contact__c = contact.Id;
+        insert biReim1;
+        
+      /*  Employee_Mileage__c emp = new Employee_Mileage__c();
         emp.EmployeeReimbursement__c = er.id;
         emp.Contact_Email_Id__c = contact.External_Email__c;
         emp.Name = 'Test Mileage Record';
@@ -109,20 +133,36 @@ public class BiWeeklyReimReportforPLMControllerTest {
         emp.TimeZone__c = 'US/Mountain' ;
         emp.Mileage__c = 10.00;
         emp.Fuel_price__c = 10.00;
-        emp.Trip_Date__c = system.today()-10;
+        emp.Trip_Date__c = system.today()-100;
         emp.StartTime__c = system.now()-10;
         emp.EndTime__c =  system.now()-10;
         emp.Bi_Weekly_Reimbursement__c   = biReim.Id;
-        insert emp;
+        insert emp; */
         
+        Employee_Mileage__c emp1 = new Employee_Mileage__c();
+        emp1.EmployeeReimbursement__c = er1.id;
+        emp1.Contact_Email_Id__c = contact.External_Email__c;
+        emp1.Name = 'Test Mileage Record';
+        emp1.Trip_Status__c = 'Approved';
+        emp1.TimeZone__c = 'US/Mountain' ;
+        emp1.Mileage__c = 10.00;
+        emp1.Fuel_price__c = 10.00;
+        emp1.Trip_Date__c = system.today()-120;
+        emp1.StartTime__c = system.now()-10;
+        emp1.EndTime__c =  system.now()-10;
+        emp1.Bi_Weekly_Reimbursement__c = biReim1.Id;
+        insert emp1;
+
+        contact.Deactivated_Date__c = System.today().addDays(-15);
+        update contact;
+
         Test.startTest();
         System.runAs(user_1) {
             string ConId = contact.Id;
-            //String startDate = '2021-07-28';
-            //String endDate = '2021-08-11';
-            //String conId = ApexPages.currentPage().getParameters().put('id',contact.Id);
-            String startDate = ApexPages.currentPage().getParameters().put('startDate','2020-01-22');
-            String endDate = ApexPages.currentPage().getParameters().put('endDate','2020-08-22');
+            
+            String startDate = ApexPages.currentPage().getParameters().put('startDate','2021-10-02');
+            String endDate = ApexPages.currentPage().getParameters().put('endDate','2021-11-27');
+            System.debug('***Test-startDate***'+startDate+'***endDate***'+endDate);
             BiWeeklyReimReportforPLMController objClass = new BiWeeklyReimReportforPLMController();
         }
         Test.stopTest();

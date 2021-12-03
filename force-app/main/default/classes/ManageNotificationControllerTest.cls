@@ -156,8 +156,7 @@ public class ManageNotificationControllerTest {
        ManageNotificationController.UploadLocation(json ,Acc.Id);
        ManageNotificationController.getdriverInsurance(attach.id);
        ManageNotificationController.editInlineNewEmployee(json3 ,con2.id);
-            
-        //
+        
        }
     }
 }

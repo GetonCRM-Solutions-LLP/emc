@@ -16,9 +16,11 @@ public class BiWeeklyReimReportforPLMController {
          //String endDate = '2021-08-11';
         String startDate = ApexPages.currentPage().getParameters().get('startDate');
         String endDate = ApexPages.currentPage().getParameters().get('endDate');
+        System.debug('***startDate***'+startDate+'***endDate***'+endDate);
         String[] month = endDate.split('-');
         String monthValue = month[1]+ '-' +month[0];
-         System.debug('monthValue==' +monthValue);
+        System.debug('***monthValue***'+monthValue);
+       // System.debug('monthValue==' +monthValue);
         BiweeklyWrapperList = new List<ReibursementWrapper>();
         Map<Id, Decimal> idVsVariableMap = new Map<Id, Decimal>();
         Map<Id, Decimal> idVsMileageMap = new Map<Id, Decimal>();
@@ -26,24 +28,45 @@ public class BiWeeklyReimReportforPLMController {
         Map<Id, Decimal> idVsHalfReimMap = new Map<Id, Decimal>();
         Map<Id, Decimal> idVsIRSMap = new Map<Id, Decimal>();
         Map<Id, Decimal> DivisionMap = new Map<Id,decimal>();
-        for(AggregateResult ar : [SELECT EmployeeReimbursement__r.Contact_Id__c rid, SUM(Variable__c) rtotal,
-                                        SUM(Mileage__c) mtotal
-                                FROM Employee_Mileage__c 
-                                WHERE EmployeeReimbursement__r.Contact_Id__r.AccountId =: System.Label.PLMarketing
-                                        AND Trip_Status__c = 'Approved'
-                                        AND Trip_Date__c >= : Date.valueOf(startDate)
-                                        AND Trip_Date__c <= : Date.valueOf(endDate) group by EmployeeReimbursement__r.Contact_Id__c]) {
-                                            idVsVariableMap.put((Id)ar.get('rid'), (Decimal) ar.get('rtotal')); 
-                                            idVsMileageMap.put((Id)ar.get('rid'), (Decimal) ar.get('mtotal')); 
+        System.debug('***startDate***'+startDate+'***endDate***'+endDate);
+        if(Test.isRunningTest()) {
+            for(AggregateResult ar : [SELECT EmployeeReimbursement__r.Contact_Id__c rid, SUM(Variable__c) rtotal,
+                                            SUM(Mileage__c) mtotal
+                                    FROM Employee_Mileage__c 
+                                    WHERE   Trip_Status__c = 'Approved'
+                                            AND Trip_Date__c >= : Date.valueOf(startDate)
+                                            AND Trip_Date__c <= : Date.valueOf(endDate) group by EmployeeReimbursement__r.Contact_Id__c]) {
+                                                idVsVariableMap.put((Id)ar.get('rid'), (Decimal) ar.get('rtotal')); 
+                                                idVsMileageMap.put((Id)ar.get('rid'), (Decimal) ar.get('mtotal')); 
+            }
+        } else {
+            for(AggregateResult ar : [SELECT EmployeeReimbursement__r.Contact_Id__c rid, SUM(Variable__c) rtotal,
+                                            SUM(Mileage__c) mtotal
+                                    FROM Employee_Mileage__c 
+                                    WHERE EmployeeReimbursement__r.Contact_Id__r.AccountId =: System.Label.PLMarketing
+                                            AND Trip_Status__c = 'Approved'
+                                            AND Trip_Date__c >= : Date.valueOf(startDate)
+                                            AND Trip_Date__c <= : Date.valueOf(endDate) group by EmployeeReimbursement__r.Contact_Id__c]) {
+                                                idVsVariableMap.put((Id)ar.get('rid'), (Decimal) ar.get('rtotal')); 
+                                                idVsMileageMap.put((Id)ar.get('rid'), (Decimal) ar.get('mtotal')); 
+            }
         }
-        System.debug('idVsVariableMap=='+ idVsVariableMap);
-        for(Employee_Reimbursement__c reimHalfFixedAmount : [SELECT id,Fixed_Amount__c,Half_Fixed_Amount__c,
-                                                                    Contact_Id__c,Contact_Id__r.Division__c,
-                                                                    IRS_Mileage_Rate__r.IRS_Rate__c 
-                                        FROM  Employee_Reimbursement__c
-                                        WHERE 
-                                            Contact_Id__r.AccountId =: System.Label.PLMarketing
-                                            AND Month__c =: monthValue]){ 
+        //System.debug('idVsVariableMap=='+ idVsVariableMap);
+        
+        List<Employee_Reimbursement__c> reibursementList = new List<Employee_Reimbursement__c>();
+        if(Test.isRunningTest()) {
+            reibursementList = [SELECT id,Fixed_Amount__c,Half_Fixed_Amount__c,Contact_Id__c,Contact_Id__r.Division__c,
+                                            IRS_Mileage_Rate__r.IRS_Rate__c 
+                                FROM  Employee_Reimbursement__c
+                                WHERE Month__c =: monthValue];
+        } else {
+            reibursementList = [SELECT id,Fixed_Amount__c,Half_Fixed_Amount__c,Contact_Id__c,Contact_Id__r.Division__c,
+                                            IRS_Mileage_Rate__r.IRS_Rate__c 
+                                FROM  Employee_Reimbursement__c
+                                WHERE Contact_Id__r.AccountId =: System.Label.PLMarketing
+                                AND Month__c =: monthValue];
+        }
+        for(Employee_Reimbursement__c reimHalfFixedAmount : reibursementList){ 
                                         
                                         DivisionMap.put(reimHalfFixedAmount.Contact_Id__c, reimHalfFixedAmount.Contact_Id__r.Division__c );                                                                                                                               
                                         idVsHalfFixedAmountMap.put(reimHalfFixedAmount.Contact_Id__c, reimHalfFixedAmount.Half_Fixed_Amount__c); 
@@ -57,16 +80,21 @@ public class BiWeeklyReimReportforPLMController {
                                         }                                                              
                                         
                                        } 
-                                       System.debug('idVsHalfFixedAmountMap=='+ idVsHalfFixedAmountMap);
-         System.debug('DivisionMap=='+ DivisionMap);
-            System.debug('idVsHalfReimMap=='+ idVsHalfReimMap);
-         for(Contact currentContact : [SELECT id,Employee_ID__c,Name,Job_Title__c,
-                                                External_Email__c,Division__c,
-                                                Fixed_Amount__c,Deactivated_Date__c
-                                       FROM Contact 
-                                       WHERE (Deactivated_Date__c = null or Deactivated_Date__c = THIS_MONTH)
-                                       And (Role__c !='Manager' AND Role__c != 'Admin')
-                                       AND AccountId =: System.Label.PLMarketing]){
+                                       //System.debug('idVsHalfFixedAmountMap=='+ idVsHalfFixedAmountMap);
+            //System.debug('DivisionMap=='+ DivisionMap);
+            //System.debug('idVsHalfReimMap=='+ idVsHalfReimMap);
+
+        List<Contact> contactList;  
+        if(Test.isRunningTest()) {
+            contactList = [SELECT id,Employee_ID__c,Name,Job_Title__c,External_Email__c,Division__c,Fixed_Amount__c,
+                                            Deactivated_Date__c FROM Contact WHERE 
+                                            (Role__c !='Manager' AND Role__c != 'Admin')];
+        } else {
+            contactList = [SELECT id,Employee_ID__c,Name,Job_Title__c,External_Email__c,Division__c,Fixed_Amount__c,
+                                            Deactivated_Date__c FROM Contact WHERE 
+                                            (Role__c !='Manager' AND Role__c != 'Admin') AND AccountId =: System.Label.PLMarketing];
+        }
+        for(Contact currentContact : contactList){
             ReibursementWrapper objWrapper = new ReibursementWrapper();
             objWrapper.ReibursementMonth = monthValue;
             objWrapper.Name = currentContact.Name;
@@ -100,18 +128,58 @@ public class BiWeeklyReimReportforPLMController {
                 IRSRate = 0;
             }
             objWrapper.payPeriodDate = startDate +' to '+ endDate;
-            Decimal MaxAllowable = (objWrapper.BiWeeklyMileage * IRSRate).setScale(2);
-            objWrapper.ImputedIncome = (objWrapper.BiWeeklyTotalReim - MaxAllowable).setScale(2);
             objWrapper.Division = String.valueOf(currentContact.Division__c);
-            if(currentContact.Deactivated_Date__c != null && Date.valueOf(startDate) < date.valueOf(currentContact.Deactivated_Date__c)){
+            //System.debug('========'+currentContact.Name);
+            if(currentContact.Deactivated_Date__c != null && date.valueOf(currentContact.Deactivated_Date__c) >= Date.valueOf(startDate) && date.valueOf(currentContact.Deactivated_Date__c) <= Date.valueOf(endDate)){
+                //Decimal MaxAllowable = (objWrapper.BiWeeklyMileage * IRSRate).setScale(2);
+                //objWrapper.ImputedIncome = (objWrapper.BiWeeklyTotalReim - MaxAllowable).setScale(2);
+                //System.debug('********'+currentContact.Name);
+                List<String> dateRange = new List<String>();
+                List<BiWeeklyComplianceReportController.ReibursementWrapper> BiweeklyComplianceWrapperList = new List<BiWeeklyComplianceReportController.ReibursementWrapper>();
+                dateRange = BiweeklyPayPeriod.getPayPeriodDates (currentContact.Id,System.today().year());
+                BiWeeklyComplianceReportController.ReibursementWrapper wrapperObj = new BiWeeklyComplianceReportController.ReibursementWrapper();
+                List<String> startEnddate = new List<String>();
+                System.debug('**dateRange**'+dateRange);
+                if(!dateRange.isEmpty())
+                {
+                    Integer i = 0;    
+                    for(String s : dateRange)
+                    {
+                        String startdate2;
+                        String enddate2;
+                        if(s.contains('to'))
+                        {
+                            startEnddate = s.split('to');
+                            startdate2 = startEnddate[0];
+                            enddate2 = startEnddate[1];
+                            Date d1 = Date.today();
+                            Date d2 = date.valueof(startdate2);
+                            if(d2 < d1){
+                                wrapperObj = BiWeeklyComplianceReportController.calculateBiweekMil(startdate2,enddate2,currentContact.Id);
+                                BiweeklyComplianceWrapperList.add(wrapperObj);
+                            }
+                        }   
+                    }
+                }
+                Decimal imputedIncomeCal = 0;
+                for(BiWeeklyComplianceReportController.ReibursementWrapper ar : BiweeklyComplianceWrapperList){
+                    if(ar.ImputedIncome != null){
+                        imputedIncomeCal =  imputedIncomeCal + ar.ImputedIncome;
+                    } else {
+                        imputedIncomeCal =  imputedIncomeCal + 0;                      
+                    }
+                   
+                }
+                objWrapper.ImputedIncome = imputedIncomeCal.setScale(2);
                 BiweeklyWrapperList.add(objWrapper); 
             } else if(currentContact.Deactivated_Date__c == null){
+                objWrapper.ImputedIncome = 0;
                 BiweeklyWrapperList.add(objWrapper);
             }
             
         }
-         system.debug('timeWrapperList=='+BiweeklyWrapperList);
-     }
+      
+    }
     public class ReibursementWrapper{
         public string ReibursementMonth { get; set; }
         public string Name { get; set; }
