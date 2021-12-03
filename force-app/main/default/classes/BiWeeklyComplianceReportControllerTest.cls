@@ -75,22 +75,23 @@ public class BiWeeklyComplianceReportControllerTest {
         insert objIRSRate;
         
    
-		Employee_Reimbursement__c er = new Employee_Reimbursement__c();
+    Employee_Reimbursement__c er = new Employee_Reimbursement__c();
         er.Contact_Id__c = con.Id;
         er.Name = 'Reimbersment Test';
         er.Month__c = '09-2021';
         er.Status__c = 'Pending';
         er.Fuel_Price__c = 10.00; 
         er.Fixed_Amount__c = con.Fixed_Amount__c;
-		er.Maintenance_and_Tires__c = con.Maintenance_and_Tires__c;
+        er.Maintenance_and_Tires__c = con.Maintenance_and_Tires__c;
         er.MPG__c = con.MPG__c;
         er.IRS_Mileage_Rate__c= objIRSRate.Id;
         er.Fuel_Price__c = 2.14;
-        
-        
-        
          insert er;
         
+        Bi_Weekly_Reimbursement__c bob = new Bi_Weekly_Reimbursement__c();
+        bob.name = '9/19/2021 to 10/2/2021';
+        bob.Contact__c = con.id;
+        insert bob;
         Employee_Mileage__c emp = new Employee_Mileage__c();
         emp.EmployeeReimbursement__c = er.id;
         emp.Contact_Email_Id__c = con.External_Email__c;
@@ -103,6 +104,7 @@ public class BiWeeklyComplianceReportControllerTest {
         emp.StartTime__c = system.now();
         emp.EndTime__c =  system.now();
         emp.Trip_Date__c = Date.parse('10/15/2021');
+        emp.Bi_Weekly_Reimbursement__c = bob.id;
         insert emp;
         Test.startTest();
         System.runAs(user_1) {
