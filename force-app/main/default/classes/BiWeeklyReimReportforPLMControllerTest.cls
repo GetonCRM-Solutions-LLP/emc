@@ -159,9 +159,7 @@ public class BiWeeklyReimReportforPLMControllerTest {
         Test.startTest();
         System.runAs(user_1) {
             string ConId = contact.Id;
-            //String startDate = '2021-07-28';
-            //String endDate = '2021-08-11';
-            //String conId = ApexPages.currentPage().getParameters().put('id',contact.Id);
+            
             String startDate = ApexPages.currentPage().getParameters().put('startDate','2021-10-02');
             String endDate = ApexPages.currentPage().getParameters().put('endDate','2021-11-27');
             System.debug('***Test-startDate***'+startDate+'***endDate***'+endDate);

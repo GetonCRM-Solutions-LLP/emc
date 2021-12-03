@@ -1,1 +1,1 @@
-DemoClassTest,BiWeeklyReimReportforPLMControllerTest
+DemoClassTest,BiWeeklyReimReportforPLMControllerTest,ManageNotificationControllerTest
