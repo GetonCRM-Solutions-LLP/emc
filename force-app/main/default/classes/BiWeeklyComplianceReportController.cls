@@ -1,5 +1,6 @@
 public with sharing class BiWeeklyComplianceReportController {
     
+    public double totalImputedIncome {get; set;}
     public List<ReibursementWrapper> BiweeklyComplianceWrapperList{get;set;}
     public Integer slot = 0;
     public String xlsHeader{
@@ -40,6 +41,7 @@ public with sharing class BiWeeklyComplianceReportController {
         }
 
     }
+
     public static ReibursementWrapper calculateBiweekMil (String startdates,String enddates,String contactid){
         Map<Id,Decimal> mileageMap = new Map<Id,Decimal>();
         Map<Id,Decimal> variableMap = new Map<Id,Decimal>();
@@ -67,16 +69,18 @@ public with sharing class BiWeeklyComplianceReportController {
                                         variableMap.put((Id)ar.get('cid'),(Decimal)ar.get('vtotal'));  
                                         mileageMap.put((Id)ar.get('cid'),(Decimal)ar.get('rtotal'));                     
         } 
-		system.debug('reimStartMonth :: '+reimStartMonth);
+        //system.debug('reimStartMonth :: '+reimStartMonth + ':: reimEndMonth ::'+reimEndMonth);
         List<Employee_Reimbursement__c> reimList = new List<Employee_Reimbursement__c>();
         for(Employee_Reimbursement__c reim : [SELECT id,Half_Fixed_Amount__c,Fuel_Price__c,
                                                     IRS_Mileage_Rate__r.IRS_Rate__c 
                                                 FROM Employee_Reimbursement__c 
                                                 WHERE (Month__c =: reimStartMonth OR Month__c =: reimEndMonth)
-                                                AND Contact_Id__c =: contactid ]){
+                                                AND Contact_Id__c =: contactid LIMIT 100]){
             reimList.add(reim);
         }
+        //System.debug('**reimList**'+reimList);
         ReibursementWrapper wrapperObj = new ReibursementWrapper();
+        //System.debug('**startdates**'+startdates+'**enddates**'+enddates);
         wrapperObj.StartDate = startdates.trim();
         wrapperObj.EndDate = enddates.trim();
         if(reimList.size() > 0 ){      
@@ -101,7 +105,15 @@ public with sharing class BiWeeklyComplianceReportController {
             
             wrapperObj.MaxAllowable = (wrapperObj.Mileage * wrapperObj.IRSRate).setScale(2);
             wrapperObj.ImputedIncome = (wrapperObj.TotalReimbursement - wrapperObj.MaxAllowable).setScale(2);
+
+            /*if(totalImputedIncome > 0 ){
+                totalImputedIncome = totalImputedIncome + wrapperObj.ImputedIncome;
+            } else {
+                totalImputedIncome = wrapperObj.ImputedIncome;
+            }*/
         }
+        //System.debug('**contactid**'+contactid);
+        //System.debug('**wrapperObj**'+wrapperObj);
         return wrapperObj;
     }
 
