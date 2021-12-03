@@ -125,7 +125,7 @@ public class BiWeeklyReimReportforPLMControllerTest {
         biReim1.Contact__c = contact.Id;
         insert biReim1;
         
-        Employee_Mileage__c emp = new Employee_Mileage__c();
+      /*  Employee_Mileage__c emp = new Employee_Mileage__c();
         emp.EmployeeReimbursement__c = er.id;
         emp.Contact_Email_Id__c = contact.External_Email__c;
         emp.Name = 'Test Mileage Record';
@@ -137,7 +137,7 @@ public class BiWeeklyReimReportforPLMControllerTest {
         emp.StartTime__c = system.now()-10;
         emp.EndTime__c =  system.now()-10;
         emp.Bi_Weekly_Reimbursement__c   = biReim.Id;
-        insert emp;
+        insert emp; */
         
         Employee_Mileage__c emp1 = new Employee_Mileage__c();
         emp1.EmployeeReimbursement__c = er1.id;

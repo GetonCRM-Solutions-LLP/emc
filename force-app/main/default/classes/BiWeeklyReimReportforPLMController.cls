@@ -52,6 +52,7 @@ public class BiWeeklyReimReportforPLMController {
             }
         }
         //System.debug('idVsVariableMap=='+ idVsVariableMap);
+        
         List<Employee_Reimbursement__c> reibursementList = new List<Employee_Reimbursement__c>();
         if(Test.isRunningTest()) {
             reibursementList = [SELECT id,Fixed_Amount__c,Half_Fixed_Amount__c,Contact_Id__c,Contact_Id__r.Division__c,
