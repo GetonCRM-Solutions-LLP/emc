@@ -364,8 +364,7 @@ public with sharing class ManageNotificationController {
                     finalstr = finalstr + Recordstring;
                 }
                 attach.setFileName('Trips not inserted.xls');
-                excel = blob.valueOf(finalstr);
-                
+                excel = blob.valueOf(finalstr);                
             }
             attach.setBody(excel);
             List<Contact> conList = [SELECT id,FirstName,External_Email__c
