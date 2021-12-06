@@ -1936,6 +1936,8 @@
 
 
             $scope.displayCheckboxForEnableUser = function () {
+                $scope.checkboxobj = {}	
+                $scope.checkboxobj.isCheckedAllForEnableUser = false;
                 $scope.isPlAccountAbsence = false;
                 $scope.checkboxobjEnableUserShow = true;
                 $scope.checkboxobjDeactivateShow = false;
@@ -2019,7 +2021,13 @@
                     $scope.checkboxobjDeactivateShow = false;
                     $scope.showResetPasswordbtn = false;
                 }
-
+                /* EMC - 133 Select all functionality of Checkbox is not working on "Activity" on Driver Page */
+                if (count === mylistlen) {
+                    $scope.checkboxobj.isCheckedAllForEnableUser = true;
+                } else {
+                    $scope.checkboxobj.isCheckedAllForEnableUser = false;
+                }
+                /* EMC - 133 ends */
                 $scope.empupdatelist.push(emp);
             }
 
@@ -2107,6 +2115,8 @@
                 );
             }
             $scope.displayCheckboxForConcur = function () {
+                $scope.checkboxobj = {}	
+                $scope.checkboxobj.isCheckedAllForConcur = false;
                 $scope.isPlAccountAbsence = false;
                 $scope.checkboxobjConcurShow = true;
                 $scope.checkboxobjEnableUserShow = false;
@@ -2189,7 +2199,13 @@
                     $scope.checkboxobjDeactivateShow = false;
                     $scope.showResetPasswordbtn = false;
                 }
-
+                /* EMC - 133 Select all functionality of Checkbox is not working on "Activity" on Driver Page */
+                    if (count === concurlistlen) {
+                        $scope.checkboxobj.isCheckedAllForConcur = true;
+                    } else {
+                        $scope.checkboxobj.isCheckedAllForConcur = false;
+                    }
+                 /* EMC - 133 ends */
                 $scope.empupdatelist.push(emp);
             }
 
@@ -2221,6 +2237,8 @@
 
 
             $scope.displayCheckboxForDeactivation = function () {
+                $scope.checkboxobj = {}	
+                $scope.checkboxobj.isCheckedAllForDeactivate = false;
                 $scope.isPlAccountAbsence = false;
                 $scope.checkboxobjDeactivateShow = true;
                 $scope.checkboxobjFreezeShow = false;
@@ -2298,7 +2316,13 @@
                     $scope.checkboxobjDeactivateShow = false;
                     $scope.showResetPasswordbtn = false;
                 }
-
+                /* EMC - 133 Select all functionality of Checkbox is not working on "Activity" on Driver Page */
+                    if (count === mylistlen) {
+                        $scope.checkboxobj.isCheckedAllForDeactivate = true;
+                    } else {
+                        $scope.checkboxobj.isCheckedAllForDeactivate = false;
+                    }
+                 /* EMC - 133 ends */
                 $scope.empupdatelist.push(emp);
             }
 
@@ -2314,6 +2338,8 @@
             }
 
             $scope.displayCheckboxForFreeze = function () {
+                $scope.checkboxobj = {}	
+                $scope.checkboxobj.isCheckedAllForFreeze = false;
                 $scope.isPlAccountAbsence = false;
                 $scope.checkboxobjDeactivateShow = false;
                 $scope.checkboxobjEnableUserShow = false;
@@ -2384,8 +2410,13 @@
                     $scope.showMassFreezeEmployeebtn = false;
                     $scope.showMassUnFreezeEmployeebtn = false;
                 }
-
-
+                /* EMC - 133 Select all functionality of Checkbox is not working on "Activity" on Driver Page */
+                if (count === mylistlen) {
+                    $scope.checkboxobj.isCheckedAllForFreeze = true;
+                } else {
+                    $scope.checkboxobj.isCheckedAllForFreeze = false;
+                }
+                 /* EMC - 133 ends */
             }
 
             $scope.FreezeEmployees = function () {
@@ -2473,6 +2504,8 @@
 
             //* EMC - 129 : "LOA" amount and "pay period" for PL marketing account on Driver Page */
             $scope.showLeaveOfAbsence = function () {
+                $scope.checkboxobj = {}	
+                $scope.checkboxobj.isCheckedAllForLOA = false;
                 $scope.IsVisibleUpdatebtn = false;
                 $scope.isPlAccountAbsence = true;
                 $scope.checkboxobjLoaShow = true;
@@ -2518,6 +2551,13 @@
                     $scope.showMultipleAction = true;
                 }
 
+                /* EMC - 133 Select all functionality of Checkbox is not working on "Activity" on Driver Page */
+                if (count === emplistlen) {
+                    $scope.checkboxobj.isCheckedAllForLOA = true;
+                } else {
+                    $scope.checkboxobj.isCheckedAllForLOA = false;
+                }
+                /* EMC - 133 ends */
                 $scope.empupdatelist.push(emp);
             }
 
