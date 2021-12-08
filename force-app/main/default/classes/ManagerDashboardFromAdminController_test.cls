@@ -4,29 +4,22 @@ public class ManagerDashboardFromAdminController_test {
         RecordUtilityClass.sendEmailforCompliance();
         RecordUtilityClass.enableMappingGasPriceTrigger();
         RecordUtilityClass.vehicleUrlMapping();
-
         Account obj_Account = RecordUtilityClass.buildAccount();
         insert obj_Account;
-			obj_Account.Pay_Period_Days__c = 13;
-        	obj_Account.Pay_Period_Start_Date__c = system.today().adddays(-30);
+            obj_Account.Pay_Period_Days__c = 13;
+            obj_Account.Pay_Period_Start_Date__c = system.today().adddays(-30);
         update obj_Account;
-        
         Contact obj_admincontact = RecordUtilityClass.buildAdminContact(obj_Account);
         insert obj_admincontact;
-
         List<Contact> obj_Manager_list = RecordUtilityClass.buildManagerContact(obj_Account,obj_admincontact);
         insert obj_Manager_list;
-
         List<Contact> obj_Driver_list = RecordUtilityClass.buildDriverContact(obj_Account,obj_Manager_list[0]);
         insert obj_Driver_list;
-
         List<Employee_Reimbursement__c> listEmp = RecordUtilityClass.buildPendingEmployee_Reimbursement(obj_Driver_list);
         //listEmp[0].Contact_Id__c = obj_Account.Id;
         insert listEmp;
-        
         list<Bi_Weekly_Reimbursement__c> empBIweekReim = RecordUtilityClass.buildPendingBiReimbursement(obj_Driver_list);
             insert empBIweekReim;
-
         List<Employee_Mileage__c> listMileage_obj = RecordUtilityClass.buildNoApprovedYetEmployeeMileages(listEmp, empBIweekReim[0].Id);
         insert listMileage_obj;
         List<String> reimbursementIdList = new List<String>();
@@ -50,17 +43,13 @@ public class ManagerDashboardFromAdminController_test {
        // ManagerDashboardFromAdminController.getChartLabels();
         ManagerDashboardFromAdminController.getAllDriversLastMonthReimbursements();
         ManagerDashboardFromAdminController.getAllDriversLastMonthUpdatedReimbursements(managerid, obj_Account.Id,'false');
-        
         ManagerDashboardFromAdminController.getAllDriversLastMonthUnapprovedReimbursementsclone();
-
         ManagerDashboardFromAdminController.getAllDriversLastMonthUpdatedUnapprovedReimburseClone(obj_Manager_list[0].Id,obj_Account.Id,'false');
-        
         AsyncApexJob batch = ManagerDashboardFromAdminController.approveReimbursements(JSON.serialize(reimbursementIdList),obj_admincontact.Id,obj_Account.Id,'false');
         ManagerDashboardFromAdminController.approveMileagesClone(JSON.serialize(reimbursementIdList),obj_admincontact.Id,obj_Account.Id,'false');
         List<Employee_Reimbursement__c> obj_Employee_Reimbursement_List = RecordUtilityClass.getEmployee_Reimbursement(obj_Account.id);
         List<EmployeeReimbursementDetailsAdmin> obj_EmployeeReimbursementDetailsAdmin_List = RecordUtilityClass.getListofEmployeeReimbursementDetailsAdmin(obj_Employee_Reimbursement_List);
         List<Employee_Mileage__c> obj_list_mileages =  RecordUtilityClass.getMileagesList();
-
        // ManagerDashboardFromAdminController.approveMileagesClone(JSON.serialize(obj_Employee_Reimbursement_List),obj_Manager_list[0].Id,obj_Account.Id);
         List<EmployeeMileages> obj_EmployeeMileages_list1=new List<EmployeeMileages>();
         List<EmployeeMileages> obj_EmployeeMileages_list=RecordUtilityClass.getallEmployeeMileages(obj_list_mileages);
@@ -73,8 +62,6 @@ public class ManagerDashboardFromAdminController_test {
                 {
                     i++;
                     obj.isSelected=true;
-    
-
                 }
                 else
                 {
@@ -96,7 +83,6 @@ public class ManagerDashboardFromAdminController_test {
         ManagerDashboardFromAdminController.getAdminid();
         ManagerDashboardFromAdminController.getContactid();
         ManagerDashboardFromAdminController.getRedirected();
-        
         //ManagerDashboardFromAdminController.approveReimbursements(JSON.serialize(listEmp), managerid, obj_Account.Id);
     }
 }

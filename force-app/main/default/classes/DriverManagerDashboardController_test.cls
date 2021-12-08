@@ -121,6 +121,10 @@ public class DriverManagerDashboardController_test {
        DriverManagerDashboardController.totalmileages='';
        DriverManagerDashboardController.totalvariableamount='';
        DriverManagerDashboardController.setEmployeeName();
+        DriverManagerDashboardController.showTeamRecord=true;
+        DriverManagerDashboardController.insurancePage=true;
+        PageReference pageRef = Page.DriverManagerDashboard; // Add your VF page Name here
+  pageRef.getParameters().put('showteam', 'showteam' );
        
         Test.stopTest();
     }

@@ -39,9 +39,12 @@ public class ContactTriggerHelperTest {
          
         //Insert Account data Using Utility class
         Account acc = TestUtilityClass.getTestSingleAccount();
-		acc.Triplog_API__c = 'fde76cdde14449bea46b321225ac8fd1';
-		update acc;
+        acc.Triplog_API__c = 'fde76cdde14449bea46b321225ac8fd1';
+        acc.Pay_Period_Days__c = 13;
+        acc.Pay_Period_Start_Date__c = system.today().adddays(-10);
+        update acc;
         
+        system.debug('acc='+acc);
         Contact con2 = new Contact();
         con2.FirstName = 'Test2';
         con2.LastName = 'Contact';
@@ -55,7 +58,7 @@ public class ContactTriggerHelperTest {
         con2.External_Email__c = 'minkesh.patel14@gmail.com';
         con2.Deactivated_Date__c = Null;
         con2.isCommunityUser__c = True;
-		con2.Triplog_UserID__c = '23rcdsf';
+        con2.Triplog_UserID__c = '23rcdsf';
         con2.Role__c = 'Manager';
         con2.Monthly_Mileage_Limit__c = 0;
         con2.IsCreatedFromCommunity__c = true; 
@@ -70,7 +73,7 @@ public class ContactTriggerHelperTest {
         con.MailingStreet = 'Test Street';
         con.MailingCity = 'Test City';
         con.MailingState = 'AL';
-		con.Triplog_UserID__c = '23rcdssf';
+        con.Triplog_UserID__c = '23rcdssf';
         con.MailingPostalCode = '36310';
         con.Manager__c = con2.Id;
         con.MailingCountry = 'CA';
@@ -101,7 +104,7 @@ public class ContactTriggerHelperTest {
         con1.Manager__c = con2.Id;
         con1.MailingCountry = 'CA';
         con1.Phone = '1232434445';
-		con1.Triplog_UserID__c = '23rcdsf';
+        con1.Triplog_UserID__c = '23rcdsf';
         con1.External_Email__c = 'minkesh33.patel14232378@gmail.com';
         con1.Deactivated_Date__c = system.today();
         con1.isCommunityUser__c = True;
@@ -112,14 +115,45 @@ public class ContactTriggerHelperTest {
         con1.compliancestatus__c = 'No – Vehicle Age';
         insert con1;
         
+      //  acc.Pay_Period_Days__c = 13;
+       // acc.Pay_Period_Start_Date__c = system.today().adddays(-10);
+        
+        contact contest = [select id,account.Pay_Period_Days__c,account.Pay_Period_Start_Date__c from contact where id =: con1.id];
+        
+        system.debug('con1='+ [select id,account.Pay_Period_Days__c,account.Pay_Period_Start_Date__c from contact where id =: con1.id]);
+        system.debug(contest.account.Pay_Period_Days__c)   ;
+        system.debug(contest.account.Pay_Period_Start_Date__c)   ;
+        Employee_Reimbursement__c er = new Employee_Reimbursement__c();
+        er.Contact_Id__c = con.Id;
+        er.Month__c = '4-2017';
+        er.Name = contact.lastname+':'+er.month__c;
+        er.Status__c = 'Pending';
+        er.Fuel_Price__c = 1;
+        er.MPG__c = 10;
+        er.Maintenance_and_Tires__c = 24;
+        er.Fuel_Price__c = 1;
+        er.MPG__c = 10.10;
+        er.Maintenance_and_Tires__c = 10;
+        er.Fixed_Amount__c = 10.10;
+        er.Triplog_POST_Response__c = '123';
+        er.Triplog_Status__c = 'U';
+        insert er;
+        
+        Bi_Weekly_Reimbursement__c bob = new Bi_Weekly_Reimbursement__c();
+        bob.name = '9/19/2021 to 10/2/2021';
+        bob.Contact__c = con.id;
+        insert bob;
+        
         con1.compliancestatus__c = 'Yes';
-		update con1;
+        update con1;
         Map<String,String> contactInfo = new Map<String,String>();
         Map<String,String> accountInfo = new Map<String,String>();
         contactInfo.put(con1.Triplog_UserID__c, con1.Phone);
         accountInfo.put(con1.Triplog_UserID__c, acc.Triplog_API__c);
         ContactTriggerHelper.putHTTPEnableUserTriplog(con1.Id);
         ContactTriggerHelper.putHTTPUpdateUserPhoneTriplog(contactInfo,accountInfo);
+        //ContactTriggerHelper.CreateBiweekReimbursement(con1);
+        ContactTriggerHelper.putHTTP(acc.id, 'test@gmail.com');
         
     }
     static testMethod void testmethod3() {
@@ -169,7 +203,9 @@ public class ContactTriggerHelperTest {
          
         //Insert Account data Using Utility class
         Account acc = TestUtilityClass.getTestSingleAccount();
-
+         acc.Pay_Period_Days__c = 13;
+        acc.Pay_Period_Start_Date__c = system.today().adddays(-10);
+        update acc;
         Contact con2 = new Contact();
         con2.FirstName = 'Test2';
         con2.LastName = 'Contact';
@@ -266,7 +302,9 @@ public class ContactTriggerHelperTest {
          
         //Insert Account data Using Utility class
         Account acc = TestUtilityClass.getTestSingleAccount();
-
+         acc.Pay_Period_Days__c = 13;
+        acc.Pay_Period_Start_Date__c = system.today().adddays(-10);
+        update acc;
         Contact con2 = new Contact();
         con2.FirstName = 'Test2';
         con2.LastName = 'Contact';
@@ -282,9 +320,7 @@ public class ContactTriggerHelperTest {
         con2.isCommunityUser__c = True;
         con2.Role__c = 'Manager';
         con2.Monthly_Mileage_Limit__c = 0;
-        con2.IsCreatedFromCommunity__c = true; 
-        
-        
+        con2.IsCreatedFromCommunity__c = true;        
         insert con2;
         
         //Insert Contact data 
@@ -310,6 +346,28 @@ public class ContactTriggerHelperTest {
         con.compliancestatus__c = 'No – Vehicle Value';
         con.Driving_States__c = 'AL';
         insert con;
+        
+        Employee_Reimbursement__c er = new Employee_Reimbursement__c();
+        er.Contact_Id__c = con.Id;
+        er.Month__c = '4-2017';
+        er.Name = contact.lastname+':'+er.month__c;
+        er.Status__c = 'Pending';
+        er.Fuel_Price__c = 1;
+        er.MPG__c = 10;
+        er.Maintenance_and_Tires__c = 24;
+        er.Fuel_Price__c = 1;
+        er.MPG__c = 10.10;
+        er.Maintenance_and_Tires__c = 10;
+        er.Fixed_Amount__c = 10.10;
+        er.Triplog_POST_Response__c = '123';
+        er.Triplog_Status__c = 'U';
+        insert er;
+        
+        Bi_Weekly_Reimbursement__c bob = new Bi_Weekly_Reimbursement__c();
+        bob.name = '9/19/2021 to 10/2/2021';
+        bob.Contact__c = con.id;
+        insert bob;
+        
         
         con.compliancestatus__c = 'Yes';        
         update con;
