@@ -15,7 +15,6 @@ public with sharing class BiWeekEmployeeReimbTriggerHandler {
                 //this static value is used for bypass from here when MappingGasPriceTrigger is called. this is while 'Mileage update after the lock date' is updated  
                 StaticValues.isCalledFromReimTri = false;
                 reimForMil = empReimburseNew.get(empmilege.Bi_Weekly_Reimbursement__c);
-                    
                 if(empmilege.Approved_Date__c == null) {
                     empmilege.Approved_Date__c = reimForMil.Approved_Date__c;
                 }

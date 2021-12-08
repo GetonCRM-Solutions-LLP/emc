@@ -39,10 +39,8 @@ public class ManagerDashboardController
     }
     public static PageReference getRedirected()
     {
-        
         if(getContactid()!=''&& getAccountid()!='' && getShowTeam() != '')
         {
-               
             setEmployeeName(); // sets the Name of the Employee name and Show team record Values according to Database.
             return null;
         }

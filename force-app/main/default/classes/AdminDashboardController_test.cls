@@ -58,8 +58,6 @@ public class AdminDashboardController_test {
         AsyncApexJob batch1 = AdminDashboardController.approveReimbursementsLWC(JSON.serialize(reimbursementIdList),currentAdmin.id,currentAccount.id,'false',JSON.serialize(updateThresholdWrapperList));
         AdminDashboardController.approveMileagesClone(JSON.serialize(reimbursementIdList),currentAdmin.id,currentAccount.Id,'true');
         System.debug('employeereimbursementList'+employeereimbursementList);
-       
-
         List<EmployeeMileages> obj_EmployeeMileages_list1=new List<EmployeeMileages>();
         List<EmployeeMileages> obj_EmployeeMileages_list2=new List<EmployeeMileages>();
         List<EmployeeMileages> obj_EmployeeMileages_list=RecordUtilityClass.getallEmployeeMileages(driverMileagesList);

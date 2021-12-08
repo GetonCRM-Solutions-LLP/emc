@@ -30,8 +30,7 @@ public class BiWeekEmployeeReimbTriggerHandlerTest {
         Profile profile_1 = [SELECT Id FROM Profile WHERE Name = 'Customer Community Login User' LIMIT 1];
         User admin = [SELECT Id, Username, UserRoleId FROM User WHERE Profile.Name = 'System Administrator' AND UserRoleId = :userRole_1.Id LIMIT 1];
         User user_1;
-        
-        
+    
         Account acc = new Account();
         Contact con = new Contact();
         System.runAs(admin) {
@@ -131,7 +130,6 @@ public class BiWeekEmployeeReimbTriggerHandlerTest {
             }
             //bireim.Approved_Date__c = system.today();
             update emp;
-            
             BiWeekEmployeeReimbTriggerHandler biweeklyreim = new BiWeekEmployeeReimbTriggerHandler();
         }
         Test.stopTest();

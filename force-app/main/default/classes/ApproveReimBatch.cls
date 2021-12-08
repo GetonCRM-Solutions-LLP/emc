@@ -79,7 +79,6 @@ global class ApproveReimBatch implements Database.Batchable<String> {
                 update reimbursementList;
             }
         }
-        
     }
     global void finish(Database.BatchableContext bc){
         // execute any post-processing operations

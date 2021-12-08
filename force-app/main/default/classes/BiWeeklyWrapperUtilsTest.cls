@@ -16,8 +16,6 @@ public class BiWeeklyWrapperUtilsTest {
         customSetting1.Send_email_from_code__c= true;
         insert customSetting1;
         
-        
-        
         //ContactTriCommunityReimCreate__c comreim = new ContactTriCommunityReimCreate__c();
         
         Vehicle_URL_Mapping__c veh = new Vehicle_URL_Mapping__c();
@@ -34,7 +32,6 @@ public class BiWeeklyWrapperUtilsTest {
         
         Account acc = new Account();
        
-        
         Contact con = new Contact();
         System.runAs(admin) {
             acc.Name = 'Test Account';
@@ -47,8 +44,6 @@ public class BiWeeklyWrapperUtilsTest {
            
             Contact contact_1 = new Contact(AccountId = acc.Id, LastName = 'xgeek',External_Email__c='newmail@gmail.com');
             insert contact_1;
-            
-            
             
             con.LastName = 'TestContact';
             con.Role__c = 'Driver';
@@ -141,7 +136,6 @@ public class BiWeeklyWrapperUtilsTest {
     
     public static testmethod void testMethod2() {
         
-       
         TriggerConfig__c customSetting =  new TriggerConfig__c();
         customSetting.Name = 'Defaulttrigger';
         customSetting.MappingGasPriceTrigger__c = true;
@@ -156,7 +150,6 @@ public class BiWeeklyWrapperUtilsTest {
         customSetting1.Send_email_from_code__c= true;
         insert customSetting1;
 
-        
         Vehicle_URL_Mapping__c veh = new Vehicle_URL_Mapping__c();
         veh.URL__c = 'https://cdn2.hubspot.net/hubfs/2511299/iStock-494093356.jpg';
         veh.vehicle__c = 'Full-Size Sedan';
@@ -181,8 +174,6 @@ public class BiWeeklyWrapperUtilsTest {
            
             Contact contact_1 = new Contact(AccountId = acc.Id, LastName = 'xgeek',External_Email__c='newmail@gmail.com');
             insert contact_1;
-            
-            
             
             con.LastName = 'TestContact';
             con.Role__c = 'Driver';
@@ -278,8 +269,6 @@ public class BiWeeklyWrapperUtilsTest {
         //emwrpList.add(WrapperUtils.getEmployeeReimbursements(er));
         //BiWeeklyWrapperUtils.getUnapprovedMileages(String.valueof(JSON.serialize(emwrpList)));
         
-        
-
     }
  public static testmethod void testMethod3() {
         TriggerConfig__c customSetting =  new TriggerConfig__c();
@@ -295,8 +284,6 @@ public class BiWeeklyWrapperUtilsTest {
         customSetting1.Name = 'Send Email For Compliance';
         customSetting1.Send_email_from_code__c= true;
         insert customSetting1;
-        
-        
         
         //ContactTriCommunityReimCreate__c comreim = new ContactTriCommunityReimCreate__c();
         
@@ -314,7 +301,6 @@ public class BiWeeklyWrapperUtilsTest {
         
         Account acc = new Account();
        
-        
         Contact con = new Contact();
         System.runAs(admin) {
             acc.Name = 'Test Account';
@@ -327,8 +313,6 @@ public class BiWeeklyWrapperUtilsTest {
            
             Contact contact_1 = new Contact(AccountId = acc.Id, LastName = 'xgeek',External_Email__c='newmail@gmail.com');
             insert contact_1;
-            
-            
             
             con.LastName = 'TestContact';
             con.Role__c = 'Driver';
@@ -418,8 +402,6 @@ public class BiWeeklyWrapperUtilsTest {
        // BiWeeklyWrapperUtils.getMileagesOfReimbursement(emp);
       //  BiWeeklyWrapperUtils.getBiweekReimId(con.Id, system.today());
         
-        
-
     }
     
      public static testmethod void testMethod4() {
@@ -437,8 +419,6 @@ public class BiWeeklyWrapperUtilsTest {
         customSetting1.Send_email_from_code__c= true;
         insert customSetting1;
         
-        
-        
         //ContactTriCommunityReimCreate__c comreim = new ContactTriCommunityReimCreate__c();
         
         Vehicle_URL_Mapping__c veh = new Vehicle_URL_Mapping__c();
@@ -455,7 +435,6 @@ public class BiWeeklyWrapperUtilsTest {
         
         Account acc = new Account();
        
-        
         Contact con = new Contact();
         System.runAs(admin) {
             acc.Name = 'Test Account';
@@ -468,8 +447,6 @@ public class BiWeeklyWrapperUtilsTest {
            
             Contact contact_1 = new Contact(AccountId = acc.Id, LastName = 'xgeek',External_Email__c='newmail@gmail.com');
             insert contact_1;
-            
-            
             
             con.LastName = 'TestContact';
             con.Role__c = 'Driver';
@@ -599,9 +576,6 @@ public class BiWeeklyWrapperUtilsTest {
         Contact con = new Contact();
         Contact con1 = new Contact();
         
-        
-            
-            
         System.runAs(admin) {
             acc.Name = 'Test Account';
             //acc.Pay_Period_Start_Date__c = system.today();
@@ -732,8 +706,6 @@ public class BiWeeklyWrapperUtilsTest {
        // BiWeeklyWrapperUtils.getMileagesOfReimbursement(emp);
       //  BiWeeklyWrapperUtils.getBiweekReimId(con.Id, system.today());
         
-        
-
     }
  
      

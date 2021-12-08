@@ -32,7 +32,6 @@ public with sharing class AdminDashboardController {
         }
     }
     public static PageReference getRedirected() {
-
         if (getContactid() != '' && getAccountid() != '' && getShowTeam() != '') {
             showTeamRecord = boolean.valueOf(getShowTeam());            
             setEmployeeName(); // sets the Name of the Employee name and Show team record Values according to Database.
@@ -42,7 +41,6 @@ public with sharing class AdminDashboardController {
             // redirect to error page
             return null;
         }
-
     }
     public static string getChartData() {
         System.debug('AdmindashgetChartData');

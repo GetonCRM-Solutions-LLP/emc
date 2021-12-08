@@ -75,7 +75,6 @@ public without sharing class ContactTriggerHelper {
 
     public static void  CommunityUserCreate(List<Contact> contactList) {
         List<User> createUserList = new List<User>();
-
         /*if(Trigger.isBefore) {
             map<string, Id> conemailtoid = new  map<string, ID>();
 
@@ -224,7 +223,6 @@ public without sharing class ContactTriggerHelper {
     public static void updateComplianceStatus(List<Contact> newCon, Map<ID, Contact> conOldMap) {
     System.Debug(newCon[0].compliancestatus__c);
     System.Debug(conOldMap.get(newCon[0].id).compliancestatus__c);
-    
         List<String> emails = new List<String>();
         EmailTemplate emTmp = new EmailTemplate();
         Messaging.SingleEmailMessage mail;

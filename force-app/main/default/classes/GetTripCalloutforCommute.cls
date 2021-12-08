@@ -12,7 +12,6 @@ global class GetTripCalloutforCommute {
     
     public static final String MLOGACCOUNT = System.Label.Triplog_New_URL; 
     
-    
     Webservice static void GetTripCalloutForCommuteMileage(ID empReID, String contactEmail, ID contactid, String priMin, String priMax, String fuel, String mpg, String maintenansAndTires, String apiToken, String tripStatus,Boolean putCall, String activityStatus) 
     {
         List<Tripslog__c> obj_Tripslog_list = new List<Tripslog__c>();   
@@ -73,7 +72,6 @@ global class GetTripCalloutforCommute {
                 emp.MPG__c = !CheckNull(mpg) ? Decimal.valueof(mpg) : null;
                 emp.Maintenance_and_Tires__c = !CheckNull(maintenansAndTires) ? Decimal.valueof(maintenansAndTires) : null;
 
-                
                 if(lt.fromLocation != null && lt.fromLocation.display != null ) {
                     emp.FromLocationId__c = lt.fromLocation.id;
                     emp.Trip_Origin__c = lt.fromLocation.display;

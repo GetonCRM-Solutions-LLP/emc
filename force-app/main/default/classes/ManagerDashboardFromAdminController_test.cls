@@ -38,7 +38,6 @@ public class ManagerDashboardFromAdminController_test {
         String accId = ApexPages.currentPage().getParameters().put('accid',obj_Account.Id);
         ManagerDashboardFromAdminController mddc = new ManagerDashboardFromAdminController();
         ManagerDashboardFromAdminController.getAllDriversLastMonthUpdatedUnapprovedReimburseClone1(obj_Manager_list[0].Id,obj_Account.Id,'false');
-
         ManagerDashboardFromAdminController.getAdminid();
         ManagerDashboardFromAdminController.totalmileages='';
         ManagerDashboardFromAdminController.totalvariableamount='';

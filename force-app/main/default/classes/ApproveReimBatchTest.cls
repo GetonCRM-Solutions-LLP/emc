@@ -54,7 +54,6 @@ public class ApproveReimBatchTest {
         
         Employee_Reimbursement__c er = new Employee_Reimbursement__c();
         er.Contact_Id__c = contact.Id;
-        
         er.month__c = '09-2020';
         er.Name = contact.lastname+':'+er.month__c;
         er.Status__c = 'Pending';

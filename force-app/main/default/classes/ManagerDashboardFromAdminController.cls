@@ -50,7 +50,6 @@ public class ManagerDashboardFromAdminController
         }
     }
     public static PageReference getRedirected() {
-
         if (getContactid() != '' && getAccountid() != '' && getAdminid()!= '') {
             setEmployeeName(); // sets the Name of the Employee name and Show team record Values according to Database.
             return null;
@@ -58,7 +57,6 @@ public class ManagerDashboardFromAdminController
             // redirect to error page
             return null;
         }
-
     }
     public static string getChartData()
     {        

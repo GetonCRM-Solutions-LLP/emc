@@ -3,7 +3,6 @@ public class GetTripCalloutforCommmiteTripTest {
     public static testMethod Void GetTripCalloutForMileageTestMethod() {
         
         String fuelPrice, mpg, mat, priMin, priMax;
-        
         TriggerConfig__c customSetting =  new TriggerConfig__c();
         customSetting.Name = 'Defaulttrigger';
         customSetting.MappingGasPriceTrigger__c = true;
@@ -63,7 +62,6 @@ public class GetTripCalloutforCommmiteTripTest {
         er.Triplog_POST_Response__c = '123';
         er.Triplog_Status__c = 'U';
         insert er;
-
 
         Employee_Reimbursement__c er1 = new Employee_Reimbursement__c();
         er1.Contact_Id__c = currentContact.Id;

@@ -293,8 +293,6 @@ public with sharing class BiWeeklyWrapperUtils {
         
         else if(showteam != null && showteam == false && (role == 'Manager' || role =='Driver/Manager'))
         {
-            
-            
             employeeReimbursementList = [SELECT id,
                                             Name, 
                                             Month__c,

@@ -7,8 +7,7 @@ public class DriverManagerDashboardController_test {
         RecordUtilityClass.vehicleUrlMapping();
         Account currentAccount = RecordUtilityClass.buildAccount();
         insert currentAccount;
-        
-        
+
         Contact currentAdmin = RecordUtilityClass.buildAdminContact(currentAccount);
         insert currentAdmin;
         List<Contact> obj_Manager_list = RecordUtilityClass.buildManagerContact(currentAccount,currentAdmin);
@@ -131,6 +130,5 @@ public class DriverManagerDashboardController_test {
         DriverManagerDashboardController.getContactid();
         DriverManagerDashboardController.getRedirected();
        // DriverManagerDashboardController.setEmployeeName();
-        
     }
 }

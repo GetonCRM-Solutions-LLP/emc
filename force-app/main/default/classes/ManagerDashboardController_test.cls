@@ -2,7 +2,6 @@
 public class ManagerDashboardController_test {
     public static testmethod void ManagerDashboardControllerTestMethod() {
       
-
         RecordUtilityClass.createRecordsforManagerDashboard(); // inserting the records for ManagerDashboardController class
         Account currentAccount = RecordUtilityClass.getAccount(); // retriving the Accounts 
         system.debug('currentAccount=='+ currentAccount);

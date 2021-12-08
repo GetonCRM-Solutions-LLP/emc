@@ -196,7 +196,6 @@ public class DriverManagerDashboardController
         return aaj;
 
     }
-
     @RemoteAction
     public static String getUnapprovedMileages(String reimbursementDetails,String accountId)
     {
