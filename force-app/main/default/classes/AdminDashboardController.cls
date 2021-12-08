@@ -49,7 +49,7 @@ public with sharing class AdminDashboardController {
         return WrapperUtils.getChartData(getContactid(),boolean.valueOf(getShowTeam()),getAccountid(),'Admin');
     }
     
-
+    @AuraEnabled
     public static void setEmployeeName() {
         Contact employee= [SELECT Id, Name, showTeamRecord__c, External_Email__c,Insurance_Attachment_Id__c FROM Contact WHERE id =: getContactid()];
         if(employee!=null)
@@ -72,20 +72,37 @@ public with sharing class AdminDashboardController {
     }    
     public static string getAllDriversLastMonthUnapprovedReimbursementsClone() 
     {        
-        return String.escapeSingleQuotes(WrapperUtils.getUnapprovedReimbursements(getContactid(),getAccountid(),boolean.valueOf(getShowTeam()),'Admin'));
+        if(BiWeeklyWrapperUtils.checkBiweekAccount(getAccountid()) == true){
+            return String.escapeSingleQuotes(BiWeeklyWrapperUtils.getUnapprovedReimbursements(getContactid(),getAccountid(),boolean.valueOf(getShowTeam()),'Admin'));
+        } else {
+            return String.escapeSingleQuotes(WrapperUtils.getUnapprovedReimbursements(getContactid(),getAccountid(),boolean.valueOf(getShowTeam()),'Admin'));
+        }
+        //return String.escapeSingleQuotes(WrapperUtils.getUnapprovedReimbursements(getContactid(),getAccountid(),boolean.valueOf(getShowTeam()),'Admin'));
     }    
     @RemoteAction
     public static string getAllDriversLastMonthUpdatedReimbursements(String did, String accid,String showTeamRecord) {
-        return String.escapeSingleQuotes(WrapperUtils.getLastMonthReimbursements(did,accid,boolean.valueOf(showTeamRecord),'Admin'));
+        if(BiWeeklyWrapperUtils.checkBiweekAccount(accid) == true){
+            return String.escapeSingleQuotes(BiWeeklyWrapperUtils.getLastMonthReimbursements(did,accid,boolean.valueOf(showTeamRecord),'Admin'));
+        } else {
+            return String.escapeSingleQuotes(WrapperUtils.getLastMonthReimbursements(did,accid,boolean.valueOf(showTeamRecord),'Admin'));
+        }
     }    
     public static string getAllDriversLastMonthUpdatedUnapprovedReimburseClone(String did, String accid,boolean showTeamRecord) 
     {
-        return String.escapeSingleQuotes(WrapperUtils.getUnapprovedReimbursements(did,accid,showTeamRecord,'Admin'));
+        if(BiWeeklyWrapperUtils.checkBiweekAccount(accid) == true){
+            return String.escapeSingleQuotes(BiWeeklyWrapperUtils.getUnapprovedReimbursements(did,accid,showTeamRecord,'Admin'));
+        } else {
+            return String.escapeSingleQuotes(WrapperUtils.getUnapprovedReimbursements(did,accid,showTeamRecord,'Admin'));
+        }
     }
     @RemoteAction
     public static string getAllDriversLastMonthUpdatedUnapprovedReimburseClone1(String did, String accid,string showTeamRecord) 
     {
-        return String.escapeSingleQuotes(WrapperUtils.getUnapprovedReimbursements(did,accid,boolean.valueOf(showTeamRecord),'Admin'));
+        if(BiWeeklyWrapperUtils.checkBiweekAccount(accid) == true){
+            return String.escapeSingleQuotes(BiWeeklyWrapperUtils.getUnapprovedReimbursements(did,accid,boolean.valueOf(showTeamRecord),'Admin'));
+        } else {
+            return String.escapeSingleQuotes(WrapperUtils.getUnapprovedReimbursements(did,accid,boolean.valueOf(showTeamRecord),'Admin'));
+        }
     }
     @RemoteAction
     public static AsyncApexJob approveReimbursements(String reimbursements,String did,String accid,String showTeamRecord,String updateThreshold) {
@@ -99,7 +116,7 @@ public with sharing class AdminDashboardController {
         // {
         //     WrapperUtils.updateReimbursements(reimbursements);
         // }
-        ApproveReimBatch tripBtc = new ApproveReimBatch(reimbursements);
+        ApproveReimBatch tripBtc = new ApproveReimBatch(reimbursements,BiWeeklyWrapperUtils.checkBiweekAccount(accid));
         ID batchprocessid = Database.executeBatch(tripBtc,1);
         AsyncApexJob aaj = [SELECT Id, Status,ExtendedStatus, JobItemsProcessed, TotalJobItems, NumberOfErrors 
                     FROM AsyncApexJob WHERE ID =: batchprocessid ];
@@ -133,7 +150,7 @@ public with sharing class AdminDashboardController {
         AsyncApexJob aaj;
         if(mileages!=null)
         {
-            ApproveReimBatch tripBtc = new ApproveReimBatch(mileages);
+            ApproveReimBatch tripBtc = new ApproveReimBatch(mileages,BiWeeklyWrapperUtils.checkBiweekAccount(accid));
             ID batchprocessid = Database.executeBatch(tripBtc,1);
             aaj = [SELECT Id, Status,ExtendedStatus, JobItemsProcessed, TotalJobItems, NumberOfErrors 
                                     FROM AsyncApexJob WHERE ID =: batchprocessid ];
@@ -183,7 +200,7 @@ public with sharing class AdminDashboardController {
         
     }
     @RemoteAction
-    public static String getUnapprovedMileages(String reimbursementDetails) // Please change the method body,UI Dev require to pass the several parameters
+    public static String getUnapprovedMileages(String reimbursementDetails,String accountId) // Please change the method body,UI Dev require to pass the several parameters
     {
         system.debug('inside getUnapprovedMileages'+reimbursementDetails);
         /*double mileages=0;
@@ -211,7 +228,11 @@ public with sharing class AdminDashboardController {
                 mileageList.add(WrapperUtils.getMileagesOfReimbursement(currentMileage));
             }   
         }*/
-        return String.escapeSingleQuotes(WrapperUtils.getUnapprovedMileages(reimbursementDetails));
+        if(BiWeeklyWrapperUtils.checkBiweekAccount(accountId) == true){
+            return String.escapeSingleQuotes(BiWeeklyWrapperUtils.getUnapprovedMileages(reimbursementDetails));
+        } else{
+            return String.escapeSingleQuotes(WrapperUtils.getUnapprovedMileages(reimbursementDetails));
+        }
     }
     /*@RemoteAction
     public static String getUnapprovedMileagesforDownload(String reimbursement)
@@ -250,5 +271,53 @@ public with sharing class AdminDashboardController {
         }
         return lastMonth;
     }*/
-    
+    @AuraEnabled
+    public static AsyncApexJob approveMileagesCloneLWC(String mileages, String did, String accid,String showTeamRecord)
+    {
+        List<String> updatedlist = new List<String>();
+        AsyncApexJob aaj;
+        if(mileages!=null)
+        {
+            ApproveReimBatch tripBtc = new ApproveReimBatch(mileages,BiWeeklyWrapperUtils.checkBiweekAccount(accid));
+            ID batchprocessid = Database.executeBatch(tripBtc,1);
+            aaj = [SELECT Id, Status,ExtendedStatus, JobItemsProcessed, TotalJobItems, NumberOfErrors 
+                                    FROM AsyncApexJob WHERE ID =: batchprocessid ];
+        }       
+        return aaj;
+    }
+
+    @AuraEnabled
+    public static AsyncApexJob approveReimbursementsLWC(String reimbursements,String did,String accid,String showTeamRecord,String updateThreshold) {
+        System.debug('reimbursements='+reimbursements);
+        List<String> updatedlist = new List<String>();
+        if(updateThreshold!=null && String.isNotBlank(updateThreshold))
+        {            
+            WrapperUtils.updateContactThresholdLimit(updateThreshold);
+        }
+        ApproveReimBatch tripBtc = new ApproveReimBatch(reimbursements,BiWeeklyWrapperUtils.checkBiweekAccount(accid));
+        ID batchprocessid = Database.executeBatch(tripBtc,1);
+        AsyncApexJob aaj = [SELECT Id, Status,ExtendedStatus, JobItemsProcessed, TotalJobItems, NumberOfErrors 
+                    FROM AsyncApexJob WHERE ID =: batchprocessid ];
+
+        return aaj;
+          
+    }
+    @AuraEnabled
+    public static String CheckBatchStatusLWC(String batchprocessid){
+        System.debug('batchprocessid'+batchprocessid);
+        AsyncApexJob aaj = [SELECT Id, Status,ExtendedStatus, JobItemsProcessed, TotalJobItems, NumberOfErrors 
+                    FROM AsyncApexJob WHERE ID =: batchprocessid ];
+                    System.debug('aaj'+aaj);
+        if(aaj.Status == 'Failed'){
+            return aaj.Status+'='+aaj.ExtendedStatus; 
+        }
+        return aaj.Status;
+    }
+    @AuraEnabled
+    public static List<String> UpdatedReimListLWC(String did,String accid,String showTeamRecord){
+        List<String> updatedlist = new List<String>();
+        updatedlist.add(getAllDriversLastMonthUpdatedReimbursements(did,accid,showTeamRecord));
+        updatedlist.add(getAllDriversLastMonthUpdatedUnapprovedReimburseClone(did,accid,boolean.valueOf(showTeamRecord)));
+        return updatedlist;
+    }
 }

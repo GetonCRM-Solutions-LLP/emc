@@ -119,6 +119,7 @@ global class GetTripCalloutforCommute {
                 }
 
                 emp.Trip_Date__c = !CheckNull(lt.startTime) ? Date.valueof(lt.startTime.split('T')[0]) : null;
+                emp.Bi_Weekly_Reimbursement__c = BiWeeklyWrapperUtils.getBiweekReimId(contactid,emp.Trip_Date__c);
                 empList.add(emp);
                 trip_IDs.add(Integer.valueOf(lt.id));
                 totalmileages += Double.valueOf(emp.Mileage__c);    

@@ -7,6 +7,8 @@ public class DriverManagerDashboardController_test {
         RecordUtilityClass.vehicleUrlMapping();
         Account currentAccount = RecordUtilityClass.buildAccount();
         insert currentAccount;
+        
+        
         Contact currentAdmin = RecordUtilityClass.buildAdminContact(currentAccount);
         insert currentAdmin;
         List<Contact> obj_Manager_list = RecordUtilityClass.buildManagerContact(currentAccount,currentAdmin);
@@ -22,13 +24,19 @@ public class DriverManagerDashboardController_test {
         list<Employee_Reimbursement__c> empReimbursementList = RecordUtilityClass.buildPendingEmployee_Reimbursement(obj_Driver_list);
         insert empReimbursementList;
 
-        List<Employee_Mileage__c> obj_Employee_Mileage_list = RecordUtilityClass.buildNoApprovedYetEmployeeMileages(empReimbursementList);
+        list<Bi_Weekly_Reimbursement__c> empBIweeReimbursementList1 = RecordUtilityClass.buildPendingBiReimbursement(obj_Driver_list);
+        insert empBIweeReimbursementList1;
+
+        List<Employee_Mileage__c> obj_Employee_Mileage_list = RecordUtilityClass.buildNoApprovedYetEmployeeMileages(empReimbursementList, empBIweeReimbursementList1[0].id);
         insert obj_Employee_Mileage_list;
 
         list<Employee_Reimbursement__c> empReimbursementList1 = RecordUtilityClass.buildPendingEmployee_Reimbursement(obj_driverManager_list);
         insert empReimbursementList1;
 
-        List<Employee_Mileage__c> obj_Employee_Mileage_list1 = RecordUtilityClass.buildNoApprovedYetEmployeeMileages(empReimbursementList1);
+        list<Bi_Weekly_Reimbursement__c> empBIReimbursementList1 = RecordUtilityClass.buildPendingBiReimbursement(obj_driverManager_list);
+        insert empBIReimbursementList1;
+
+        List<Employee_Mileage__c> obj_Employee_Mileage_list1 = RecordUtilityClass.buildNoApprovedYetEmployeeMileages(empReimbursementList1,empBIReimbursementList1[0].id );
         insert obj_Employee_Mileage_list1;
 
         //file
@@ -104,7 +112,7 @@ public class DriverManagerDashboardController_test {
         employeereimbursementList = (List<EmployeeMileagesForCalculation>)JSON.deserialize(reimbursement,List<EmployeeMileagesForCalculation>.Class);
         //List<Employee_Reimbursement__c> obj_Employee_Reimbursement_List = RecordUtilityClass.getEmployee_Reimbursement(obj_acc.id);
         //DriverManagerDashboardController.approveMileages(JSON.serialize(obj_EmployeeMileages_list1));
-         DriverManagerDashboardController.getUnapprovedMileages(JSON.serialize(employeereimbursementList[0]));
+         DriverManagerDashboardController.getUnapprovedMileages(JSON.serialize(employeereimbursementList[0]),currentAccount.id);
        // List<String> result =DriverManagerDashboardController.approveMileagesClone(JSON.serialize(obj_EmployeeMileages_list),obj_driverManager_list[0].Id,currentAccount.Id,'true');
          //DriverManagerDashboardController.getUnapprovedMileages('',obj_driverManager_list[0].Id);
         /*DriverManagerDashboardController.getAllDriversLastMonthUpdatedReimbursements(conId,accId);

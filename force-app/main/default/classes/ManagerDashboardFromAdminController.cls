@@ -81,11 +81,15 @@ public class ManagerDashboardFromAdminController
     public static string getAllDriversLastMonthReimbursements()
     {        
          //return String.escapeSingleQuotes(getLastMonthReimbursements(getContactid(),getAccountid(),boolean.valueOf(getShowTeam()),'Manager')); 
-         return String.escapeSingleQuotes(getAllDriversLastMonthUpdatedReimbursements(getContactid(),getAccountid(),getShowTeam()));        
+         return String.escapeSingleQuotes(getAllDriversLastMonthUpdatedReimbursements(getContactid(),getAccountid(),getShowTeam()));      
     }
     @RemoteAction
     public static string getAllDriversLastMonthUpdatedReimbursements(String managerid, String accid,String showTeamRecord) {
-         return String.escapeSingleQuotes(WrapperUtils.getLastMonthReimbursements(managerid,accid,boolean.valueOf(showTeamRecord),'Manager'));
+        if(BiWeeklyWrapperUtils.checkBiweekAccount(accid) == true){
+            return String.escapeSingleQuotes(BiWeeklyWrapperUtils.getLastMonthReimbursements(managerid,accid,boolean.valueOf(showTeamRecord),'Manager'));
+        } else {
+            return String.escapeSingleQuotes(WrapperUtils.getLastMonthReimbursements(managerid,accid,boolean.valueOf(showTeamRecord),'Manager'));
+        }
     }
    /* public static string getAllDriversLastMonthUnapprovedReimbursements()
     {        
@@ -109,23 +113,35 @@ public class ManagerDashboardFromAdminController
     public static string getAllDriversLastMonthUnapprovedReimbursementsclone()
     {       
        // return getAllDriversLastMonthUpdatedUnapprovedReimburseClone(getContactid(),getAccountid(),getShowTeam());
-         return String.escapeSingleQuotes(WrapperUtils.getUnapprovedReimbursements(getContactid(),getAccountid(),boolean.valueOf(getShowTeam()),'Manager'));
+        if(BiWeeklyWrapperUtils.checkBiweekAccount(getAccountid()) == true){
+            return String.escapeSingleQuotes(BiWeeklyWrapperUtils.getUnapprovedReimbursements(getContactid(),getAccountid(),boolean.valueOf(getShowTeam()),'Manager'));
+        } else {
+            return String.escapeSingleQuotes(WrapperUtils.getUnapprovedReimbursements(getContactid(),getAccountid(),boolean.valueOf(getShowTeam()),'Manager'));
+        } 
     }
     
     public static string getAllDriversLastMonthUpdatedUnapprovedReimburseClone(String did, String accid,String showTeamRecord) {
-        return String.escapeSingleQuotes(WrapperUtils.getUnapprovedReimbursements(did,accid,boolean.valueOf(showTeamRecord),'Manager'));
+        if(BiWeeklyWrapperUtils.checkBiweekAccount(accid) == true){
+            return String.escapeSingleQuotes(BiWeeklyWrapperUtils.getUnapprovedReimbursements(did,accid,boolean.valueOf(showTeamRecord),'Manager'));
+        } else {
+            return String.escapeSingleQuotes(WrapperUtils.getUnapprovedReimbursements(did,accid,boolean.valueOf(showTeamRecord),'Manager'));
+        } 
     }
     @RemoteAction
     public static string getAllDriversLastMonthUpdatedUnapprovedReimburseClone1(String did, String accid,string showTeamRecord) 
     {
-        return String.escapeSingleQuotes(WrapperUtils.getUnapprovedReimbursements(did,accid,boolean.valueOf(showTeamRecord),'Manager'));
+        if(BiWeeklyWrapperUtils.checkBiweekAccount(accid) == true){
+            return String.escapeSingleQuotes(BiWeeklyWrapperUtils.getUnapprovedReimbursements(did,accid,boolean.valueOf(showTeamRecord),'Manager'));
+        } else {
+            return String.escapeSingleQuotes(WrapperUtils.getUnapprovedReimbursements(did,accid,boolean.valueOf(showTeamRecord),'Manager'));
+        }
     }
      @RemoteAction
     public static AsyncApexJob approveReimbursements(String reimbursements,String did,String accid,String showTeamRecord)
     {      
         //updatedlist.add(getAllDriversLastMonthUpdatedReimbursements(managerid,accid,showTeamRecord));
         //updatedlist.add(getAllDriversLastMonthUpdatedUnapprovedReimburseclone(managerid,accid,showTeamRecord));              
-        ApproveReimBatch tripBtc = new ApproveReimBatch(reimbursements);
+        ApproveReimBatch tripBtc = new ApproveReimBatch(reimbursements,BiWeeklyWrapperUtils.checkBiweekAccount(accid));
 		ID batchprocessid = Database.executeBatch(tripBtc,1);
         AsyncApexJob aaj = [SELECT Id, Status,ExtendedStatus, JobItemsProcessed, TotalJobItems, NumberOfErrors 
                     FROM AsyncApexJob WHERE ID =: batchprocessid ];
@@ -154,10 +170,10 @@ public class ManagerDashboardFromAdminController
         AsyncApexJob aaj;
         if(mileages!=null)
         {
-             WrapperUtils.approveMileagesClone1(mileages);
+            // WrapperUtils.approveMileagesClone1(mileages);
             //  updatedlist.add(getAllDriversLastMonthUpdatedReimbursements(did,accid,showTeamRecord));
             //  updatedlist.add(getAllDriversLastMonthUpdatedUnapprovedReimburseClone(did,accid,showTeamRecord));
-             ApproveReimBatch tripBtc = new ApproveReimBatch(mileages);
+             ApproveReimBatch tripBtc = new ApproveReimBatch(mileages,BiWeeklyWrapperUtils.checkBiweekAccount(accid));
              ID batchprocessid = Database.executeBatch(tripBtc,1);
              aaj = [SELECT Id, Status,ExtendedStatus, JobItemsProcessed, TotalJobItems, NumberOfErrors 
                                      FROM AsyncApexJob WHERE ID =: batchprocessid ];
@@ -171,7 +187,7 @@ public class ManagerDashboardFromAdminController
     }
 
     @RemoteAction
-    public static String getUnapprovedMileages(String reimbursementDetails)
+    public static String getUnapprovedMileages(String reimbursementDetails,String accountId)
     {
         /*double mileages=0;
         double variableamount=0;
@@ -199,6 +215,10 @@ public class ManagerDashboardFromAdminController
             }   
         }
         System.debug(JSON.serialize(employeeReimbursementList).unescapeHtml4());*/
-        return String.escapeSingleQuotes(WrapperUtils.getUnapprovedMileages(reimbursementDetails));
+        if(BiWeeklyWrapperUtils.checkBiweekAccount(accountId) == true){
+            return String.escapeSingleQuotes(BiWeeklyWrapperUtils.getUnapprovedMileages(reimbursementDetails));
+        } else{
+            return String.escapeSingleQuotes(WrapperUtils.getUnapprovedMileages(reimbursementDetails));
+        }
     }
 }

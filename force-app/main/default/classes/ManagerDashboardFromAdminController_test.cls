@@ -7,7 +7,10 @@ public class ManagerDashboardFromAdminController_test {
 
         Account obj_Account = RecordUtilityClass.buildAccount();
         insert obj_Account;
-
+			obj_Account.Pay_Period_Days__c = 13;
+        	obj_Account.Pay_Period_Start_Date__c = system.today().adddays(-30);
+        update obj_Account;
+        
         Contact obj_admincontact = RecordUtilityClass.buildAdminContact(obj_Account);
         insert obj_admincontact;
 
@@ -20,8 +23,11 @@ public class ManagerDashboardFromAdminController_test {
         List<Employee_Reimbursement__c> listEmp = RecordUtilityClass.buildPendingEmployee_Reimbursement(obj_Driver_list);
         //listEmp[0].Contact_Id__c = obj_Account.Id;
         insert listEmp;
+        
+        list<Bi_Weekly_Reimbursement__c> empBIweekReim = RecordUtilityClass.buildPendingBiReimbursement(obj_Driver_list);
+            insert empBIweekReim;
 
-        List<Employee_Mileage__c> listMileage_obj = RecordUtilityClass.buildNoApprovedYetEmployeeMileages(listEmp);
+        List<Employee_Mileage__c> listMileage_obj = RecordUtilityClass.buildNoApprovedYetEmployeeMileages(listEmp, empBIweekReim[0].Id);
         insert listMileage_obj;
         List<String> reimbursementIdList = new List<String>();
         reimbursementIdList.add(listEmp[0].id);

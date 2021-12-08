@@ -74,27 +74,46 @@ public class ManagerDashboardController
     @RemoteAction
     public static string getAllDriversLastMonthUpdatedReimbursements(String did,String accid,boolean showTeamRecord)
     {   
-        
-         return String.escapeSingleQuotes(WrapperUtils.getLastMonthReimbursements(did,accid,showTeamRecord,'Manager'));
+        if(BiWeeklyWrapperUtils.checkBiweekAccount(accid) == true){
+            return String.escapeSingleQuotes(BiWeeklyWrapperUtils.getLastMonthReimbursements(did,accid,boolean.valueOf(showTeamRecord),'Manager'));
+        } else {
+            return String.escapeSingleQuotes(WrapperUtils.getLastMonthReimbursements(did,accid,boolean.valueOf(showTeamRecord),'Manager'));
+        }
     }
     public static string getAllDriversLastMonthReimbursements()
     { 
-        return String.escapeSingleQuotes(WrapperUtils.getLastMonthReimbursements(getContactid(),getAccountid(),boolean.valueOf(getShowTeam()),'Manager'));        
+        //return String.escapeSingleQuotes(WrapperUtils.getLastMonthReimbursements(getContactid(),getAccountid(),boolean.valueOf(getShowTeam()),'Manager'));        
+        if(BiWeeklyWrapperUtils.checkBiweekAccount(getAccountid()) == true){
+            return String.escapeSingleQuotes(BiWeeklyWrapperUtils.getLastMonthReimbursements(getContactid(),getAccountid(),boolean.valueOf(getShowTeam()),'Manager'));
+        } else {
+            return String.escapeSingleQuotes(WrapperUtils.getLastMonthReimbursements(getContactid(),getAccountid(),boolean.valueOf(getShowTeam()),'Manager'));
+        }
     }
-    public static string getAllDriversLastMonthUpdatedUnapprovedReimburseclone(String did,String accid,boolean showTeamRecord)
-
+    public static string getAllDriversLastMonthUpdatedUnapprovedReimburseclone(String did,String accid,boolean showTeamRecord) 
     {   
-       return String.escapeSingleQuotes(WrapperUtils.getUnapprovedReimbursements(did,accid,showTeamRecord,'Manager'));
+        if(BiWeeklyWrapperUtils.checkBiweekAccount(accid) == true){
+            return String.escapeSingleQuotes(BiWeeklyWrapperUtils.getUnapprovedReimbursements(did,accid,showTeamRecord,'Manager'));
+        } else {
+            return String.escapeSingleQuotes(WrapperUtils.getUnapprovedReimbursements(did,accid,showTeamRecord,'Manager'));
+        } 
     }
     
     @RemoteAction
     public static string getAllDriversLastMonthUpdatedUnapprovedReimburseClone1(String did, String accid,string showTeamRecord) 
     {
-        return String.escapeSingleQuotes(WrapperUtils.getUnapprovedReimbursements(did,accid,boolean.valueOf(showTeamRecord),'Manager'));
+        if(BiWeeklyWrapperUtils.checkBiweekAccount(accid) == true){
+            return String.escapeSingleQuotes(BiWeeklyWrapperUtils.getUnapprovedReimbursements(did,accid,boolean.valueOf(showTeamRecord),'Manager'));
+        } else {
+            return String.escapeSingleQuotes(WrapperUtils.getUnapprovedReimbursements(did,accid,boolean.valueOf(showTeamRecord),'Manager'));
+        }
     }
     public static string getAllDriversLastMonthUnapprovedReimbursementsclone()
     {   
-        return String.escapeSingleQuotes(WrapperUtils.getUnapprovedReimbursements(getContactid(),getAccountid(),boolean.valueOf(getShowTeam()),'Manager'));
+        if(BiWeeklyWrapperUtils.checkBiweekAccount(getAccountid()) == true){
+            return String.escapeSingleQuotes(BiWeeklyWrapperUtils.getUnapprovedReimbursements(getContactid(),getAccountid(),boolean.valueOf(getShowTeam()),'Manager'));
+        } else {
+            return String.escapeSingleQuotes(WrapperUtils.getUnapprovedReimbursements(getContactid(),getAccountid(),boolean.valueOf(getShowTeam()),'Manager'));
+        }
     }
     
     @RemoteAction
@@ -109,7 +128,7 @@ public class ManagerDashboardController
         // {
         //     WrapperUtils.updateReimbursements(reimbursements);
         // }
-        ApproveReimBatch tripBtc = new ApproveReimBatch(reimbursements);
+        ApproveReimBatch tripBtc = new ApproveReimBatch(reimbursements,BiWeeklyWrapperUtils.checkBiweekAccount(accid));
 		ID batchprocessid = Database.executeBatch(tripBtc,1);
         AsyncApexJob aaj = [SELECT Id, Status,ExtendedStatus, JobItemsProcessed, TotalJobItems, NumberOfErrors 
                     FROM AsyncApexJob WHERE ID =: batchprocessid ];
@@ -159,7 +178,7 @@ public class ManagerDashboardController
             //  updatedlist.add(getAllDriversLastMonthUpdatedReimbursements(did,accid,boolean.valueOf(showTeamRecord)));
             //  updatedlist.add(getAllDriversLastMonthUpdatedUnapprovedReimburseClone(did,accid,boolean.valueOf(showTeamRecord)));
             //  return updatedlist;
-            ApproveReimBatch tripBtc = new ApproveReimBatch(mileages);
+            ApproveReimBatch tripBtc = new ApproveReimBatch(mileages,BiWeeklyWrapperUtils.checkBiweekAccount(accid));
              ID batchprocessid = Database.executeBatch(tripBtc,1);
              aaj = [SELECT Id, Status,ExtendedStatus, JobItemsProcessed, TotalJobItems, NumberOfErrors 
                                      FROM AsyncApexJob WHERE ID =: batchprocessid ];
@@ -175,7 +194,7 @@ public class ManagerDashboardController
     }
 
     @RemoteAction
-    public static String getUnapprovedMileages(String reimbursementDetails)
+    public static String getUnapprovedMileages(String reimbursementDetails,String accountId)
     {
         /*double mileages=0;
         double variableamount=0;
@@ -202,7 +221,11 @@ public class ManagerDashboardController
                 employeeMileageList.add(WrapperUtils.getMileagesOfReimbursement(currentMileage));
             }   
         }*/
-        return String.escapeSingleQuotes(WrapperUtils.getUnapprovedMileages(reimbursementDetails));
+        if(BiWeeklyWrapperUtils.checkBiweekAccount(accountId) == true){
+            return String.escapeSingleQuotes(BiWeeklyWrapperUtils.getUnapprovedMileages(reimbursementDetails));
+        } else{
+            return String.escapeSingleQuotes(WrapperUtils.getUnapprovedMileages(reimbursementDetails));
+        }
     } 
     
 }

@@ -26,6 +26,8 @@ public class ApproveReimBatchTest {
         acc.Name = 'Delta account';
         acc.Triplog_API__c = '123456789';
         Acc.Triplog_Status__c = 'U';
+        acc.Pay_Period_Start_Date__c = system.today().adddays(-30);
+        acc.Pay_Period_Days__c = 13;
         insert Acc;
         
         Contact contact = new Contact();
@@ -65,10 +67,17 @@ public class ApproveReimBatchTest {
         er.Fixed_Amount__c = 10.10;
         er.Triplog_Status__c = 'U';
         insert er;
-       
+       Bi_Weekly_Reimbursement__c bob = new Bi_Weekly_Reimbursement__c();
+                bob.name = '9/19/2021 to 10/2/2021';
+                bob.Contact__c = con.id;
+                insert bob;
         String ids = '["'+er.id+'"]';
-        ApproveReimBatch obj = new ApproveReimBatch(ids);
+        String biids = '["'+bob.id+'"]';
+        ApproveReimBatch obj = new ApproveReimBatch(ids,false);
         DataBase.executeBatch(obj);
-       
+         Test.startTest();
+         ApproveReimBatch obj1 = new ApproveReimBatch(biids,true);
+        DataBase.executeBatch(obj1);
+            Test.stopTest();   
     }
 }
