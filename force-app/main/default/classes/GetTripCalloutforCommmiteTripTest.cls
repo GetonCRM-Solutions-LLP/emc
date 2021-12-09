@@ -196,8 +196,6 @@ public class GetTripCalloutforCommmiteTripTest {
         //GetTripCallout.trip_IDs = tripSet;
         GetTripCalloutforCommute.putHTTP(apiToken,currentContact.Id,er.Id,tripSet );
         
-        //test comment
-        
         Test.stopTest();
 
 

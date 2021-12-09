@@ -11,6 +11,93 @@ public class DriverManagerDashboardController_test {
 
         Contact currentAdmin = RecordUtilityClass.buildAdminContact(currentAccount);
         insert currentAdmin;
+
+        Vehicle_URL_Mapping__c veh = new Vehicle_URL_Mapping__c();
+        veh.URL__c = 'https://cdn2.hubspot.net/hubfs/2511299/iStock-494093356.jpg';
+        veh.vehicle__c = 'Full-Size Sedan';
+        veh.Year__c = '2019';
+        
+        insert veh;
+        
+        UserRole userRole_1 = [SELECT Id FROM UserRole WHERE DeveloperName = 'EMD' LIMIT 1];
+        Profile profile_1 = [SELECT Id FROM Profile WHERE Name = 'Customer Community Login User' LIMIT 1];
+        User admin = [SELECT Id, Username, UserRoleId FROM User WHERE Profile.Name = 'System Administrator' AND UserRoleId = :userRole_1.Id LIMIT 1];
+        User user_1;
+        
+       // Account currentAccount = new Account();
+        Contact con = new Contact();
+       // contact currentAdmin = new contact();
+        
+        System.runAs(admin) {
+           /* currentAccount.Name = 'Test Account';
+            //currentAccount.Pay_Period_Start_Date__c = system.today();
+            currentAccount.Bi_Weekly_Pay_Period__c = true;
+            currentAccount.Pay_Period_Days__c = 13;
+            currentAccount.Pay_Period_Start_Date__c = system.today().adddays(-130);
+            currentAccount.Last_Reimbursement_Created__c = '12-2021';
+            insert currentAccount;
+           */
+            Contact contact_1 = new Contact(AccountId = currentAccount.Id, LastName = 'xgeek',External_Email__c='newmail@gmail.com');
+            insert contact_1;
+            
+            con.LastName = 'TestContact';
+            con.Role__c = 'Driver';
+            con.Car_Image__c = veh.URL__c;
+            con.Vehicle_Type__c = veh.Year__c +' '+veh.vehicle__c;
+            con.AccountId = currentAccount.Id;
+            con.Activation_Date__c = system.today();
+            con.Deactivated_Date__c = system.today().addDays(-2);
+            con.External_Email__c = 'test@email.com';
+            con.Fixed_Amount__c = 371.28;
+            con.MailingCity = 'Abilene';
+            con.MailingState = 'TX';
+            con.Time_Zone__c = 'US/Mountain' ;
+            con.Driving_States__c = 'TX';
+            con.Fixed_Amount__c = 322.00;
+            con.Maintenance_and_Tires__c = 1.2;
+            con.MPG__c= 10.00;
+            con.Monthly_Mileage_Limit__c = 100.00;
+            con.Deactivated_Date__c = null;
+            insert con;
+            
+            /*
+            currentAdmin.LastName = 'TestContact';
+            currentAdmin.Role__c = 'Admin';
+            currentAdmin.Car_Image__c = veh.URL__c;
+            currentAdmin.Vehicle_Type__c = veh.Year__c +' '+veh.vehicle__c;
+            currentAdmin.AccountId = currentAccount.Id;
+            currentAdmin.Activation_Date__c = system.today();
+            currentAdmin.Deactivated_Date__c = system.today().addDays(-2);
+            currentAdmin.External_Email__c = 'test@email1.com';
+            currentAdmin.Fixed_Amount__c = 371.28;
+            currentAdmin.MailingCity = 'Abilene';
+            currentAdmin.MailingState = 'TX';
+            currentAdmin.Time_Zone__c = 'US/Mountain' ;
+            currentAdmin.Driving_States__c = 'TX';
+            currentAdmin.Fixed_Amount__c = 322.00;
+            currentAdmin.Maintenance_and_Tires__c = 1.2;
+            currentAdmin.MPG__c= 10.00;
+            currentAdmin.Monthly_Mileage_Limit__c = 100.00;
+            currentAdmin.Deactivated_Date__c = null;
+            insert currentAdmin;
+            */
+            user_1 = new User( 
+                Email = 'yourusername@gmail.com',
+                ProfileId = profile_1.Id, 
+                UserName = 'yourusername@gmail.com', 
+                Alias = 'Test',
+                TimeZoneSidKey = 'America/New_York',
+                EmailEncodingKey = 'ISO-8859-1',
+                LocaleSidKey = 'en_US', 
+                LanguageLocaleKey = 'en_US',
+                ContactId = contact_1.Id,
+                PortalRole = 'Manager',
+                FirstName = 'Firstname',
+                LastName = 'Lastname'
+            );
+            insert user_1;
+        }
+        
         List<Contact> obj_Manager_list = RecordUtilityClass.buildManagerContact(currentAccount,currentAdmin);
         insert obj_Manager_list;
         List<Contact> obj_driverManager_list = RecordUtilityClass.buildDriverManagerContact(currentAccount,obj_Manager_list[0]);

@@ -59,7 +59,7 @@ global class ApproveReimBatch implements Database.Batchable<String> {
                 currentReim.Status__c = 'Approved';
                 currentReim.Approved_Date__c = system.today();
                 currentReim.Reimbursement_Approval__c = false;   
-                System.debug('currentReim'+currentReim);           
+                //System.debug('currentReim'+currentReim);           
                 biWeekreimbursementList.add(currentReim);
             }
             if(!biWeekreimbursementList.isEmpty()) {

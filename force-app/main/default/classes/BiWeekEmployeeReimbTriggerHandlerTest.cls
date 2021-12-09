@@ -7,7 +7,6 @@ public class BiWeekEmployeeReimbTriggerHandlerTest {
         customEmailSetting.ContactTriCommunityReimCreate__c = true;
         insert customEmailSetting;
         
-        system.debug('customEmailSetting=='+ customEmailSetting);
         SendEmail__c customSetting1 =  new SendEmail__c();
         customSetting1.Name = 'Send Email For Compliance';
         customSetting1.Send_email_from_code__c= true;

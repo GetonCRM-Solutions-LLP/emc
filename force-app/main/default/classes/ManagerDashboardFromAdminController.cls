@@ -83,6 +83,7 @@ public class ManagerDashboardFromAdminController
     }
     @RemoteAction
     public static string getAllDriversLastMonthUpdatedReimbursements(String managerid, String accid,String showTeamRecord) {
+       // System.debug('**BiWeeklyWrapperUtils.checkBiweekAccount(accid)**'+BiWeeklyWrapperUtils.checkBiweekAccount(accid));
         if(BiWeeklyWrapperUtils.checkBiweekAccount(accid) == true){
             return String.escapeSingleQuotes(BiWeeklyWrapperUtils.getLastMonthReimbursements(managerid,accid,boolean.valueOf(showTeamRecord),'Manager'));
         } else {
@@ -140,10 +141,10 @@ public class ManagerDashboardFromAdminController
         //updatedlist.add(getAllDriversLastMonthUpdatedReimbursements(managerid,accid,showTeamRecord));
         //updatedlist.add(getAllDriversLastMonthUpdatedUnapprovedReimburseclone(managerid,accid,showTeamRecord));              
         ApproveReimBatch tripBtc = new ApproveReimBatch(reimbursements,BiWeeklyWrapperUtils.checkBiweekAccount(accid));
-		ID batchprocessid = Database.executeBatch(tripBtc,1);
+        ID batchprocessid = Database.executeBatch(tripBtc,1);
         AsyncApexJob aaj = [SELECT Id, Status,ExtendedStatus, JobItemsProcessed, TotalJobItems, NumberOfErrors 
                     FROM AsyncApexJob WHERE ID =: batchprocessid ];
-		return aaj;
+        return aaj;
     }
      @RemoteAction
     public static String CheckBatchStatus(ID batchprocessid){
@@ -152,7 +153,7 @@ public class ManagerDashboardFromAdminController
         if(aaj.Status == 'Failed'){
             return aaj.Status+'='+aaj.ExtendedStatus; 
         }
-		return aaj.Status;
+        return aaj.Status;
     }
     @RemoteAction
     public static List<String> UpdatedReimList(String did,String accid,String showTeamRecord){
@@ -187,6 +188,8 @@ public class ManagerDashboardFromAdminController
     @RemoteAction
     public static String getUnapprovedMileages(String reimbursementDetails,String accountId)
     {
+        system.debug('accountId=='+ accountId);
+        system.debug('reimbursementDetails=='+ reimbursementDetails);
         /*double mileages=0;
         double variableamount=0;
         totalmileages =''; 
@@ -213,7 +216,11 @@ public class ManagerDashboardFromAdminController
             }   
         }
         System.debug(JSON.serialize(employeeReimbursementList).unescapeHtml4());*/
+   
+        
         if(BiWeeklyWrapperUtils.checkBiweekAccount(accountId) == true){
+            //system.debug('BiWeeklyWrapperUtils.checkBiweekAccount(accountId)=='+ BiWeeklyWrapperUtils.checkBiweekAccount(accountId));
+            //system.debug('reimbursementDetails=='+ String.escapeSingleQuotes(BiWeeklyWrapperUtils.getUnapprovedMileages(reimbursementDetails)));
             return String.escapeSingleQuotes(BiWeeklyWrapperUtils.getUnapprovedMileages(reimbursementDetails));
         } else{
             return String.escapeSingleQuotes(WrapperUtils.getUnapprovedMileages(reimbursementDetails));

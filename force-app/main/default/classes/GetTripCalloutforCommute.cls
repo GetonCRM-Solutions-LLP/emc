@@ -227,6 +227,5 @@ global class GetTripCalloutforCommute {
                 Integer.valueof(param1.split('-')[4]), 
                 Integer.valueof(param1.split('-')[5].removeEnd('.000Z'))
             );
-        //test comment
     }
 }

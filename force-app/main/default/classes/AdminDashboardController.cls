@@ -43,7 +43,7 @@ public with sharing class AdminDashboardController {
         }
     }
     public static string getChartData() {
-        System.debug('AdmindashgetChartData==');
+        System.debug('AdmindashgetChartData');
         return WrapperUtils.getChartData(getContactid(),boolean.valueOf(getShowTeam()),getAccountid(),'Admin');
     }
     

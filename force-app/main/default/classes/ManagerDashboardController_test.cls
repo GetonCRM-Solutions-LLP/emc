@@ -6,7 +6,7 @@ public class ManagerDashboardController_test {
         Account currentAccount = RecordUtilityClass.getAccount(); // retriving the Accounts 
         system.debug('currentAccount=='+ currentAccount);
         Contact currentAdmin = RecordUtilityClass.getManagerContact(); // Retriving the Manager with limit 1
-        system.debug('currentAdmin=='+ currentAdmin);
+        
         List<Employee_Reimbursement__c> empReimbursementList = RecordUtilityClass.getEmployee_Reimbursement(currentAccount.id);
         
         system.debug('empReimbursementList=='+ empReimbursementList);

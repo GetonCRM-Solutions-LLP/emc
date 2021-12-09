@@ -221,7 +221,7 @@ public without sharing class ContactTriggerHelper {
     }*/
     
     public static void updateComplianceStatus(List<Contact> newCon, Map<ID, Contact> conOldMap) {
-        system.debug('conOldMap=='+ conOldMap);
+       // system.debug('conOldMap=='+ conOldMap);
     System.Debug(newCon[0].compliancestatus__c);
     System.Debug(conOldMap.get(newCon[0].id).compliancestatus__c);
         List<String> emails = new List<String>();
@@ -532,7 +532,7 @@ public without sharing class ContactTriggerHelper {
                     newAuditTrialCreate.add(new AuditTrail__c(Field__c='Deactivation Date',Timestamp__c=Datetime.now(),Modifiedby__c=UserInfo.getFirstName()+' '+UserInfo.getLastName(),NewValue__c=String.valueOf(c.Deactivated_Date__c),OldValue__c=String.valueOf(conOld.get(c.id).Deactivated_Date__c),Contact__c=c.id));
                 
             //for(String ConOldMap:conOld.keySet()){
-            //test comment
+        
                 
            // }
         }
