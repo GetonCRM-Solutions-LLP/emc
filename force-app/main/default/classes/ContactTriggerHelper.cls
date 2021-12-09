@@ -500,6 +500,8 @@ public without sharing class ContactTriggerHelper {
     //Track History of Contact
     public static void TrackHistory(Map<ID,Contact> conOld,List<Contact> contactListNew,Map<String,String> managerNames){
         
+        
+        
         //Map for Manager Name
         
         //Audit Trial
