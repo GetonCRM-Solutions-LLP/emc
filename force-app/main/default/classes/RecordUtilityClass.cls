@@ -95,8 +95,11 @@ public with sharing class RecordUtilityClass
         List<Contact> obj_Manager_list;
         List<Contact> obj_Driver_list;
         System.runAs(admin) {
-            Account account_1 = new Account( Name = 'Community'  );
+            Account account_1 = new Account( Name = 'Community',Pay_Period_Start_Date__c = System.today().addDays(-130),Pay_Period_Days__c = 13);
             insert account_1;
+            
+            /*Account account_1 = new Account( Name = 'Community');
+            insert account_1;*/
             
             Contact contact_1 = new Contact(AccountId = account_1.Id, LastName = 'xgeek',External_Email__c= 'abc@gmail.com');
             insert contact_1;
@@ -166,7 +169,7 @@ public with sharing class RecordUtilityClass
     }
     public static Account getAccount()
     {
-        return [Select id,name from Account limit 1];
+        return [Select id,name,Pay_Period_Start_Date__c, Pay_Period_Days__c from Account limit 1];
     }
     public static Contact getAdminContact()
     {
@@ -193,8 +196,10 @@ public with sharing class RecordUtilityClass
     {
         return [Select id,Name,Manager__c from Contact where Role__c='Manager'];
     }
+    
     public static List<Employee_Reimbursement__c> getEmployee_Reimbursement(String accid)
     {
+        system.debug('getEmployee_Reimbursement==' + accid);
         return [select id,Name, Month__c, Approved_Date__c,Contact_Id__r.Accountid, Contact_Id__c, Contact_Id__r.name, Contact_Id__r.Monthly_Mileage_Limit__c, Total_Approved__c, Total_Mileage__c, Status__c, Total_Variable_Rate__c,(select id,Name,Trip_Status__c,Trip_Date__c,Trip_Origin__c,Trip_Destination__c,Approved_Date__c,Mileage__c,Variable__c,EmployeeReimbursement__c,EmployeeReimbursement__r.month__c,EmployeeReimbursement__r.Contact_Id__c,CreatedDate,Rejected__c from Employees_Mileage__r where Trip_Status__c =: StaticValues.noApprovedYet and Approved_Date__c = null) from Employee_Reimbursement__c where Contact_Id__r.Accountid =: accid and (Contact_Id__r.Deactivated_Date__c = null OR Contact_Id__r.Deactivated_Date__c > TODAY) and Status__c = 'Pending' and Approved_Date__c = null];
     }
     public static List<Employee_Reimbursement__c> getDriverEmployee_Reimbursement(String drivercontactid)
@@ -313,6 +318,8 @@ public with sharing class RecordUtilityClass
         obj_Account.name='test Account';
         obj_Account.isUsingTriplog__c =  true;
         obj_Account.Triplog_API__c = 'Test';
+        obj_Account.Pay_Period_Start_Date__c = system.today().adddays(-30);
+        obj_Account.Pay_Period_Days__c = 13;
         if(System.Today().Month()<10)
         {
             obj_Account.Last_Reimbursement_Created__c = '0'+System.Today().Month()+'-'+System.Today().Year();

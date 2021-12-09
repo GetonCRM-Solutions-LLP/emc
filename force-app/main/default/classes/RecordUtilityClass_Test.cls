@@ -21,7 +21,7 @@ public with sharing class RecordUtilityClass_Test {
         List<Contact> obj_Manager_list;
         List<Contact> obj_Driver_list;
         System.runAs(admin) {
-            Account account_1 = new Account( Name = 'Community'  );
+            Account account_1 = new Account( Name = 'Community',Pay_Period_Days__c = 13,  Pay_Period_Start_Date__c = system.today().adddays(-30));
             insert account_1;
             
             Contact contact_1 = new Contact(AccountId = account_1.Id, LastName = 'xgeek',External_Email__c= 'abc@gmail.com');
@@ -87,7 +87,7 @@ public with sharing class RecordUtilityClass_Test {
         List<Contact> listContactDriver;
 
         System.runAs(admin) {
-            Account account_1 = new Account( Name = 'Community'  );
+            Account account_1 = new Account( Name = 'Community',Pay_Period_Days__c = 13,  Pay_Period_Start_Date__c = system.today().adddays(-30)  );
             insert account_1;
             
             Contact contact_1 = new Contact(AccountId = account_1.Id, LastName = 'xgeek',External_Email__c= 'abc@gmail.com');
@@ -155,7 +155,7 @@ public with sharing class RecordUtilityClass_Test {
         List<Contact> listContactManager;
         List<Contact> listContactDriver;
         System.runAs(admin) {
-            Account account_1 = new Account( Name = 'Community'  );
+            Account account_1 = new Account( Name = 'Community',Pay_Period_Days__c = 13,  Pay_Period_Start_Date__c = system.today().adddays(-30)  );
             insert account_1;
             
             Contact contact_1 = new Contact(AccountId = account_1.Id, LastName = 'xgeek',External_Email__c= 'abc@gmail.com');
@@ -222,7 +222,7 @@ public with sharing class RecordUtilityClass_Test {
         List<Contact> listContactManager;
         List<Contact> listContactDriver;
         System.runAs(admin) {
-            Account account_1 = new Account( Name = 'Community'  );
+            Account account_1 = new Account( Name = 'Community',Pay_Period_Days__c = 13,  Pay_Period_Start_Date__c = system.today().adddays(-30)  );
             insert account_1;
             
             Contact contact_1 = new Contact(AccountId = account_1.Id, LastName = 'xgeek',External_Email__c= 'abc@gmail.com');
