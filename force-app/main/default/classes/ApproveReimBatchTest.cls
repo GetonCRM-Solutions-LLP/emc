@@ -66,6 +66,8 @@ public class ApproveReimBatchTest {
         er.Fixed_Amount__c = 10.10;
         er.Triplog_Status__c = 'U';
         insert er;
+        
+        system.debug('er=='+ er);
        Bi_Weekly_Reimbursement__c bob = new Bi_Weekly_Reimbursement__c();
                 bob.name = '9/19/2021 to 10/2/2021';
                 bob.Contact__c = con.id;

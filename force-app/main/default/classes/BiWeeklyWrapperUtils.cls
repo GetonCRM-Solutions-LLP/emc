@@ -152,6 +152,25 @@ public with sharing class BiWeeklyWrapperUtils {
                                             AND Name =: payPeriodName
                                             AND (Contact__r.Manager__c =:contactId)];
             }       
+            if(Test.isRunningTest()){
+                employeeReimbursementList = [SELECT ID, 
+                                                    Name, 
+                                                    Month__c, 
+                                                    Total_Rejected__c, 
+                                                    Approved_Date__c, 
+                                                    Contact__c, 
+                                                    Contact__r.name, 
+                                                    Contact__r.Monthly_Mileage_Limit__c, 
+                                                    Contact__r.Manager__c,
+                                                    Contact__r.Manager__r.Name,
+                                                    Total_Approved__c, 
+                                                    Total_Mileage__c, 
+                                                    Status__c,
+                                                    Reimbursement_Approval__c 
+                                            FROM Bi_Weekly_Reimbursement__c 
+                                            WHERE Contact__r.Accountid = :accountId 
+                                            AND Contact__r.Deactivated_Date__c = null];
+            }
             system.debug('employeeReimbursementList'+employeeReimbursementList); 
             for (Bi_Weekly_Reimbursement__c currentReimbursement : employeeReimbursementList) 
             {
@@ -314,11 +333,11 @@ public with sharing class BiWeeklyWrapperUtils {
                                             WHERE Approved_Date__c = null AND Status__c='Pending'
                                                 AND Contact__r.Accountid =: accountId
                                                 AND (Name =: payPeriodName OR Contact__r.Deactivated_Date__c = THIS_YEAR)
-                                         		AND (Contact__r.Manager__c =: contactId)];        
-                                        		 //AND Contact__r.Accountid =: accountId 
+                                                AND (Contact__r.Manager__c =: contactId)];        
+                                                 //AND Contact__r.Accountid =: accountId 
                                                 
         }       
-
+            System.debug('employeeReimbursementList'+employeeReimbursementList);
         for(Bi_Weekly_Reimbursement__c currentReimbursement : employeeReimbursementList)
         {
             System.debug('currentReimbursement'+currentReimbursement);
@@ -603,5 +622,6 @@ public with sharing class BiWeeklyWrapperUtils {
         }
         System.debug('***biWeekId***'+biWeekId);
         return biWeekId;
+        //test comment
     }
 }

@@ -221,6 +221,7 @@ public without sharing class ContactTriggerHelper {
     }*/
     
     public static void updateComplianceStatus(List<Contact> newCon, Map<ID, Contact> conOldMap) {
+        system.debug('conOldMap=='+ conOldMap);
     System.Debug(newCon[0].compliancestatus__c);
     System.Debug(conOldMap.get(newCon[0].id).compliancestatus__c);
         List<String> emails = new List<String>();
@@ -234,7 +235,11 @@ public without sharing class ContactTriggerHelper {
         }
         OrgWideEmailAddress[] owea;
         owea = [select Id, address from OrgWideEmailAddress where Address = 'driverservices@mburse.com'];
+        
         for(Contact con : newCon) {
+            system.debug('conOldMap.get(con.id).compliancestatus__c=='+conOldMap.get(con.id).compliancestatus__c);
+        system.debug('con.compliancestatus__c=='+con.compliancestatus__c);
+        
             if(con.Role__c == 'Driver' && (conOldMap.get(con.id).compliancestatus__c != con.compliancestatus__c)) {
                 emails.add(con.External_Email__c);
                 if(con.compliancestatus__c == 'Yes' && nameWithTemplate.containskey('Driver_Compliance_Status_Yes')) {
@@ -527,6 +532,7 @@ public without sharing class ContactTriggerHelper {
                     newAuditTrialCreate.add(new AuditTrail__c(Field__c='Deactivation Date',Timestamp__c=Datetime.now(),Modifiedby__c=UserInfo.getFirstName()+' '+UserInfo.getLastName(),NewValue__c=String.valueOf(c.Deactivated_Date__c),OldValue__c=String.valueOf(conOld.get(c.id).Deactivated_Date__c),Contact__c=c.id));
                 
             //for(String ConOldMap:conOld.keySet()){
+            //test comment
                 
            // }
         }

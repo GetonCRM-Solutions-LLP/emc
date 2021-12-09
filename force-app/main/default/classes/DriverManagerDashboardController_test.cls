@@ -7,6 +7,7 @@ public class DriverManagerDashboardController_test {
         RecordUtilityClass.vehicleUrlMapping();
         Account currentAccount = RecordUtilityClass.buildAccount();
         insert currentAccount;
+       
 
         Contact currentAdmin = RecordUtilityClass.buildAdminContact(currentAccount);
         insert currentAdmin;
@@ -124,15 +125,19 @@ public class DriverManagerDashboardController_test {
         DriverManagerDashboardController.showTeamRecord=true;
         DriverManagerDashboardController.insurancePage=true;
         PageReference pageRef = Page.DriverManagerDashboard; // Add your VF page Name here
-  pageRef.getParameters().put('showteam', 'showteam' );
-       
+  		pageRef.getParameters().put('showteam', 'showteam' );
+        DriverManagerDashboardController.getAccountid();
+        DriverManagerDashboardController.getContactid();
+        DriverManagerDashboardController.getRedirected();
+		 
+        //test comment       
         Test.stopTest();
     }
-    public static testmethod void DriverManagerDashboardControllerTestMethod1() 
-    {
+   /* public static testmethod void DriverManagerDashboardControllerTestMethod1() {
         DriverManagerDashboardController.getAccountid();
         DriverManagerDashboardController.getContactid();
         DriverManagerDashboardController.getRedirected();
        // DriverManagerDashboardController.setEmployeeName();
-    }
+    } */
+    
 }

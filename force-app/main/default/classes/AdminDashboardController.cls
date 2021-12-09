@@ -43,13 +43,14 @@ public with sharing class AdminDashboardController {
         }
     }
     public static string getChartData() {
-        System.debug('AdmindashgetChartData');
+        System.debug('AdmindashgetChartData==');
         return WrapperUtils.getChartData(getContactid(),boolean.valueOf(getShowTeam()),getAccountid(),'Admin');
     }
     
     @AuraEnabled
     public static void setEmployeeName() {
         Contact employee= [SELECT Id, Name, showTeamRecord__c, External_Email__c,Insurance_Attachment_Id__c FROM Contact WHERE id =: getContactid()];
+        system.debug('employee='+ employee);
         if(employee!=null)
         {
             emailofEmployee = employee.External_Email__c;

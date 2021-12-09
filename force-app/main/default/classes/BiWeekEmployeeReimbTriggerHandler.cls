@@ -2,6 +2,7 @@ public with sharing class BiWeekEmployeeReimbTriggerHandler {
     public BiWeekEmployeeReimbTriggerHandler() {
     }
     public static Void mileagefieldupdate(List<Bi_Weekly_Reimbursement__c> empReimbursList, Map<Id,Bi_Weekly_Reimbursement__c> empReimburseOld, Map<Id,Bi_Weekly_Reimbursement__c> empReimburseNew) {         
+        system.debug('empReimbursList=='+ empReimbursList);
         List<Employee_Mileage__c> mileageUpdatelist = new List<Employee_Mileage__c>();
         Bi_Weekly_Reimbursement__c reimForMil = new Bi_Weekly_Reimbursement__c();
         for(Employee_Mileage__c empmilege : [SELECT id, name, Trip_Status__c, Rejected__c,

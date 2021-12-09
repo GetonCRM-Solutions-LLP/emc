@@ -78,6 +78,7 @@ global class ApproveReimBatch implements Database.Batchable<String> {
             if(!reimbursementList.isEmpty()) {
                 update reimbursementList;
             }
+            system.debug('reimbursementList=='+ reimbursementList);
         }
     }
     global void finish(Database.BatchableContext bc){

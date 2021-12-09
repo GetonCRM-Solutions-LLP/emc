@@ -11,6 +11,7 @@ public class AdminDashboardController_test {
         insert currentAccount;*/
         
         Account currentAccount = RecordUtilityClass.getAccount();
+        system.debug('currentAccount='+ currentAccount);
         
         system.debug('currentAccount=='+ currentAccount);
        Contact currentAdmin = RecordUtilityClass.getAdminContact(); // Retriving the Admin with limit 1
