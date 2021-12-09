@@ -5,12 +5,6 @@ public class DriverManagerDashboardController_test {
         RecordUtilityClass.sendEmailforCompliance();
         RecordUtilityClass.enableMappingGasPriceTrigger();
         RecordUtilityClass.vehicleUrlMapping();
-        Account currentAccount = RecordUtilityClass.buildAccount();
-        insert currentAccount;
-       
-
-        Contact currentAdmin = RecordUtilityClass.buildAdminContact(currentAccount);
-        insert currentAdmin;
 
         Vehicle_URL_Mapping__c veh = new Vehicle_URL_Mapping__c();
         veh.URL__c = 'https://cdn2.hubspot.net/hubfs/2511299/iStock-494093356.jpg';
@@ -24,9 +18,9 @@ public class DriverManagerDashboardController_test {
         User admin = [SELECT Id, Username, UserRoleId FROM User WHERE Profile.Name = 'System Administrator' AND UserRoleId = :userRole_1.Id LIMIT 1];
         User user_1;
         
-       // Account currentAccount = new Account();
+        Account currentAccount;
         Contact con = new Contact();
-       // contact currentAdmin = new contact();
+        Contact currentAdmin;
         
         System.runAs(admin) {
            /* currentAccount.Name = 'Test Account';
@@ -37,6 +31,12 @@ public class DriverManagerDashboardController_test {
             currentAccount.Last_Reimbursement_Created__c = '12-2021';
             insert currentAccount;
            */
+            currentAccount = RecordUtilityClass.buildAccount();
+            insert currentAccount;
+           
+    
+            currentAdmin = RecordUtilityClass.buildAdminContact(currentAccount);
+            insert currentAdmin;
             Contact contact_1 = new Contact(AccountId = currentAccount.Id, LastName = 'xgeek',External_Email__c='newmail@gmail.com');
             insert contact_1;
             
@@ -212,11 +212,11 @@ public class DriverManagerDashboardController_test {
         DriverManagerDashboardController.showTeamRecord=true;
         DriverManagerDashboardController.insurancePage=true;
         PageReference pageRef = Page.DriverManagerDashboard; // Add your VF page Name here
-  		pageRef.getParameters().put('showteam', 'showteam' );
+        pageRef.getParameters().put('showteam', 'showteam' );
         DriverManagerDashboardController.getAccountid();
         DriverManagerDashboardController.getContactid();
         DriverManagerDashboardController.getRedirected();
-		 
+         
         //test comment       
         Test.stopTest();
     }

@@ -22,13 +22,16 @@ public class ManagerDashboardFromAdminController_test {
         User admin = [SELECT Id, Username, UserRoleId FROM User WHERE Profile.Name = 'System Administrator' AND UserRoleId = :userRole_1.Id LIMIT 1];
         User user_1;
         
-        Account obj_Account = RecordUtilityClass.buildAccount();
+        /*Account obj_Account = RecordUtilityClass.buildAccount();
         
             obj_Account.Pay_Period_Days__c = 13;
             obj_Account.Pay_Period_Start_Date__c = system.today().adddays(-30);
         insert obj_Account;
+*/
        // Account obj_Account = new Account();
+       	 Account obj_Account;
         Contact con = new Contact();
+        contact obj_admincontact ;
         //contact obj_admincontact = new contact();
         
         System.runAs(admin) {
@@ -40,7 +43,11 @@ public class ManagerDashboardFromAdminController_test {
             obj_Account.Last_Reimbursement_Created__c = '12-2021';
             insert obj_Account;
            */
-             
+            obj_Account = RecordUtilityClass.buildAccount();
+        
+            obj_Account.Pay_Period_Days__c = 13;
+            obj_Account.Pay_Period_Start_Date__c = system.today().adddays(-30);
+        insert obj_Account;
             
             system.debug('obj_Account=='+ obj_Account);
             Contact contact_1 = new Contact(AccountId = obj_Account.Id, LastName = 'xgeek',External_Email__c='newmail@gmail.com');
@@ -65,6 +72,9 @@ public class ManagerDashboardFromAdminController_test {
             con.Monthly_Mileage_Limit__c = 100.00;
             con.Deactivated_Date__c = null;
             insert con;
+            
+              obj_admincontact = RecordUtilityClass.buildAdminContact(obj_Account);
+        insert obj_admincontact;
             
            /* 
             obj_admincontact.LastName = 'TestContact';
@@ -105,8 +115,9 @@ public class ManagerDashboardFromAdminController_test {
         }
         
         
-        Contact obj_admincontact = RecordUtilityClass.buildAdminContact(obj_Account);
+       /* Contact obj_admincontact = RecordUtilityClass.buildAdminContact(obj_Account);
         insert obj_admincontact;
+*/
         List<Contact> obj_Manager_list = RecordUtilityClass.buildManagerContact(obj_Account,obj_admincontact);
         insert obj_Manager_list;
         List<Contact> obj_Driver_list = RecordUtilityClass.buildDriverContact(obj_Account,obj_Manager_list[0]);
