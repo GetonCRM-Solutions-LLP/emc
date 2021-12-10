@@ -38,293 +38,119 @@ public class ContactTriggerHelperTest {
         insert customSetting;
          
         //Insert Account data Using Utility class
-        Account acc = TestUtilityClass.getTestSingleAccount();
-        acc.Triplog_API__c = 'fde76cdde14449bea46b321225ac8fd1';
-        acc.Pay_Period_Days__c = 13;
-        acc.Pay_Period_Start_Date__c = system.today().adddays(-10);
-        update acc;
-        
-        //system.debug('acc='+acc);
-        Contact con2 = new Contact();
-        con2.FirstName = 'Test2';
-        con2.LastName = 'Contact';
-        con2.AccountId = acc.Id;
-        con2.MailingStreet = 'Test Street';
-        con2.MailingCity = 'Abbeville';
-        con2.MailingState = 'AL';
-        con2.MailingPostalCode = '123';
-        con2.MailingCountry = 'CA';
-        con2.Phone = '1232434445';
-        con2.External_Email__c = 'minkesh.patel14@gmail.com';
-        con2.Deactivated_Date__c = Null;
-        con2.isCommunityUser__c = True;
-        con2.Triplog_UserID__c = '23rcdsf';
-        con2.Role__c = 'Manager';
-        con2.Monthly_Mileage_Limit__c = 0;
-        con2.IsCreatedFromCommunity__c = true; 
-        insert con2;
-        
-        //Insert Contact data 
-        Contact con = new Contact();
-        con.FirstName = 'Test';
-        con.LastName = 'Contact';
-        con.AccountId = acc.Id;
-        con.Fixed_Amount__c = 10;
-        con.MailingStreet = 'Test Street';
-        con.MailingCity = 'Test City';
-        con.MailingState = 'AL';
-        con.Triplog_UserID__c = '23rcdssf';
-        con.MailingPostalCode = '36310';
-        con.Manager__c = con2.Id;
-        con.MailingCountry = 'CA';
-        con.Phone = '1232434445';
-        con.External_Email__c = 'minkesh.patel14232378@gmail.com';
-        con.Deactivated_Date__c = system.today();
-        con.isCommunityUser__c = True;
-        con.Role__c = 'Driver';
-        con.Monthly_Mileage_Limit__c = 0;
-        con.IsCreatedFromCommunity__c = true; 
-        con.Vehicle_Type__c  = '2019 Full-Size Sedan';
-        con.compliancestatus__c = 'Yes';
-        insert con;
-        
-        con.Deactivated_Date__c = null;
-        con.compliancestatus__c = 'No – Vehicle Age';
-        update con;
-        
-        Contact con1 = new Contact();
-        con1.FirstName = 'Test2';
-        con1.LastName = 'Contact2';
-        con1.AccountId = acc.Id;
-        con1.Fixed_Amount__c = 10;
-        con1.MailingStreet = 'Test Street';
-        con1.MailingCity = 'Test City';
-        con1.MailingState = 'AL';
-        con1.MailingPostalCode = '36310';
-        con1.Manager__c = con2.Id;
-        con1.MailingCountry = 'CA';
-        con1.Phone = '1232434445';
-        con1.Triplog_UserID__c = '23rcdsf';
-        con1.External_Email__c = 'minkesh33.patel14232378@gmail.com';
-        con1.Deactivated_Date__c = system.today();
-        con1.isCommunityUser__c = True;
-        con1.Role__c = 'Driver';
-        con1.Monthly_Mileage_Limit__c = 0;
-        con1.IsCreatedFromCommunity__c = true; 
-        con1.Vehicle_Type__c  = '2019 Full-Size Sedan';
-        con1.compliancestatus__c = 'No – Vehicle Age';
-        insert con1;
-        
-      //  acc.Pay_Period_Days__c = 13;
-       // acc.Pay_Period_Start_Date__c = system.today().adddays(-10);
-        
-        contact contest = [select id,account.Pay_Period_Days__c,account.Pay_Period_Start_Date__c from contact where id =: con1.id];
-        
-        system.debug('con1='+ [select id,account.Pay_Period_Days__c,account.Pay_Period_Start_Date__c from contact where id =: con1.id]);
-        system.debug(contest.account.Pay_Period_Days__c)   ;
-        system.debug(contest.account.Pay_Period_Start_Date__c)   ;
-        Employee_Reimbursement__c er = new Employee_Reimbursement__c();
-        er.Contact_Id__c = con.Id;
-        er.Month__c = '4-2017';
-        er.Name = contact.lastname+':'+er.month__c;
-        er.Status__c = 'Pending';
-        er.Fuel_Price__c = 1;
-        er.MPG__c = 10;
-        er.Maintenance_and_Tires__c = 24;
-        er.Fuel_Price__c = 1;
-        er.MPG__c = 10.10;
-        er.Maintenance_and_Tires__c = 10;
-        er.Fixed_Amount__c = 10.10;
-        er.Triplog_POST_Response__c = '123';
-        er.Triplog_Status__c = 'U';
-        insert er;
-        
-        Bi_Weekly_Reimbursement__c bob = new Bi_Weekly_Reimbursement__c();
-        bob.name = '9/19/2021 to 10/2/2021';
-        bob.Contact__c = con.id;
-        insert bob;
-        
-        con1.compliancestatus__c = 'Yes';
-        update con1;
+        UserRole userRole_1 = [SELECT Id FROM UserRole WHERE DeveloperName = 'EMD' LIMIT 1];
+        Profile profile_1 = [SELECT Id FROM Profile WHERE Name = 'Customer Community Login User' LIMIT 1];
+        User admin = [SELECT Id, Username, UserRoleId FROM User WHERE Profile.Name = 'System Administrator' AND UserRoleId = :userRole_1.Id LIMIT 1];
+        User user_1;
+        Account acc;
+        Contact con2;
+        Contact con;
+        Contact con1;
+        System.runAs(admin) {
+            acc = TestUtilityClass.getTestSingleAccount();
+            acc.Triplog_API__c = 'fde76cdde14449bea46b321225ac8fd1';
+            acc.Pay_Period_Start_Date__c = System.today().addDays(-100);
+            acc.Pay_Period_Days__c = 13;
+            update acc;
+            Contact contact_1 = new Contact(AccountId = acc.Id, LastName = 'xgeek',External_Email__c= 'abc@gmail.com');
+            insert contact_1;
+
+            con2 = new Contact();
+            con2.FirstName = 'Test2';
+            con2.LastName = 'Contact';
+            con2.AccountId = acc.Id;
+            con2.MailingStreet = 'Test Street';
+            con2.MailingCity = 'Abbeville';
+            con2.MailingState = 'AL';
+            con2.MailingPostalCode = '123';
+            con2.MailingCountry = 'CA';
+            con2.Phone = '1232434445';
+            con2.External_Email__c = 'minkesh.patel14@gmail.com';
+            con2.Deactivated_Date__c = Null;
+            con2.isCommunityUser__c = True;
+            con2.Triplog_UserID__c = '23rcdsf';
+            con2.Role__c = 'Manager';
+            con2.Monthly_Mileage_Limit__c = 0;
+            con2.IsCreatedFromCommunity__c = true; 
+            insert con2;
+
+            con = new Contact();
+            con.FirstName = 'Test';
+            con.LastName = 'Contact';
+            con.AccountId = acc.Id;
+            con.Fixed_Amount__c = 10;
+            con.MailingStreet = 'Test Street';
+            con.MailingCity = 'Test City';
+            con.MailingState = 'AL';
+            con.Triplog_UserID__c = '23rcdssf';
+            con.MailingPostalCode = '36310';
+            con.Manager__c = con2.Id;
+            con.MailingCountry = 'CA';
+            con.Phone = '1232434445';
+            con.External_Email__c = 'minkesh.patel14232378@gmail.com';
+            con.Deactivated_Date__c = system.today();
+            con.isCommunityUser__c = True;
+            con.Role__c = 'Driver';
+            con.Monthly_Mileage_Limit__c = 0;
+            con.IsCreatedFromCommunity__c = true; 
+            con.Vehicle_Type__c  = '2019 Full-Size Sedan';
+            con.compliancestatus__c = 'Yes';
+            insert con;
+            con.Deactivated_Date__c = null;
+            con.compliancestatus__c = 'No – Vehicle Age';
+            update con;
+
+            con1 = new Contact();
+            con1.FirstName = 'Test2';
+            con1.LastName = 'Contact2';
+            con1.AccountId = acc.Id;
+            con1.Fixed_Amount__c = 10;
+            con1.MailingStreet = 'Test Street';
+            con1.MailingCity = 'Test City';
+            con1.MailingState = 'AL';
+            con1.MailingPostalCode = '36310';
+            con1.Manager__c = con2.Id;
+            con1.MailingCountry = 'CA';
+            con1.Phone = '1232434445';
+            con1.Triplog_UserID__c = '23rcdsf';
+            con1.External_Email__c = 'minkesh33.patel14232378@gmail.com';
+            con1.Deactivated_Date__c = system.today();
+            con1.isCommunityUser__c = True;
+            con1.Role__c = 'Driver';
+            con1.Monthly_Mileage_Limit__c = 0;
+            con1.IsCreatedFromCommunity__c = true; 
+            con1.Vehicle_Type__c  = '2019 Full-Size Sedan';
+            con1.compliancestatus__c = 'No – Vehicle Age';
+            insert con1;
+            con1.compliancestatus__c = 'Yes';
+            update con1;
+
+            user_1 = new User( 
+                Email = 'yourusername@gmail.com',
+                ProfileId = profile_1.Id, 
+                UserName = 'yourusername@gmail.com', 
+                Alias = 'Test',
+                TimeZoneSidKey = 'America/New_York',
+                EmailEncodingKey = 'ISO-8859-1',
+                LocaleSidKey = 'en_US', 
+                LanguageLocaleKey = 'en_US',
+                ContactId = contact_1.Id,
+                PortalRole = 'Manager',
+                FirstName = 'Firstname',
+                LastName = 'Lastname'
+            );
+            insert user_1;
+        }     
+        Test.startTest();
+        System.runAs(user_1) {
         Map<String,String> contactInfo = new Map<String,String>();
         Map<String,String> accountInfo = new Map<String,String>();
         contactInfo.put(con1.Triplog_UserID__c, con1.Phone);
         accountInfo.put(con1.Triplog_UserID__c, acc.Triplog_API__c);
         ContactTriggerHelper.putHTTPEnableUserTriplog(con1.Id);
         ContactTriggerHelper.putHTTPUpdateUserPhoneTriplog(contactInfo,accountInfo);
-        //ContactTriggerHelper.CreateBiweekReimbursement(con1);
-        ContactTriggerHelper.putHTTP(acc.id, 'test@gmail.com');
-        
-    }
-    
-        static testMethod void sendEmailOnDriverCreateTest1() {
-        //Insert Custom setting data
-        TriggerConfig__c customEmailSetting =  new TriggerConfig__c();
-        customEmailSetting.Name = 'Defaulttrigger';
-        customEmailSetting.ContactTriggersendEmailForNewContact__c = true;
-        customEmailSetting.ContactTriCommunityReimCreate__c = true;
-        insert customEmailSetting;
-        
-        List<IRS_Mileage_Rate__c> obj_IRS_Mileage_Rate =  RecordUtilityClass.insertIrsRate();
-         
-        Address__c obj_Address = new Address__c();
-        obj_Address.State__c ='Alabama';
-        obj_Address.City__c ='Abbeville';
-        obj_Address.Abbreviation__c ='AL';
-        obj_Address.ZIP_Code__c ='36310'; 
-        obj_Address.Time_Zone__c = 'America/Anchorage';
-        List<Address__c> obj_list_Address = new List<Address__c>();
-        obj_list_Address.add(obj_Address);
-        insert obj_list_Address;
-
-        Vehicle_URL_Mapping__c veh = new Vehicle_URL_Mapping__c();
-        veh.URL__c = 'https://cdn2.hubspot.net/hubfs/2511299/iStock-494093356.jpg';
-        veh.vehicle__c = 'Full-Size Sedan';
-        veh.Year__c = '2019';
-        insert veh;
-
-        Vehicle_URL_Mapping__c veh2 = new Vehicle_URL_Mapping__c();
-        veh2.URL__c = 'https://cdn3.hubspot.net/hubfs/2511299/iStock-494093356.jpg';
-        veh2.vehicle__c = 'Dodge Charger';
-        veh2.Year__c = '2020';
-        insert veh2;
-        
-        SendEmail__c customSetting =  new SendEmail__c();
-        customSetting.Name = 'Send Email For Compliance';
-        customSetting.Send_email_from_code__c= true;
-        insert customSetting;
-         
-        //Insert Account data Using Utility class
-        Account acc = TestUtilityClass.getTestSingleAccount();
-        acc.Triplog_API__c = 'fde76cdde14449bea46b321225ac8fd1';
-        acc.Pay_Period_Days__c = 13;
-        acc.Pay_Period_Start_Date__c = system.today().adddays(-10);
-        update acc;
-        
-        system.debug('acc='+acc);
-        Contact con2 = new Contact();
-        con2.FirstName = 'Test2';
-        con2.LastName = 'Contact';
-        con2.AccountId = acc.Id;
-        con2.MailingStreet = 'Test Street';
-        con2.MailingCity = 'Abbeville';
-        con2.MailingState = 'AL';
-        con2.MailingPostalCode = '123';
-        con2.MailingCountry = 'CA';
-        con2.Phone = '1232434445';
-        con2.External_Email__c = 'minkesh.patel14@gmail.com';
-        con2.Deactivated_Date__c = Null;
-        con2.isCommunityUser__c = True;
-        con2.Triplog_UserID__c = '23rcdsf';
-        con2.Role__c = 'Manager';
-        con2.Monthly_Mileage_Limit__c = 0;
-        con2.IsCreatedFromCommunity__c = true; 
-        insert con2;
-        
-            Map<ID, Contact> conOldMap = new Map<ID, Contact>();
-        //Insert Contact data 
-        Contact con = new Contact();
-        con.FirstName = 'Test';
-        con.LastName = 'Contact';
-        con.AccountId = acc.Id;
-        con.Fixed_Amount__c = 10;
-        con.MailingStreet = 'Test Street';
-        con.MailingCity = 'Test City';
-        con.MailingState = 'AL';
-        con.Triplog_UserID__c = '23rcdssf';
-        con.MailingPostalCode = '36310';
-        con.Manager__c = con2.Id;
-        con.MailingCountry = 'CA';
-        con.Phone = '1232434445';
-        con.External_Email__c = 'minkesh.patel14232378@gmail.com';
-        con.Deactivated_Date__c = system.today();
-        con.isCommunityUser__c = True;
-        con.Role__c = 'Driver';
-        con.Monthly_Mileage_Limit__c = 0;
-        con.IsCreatedFromCommunity__c = true; 
-        con.Vehicle_Type__c  = '2019 Full-Size Sedan';
-        con.compliancestatus__c = 'No Compliance';
-        insert con;
-            
-            conOldMap.put(con.Id, con);
-         
-            
-            
-        con.Deactivated_Date__c = null;
-        con.compliancestatus__c = 'Resubmit Insurance – you submitted an insurance card';
-        update con;
-        
-        Contact con1 = new Contact();
-        con1.FirstName = 'Test2';
-        con1.LastName = 'Contact2';
-        con1.AccountId = acc.Id;
-        con1.Fixed_Amount__c = 10;
-        con1.MailingStreet = 'Test Street';
-        con1.MailingCity = 'Test City';
-        con1.MailingState = 'AL';
-        con1.MailingPostalCode = '36310';
-        con1.Manager__c = con2.Id;
-        con1.MailingCountry = 'CA';
-        con1.Phone = '1232434445';
-        con1.Triplog_UserID__c = '23rcdsf';
-        con1.External_Email__c = 'minkesh33.patel14232378@gmail.com';
-        con1.Deactivated_Date__c = system.today();
-        con1.isCommunityUser__c = True;
-        con1.Role__c = 'Driver';
-        con1.Monthly_Mileage_Limit__c = 0;
-        con1.IsCreatedFromCommunity__c = true; 
-        con1.Vehicle_Type__c  = '2019 Full-Size Sedan';
-        con1.compliancestatus__c = 'Yes';
-        insert con1;
-            
-            List<Contact> conlist = new List<Contact>();
-            conlist.add(con1);
-        
-      //  acc.Pay_Period_Days__c = 13;
-       // acc.Pay_Period_Start_Date__c = system.today().adddays(-10);
-        
-        contact contest = [select id,account.Pay_Period_Days__c,account.Pay_Period_Start_Date__c from contact where id =: con1.id];
-        
-        system.debug('con1='+ [select id,account.Pay_Period_Days__c,account.Pay_Period_Start_Date__c from contact where id =: con1.id]);
-        system.debug(contest.account.Pay_Period_Days__c)   ;
-        system.debug(contest.account.Pay_Period_Start_Date__c)   ;
-        Employee_Reimbursement__c er = new Employee_Reimbursement__c();
-        er.Contact_Id__c = con.Id;
-        er.Month__c = '4-2017';
-        er.Name = contact.lastname+':'+er.month__c;
-        er.Status__c = 'Pending';
-        er.Fuel_Price__c = 1;
-        er.MPG__c = 10;
-        er.Maintenance_and_Tires__c = 24;
-        er.Fuel_Price__c = 1;
-        er.MPG__c = 10.10;
-        er.Maintenance_and_Tires__c = 10;
-        er.Fixed_Amount__c = 10.10;
-        er.Triplog_POST_Response__c = '123';
-        er.Triplog_Status__c = 'U';
-        insert er;
-        
-        Bi_Weekly_Reimbursement__c bob = new Bi_Weekly_Reimbursement__c();
-        bob.name = '9/19/2021 to 10/2/2021';
-        bob.Contact__c = con.id;
-        insert bob;
-        
-        con1.compliancestatus__c = 'No - Insurance not provided';
-        update con1;
-        Map<String,String> contactInfo = new Map<String,String>();
-        Map<String,String> accountInfo = new Map<String,String>();
-        contactInfo.put(con1.Triplog_UserID__c, con1.Phone);
-        accountInfo.put(con1.Triplog_UserID__c, acc.Triplog_API__c);
-        ContactTriggerHelper.putHTTPEnableUserTriplog(con1.Id);
-        ContactTriggerHelper.putHTTPUpdateUserPhoneTriplog(contactInfo,accountInfo);
-        ContactTriggerHelper.CreateReimbursement(con1);
-        ContactTriggerHelper.CreateBiweekReimbursement(con1);
-        ContactTriggerHelper.populatestaticValue(conlist);
-        //ContactTriggerHelper.CreateBiweekReimbursement(con1);
-        ContactTriggerHelper.putHTTP(acc.id, 'test@gmail.com');
-        //  ContactTriggerHelper.createReimRecord(conlist, conOldMap);
-          //test Comment
-        
+        }
+        Test.stopTest();
     }
     static testMethod void testmethod3() {
         //Insert Custom setting data
@@ -371,60 +197,87 @@ public class ContactTriggerHelperTest {
         customSetting.Send_email_from_code__c= true;
         insert customSetting;
          
-        //Insert Account data Using Utility class
-        Account acc = TestUtilityClass.getTestSingleAccount();
-         acc.Pay_Period_Days__c = 13;
-        acc.Pay_Period_Start_Date__c = system.today().adddays(-10);
-        update acc;
-        Contact con2 = new Contact();
-        con2.FirstName = 'Test2';
-        con2.LastName = 'Contact';
-        con2.AccountId = acc.Id;
-        con2.MailingStreet = 'Test Street';
-        con2.MailingCity = 'Abbeville';
-        con2.MailingState = 'AL';
-        con2.MailingPostalCode = '123';
-        con2.MailingCountry = 'CA';
-        con2.Phone = '1232434445';
-        con2.External_Email__c = 'minkesh.patel14@gmail.com';
-        con2.Deactivated_Date__c = Null;
-        con2.isCommunityUser__c = True;
-        con2.Role__c = 'Manager';
-        con2.Monthly_Mileage_Limit__c = 0;
-        con2.IsCreatedFromCommunity__c = true; 
-        
-        
-        insert con2;
-        
-        //Insert Contact data 
-        Contact con = new Contact();
-        con.FirstName = 'Test';
-        con.LastName = 'Contact';
-        con.AccountId = acc.Id;
-        con.Fixed_Amount__c = 10;
-        con.MailingStreet = 'Test Street';
-        con.MailingCity = 'Test City';
-        con.MailingState = null;
-        con.MailingPostalCode = '36310';
-        con.Manager__c = con2.Id;
-        con.MailingCountry = 'CA';
-        con.Phone = '1232434445';
-        con.External_Email__c = 'minkesh.patel14232378@gmail.com';
-        con.Deactivated_Date__c = Null;
-        con.isCommunityUser__c = True;
-        con.Role__c = 'Driver';
-        con.Triplog_UserID__c = '370415';
-        con.Monthly_Mileage_Limit__c = 0;
-        con.IsCreatedFromCommunity__c = true; 
-        con.Vehicle_Type__c  = '2019 Full-Size Sedan';
-        con.compliancestatus__c = 'No – Vehicle Value';
-        con.Driving_States__c = 'AL';
-        insert con;
-        
-        con.compliancestatus__c = 'No – Insurance not meeting minimum';      
-        con.Phone = '24777';
-        update con;
-    } 
+        UserRole userRole_1 = [SELECT Id FROM UserRole WHERE DeveloperName = 'EMD' LIMIT 1];
+        Profile profile_1 = [SELECT Id FROM Profile WHERE Name = 'Customer Community Login User' LIMIT 1];
+        User admin = [SELECT Id, Username, UserRoleId FROM User WHERE Profile.Name = 'System Administrator' AND UserRoleId = :userRole_1.Id LIMIT 1];
+        User user_1;
+        Account acc;
+        Contact con2;
+        Contact con;
+        System.runAs(admin) {
+            acc = TestUtilityClass.getTestSingleAccount();
+            acc.Pay_Period_Start_Date__c = System.today().addDays(-100);
+            acc.Pay_Period_Days__c = 13;
+            update acc;
+            Contact contact_1 = new Contact(AccountId = acc.Id, LastName = 'xgeek',External_Email__c= 'abc@gmail.com');
+            insert contact_1;
+            con2 = new Contact();
+            con2.FirstName = 'Test2';
+            con2.LastName = 'Contact';
+            con2.AccountId = acc.Id;
+            con2.MailingStreet = 'Test Street';
+            con2.MailingCity = 'Abbeville';
+            con2.MailingState = 'AL';
+            con2.MailingPostalCode = '123';
+            con2.MailingCountry = 'CA';
+            con2.Phone = '1232434445';
+            con2.External_Email__c = 'minkesh.patel14@gmail.com';
+            con2.Deactivated_Date__c = Null;
+            con2.isCommunityUser__c = True;
+            con2.Role__c = 'Manager';
+            con2.Monthly_Mileage_Limit__c = 0;
+            con2.IsCreatedFromCommunity__c = true; 
+            insert con2;
+
+            con = new Contact();
+            con.FirstName = 'Test';
+            con.LastName = 'Contact';
+            con.AccountId = acc.Id;
+            con.Fixed_Amount__c = 10;
+            con.MailingStreet = 'Test Street';
+            con.MailingCity = 'Test City';
+            con.MailingState = null;
+            con.MailingPostalCode = '36310';
+            con.Manager__c = con2.Id;
+            con.MailingCountry = 'CA';
+            con.Phone = '1232434445';
+            con.External_Email__c = 'minkesh.patel14232378@gmail.com';
+            con.Deactivated_Date__c = Null;
+            con.isCommunityUser__c = True;
+            con.Role__c = 'Driver';
+            con.Triplog_UserID__c = '370415';
+            con.Monthly_Mileage_Limit__c = 0;
+            con.IsCreatedFromCommunity__c = true; 
+            con.Vehicle_Type__c  = '2019 Full-Size Sedan';
+            con.compliancestatus__c = 'No – Vehicle Value';
+            con.Driving_States__c = 'AL';
+            insert con;
+            
+            con.compliancestatus__c = 'No – Insurance not meeting minimum';      
+            con.Phone = '24777';
+            update con;
+
+            user_1 = new User( 
+                Email = 'yourusername@gmail.com',
+                ProfileId = profile_1.Id, 
+                UserName = 'yourusername@gmail.com', 
+                Alias = 'Test',
+                TimeZoneSidKey = 'America/New_York',
+                EmailEncodingKey = 'ISO-8859-1',
+                LocaleSidKey = 'en_US', 
+                LanguageLocaleKey = 'en_US',
+                ContactId = contact_1.Id,
+                PortalRole = 'Manager',
+                FirstName = 'Firstname',
+                LastName = 'Lastname'
+            );
+            insert user_1;
+        } 
+        Test.startTest();
+        System.runAs(user_1) {
+        }
+        Test.stopTest();
+    }
     static testMethod void testmethod4() {
         //Insert Custom setting data
         TriggerConfig__c customEmailSetting =  new TriggerConfig__c();
@@ -470,103 +323,82 @@ public class ContactTriggerHelperTest {
         customSetting.Send_email_from_code__c= true;
         insert customSetting;
          
-        //Insert Account data Using Utility class
-        Account acc = TestUtilityClass.getTestSingleAccount();
-        acc.Pay_Period_Days__c = 13;
-        acc.Pay_Period_Start_Date__c = system.today().adddays(-10);
-        update acc;
-        Contact con2 = new Contact();
-        con2.FirstName = 'Test2';
-        con2.LastName = 'Contact';
-        con2.AccountId = acc.Id;
-        con2.MailingStreet = 'Test Street';
-        con2.MailingCity = 'Abbeville';
-        con2.MailingState = 'AL';
-        con2.MailingPostalCode = '123';
-        con2.MailingCountry = 'CA';
-        con2.Phone = '1232434445';
-        con2.External_Email__c = 'minkesh.patel14@gmail.com';
-        con2.Deactivated_Date__c = Null;
-        con2.isCommunityUser__c = True;
-        con2.Role__c = 'Manager';
-        con2.Monthly_Mileage_Limit__c = 0;
-        con2.IsCreatedFromCommunity__c = true;        
-        insert con2;
-        
-        //Insert Contact data 
-        Contact con = new Contact();
-        con.FirstName = 'Test';
-        con.LastName = 'Contact';
-        con.AccountId = acc.Id;
-        con.Fixed_Amount__c = 10;
-        con.MailingStreet = 'Test Street';
-        con.MailingCity = 'Test City';
-        con.MailingState = null;
-        con.MailingPostalCode = '36310';
-        con.Manager__c = con2.Id;
-        con.MailingCountry = 'CA';
-        con.Phone = '1232434445';
-        con.External_Email__c = 'minkesh.patel14232378@gmail.com';
-        con.Deactivated_Date__c = Null;
-        con.isCommunityUser__c = True;
-        con.Role__c = 'Driver';
-        con.Monthly_Mileage_Limit__c = 0;
-        con.IsCreatedFromCommunity__c = true; 
-        con.Vehicle_Type__c  = '2019 Full-Size Sedan';
-        con.compliancestatus__c = 'No – Vehicle Value';
-        con.Driving_States__c = 'AL';
-        insert con;
-        
-        Employee_Reimbursement__c er = new Employee_Reimbursement__c();
-        er.Contact_Id__c = con.Id;
-        er.Month__c = '4-2017';
-        er.Name = contact.lastname+':'+er.month__c;
-        er.Status__c = 'Pending';
-        er.Fuel_Price__c = 1;
-        er.MPG__c = 10;
-        er.Maintenance_and_Tires__c = 24;
-        er.Fuel_Price__c = 1;
-        er.MPG__c = 10.10;
-        er.Maintenance_and_Tires__c = 10;
-        er.Fixed_Amount__c = 10.10;
-        er.Triplog_POST_Response__c = '123';
-        er.Triplog_Status__c = 'U';
-        insert er;
-        
-        Bi_Weekly_Reimbursement__c bob = new Bi_Weekly_Reimbursement__c();
-        bob.name = '9/19/2021 to 10/2/2021';
-        bob.Contact__c = con.id;
-        insert bob;
+        UserRole userRole_1 = [SELECT Id FROM UserRole WHERE DeveloperName = 'EMD' LIMIT 1];
+        Profile profile_1 = [SELECT Id FROM Profile WHERE Name = 'Customer Community Login User' LIMIT 1];
+        User admin = [SELECT Id, Username, UserRoleId FROM User WHERE Profile.Name = 'System Administrator' AND UserRoleId = :userRole_1.Id LIMIT 1];
+        User user_1;
+        Account acc;
+        Contact con2;
+        Contact con;
+        System.runAs(admin) {
+            acc = TestUtilityClass.getTestSingleAccount();
+            acc.Pay_Period_Start_Date__c = System.today().addDays(-100);
+            acc.Pay_Period_Days__c = 13;
+            update acc;
+            Contact contact_1 = new Contact(AccountId = Acc.Id, LastName = 'xgeek',External_Email__c= 'abc@gmail.com');
+            insert contact_1;
+            con2 = new Contact();
+            con2.FirstName = 'Test2';
+            con2.LastName = 'Contact';
+            con2.AccountId = acc.Id;
+            con2.MailingStreet = 'Test Street';
+            con2.MailingCity = 'Abbeville';
+            con2.MailingState = 'AL';
+            con2.MailingPostalCode = '123';
+            con2.MailingCountry = 'CA';
+            con2.Phone = '1232434445';
+            con2.External_Email__c = 'minkesh.patel14@gmail.com';
+            con2.Deactivated_Date__c = Null;
+            con2.isCommunityUser__c = True;
+            con2.Role__c = 'Manager';
+            con2.Monthly_Mileage_Limit__c = 0;
+            con2.IsCreatedFromCommunity__c = true;         
+            insert con2;
 
-        con.compliancestatus__c = 'Yes';        
-        update con;
-        
-        Contact con3 = new Contact();
-        con3.FirstName = 'Test';
-        con3.LastName = 'Contact';
-        con3.AccountId = acc.Id;
-        con3.Fixed_Amount__c = 10;
-        con3.MailingStreet = 'Test Street';
-        con3.MailingCity = 'Test City';
-        con3.MailingState = null;
-        con3.MailingPostalCode = '36310';
-        con3.Manager__c = con2.Id;
-        con3.MailingCountry = 'CA';
-        con3.Phone = '1232434445';
-        con3.External_Email__c = 'minkesh.patel33232378@gmail.com';
-        con3.Deactivated_Date__c = Null;
-        con3.isCommunityUser__c = True;
-        con3.Role__c = 'Driver';
-        con3.Monthly_Mileage_Limit__c = 0;
-        con3.IsCreatedFromCommunity__c = true; 
-        con3.Vehicle_Type__c  = '2019 Full-Size Sedan';
-        con3.compliancestatus__c = 'No – Vehicle Value';
-        con3.Driving_States__c = 'AL';
-        con3.Deactivated_Date__c = system.today();
-        insert con3;
-        
-        con3.Deactivated_Date__c = null;
-        update con3;
+            con = new Contact();
+            con.FirstName = 'Test';
+            con.LastName = 'Contact';
+            con.AccountId = acc.Id;
+            con.Fixed_Amount__c = 10;
+            con.MailingStreet = 'Test Street';
+            con.MailingCity = 'Test City';
+            con.MailingState = null;
+            con.MailingPostalCode = '36310';
+            con.Manager__c = con2.Id;
+            con.MailingCountry = 'CA';
+            con.Phone = '1232434445';
+            con.External_Email__c = 'minkesh.patel14232378@gmail.com';
+            con.Deactivated_Date__c = Null;
+            con.isCommunityUser__c = True;
+            con.Role__c = 'Driver';
+            con.Monthly_Mileage_Limit__c = 0;
+            con.IsCreatedFromCommunity__c = true; 
+            con.Vehicle_Type__c  = '2019 Full-Size Sedan';
+            con.compliancestatus__c = 'No – Vehicle Value';
+            con.Driving_States__c = 'AL';
+            insert con;
+            con.compliancestatus__c = 'Yes';        
+            update con;
+
+            user_1 = new User( 
+                Email = 'yourusername@gmail.com',
+                ProfileId = profile_1.Id, 
+                UserName = 'yourusername@gmail.com', 
+                Alias = 'Test',
+                TimeZoneSidKey = 'America/New_York',
+                EmailEncodingKey = 'ISO-8859-1',
+                LocaleSidKey = 'en_US', 
+                LanguageLocaleKey = 'en_US',
+                ContactId = contact_1.Id,
+                PortalRole = 'Manager',
+                FirstName = 'Firstname',
+                LastName = 'Lastname'
+            );
+            insert user_1;
+        }
+        Test.startTest();
+        System.runAs(user_1) {
+        }
+        Test.stopTest();
     }
-   
 }
