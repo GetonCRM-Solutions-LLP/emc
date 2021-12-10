@@ -472,7 +472,7 @@ public class ContactTriggerHelperTest {
          
         //Insert Account data Using Utility class
         Account acc = TestUtilityClass.getTestSingleAccount();
-         acc.Pay_Period_Days__c = 13;
+        acc.Pay_Period_Days__c = 13;
         acc.Pay_Period_Start_Date__c = system.today().adddays(-10);
         update acc;
         Contact con2 = new Contact();
@@ -540,6 +540,33 @@ public class ContactTriggerHelperTest {
 
         con.compliancestatus__c = 'Yes';        
         update con;
+        
+        Contact con3 = new Contact();
+        con3.FirstName = 'Test';
+        con3.LastName = 'Contact';
+        con3.AccountId = acc.Id;
+        con3.Fixed_Amount__c = 10;
+        con3.MailingStreet = 'Test Street';
+        con3.MailingCity = 'Test City';
+        con3.MailingState = null;
+        con3.MailingPostalCode = '36310';
+        con3.Manager__c = con2.Id;
+        con3.MailingCountry = 'CA';
+        con3.Phone = '1232434445';
+        con3.External_Email__c = 'minkesh.patel33232378@gmail.com';
+        con3.Deactivated_Date__c = Null;
+        con3.isCommunityUser__c = True;
+        con3.Role__c = 'Driver';
+        con3.Monthly_Mileage_Limit__c = 0;
+        con3.IsCreatedFromCommunity__c = true; 
+        con3.Vehicle_Type__c  = '2019 Full-Size Sedan';
+        con3.compliancestatus__c = 'No – Vehicle Value';
+        con3.Driving_States__c = 'AL';
+        con3.Deactivated_Date__c = system.today();
+        insert con3;
+        
+        con3.Deactivated_Date__c = null;
+        update con3;
     }
    
 }

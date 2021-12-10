@@ -6,10 +6,8 @@ public without sharing class ContactTriggerHelper {
         Map<String,String> urlMap = new Map<String,String>();
         set<String> vehicleNamesset = new set<String>();
 
-        for(Contact conRec : contactList)
-        {
-            if(conRec.Vehicle_Type__c!=null)
-            {
+        for(Contact conRec : contactList) {
+            if(conRec.Vehicle_Type__c!=null) {
                 vehicleNamesset.add(conRec.Vehicle_Type__c.replace(' ','').toUpperCase());
             }            
         }
@@ -19,18 +17,12 @@ public without sharing class ContactTriggerHelper {
             }
         } 
         
-        for(Contact conRec : contactList)
-        {
-            if(conRec.Role__c=='Driver' || conRec.Role__c=='Driver/Manager' || conRec.Role__c == StaticValues.roleAdminDriver )
-            {
-                if(conRec.Vehicle_Type__c != '')
-                {
-                    if(urlMap.containsKey(conRec.Vehicle_Type__c.replace(' ','').toUpperCase()))
-                    {
+        for(Contact conRec : contactList) {
+            if(conRec.Role__c=='Driver' || conRec.Role__c=='Driver/Manager' || conRec.Role__c == StaticValues.roleAdminDriver ) {
+                if(conRec.Vehicle_Type__c != '') {
+                    if(urlMap.containsKey(conRec.Vehicle_Type__c.replace(' ','').toUpperCase())) {
                         conRec.Car_Image__c = urlMap.get(conRec.Vehicle_Type__c.replace(' ','').toUpperCase());
-                    } 
-                    else 
-                    {
+                    } else {
                         conRec.addError('Please Enter Valid Standard Vehicle Make Model and Year');
                     }
                 }
@@ -40,18 +32,14 @@ public without sharing class ContactTriggerHelper {
     }
     
     @Future(callout = true)
-    public static void putHTTPUpdateUserPhoneTriplog(Map<String,String> tripIdWisePhone,Map<String,String> triplogidwiseAPIkey) 
-    {
+    public static void putHTTPUpdateUserPhoneTriplog(Map<String,String> tripIdWisePhone,Map<String,String> triplogidwiseAPIkey) {
         Http h;
         HttpRequest req;
         HttpResponse res;
         String MLOGACCOUNT = System.Label.Triplog_New_URL;
-
-        for(String currentUserId : triplogidwiseAPIkey.keySet())
-        {
+        for(String currentUserId : triplogidwiseAPIkey.keySet()) {
             String baseURL = !MLOGACCOUNT.Contains( triplogidwiseAPIkey.get(currentUserId) ) ? StaticValues.TRIPLOG_BASEURL : StaticValues.MLOG_BASEURL;
-            if(tripIdWisePhone.containsKey(currentUserId) && tripIdWisePhone.get(currentUserId) != null)
-            {
+            if(tripIdWisePhone.containsKey(currentUserId) && tripIdWisePhone.get(currentUserId) != null) {
                 JSONGenerator gen = JSON.createGenerator(true);
                 gen.writeStartObject();
                 gen.writeStringField('phone',tripIdWisePhone.get(currentUserId));
@@ -64,41 +52,15 @@ public without sharing class ContactTriggerHelper {
                 req.setbody(gen.getAsString());
                 req.setHeader('Content-Type', 'application/json');
                 req.setHeader('Authorization', 'apikey '+ triplogidwiseAPIkey.get(currentUserId));
-                if(!Test.isRunningTest())
-                {
+                if(!Test.isRunningTest()) {
                     res = h.send(req);            
                 }
-            }
-           
+            }           
         }
     }
 
     public static void  CommunityUserCreate(List<Contact> contactList) {
         List<User> createUserList = new List<User>();
-        /*if(Trigger.isBefore) {
-            map<string, Id> conemailtoid = new  map<string, ID>();
-
-            for(Contact conObj: [SELECT
-                                    id, 
-                                    Manager__c, 
-                                    External_Email__c, 
-                                    Email
-                                FROM
-                                    Contact
-                                WHERE External_Email__c != '']) {
-                    conemailtoid.put(conObj.External_Email__c.touppercase(), conObj.id);
-                
-            }
-            for(Contact cc: contactList) {
-                if(string.isNotBlank(cc.Manager_External_Email__c)) {
-                    if(conemailtoid.containsKey(cc.Manager_External_Email__c.touppercase())) {
-                        cc.Manager__c = conemailtoid.get(cc.Manager_External_Email__c.touppercase());
-                    }
-                }
-            }
-        }*/
-
-        // if(Trigger.isAfter) {
             list<Profile> profileList = [SELECT
                                             Id, 
                                             Name
@@ -115,17 +77,13 @@ public without sharing class ContactTriggerHelper {
             for(Profile profileObj : profileList){
                 if(profileObj.Name == 'Customer Community Login User - Driver' ){
                    profilemap.put('Driver',profileObj.id);
-                } 
-                else if(profileObj.Name == 'Customer Community Login User - Manager'){
+                } else if(profileObj.Name == 'Customer Community Login User - Manager'){
                    profilemap.put('Manager',profileObj.id);
-                }
-                else if(profileObj.Name == 'Customer Community Login User - Manager/Driver'){
+                } else if(profileObj.Name == 'Customer Community Login User - Manager/Driver'){
                     profilemap.put('Driver/Manager',profileObj.id);
-                }
-                else if(profileObj.Name == 'Customer Community Login User - Super Manager/Driver'){
+                } else if(profileObj.Name == 'Customer Community Login User - Super Manager/Driver'){
                    profilemap.put(StaticValues.roleAdminDriver ,profileObj.id); 
-                }
-                else if(profileObj.Name == 'Customer Community Login User - Super Manager'){
+                }  else if(profileObj.Name == 'Customer Community Login User - Super Manager'){
                    profilemap.put('Admin',profileObj.id);
                 }
             }
@@ -135,11 +93,9 @@ public without sharing class ContactTriggerHelper {
                     createUserList.add(CreateUserFromCommunity(conObj,profilemap.get(conObj.Role__c)));
                 }
             }
-            if(createUserList.size()>0)
-            {
+            if(createUserList.size()>0) {
                 insert createUserList;
             }            
-        // }
     }
 
     public static User CreateUserFromCommunity(Contact contObj, Id profileId){
@@ -221,7 +177,6 @@ public without sharing class ContactTriggerHelper {
     }*/
     
     public static void updateComplianceStatus(List<Contact> newCon, Map<ID, Contact> conOldMap) {
-       // system.debug('conOldMap=='+ conOldMap);
     System.Debug(newCon[0].compliancestatus__c);
     System.Debug(conOldMap.get(newCon[0].id).compliancestatus__c);
         List<String> emails = new List<String>();
@@ -238,7 +193,7 @@ public without sharing class ContactTriggerHelper {
         
         for(Contact con : newCon) {
             system.debug('conOldMap.get(con.id).compliancestatus__c=='+conOldMap.get(con.id).compliancestatus__c);
-        system.debug('con.compliancestatus__c=='+con.compliancestatus__c);
+            system.debug('con.compliancestatus__c=='+con.compliancestatus__c);
         
             if(con.Role__c == 'Driver' && (conOldMap.get(con.id).compliancestatus__c != con.compliancestatus__c)) {
                 emails.add(con.External_Email__c);
@@ -258,13 +213,10 @@ public without sharing class ContactTriggerHelper {
                     emTmp = null;
                 }
                 system.debug('=====emTmp===>'+emTmp);
-                //system.debug('=====emTmp===>'+emTmp);
                 if(!emails.isEmpty() && emTmp != null) {
                     mail = new Messaging.SingleEmailMessage();
                     mail.setToAddresses(emails);
-                    //Set Email Subject
                     mail.setSubject(emTmp.Subject);
-                    //Body of Email
                     mail.setPlainTextBody(emTmp.Body.replace('{!Contact.FirstName}', con.FirstName));
                     if(owea.size()>0) {
                         mail.setOrgWideEmailAddressId(owea.get(0).Id);
@@ -276,8 +228,7 @@ public without sharing class ContactTriggerHelper {
         }
         //Sending the Email
         SendEmail__c  objSendEmail = SendEmail__c.getValues('Send Email For Compliance');
-        if(objSendEmail.Send_email_from_code__c==true)
-        {
+        if(objSendEmail.Send_email_from_code__c==true) {
             Messaging.sendEmail(mails);
         }
            
@@ -290,10 +241,9 @@ public without sharing class ContactTriggerHelper {
         List<Bi_Weekly_Reimbursement__c> bireimToInsert   = new List<Bi_Weekly_Reimbursement__c>();
         for(Contact con : newCon) {
             if(conOldMap.get(con.id).Deactivated_Date__c != null && (conOldMap.get(con.id).Deactivated_Date__c != con.Deactivated_Date__c) && con.Activation_Date__c <= System.today()){
-              
                 if(con.Role__c != 'Admin' && con.Role__c != 'Manager') {
                     TriggerConfig__c customSetting = TriggerConfig__c.getInstance('Defaulttrigger');
-                    if(customSetting.ContactTriCommunityReimCreate__c == true){
+                    if(customSetting.ContactTriCommunityReimCreate__c == true) {
                         reimToInsert.add(CreateReimbursement(con));
                         bireimToInsert.add(CreateBiweekReimbursement(con));
                     }
@@ -339,9 +289,8 @@ public without sharing class ContactTriggerHelper {
                 bireimToInsert.add(CreateBiweekReimbursement(con));
             }
         }
-        if(!reimToInsert.isEmpty()){
-            insert reimToInsert;
-            
+        if(!reimToInsert.isEmpty()) {
+            insert reimToInsert;            
         }
         if(!bireimToInsert.isEmpty()){
             insert bireimToInsert;
