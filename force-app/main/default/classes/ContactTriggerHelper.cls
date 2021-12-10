@@ -364,7 +364,7 @@ public without sharing class ContactTriggerHelper {
                 }
                 payStartdate = endDate.addDays(1);
             } while(endDate <= System.today());
-		system.debug('dtList=='+ dtList);
+        system.debug('dtList=='+ dtList);
         system.debug('contest.Account.Pay_Period_Start_Date__c=='+ contest.Account.Pay_Period_Start_Date__c);
         system.debug('contest.Account.Pay_Period_Days__c=='+ contest.Account.Pay_Period_Days__c);
         //List<IRS_Mileage_Rate__c> objIRSRate = [SELECT id,year__c,IRS_Rate__c FROM IRS_Mileage_Rate__c Where year__c =: String.valueOf(System.today().year()) Limit 1];
@@ -532,11 +532,6 @@ public without sharing class ContactTriggerHelper {
                 }
                 if(c.Deactivated_Date__c != conOld.get(c.Id).Deactivated_Date__c)
                     newAuditTrialCreate.add(new AuditTrail__c(Field__c='Deactivation Date',Timestamp__c=Datetime.now(),Modifiedby__c=UserInfo.getFirstName()+' '+UserInfo.getLastName(),NewValue__c=String.valueOf(c.Deactivated_Date__c),OldValue__c=String.valueOf(conOld.get(c.id).Deactivated_Date__c),Contact__c=c.id));
-                
-            //for(String ConOldMap:conOld.keySet()){
-        
-                
-           // }
         }
     
         if(newAuditTrialCreate.Size()>0)

@@ -537,8 +537,7 @@ public class ContactTriggerHelperTest {
         bob.name = '9/19/2021 to 10/2/2021';
         bob.Contact__c = con.id;
         insert bob;
-        
-        
+
         con.compliancestatus__c = 'Yes';        
         update con;
     }
