@@ -8,6 +8,7 @@ public class ContactTriggerHelperTest {
         customEmailSetting.ContactTriCommunityReimCreate__c = true;
         insert customEmailSetting;
         
+        
         List<IRS_Mileage_Rate__c> obj_IRS_Mileage_Rate =  RecordUtilityClass.insertIrsRate();
          
         Address__c obj_Address = new Address__c();
