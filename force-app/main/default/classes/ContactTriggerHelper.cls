@@ -6,10 +6,8 @@ public without sharing class ContactTriggerHelper {
         Map<String,String> urlMap = new Map<String,String>();
         set<String> vehicleNamesset = new set<String>();
 
-        for(Contact conRec : contactList)
-        {
-            if(conRec.Vehicle_Type__c!=null)
-            {
+        for(Contact conRec : contactList) {
+            if(conRec.Vehicle_Type__c!=null) {
                 vehicleNamesset.add(conRec.Vehicle_Type__c.replace(' ','').toUpperCase());
             }            
         }
@@ -19,18 +17,12 @@ public without sharing class ContactTriggerHelper {
             }
         } 
         
-        for(Contact conRec : contactList)
-        {
-            if(conRec.Role__c=='Driver' || conRec.Role__c=='Driver/Manager' || conRec.Role__c == StaticValues.roleAdminDriver )
-            {
-                if(conRec.Vehicle_Type__c != '')
-                {
-                    if(urlMap.containsKey(conRec.Vehicle_Type__c.replace(' ','').toUpperCase()))
-                    {
+        for(Contact conRec : contactList) {
+            if(conRec.Role__c=='Driver' || conRec.Role__c=='Driver/Manager' || conRec.Role__c == StaticValues.roleAdminDriver ) {
+                if(conRec.Vehicle_Type__c != '') {
+                    if(urlMap.containsKey(conRec.Vehicle_Type__c.replace(' ','').toUpperCase())) {
                         conRec.Car_Image__c = urlMap.get(conRec.Vehicle_Type__c.replace(' ','').toUpperCase());
-                    } 
-                    else 
-                    {
+                    } else {
                         conRec.addError('Please Enter Valid Standard Vehicle Make Model and Year');
                     }
                 }
@@ -40,18 +32,14 @@ public without sharing class ContactTriggerHelper {
     }
     
     @Future(callout = true)
-    public static void putHTTPUpdateUserPhoneTriplog(Map<String,String> tripIdWisePhone,Map<String,String> triplogidwiseAPIkey) 
-    {
+    public static void putHTTPUpdateUserPhoneTriplog(Map<String,String> tripIdWisePhone,Map<String,String> triplogidwiseAPIkey) {
         Http h;
         HttpRequest req;
         HttpResponse res;
         String MLOGACCOUNT = System.Label.Triplog_New_URL;
-
-        for(String currentUserId : triplogidwiseAPIkey.keySet())
-        {
+        for(String currentUserId : triplogidwiseAPIkey.keySet()) {
             String baseURL = !MLOGACCOUNT.Contains( triplogidwiseAPIkey.get(currentUserId) ) ? StaticValues.TRIPLOG_BASEURL : StaticValues.MLOG_BASEURL;
-            if(tripIdWisePhone.containsKey(currentUserId) && tripIdWisePhone.get(currentUserId) != null)
-            {
+            if(tripIdWisePhone.containsKey(currentUserId) && tripIdWisePhone.get(currentUserId) != null) {
                 JSONGenerator gen = JSON.createGenerator(true);
                 gen.writeStartObject();
                 gen.writeStringField('phone',tripIdWisePhone.get(currentUserId));
@@ -64,42 +52,15 @@ public without sharing class ContactTriggerHelper {
                 req.setbody(gen.getAsString());
                 req.setHeader('Content-Type', 'application/json');
                 req.setHeader('Authorization', 'apikey '+ triplogidwiseAPIkey.get(currentUserId));
-                if(!Test.isRunningTest())
-                {
+                if(!Test.isRunningTest()) {
                     res = h.send(req);            
                 }
-            }
-           
+            }           
         }
     }
 
     public static void  CommunityUserCreate(List<Contact> contactList) {
         List<User> createUserList = new List<User>();
-
-        /*if(Trigger.isBefore) {
-            map<string, Id> conemailtoid = new  map<string, ID>();
-
-            for(Contact conObj: [SELECT
-                                    id, 
-                                    Manager__c, 
-                                    External_Email__c, 
-                                    Email
-                                FROM
-                                    Contact
-                                WHERE External_Email__c != '']) {
-                    conemailtoid.put(conObj.External_Email__c.touppercase(), conObj.id);
-                
-            }
-            for(Contact cc: contactList) {
-                if(string.isNotBlank(cc.Manager_External_Email__c)) {
-                    if(conemailtoid.containsKey(cc.Manager_External_Email__c.touppercase())) {
-                        cc.Manager__c = conemailtoid.get(cc.Manager_External_Email__c.touppercase());
-                    }
-                }
-            }
-        }*/
-
-        // if(Trigger.isAfter) {
             list<Profile> profileList = [SELECT
                                             Id, 
                                             Name
@@ -116,17 +77,13 @@ public without sharing class ContactTriggerHelper {
             for(Profile profileObj : profileList){
                 if(profileObj.Name == 'Customer Community Login User - Driver' ){
                    profilemap.put('Driver',profileObj.id);
-                } 
-                else if(profileObj.Name == 'Customer Community Login User - Manager'){
+                } else if(profileObj.Name == 'Customer Community Login User - Manager'){
                    profilemap.put('Manager',profileObj.id);
-                }
-                else if(profileObj.Name == 'Customer Community Login User - Manager/Driver'){
+                } else if(profileObj.Name == 'Customer Community Login User - Manager/Driver'){
                     profilemap.put('Driver/Manager',profileObj.id);
-                }
-                else if(profileObj.Name == 'Customer Community Login User - Super Manager/Driver'){
+                } else if(profileObj.Name == 'Customer Community Login User - Super Manager/Driver'){
                    profilemap.put(StaticValues.roleAdminDriver ,profileObj.id); 
-                }
-                else if(profileObj.Name == 'Customer Community Login User - Super Manager'){
+                }  else if(profileObj.Name == 'Customer Community Login User - Super Manager'){
                    profilemap.put('Admin',profileObj.id);
                 }
             }
@@ -136,11 +93,9 @@ public without sharing class ContactTriggerHelper {
                     createUserList.add(CreateUserFromCommunity(conObj,profilemap.get(conObj.Role__c)));
                 }
             }
-            if(createUserList.size()>0)
-            {
+            if(createUserList.size()>0) {
                 insert createUserList;
             }            
-        // }
     }
 
     public static User CreateUserFromCommunity(Contact contObj, Id profileId){
@@ -224,7 +179,6 @@ public without sharing class ContactTriggerHelper {
     public static void updateComplianceStatus(List<Contact> newCon, Map<ID, Contact> conOldMap) {
     System.Debug(newCon[0].compliancestatus__c);
     System.Debug(conOldMap.get(newCon[0].id).compliancestatus__c);
-    
         List<String> emails = new List<String>();
         EmailTemplate emTmp = new EmailTemplate();
         Messaging.SingleEmailMessage mail;
@@ -236,7 +190,11 @@ public without sharing class ContactTriggerHelper {
         }
         OrgWideEmailAddress[] owea;
         owea = [select Id, address from OrgWideEmailAddress where Address = 'driverservices@mburse.com'];
+        
         for(Contact con : newCon) {
+            system.debug('conOldMap.get(con.id).compliancestatus__c=='+conOldMap.get(con.id).compliancestatus__c);
+            system.debug('con.compliancestatus__c=='+con.compliancestatus__c);
+        
             if(con.Role__c == 'Driver' && (conOldMap.get(con.id).compliancestatus__c != con.compliancestatus__c)) {
                 emails.add(con.External_Email__c);
                 if(con.compliancestatus__c == 'Yes' && nameWithTemplate.containskey('Driver_Compliance_Status_Yes')) {
@@ -255,13 +213,10 @@ public without sharing class ContactTriggerHelper {
                     emTmp = null;
                 }
                 system.debug('=====emTmp===>'+emTmp);
-                //system.debug('=====emTmp===>'+emTmp);
                 if(!emails.isEmpty() && emTmp != null) {
                     mail = new Messaging.SingleEmailMessage();
                     mail.setToAddresses(emails);
-                    //Set Email Subject
                     mail.setSubject(emTmp.Subject);
-                    //Body of Email
                     mail.setPlainTextBody(emTmp.Body.replace('{!Contact.FirstName}', con.FirstName));
                     if(owea.size()>0) {
                         mail.setOrgWideEmailAddressId(owea.get(0).Id);
@@ -273,8 +228,7 @@ public without sharing class ContactTriggerHelper {
         }
         //Sending the Email
         SendEmail__c  objSendEmail = SendEmail__c.getValues('Send Email For Compliance');
-        if(objSendEmail.Send_email_from_code__c==true)
-        {
+        if(objSendEmail.Send_email_from_code__c==true) {
             Messaging.sendEmail(mails);
         }
            
@@ -284,18 +238,22 @@ public without sharing class ContactTriggerHelper {
     public static void createReimRecord(List<Contact> newCon, Map<ID, Contact> conOldMap) {
         
         List<Employee_Reimbursement__c> reimToInsert   = new List<Employee_Reimbursement__c>();
+        List<Bi_Weekly_Reimbursement__c> bireimToInsert   = new List<Bi_Weekly_Reimbursement__c>();
         for(Contact con : newCon) {
             if(conOldMap.get(con.id).Deactivated_Date__c != null && (conOldMap.get(con.id).Deactivated_Date__c != con.Deactivated_Date__c) && con.Activation_Date__c <= System.today()){
-              
                 if(con.Role__c != 'Admin' && con.Role__c != 'Manager') {
                     TriggerConfig__c customSetting = TriggerConfig__c.getInstance('Defaulttrigger');
-                    if(customSetting.ContactTriCommunityReimCreate__c == true){
+                    if(customSetting.ContactTriCommunityReimCreate__c == true) {
                         reimToInsert.add(CreateReimbursement(con));
+                        bireimToInsert.add(CreateBiweekReimbursement(con));
                     }
                 }
             }
-            if(reimToInsert.size() > 0){
+            if(!reimToInsert.isEmpty()){
                 upsert reimToInsert;
+                if(!bireimToInsert.isEmpty()){
+                    upsert bireimToInsert;
+                }                
                 ContactTriggerHelper.putHTTPEnableUserTriplog(con.id);
                 RosterController.resetPassword(con.id);
                 putHTTP(con.AccountId,con.External_Email__c);
@@ -323,15 +281,56 @@ public without sharing class ContactTriggerHelper {
 
     public static void  CommunityReimCreate(List<Contact> contactList) {
         List<Employee_Reimbursement__c> reimToInsert   = new List<Employee_Reimbursement__c>();
+        List<Bi_Weekly_Reimbursement__c> bireimToInsert   = new List<Bi_Weekly_Reimbursement__c>();
         for(Contact con : contactList){
             putHTTP(con.AccountId,con.External_Email__c);
             if(con.Role__c != 'Admin' && con.Role__c != 'Manager' && con.Deactivated_Date__c == null) {
                 reimToInsert.add(CreateReimbursement(con));
+                bireimToInsert.add(CreateBiweekReimbursement(con));
             }
         }
-        if(reimToInsert.size() > 0){
-            insert reimToInsert;
+        if(!reimToInsert.isEmpty()) {
+            insert reimToInsert;            
         }
+        if(!bireimToInsert.isEmpty()){
+            insert bireimToInsert;
+        }
+    }
+    //This method is used to create a Bi-Weekly reimbursment
+    public static Bi_Weekly_Reimbursement__c CreateBiweekReimbursement(Contact con){        
+        contact contest = [select id,account.Pay_Period_Days__c,account.Pay_Period_Start_Date__c from contact where id =: con.id];
+        List<Date> dtList = new list<Date>();
+        Date payStartDate = contest.Account.Pay_Period_Start_Date__c;
+        Date endDate;
+        system.debug('contest=='+ contest);
+        system.debug('payStartDate=='+ payStartDate);
+        system.debug('pay days==' + contest.account.Pay_Period_Days__c);
+            do {
+                endDate = payStartdate.addDays(Integer.valueof(contest.Account.Pay_Period_Days__c));
+                if(payStartdate != null && payStartdate <= System.today() && System.today() <= endDate) {
+                    dtList.add(payStartdate);
+                    dtList.add(endDate);
+                }
+                payStartdate = endDate.addDays(1);
+            } while(endDate <= System.today());
+        system.debug('dtList=='+ dtList);
+        system.debug('contest.Account.Pay_Period_Start_Date__c=='+ contest.Account.Pay_Period_Start_Date__c);
+        system.debug('contest.Account.Pay_Period_Days__c=='+ contest.Account.Pay_Period_Days__c);
+        //List<IRS_Mileage_Rate__c> objIRSRate = [SELECT id,year__c,IRS_Rate__c FROM IRS_Mileage_Rate__c Where year__c =: String.valueOf(System.today().year()) Limit 1];
+        Bi_Weekly_Reimbursement__c er = new Bi_Weekly_Reimbursement__c();
+        er.Fixed_Amount__c = con.Fixed_Amount__c;
+        er.Status__c = 'Pending';
+        er.Maintenance_and_Tires__c = con.Maintenance_and_Tires__c;
+        er.MPG__c = con.MPG__c;
+        er.Contact__c = con.id;
+        er.Name = dtList[0]+' to '+ dtList[1];
+        er.Fuel_Price__c = 0;
+        er.Start_Date__c = dtList[0];
+        er.End_Date__c = dtList[1];
+        // if(objIRSRate.size() > 0){
+        //     er.IRS_Mileage_Rate__c = objIRSRate[0].ID;
+        // }
+        return er;
     }
     //This method is used send a welcome email from triplog or mlog to install a application.
     @future (callout=true)
@@ -450,6 +449,8 @@ public without sharing class ContactTriggerHelper {
     //Track History of Contact
     public static void TrackHistory(Map<ID,Contact> conOld,List<Contact> contactListNew,Map<String,String> managerNames){
         
+        
+        
         //Map for Manager Name
         
         //Audit Trial
@@ -480,10 +481,6 @@ public without sharing class ContactTriggerHelper {
                 }
                 if(c.Deactivated_Date__c != conOld.get(c.Id).Deactivated_Date__c)
                     newAuditTrialCreate.add(new AuditTrail__c(Field__c='Deactivation Date',Timestamp__c=Datetime.now(),Modifiedby__c=UserInfo.getFirstName()+' '+UserInfo.getLastName(),NewValue__c=String.valueOf(c.Deactivated_Date__c),OldValue__c=String.valueOf(conOld.get(c.id).Deactivated_Date__c),Contact__c=c.id));
-                
-            //for(String ConOldMap:conOld.keySet()){
-                
-           // }
         }
     
         if(newAuditTrialCreate.Size()>0)
