@@ -20,7 +20,6 @@ public class BiWeeklyReimReportforPLMController {
         String[] month = endDate.split('-');
         String monthValue = month[1]+ '-' +month[0];
         System.debug('***monthValue***'+monthValue);
-       // System.debug('monthValue==' +monthValue);
         BiweeklyWrapperList = new List<ReibursementWrapper>();
         Map<Id, Decimal> idVsVariableMap = new Map<Id, Decimal>();
         Map<Id, Decimal> idVsMileageMap = new Map<Id, Decimal>();
@@ -51,8 +50,6 @@ public class BiWeeklyReimReportforPLMController {
                                                 idVsMileageMap.put((Id)ar.get('rid'), (Decimal) ar.get('mtotal')); 
             }
         }
-        //System.debug('idVsVariableMap=='+ idVsVariableMap);
-        
         List<Employee_Reimbursement__c> reibursementList = new List<Employee_Reimbursement__c>();
         if(Test.isRunningTest()) {
             reibursementList = [SELECT id,Fixed_Amount__c,Half_Fixed_Amount__c,Contact_Id__c,Contact_Id__r.Division__c,
@@ -79,10 +76,7 @@ public class BiWeeklyReimReportforPLMController {
                                             idVsHalfReimMap.put(reimHalfFixedAmount.Contact_Id__c, 0 + reimHalfFixedAmount.Half_Fixed_Amount__c); 
                                         }                                                              
                                         
-                                       } 
-                                       //System.debug('idVsHalfFixedAmountMap=='+ idVsHalfFixedAmountMap);
-            //System.debug('DivisionMap=='+ DivisionMap);
-            //System.debug('idVsHalfReimMap=='+ idVsHalfReimMap);
+                                       }          
 
         List<Contact> contactList;  
         if(Test.isRunningTest()) {
@@ -129,17 +123,12 @@ public class BiWeeklyReimReportforPLMController {
             }
             objWrapper.payPeriodDate = startDate +' to '+ endDate;
             objWrapper.Division = String.valueOf(currentContact.Division__c);
-            //System.debug('========'+currentContact.Name);
             if(currentContact.Deactivated_Date__c != null && date.valueOf(currentContact.Deactivated_Date__c) >= Date.valueOf(startDate) && date.valueOf(currentContact.Deactivated_Date__c) <= Date.valueOf(endDate)){
-                //Decimal MaxAllowable = (objWrapper.BiWeeklyMileage * IRSRate).setScale(2);
-                //objWrapper.ImputedIncome = (objWrapper.BiWeeklyTotalReim - MaxAllowable).setScale(2);
-                //System.debug('********'+currentContact.Name);
-                List<String> dateRange = new List<String>();
+                //List<String> dateRange = new List<String>();
                 List<BiWeeklyComplianceReportController.ReibursementWrapper> BiweeklyComplianceWrapperList = new List<BiWeeklyComplianceReportController.ReibursementWrapper>();
-                dateRange = BiweeklyPayPeriod.getPayPeriodDates (currentContact.Id,System.today().year());
+                //dateRange = BiweeklyPayPeriod.getPayPeriodDates (currentContact.Id,System.today().year());
                 BiWeeklyComplianceReportController.ReibursementWrapper wrapperObj = new BiWeeklyComplianceReportController.ReibursementWrapper();
-                List<String> startEnddate = new List<String>();
-                System.debug('**dateRange**'+dateRange);
+                /*List<String> startEnddate = new List<String>();                
                 if(!dateRange.isEmpty())
                 {
                     Integer i = 0;    
@@ -155,12 +144,14 @@ public class BiWeeklyReimReportforPLMController {
                             Date d1 = Date.today();
                             Date d2 = date.valueof(startdate2);
                             if(d2 < d1){
-                                wrapperObj = BiWeeklyComplianceReportController.calculateBiweekMil(startdate2,enddate2,currentContact.Id);
+                                wrapperObj = BiWeeklyComplianceReportController.calculateBiweekMil(startDate,endDate,currentContact.Id);
                                 BiweeklyComplianceWrapperList.add(wrapperObj);
                             }
                         }   
                     }
-                }
+                }*/
+                wrapperObj = BiWeeklyComplianceReportController.calculateBiweekMil(startDate,endDate,currentContact.Id);
+                BiweeklyComplianceWrapperList.add(wrapperObj);
                 Decimal imputedIncomeCal = 0;
                 for(BiWeeklyComplianceReportController.ReibursementWrapper ar : BiweeklyComplianceWrapperList){
                     if(ar.ImputedIncome != null){
