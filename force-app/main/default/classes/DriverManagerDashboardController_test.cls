@@ -5,10 +5,99 @@ public class DriverManagerDashboardController_test {
         RecordUtilityClass.sendEmailforCompliance();
         RecordUtilityClass.enableMappingGasPriceTrigger();
         RecordUtilityClass.vehicleUrlMapping();
-        Account currentAccount = RecordUtilityClass.buildAccount();
-        insert currentAccount;
-        Contact currentAdmin = RecordUtilityClass.buildAdminContact(currentAccount);
-        insert currentAdmin;
+
+        Vehicle_URL_Mapping__c veh = new Vehicle_URL_Mapping__c();
+        veh.URL__c = 'https://cdn2.hubspot.net/hubfs/2511299/iStock-494093356.jpg';
+        veh.vehicle__c = 'Full-Size Sedan';
+        veh.Year__c = '2019';
+        
+        insert veh;
+        
+        UserRole userRole_1 = [SELECT Id FROM UserRole WHERE DeveloperName = 'EMD' LIMIT 1];
+        Profile profile_1 = [SELECT Id FROM Profile WHERE Name = 'Customer Community Login User' LIMIT 1];
+        User admin = [SELECT Id, Username, UserRoleId FROM User WHERE Profile.Name = 'System Administrator' AND UserRoleId = :userRole_1.Id LIMIT 1];
+        User user_1;
+        
+        Account currentAccount;
+        Contact con = new Contact();
+        Contact currentAdmin;
+        
+        System.runAs(admin) {
+           /* currentAccount.Name = 'Test Account';
+            //currentAccount.Pay_Period_Start_Date__c = system.today();
+            currentAccount.Bi_Weekly_Pay_Period__c = true;
+            currentAccount.Pay_Period_Days__c = 13;
+            currentAccount.Pay_Period_Start_Date__c = system.today().adddays(-130);
+            currentAccount.Last_Reimbursement_Created__c = '12-2021';
+            insert currentAccount;
+           */
+            currentAccount = RecordUtilityClass.buildAccount();
+            insert currentAccount;
+           
+    
+            currentAdmin = RecordUtilityClass.buildAdminContact(currentAccount);
+            insert currentAdmin;
+            Contact contact_1 = new Contact(AccountId = currentAccount.Id, LastName = 'xgeek',External_Email__c='newmail@gmail.com');
+            insert contact_1;
+            
+            con.LastName = 'TestContact';
+            con.Role__c = 'Driver';
+            con.Car_Image__c = veh.URL__c;
+            con.Vehicle_Type__c = veh.Year__c +' '+veh.vehicle__c;
+            con.AccountId = currentAccount.Id;
+            con.Activation_Date__c = system.today();
+            con.Deactivated_Date__c = system.today().addDays(-2);
+            con.External_Email__c = 'test@email.com';
+            con.Fixed_Amount__c = 371.28;
+            con.MailingCity = 'Abilene';
+            con.MailingState = 'TX';
+            con.Time_Zone__c = 'US/Mountain' ;
+            con.Driving_States__c = 'TX';
+            con.Fixed_Amount__c = 322.00;
+            con.Maintenance_and_Tires__c = 1.2;
+            con.MPG__c= 10.00;
+            con.Monthly_Mileage_Limit__c = 100.00;
+            con.Deactivated_Date__c = null;
+            insert con;
+            
+            /*
+            currentAdmin.LastName = 'TestContact';
+            currentAdmin.Role__c = 'Admin';
+            currentAdmin.Car_Image__c = veh.URL__c;
+            currentAdmin.Vehicle_Type__c = veh.Year__c +' '+veh.vehicle__c;
+            currentAdmin.AccountId = currentAccount.Id;
+            currentAdmin.Activation_Date__c = system.today();
+            currentAdmin.Deactivated_Date__c = system.today().addDays(-2);
+            currentAdmin.External_Email__c = 'test@email1.com';
+            currentAdmin.Fixed_Amount__c = 371.28;
+            currentAdmin.MailingCity = 'Abilene';
+            currentAdmin.MailingState = 'TX';
+            currentAdmin.Time_Zone__c = 'US/Mountain' ;
+            currentAdmin.Driving_States__c = 'TX';
+            currentAdmin.Fixed_Amount__c = 322.00;
+            currentAdmin.Maintenance_and_Tires__c = 1.2;
+            currentAdmin.MPG__c= 10.00;
+            currentAdmin.Monthly_Mileage_Limit__c = 100.00;
+            currentAdmin.Deactivated_Date__c = null;
+            insert currentAdmin;
+            */
+            user_1 = new User( 
+                Email = 'yourusername@gmail.com',
+                ProfileId = profile_1.Id, 
+                UserName = 'yourusername@gmail.com', 
+                Alias = 'Test',
+                TimeZoneSidKey = 'America/New_York',
+                EmailEncodingKey = 'ISO-8859-1',
+                LocaleSidKey = 'en_US', 
+                LanguageLocaleKey = 'en_US',
+                ContactId = contact_1.Id,
+                PortalRole = 'Manager',
+                FirstName = 'Firstname',
+                LastName = 'Lastname'
+            );
+            insert user_1;
+        }
+        
         List<Contact> obj_Manager_list = RecordUtilityClass.buildManagerContact(currentAccount,currentAdmin);
         insert obj_Manager_list;
         List<Contact> obj_driverManager_list = RecordUtilityClass.buildDriverManagerContact(currentAccount,obj_Manager_list[0]);
@@ -22,13 +111,19 @@ public class DriverManagerDashboardController_test {
         list<Employee_Reimbursement__c> empReimbursementList = RecordUtilityClass.buildPendingEmployee_Reimbursement(obj_Driver_list);
         insert empReimbursementList;
 
-        List<Employee_Mileage__c> obj_Employee_Mileage_list = RecordUtilityClass.buildNoApprovedYetEmployeeMileages(empReimbursementList);
+        list<Bi_Weekly_Reimbursement__c> empBIweeReimbursementList1 = RecordUtilityClass.buildPendingBiReimbursement(obj_Driver_list);
+        insert empBIweeReimbursementList1;
+
+        List<Employee_Mileage__c> obj_Employee_Mileage_list = RecordUtilityClass.buildNoApprovedYetEmployeeMileages(empReimbursementList, empBIweeReimbursementList1[0].id);
         insert obj_Employee_Mileage_list;
 
         list<Employee_Reimbursement__c> empReimbursementList1 = RecordUtilityClass.buildPendingEmployee_Reimbursement(obj_driverManager_list);
         insert empReimbursementList1;
 
-        List<Employee_Mileage__c> obj_Employee_Mileage_list1 = RecordUtilityClass.buildNoApprovedYetEmployeeMileages(empReimbursementList1);
+        list<Bi_Weekly_Reimbursement__c> empBIReimbursementList1 = RecordUtilityClass.buildPendingBiReimbursement(obj_driverManager_list);
+        insert empBIReimbursementList1;
+
+        List<Employee_Mileage__c> obj_Employee_Mileage_list1 = RecordUtilityClass.buildNoApprovedYetEmployeeMileages(empReimbursementList1,empBIReimbursementList1[0].id );
         insert obj_Employee_Mileage_list1;
 
         //file
@@ -104,7 +199,7 @@ public class DriverManagerDashboardController_test {
         employeereimbursementList = (List<EmployeeMileagesForCalculation>)JSON.deserialize(reimbursement,List<EmployeeMileagesForCalculation>.Class);
         //List<Employee_Reimbursement__c> obj_Employee_Reimbursement_List = RecordUtilityClass.getEmployee_Reimbursement(obj_acc.id);
         //DriverManagerDashboardController.approveMileages(JSON.serialize(obj_EmployeeMileages_list1));
-         DriverManagerDashboardController.getUnapprovedMileages(JSON.serialize(employeereimbursementList[0]));
+         DriverManagerDashboardController.getUnapprovedMileages(JSON.serialize(employeereimbursementList[0]),currentAccount.id);
        // List<String> result =DriverManagerDashboardController.approveMileagesClone(JSON.serialize(obj_EmployeeMileages_list),obj_driverManager_list[0].Id,currentAccount.Id,'true');
          //DriverManagerDashboardController.getUnapprovedMileages('',obj_driverManager_list[0].Id);
         /*DriverManagerDashboardController.getAllDriversLastMonthUpdatedReimbursements(conId,accId);
@@ -114,15 +209,22 @@ public class DriverManagerDashboardController_test {
        DriverManagerDashboardController.totalmileages='';
        DriverManagerDashboardController.totalvariableamount='';
        DriverManagerDashboardController.setEmployeeName();
-       
+        DriverManagerDashboardController.showTeamRecord=true;
+        DriverManagerDashboardController.insurancePage=true;
+        PageReference pageRef = Page.DriverManagerDashboard; // Add your VF page Name here
+        pageRef.getParameters().put('showteam', 'showteam' );
+        DriverManagerDashboardController.getAccountid();
+        DriverManagerDashboardController.getContactid();
+        DriverManagerDashboardController.getRedirected();
+         
+        //test comment       
         Test.stopTest();
     }
-    public static testmethod void DriverManagerDashboardControllerTestMethod1() 
-    {
+   /* public static testmethod void DriverManagerDashboardControllerTestMethod1() {
         DriverManagerDashboardController.getAccountid();
         DriverManagerDashboardController.getContactid();
         DriverManagerDashboardController.getRedirected();
        // DriverManagerDashboardController.setEmployeeName();
-        
-    }
+    } */
+    
 }
