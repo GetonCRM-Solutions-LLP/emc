@@ -900,7 +900,7 @@
                                             $scope.AllDriversLastMonthReimbursements = JSON.parse(result[0].replace(/(&quot\;)/g, "\""));
                                             console.log("approveReimbursements Result 2", $scope.AllDriversLastMonthReimbursements);
                                             angular.forEach($scope.AllDriversLastMonthReimbursements, function (item) {
-                                                if (item.totalMileages > '0.00' && item.status != 'Approved') {
+                                                if (item.totalMileages > '0.00' && item.status != 'Pending') { /* EMC - 168 : Approve checkbox still present on dashboard */
                                                     reimCount++;
                                                 }
                                             });
@@ -970,7 +970,7 @@
                 $scope.exportData.push(["Name", "Month", "Approved Mileages", "Approval Threshold", "Submited Mileage"]);
                 angular.forEach($scope.AllDriversLastMonthReimbursements, function (item, key) {
                     $scope.exportData.push([item.name, item.month, item.approvedMileages, item.threshold, item.totalMileages]);
-                    if (item.totalMileages > '0.00' && item.status != 'Approved') {
+                    if (item.totalMileages > '0.00' && item.status != 'Pending') { /* EMC - 168 : Approve checkbox still present on dashboard */
                         count++;
                         $scope.displayApprovebtn = true;
                     }
@@ -1420,7 +1420,7 @@
                 $scope.emailOfEmployee = '{!emailofEmployee}';
                 $scope.clickedMonth = "";
                 Visualforce.remoting.Manager.invokeAction(
-                    '{!$RemoteAction.ManagerDashboardFromAdminController.getUnapprovedMileages}', JSON.stringify($scope.mileagesList),
+                    '{!$RemoteAction.ManagerDashboardFromAdminController.getUnapprovedMileages}', JSON.stringify($scope.mileagesList), $scope.accid, 
                     function (result, event) {
                         if (event.status && result != null) {
                             var resultdata = result.replace(/\\/g, '');

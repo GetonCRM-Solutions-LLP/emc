@@ -1286,7 +1286,7 @@
             let currDate = new Date();
             let compareDate = currDate.getDate();
             $scope.syncMonth = (compareDate >= 18) ? (daymonth[currDate.getMonth()]) : (daymonth[currDate.getMonth() - 1]);
-            // console.log($scope.syncMonth);
+            console.log($scope.syncMonth);
             //  $scope.syncYear = ($scope.syncMonth === "December") ? currDate.getFullYear() - 1 : currDate.getFullYear(); 
             $scope.reimbursementDialog = new MileagesofReimbursements(false);
             $scope.FromDate = $filter('date')(new Date(), "MMddyyyyHHmmss");
@@ -1861,7 +1861,13 @@
             if ($scope.empContact[0].Account.Logo_Document_Id__c == null || $scope.empContact[0].Account.Logo_Document_Id__c == '' || $scope.empContact[0].Account.Logo_Document_Id__c == undefined) {
                 $scope.empContact[0].Account.Logo_Document_Id__c = '';
             }
+            $scope.gasrate = {!gasVariableRatePreviosMonth}
             $scope.gaspricedata = {!gaspriceforpreviosmonth};
+            if ($scope.gasrate != null && $scope.gasrate != '') {
+                $scope.variablefuelprice = JSON.stringify($scope.gasrate);
+            }else{
+                $scope.variablefuelprice = "";
+            }
             /*$scope.fuelprice = JSON.stringify($scope.gaspricedata[0].Fuel_Price__c);*/
             if ($scope.gaspricedata != null && $scope.gaspricedata != '') {
                 if ($scope.gaspricedata[0].Fuel_Price__c != '' && $scope.gaspricedata[0].Fuel_Price__c != null) {
@@ -1978,26 +1984,26 @@
             }
 
             // Time and Attendence Report
-            // $scope.fetchTimeAttendence = function (clickedyear) {
-            //     $('#spinner').show();
-            //     $scope.timeAttendence = [];
-            //     $scope.selectedYear = clickedyear;
-            //     Visualforce.remoting.Manager.invokeAction('{!$RemoteAction.DriverDashboardFromAdminManager.TimeAttendance}', $scope.id, $scope.selectedYear,
-            //         function (result, event) {
-            //             if (event.status && result != null) {
-            //                 $scope.timeAttendence = result;
-            //                 console.log($scope.timeAttendence);
-            //                 $('#spinner').hide();
-            //             }
-            //             else {
-            //                 $('#spinner').hide();
-            //             }
-            //             $scope.$apply();
-            //         },
-            //         { escape: false }
-            //     );
+           $scope.fetchTimeAttendence = function (clickedyear) {
+                $('#spinner').show();
+                $scope.timeAttendence = [];
+                $scope.selectedYear = clickedyear;
+                Visualforce.remoting.Manager.invokeAction('{!$RemoteAction.DriverDashboardFromAdminManager.TimeAttendance}', $scope.id, $scope.selectedYear,
+                    function (result, event) {
+                        if (event.status && result != null) {
+                            $scope.timeAttendence = result;
+                            console.log($scope.timeAttendence);
+                            $('#spinner').hide();
+                        }
+                        else {
+                            $('#spinner').hide();
+                        }
+                        $scope.$apply();
+                    },
+                    { escape: false }
+                );
 
-            // }
+            }
 
             // excel download
             $scope.downloadToExcel = function (sheetData, excelfile) {
@@ -2088,96 +2094,96 @@
 
             }
             // Reimbursement Link 
-            // $scope.fetchReimbMileage = function (clickedyear) {
-            //     $('#spinner').show();
-            //     $scope.reimbMileages = [];
-            //     $scope.selectedYear = clickedyear;
-            //     Visualforce.remoting.Manager.invokeAction('{!$RemoteAction.DriverDashboardFromAdminManager.getAllReimbursements}', $scope.selectedYear, $scope.id, $scope.accid,
-            //         function (result, event) {
-            //             if (event.status && result != null) {
-            //                 if (result != '') {
-            //                     $scope.reimbMileages = [];
-            //                     $scope.reimbMileages = JSON.parse(result);
-            //                     console.log($scope.reimbMileages);
-            //                 }
-            //                 else {
-            //                     $scope.reimbMileages = [];
-            //                 }
-            //                 $('#spinner').hide();
-            //             }
-            //             else {
-            //                 $('#spinner').hide();
-            //                 toastr.error('Something went wrong');
-            //             }
-            //             $scope.$apply();
-            //         },
-            //         { escape: false }
-            //     );
-            // }
+            $scope.fetchErmiReimbMileage = function (clickedyear) {
+                $('#spinner').show();
+                $scope.reimbMileages = [];
+                $scope.selectedYear = clickedyear;
+                Visualforce.remoting.Manager.invokeAction('{!$RemoteAction.DriverDashboardFromAdminManager.getAllReimbursements}', $scope.selectedYear, $scope.id, $scope.accid,
+                    function (result, event) {
+                        if (event.status && result != null) {
+                            if (result != '') {
+                                $scope.reimbMileages = [];
+                                $scope.reimbMileages = JSON.parse(result);
+                                console.log($scope.reimbMileages);
+                            }
+                            else {
+                                $scope.reimbMileages = [];
+                            }
+                            $('#spinner').hide();
+                        }
+                        else {
+                            $('#spinner').hide();
+                            toastr.error('Something went wrong');
+                        }
+                        $scope.$apply();
+                    },
+                    { escape: false }
+                );
+            }
 
             // download time and attendance detail report or reimbursement report
-            // $scope.downloadReport = function (startDt, endDt) {
-            //     $scope.timePeriodList = [];
-            //     $scope.empObj = {!obj_current_contact_details};
-            //     $scope.driverName = $scope.empObj[0].Name;
-            //     $scope.TDate = $filter('date')(new Date(), "MMddyyyyHHmmss");
-            //     $scope.excelFileName = $scope.driverName + '\'s Time And Attendance Report ' + $scope.TDate;
-            //     Visualforce.remoting.Manager.invokeAction('{!$RemoteAction.DriverDashboardFromAdminManager.getMileagesBasedTandAtt}', startDt, endDt, $scope.id,
-            //         function (result, event) {
-            //             if (event.status && result != null) {
-            //                 if (result != '') {
-            //                     var detailedList = JSON.parse(result);
-            //                     $scope.exportPeriodList = [];
-            //                     $scope.exportPeriodList.push(["Contact Email", "Tracking Style", "Day Of Week", "Trip Date", "Start Time", "End Time", "Trip Origin", "Trip Destination", "Mileage", "Status", "Date Submitted", "Date Approved", "Maint/Tires", "Fuel Rate", "Variable Rate", "Variable Amount", "Drive Time", "Stay Time", "Total Time", "Notes", "Tags"]);
-            //                     angular.forEach(detailedList, function (item, key) {
-            //                         $scope.exportPeriodList.push([item.emailaddress, item.tracingstyle, item.dayofweek, item.tripdate, item.starttime, item.endtime, item.origin, item.destination, item.mileage, item.status, item.submitteddate, item.approveddate, item.maintTyre, item.fuelRate, item.variablerate, item.variableamount, item.drivingtime, item.staytime, item.totaltime, item.notes, item.tag]);
-            //                     });
+               $scope.downloadReport = function (startDt, endDt) {
+                $scope.timePeriodList = [];
+                $scope.empObj = {!obj_current_contact_details};
+                $scope.driverName = $scope.empObj[0].Name;
+                $scope.TDate = $filter('date')(new Date(), "MMddyyyyHHmmss");
+                $scope.excelFileName = $scope.driverName + '\'s Time And Attendance Report ' + $scope.TDate;
+                Visualforce.remoting.Manager.invokeAction('{!$RemoteAction.DriverDashboardFromAdminManager.getMileagesBasedTandAtt}', startDt, endDt, $scope.id,
+                    function (result, event) {
+                        if (event.status && result != null) {
+                            if (result != '') {
+                                var detailedList = JSON.parse(result);
+                                $scope.exportPeriodList = [];
+                                $scope.exportPeriodList.push(["Contact Email", "Tracking Style", "Day Of Week", "Trip Date", "Start Time", "End Time", "Trip Origin", "Trip Destination", "Mileage", "Status", "Date Submitted", "Date Approved", "Maint/Tires", "Fuel Rate", "Variable Rate", "Variable Amount", "Drive Time", "Stay Time", "Total Time", "Notes", "Tags"]);
+                                angular.forEach(detailedList, function (item, key) {
+                                    $scope.exportPeriodList.push([item.emailaddress, item.tracingstyle, item.dayofweek, item.tripdate, item.starttime, item.endtime, item.origin, item.destination, item.mileage, item.status, item.submitteddate, item.approveddate, item.maintTyre, item.fuelRate, item.variablerate, item.variableamount, item.drivingtime, item.staytime, item.totaltime, item.notes, item.tag]);
+                                });
 
-            //                     $scope.downloadToExcel($scope.exportPeriodList, $scope.excelFileName);
-            //                 } else {
-            //                     $scope.exportPeriodList = [];
-            //                     $scope.downloadToExcel($scope.exportPeriodList, $scope.excelFileName);
-            //                 }
-            //                 $scope.$apply();
-            //             }
-            //         },
-            //         { escape: false }
-            //     );
-            // }
-            // $scope.downloadReimbReport = function (reimYear , reimonth) {
-            //     $scope.exportReimbusList = [];
-            //     $scope.empObj = {!obj_current_contact_details};
-            //     $scope.driverName = $scope.empObj[0].Name;
-            //     $scope.TDate = $filter('date')(new Date(), "MMddyyyyHHmmss");
-            //     $scope.excelFileName = $scope.driverName + '\'s Reimbursement Report ' + $scope.TDate;
-            //     Visualforce.remoting.Manager.invokeAction(
-            //         '{!$RemoteAction.DriverDashboardFromAdminManager.getMileages}', reimonth, reimYear, $scope.id,
-            //         function (result, event) {
-            //             if (event.status && result != null) {
-            //                 if (result != '') {
-            //                     var pattern = /&quot\;/g;
-            //                      var resultdata = result.replace(pattern, '"')
-            //                     console.log(resultdata)
-            //                     var mileageReimbList = JSON.parse(resultdata);
-            //                     console.log(mileageReimbList)
-            //                     $scope.exportReimbusList.push(["Contact Email", "Tracking Style", "Day Of Week", "Trip Date", "Start Time", "End Time", "Trip Origin", "Trip Destination", "Mileage", "Status", "Date Submitted", "Date Approved", "Maint/Tires", "Fuel Rate", "Variable Rate", "Variable Amount", "Total Time", "Notes", "Tags"]);
-            //                     angular.forEach(mileageReimbList, function (item, key) {
-            //                         $scope.exportReimbusList.push([item.emailaddress, item.tracingstyle, item.dayofweek, item.tripdate, item.starttime, item.endtime, item.origin, item.destination, item.mileage, item.status, item.submitteddate, item.approveddate, item.maintTyre, item.fuelRate, item.variablerate, item.variableamount, item.totaltime, item.notes, item.tag]);
-            //                     });
-            //                     $scope.downloadToExcel($scope.exportReimbusList, $scope.excelFileName);
-            //                 }
-            //             }
-            //         });
-            //     // $scope.exportReimbusList.push(["Contact Email", "Contact Driver Type" , "Month" , "Mileage", "Status", "Date Approved", "Maint/Tires", "Fuel Rate", "Mi Rate" , "Variable Amount", "Fixed 1", "Fixed 2", "Fixed 3", "Total Reimbursement"]);
-            //     // angular.forEach($scope.reimbMileages, function (item, key) {
-            //     //     if(item.month === reimonth){
-            //     //         $scope.exportReimbusList.push([item.contactEmail, item.contactdrivertype, item.month, item.mileage, item.status, item.approveddate, item.maintainsAndTyres, item.fuel, item.variableRate, item.varibleAmount, item.fixed1, item.fixed2, item.fixed3,  item.totalFixedAmount]);
-            //     //     }
-            //     // });
+                                $scope.downloadToExcel($scope.exportPeriodList, $scope.excelFileName);
+                            } else {
+                                $scope.exportPeriodList = [];
+                                $scope.downloadToExcel($scope.exportPeriodList, $scope.excelFileName);
+                            }
+                            $scope.$apply();
+                        }
+                    },
+                    { escape: false }
+                );
+            }
+              $scope.downloadReimbReportForERMI = function (reimYear , reimonth) {
+                $scope.exportReimbusList = [];
+                $scope.empObj = {!obj_current_contact_details};
+                $scope.driverName = $scope.empObj[0].Name;
+                $scope.TDate = $filter('date')(new Date(), "MMddyyyyHHmmss");
+                $scope.excelFileName = $scope.driverName + '\'s Reimbursement Report ' + $scope.TDate;
+                Visualforce.remoting.Manager.invokeAction(
+                    '{!$RemoteAction.DriverDashboardFromAdminManager.getMileages}', reimonth, reimYear, $scope.id,
+                    function (result, event) {
+                        if (event.status && result != null) {
+                            if (result != '') {
+                                var pattern = /&quot\;/g;
+                                 var resultdata = result.replace(pattern, '"')
+                                console.log(resultdata)
+                                var mileageReimbList = JSON.parse(resultdata);
+                                console.log(mileageReimbList)
+                                $scope.exportReimbusList.push(["Contact Email", "Tracking Style", "Day Of Week", "Trip Date", "Start Time", "End Time", "Trip Origin", "Trip Destination", "Mileage", "Status", "Date Submitted", "Date Approved", "Maint/Tires", "Fuel Rate", "Variable Rate", "Variable Amount", "Total Time", "Notes", "Tags"]);
+                                angular.forEach(mileageReimbList, function (item, key) {
+                                    $scope.exportReimbusList.push([item.emailaddress, item.tracingstyle, item.dayofweek, item.tripdate, item.starttime, item.endtime, item.origin, item.destination, item.mileage, item.status, item.submitteddate, item.approveddate, item.maintTyre, item.fuelRate, item.variablerate, item.variableamount, item.totaltime, item.notes, item.tag]);
+                                });
+                                $scope.downloadToExcel($scope.exportReimbusList, $scope.excelFileName);
+                            }
+                        }
+                    });
+                // $scope.exportReimbusList.push(["Contact Email", "Contact Driver Type" , "Month" , "Mileage", "Status", "Date Approved", "Maint/Tires", "Fuel Rate", "Mi Rate" , "Variable Amount", "Fixed 1", "Fixed 2", "Fixed 3", "Total Reimbursement"]);
+                // angular.forEach($scope.reimbMileages, function (item, key) {
+                //     if(item.month === reimonth){
+                //         $scope.exportReimbusList.push([item.contactEmail, item.contactdrivertype, item.month, item.mileage, item.status, item.approveddate, item.maintainsAndTyres, item.fuel, item.variableRate, item.varibleAmount, item.fixed1, item.fixed2, item.fixed3,  item.totalFixedAmount]);
+                //     }
+                // });
 
            
             
-            // }
+            }
             $scope.syncMileages = function (month, fuel, maintainsAndTyres, empReID, mpg) {
                 $('#processSpinner').show();
                 document.getElementById('messageContainer').classList.add('left-style');
@@ -2419,15 +2425,21 @@
                                             {{yr}}
                                         </a>
                                     </h5>
-                                    <!-- <h5 class="mb-0 ml-5" ng-if="accid === ERMIAcc && driverType != 'Driver - Salary' ">
+                                     <h5 class="mb-0 ml-5" ng-if="accid === ERMIAcc && driverType != 'Driver - Salary' ">
                                         <a class="collapsed" data-toggle="collapse" href="#collapseTimeCard{{$index}}" aria-expanded="false" aria-controls="collapseTimeCard"
                                             ng-click="fetchTimeAttendence(yr)">
                                             T &amp; A
                                         </a>
-                                    </h5> -->
+                                    </h5>
                                     <h5 class="mb-0 ml-5" ng-if="accid == PLMarketing">
                                         <a class="collapsed" data-toggle="collapse" href="#collapseReimbCard{{$index}}" aria-expanded="false" aria-controls="collapseReimbCard"
                                             ng-click="fetchReimbMileage(yr)">
+                                            Reimbursement
+                                        </a>
+                                    </h5>
+                                      <h5 class="mb-0 ml-5"  ng-if="accid === ERMIAcc && driverType != 'Driver - Salary' ">
+                                        <a class="collapsed" data-toggle="collapse" href="#collapseReimbCard{{$index}}" aria-expanded="false" aria-controls="collapseReimbCard"
+                                            ng-click="fetchErmiReimbMileage(yr)">
                                             Reimbursement
                                         </a>
                                     </h5>
@@ -2572,7 +2584,7 @@
 
                                     </div>
                                 </div>
-                                <!-- <div ng-if="accid === ERMIAcc && driverType != 'Driver - Salary' " id="collapseTimeCard{{$index}}" class="collapse" role="tabpanel" aria-labelledby="Cardheading"
+                                 <div ng-if="accid === ERMIAcc && driverType != 'Driver - Salary' " id="collapseTimeCard{{$index}}" class="collapse" role="tabpanel" aria-labelledby="Cardheading"
                                     data-parent="#accordion">
                                     <div class="card-body pad-0">
                                         <div class="table-responsive">
@@ -2599,7 +2611,7 @@
                                                     </tr>
                                                 </thead>
                                                 <tbody class="driver-dashboard-table table-a-link">
-                                                    <tr dir-paginate="time in timeAttendence |orderBy:sortKey:reverse |itemsPerPage:12">
+                                                    <tr dir-paginate="time in timeAttendence | orderBy : '-startDate' |itemsPerPage:12">
                                                         <td>{{time.startDate}}</td>
                                                         <td>{{time.endDate}}</td>
                                                         <td>{{time.totaldrivingTime}}</td>
@@ -2620,7 +2632,7 @@
 
                                     </div>
                                 </div>
-                                <div  ng-if="accid === ERMIAcc && driverType != 'Driver - Salary' " id="collapseReimbCard{{$index}}" class="collapse" role="tabpanel" aria-labelledby="Cardheading"
+                               <div  ng-if="accid === ERMIAcc && driverType != 'Driver - Salary' " id="collapseReimbCard{{$index}}" class="collapse" role="tabpanel" aria-labelledby="Cardheading"
                                     data-parent="#accordion">
                                     <div class="card-body pad-0">
                                         <div class="table-responsive">
@@ -2679,7 +2691,7 @@
                                                         <td ng-if="reimbml.totalFixedAmount != 'null' && reimbml.totalFixedAmount != ''" class="vw-8">{{reimbml.totalFixedAmount}}</td>
                                                         <td ng-if="reimbml.totalFixedAmount == 'null' || reimbml.totalFixedAmount == ''" class="vw-8"></td>
                                                         <td class="vw-4">
-                                                            <button class="btn btn-primary font-14 mr-11 cursor-type" ng-click="downloadReimbReport(yr,reimbml.month)">Download
+                                                            <button class="btn btn-primary font-14 mr-11 cursor-type" ng-click="downloadReimbReportForERMI(yr,reimbml.month)">Download
                                                                 <i class="fa fa-download"></i>
                                                             </button>
                                                         </td>
@@ -2692,7 +2704,7 @@
                                         </div>
 
                                     </div>
-                                </div> -->
+                                </div>
                             </div>
                         </div>
                     </div>

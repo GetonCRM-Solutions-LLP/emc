@@ -1251,7 +1251,7 @@
                                 var trueselect = $filter("filter")(arr, { isSelected: true });
                                 var trueunapprove = $filter("filter")(arr, { isUnapprove: true });
                                 scope.selectcount = trueselect.length;
-                                // console.log(scope.model.name,scope.model.emailOfEmployee);
+                                console.log(scope.model.name,scope.model.emailOfEmployee,truecheck, trueselect, trueunapprove);
                                 Visualforce.remoting.Manager.invokeAction(
                                     '{!$RemoteAction.AdminDashboardController.approveMileages}', JSON.stringify(truecheck), JSON.stringify(trueselect), JSON.stringify(trueunapprove), scope.model.name, scope.model.emailOfEmployee,
                                     function (result, event) {
@@ -1517,7 +1517,7 @@
                                                 console.log("approveReimbursements Result 2", $scope.AllDriversLastMonthReimbursements);
                                                 console.log("approveReimbursementsClone Result 2", $scope.AllDriversLastMonthUnapprovedReimbursementsClone);
                                                 angular.forEach($scope.AllDriversLastMonthReimbursements, function (item) {
-                                                    if (item.totalMileages > '0.00' && item.status != 'Approved'){
+                                                    if (item.totalMileages > '0.00' && item.status != 'Pending'){ /* EMC - 168 : Approve checkbox still present on dashboard */
                                                         reimCount ++;
                                                     }
                                                 });
@@ -1820,7 +1820,7 @@
 
                     $scope.exportData.push([item.name, item.month, item.status, item.approvedMileages, item.threshold, item.totalMileages, item.rejectedMileages]);
 
-                    if (item.totalMileages > '0.00' && item.status != 'Approved') {
+                    if (item.totalMileages > '0.00' && item.status != 'Pending') { /* EMC - 168 : Approve checkbox still present on dashboard */
                         $scope.displayApprovebtn = true;
                         count++;
                     }
@@ -1950,7 +1950,7 @@
                         countstatus++;
 
                 });
-                console.log("team reimbursement", $scope.myTeamReimbusement);
+              
                 if (myteamlen === count || total === count) {
                     $scope.checkboxObj.IsAllCheckedForApprove = true;
 
@@ -1974,7 +1974,7 @@
                 else {
                     $scope.displayTeamRecordBtn = false;
                 }
-
+                console.log("team reimbursement", $scope.myTeamReimbusement);
             }
 
             $scope.unApprovedCheckUncheckAll = function (IsAllCheckedForUnapprove) {
@@ -2381,7 +2381,7 @@
                 $scope.name = name;
                 $scope.managerName = managerName;
                 $scope.mileagesList = [];
-                Visualforce.remoting.Manager.invokeAction('{!$RemoteAction.AdminDashboardController.getUnapprovedMileages}', JSON.stringify($scope.unapprovereimbursements),
+                Visualforce.remoting.Manager.invokeAction('{!$RemoteAction.AdminDashboardController.getUnapprovedMileages}', JSON.stringify($scope.unapprovereimbursements), $scope.accid,
                     function (result, event) {
                         if (event.status && result != null) {
                             var resultdata = result.replace(/\\/g, '');
@@ -2423,6 +2423,7 @@
 
                             });
                             $scope.emailOfEmployee = '{!emailofEmployee}';
+                            console.log($scope.emailOfEmployee);
                             $scope.exportReimList = [];
                             $scope.exportReimList.push(["Contact Email", "Tracking Style", "Day Of Week", "Trip Date", "Start Time", "End Time", "Trip Origin", "Trip Destination", "Mileage", "Status", "Date Submitted", "Date Approved", "Maint/Tires", "Fuel Rate", "Variable Rate", "Variable Amount", "Drive Time", "Stay Time", "Total Time", "Notes", "Tags"]);
                             angular.forEach($scope.mileagesList, function (item, key) {
@@ -2460,6 +2461,7 @@
                 $scope.displayUnapprovedBtn = false;
                 $scope.displayTeamRecordBtn = false;
                 $scope.$modalInstance.dismiss('cancel');
+                console.log($scope.AllDriversLastMonthUnapprovedReimbursementsClone)
                 angular.forEach($scope.AllDriversLastMonthReimbursements, function (item) {
                     if (item.isSelected && item.status != 'Approved'){
                         item.reimbursementApproval = true;
