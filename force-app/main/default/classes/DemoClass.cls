@@ -6,7 +6,6 @@ public with sharing class DemoClass {
         /* debug log  */
 
         System.debug(' Test class: ' + a);
-=======
         //test
         //test1
         System.debug('Test class: ' + a);
