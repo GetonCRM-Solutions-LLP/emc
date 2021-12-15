@@ -25,27 +25,53 @@ public class GetTripCalloutforCommmiteTripTest {
         objSendEmailToMe.Send_email_to_me__c = true;
         insert objSendEmailToMe;
         
-         IRS_Mileage_Rate__c irs = new IRS_Mileage_Rate__c();
-         irs.year__c = String.valueof(system.today().year());
-         irs.IRS_Rate__c = 0.85;
-         insert irs;
-
-        Account account = new Account();
-        account.Name = 'Test Account';
-        account.Triplog_API__c = '123456789';
-        account.Triplog_Status__c = 'U';
-        account.Pay_Period_Days__c = 13;
-        account.Pay_Period_Start_Date__c = system.today().adddays(-10);
-        insert account;
-           
-        Contact currentContact = new Contact();
-        currentContact.Lastname = 'Test Contact';
-        currentContact.AccountId = account.Id;
-        currentContact.External_Email__c = 'test@test.com';
-        currentContact.Triplog_Status__c = 'U';
-        currentContact.Vehicle_Type__c  = '2019 Mileage Rate';  
-        currentContact.Role__c = 'Driver';  
-        insert currentContact;
+        IRS_Mileage_Rate__c irs = new IRS_Mileage_Rate__c();
+        irs.year__c = String.valueof(system.today().year());
+        irs.IRS_Rate__c = 0.85;
+        insert irs;
+        
+        UserRole userRole_1 = [SELECT Id FROM UserRole WHERE DeveloperName = 'EMD' LIMIT 1];
+        Profile profile_1 = [SELECT Id FROM Profile WHERE Name = 'Customer Community Login User' LIMIT 1];
+        User admin = [SELECT Id, Username, UserRoleId FROM User WHERE Profile.Name = 'System Administrator' AND UserRoleId = :userRole_1.Id LIMIT 1];
+        User user_1;
+        Account account;
+        Contact currentContact;
+        System.runAs(admin) {
+            account = new Account();
+            account.Name = 'Test Account';
+            account.Triplog_API__c = '123456789';
+            account.Triplog_Status__c = 'U';
+            account.Pay_Period_Days__c = 13;
+            account.Pay_Period_Start_Date__c = system.today().adddays(-10);
+            insert account;
+            
+            Contact contact_1 = new Contact(AccountId = account.Id, LastName = 'xgeek',External_Email__c='newmail@gmail.com');
+            insert contact_1;
+            currentContact = new Contact();
+            currentContact.Lastname = 'Test Contact';
+            currentContact.AccountId = account.Id;
+            currentContact.External_Email__c = 'test@test.com';
+            currentContact.Triplog_Status__c = 'U';
+            currentContact.Vehicle_Type__c  = '2019 Mileage Rate';  
+            currentContact.Role__c = 'Driver';  
+            insert currentContact;
+            
+            user_1 = new User( 
+                Email = 'yourusername@gmail.com',
+                ProfileId = profile_1.Id, 
+                UserName = 'yourusername@gmail.com', 
+                Alias = 'Test',
+                TimeZoneSidKey = 'America/New_York',
+                EmailEncodingKey = 'ISO-8859-1',
+                LocaleSidKey = 'en_US', 
+                LanguageLocaleKey = 'en_US',
+                ContactId = contact_1.Id,
+                PortalRole = 'Manager',
+                FirstName = 'Firstname',
+                LastName = 'Lastname'
+            );
+            insert user_1;
+        }        
         
         Employee_Reimbursement__c er = new Employee_Reimbursement__c();
         er.Contact_Id__c = currentContact.Id;
@@ -124,7 +150,7 @@ public class GetTripCalloutforCommmiteTripTest {
         
         Test.startTest();
         Test.setMock(HttpCalloutMock.class, new GetTripCalloutMock());
-        GetTripCalloutforCommute.GetTripCalloutForCommuteMileage(er.id, currentContact.External_Email__c,currentContact.id, priMin, priMax, fuelPrice, mpg, mat, account.Triplog_API__c, er.Triplog_Status__c,true,'Business');
+        GetTripCalloutforCommute.GetTripCalloutForCommuteMileage(er.id, currentContact.External_Email__c,currentContact.id, priMin, priMax, fuelPrice, mpg, mat, account.Triplog_API__c, er.Triplog_Status__c,true,'Business',false);
         
         String body = 'test';
         String apiToken = 'test';
@@ -155,22 +181,48 @@ public class GetTripCalloutforCommmiteTripTest {
          irs.IRS_Rate__c = 0.85;
          insert irs;
         
-        Account account = new Account();
-        account.Name = 'Test Account';
-        account.Triplog_API__c = '123456789';
-        account.Triplog_Status__c = 'U';
-        account.Pay_Period_Days__c = 13;
-        account.Pay_Period_Start_Date__c = system.today().adddays(-10);
-        insert account;
-           
-        Contact currentContact = new Contact();
-        currentContact.Lastname = 'Test Contact';
-        currentContact.AccountId = account.Id;
-        currentContact.External_Email__c = 'test@test.com';
-        currentContact.Triplog_Status__c = 'U';
-        currentContact.Vehicle_Type__c  = '2019 Mileage Rate'; 
-        currentContact.Role__c = 'Driver';   
-        insert currentContact;
+        UserRole userRole_1 = [SELECT Id FROM UserRole WHERE DeveloperName = 'EMD' LIMIT 1];
+        Profile profile_1 = [SELECT Id FROM Profile WHERE Name = 'Customer Community Login User' LIMIT 1];
+        User admin = [SELECT Id, Username, UserRoleId FROM User WHERE Profile.Name = 'System Administrator' AND UserRoleId = :userRole_1.Id LIMIT 1];
+        User user_1;
+        Account account;
+        Contact currentContact;
+        System.runAs(admin) {
+            account = new Account();
+            account.Name = 'Test Account';
+            account.Triplog_API__c = '123456789';
+            account.Triplog_Status__c = 'U';
+            account.Pay_Period_Days__c = 13;
+            account.Pay_Period_Start_Date__c = system.today().adddays(-10);
+            insert account;
+            
+            Contact contact_1 = new Contact(AccountId = account.Id, LastName = 'xgeek',External_Email__c='newmail@gmail.com');
+            insert contact_1;
+            currentContact = new Contact();
+            currentContact.Lastname = 'Test Contact';
+            currentContact.AccountId = account.Id;
+            currentContact.External_Email__c = 'test@test.com';
+            currentContact.Triplog_Status__c = 'U';
+            currentContact.Vehicle_Type__c  = '2019 Mileage Rate';  
+            currentContact.Role__c = 'Driver';  
+            insert currentContact;
+            
+            user_1 = new User( 
+                Email = 'yourusername@gmail.com',
+                ProfileId = profile_1.Id, 
+                UserName = 'yourusername@gmail.com', 
+                Alias = 'Test',
+                TimeZoneSidKey = 'America/New_York',
+                EmailEncodingKey = 'ISO-8859-1',
+                LocaleSidKey = 'en_US', 
+                LanguageLocaleKey = 'en_US',
+                ContactId = contact_1.Id,
+                PortalRole = 'Manager',
+                FirstName = 'Firstname',
+                LastName = 'Lastname'
+            );
+            insert user_1;
+        }
         
         Employee_Reimbursement__c er = new Employee_Reimbursement__c();
         er.Contact_Id__c = currentContact.Id;
