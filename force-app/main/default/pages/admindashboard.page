@@ -1517,7 +1517,7 @@
                                                 console.log("approveReimbursements Result 2", $scope.AllDriversLastMonthReimbursements);
                                                 console.log("approveReimbursementsClone Result 2", $scope.AllDriversLastMonthUnapprovedReimbursementsClone);
                                                 angular.forEach($scope.AllDriversLastMonthReimbursements, function (item) {
-                                                    if (item.totalMileages > '0.00' && item.status != 'Pending'){ /* EMC - 168 : Approve checkbox still present on dashboard */
+                                                    if (item.totalMileages > '0.00' && item.status === 'Pending'){ /* EMC - 168 : Approve checkbox still present on dashboard */
                                                         reimCount ++;
                                                     }
                                                 });
@@ -1820,7 +1820,7 @@
 
                     $scope.exportData.push([item.name, item.month, item.status, item.approvedMileages, item.threshold, item.totalMileages, item.rejectedMileages]);
 
-                    if (item.totalMileages > '0.00' && item.status != 'Pending') { /* EMC - 168 : Approve checkbox still present on dashboard */
+                    if (item.totalMileages > '0.00' && item.status === 'Pending') { /* EMC - 168 : Approve checkbox still present on dashboard */
                         $scope.displayApprovebtn = true;
                         count++;
                     }

@@ -1274,7 +1274,7 @@
                                                 $scope.AllDriversLastMonthReimbursements = JSON.parse(result[0].replace(/(&quot\;)/g, "\""));
                                                 console.log("approveReimbursements Result 2", $scope.AllDriversLastMonthReimbursements);
                                                 angular.forEach($scope.AllDriversLastMonthReimbursements, function (item) {
-                                                    if (item.totalMileages > '0.00' && item.status != 'Pending'){ /* EMC - 168 : Approve checkbox still present on dashboard */
+                                                    if (item.totalMileages > '0.00' && item.status === 'Pending'){ /* EMC - 168 : Approve checkbox still present on dashboard */
                                                         reimCount ++;
                                                     }
                                                 });
@@ -1370,7 +1370,7 @@
                 $scope.exportData.push(["Name", "Month", "Status", "Approval Threshold", "Approved Mileage"]);
                 angular.forEach($scope.AllDriversLastMonthReimbursements, function (item) {
                     $scope.exportData.push([item.name, item.month, item.status, item.threshold, item.approvedMileages]);
-                    if (item.totalMileages > '0.00' && item.status != 'Pending') { /* EMC - 168 : Approve checkbox still present on dashboard */
+                    if (item.totalMileages > '0.00' && item.status === 'Pending') { /* EMC - 168 : Approve checkbox still present on dashboard */
                         $scope.displayApprovebtn = true; 
                         count++;
                     }
