@@ -3,7 +3,6 @@ public class GetTripCalloutforCommmiteTripTest {
     public static testMethod Void GetTripCalloutForMileageTestMethod() {
         
         String fuelPrice, mpg, mat, priMin, priMax;
-        
         TriggerConfig__c customSetting =  new TriggerConfig__c();
         customSetting.Name = 'Defaulttrigger';
         customSetting.MappingGasPriceTrigger__c = true;
@@ -35,6 +34,8 @@ public class GetTripCalloutforCommmiteTripTest {
         account.Name = 'Test Account';
         account.Triplog_API__c = '123456789';
         account.Triplog_Status__c = 'U';
+        account.Pay_Period_Days__c = 13;
+        account.Pay_Period_Start_Date__c = system.today().adddays(-10);
         insert account;
            
         Contact currentContact = new Contact();
@@ -62,7 +63,6 @@ public class GetTripCalloutforCommmiteTripTest {
         er.Triplog_Status__c = 'U';
         insert er;
 
-
         Employee_Reimbursement__c er1 = new Employee_Reimbursement__c();
         er1.Contact_Id__c = currentContact.Id;
         er1.Month__c = null;
@@ -80,16 +80,23 @@ public class GetTripCalloutforCommmiteTripTest {
         er1.Triplog_Status__c = null;
         insert er1;
         
+        Bi_Weekly_Reimbursement__c bob = new Bi_Weekly_Reimbursement__c();
+        bob.name = '9/19/2021 to 10/2/2021';
+        bob.Contact__c = currentContact.id;
+        insert bob;
+                
         Employee_Mileage__c emp = new Employee_Mileage__c();
         emp.Contact_Email_Id__c = 'test@test.gmail.com';
         emp.Name = 'Test Mileage Record';
         emp.EmployeeReimbursement__c = er.id;
+        emp.Bi_Weekly_Reimbursement__c = bob.id;
         insert emp;
 
         Employee_Mileage__c emp1 = new Employee_Mileage__c();
         emp1.Contact_Email_Id__c = 'test@test.gmail.com';
         emp1.Name = 'Test Mileage Record';
         emp1.EmployeeReimbursement__c = er.id;
+        emp1.Bi_Weekly_Reimbursement__c = bob.id;
         emp1.Trip_Status__c = 'Approved';
         insert emp1;
 
@@ -97,6 +104,7 @@ public class GetTripCalloutforCommmiteTripTest {
         emp2.Contact_Email_Id__c = 'test@test.gmail.com';
         emp2.Name = 'Test Mileage Record';
         emp2.EmployeeReimbursement__c = er.id;
+        emp2.Bi_Weekly_Reimbursement__c = bob.id;
         emp2.StartTime__c = null;
         insert emp2;
 
@@ -104,6 +112,7 @@ public class GetTripCalloutforCommmiteTripTest {
         emp3.Contact_Email_Id__c = 'test@test.gmail.com';
         emp3.Name = 'Test Mileage Record';
         emp3.EmployeeReimbursement__c = er.id;
+        emp3.Bi_Weekly_Reimbursement__c = bob.id;
         emp3.EndTime__c = null;
         insert emp3;
         
@@ -150,6 +159,8 @@ public class GetTripCalloutforCommmiteTripTest {
         account.Name = 'Test Account';
         account.Triplog_API__c = '123456789';
         account.Triplog_Status__c = 'U';
+        account.Pay_Period_Days__c = 13;
+        account.Pay_Period_Start_Date__c = system.today().adddays(-10);
         insert account;
            
         Contact currentContact = new Contact();

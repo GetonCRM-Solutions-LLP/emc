@@ -36,6 +36,7 @@ public class BiWeeklyReimReportforPLMControllerTest {
 
         Account acc ;
         Contact contact ;
+        Contact contact1 ;
         System.runAs(admin) {
             acc = new Account();  
             acc.Name = 'PL Marketing';
@@ -50,7 +51,6 @@ public class BiWeeklyReimReportforPLMControllerTest {
 
             contact = new Contact();
             contact.lastname = 'Test Contact';
-            //contact.AccountId = System.Label.PLMarketing;
             contact.AccountId = Acc.id;
             contact.Activation_Date__c = System.today().addDays(-90);
             contact.Vehicle_Type__c = '2019 Mileage Rate';
@@ -65,6 +65,22 @@ public class BiWeeklyReimReportforPLMControllerTest {
             contact.isCommunityUser__c = true;
             contact.Fixed_Amount__c = 201.12;
             insert contact;
+            
+            contact1 = new Contact();
+            contact1.lastname = 'Test Contact';
+            contact1.AccountId = Acc.id;
+            contact1.Activation_Date__c = System.today().addDays(-90);
+            contact1.Vehicle_Type__c = '2019 Mileage Rate';
+            contact1.External_Email__c = 'minkesxh.patel1478@gmail.com';
+            contact1.compliancestatus__c = 'Yes';
+            contact1.Deactivated_Date__c = system.now()-60;
+            contact1.MailingCity = 'Abilene';
+            contact1.MailingState = 'TX';
+            contact1.Driving_States__c = 'TX';
+            contact1.Role__c = 'Driver';
+            contact1.isCommunityUser__c = true;
+            contact1.Fixed_Amount__c = 201.12;
+            insert contact1;
 
             user_1 = new User( 
                 Email = 'yourusername@gmail.com',
@@ -116,7 +132,7 @@ public class BiWeeklyReimReportforPLMControllerTest {
         insert er1;
         
         Bi_Weekly_Reimbursement__c  biReim = new Bi_Weekly_Reimbursement__c();
-        biReim.Name = '10/17/2021 to 10/30/2021';
+        biReim.Name = '10/02/2021 to 11/27/2021';
         biReim.Contact__c = contact.Id;
         insert biReim;
         
@@ -125,7 +141,7 @@ public class BiWeeklyReimReportforPLMControllerTest {
         biReim1.Contact__c = contact.Id;
         insert biReim1;
         
-      /*  Employee_Mileage__c emp = new Employee_Mileage__c();
+        Employee_Mileage__c emp = new Employee_Mileage__c();
         emp.EmployeeReimbursement__c = er.id;
         emp.Contact_Email_Id__c = contact.External_Email__c;
         emp.Name = 'Test Mileage Record';
@@ -133,11 +149,11 @@ public class BiWeeklyReimReportforPLMControllerTest {
         emp.TimeZone__c = 'US/Mountain' ;
         emp.Mileage__c = 10.00;
         emp.Fuel_price__c = 10.00;
-        emp.Trip_Date__c = system.today()-100;
+        emp.Trip_Date__c = date.valueof('2021-10-03');
         emp.StartTime__c = system.now()-10;
         emp.EndTime__c =  system.now()-10;
         emp.Bi_Weekly_Reimbursement__c   = biReim.Id;
-        insert emp; */
+        insert emp;
         
         Employee_Mileage__c emp1 = new Employee_Mileage__c();
         emp1.EmployeeReimbursement__c = er1.id;
@@ -147,7 +163,7 @@ public class BiWeeklyReimReportforPLMControllerTest {
         emp1.TimeZone__c = 'US/Mountain' ;
         emp1.Mileage__c = 10.00;
         emp1.Fuel_price__c = 10.00;
-        emp1.Trip_Date__c = system.today()-120;
+        emp1.Trip_Date__c = date.valueof('2021-10-02');
         emp1.StartTime__c = system.now()-10;
         emp1.EndTime__c =  system.now()-10;
         emp1.Bi_Weekly_Reimbursement__c = biReim1.Id;
