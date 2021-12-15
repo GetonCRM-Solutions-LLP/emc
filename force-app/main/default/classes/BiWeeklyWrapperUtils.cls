@@ -579,39 +579,37 @@ public with sharing class BiWeeklyWrapperUtils {
         return currentEmployeeMileage;
     }
 
-    public static string getBiweekReimId (String contactId,Date tripdate){
-        System.debug('***getBiweekReimId***');
-        Integer payDays;
-        Date payStartDate;
-        Boolean checkBiweekAcc = false;
-        for(Contact con : [SELECT id,Account.Pay_Period_Days__c, Account.Pay_Period_Start_Date__c,Account.Bi_Weekly_Pay_Period__c FROM Contact WHERE id =: contactId]){
-            payDays = Integer.valueOf(con.Account.Pay_Period_Days__c);
-            payStartdate = con.Account.Pay_Period_Start_Date__c;
-            checkBiweekAcc = con.Account.Bi_Weekly_Pay_Period__c;
-        }
+    public static string getBiweekReimId (String contactId,Date tripdate,Boolean checkBiweekAcc){
         String biWeekId;
-        Date endDate;
-        List<Date> dtList = new list<Date>();
-        do {
-            endDate = payStartdate.addDays(payDays);
-            if(payStartdate <= tripdate && tripdate <= endDate) {
-                dtList.add(payStartdate);
-                dtList.add(endDate);
-            }
-            payStartdate = endDate.addDays(1);
-        } while(endDate <= System.today());
-        System.debug('***dtList***'+dtList);
-
-        if(!dtList.isEmpty() && checkBiweekAcc == true){
-            for(Bi_Weekly_Reimbursement__c biWeekObj: [SELECT id,Start_Date__c, End_Date__c,Contact__c 
-                                                    FROM Bi_Weekly_Reimbursement__c 
-                                                    WHERE Contact__c =: contactId 
-                                                        AND Start_Date__c =: date.valueof(dtList[0])
-                                                        AND End_Date__c =: date.valueof(dtList[1])] ) {
-                                                            System.debug('***inside for  ***');
-                                                            biWeekId = biWeekObj.Id;
-            }
-        } else if(!dtList.isEmpty() && checkBiweekAcc == false){
+        if(checkBiweekAcc == true ){
+            Integer payDays;
+            Date payStartDate;            
+            for(Contact con : [SELECT id,Account.Pay_Period_Days__c, Account.Pay_Period_Start_Date__c,Account.Bi_Weekly_Pay_Period__c FROM Contact WHERE id =: contactId]){
+                payDays = Integer.valueOf(con.Account.Pay_Period_Days__c);
+                payStartdate = con.Account.Pay_Period_Start_Date__c;                
+            }            
+            Date endDate;
+            List<Date> dtList = new list<Date>();
+            do {
+                endDate = payStartdate.addDays(payDays);
+                if(payStartdate <= tripdate && tripdate <= endDate) {
+                    dtList.add(payStartdate);
+                    dtList.add(endDate);
+                }
+                payStartdate = endDate.addDays(1);
+            } while(endDate <= System.today());
+            System.debug('***dtList***'+dtList);    
+            if(!dtList.isEmpty()){
+                for(Bi_Weekly_Reimbursement__c biWeekObj: [SELECT id,Start_Date__c, End_Date__c,Contact__c 
+                                                        FROM Bi_Weekly_Reimbursement__c 
+                                                        WHERE Contact__c =: contactId 
+                                                            AND Start_Date__c =: date.valueof(dtList[0])
+                                                            AND End_Date__c =: date.valueof(dtList[1])] ) {
+                                                                System.debug('***inside for  ***');
+                                                                biWeekId = biWeekObj.Id;
+                }
+            } 
+        } else {
             for(Bi_Weekly_Reimbursement__c biWeekObj: [SELECT id,Start_Date__c, End_Date__c,Contact__c 
                                                     FROM Bi_Weekly_Reimbursement__c 
                                                     WHERE Contact__c =: contactId 
@@ -619,9 +617,7 @@ public with sharing class BiWeeklyWrapperUtils {
                                                             System.debug('***inside for  ***');
                                                             biWeekId = biWeekObj.Id;
             }
-        }
-        System.debug('***biWeekId***'+biWeekId);
-        return biWeekId;
-       
+        }        
+        return biWeekId;       
     }
 }
