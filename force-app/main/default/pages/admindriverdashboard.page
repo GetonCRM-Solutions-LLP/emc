@@ -1089,7 +1089,7 @@ function ($filter) {
                                                 $scope.AllDriversLastMonthReimbursements = JSON.parse(result[0].replace(/(&quot\;)/g, "\""));
                                                 console.log("approveReimbursements Result 2", $scope.AllDriversLastMonthReimbursements);
                                                 angular.forEach($scope.AllDriversLastMonthReimbursements, function (item) {
-                                                    if (item.totalMileages > '0.00' && item.status != 'Approved'){
+                                                    if (item.totalMileages > '0.00' && item.status === 'Pending'){ /* EMC - 168 : Approve checkbox still present on dashboard */
                                                         reimCount ++;
                                                     }
                                                 });
@@ -1180,7 +1180,7 @@ function ($filter) {
                     $scope.exportData.push(["Name", "Month", "Status","Approved Mileage","Approval Threshold","Submited Mileage","Rejected Mileage"]);
                     angular.forEach($scope.AllDriversLastMonthReimbursements, function (item, key) {
                         $scope.exportData.push([item.name, item.month, item.status,item.approvedMileages,item.threshold,item.totalMileages,item.rejectedMileages]);
-                        if(item.totalMileages > '0.00' && item.status != 'Approved'){
+                        if(item.totalMileages > '0.00' && item.status === 'Pending'){ /* EMC - 168 : Approve checkbox still present on dashboard */
                         $scope.displayApprovebtn = true;
                             count++;
                         }
@@ -1853,7 +1853,7 @@ function ($filter) {
                 $scope.driverid = driverid;
                 $scope.name = name;
                 $scope.mileagesList = [];
-                Visualforce.remoting.Manager.invokeAction('{!$RemoteAction.AdminDashboardController.getUnapprovedMileages}', JSON.stringify($scope.unapprovereimbursements),
+                Visualforce.remoting.Manager.invokeAction('{!$RemoteAction.AdminDashboardController.getUnapprovedMileages}', JSON.stringify($scope.unapprovereimbursements), $scope.accid, 
                     function (result, event) {
                         if (event.status && result != null) {
                             var resultdata = result.replace(/\\/g,'');
