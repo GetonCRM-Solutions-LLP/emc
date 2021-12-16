@@ -25,15 +25,10 @@ public class WrapperUtils_Test {
         List<Contact> obj_Manager_list;
         List<Contact> obj_Driver_list;
         System.runAs(admin) {
-            Account account_1 = new Account( Name = 'Community'  );
-            insert account_1;
-            
-            Contact contact_1 = new Contact(AccountId = account_1.Id, LastName = 'xgeek',External_Email__c= 'abc@gmail.com');
-            insert contact_1;
-
             obj_Account = RecordUtilityClass.buildAccount();
             insert obj_Account;
-    
+            Contact contact_1 = new Contact(AccountId = obj_Account.Id, LastName = 'xgeek',External_Email__c= 'abc@gmail.com');
+            insert contact_1;
             obj_admincontact = RecordUtilityClass.buildAdminContact(obj_Account);
             insert obj_admincontact;       
     
@@ -280,15 +275,11 @@ public class WrapperUtils_Test {
         Contact obj_admincontact;
         List<Contact> obj_Manager_list;
         List<Contact> obj_Driver_list;
-        System.runAs(admin) {
-            Account account_1 = new Account( Name = 'Community'  );
-            insert account_1;
-            
-            Contact contact_1 = new Contact(AccountId = account_1.Id, LastName = 'xgeek',External_Email__c= 'abc@gmail.com');
-            insert contact_1;
+        System.runAs(admin) {            
             obj_Account = RecordUtilityClass.buildAccount();
             insert obj_Account;
-    
+            Contact contact_1 = new Contact(AccountId = obj_Account.Id, LastName = 'xgeek',External_Email__c= 'abc@gmail.com');
+            insert contact_1;
             obj_admincontact = RecordUtilityClass.buildAdminContact(obj_Account);
             insert obj_admincontact;       
     
@@ -538,16 +529,11 @@ public class WrapperUtils_Test {
         Contact obj_admincontact;
         List<Contact> obj_Manager_list;
         List<Contact> obj_Driver_list;
-        System.runAs(admin) {
-            Account account_1 = new Account( Name = 'Community'  );
-            insert account_1;
-            
-            Contact contact_1 = new Contact(AccountId = account_1.Id, LastName = 'xgeek',External_Email__c= 'abc@gmail.com');
-            insert contact_1;
-            
+        System.runAs(admin) {            
             obj_Account = RecordUtilityClass.buildAccount();
             insert obj_Account;
-
+            Contact contact_1 = new Contact(AccountId = obj_Account.Id, LastName = 'xgeek',External_Email__c= 'abc@gmail.com');
+            insert contact_1;
             obj_admincontact = RecordUtilityClass.buildAdminContact(obj_Account);
             insert obj_admincontact;       
 
