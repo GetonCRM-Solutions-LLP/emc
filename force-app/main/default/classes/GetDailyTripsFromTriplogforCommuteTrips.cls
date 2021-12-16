@@ -75,7 +75,7 @@ global class GetDailyTripsFromTriplogforCommuteTrips implements Database.Batchab
                     String reimMPG = String.valueof(reim.MPG__c) != null ? String.valueof(reim.MPG__c):'';
                     String reimMAT = String.valueof(reim.Maintenance_and_Tires__c) != null ? String.valueof(reim.Maintenance_and_Tires__c):'';
                     Boolean checkBiweek = reim.Contact_Id__r.Account.Bi_Weekly_Pay_Period__c != null ? reim.Contact_Id__r.Account.Bi_Weekly_Pay_Period__c : false;
-                    String biweekReimId = MappingGasPriceTriggerHelper.getBiweekReimId(con.Id,con.Account.Pay_Period_Start_Date__c,Integer.valueOf(con.Account.Pay_Period_Days__c),System.today()-1);
+                    //String biweekReimId = MappingGasPriceTriggerHelper.getBiweekReimId(con.Id,con.Account.Pay_Period_Start_Date__c,Integer.valueOf(con.Account.Pay_Period_Days__c),System.today()-1);
                     if(reim != null && con.Email != null) {
                         reimbursementIds.add(reim.id);
                        GetTripCalloutforCommute.GetTripCalloutForCommuteMileage(reim.id, con.Email,con.id,startMonthDate, lastMonthDate, reimFuel, reimMPG, reimMAT, con.Account.Triplog_API__c, TripStatus,putCall,'Commute',checkBiweek);
