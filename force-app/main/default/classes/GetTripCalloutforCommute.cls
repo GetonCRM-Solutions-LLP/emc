@@ -43,6 +43,10 @@ global class GetTripCalloutforCommute {
             List<TripLogJSONClass.Trips> listTrips = tripLog.trips;
             Datetime MaxTime;
             Boolean CheckHomeTrip = false;
+            String BiWeekId;
+            if(checkByWeek == false){
+                BiWeekId = getBiWeekReimId(contactid);
+            }
             /**** Create Employee Mileage Record ****/
             for(TripLogJSONClass.Trips lt : listTrips) 
             {   
@@ -117,7 +121,11 @@ global class GetTripCalloutforCommute {
                 }
 
                 emp.Trip_Date__c = !CheckNull(lt.startTime) ? Date.valueof(lt.startTime.split('T')[0]) : null;
-                emp.Bi_Weekly_Reimbursement__c = BiWeeklyWrapperUtils.getBiweekReimId(contactid,emp.Trip_Date__c,checkByWeek);
+                if(checkByWeek == false && BiWeekId != null){
+                    emp.Bi_Weekly_Reimbursement__c = BiWeekId;
+                }  else {
+                    emp.Bi_Weekly_Reimbursement__c = BiWeeklyWrapperUtils.getBiweekReimId(contactid,emp.Trip_Date__c,checkByWeek);
+                }              
                 empList.add(emp);
                 trip_IDs.add(Integer.valueOf(lt.id));
                 totalmileages += Double.valueOf(emp.Mileage__c);    
@@ -227,5 +235,14 @@ global class GetTripCalloutforCommute {
                 Integer.valueof(param1.split('-')[4]), 
                 Integer.valueof(param1.split('-')[5].removeEnd('.000Z'))
             );
+    }
+    public static string getBiWeekReimId (String ContactId){
+        String biWeekId;
+        for(Bi_Weekly_Reimbursement__c biWeekObj: [SELECT id,Start_Date__c, End_Date__c,Contact__c 
+                                                    FROM Bi_Weekly_Reimbursement__c 
+                                                    WHERE Contact__c =: contactId Limit 1] ) {
+                                                            biWeekId = biWeekObj.Id;
+        }
+        return biWeekId;
     }
 }
