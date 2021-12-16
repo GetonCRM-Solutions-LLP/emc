@@ -12,7 +12,7 @@ global class GetTripCallout {
     
     public static final String MLOGACCOUNT = System.Label.Triplog_New_URL; 
     
-    Webservice static void GetTripCalloutForMileage(ID empReID, String contactEmail, ID contactid, String priMin, String priMax, String fuel, String mpg, String maintenansAndTires, String apiToken, String tripStatus,Boolean putCall) 
+    Webservice static void GetTripCalloutForMileage(ID empReID, String contactEmail, ID contactid, String priMin, String priMax, String fuel, String mpg, String maintenansAndTires, String apiToken, String tripStatus,Boolean putCall,Boolean checkByWeek) 
     {
         List<Tripslog__c> obj_Tripslog_list = new List<Tripslog__c>();   
         List<Employee_Mileage__c> empList = new List<Employee_Mileage__c>();
@@ -117,8 +117,8 @@ global class GetTripCallout {
                 } else {
                     emp.Triplog_Map__c = null;
                 }
-
                 emp.Trip_Date__c = !CheckNull(lt.startTime) ? Date.valueof(lt.startTime.split('T')[0]) : null;
+                emp.Bi_Weekly_Reimbursement__c = BiWeeklyWrapperUtils.getBiweekReimId(contactid,emp.Trip_Date__c,checkByWeek);
                 empList.add(emp);
                 trip_IDs.add(Integer.valueOf(lt.id));
                 totalmileages += Double.valueOf(emp.Mileage__c);    
