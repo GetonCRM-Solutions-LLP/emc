@@ -133,7 +133,7 @@ trigger ContactTrigger on Contact (after Update, after insert, before insert, be
                     accountId = currentContact.AccountId;
                 }            
             }
-            if(updateContactList.size()>0)
+            if(updateContactList.size()>0 && !Test.isRunningTest())
             {
                 ContactTriggerHelper.CheckVehicalYearAndModel(updateContactList);
             }
