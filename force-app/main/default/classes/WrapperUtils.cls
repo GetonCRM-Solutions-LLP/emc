@@ -381,6 +381,8 @@ public with sharing class WrapperUtils
         }
         if(String.isNotBlank(currentEmployeeDetail.firstPayrollPer)){
             currentContact.First_Payroll__c = currentEmployeeDetail.firstPayrollPer;
+        } else {
+            currentContact.First_Payroll__c = null;
         }
         if(currentEmployeeDetail.lastPayDate  !=  null)
         {
@@ -2170,19 +2172,24 @@ public with sharing class WrapperUtils
         
     public static String getDriverGasPrice(String MailingState,String MailingCity)
     {   
-       
         String gaspriceyearmonth = '';
-        if(System.today().month() == 1)
-        {
+        if(System.today().month() == 1) {
             gaspriceyearmonth = MailingCity + MailingState + 12+ String.valueOf(System.today().year()-1); 
-        }
-        else
-        {
+        } else {
             gaspriceyearmonth = MailingCity + MailingState + String.valueOf(System.today().month()-1) + String.valueOf(System.today().year()); 
         }
         List<Gas_Prices__c> gasPriceList = new List<Gas_Prices__c>();
         gasPriceList = [SELECT id,Fuel_Price__c FROM Gas_Prices__c WHERE Month_State_City__c =: gaspriceyearmonth];
         return JSON.serialize(gasPriceList);
+    }
+    public static String getDriverFuelVariableRate(String conId){
+        String lastMonth = Utils.fetchMonths(1, 0)[0];
+        String fuelVariableRate = '';
+        List<Employee_Reimbursement__c> reimList = [SELECT id,Fuel_Variable_Rate__c FROM Employee_Reimbursement__c WHERE Contact_Id__c =: conId and Month__c =: lastMonth ];
+        if(!reimList.isEmpty()){
+            fuelVariableRate = String.valueOf(reimList[0].Fuel_Variable_Rate__c);
+        }
+        return fuelVariableRate;
     }
     public Static String getAllReimbursements(String year,String did,String accid) 
     { 
@@ -3042,7 +3049,7 @@ public with sharing class WrapperUtils
     //AI-000429
     public static void TripCallout(Id driverId, String month, String year, String fuel, String maintTyre, Id empReID,String mpg,String status){
         List<contact> obj_currect_contact1 = new List<contact>();
-        obj_currect_contact1 = [SELECT id, Email, Account.Triplog_API__c 
+        obj_currect_contact1 = [SELECT id, Email, Account.Triplog_API__c,Account.Bi_Weekly_Pay_Period__c 
                                     FROM Contact 
                                     WHERE id =: driverId];
 
@@ -3054,10 +3061,10 @@ public with sharing class WrapperUtils
         String priMax = String.valueOf(Date.valueOf(priMin).addDays(date.daysInMonth(Integer.valueOf(year), Integer.valueOf(monthNumberMap.get(month))) - 1));
     
         String apiToken = obj_currect_contact1[0].Account.Triplog_API__c ;
-        
+        Boolean checkBiWeek = obj_currect_contact1[0].Account.Bi_Weekly_Pay_Period__c;
         if(apiToken != null && !Test.isRunningTest() ){
             System.debug('----------------------------');
-            GetTripCallout.GetTripCalloutForMileage(empReID, obj_currect_contact1[0].Email,obj_currect_contact1[0].id,priMin,priMax,fuel,mpg,maintTyre,apiToken,status,false);
+            GetTripCallout.GetTripCalloutForMileage(empReID, obj_currect_contact1[0].Email,obj_currect_contact1[0].id,priMin,priMax,fuel,mpg,maintTyre,apiToken,status,false,checkBiWeek);
         }
     }
 
