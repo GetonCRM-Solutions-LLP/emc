@@ -2093,6 +2093,20 @@
                 );
 
             }
+            // Total Reimbursemnt For Reimbursement For ERMI Account
+            function calculateReimb(fixed1, fixed2, fixed3, variable){
+                let nfixed1, nfixed2, nfixed3, nVariable, f1, f2, f3, vr, totalReim;
+                nfixed1 = (fixed1 != "null") ? fixed1.split(" $") : fixed1;
+                nfixed2 = (fixed2 != "null") ? fixed2.split(" $") : fixed2;
+                nfixed3 = (fixed3 != "null") ? fixed3.split(" $") : fixed3;
+                nVariable = (variable != "null") ? variable.split(" $") : variable;
+                f1 = (nfixed1 != "null") ? parseFloat(nfixed1[1]) : 0.00;
+                f2 = (nfixed2 != "null") ? parseFloat(nfixed2[1]) : 0.00;
+                f3 = (nfixed3 != "null") ? parseFloat(nfixed3[1]) : 0.00;
+                vr = (nVariable != "null") ? parseFloat(nVariable[1]) : 0.00;
+                totalReim = f1 + f2 + f3 + vr;
+                return totalReim.toFixed(2).toString();
+            }
             // Reimbursement Link 
             $scope.fetchErmiReimbMileage = function (clickedyear) {
                 $('#spinner').show();
@@ -2104,6 +2118,9 @@
                             if (result != '') {
                                 $scope.reimbMileages = [];
                                 $scope.reimbMileages = JSON.parse(result);
+                                angular.forEach($scope.reimbMileages, function(item){
+                                    item.totalForReimbursement = calculateReimb(item.fixed1, item.fixed2, item.fixed3, item.varibleAmount)
+                                })
                                 console.log($scope.reimbMileages);
                             }
                             else {
@@ -2688,8 +2705,8 @@
                                                         <td ng-if="reimbml.fixed2 == 'null' || reimbml.fixed2 == ''"></td>
                                                         <td ng-if="reimbml.fixed3 != 'null' && reimbml.fixed3 != ''">{{reimbml.fixed3}}</td>
                                                         <td ng-if="reimbml.fixed3 == 'null' || reimbml.fixed3 == ''"></td>
-                                                        <td ng-if="reimbml.totalFixedAmount != 'null' && reimbml.totalFixedAmount != ''" class="vw-8">{{reimbml.totalFixedAmount}}</td>
-                                                        <td ng-if="reimbml.totalFixedAmount == 'null' || reimbml.totalFixedAmount == ''" class="vw-8"></td>
+                                                        <td ng-if="reimbml.totalForReimbursement != null && reimbml.totalForReimbursement != ''" class="vw-8">${{reimbml.totalForReimbursement}}</td>
+                                                        <td ng-if="reimbml.totalForReimbursement == null || reimbml.totalForReimbursement == '0'" class="vw-8"></td>
                                                         <td class="vw-4">
                                                             <button class="btn btn-primary font-14 mr-11 cursor-type" ng-click="downloadReimbReportForERMI(yr,reimbml.month)">Download
                                                                 <i class="fa fa-download"></i>
