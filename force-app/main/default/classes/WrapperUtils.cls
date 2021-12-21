@@ -1588,7 +1588,7 @@ public with sharing class WrapperUtils
               {
                  totalmileages1 = quaterWiseWrapperTaxMap.get(1).Mileages;
               } 
-              if(totalmileages1>2500)
+              if(totalmileages1>5000)
               {
                 wrapppertaxQuater1 = quaterWiseWrapperTaxMap.get(1);
                 wrapppertaxQuater1.ImputedAmount = 0;
@@ -1624,7 +1624,7 @@ public with sharing class WrapperUtils
               {
                  totalmileages1 =totalmileages1+quaterWiseWrapperTaxMap.get(2).Mileages;
               }
-              if(totalmileages1>2500)
+              if(totalmileages1>5000)
               {
                 if(quaterWiseWrapperTaxMap.containsKey(1))
                 {
@@ -1687,7 +1687,7 @@ public with sharing class WrapperUtils
                 totalmileages1 =totalmileages1+quaterWiseWrapperTaxMap.get(3).Mileages; 
               }
               
-              if(totalmileages1>2500)
+              if(totalmileages1>5000)
               {
                 if(quaterWiseWrapperTaxMap.containsKey(1))
                 {
@@ -1775,7 +1775,7 @@ public with sharing class WrapperUtils
               {
                 totalmileages1 =totalmileages1+quaterWiseWrapperTaxMap.get(4).Mileages; 
               } 
-              if(totalmileages1>2500)
+              if(totalmileages1>5000)
               {
                 if(quaterWiseWrapperTaxMap.containsKey(1))
                 {        
@@ -1898,7 +1898,7 @@ public with sharing class WrapperUtils
           {
               if(currentDriver.compliancestatus__c =='Yes')
               {
-                if(totalmileages1 < 2500)
+                if(totalmileages1 < 5000)
                 {
                     system.debug('totalmileages1'+totalmileages1);
                     message=label.compliancenotmeeting;
