@@ -1,1 +1,1 @@
-DemoClassTest,WrapperUtils_Test
+DemoClassTest,UpdateInsuranceDataController_Test
