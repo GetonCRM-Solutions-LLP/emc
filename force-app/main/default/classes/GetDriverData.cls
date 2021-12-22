@@ -276,7 +276,7 @@ public with sharing class GetDriverData {
             query +=   'OR (EmployeeReimbursement__r.Contact_Id__r.Manager__r.Manager__r.Manager__c = \'' + AdminId + '\' )' ;
             query +=   'OR (EmployeeReimbursement__r.Contact_Id__r.Manager__r.Manager__r.Manager__r.Manager__c = \'' + AdminId + '\' ))' ;
         }
-        query += ' WITH SECURITY_ENFORCED ';
+        //query += ' WITH SECURITY_ENFORCED ';
         query += ' order by ConvertedStartTime__c asc ';
         query += ' LIMIT 9999';
         system.debug('query'+query);
@@ -376,7 +376,7 @@ public with sharing class GetDriverData {
             query +=   'OR (EmployeeReimbursement__r.Contact_Id__r.Manager__r.Manager__r.Manager__r.Manager__c = \'' + AdminId + '\' ))' ;
         }
         system.debug('query'+query);
-        query += ' WITH SECURITY_ENFORCED ';
+        //query += ' WITH SECURITY_ENFORCED ';
         query += ' order by ConvertedStartTime__c asc ';
         //query += ' LIMIT 500';
         query += 'LIMIT ' + limitSize +' ';
@@ -690,6 +690,16 @@ public with sharing class GetDriverData {
         Database.executeBatch (obj,1);
         return 'Success';
     } 
-
+    @AuraEnabled
+    public static boolean getInsuranceStatus(String conId){
+        Contact employee = [SELECT Id,Insurance_Attachment_Id__c FROM Contact WHERE id =: conId];
+        boolean insurancePage;
+        if(employee!=null) {
+            if(employee.Insurance_Attachment_Id__c != null) {
+                insurancePage = true;
+            }
+        }
+        return insurancePage;
+    }
  
 }
