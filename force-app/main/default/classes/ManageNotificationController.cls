@@ -250,7 +250,7 @@ public with sharing class ManageNotificationController {
         return null;
     }
     @RemoteAction
-    public static String UploadMileage(string mileage,string  accId,String adminId) { 
+    public static String UploadMileage(string mileage,string  accId,String adminId,String startdate,String enddate) { 
         List<JSONMilList> MilJson = JSONMilList.parse(mileage);
         set<string> employeeIdList = new set<string>(); 
         set<string> monthList = new set<String>();
@@ -266,6 +266,7 @@ public with sharing class ManageNotificationController {
         }
         map<string, string> empIdvsEmailMap = new map<string, string>();
         map<string, Id> reimIdMap = new map<string, Id>();
+        map<string, Id> biweekIdMap = new map<string, Id>();
         map<string, Decimal> empIdvsMPGMap = new map<string, Decimal>();
         map<string, Decimal> empIdvsMaintireMap = new map<string, Decimal>();
         List<Employee_Mileage__c> empNotSendMilList = new List<Employee_Mileage__c>();
@@ -289,8 +290,20 @@ public with sharing class ManageNotificationController {
                                                         }  
                                                     }
                                                   }
+                                                 
+                                                  
+        for(Bi_Weekly_Reimbursement__c bireim : [SELECT id,name,Contact__r.name,Contact__r.Employee_ID__c
+                                                    FROM Bi_Weekly_Reimbursement__c 
+                                                    WHERE Start_Date__c=: Date.valueOf(startdate) 
+                                                    AND End_Date__c =:Date.valueOf(enddate)
+                                                    AND Contact__r.Employee_ID__c IN: employeeIdList
+                                                    AND Contact__r.AccountId =: accId ]){
+                                                        biweekIdMap.put(bireim.Contact__r.Employee_ID__c, bireim.id);
+        }
+        daylight_saving_time_config__c DSTzconfig = daylight_saving_time_config__c.getValues(String.valueOf(System.today().year()));
         List<Employee_Mileage__c> empMilList = new List<Employee_Mileage__c>();
-        for(JSONMilList objJson : MilJson){ 
+        for(JSONMilList objJson : MilJson){
+        
             if(objJson.Contact_Email != null ) {
                 list<String> tripDateSplit = new list<String>();
                 string mapKey;
@@ -299,9 +312,19 @@ public with sharing class ManageNotificationController {
                     tripDateSplit = objJson.Trip_Date.split('/');
                   mapKey = objJson.EmployeeId+':'+tripDateSplit[0]+'-'+tripDateSplit[2];
                 }
-                if(tripDateSplit.size() > 0) {  
-                    mil.Trip_Date__c = date.valueof(Date.parse(tripDateSplit[0]+'/'+tripDateSplit[1] +'/'+tripDateSplit[2]));
-                    mil.ConvertedStartTime__c = date.valueof(Date.parse(tripDateSplit[0]+'/'+tripDateSplit[1] +'/'+tripDateSplit[2]));
+                
+                if(tripDateSplit.size() > 0) { 
+                    Date tripdatecreate = date.valueof(Date.parse(tripDateSplit[0]+'/'+tripDateSplit[1] +'/'+tripDateSplit[2]));
+                    if(tripdatecreate >= DSTzconfig.Start_Date__c && tripdatecreate <= DSTzconfig.End_Date__c){
+                        mil.Trip_Date__c = date.valueof(Date.parse(tripDateSplit[0]+'/'+tripDateSplit[1] +'/'+tripDateSplit[2])).adddays(1);                    
+                        mil.ConvertedStartTime__c = date.valueof(Date.parse(tripDateSplit[0]+'/'+tripDateSplit[1] +'/'+tripDateSplit[2])).adddays(2);  
+                    } else {
+                        mil.Trip_Date__c = date.valueof(Date.parse(tripDateSplit[0]+'/'+tripDateSplit[1] +'/'+tripDateSplit[2]));                    
+                        mil.ConvertedStartTime__c = date.valueof(Date.parse(tripDateSplit[0]+'/'+tripDateSplit[1] +'/'+tripDateSplit[2])).adddays(1);  
+                    }
+                                      
+                    system.debug('mil.Trip_Date__'+ mil.Trip_Date__c);
+                    system.debug('mil.ConvertedStartTime__c '+ mil.ConvertedStartTime__c );
                 }
                 mil.Trip_Origin__c = objJson.Trip_Origin;
                 mil.Trip_Destination__c = objJson.Trip_Destination;
@@ -309,7 +332,13 @@ public with sharing class ManageNotificationController {
                 if(objJson.Trip_Status == 'Approved' || objJson.Trip_Status == 'Rejected') {
                     if(objJson.Approved_Date != null && objJson.Approved_Date.contains('/') ){
                         list<String> approvedDateSplit = objJson.Approved_Date.split('/'); 
-                        mil.Approved_Date__c = date.valueof(Date.parse(approvedDateSplit[0]+'/'+approvedDateSplit[1] +'/'+approvedDateSplit[2]));
+                        Date createApproval = date.valueof(Date.parse(approvedDateSplit[0]+'/'+approvedDateSplit[1] +'/'+approvedDateSplit[2]));
+                        if(createApproval >= DSTzconfig.Start_Date__c && createApproval <= DSTzconfig.End_Date__c){
+                            mil.Approved_Date__c = date.valueof(Date.parse(approvedDateSplit[0]+'/'+approvedDateSplit[1] +'/'+approvedDateSplit[2])).adddays(1);
+                        } else {
+                            mil.Approved_Date__c = date.valueof(Date.parse(approvedDateSplit[0]+'/'+approvedDateSplit[1] +'/'+approvedDateSplit[2]));
+                        }
+                        
                     } else {
                         mil.Approved_Date__c = system.today();
                     }
@@ -331,12 +360,14 @@ public with sharing class ManageNotificationController {
                 if(empIdvsMaintireMap.containsKey(mapKey)) {
                     mil.Maintenance_and_Tires__c = empIdvsMaintireMap.get(mapKey);
                 }
-                if(reimIdMap.containsKey(mapKey)) {
+                if(reimIdMap.containsKey(mapKey) && biweekIdMap.containsKey(string.valueOf(objJson.EmployeeId))) {
                     mil.EmployeeReimbursement__c = string.valueOf(reimIdMap.get(mapKey));
+                    mil.Bi_Weekly_Reimbursement__c = string.valueOf(biweekIdMap.get(string.valueOf(objJson.EmployeeId)));
                     empMilList.add(mil);
                 } else {
                     empNotSendMilList.add(mil);
                 }
+                
             }
         }
         Database.SaveResult[] srList = Database.insert(empMilList, false);
@@ -344,7 +375,6 @@ public with sharing class ManageNotificationController {
         Integer tripcount= 0;
         if(srList.size() > 0){
             for (Database.SaveResult sr : srList) {
-                System.debug('sr' + sr);
                 if (sr.isSuccess() == false) {
                     for(Database.Error objErr : sr.getErrors()) {
                         errorMap.put(tripcount, objErr.getMessage());
