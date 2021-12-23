@@ -30,6 +30,12 @@ public class ManageNotificationControllerTest {
         veh.Year__c = '2019';
         insert veh;
         
+        daylight_saving_time_config__c customSetting2 =  new daylight_saving_time_config__c();
+        customSetting2.Name = '2021';
+        customSetting2.Start_Date__c = System.today();
+        customSetting2.End_Date__c = System.today() + 60;
+        insert customSetting2;
+        
         List<IRS_Mileage_Rate__c> obj_IRS_Mileage_Rate =  RecordUtilityClass.insertIrsRate();
         Account acc = new Account();     
         List<Contact> conList = new List<Contact>();
@@ -42,6 +48,9 @@ public class ManageNotificationControllerTest {
         User user_1;
         System.runAs(admin) {
           Account account_1 = new Account( Name = 'Community'  );
+           account_1.Bi_Weekly_Pay_Period__c = true;
+            account_1.Pay_Period_Days__c = 13;
+            account_1.Pay_Period_Start_Date__c = system.today().adddays(-130);
           insert account_1;
           
           Contact contact_1 = new Contact(AccountId = account_1.Id, LastName = 'xgeek',External_Email__c='abc@gmail.com');
@@ -49,6 +58,9 @@ public class ManageNotificationControllerTest {
            acc.Name = 'Test Account';
             acc.Triplog_API__c = '123456789';
             Acc.Triplog_Status__c = 'U';
+             acc.Bi_Weekly_Pay_Period__c = true;
+            acc.Pay_Period_Days__c = 13;
+            acc.Pay_Period_Start_Date__c = system.today().adddays(-130);
             insert Acc;
             
             for(Integer i; i<=10; i++){
@@ -150,7 +162,7 @@ public class ManageNotificationControllerTest {
         ManageNotificationController.NewEmployeeData(Acc.Id,con2.id);
         ManageNotificationController.NewEmployeeData(Acc.Id,con3.id);
         ManageNotificationController.UploadLocation(json,Acc.Id);
-        ManageNotificationController.UploadMileage(json2,Acc.Id,con2.Id);
+        ManageNotificationController.UploadMileage(json2,Acc.Id,con2.Id,'2021-06-30','2021-08-31');
         
        ManageNotificationController.sendAllInsuranceEmail(json2, con2.id);
        ManageNotificationController.UploadLocation(json ,Acc.Id);
