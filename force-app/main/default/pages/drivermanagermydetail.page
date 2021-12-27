@@ -932,22 +932,26 @@
             // download time and attendance detail report or reimbursement report
                 $scope.downloadReport = function (startDt, endDt) {
                         $scope.timePeriodList = [];
-                        $scope.driverName = '{!contactDataAsString}';
+                        $scope.empObj = {!obj_current_contact_details};
+                        $scope.driverName = $scope.empObj[0].Name;
                         $scope.TDate = $filter('date')(new Date(), "MMddyyyyHHmmss");
                         $scope.excelFileName = $scope.driverName + '\'s Time And Attendance Report ' + $scope.TDate;
                         Visualforce.remoting.Manager.invokeAction('{!$RemoteAction.drivermanagermydetailcontroller.getMileagesBasedTandAtt}', startDt, endDt, $scope.id,
                             function (result, event) {
                                 if (event.status && result != null) {
-                                    var detailedList = JSON.parse(result);
-                                    console.log(detailedList);
-                                    $scope.exportPeriodList = [];
-
-                                    $scope.exportPeriodList.push(["Contact Email", "Tracking Style", "Day Of Week", "Trip Date", "Start Time", "End Time", "Trip Origin", "Trip Destination", "Mileage", "Status", "Date Submitted", "Date Approved", "Maint/Tires", "Fuel Rate", "Variable Rate", "Variable Amount", "Drive Time", "Stay Time", "Total Time", "Notes", "Tags"]);
-                                    angular.forEach(detailedList, function (item, key) {
-                                        $scope.exportPeriodList.push([item.emailaddress, item.tracingstyle, item.dayofweek, item.tripdate, item.starttime, item.endtime, item.origin, item.destination, item.mileage, item.status, item.submitteddate, item.approveddate, item.maintTyre, item.fuelRate, item.variablerate, item.variableamount, item.drivingtime, item.staytime, item.totaltime, item.notes, item.tag]);
-                                    });
-
-                                    $scope.downloadToExcel($scope.exportPeriodList, $scope.excelFileName);
+                                    if (result != '') {
+                                        var detailedList = JSON.parse(result);
+                                        console.log(detailedList);
+                                        $scope.exportPeriodList = [];
+                                        $scope.exportPeriodList.push(["Contact Email", "Tracking Style", "Day Of Week", "Trip Date", "Start Time", "End Time", "Trip Origin", "Trip Destination", "Mileage", "Status", "Date Submitted", "Date Approved", "Maint/Tires", "Fuel Rate", "Variable Rate", "Variable Amount", "Drive Time", "Stay Time", "Total Time", "Notes", "Tags"]);
+                                        angular.forEach(detailedList, function (item, key) {
+                                            $scope.exportPeriodList.push([item.emailaddress, item.tracingstyle, item.dayofweek, item.tripdate, item.starttime, item.endtime, item.origin, item.destination, item.mileage, item.status, item.submitteddate, item.approveddate, item.maintTyre, item.fuelRate, item.variablerate, item.variableamount, item.drivingtime, item.staytime, item.totaltime, item.notes, item.tag]);
+                                        });
+                                        $scope.downloadToExcel($scope.exportPeriodList, $scope.excelFileName);
+                                    } else {
+                                        $scope.exportPeriodList = [];
+                                        toastr.error("No mileage found between " + startDt + " to " + endDt);
+                                    }
                                 }
                                 $scope.$apply();
                             },
@@ -1004,12 +1008,16 @@
                                 var pattern = /&quot\;/g;
                                 var resultdata = (result[0]).replace(pattern, '"');
                                 var mileageReimbList = JSON.parse(resultdata);
-                                console.log(mileageReimbList)
-                                $scope.exportReimbusList.push(["Contact Email", "Tracking Style", "Day Of Week", "Trip Date", "Start Time", "End Time", "Trip Origin", "Trip Destination", "Mileage", "Status", "Date Submitted", "Date Approved", "Maint/Tires", "Fuel Rate", "Variable Rate", "Variable Amount", "Total Time", "Notes", "Tags"]);
-                                angular.forEach(mileageReimbList, function (item, key) {
-                                    $scope.exportReimbusList.push([item.emailaddress, item.tracingstyle, item.dayofweek, item.tripdate, item.starttime, item.endtime, item.origin, item.destination, item.mileage, item.status, item.submitteddate, item.approveddate, item.maintTyre, item.fuelRate, item.variablerate, item.variableamount, item.totaltime, item.notes, item.tag]);
-                                });
-                                $scope.downloadToExcel($scope.exportReimbusList, $scope.excelFileName);
+                                if (mileageReimbList.length > 0) {
+                                    $scope.exportReimbusList.push(["Contact Email", "Tracking Style", "Day Of Week", "Trip Date", "Start Time", "End Time", "Trip Origin", "Trip Destination", "Mileage", "Status", "Date Submitted", "Date Approved", "Maint/Tires", "Fuel Rate", "Variable Rate", "Variable Amount", "Total Time", "Notes", "Tags"]);
+                                    angular.forEach(mileageReimbList, function (item, key) {
+                                        $scope.exportReimbusList.push([item.emailaddress, item.tracingstyle, item.dayofweek, item.tripdate, item.starttime, item.endtime, item.origin, item.destination, item.mileage, item.status, item.submitteddate, item.approveddate, item.maintTyre, item.fuelRate, item.variablerate, item.variableamount, item.totaltime, item.notes, item.tag]);
+                                    });
+                                    $scope.downloadToExcel($scope.exportReimbusList, $scope.excelFileName);
+                                } else {
+                                    $scope.exportReimbusList = [];
+                                    toastr.error("No mileage found for " + reimonth);
+                                }
                             }
                         }
                     });

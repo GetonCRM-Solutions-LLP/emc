@@ -2159,7 +2159,7 @@
                                 $scope.downloadToExcel($scope.exportPeriodList, $scope.excelFileName);
                             } else {
                                 $scope.exportPeriodList = [];
-                                $scope.downloadToExcel($scope.exportPeriodList, $scope.excelFileName);
+                                toastr.error("No mileage found between "+ startDt + " to " + endDt);
                             }
                             $scope.$apply();
                         }
@@ -2188,6 +2188,9 @@
                                     $scope.exportReimbusList.push([item.emailaddress, item.tracingstyle, item.dayofweek, item.tripdate, item.starttime, item.endtime, item.origin, item.destination, item.mileage, item.status, item.submitteddate, item.approveddate, item.maintTyre, item.fuelRate, item.variablerate, item.variableamount, item.totaltime, item.notes, item.tag]);
                                 });
                                 $scope.downloadToExcel($scope.exportReimbusList, $scope.excelFileName);
+                            }else{
+                                $scope.exportReimbusList = [];
+                                toastr.error("No mileage found for "+reimonth);
                             }
                         }
                     });
