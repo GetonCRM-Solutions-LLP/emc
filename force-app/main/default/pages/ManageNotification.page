@@ -1172,6 +1172,7 @@
             $scope.enCustomDate = '';
 
             $scope.onPayPeriodChange = function (period) {
+                document.querySelector('.mileage-file').value = "";
                 if (period != "Select Pay Period") {
                     $scope.splitObj = period.split(' to ');
                     $scope.stCustomDate = $scope.splitObj[0];
@@ -2368,11 +2369,11 @@
                                         onchange="angular.element(this).scope().mileage_file_changed(this)" />
                                 </div>
                             </div> -->
-                    <button class="slds-btn slds-btn-primary slds-btn-sm waves-effect bc-blue waves-light mleft-0" ng-click="openModalForUpload()">
+                    <button class="slds-btn slds-btn-primary slds-btn-sm waves-effect bc-blue waves-light mleft-0" ng-click="openModalForUpload()" ng-if="accid === PLMarketing">
                         <i class="fa fa-upload slds-p-right_xx-small"></i> Upload Mileage
                     </button>
                     <button  class="slds-btn slds-btn-primary slds-btn-sm waves-effect bc-grey waves-light mleft-0"
-                        ng-click="exportToCsv(mileageTemplate, nameOfMileageFile)">
+                        ng-click="exportToCsv(mileageTemplate, nameOfMileageFile)" ng-if="accid === PLMarketing">
                         <i class="fa fa-download slds-p-right_xx-small"></i> Download Mileage Template
                     </button>
                 </div>
@@ -2539,7 +2540,7 @@
                                 <div class="file-field" ng-class="{'disable-div' : mileageBtn === true}"><!-- ng-if="accid === PLMarketing" -->
                                     <div class="slds-btn slds-btn-primary slds-btn-sm waves-effect bc-blue waves-light mleft-0" id="locationFileBtn-{{$index}}">
                                         <i class="fa fa-upload slds-p-right_xx-small"></i><span>Upload</span>
-                                        <input type="file"  multiple="false"  accept=".xls, .xlsx, .csv"
+                                        <input type="file" class="mileage-file"  multiple="false"  accept=".xls, .xlsx, .csv"
                                             onchange="angular.element(this).scope().mileage_file_changed(this)" />
                                     </div>
                                 </div>
