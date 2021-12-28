@@ -633,8 +633,16 @@
                                     <table class="table table-borderless reim-table mb-r">
                                         <tbody >
                                             <tr>
-                                                <td class="font-white col-12 col-lg-6 col-xl-4 col-md-6 col-sm-12">{{totalMonthlyAmount| currency:"$":2}}</td> <!-- plr -->
+                                                <td class="font-white col-12 col-lg-6 col-xl-5 col-md-6 col-sm-12">{{totalMonthlyAmount| currency:"$":2}}</td> <!-- plr -->
                                                 <td class="font-white">Monthly Fixed Amount</td>
+                                            </tr>
+                                            <tr ng-if="fixedcostadjustment != undefined || fixedcostadjustment != null">
+                                                <td class="font-white col-12 col-lg-6 col-xl-5 col-md-6 col-sm-12">{{fixedcostadjustment| currency:"$":2}}</td> <!-- plr -->
+                                                <td class="font-white">Fixed Cost Adjustment</td>
+                                            </tr>
+                                            <tr ng-if="totalMonthlyFixedCost != undefined || totalMonthlyFixedCost != null">
+                                                <td class="font-white col-12 col-lg-6 col-xl-5 col-md-6 col-sm-12">{{totalMonthlyFixedCost| currency:"$":2}}</td> <!-- plr -->
+                                                <td class="font-white">Total Monthly Fixed Amount</td>
                                             </tr>
                                         </tbody>
                                     </table>
@@ -648,8 +656,8 @@
                                     <table class="table table-borderless reim-table">
                                         <tbody >
                                             <tr>
-                                                <td class="col-12 col-lg-6 col-xl-4 col-md-6 col-sm-12">{{ fuelprice| currency:"$":4}}</td>
-                                                <td>Gas</td>
+                                                <td class="col-12 col-lg-6 col-xl-4 col-md-6 col-sm-12">{{ variablefuelprice | currency:"$":4}}</td>
+                                                <td>Gas Rate</td>
                                             </tr>
                                             <tr>
                                                 <td class="col-12 col-lg-6 col-xl-4 col-md-6 col-sm-12">{{empContact[0].Maintenance__c| currency:"$":4}}</td>

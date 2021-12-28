@@ -315,14 +315,16 @@ public with sharing class ManageNotificationController {
                 
                 if(tripDateSplit.size() > 0) { 
                     Date tripdatecreate = date.valueof(Date.parse(tripDateSplit[0]+'/'+tripDateSplit[1] +'/'+tripDateSplit[2]));
-                    if(tripdatecreate >= DSTzconfig.Start_Date__c && tripdatecreate <= DSTzconfig.End_Date__c){
+                   /* if(tripdatecreate >= DSTzconfig.Start_Date__c && tripdatecreate <= DSTzconfig.End_Date__c){
                         mil.Trip_Date__c = date.valueof(Date.parse(tripDateSplit[0]+'/'+tripDateSplit[1] +'/'+tripDateSplit[2])).adddays(1);                    
                         mil.ConvertedStartTime__c = date.valueof(Date.parse(tripDateSplit[0]+'/'+tripDateSplit[1] +'/'+tripDateSplit[2])).adddays(2);  
                     } else {
                         mil.Trip_Date__c = date.valueof(Date.parse(tripDateSplit[0]+'/'+tripDateSplit[1] +'/'+tripDateSplit[2]));                    
                         mil.ConvertedStartTime__c = date.valueof(Date.parse(tripDateSplit[0]+'/'+tripDateSplit[1] +'/'+tripDateSplit[2])).adddays(1);  
                     }
-                                      
+                    */
+                       mil.Trip_Date__c = date.valueof(Date.parse(tripDateSplit[0]+'/'+tripDateSplit[1] +'/'+tripDateSplit[2]));                    
+                        mil.ConvertedStartTime__c = date.valueof(Date.parse(tripDateSplit[0]+'/'+tripDateSplit[1] +'/'+tripDateSplit[2]));                 
                     system.debug('mil.Trip_Date__'+ mil.Trip_Date__c);
                     system.debug('mil.ConvertedStartTime__c '+ mil.ConvertedStartTime__c );
                 }
@@ -332,13 +334,13 @@ public with sharing class ManageNotificationController {
                 if(objJson.Trip_Status == 'Approved' || objJson.Trip_Status == 'Rejected') {
                     if(objJson.Approved_Date != null && objJson.Approved_Date.contains('/') ){
                         list<String> approvedDateSplit = objJson.Approved_Date.split('/'); 
-                        Date createApproval = date.valueof(Date.parse(approvedDateSplit[0]+'/'+approvedDateSplit[1] +'/'+approvedDateSplit[2]));
+                        /*Date createApproval = date.valueof(Date.parse(approvedDateSplit[0]+'/'+approvedDateSplit[1] +'/'+approvedDateSplit[2]));
                         if(createApproval >= DSTzconfig.Start_Date__c && createApproval <= DSTzconfig.End_Date__c){
                             mil.Approved_Date__c = date.valueof(Date.parse(approvedDateSplit[0]+'/'+approvedDateSplit[1] +'/'+approvedDateSplit[2])).adddays(1);
                         } else {
                             mil.Approved_Date__c = date.valueof(Date.parse(approvedDateSplit[0]+'/'+approvedDateSplit[1] +'/'+approvedDateSplit[2]));
-                        }
-                        
+                        }*/
+                       mil.Approved_Date__c = date.valueof(Date.parse(approvedDateSplit[0]+'/'+approvedDateSplit[1] +'/'+approvedDateSplit[2])); 
                     } else {
                         mil.Approved_Date__c = system.today();
                     }

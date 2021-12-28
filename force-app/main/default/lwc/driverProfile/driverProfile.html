@@ -75,7 +75,7 @@
                                     <lightning-layout-item padding="small" size="6" class="custom-layout">
                                         <div class="carProfile slds-grid slds-wrap">
                                             <figure>
-                                                <img src={contactDetails.carImage} alt="icon" />
+                                                <img class="car-image" src={contactDetails.carImage} alt="icon" />
                                                 <figcaption>{contactDetails.vehicalType}</figcaption>
                                             </figure>
                                         </div>
@@ -108,49 +108,53 @@
                     class="slds-col slds-size_1-of-1 slds-medium-size_6-of-12 slds-large-size_12-of-12 dProfile-header-section dProfile-right-header">
                     <h2 class="profile-heading">Notifications</h2>
                 </div>
-                <div
-                    class="slds-col slds-grid slds-wrap slds-size_1-of-1 slds-medium-size_6-of-12 slds-large-size_12-of-12">
-                    <template if:true={isNotify}>
-                        <template for:each={notifyList} for:item="notify" for:index="index">
-                            <div data-id={index}
-                                class="slds-notify slds-notify_alert slds-alert_warning slds-m-top_small received"
-                                role="alert" key={notify.Id}>
-                                <span class="slds-assistive-text">warning</span>
-                                <!-- <span class="slds-icon_container slds-icon-utility-warning slds-m-right_x-small" title="Description of icon when needed">
+                <template if:true={isShowMessage}>
+                    <div
+                        class="slds-col slds-grid slds-wrap slds-size_1-of-1 slds-medium-size_6-of-12 slds-large-size_12-of-12">
+                        <template if:true={isNotify}>
+                            <template for:each={notifyList} for:item="notify" for:index="index">
+                                <div data-id={index}
+                                    class="slds-notify slds-notify_alert slds-alert_warning slds-m-top_small received"
+                                    role="alert" key={notify.Id}>
+                                    <span class="slds-assistive-text">warning</span>
+                                    <!-- <span class="slds-icon_container slds-icon-utility-warning slds-m-right_x-small" title="Description of icon when needed">
                                     <svg class="slds-icon slds-icon_x-small bell-icon" aria-hidden="true">
                                         <use xlink:href="/_slds/icons/utility-sprite/svg/symbols.svg#notification"></use>
                                     </svg>
                                     <lightning-icon icon-name="utility:notification" size="x-small" class="bell-icon">
                                    </lightning-icon>
                                 </span> -->
-                                <h2 class="notify-head"> {notify.message}</h2>
-                                <div class="slds-notify__close">
-                                    <button data-id={index}
-                                        class="slds-button slds-button_icon slds-button_icon-small slds-button_icon-inverse btnClose"
-                                        title="Close" onclick={handleClose}>
-                                        <!-- <lightning-icon icon-name="utility:close" size="x-small" class="close_icon">
+                                    <h2 class="notify-head"> {notify.message}</h2>
+                                    <div class="slds-notify__close">
+                                        <button data-id={index}
+                                            class="slds-button slds-button_icon slds-button_icon-small slds-button_icon-inverse btnClose"
+                                            title="Close" onclick={handleClose}>
+                                            <!-- <lightning-icon icon-name="utility:close" size="x-small" class="close_icon">
                                           </lightning-icon> -->
-                                        <svg class="slds-button__icon slds-button_icon_x-small close_icon"
-                                            aria-hidden="true">
-                                            <use xlink:href="/_slds/icons/utility-sprite/svg/symbols.svg#close"></use>
-                                        </svg>
-                                        <span class="slds-assistive-text">Close</span>
-                                    </button>
+                                            <svg class="slds-button__icon slds-button_icon_x-small close_icon"
+                                                aria-hidden="true">
+                                                <use xlink:href="/_slds/icons/utility-sprite/svg/symbols.svg#close">
+                                                </use>
+                                            </svg>
+                                            <span class="slds-assistive-text">Close</span>
+                                        </button>
+                                    </div>
                                 </div>
-                            </div>
+                            </template>
                         </template>
-                    </template>
-                    <template if:false={isNotify}>
-                        <!-- <div class="slds-col slds-size_1-of-1 slds-medium-size_6-of-12 slds-large-size_12-of-12 slds-m-top_small">
+                        <template if:false={isNotify}>
+                            <!-- <div class="slds-col slds-size_1-of-1 slds-medium-size_6-of-12 slds-large-size_12-of-12 slds-m-top_small">
                         <img src={noNotification} />
                        </div> -->
-                        <div
-                            class="slds-col slds-size_1-of-1 slds-medium-size_6-of-12 slds-large-size_12-of-12 slds-m-top_medium notify_text">
-                            You have no notifications right now.
-                        </div>
+                            <div
+                                class="slds-col slds-size_1-of-1 slds-medium-size_6-of-12 slds-large-size_12-of-12 slds-m-top_medium notify_text">
+                                You have no notifications right now.
+                            </div>
 
-                    </template>
-                </div>
+                        </template>
+                    </div>
+                </template>
+              
             </div>
         </div>
         <div class="slds-grid slds-wrap dInfoGrid slds-p-bottom_large slds-is-close" data-id="profileSection">
