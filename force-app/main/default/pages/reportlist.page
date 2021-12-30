@@ -1953,6 +1953,9 @@
                             <p ng-if="accid === spbsId || accid === deltaId || accid === antonpaarId">
                                 <a href="/app/AnnualComplianceReport?accid={{accid}}&showteam={{showteam}}&id={{id}}" title="This report includes details about drivers who's compliance status is yes">Annual Tax Liability Report </a>
                             </p>
+                            <p ng-if="accid === plMAcc">
+                                <a href="/app/AnnualComplianceReportPLM?accid={{accid}}">Annual Tax Liability Report </a>
+                            </p>
                         </div>
                     </div>
                 </div>
