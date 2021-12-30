@@ -1,1 +1,1 @@
-DemoClassTest,ManageNotificationControllerTest,MileageLockDateUpdateControllerTest
+DemoClassTest,ComplianceReportPLMTest
