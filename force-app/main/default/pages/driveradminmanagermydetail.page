@@ -410,6 +410,12 @@
             }
             $scope.businessUse = $scope.empContact[0].Total_Monthly_Costs__c * ($scope.empContact[0].Business_Use__c / 100);
             $scope.totalMonthlyAmount = $scope.businessUse / 12;
+            if($scope.empContact[0].Fixed_Cost_Adjustment__c == null || $scope.empContact[0].Fixed_Cost_Adjustment__c == "" || $scope.empContact[0].Fixed_Cost_Adjustment__c == undefined){
+                $scope.fixedcostadjustment = null
+            }else{
+                $scope.fixedcostadjustment = $scope.empContact[0].Fixed_Cost_Adjustment__c
+                $scope.totalMonthlyFixedCost = $scope.fixedcostadjustment + $scope.totalMonthlyAmount;
+            }
             $scope.showunapprove = false;
             if ($scope.empReimList == 0) {
                 $scope.unapprovemileage = JSON.stringify($scope.empReimList);
