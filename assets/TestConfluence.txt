@@ -1,1 +1,1 @@
-DemoClassTest,ComplianceReportPLMTest
+DemoClassTest,ReportListController_Test
