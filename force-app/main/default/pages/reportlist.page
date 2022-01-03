@@ -774,28 +774,41 @@
                                 return today;
                             }
 
+                            function filterByYear(item){
+                                var a = item.split(' to ');
+                                if(new Date(a[0]).getFullYear() === new Date().getFullYear()){
+                                    return true;
+                                }else{
+                                    if(new Date(a[1]).getFullYear() === new Date().getFullYear()){
+                                        return true;
+                                    }
+                                }
+                            }
                             function payDate(date) {
                                 var st = new Date(date);
                                 var today = new Date();
                                 var i = 0;
                                 var dateArr = [];
                                 var end;
+                                var pDays = scope.payPeriodDays
                                 var currentYear = (new Date()).getFullYear();
                                 if (date) {
                                     for (i = 0; i <= dateArr.length; i++) {
-                                        if (currentYear === st.getFullYear()) {
                                             if (st < today) {
                                                 end = new Date(st);
-                                                end = new Date(end.setDate(end.getDate() + 13));
+                                                end = new Date(end.setDate(end.getDate() + pDays));
                                                 let finaldate = FormatDate(st) + ' to ' + FormatDate(end)
-                                                dateArr.push(finaldate);
+                                               // if (currentYear === end.getFullYear()) {
+                                                    dateArr.push(finaldate);
+                                                //}
                                                 st = new Date(end.setDate(end.getDate() + 1));
                                             }
-
-                                        }
                                     }
-                                    return dateArr;
-                                    console.log("List->", dateArr);
+
+                                    let arrByYear = dateArr.filter(filterByYear)
+                                    console.log("List->", arrByYear);
+                                    return arrByYear;
+                                   
                                 }
                             }
 
@@ -803,7 +816,9 @@
                             var url = new URL(url_string);
                             var host = url.host;
                             scope.option = "Select Pay Period"
-                            scope.biweeklyDate = payDate('07/25/21');
+                            scope.payPeriodDays = {!accPayDays};
+                            scope.payPeriodStDate = $filter('date')(new Date('{!accPayperiodStart}'), 'MM/dd/yy');
+                            scope.biweeklyDate = payDate(scope.payPeriodStDate);
                             scope.biweeklyDate.splice(0, 0, scope.option);
                             scope.biweeklyPayRole = scope.biweeklyDate[0];
                             scope.stCustomDate = '';
@@ -1698,7 +1713,8 @@
 
             }
             console.log($scope.ListAllReports);
-            console.log({!checkTripStatus})
+            console.log("accPayperiodStart",'{!accPayperiodStart}');
+            console.log("accPayDays", {!accPayDays});
             $scope.showtaxdifferently = true;
             $scope.chkTripStatus = {!checkTripStatus}
             angular.forEach($scope.ListAllReports, function (report) {
