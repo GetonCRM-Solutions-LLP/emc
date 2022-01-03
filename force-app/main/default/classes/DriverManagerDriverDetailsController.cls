@@ -10,6 +10,7 @@ public with sharing class DriverManagerDriverDetailsController
     public static String totalvariableamount{get;set;}
     public static String contactDataAsString {get; set;}
     public static String gaspriceforpreviosmonth {get; set;}
+    public static String gasVariableRatePreviosMonth {get; set;}
     public static List<contact> obj_currect_contact {get;set;}
     public static String nameofEmployee{get;set;}
     public static String emailofEmployee{get;set;}
@@ -29,14 +30,14 @@ public with sharing class DriverManagerDriverDetailsController
     public DriverManagerDriverDetailsController() 
     {
         obj_currect_contact = new List<contact>();
+         System.debug('obj_currect_contact:--'+obj_currect_contact);
         obj_driver_driverMVR = new List<Attachment>();
         obj_current_contact_details = getDriverDetails();
         setEmployeeName();
         System.debug('obj_currect_contact:--'+obj_currect_contact);
-        if(obj_currect_contact.size()>0)
-        {
+        if(obj_currect_contact.size()>0) {
             gaspriceforpreviosmonth = getDriverGasPrice(obj_currect_contact[0].MailingState,obj_currect_contact[0].MailingCity);
-            System.debug('gaspriceforpreviosmonth:--'+gaspriceforpreviosmonth);
+            gasVariableRatePreviosMonth = WrapperUtils.getDriverFuelVariableRate(obj_currect_contact[0].Id);
         }
         obj_driver_insurance = new List<Attachment>();
         obj_driver_driverpacket = new List<Attachment>();
@@ -145,7 +146,7 @@ public with sharing class DriverManagerDriverDetailsController
                                         Fixed_Amount__c, compliancestatus__c, Car_Image__c,
                                         Account.Name, Account.Logo_Document_Id__c, Vehicle_Type__c,
                                         Maintenance__c,Tires__c, Insurance_Rate__c, License_Ragistration__c, Taxes__c,
-                                        Depreciation__c, Total_Monthly_Costs__c, Business_Use__c 
+                                        Depreciation__c, Total_Monthly_Costs__c, Business_Use__c ,Fixed_Cost_Adjustment__c
                                     FROM Contact 
                                     WHERE id =: getDriverid()];
         System.debug('obj_currect_contact:--'+obj_currect_contact);
