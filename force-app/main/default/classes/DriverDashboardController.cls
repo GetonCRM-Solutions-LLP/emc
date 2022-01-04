@@ -10,6 +10,7 @@ public class DriverDashboardController
     public static String totalvariableamount{get;set;}
     public static String contactDataAsString {get; set;}
     public static String gaspriceforpreviosmonth {get; set;}
+    public static String gasVariableRatePreviosMonth {get; set;}
     public String accInsuranceList {get; set;}
     public static String currentDriverDetails {get;set;}
     public List<Attachment> driverInsuranceAttachmentList {get;set;}
@@ -31,14 +32,12 @@ public class DriverDashboardController
         List<contact> currentDriverList = new List<contact>();
         obj_driver_driverMVR = new List<Attachment>();
         currentDriverDetails = getDriverDetails();
-        if(currentDriverDetails!=null)
-        {
-            System.debug('sdhjahsdhaksh'+JSON.deserialize(currentDriverDetails,List<Contact>.Class));
+        if(currentDriverDetails!=null) {
             currentDriverList = (List<Contact>)JSON.deserialize(currentDriverDetails,List<Contact>.Class);
         }
-        if(currentDriverList.size()>0)
-        {
+        if(currentDriverList.size()>0) {
             gaspriceforpreviosmonth = WrapperUtils.getDriverGasPrice(currentDriverList[0].MailingState,currentDriverList[0].MailingCity);
+            gasVariableRatePreviosMonth = WrapperUtils.getDriverFuelVariableRate(currentDriverList[0].Id);
         }
         driverInsuranceAttachmentList = new List<Attachment>();
         driverPacketAttachmentList = new List<Attachment>();
@@ -180,7 +179,7 @@ public class DriverDashboardController
                                         Fixed_Amount__c, compliancestatus__c, Car_Image__c, Account.Name, Account.Logo_Document_Id__c, 
                                         Vehicle_Type__c,Insurance_Attachment_Id__c, Account.Triplog_API__c, Email,
                                         Maintenance__c,Tires__c, Insurance_Rate__c, License_Ragistration__c, Taxes__c,
-                                        Depreciation__c, Total_Monthly_Costs__c, Business_Use__c
+                                        Depreciation__c, Total_Monthly_Costs__c, Business_Use__c,Fixed_Cost_Adjustment__c
                                     FROM Contact 
                                     WHERE id =: contactid];
         return JSON.serialize(driverDataList ).unescapeHtml4();
