@@ -1281,7 +1281,8 @@
 
             let currDate = new Date();
             let compareDate = currDate.getDate();
-            $scope.syncMonth = (compareDate >= 18) ? (daymonth[currDate.getMonth()]) : (daymonth[currDate.getMonth() - 1]);
+            $scope.preYear = (currDate.getFullYear() - 1).toString();
+            $scope.syncMonth = (currDate.getMonth() > 0) ? (compareDate >= 18) ? (daymonth[currDate.getMonth()]) : (daymonth[currDate.getMonth() - 1]) : (compareDate >= 18) ? (daymonth[currDate.getMonth()]) : (daymonth[11]);
             //console.log($scope.syncMonth);
             $scope.syncMileageLabel = '{!($Label.unapproveMileageMessage)}';
             $scope.approvalTopMsg = '{!($Label.mileageApprovalTopMsg)}';
@@ -1886,10 +1887,33 @@
                                     }
                                 });
                                 var monthCheck = $scope.resultMonth.includes($scope.syncMonth);
-                                if ($scope.lastYear === $scope.selectedYear) {
-                                    if (monthCheck) {
-                                        $scope.syncHeader = true;
+                                if ($scope.syncMonth === 'December') {
+                                    if ($scope.lastYear === $scope.selectedYear) {
+                                        if (monthCheck == false) {
+                                            if ($scope.selectedYear === $scope.preYear) {
+                                                $scope.syncHeader = true;
+                                            } else {
+                                                $scope.syncHeader = false;
+                                            }
+                                        }else{
+                                            $scope.syncHeader = true;
+                                        }
                                     } else {
+                                        if ($scope.selectedYear === $scope.preYear) {
+                                            $scope.syncHeader = true;
+                                        } else {
+                                            $scope.syncHeader = false;
+                                        }
+                                    }
+                                }
+                                else {
+                                    if ($scope.lastYear === $scope.selectedYear) {
+                                        if (monthCheck) {
+                                            $scope.syncHeader = true;
+                                        } else {
+                                            $scope.syncHeader = false;
+                                        }
+                                    }else{
                                         $scope.syncHeader = false;
                                     }
                                 }
@@ -2391,7 +2415,7 @@
                                             <table id="driver-dashbord" class="table table-striped dt-responsive nowrap dataTable" cellspacing="0" width="100%">
                                                 <thead>
                                                     <tr>
-                                                        <th ng-if="yr == lastYear" ng-show="syncHeader">Sync</th>
+                                                        <th ng-if="yr == lastYear || yr == preYear" ng-show="syncHeader">Sync</th>
                                                         <th>Month
                                                             <span class="sort-icon pull-right"></span>
                                                         </th>
@@ -2419,7 +2443,7 @@
                                                 </thead>
                                                 <tbody class="driver-dashboard-table table-a-link">
                                                     <tr dir-paginate="ml in mileages |orderBy:sortKey:reverse |itemsPerPage:12">
-                                                        <td class="w-10rem" ng-if="yr == lastYear" ng-show="syncHeader">
+                                                        <td class="w-10rem" ng-if="yr == lastYear || yr == preYear" ng-show="syncHeader">
                                                             <button class="btn btn-primary syncMileageBtn" ng-click="syncMileages(ml.month,ml.fuel,ml.maintainsAndTyres,ml.employeeReimbursementId,ml.mpg)"
                                                                 ng-if="ml.month == syncMonth">Mileage</button>
                                                         </td>
