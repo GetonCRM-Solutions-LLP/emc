@@ -1803,10 +1803,19 @@
             $scope.gasrate = {!gasVariableRatePreviosMonth}
             $scope.gaspricedata = {!gaspriceforpreviosmonth};
             if ($scope.gasrate != null && $scope.gasrate != '') {
-                $scope.variablefuelprice = JSON.stringify($scope.gasrate);
-            }else{
-                $scope.variablefuelprice = "";
+                if ($scope.gasrate[0] != undefined) {
+                    if ($scope.gasrate[0].Fuel_Price__c == null) {
+                        $scope.variablefuelprice = JSON.stringify($scope.gasrate);
+                    } else {
+                        $scope.variablefuelprice = null
+                    }
+                } else {
+                    $scope.variablefuelprice = $scope.gasrate
+                }
+            } else {
+                    $scope.variablefuelprice = null;
             }
+
             if ($scope.gaspricedata != null && $scope.gaspricedata != '') {
                 if ($scope.gaspricedata[0].Fuel_Price__c != '' && $scope.gaspricedata[0].Fuel_Price__c != null) {
                     $scope.fuelprice = JSON.stringify($scope.gaspricedata[0].Fuel_Price__c);
@@ -1817,14 +1826,13 @@
                 $scope.fuelprice = '';
             }
 
-
             $scope.empReimList = JSON.parse('{!ReimbursementsList}');
-
             if($scope.fuelprice != ''){
                 $scope.miles = parseFloat($scope.fuelprice) + $scope.empContact[0].Maintenance__c + $scope.empContact[0].Tires__c;
             }else{
                 $scope.miles = $scope.empContact[0].Maintenance__c + $scope.empContact[0].Tires__c;
             }
+            
             $scope.businessUse = $scope.empContact[0].Total_Monthly_Costs__c * ($scope.empContact[0].Business_Use__c / 100);
             $scope.totalMonthlyAmount = $scope.businessUse / 12;
             if($scope.empContact[0].Fixed_Cost_Adjustment__c == null || $scope.empContact[0].Fixed_Cost_Adjustment__c == "" || $scope.empContact[0].Fixed_Cost_Adjustment__c == undefined){

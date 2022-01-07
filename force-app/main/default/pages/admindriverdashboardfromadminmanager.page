@@ -1473,9 +1473,17 @@
             $scope.gaspricedata = {!gaspriceforpreviosmonth};
            
             if ($scope.gasrate != null && $scope.gasrate != '') {
-                $scope.variablefuelprice = JSON.stringify($scope.gasrate);
+                if ($scope.gasrate[0] != undefined) {
+                    if ($scope.gasrate[0].Fuel_Price__c == null) {
+                        $scope.variablefuelprice = JSON.stringify($scope.gasrate);
+                    } else {
+                        $scope.variablefuelprice = null
+                    }
+                }else{
+                    $scope.variablefuelprice = $scope.gasrate
+                }
             }else{
-                $scope.variablefuelprice = "";
+                $scope.variablefuelprice = null;
             }
             /*$scope.fuelprice = JSON.stringify($scope.gaspricedata[0].Fuel_Price__c);*/
             if ($scope.gaspricedata != null && $scope.gaspricedata != '') {

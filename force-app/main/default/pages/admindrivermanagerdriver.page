@@ -1391,11 +1391,19 @@
         $scope.mileageList = '';
         $scope.gasrate = {!gasVariableRatePreviosMonth}
         $scope.gaspricedata = {!gaspriceforpreviosmonth};
-          if ($scope.gasrate != null && $scope.gasrate != '') {
-                $scope.variablefuelprice = JSON.stringify($scope.gasrate);
-          }else{
-                $scope.variablefuelprice = "";
-          }
+        if ($scope.gasrate != null && $scope.gasrate != '') {
+            if ($scope.gasrate[0] != undefined) {
+                if ($scope.gasrate[0].Fuel_Price__c == null) {
+                    $scope.variablefuelprice = JSON.stringify($scope.gasrate);
+                } else {
+                    $scope.variablefuelprice = null
+                }
+            } else {
+                $scope.variablefuelprice = $scope.gasrate
+            }
+        } else {
+                $scope.variablefuelprice = null;
+        }
         if ($scope.gaspricedata != null && $scope.gaspricedata != '') {
             if ($scope.gaspricedata[0].Fuel_Price__c != '' && $scope.gaspricedata[0].Fuel_Price__c != null) {
                 $scope.fuelprice = JSON.stringify($scope.gaspricedata[0].Fuel_Price__c);
