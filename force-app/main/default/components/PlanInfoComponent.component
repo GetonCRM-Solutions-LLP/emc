@@ -655,7 +655,7 @@
                                 <div class="header-middle-lt mb-1">
                                     <table class="table table-borderless reim-table">
                                         <tbody >
-                                            <tr>
+                                            <tr ng-if="variablefuelprice != null">
                                                 <td class="col-12 col-lg-6 col-xl-4 col-md-6 col-sm-12">{{ variablefuelprice | currency:"$":4}}</td>
                                                 <td>Gas Rate</td>
                                             </tr>
