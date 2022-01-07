@@ -1853,7 +1853,6 @@
 
             $scope.empContact = {!obj_current_contact_details};
             $scope.driverType = $scope.empContact[0].Driver_Type__c;
-            console.log("Employee", $scope.empContact)
             if ($scope.empContact[0].Car_Image__c == null || $scope.empContact[0].Car_Image__c == '' || $scope.empContact[0].Car_Image__c == undefined) {
                 $scope.empContact[0].Car_Image__c = '';
             }
@@ -1862,10 +1861,19 @@
             }
             $scope.gasrate = {!gasVariableRatePreviosMonth}
             $scope.gaspricedata = {!gaspriceforpreviosmonth};
+            
             if ($scope.gasrate != null && $scope.gasrate != '') {
-                $scope.variablefuelprice = JSON.stringify($scope.gasrate);
-            }else{
-                $scope.variablefuelprice = "";
+                if ($scope.gasrate[0] != undefined) {
+                    if ($scope.gasrate[0].Fuel_Price__c == null) {
+                        $scope.variablefuelprice = JSON.stringify($scope.gasrate);
+                    } else {
+                        $scope.variablefuelprice = null
+                    }
+                }else{
+                    $scope.variablefuelprice = $scope.gasrate
+                }
+            } else {
+                    $scope.variablefuelprice = null;
             }
             /*$scope.fuelprice = JSON.stringify($scope.gaspricedata[0].Fuel_Price__c);*/
 
@@ -1900,7 +1908,6 @@
 
             }
             else {
-
                 var count = 0;
                 angular.forEach($scope.empReimList, function (item, key) {
                     count = count + item.Total_Pending__c;
@@ -1909,8 +1916,6 @@
                 $scope.showunapprove = true;
             }
             $scope.mileageList = '';
-
-
             $scope.selectedYear = '';
 
             $scope.fetchMileage = function (clickedyear) {
