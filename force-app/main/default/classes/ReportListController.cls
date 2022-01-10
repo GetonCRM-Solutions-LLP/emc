@@ -10,6 +10,8 @@ public with sharing class ReportListController
     public boolean checkTripStatus {get; set;}
     public date accPayperiodStart {get; set;}
     public string accPayDays {get; set;}
+    public static Integer AccountYear{get;set;} 
+
     public ReportListController() 
     {  
         reimWrapperList = new List<reimbursementWrapper>();
@@ -41,11 +43,13 @@ public with sharing class ReportListController
         reimburName = JSON.serialize(reimWrapperList);
         for(Account acc : [SELECT id,Trip_Status_Lock__c,
                                     Pay_Period_Start_Date__c, 
-                                    Pay_Period_Days__c 
+                                    Pay_Period_Days__c,
+                                    CreatedDate  
                                 FROM Account 
                                 WHERE id =: getAccountid() ]){
             accPayperiodStart = acc.Pay_Period_Start_Date__c;
             accPayDays = string.valueOf(acc.Pay_Period_Days__c);
+            AccountYear = Date.valueof(acc.CreatedDate).year();
             if(acc.Trip_Status_Lock__c != null){
                 checkTripStatus = false;
             } else {
