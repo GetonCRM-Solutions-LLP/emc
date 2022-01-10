@@ -70,7 +70,7 @@
             .row-inline {
                 display: flex;
                 flex-wrap: wrap;
-                width: 387px;
+                width: 100%;
             }
 
             .main-input {
@@ -776,13 +776,17 @@
 
                             function filterByYear(item){
                                 var a = item.split(' to ');
-                                if(new Date(a[0]).getFullYear() === new Date().getFullYear()){
-                                    return true;
-                                }else{
-                                    if(new Date(a[1]).getFullYear() === new Date().getFullYear()){
+                                var year = parseInt(scope.biweeklyPayRoleYear);
+                                if (year != undefined) {
+                                    if (new Date(a[0]).getFullYear() === year) {
                                         return true;
+                                    } else {
+                                        if (new Date(a[1]).getFullYear() === year) {
+                                            return true;
+                                        }
                                     }
                                 }
+                              
                             }
                             function payDate(date) {
                                 var st = new Date(date);
@@ -818,11 +822,23 @@
                             scope.option = "Select Pay Period"
                             scope.payPeriodDays = {!accPayDays};
                             scope.payPeriodStDate = $filter('date')(new Date('{!accPayperiodStart}'), 'MM/dd/yy');
-                            scope.biweeklyDate = payDate(scope.payPeriodStDate);
-                            scope.biweeklyDate.splice(0, 0, scope.option);
+                            scope.biweeklyDate = [];
+                            scope.biweeklyDate[0] = scope.option;
                             scope.biweeklyPayRole = scope.biweeklyDate[0];
                             scope.stCustomDate = '';
                             scope.enCustomDate = '';
+                            scope.biweeklyPayYear = [];
+                            scope.yearDefault = "Select Year"
+                            scope.accountYear = {!AccountYear};
+                            var maxYear = new Date().getFullYear();
+                            var minYear = scope.accountYear;
+                            //var minYear = new Date().getFullYear() - 2;
+
+                            for(var i = minYear; i<= maxYear; i++){
+                                scope.biweeklyPayYear.push(i);
+                            }
+                            scope.biweeklyPayYear.splice(0, 0, scope.yearDefault);
+                            scope.biweeklyPayRoleYear = scope.biweeklyPayYear[0];
                             scope.biweeklyDownload = true;
                             function refreshModal() {
                                 location.reload();
@@ -839,6 +855,26 @@
                                     scope.biweeklyDownload = true;
                                 }
                             }
+
+                            scope.onbiweeklyPayYearChange = function (year){
+                                if(year != "Select Year"){
+                                    scope.biweeklyDate = payDate(scope.payPeriodStDate, year);
+                                   if(scope.biweeklyDate.length > 0) {
+                                       scope.biweeklyDate.splice(0, 0, scope.option) 
+                                   } else {
+                                        scope.biweeklyDate = [];
+                                        scope.biweeklyDate[0] = scope.option;
+                                        scope.biweeklyPayRole = scope.biweeklyDate[0];
+                                        scope.biweeklyDownload = true;
+                                    } 
+                                }else{
+                                    scope.biweeklyDate = [];
+                                    scope.biweeklyDate[0] = scope.option;
+                                    scope.biweeklyPayRole = scope.biweeklyDate[0];
+                                    scope.biweeklyDownload = true;
+                                }
+                            }
+
                             scope.downloadReimbursementReport = function () {
                                 var window_url;
                                 window_url = 'https://' + host + '/app/BiWeeklyReimReportforPLM?startDate=' + scope.convertedStartDate + '&endDate=' + scope.convertedEndDate;
@@ -863,12 +899,17 @@
 
                             element.on('hidden.bs.modal', function () {
                                 scope.$apply(function () {
+                                    scope.biweeklyDate = [];
+                                    scope.biweeklyDate[0] = scope.option;
+                                    scope.biweeklyPayRole = scope.biweeklyDate[0];
+                                    scope.biweeklyPayRoleYear = scope.biweeklyPayYear[0];
+                                    scope.biweeklyDownload = true;
                                     scope.model.visible = false;
                                 });
                             });
 
                         },
-                        template: '<div class="modal fade driver-dashboard-monthrecord show in " tabindex="-1" role="dialog" aria-labelledby="driver-dashboard-monthrecord" id="driver-dashboard-monthrecord"><div class="fade modal-backdrop"></div><div class="modal-dialog modal-lg modal-dialog-centered"><div class="modal-content rounded-0"> <button type="button" class="close popup-close-btn" data-dismiss="modal" aria-label="Close"> <span aria-hidden="true">×</span> </button><div class="modal-body"><h4>Bi-Weekly Reimbursement Report</h4><div class="modal-divider"></div><form name="signup" class="form"><div class="form-row"><div class="form-group-theme row-inline"><label for="payRole:" class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-form-label form-lable payRole">Pay Period: <span class="tagquestion1" data-toggle="tooltip" data-placement="top" data-html="true" title="" data-original-title="<b>Please select pay period</b>"> <i class="fa fa-question"></i> </span> </label><div class="col-xl-6 col-lg-6 col-md-6 col-sm-6"><select ng-model="biweeklyPayRole" ng-change="onbiweeklyPayPeriodChange(biweeklyPayRole)" class="browser-default custom-select custom-select-xl custom-payPeriod"><option ng-repeat="bDate in biweeklyDate" ng-selected="{{biweeklyPayRole == bDate}}" value="{{bDate}}">{{bDate}}</option> </select></div></div></div></form></div><div class="modal-footer mb-3"><div class="col-md-12 mt-3 text-center"> <button id="downloadBiReimReportBtn" class="btn btn-primary float-right mt-3 mb-3" ng-click="downloadReimbursementReport()" ng-disabled="biweeklyDownload">Download <i class="fa fa-download"></i> </button></div></div></div></div></div>'
+                        template: '<div class="modal fade driver-dashboard-monthrecord show in " tabindex="-1" role="dialog" aria-labelledby="driver-dashboard-monthrecord" id="driver-dashboard-monthrecord"><div class="fade modal-backdrop"></div><div class="modal-dialog modal-md modal-dialog-centered"><div class="modal-content rounded-0"> <button type="button" class="close popup-close-btn" data-dismiss="modal" aria-label="Close"> <span aria-hidden="true">×</span> </button><div class="modal-body"><h4>Bi-Weekly Reimbursement Report</h4><div class="modal-divider"></div><form name="signup" class="form"><div class="form-row"><div class="form-group row-inline"><label for="payYear:" class="col-xl-5 col-lg-5 col-md-5 col-sm-5 col-form-label form-lable payRole">Pay Period Year : <span class="tagquestion1" data-toggle="tooltip" data-placement="top" data-html="true" title="" data-original-title="<b>Please select pay period year</b>"> <i class="fa fa-question"></i> </span> </label><div class="col-xl-6 col-lg-6 col-md-6 col-sm-6"><select ng-model="biweeklyPayRoleYear" ng-change="onbiweeklyPayYearChange(biweeklyPayRoleYear)" class="browser-default custom-select custom-select-xl"><option ng-repeat="bYear in biweeklyPayYear" ng-selected="{{biweeklyPayRoleYear == bYear}}" value="{{bYear}}">{{bYear}}</option> </select></div></div></div><div class="form-row"><div class="form-group row-inline"><label for="payRole:" class="col-xl-5 col-lg-5 col-md-5 col-sm-5 col-form-label form-lable payRole">Pay Period: <span class="tagquestion1" data-toggle="tooltip" data-placement="top" data-html="true" title="" data-original-title="<b>Please select pay period</b>"> <i class="fa fa-question"></i> </span> </label><div class="col-xl-6 col-lg-6 col-md-6 col-sm-6"><select ng-model="biweeklyPayRole" ng-change="onbiweeklyPayPeriodChange(biweeklyPayRole)" class="browser-default custom-select custom-select-xl"><option ng-repeat="bDate in biweeklyDate" ng-selected="{{biweeklyPayRole == bDate}}" value="{{bDate}}">{{bDate}}</option> </select></div></div></div></form></div><div class="modal-footer mb-3"><div class="col-md-12 mt-3 text-center"> <button id="downloadBiReimReportBtn" class="btn btn-primary float-right mt-3 mb-3" ng-click="downloadReimbursementReport()" ng-disabled="biweeklyDownload">Download <i class="fa fa-download"></i> </button></div></div></div></div></div>'
                     };
 
                 }]);
