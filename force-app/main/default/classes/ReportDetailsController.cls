@@ -7,9 +7,15 @@ public with sharing class ReportDetailsController
     public static String getdataofmanager {get;set;}
     public static String managerdriverlist{get;set;} 
     //public static String getPaymentStatusList{get;set;} 
+    public static Integer AccountYear{get;set;} 
+
     public ReportDetailsController()
     {
+        List<Account> accList = [SELECT id,name,CreatedDate FROM Account WHERE id =:getAccountid()];
         
+        if(accList.size() > 0){
+            AccountYear = Date.valueof(accList[0].CreatedDate).year();
+        }        
         reportname='';
         getdataofdriver ='nodata';
         getdataofmanager ='nodata';
