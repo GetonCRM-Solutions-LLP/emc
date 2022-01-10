@@ -406,7 +406,9 @@ public class ReportDetailsController_test {
         insert gaslist;
         list<Employee_Reimbursement__c> obj_Employee_Reimbursement_list = RecordUtilityClass.buildPendingEmployee_Reimbursement(driverList);
         insert obj_Employee_Reimbursement_list;
-        List<Employee_Mileage__c> obj_Employee_Mileage_list = RecordUtilityClass.buildNoApprovedYetEmployeeMileages(obj_Employee_Reimbursement_list);
+        list<Bi_Weekly_Reimbursement__c> obj_Employee_BiReimbursement_list = RecordUtilityClass.buildPendingBiReimbursement(driverList);
+        insert obj_Employee_BiReimbursement_list;
+        List<Employee_Mileage__c> obj_Employee_Mileage_list = RecordUtilityClass.buildNoApprovedYetEmployeeMileages(obj_Employee_Reimbursement_list,obj_Employee_BiReimbursement_list[0].Id);
         insert obj_Employee_Mileage_list;
         
      }
