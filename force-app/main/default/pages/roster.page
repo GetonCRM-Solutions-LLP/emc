@@ -25,6 +25,30 @@
         <script src="{!URLFOR($Resource.dirPagination)}"></script>
 
         <style type="text/css">
+            @keyframes fadeIn { 
+                0% {opacity: 0;} 
+                100% {opacity: 1;} 
+             }     
+             @keyframes fadeInDown {
+                0% {
+                    opacity: 0;
+                    transform: translateY(-40px);
+                }
+                100% {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+            @keyframes fadeInUp {
+                0% {
+                    opacity: 0;
+                    transform: translateY(40px);
+                }
+                100% {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
             #theBody:-webkit-full-screen {
                 background-color: #ffffff;
                 width: 100vw !important;
@@ -215,6 +239,12 @@
                 box-shadow: 0 2px 5px 0 rgb(0 0 0 / 16%), 0 2px 10px 0 rgb(0 0 0 / 12%);
             }
 
+            .submitPayBtn {
+                box-shadow: 0 2px 5px 0 rgb(0 0 0 / 16%), 0 2px 10px 0 rgb(0 0 0 / 12%);
+            }
+            .btn-primary:disabled {
+              cursor: not-allowed !important;
+            }
             .cancelbtn {
                 margin-left: 8px !important;
                 box-shadow: 0 2px 5px 0 rgb(0 0 0 / 16%), 0 2px 10px 0 rgb(0 0 0 / 12%);
@@ -484,6 +514,13 @@
                 max-width: 230px;
             }
 
+            .lodateModal{
+                animation: fadeIn 0.5s cubic-bezier(0.165, 0.84, 0.44, 1) forwards
+            }
+
+            .modal-loa{
+                animation: fadeInDown 500ms ease-in-out;
+            }
             #modalofconfirmation {
                 opacity: 1 !important;
             }
@@ -1205,7 +1242,22 @@
             };
 
             /* Model Directive For LOA Date*/
-            app.directive('editLoaDate', [function () {
+            // app.directive('formatteddate', function ($filter) {
+            //         return {
+            //             link: function (scope, element, attrs, ctrl) {
+            //                 ctrl.$formatters.unshift(function (modelValue) {
+            //                     return $filter('date')(new Date(modelValue), 'MM/dd/yy');
+            //                 });
+
+            //                 ctrl.$parsers.unshift(function (viewValue) {
+            //                     return $filter('date')(new Date(viewValue), 'MM/dd/yy');
+            //                 });
+            //             },
+            //             restrict: 'A',
+            //             require: 'ngModel'
+            //         }
+            // });
+            app.directive('editLoaDate', ['$filter', function ($filter) {
                 return {
                     restrict: 'E',
                     scope: {
@@ -1216,7 +1268,11 @@
                             var modalElement = element.find('.modal');
                             modalElement.modal(newValue ? 'show' : 'hide');
                         });
-
+                
+                        $('#adminroster-loadate').on('changeDate', function (selected) {
+                             var input = selected;
+                             scope.model.emp.LOAStartDate = $filter('date')(new Date(input.date), 'MM/dd/yy');
+                        })
                         scope.cancelModal = function () {
                             location.reload();
                         }
@@ -1232,7 +1288,7 @@
                             });
                         });
                     },
-                    template: '<div class="modal fade show" tabindex="-1" role="dialog" data-backdrop="static" data-keyboard="false"><div class="modal-dialog modal-dialog-centered"><div class="modal-content rounded-0"> <button type="button" class="close popup-close-btn" data-dismiss="modal" aria-label="Close" ng-click="cancelModal()"><span aria-hidden="true">&times;</span> </button><div class="modal-body"><form name="signup" class="form" novalidate="true"><div class="form-group-theme row"> <label for="inputActivationdate:" class="col-xl-5 col-lg-5 col-md-5 col-sm-5 col-form-label form-lable">LOA Start Date:</label><div class="col-xl-7 col-lg-7 col-md-7 col-sm-7"><div class="input-group"><input id="adminroster-deactivationdatepicker" class="form-control rounded-0 adminroster-loadate" placeholder="Select LOA Start Date"  ng-model="model.emp.loaStartDate" /><div class="input-group-prepend" id=""><span class="input-group-text"><i class="fas fa-calendar-alt"></i></span></div></div></div></div><div class="form-group justify-content-center text-center"> <button type="button" class="btn btn-primary" data-dismiss="modal">Select</button> <button type="button" class="btn btn-secondary" data-dismiss="modal" ng-click="cancelModal()">Cancel</button></div></form></div></div></div></div>'
+                    template: '<div class="modal fade show" tabindex="-1" role="dialog" data-backdrop="static" data-keyboard="false"><div class="modal-dialog modal-dialog-centered"><div class="modal-content rounded-0"> <button type="button" class="close popup-close-btn" data-dismiss="modal" aria-label="Close" ng-click="cancelModal()"><span aria-hidden="true">&times;</span> </button><div class="modal-body"><form name="signup" class="form" novalidate="true"><div class="form-group-theme row"> <label for="inputActivationdate:" class="col-xl-5 col-lg-5 col-md-5 col-sm-5 col-form-label form-lable">LOA Start Date:</label><div class="col-xl-7 col-lg-7 col-md-7 col-sm-7"><div class="input-group"><input id="adminroster-loadate" class="form-control rounded-0 adminroster-loadate" placeholder="Select LOA Start Date"  ng-model="model.emp.LOAStartDate"   onkeypress="return false;" onkeydown="return false;"/><div class="input-group-prepend" id=""><span class="input-group-text"><i class="fas fa-calendar-alt"></i></span></div></div></div></div><div class="form-group justify-content-center text-center"> <button type="button" class="btn btn-primary" data-dismiss="modal">Select</button> <button type="button" class="btn btn-secondary" data-dismiss="modal" ng-click="cancelModal()">Cancel</button></div></form></div></div></div></div>'
                 };
             }]);
 
@@ -1249,7 +1305,7 @@
             };
 
             /* Model Directive For LOA Date*/
-            app.directive('editLoaEndDate', [function () {
+            app.directive('editLoaEndDate', ['$filter', function ($filter) {
                 return {
                     restrict: 'E',
                     scope: {
@@ -1260,27 +1316,32 @@
                             var modalElement = element.find('.modal');
                             modalElement.modal(newValue ? 'show' : 'hide');
                         });
-                        scope.isSelectedValid = true;
-                        scope.isSelectValid = true;
-                        scope.showPicker = function(dt) {
-                            var selected = scope.model.emp.loaStartDate;
-                            if(selected){
-                                if(new Date(selected) <= new Date(dt)){
-                                    scope.isSelectedValid = false;
-                                    scope.isSelectValid = false;
-                                }else{
+                        $('#button-close').prop('disabled', true);
+                        $('#button-select').prop('disabled', true);
+                        $('#button-cancel').prop('disabled', true);
+
+                        $('#adminroster-loaenddate').on('changeDate', function (selected) {
+                            var stLOA = scope.model.emp.LOAStartDate;
+                            scope.model.emp.LOAEndDate = $filter('date')(new Date(selected.date), 'MM/dd/yy');
+                            if (stLOA) {
+                                if (new Date(stLOA) <=  selected.date) {
+                                    $('#button-close').prop('disabled', false);
+                                    $('#button-select').prop('disabled', false);
+                                    $('#button-cancel').prop('disabled', false);
+                                } else {
                                     toastr.error("LOA End Date must be greater than or equal to LOA Start Date");
-                                    scope.isSelectValid = true;
-                                    scope.isSelectedValid = true;
+                                    $('#button-close').prop('disabled', true);
+                                    $('#button-select').prop('disabled', true);
+                                    $('#button-cancel').prop('disabled', true);
                                 }
-                            }else{
+                            } else {
                                 toastr.error("Please enter LOA Start Date");
-                                scope.isSelectedValid = false;
-                                scope.isSelectValid = true;
-                                scope.model.emp.loaEndDate = "";
-                                //$('.ad-loa-date').val("");
+                                $('#button-close').prop('disabled', false);
+                                $('#button-select').prop('disabled', true);
+                                $('#button-cancel').prop('disabled', true);
+                                scope.model.emp.LOAEndDate = "";
                             }
-                        }
+                        })
 
                         scope.cancelModal = function () {
                             location.reload();
@@ -1293,11 +1354,14 @@
 
                         element.on('hidden.bs.modal', function () {
                             scope.$apply(function () {
+                                $('#button-close').prop('disabled', true);
+                                $('#button-select').prop('disabled', true);
+                                $('#button-cancel').prop('disabled', true);
                                 scope.model.visible = false;
                             });
                         });
                     },
-                    template: '<div class="modal fade show" tabindex="-1" role="dialog"  data-backdrop="static" data-keyboard="false"><div class="modal-dialog modal-dialog-centered"><div class="modal-content rounded-0"> <button type="button" class="close popup-close-btn" data-dismiss="modal" aria-label="Close" ng-disabled="isSelectedValid" ng-click="cancelModal()"><span aria-hidden="true">&times;</span> </button><div class="modal-body"><form name="signup" class="form" novalidate="true"><div class="form-group-theme row"> <label for="inputActivationdate:" class="col-xl-5 col-lg-5 col-md-5 col-sm-5 col-form-label form-lable">LOA End Date:</label><div class="col-xl-7 col-lg-7 col-md-7 col-sm-7"><div class="input-group"><input id="adminroster-deactivationdatepicker" class="form-control rounded-0 ad-loa-date" placeholder="Select LOA End Date"  ng-model="model.emp.loaEndDate"  ng-change="showPicker(model.emp.loaEndDate)"/><div class="input-group-prepend" id=""><span class="input-group-text"><i class="fas fa-calendar-alt"></i></span></div></div></div></div><div class="form-group justify-content-center text-center"> <button type="button" class="btn btn-primary" data-dismiss="modal" ng-disabled="isSelectValid">Select</button> <button type="button" class="btn btn-secondary" data-dismiss="modal" ng-disabled="isSelectValid" ng-click="cancelModal()">Cancel</button></div></form></div></div></div></div>'
+                    template: '<div class="modal fade show" tabindex="-1" role="dialog"  data-backdrop="static" data-keyboard="false"><div class="modal-dialog modal-dialog-centered"><div class="modal-content rounded-0"> <button id="button-close" type="button" class="close popup-close-btn" data-dismiss="modal" aria-label="Close"  ng-click="cancelModal()"><span aria-hidden="true">&times;</span> </button><div class="modal-body"><form name="signup" class="form" novalidate="true"><div class="form-group-theme row"> <label for="inputActivationdate:" class="col-xl-5 col-lg-5 col-md-5 col-sm-5 col-form-label form-lable">LOA End Date:</label><div class="col-xl-7 col-lg-7 col-md-7 col-sm-7"><div class="input-group"><input id="adminroster-loaenddate" class="form-control rounded-0 ad-loa-date" placeholder="Select LOA End Date"  ng-model="model.emp.LOAEndDate"  onkeypress="return false;" onkeydown="return false;" /><div class="input-group-prepend" id=""><span class="input-group-text"><i class="fas fa-calendar-alt"></i></span></div></div></div></div><div class="form-group justify-content-center text-center"> <button id="button-select" type="button" class="btn btn-primary" data-dismiss="modal" >Select</button> <button id="button-cancel" type="button" class="btn btn-secondary" data-dismiss="modal"  ng-click="cancelModal()">Cancel</button></div></form></div></div></div></div>'
                 };
             }]);
 
@@ -1383,7 +1447,155 @@
                         });
 
                     },
-                    template: '<div class="modal fade show lockdateModal" tabindex="-1" role="dialog"><div class="modal-dialog modal-dialog-centered"><div class="modal-content rounded-0"> <button type="button" class="close popup-close-btn close-lockdatebtn" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span> </button><div class="modal-header lockdate-modal-header"><h5 class="modal-heading fontStyle">Mileage Lock Date</h5></div><div class="modal-body"><form name="signup" class="form" novalidate="true"><div class="form-group-theme row"> <label for="inputLockdate:" class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-form-label form-lable">Lock Date:<span class="tagquestion2" data-toggle="tooltip" data-placement="top" data-html="true" title="<b>Any changes made to mileage after the lock date will appear next month.</b>"><i class="fa fa-question"></i></span> </label><div class="col-xl-7 col-lg-7 col-md-7 col-sm-7"><div class="input-group"> <input id="adminroster-lockdatepicker" class="form-control rounded-0" placeholder="Select Lock Date" required="true" ng-model="selectedlockDate" /><div class="input-group-prepend"><span class="input-group-text"><i class="fas fa-calendar-alt"></i></span></div></div></div></div><div class="form-group-theme row"> <label for="Reimbursement:" class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-form-label form-lable">Reimbursement: <span class="tagquestion2" data-toggle="tooltip" data-placement="top" data-html="true" title="" data-original-title="<b>Please select reimbursement</b>"> <i class="fa fa-question"></i> </span> </label><div class="col-xl-7 col-lg-7 col-md-7 col-sm-7"> <select ng-model="reimbursement" ng-change="onreimbursementChange(reimbursement)" class="browser-default custom-select custom-select-xl"><option ng-repeat="dateobj in dateObjArr" ng-selected="{{reimbursement == dateobj}}" value="{{dateobj}}">{{dateobj}}</option> </select></div></div><div class="form-group justify-content-center text-center"> <button class="btn btn-primary submitBtn" ng-click="updateLockDate()">Submit</button> <button type="button" class="btn btn-secondary cancelbtn" data-dismiss="modal">Cancel</button></div></form></div></div></div></div>'
+                    template: '<div class="modal fade show lockdateModal" tabindex="-1" role="dialog"><div class="modal-dialog modal-dialog-centered"><div class="modal-content rounded-0"> <button type="button" class="close popup-close-btn close-lockdatebtn" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span> </button><div class="modal-header lockdate-modal-header"><h5 class="modal-heading fontStyle">Mileage Lock Date</h5></div><div class="modal-body"><form name="signup" class="form" novalidate="true"><div class="form-group-theme row"> <label for="inputLockdate:" class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-form-label form-lable">Lock Date:<span class="tagquestion2" data-toggle="tooltip" data-placement="top" data-html="true" title="<b>Any changes made to mileage after the lock date will appear next month.</b>"><i class="fa fa-question"></i></span> </label><div class="col-xl-7 col-lg-7 col-md-7 col-sm-7"><div class="input-group"> <input id="adminroster-lockdatepicker" class="form-control rounded-0" placeholder="Select Lock Date" required="true" ng-model="selectedlockDate" /><div class="input-group-prepend"><span class="input-group-text"><i class="fas fa-calendar-alt"></i></span></div></div></div></div><div class="form-group-theme row"> <label for="Reimbursement:" class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-form-label form-lable">Reimbursement: <span class="tagquestion2" data-toggle="tooltip" data-placement="top" data-html="true" title="" data-original-title="<b>Please select reimbursement</b>"> <i class="fa fa-question"></i> </span> </label><div class="col-xl-7 col-lg-7 col-md-7 col-sm-7"> <select ng-model="reimbursement" ng-change="onreimbursementChange(reimbursement)" class="browser-default custom-select custom-select-xl"><option ng-repeat="dateobj in dateObjArr track by $index" ng-selected="{{reimbursement == dateobj}}" value="{{dateobj}}">{{dateobj}}</option> </select></div></div><div class="form-group justify-content-center text-center"> <button class="btn btn-primary submitBtn" ng-click="updateLockDate()">Submit</button> <button type="button" class="btn btn-secondary cancelbtn" data-dismiss="modal">Cancel</button></div></form></div></div></div></div>'
+                };
+
+            }]);
+
+            /* For LOA (Leave of absence) */
+            var EditLOAProcessModel = function () {
+                this.visible = false;
+            };
+
+            EditLOAProcessModel.prototype.open = function () {
+                this.visible = true;
+            };
+            EditLOAProcessModel.prototype.close = function () {
+                this.visible = false;
+            };
+
+            app.directive('editLoa', ['$filter', function ($filter) {
+                return {
+                    restrict: 'E',
+                    scope: {
+                        model: '=',
+                        someCtrlFn: '&callbackFn'
+                    },
+                    link: function (scope, element, attributes) {
+                        scope.$watch('model.visible', function (newValue) {
+                            var modalElement = element.find('.modal');
+                            modalElement.modal(newValue ? 'show' : 'hide');
+
+                        });
+
+                        // Format date in yyyy-MM-dd format
+                        function FormatDate(elDate) {
+                            var today = new Date(elDate);
+                            var dd = String(today.getDate()).padStart(2, '0');
+                            var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+                            var year = today.getFullYear();
+                            var yy = year.toString().substr(-2);
+                            // today = yyyy + '-' + mm + '-' + dd;
+                            today = mm + '/' + dd + '/' + yy
+                            return today;
+                        }
+                        function filterByYear(item) {
+                            var a = item.split(' to ');
+                            if (new Date(a[0]).getFullYear() === new Date().getFullYear()) {
+                                return true;
+                            } else {
+                                if (new Date(a[1]).getFullYear() === new Date().getFullYear()) {
+                                    return true;
+                                }
+                            }
+                        }
+                        function payDate(date) {
+                            var st = new Date(date);
+                            var today = new Date();
+                            var i = 0;
+                            var dateArr = [];
+                            var end;
+                            var pDays = scope.payPeriodDays
+                            var currentYear = (new Date()).getFullYear();
+                            if (date) {
+                                for (i = 0; i <= dateArr.length; i++) {
+                                  //  if (currentYear === st.getFullYear()) {
+                                        if (st < today) {
+                                            end = new Date(st);
+                                            end = new Date(end.setDate(end.getDate() + pDays));
+                                            let finaldate = FormatDate(st) + ' to ' + FormatDate(end)
+                                            dateArr.push(finaldate);
+                                            st = new Date(end.setDate(end.getDate() + 1));
+                                        }
+
+                                   // }
+                                }
+                                let arrByYear = dateArr.filter(filterByYear)
+                                return arrByYear;
+                            }
+                        }
+                        var url_string = $(location).attr("href");
+                        var url = new URL(url_string);
+                        scope.accid = url.searchParams.get("accid");
+                        scope.id = url.searchParams.get("id");
+                        scope.biweeklylist = '';
+                        scope.defaultOption = "Select Payroll Period";
+                        scope.disableSubmitBtn = true;
+                        scope.payPeriodDays = {!accPayDays};
+                        scope.payPeriodStDate = $filter('date')(new Date('{!accPayperiodStart}'), 'MM/dd/yy');
+                        scope.payrollArr =   payDate(scope.payPeriodStDate);
+                        scope.payrollArr.splice(0, 0, scope.defaultOption);
+                        scope.biweeklylist = scope.payrollArr[0];
+                        scope.payrollSt = "";
+                        scope.payrollEnd = "";
+                      
+                        scope.onPayrollChange = function(payroll){
+                            if(payroll != "Select Payroll Period"){
+                                var payRollSt = payroll.split(" to ");
+                                scope.payrollSt = $filter('date')(new Date(payRollSt[0]), 'yyyy-MM-dd');
+                                scope.payrollEnd =$filter('date')(new Date(payRollSt[1]), 'yyyy-MM-dd');
+                                scope.disableSubmitBtn = false;          
+                            }else{
+                                scope.disableSubmitBtn = true;          
+                            }
+                                             
+                        }
+
+                        scope.sendPayroll = function(){
+                            $('#spinner').show();
+                            Visualforce.remoting.Manager.invokeAction(
+                                '{!$RemoteAction.RosterController.BiweekReimRecord}', scope.payrollSt, scope.payrollEnd, scope.accid,
+                                function (result, event) {
+                                    if (event.status) {
+                                      if(result){
+                                        scope.$apply(function () {
+                                            scope.someCtrlFn({list: result})
+                                            scope.biweeklylist = scope.payrollArr[0];
+                                            scope.disableSubmitBtn = true;
+                                            scope.model.visible = false;
+                                            $('#spinner').hide();
+                                            var forms = document.getElementsByClassName('needs-validation');
+                                            angular.forEach(forms, function (form) {
+                                                $(form).removeClass('was-validated');
+                                            })
+                                        })
+                                      }
+                                    }
+                                    else {
+                                        $('#spinner').hide();
+                                        toastr.error('Some error has occur');
+                                    }
+                                });
+                        }
+                        scope.closePayrollModal = function(){
+                            scope.biweeklylist = scope.payrollArr[0];
+                            scope.disableSubmitBtn = true;
+                        }
+
+                        element.on('shown.bs.modal', function () {
+                            scope.$apply(function () {
+                                scope.model.visible = true;
+                            });
+                        });
+
+                        element.on('hidden.bs.modal', function () {
+                            scope.$apply(function () {
+                                scope.model.visible = false;
+                            });
+                        });
+
+                    },
+                    template: '<div class="modal fade show" tabindex="-1" role="dialog" data-backdrop="static" data-keyboard="false"><div class="modal-dialog modal-dialog-centered modal-loa" id="loa-modal-div"><div class="modal-content rounded-0"> <button type="button" class="close popup-close-btn close-lockdatebtn" data-dismiss="modal" aria-label="Close" ng-click="closePayrollModal()"><span aria-hidden="true">&times;</span> </button><div class="modal-header lockdate-modal-header"><h5 class="modal-heading fontStyle">Leave Of Absence</h5></div><div class="modal-body"><form name="signup" class="form" novalidate="true"><div class="form-group-theme row"> <label for="PayRoll:" class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-form-label form-lable">Payroll Period: <span class="tagquestion2" data-toggle="tooltip" data-placement="top" data-html="true" title="" data-original-title="<b>Please select payroll period</b>"> <i class="fa fa-question"></i> </span> </label><div class="col-xl-7 col-lg-7 col-md-7 col-sm-7"> <select ng-model="biweeklylist" ng-change="onPayrollChange(biweeklylist)" class="browser-default custom-select custom-select-xl"><option ng-repeat="payroll in payrollArr" ng-selected="{{biweeklylist == payroll}}" value="{{payroll}}">{{payroll}}</option> </select></div></div><div class="form-group justify-content-center text-center"> <button class="btn btn-primary submitPayBtn" ng-click="sendPayroll()" ng-disabled="disableSubmitBtn">Submit</button></div></form></div></div></div></div>'
                 };
 
             }]);
@@ -1391,7 +1603,6 @@
                 var url_string = $(location).attr("href");
                 var url = new URL(url_string);
                 var valueofreport = '{!($Label.RoleAdminDriver)}';
-                console.log(valueofreport);
                 var errorMsg = '{!($Label.ExceptionLabel)}';
                 $scope.accountERMI = '{!($Label.ERMI_Account)}';
                 $scope.designAIR = '{!($Label.DesignAir)}';
@@ -1426,6 +1637,7 @@
             $scope.search = "";
             $scope.size = '10mb';
             $scope.employeeslist = [];
+            $scope.employeeslistLOA = [];
             $scope.isSync = true;
             $scope.IsDisplay = false;
             $scope.editDialog = new EditDrivingStatesModel();
@@ -1433,6 +1645,7 @@
             $scope.editLOAModel = new EditLOADateModel();
             $scope.editEndLOAModel = new EditLOAEndDateModel();
             $scope.editLockDateModel = new EditLockDateModel();
+            $scope.editLOAProcessModel = new EditLOAProcessModel(); 
             $scope.backButton = false;
             $scope.showCancelProBtn = false;
             $scope.checkboxobjDeactivateShow = false;
@@ -1456,7 +1669,6 @@
             $scope.itemPerPage = $scope.pageSizeOptions[3];
             $scope.pageSizeChanged = function () {
                 $scope.itemsPerPage = parseInt($scope.itemPerPage);
-                console.log($scope.itemsPerPage, parseInt($scope.itemPerPage));
             }
             var choosenfileType = '';
 
@@ -1479,7 +1691,7 @@
                 toastr.clear();
             };
 
-            console.log("window", window);
+        
             // console.log(window.opener.parent.document.getElementById('hidden_user_id') )
             /* Trip Status For Sync Mileages */
             // $scope.tripStatus = [];
@@ -1517,6 +1729,21 @@
                 }, 10)
             }
 
+            $scope.loadDatePickerL = function (deactivateDate) { /*, lastPayDate*/
+                c(deactivateDate);
+                loaddatepickerforloa(deactivateDate); /*, lastPayDate*/
+                setTimeout(function () {
+                    refreshForm();
+                }, 10)
+            }
+
+            $scope.loadDatePickerLEnd = function (d){
+                c(d);
+                loaddatepickerforloaenddate(d); /*, lastPayDate*/
+                setTimeout(function () {
+                    refreshForm();
+                }, 10)
+            }
             /* For Hide Tab*/
             $scope.Hide = function () {
                 $scope.IsVisible = false;
@@ -1661,10 +1888,8 @@
             // }
             // AI-000179 Edited By Megha - Ends
             $scope.addfordownload = function () {
-
                 // EmployeeList Come from Controller
                 var empToUpdate = formatShortDateForEmployeeList(angular.copy($scope.employeeslist));
-                console.log("excel->", $scope.employeeslist);
                 $scope.ToDate = $filter('date')(new Date(), "MMddyyyy");
                 $scope.fileName = "Plan Participants" + ' ' + $scope.ToDate;
                 $scope.emplistfordownload = [];
@@ -1754,7 +1979,7 @@
                 $scope.$apply();
             };
 
-            /* MM/dd/yy format start*/
+            /* MM/dd/yy with '/' in string format start*/
             $scope.formateDate = function (dateString) {
                 if (dateString != '' && dateString != null) {
                     let datesplit = dateString.split('/');
@@ -1766,6 +1991,7 @@
             }
             /* MM/dd/yy format End*/
 
+         
             /* full formate Start*/
             formatFulllDateForEmployeeList = function (records) {
 
@@ -2503,11 +2729,22 @@
             }
 
             //* EMC - 129 : "LOA" amount and "pay period" for PL marketing account on Driver Page */
-            $scope.showLeaveOfAbsence = function () {
+            $scope.showLeaveOfAbsence = function (list) {
+                $scope.isPlAccountAbsence = true;
+                $scope.employeeslistLOA = list;
+                angular.forEach($scope.employeeslistLOA, function (empList){
+                    if(empList.LOAStartDate != undefined){
+                        empList.LOAStartDate = $filter('date')(new Date(empList.LOAStartDate), 'MM/dd/yy')
+                    }
+                    if(empList.LOAEndDate != undefined){
+                        empList.LOAEndDate = $filter('date')(new Date(empList.LOAEndDate), 'MM/dd/yy')
+                    }
+                    empList.isleaveofabsence = false;
+                    empList.iseditable = false;
+                })
                 $scope.checkboxobj = {}	
                 $scope.checkboxobj.isCheckedAllForLOA = false;
                 $scope.IsVisibleUpdatebtn = false;
-                $scope.isPlAccountAbsence = true;
                 $scope.checkboxobjLoaShow = true;
                 $scope.checkboxobj.isCheckedAllForLOA = ($scope.checkboxobj.isCheckedAllForLOA == true) ? false : false;
             }
@@ -2518,23 +2755,22 @@
                     $scope.showCancelProBtn = true;
                     $scope.showSaveLOABtn = true;
                     $scope.showMultipleAction = false;
-                    
                 }
                 else {
                     $scope.showCancelProBtn = false;
                     $scope.showSaveLOABtn = false;
                     $scope.showMultipleAction = true;
-                    $scope.checkboxobjLoaShow = false;
+                   // $scope.checkboxobjLoaShow = false;
                 }
-                angular.forEach($scope.employeeslist, function (emp) {
+                angular.forEach($scope.employeeslistLOA, function (emp) {
                     emp.isleaveofabsence = $scope.checkboxobj.isCheckedAllForLOA;
                     $scope.empupdatelist.push(emp);
                 });
             }
             $scope.CheckUncheckForLOA = function(emp){
-                var emplistlen = $scope.employeeslist.length;
+                var emplistlen = $scope.employeeslistLOA.length;
                 var count = 0;
-                angular.forEach($scope.employeeslist, function (item) {
+                angular.forEach($scope.employeeslistLOA, function (item) {
                     if (item.isleaveofabsence) {
                         count++;
                     }
@@ -2558,55 +2794,96 @@
                     $scope.checkboxobj.isCheckedAllForLOA = false;
                 }
                 /* EMC - 133 ends */
-
-                for (i = 0; i < $scope.empupdatelist.length; i++) {
-                    if ($scope.empupdatelist[i].userid == emp.userid) {
-                        $scope.recordfoundindex = i;
-                        break;
+                $scope.recordindex = -1;
+                if ($scope.empupdatelist.length > 0) {
+                    for (i = 0; i < $scope.empupdatelist.length; i++) {
+                        if ($scope.empupdatelist[i].BiweekId == emp.BiweekId) {
+                            $scope.recordindex = i;
+                            break;
+                        }
                     }
-                }
 
-                if ($scope.recordfoundindex != -1) {
-                    $scope.empupdatelist.remove($scope.recordfoundindex);
-                }
-
-                else {
+                    if ($scope.recordindex != -1) {
+                        $scope.empupdatelist.splice($scope.recordindex, 1);
+                    }
+                    else {
+                        $scope.empupdatelist.push(emp);
+                    }
+                }else{
                     $scope.empupdatelist.push(emp);
                 }
             }
 
             $scope.validateFixedAmount = function(amount) {
-                var fixedValue = amount.emp.loaFixedAmount;
+                var fixedValue = amount.emp.HalfFixedAmount;
                 if(fixedValue){
-                    amount.emp.loaFixedAmount = amount.emp.loaFixedAmount
+                    amount.emp.HalfFixedAmount = amount.emp.HalfFixedAmount
                         .replace(/[^\d.]/g, '')             // numbers and decimals only
                         .replace(/(^\.*)\./g, '$1')          // single dot retricted
                         .replace(/(\..*)\./g, '$1')          // decimal can't exist more than once
                         .replace(/(\.[\d]{2})./g, '$1');
                 } else{
-                    amount.emp.loaFixedAmount = 0;
+                    amount.emp.HalfFixedAmount = 0;
                 }
             }
 
+            function getPayRollStartDate(p){
+                var payroll = p.split(" to ");
+                var stDate = $filter('date')(new Date(payroll[0]), 'MM/dd/yyyy')
+                return stDate;
+            }
+
+            function getPayRollEndDate(p){
+                var endPayroll = p.split(" to ");
+                var enDate = $filter('date')(new Date(endPayroll[1]), 'MM/dd/yyyy')
+                return enDate;
+            }
+
             $scope.saveLOA = function(){
+                $scope.employeeLOAList = [];
                 angular.forEach($scope.empupdatelist, function (employee){
-                    employee.loaStartDate = (employee.loaStartDate != null) ? $filter('date')(new Date(employee.loaStartDate), 'MM/dd/yyyy') : null;
-                    employee.loaEndDate = (employee.loaEndDate != null) ? $filter('date')(new Date(employee.loaEndDate), 'MM/dd/yyyy') : null;
+                    employee.LOAStartDate = (employee.LOAStartDate != null) ? $filter('date')(new Date(employee.LOAStartDate), 'yyyy-MM-dd') : null;
+                    employee.LOAEndDate = (employee.LOAEndDate != null) ? $filter('date')(new Date(employee.LOAEndDate), 'yyyy-MM-dd') : null;
                 })
-                var listToUpdate = angular.copy($scope.empupdatelist);
+                angular.forEach($scope.empupdatelist, function (employee){
+                    var row = {}
+                    row.BiweekId = employee.BiweekId,
+                    row.ContactEmail = employee.ContactEmail,
+                    row.LOAStartDate = employee.LOAStartDate,
+                    row.LOAEndDate = employee.LOAEndDate,
+                    row.HalfFixedAmount = employee.HalfFixedAmount,
+                    row.ContactName = employee.ContactName
+                    $scope.employeeLOAList.push(row);
+                })
+                var listToUpdate = angular.copy($scope.employeeLOAList);
                 $('#spinner').show();
-                Visualforce.remoting.Manager.invokeAction('{!$RemoteAction.RosterController.editInlineNewEmployee}', JSON.stringify(listToUpdate), $scope.accid, $scope.id,
+                Visualforce.remoting.Manager.invokeAction('{!$RemoteAction.RosterController.SaveLOA}', JSON.stringify(listToUpdate),
                     function (result, event) {
                         if (event.status) {
-                            toastr.success('Records Updated Successfully.');
-                            angular.forEach($scope.empupdatelist, function (employee) {
-                                employee.iseditable = false;
-                            });
+                            if (!result.hasError) {
+                                    toastr.success('Records Updated Successfully.');
+                                    angular.forEach($scope.empupdatelist, function (employee) {
+                                        employee.iseditable = false;
+                                    });
 
-                            $scope.empupdatelist = [];
-                            $scope.selectedRow = '';
-                            $('#spinner').hide();
-                            location.reload();
+                                    $scope.empupdatelist = [];
+                                    $scope.employeeLOAList = [];
+                                    $scope.selectedRow = '';
+                                    $('#spinner').hide();
+                                    location.reload();
+                            } else {
+                                $('#spinner').hide();
+                                var err = result.message.split("==");
+                                var toastmessage = '';
+                                angular.forEach($scope.empupdatelist, function (employee) {
+                                    if (employee.BiweekId === err[0]) {
+                                        toastmessage = err[1] + ' for ' + employee.ContactName;
+                                    }
+                                });
+                                console.log("toast message", result.message, err, $scope.empupdatelist);
+                                // console.log("toast modified message", toastmessage);
+                                toastr.error(toastmessage);
+                            }
                         }
                         else {
                             $('#spinner').hide();
@@ -2619,6 +2896,10 @@
 
             //* EMC - 129 : Ends */
             // AI-000460 Ends -->
+            $scope.edit2 = function(emp, userid){
+                $scope.selectedRow = userid;
+                $scope.IsVisibleUpdatebtn = ($scope.isPlAccountAbsence === true) ? false : true;
+            }
             $scope.edit = function (emp, userid) {
                 $scope.selectedRow = userid;
                 $scope.IsVisibleUpdatebtn = ($scope.isPlAccountAbsence === true) ? false : true;
@@ -2635,43 +2916,8 @@
                 }
             })
 
-             // Format date in yyyy-MM-dd format
-                function FormatDate(elDate) {
-                    var today = new Date(elDate);
-                    var dd = String(today.getDate()).padStart(2, '0');
-                    var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
-                    var year = today.getFullYear();
-                    var yy = year.toString().substr(-2);
-                    // today = yyyy + '-' + mm + '-' + dd;
-                    today = mm + '/' + dd + '/' + yy
-                    return today;
-                }
-            function payDate(date) {
-                var st = new Date(date);
-                var today = new Date();
-                var i = 0;
-                var dateArr = [];
-                var end;
-                var currentYear = (new Date()).getFullYear();
-                if (date) {
-                    for (i = 0; i <= dateArr.length; i++) {
-                        if (currentYear === st.getFullYear()) {
-                            if (st < today) {
-                                end = new Date(st);
-                                end = new Date(end.setDate(end.getDate() + 13));
-                                let finaldate = FormatDate(st) + ' to ' + FormatDate(end)
-                                dateArr.push(finaldate);
-                                st = new Date(end.setDate(end.getDate() + 1));
-                            }
-
-                        }
-                    }
-                    return dateArr;
-                    console.log("List->", dateArr);
-                }
-            }
+      
             $scope.rolelist = {!Roles}
-            $scope.biweeklylist = payDate('07/25/21');
             $scope.driverType = {!DriverType}
             $scope.recordfoundindex = -1;
             if (beforeUpdateEmployees.length == 0)
@@ -2860,8 +3106,7 @@
             $scope.driverType = {!DriverType}
             $scope.jobTitleList = {!JobTitle}
             $scope.departmentList = {!Department}
-            console.log("job-title", $scope.jobTitleList);
-            console.log("department", $scope.departmentList);
+          
             $scope.managerlist.sort(function (a, b) {
                 var nameA = a.Name.toLowerCase(), nameB = b.Name.toLowerCase();
                 if (nameA < nameB) { //sort string ascending
@@ -3130,7 +3375,6 @@
             $scope.tabs[1].active = true;
 
             $scope.editUserID = empId.userid;
-            console.log($scope.editUserID);
             let dateAndVehicleList = {!PickListValuesIntoList}
             let tempaccdate = dateAndVehicleList[0];
             let tempdt = new Date(tempaccdate);
@@ -3731,7 +3975,7 @@
 
                 $scope.reverse = ($scope.sortKey === keyname) ? !$scope.reverse : false;
                 $scope.sortKey = keyname;
-                if (keyname === 'firstName' || keyname === 'managerName' || keyname === 'role' || keyname === 'email' || keyname === 'appVersion' || keyname === 'district' || keyname === 'territory' || keyname === 'employeeId' || keyname === 'driverType' || keyname === 'deactivationBy' || keyname === 'payRollPeriod') {
+                if (keyname === 'firstName' || keyname === 'ContactName' || keyname === 'managerName' || keyname === 'role' || keyname === 'ContactEmail' || keyname === 'email' || keyname === 'appVersion' || keyname === 'district' || keyname === 'territory' || keyname === 'employeeId' || keyname === 'driverType' || keyname === 'deactivationBy' || keyname === 'payRollPeriod') {
                     $scope.employeeslist.sort(function (a, b) {
 
                         var nameA = (a[keyname] === null) ? '' : a[keyname].toLowerCase(),
@@ -3771,7 +4015,7 @@
                         }
                     })
                 }
-                if (keyname === 'zipCode' || keyname === 'code' || keyname === 'loaFixedAmount') {
+                if (keyname === 'zipCode' || keyname === 'code' || keyname === 'HalfFixedAmount') {
                     $scope.employeeslist.sort(function (a, b) {
 
                         var nameA = (a[keyname] === null) ? '' : parseInt(a[keyname]),
@@ -3791,9 +4035,8 @@
                         }
                     })
                 }
-                if (keyname === 'deactivaedDate' || keyname === 'freeze' || keyname === 'loaStartDate' || keyname === 'loaEndDate') {
+                if (keyname === 'deactivaedDate' || keyname === 'freeze') {
                     $scope.employeeslist.sort(function (a, b) {
-
                         var nameA = (a[keyname] === null) ? '' : new Date(a[keyname].toLowerCase()),
                             nameB = (b[keyname] === null) ? '' : new Date(b[keyname].toLowerCase())
                         if ($scope.reverse) {
@@ -3814,6 +4057,90 @@
                 }
             }
 
+            $scope.sortForLOA = function (keyname) {
+                $scope.reverse = ($scope.sortKey === keyname) ? !$scope.reverse : false;
+                $scope.sortKey = keyname;
+                if (keyname === 'firstName' || keyname === 'ContactName' || keyname === 'managerName' || keyname === 'role' || keyname === 'ContactEmail' || keyname === 'email' || keyname === 'appVersion' || keyname === 'district' || keyname === 'territory' || keyname === 'employeeId' || keyname === 'driverType' || keyname === 'deactivationBy' || keyname === 'payRollPeriod') {
+                    $scope.employeeslistLOA.sort(function (a, b) {
+
+                        var nameA = (a[keyname] === null) ? '' : a[keyname].toLowerCase(),
+                            nameB = (b[keyname] === null) ? '' : b[keyname].toLowerCase()
+                        if ($scope.reverse) {
+                            if (nameA < nameB) //sort string ascending
+                                return -1
+                            if (nameA > nameB)
+                                return 1
+                            return 0 //default return value (no sorting)
+                        } else {
+                            if (nameA < nameB) //sort string ascending
+                                return 1
+                            if (nameA > nameB)
+                                return -1
+                            return 0 //default return value (no sorting)
+                        }
+                    })
+                }
+                if (keyname === 'drivingStates') {
+                    $scope.employeeslistLOA.sort(function (a, b) {
+
+                        var nameA = (a[keyname] === null) ? '' : a[keyname],
+                            nameB = (b[keyname] === null) ? '' : b[keyname]
+                        if ($scope.reverse) {
+                            if (nameA < nameB) //sort string ascending
+                                return -1
+                            if (nameA > nameB)
+                                return 1
+                            return 0 //default return value (no sorting)
+                        } else {
+                            if (nameA < nameB) //sort string ascending
+                                return 1
+                            if (nameA > nameB)
+                                return -1
+                            return 0 //default return value (no sorting)
+                        }
+                    })
+                }
+                if (keyname === 'zipCode' || keyname === 'code' || keyname === 'HalfFixedAmount') {
+                    $scope.employeeslistLOA.sort(function (a, b) {
+
+                        var nameA = (a[keyname] === null) ? '' : parseInt(a[keyname]),
+                            nameB = (b[keyname] === null) ? '' : parseInt(b[keyname])
+                        if ($scope.reverse) {
+                            if (nameA < nameB) //sort string ascending
+                                return -1
+                            if (nameA > nameB)
+                                return 1
+                            return 0 //default return valuscope.model.mileageList=e (no sorting)
+                        } else {
+                            if (nameA < nameB) //sort string ascending
+                                return 1
+                            if (nameA > nameB)
+                                return -1
+                            return 0 //default return value (no sorting)
+                        }
+                    })
+                }
+                if (keyname === 'deactivaedDate' || keyname === 'freeze' || keyname === 'LOAStartDate' || keyname === 'LOAEndDate') {
+                    $scope.employeeslistLOA.sort(function (a, b) {
+                        var nameA = (a[keyname] === null || a[keyname] === undefined) ? '' : new Date(a[keyname].toLowerCase()),
+                            nameB = (b[keyname] === null || b[keyname] === undefined) ? '' : new Date(b[keyname].toLowerCase())
+                        if ($scope.reverse) {
+                            if (nameA < nameB) //sort string ascending
+                                return -1
+                            if (nameA > nameB)
+                                return 1
+                            return 0 //default return value (no sorting)
+                        } else {
+                            if (nameA < nameB) //sort string ascending
+                                return 1
+                            if (nameA > nameB)
+                                return -1
+                            return 0 //default return value (no sorting)
+                        }
+                    })
+
+                }
+            }
             $scope.keyPressed = function (keyEvent, len) {
                 if (keyEvent.keyCode == 13 || (keyEvent.keyCode == 32 && !len)) {
                     event.preventDefault();
@@ -3982,7 +4309,7 @@
                         <a class="dropdown-item" ng-click="displayCheckboxForDeactivation()">Mass Deactivate</a>
                         <a class="dropdown-item" ng-click="displayCheckboxForFreeze()">Freeze</a>
                         <a class="dropdown-item" ng-click="displayCheckboxForUnFreeze()">UnFreeze</a>
-                        <a class="dropdown-item" ng-click="showLeaveOfAbsence()">Leave of Absence</a>
+                        <a class="dropdown-item" ng-click="editLOAProcessModel.open()" ng-if="accid === PLMarketing">Leave of Absence</a><!-- editLOAProcessModel.open() -->
                         <div class="dropdown-divider"></div>
                         <a class="dropdown-item" ng-click="displayCheckboxForConcur()" ng-if="accid === SPBSAcc || accid === EngGypAcc">Concur Connect</a>
                         <a class="dropdown-item" ng-click="editSyncAllMileageModel()" ng-if="accid === accountERMI">Sync All</a>
@@ -4270,98 +4597,88 @@
                                                 <input type="checkbox" ng-model="checkboxobj.isCheckedAllForLOA" class="loaCheck ml-10" ng-click="CheckUncheckAllForLOA(checkboxobj.isCheckedAllForLOA,emp);"
                                                 />
                                             </th>
-                                            <th ng-click="sort('firstName')">Name
-                                                <span class="sort-icon pull-right" ng-show="sortKey=='firstName'" ng-class="{'fa fa-chevron-up':reverse,'fa fa-chevron-down':!reverse}"></span>
+                                            <th ng-click="sortForLOA('ContactName')">Name
+                                                <span class="sort-icon pull-right" ng-show="sortKey=='ContactName'" ng-class="{'fa fa-chevron-up':reverse,'fa fa-chevron-down':!reverse}"></span>
                                             </th>
-                                            <th ng-click="sort('email')">Email
-                                                <span class="sort-icon pull-right" ng-show="sortKey=='email'" ng-class="{'fa fa-chevron-up':reverse,'fa fa-chevron-down':!reverse}">
+                                            <th ng-click="sortForLOA('ContactEmail')">Email
+                                                <span class="sort-icon pull-right" ng-show="sortKey=='ContactEmail'" ng-class="{'fa fa-chevron-up':reverse,'fa fa-chevron-down':!reverse}">
                                                 </span>
                                             </th>
-                                            <th ng-click="sort('loaStartDate')" style="padding-left: 24px;">LOA Start Date
-                                                <span class="sort-icon pull-right" ng-show="sortKey=='loaStartDate'" ng-class="{'fa fa-chevron-up':reverse,'fa fa-chevron-down':!reverse}"></span>
+                                            <th ng-click="sortForLOA('LOAStartDate')" style="padding-left: 24px;">LOA Start Date
+                                                <span class="sort-icon pull-right" ng-show="sortKey=='LOAStartDate'" ng-class="{'fa fa-chevron-up':reverse,'fa fa-chevron-down':!reverse}"></span>
                                             </th>
-                                            <th ng-click="sort('loaEndDate')" style="padding-left: 21px;">LOA End Date
-                                                <span class="sort-icon pull-right" ng-show="sortKey=='loaEndDate'" ng-class="{'fa fa-chevron-up':reverse,'fa fa-chevron-down':!reverse}"></span>
+                                            <th ng-click="sortForLOA('LOAEndDate')" style="padding-left: 21px;">LOA End Date
+                                                <span class="sort-icon pull-right" ng-show="sortKey=='LOAEndDate'" ng-class="{'fa fa-chevron-up':reverse,'fa fa-chevron-down':!reverse}"></span>
                                             </th>
-                                            <th ng-click="sort('payRollPeriod')">Payroll period
-                                                <span class="sort-icon pull-right" ng-show="sortKey=='payRollPeriod'" ng-class="{'fa fa-chevron-up':reverse,'fa fa-chevron-down':!reverse}"></span>
-                                            </th>
-                                            <th ng-click="sort('loaFixedAmount')">LOA Fixed Amount
-                                                <span class="sort-icon pull-right" ng-show="sortKey=='loaFixedAmount'" ng-class="{'fa fa-chevron-up':reverse,'fa fa-chevron-down':!reverse}"></span>
+                                            <th ng-click="sortForLOA('HalfFixedAmount')">LOA Fixed Amount
+                                                <span class="sort-icon pull-right" ng-show="sortKey=='HalfFixedAmount'" ng-class="{'fa fa-chevron-up':reverse,'fa fa-chevron-down':!reverse}"></span>
                                             </th>
 
                                         </tr>
                                     </thead>
                                     <tbody>
                                         <!-- height : 350px -->
-                                        <tr dir-paginate="emp in employeeslist|filter:search |itemsPerPage: itemPerPage" ng-class="{'selected':emp.userid == selectedRow}"
+                                        <tr dir-paginate="emp in employeeslistLOA| filter:search |itemsPerPage: itemPerPage" ng-class="{'selected':emp.BiweekId == selectedRow}"
                                             ng-model="emp" pagination-id="employees">
                                             <td ng-model="emp.loacheck"  ng-show="checkboxobjLoaShow" class="deactivateChktd">
                                                 <input type="checkbox" ng-model="emp.isleaveofabsence" class="loaCheck" ng-change="CheckUncheckForLOA(emp);" />
                                             </td>
-                                            <td ng-model="emp.name" class="name_td">
-                                                <a data-toggle="pill" class="a-setcolor-pointer name_link" data-target="#pills-addadminroster" ng-click="passData(emp)">{{emp.firstName}} {{emp.lastName}}</a>
+                                            <td ng-model="emp.ContactName" class="name_td">
+                                              {{emp.ContactName}}
                                             </td>
-                                            <td ng-show="!emp.iseditable" ng-click="edit(emp,emp.userid);emp.iseditable = !emp.iseditable" class="a-hover-pointer emailId_td"
+                                            <td class="a-hover-pointer emailId_td"
                                                 id="email_td">
-                                                {{emp.email}}
+                                                {{emp.ContactEmail}}
                                             </td>
-                                            <td ng-show="emp.iseditable" class="emailId_td">
-                                                <input type="email" name="email_{{emp.userid}}" class="form-control rounded-0 a-hover-pointer" ng-model="emp.email" pattern="^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,12})+$"
-                                                    required="true" />
-                                            </td>
+                                          
                                             <td ng-show="emp.iseditable">
                                                 <!-- <a ng-click="editDateModel.open(emp);loadDatePicker(emp.deactivaedDate,emp.lastPayDate);" class="a-hover-pointer a_link">
                                                     <i class="fa fa-edit a-hover-pointer"></i>
                                                     {{formateDate(emp.deactivaedDate)}}
                                                 </a> -->
-                                                <a ng-click="editLOAModel.open(emp, 'loaStartDate');loadDatePicker(emp.loaStartDate);" class="a-hover-pointer a_link">
+                                                <a ng-click="editLOAModel.open(emp, 'loaStartDate');loadDatePickerL(emp.LOAStartDate);" class="a-hover-pointer a_link">
                                                     <i class="fa fa-edit a-hover-pointer"></i>
-                                                    {{formateDate(emp.loaStartDate)}}
+                                                    {{formateDate(emp.LOAStartDate)}}
                                                 </a>
                                             </td>
-                                            <td ng-model="emp.loaStartDate" ng-show="!emp.iseditable">
-                                                <!-- <a ng-click="edit(emp,emp.userid);editDateModel.open(emp);loadDatePicker(emp.deactivaedDate,emp.lastPayDate);" class="a_link">
+                                            <td ng-model="emp.LOAStartDate" ng-show="!emp.iseditable">
+                                                <a ng-click="edit2(emp,emp.BiweekId);editLOAModel.open(emp);loadDatePickerL(emp.LOAStartDate);" class="a_link">
                                                     <i class="fa fa-edit a-hover-pointer"></i>
-                                                    {{formateDate(emp.deactivaedDate)}}
-                                                </a> -->
-                                                <a ng-click="edit(emp,emp.userid);editLOAModel.open(emp);loadDatePicker(emp.loaStartDate);" class="a_link">
-                                                    <i class="fa fa-edit a-hover-pointer"></i>
-                                                    {{formateDate(emp.loaStartDate)}}
+                                                    {{formateDate(emp.LOAStartDate)}}
                                                 </a>
                                             </td>
                                             <td ng-show="emp.iseditable">
-                                                <a ng-click="editEndLOAModel.open(emp);loadDatePicker(emp.loaEndDate);" class="a-hover-pointer a_link" data-backdrop="static" data-keyboard="false">
+                                                <a ng-click="editEndLOAModel.open(emp);loadDatePickerLEnd(emp.LOAEndDate);" class="a-hover-pointer a_link" data-backdrop="static" data-keyboard="false">
                                                     <i class="fa fa-edit a-hover-pointer"></i>
-                                                    {{formateDate(emp.loaEndDate)}}
+                                                    {{formateDate(emp.LOAEndDate)}}
                                                 </a>
                                             </td>
-                                            <td ng-model="emp.loaEndDate" ng-show="!emp.iseditable">
-                                                <a ng-click="edit(emp,emp.userid);editEndLOAModel.open(emp);loadDatePicker(emp.loaEndDate);" class="a_link">
+                                            <td ng-model="emp.LOAEndDate" ng-show="!emp.iseditable">
+                                                <a ng-click="edit2(emp,emp.BiweekId);editEndLOAModel.open(emp);loadDatePickerLEnd(emp.LOAEndDate);" class="a_link">
                                                     <i class="fa fa-edit a-hover-pointer"></i>
-                                                    {{formateDate(emp.loaEndDate)}}
+                                                    {{formateDate(emp.LOAEndDate)}}
                                                 </a>
                                             </td>
-                                            <td ng-model="emp.payRollPeriod" ng-show="emp.iseditable">
-                                                <select ng-model="emp.payRollPeriod" name="payRollPeriod_{{emp.userid}}" class="form-control rounded-0 a-hover-pointer">
+                                            <!-- <td ng-model="emp.payRollPeriod" ng-show="emp.iseditable">
+                                                <select ng-model="emp.payRollPeriod" name="payRollPeriod_{{emp.Id}}" class="form-control rounded-0 a-hover-pointer">
                                                     <option ng-selected="{{emp.payRollPeriod == pay}}" ng-repeat="pay in biweeklylist" value="{{pay}}">{{pay}}</option>
                                                 </select>
                                             </td>
                                             <td ng-model="emp.payRollPeriod" ng-show="!emp.iseditable" ng-click="edit(emp,emp.userid);emp.iseditable = !emp.iseditable"
                                                 class="a-hover-pointer">
-                                                <!-- <select ng-model="emp.payRollPeriod" name="payRollPeriod_{{emp.userid}}" class="form-control rounded-0 a-hover-pointer">
+                                                <select ng-model="emp.payRollPeriod" name="payRollPeriod_{{emp.userid}}" class="form-control rounded-0 a-hover-pointer">
                                                     <option ng-selected="{{emp.payRollPeriod == pay}}" ng-repeat="pay in biweeklylist" value="{{pay}}">{{pay}}</option>
-                                                </select> -->
+                                                </select>
                                                 <span>{{emp.payRollPeriod}}</span>
+                                            </td> -->
+                                            <td ng-model="emp.HalfFixedAmount" ng-show="emp.iseditable">
+                                                <input type="text" ng-model="emp.HalfFixedAmount" id="numberinput" class="numdivisioninput form-control rounded-0 col-md-12" ng-change="validateFixedAmount(this)" onkeydown="if(event.keyCode === 32) return false;" />
                                             </td>
-                                            <td ng-model="emp.loaFixedAmount" ng-show="emp.iseditable">
-                                                <input type="text" ng-model="emp.loaFixedAmount" id="numberinput" class="numdivisioninput form-control rounded-0 col-md-12" ng-change="validateFixedAmount(this)" onkeydown="if(event.keyCode === 32) return false;" />
-                                            </td>
-                                            <td ng-model="emp.loaFixedAmount" ng-show="!emp.iseditable" ng-click="edit(emp,emp.userid);emp.iseditable = !emp.iseditable">
-                                                <span class="manager_td">{{emp.loaFixedAmount}}</span>
+                                            <td ng-model="emp.HalfFixedAmount" ng-show="!emp.iseditable" ng-click="edit2(emp,emp.BiweekId);emp.iseditable = !emp.iseditable">
+                                                <span class="manager_td">{{emp.HalfFixedAmount}}</span>
                                             </td>
                                         </tr>
-                                        <tr ng-show="(employeeslist|filter:search).length==0">
+                                        <tr ng-show="(employeeslistLOA|filter:search).length==0">
                                             <td colspan="6" class="table-nodata">No Data Available</td>
                                         </tr>
                                     </tbody>
@@ -4392,6 +4709,7 @@
                                 <edit-Loa-Date model="editLOAModel"></edit-Loa-Date>
                                 <edit-Loa-End-Date model="editEndLOAModel"></edit-Loa-End-Date>
                                 <edit-lock-Date model="editLockDateModel"></edit-lock-Date>
+                                <edit-loa model="editLOAProcessModel" callback-fn="showLeaveOfAbsence(list)"></edit-loa>
                                 <!-- <edit-Bulk-Deactivation-Date model="editBulkDateModel"></edit-bulk-deactivation-date>    -->
                             </div>
                             <!-- <button class="btn btn-secondary rounded-0 btnupdate" type="submit" ng-show="IsVisibleUpdatebtn" ng-click="update(myform)">Update</button>
@@ -5149,11 +5467,27 @@
         <!-- End of cellphone field masking -->
         <script type="text/javascript">
             $(document).ready(function () {
+                $('#adminroster-loadate').bind("cut copy paste",function(e) {
+                    e.preventDefault();
+                });
                 $('#adminroster-lockdatepicker').datepicker({
                     format: "mm/dd/yy",
                     autoclose: true,
                     todayHighlight: true
                 });
+                $('#adminroster-loadate').datepicker({
+                    format: "mm/dd/yy",
+                    autoclose: true,
+                    todayHighlight: true,
+                    orientation: "bottom left"
+                });
+                $('#adminroster-loaenddate').datepicker({
+                    format: "mm/dd/yy",
+                    autoclose: true,
+                    todayHighlight: true,
+                    orientation: "bottom left",
+                });
+          
                 var minDate = new Date();
                 minDate.setDate(minDate.getDate());
                 var disabledLockDate = minDate;
@@ -5173,15 +5507,13 @@
 
                 // $('#adminroster-deactivationdatepicker').datepicker('setStartDate',day60today);
                 $('#adminroster-deactivationdatepicker').datepicker();
-
+               
                 //$('#adminroster-lastpaydatepicker').datepicker('setStartDate', new Date());
 
                 var drivingStates = JSON.parse('{!DrivingStates}');
                 var isFirst = true;
 
-                $('.adminroster-loadate').datepicker().bind('dateSelected', function (e, selectedDate, $td) {
-                            alert(selectedDate);
-                        });
+
                 $('input').on('beforeItemAdd', function (event) {
 
                     if (drivingStates.indexOf(event.item.toUpperCase()) == -1) {
@@ -5216,8 +5548,35 @@
                 })
             });
 
+            function loaddatepickerforloaenddate(dactivate){
+                if (dactivate != null) {
+                    let deactdate = new Date(dactivate);
+                    let day60todayloa = new Date();
+                    day60todayloa.setDate(day60todayloa.getDate() - 60);
 
+                    $('#adminroster-loaenddate').datepicker('setStartDate', day60todayloa);
+                    if (deactdate < day60todayloa) {
+                        $('#adminroster-loaenddate').datepicker('setStartDate', day60todayloa);
+                    }
 
+                    $("#adminroster-loaenddate").datepicker("setDate", deactdate);
+
+                }
+            }
+
+            function loaddatepickerforloa(deactivateDate) { /* , lastPayDate */
+                if (deactivateDate != null) {
+                    loaStartDate = deactivateDate;
+                    let deactivationdate = new Date(deactivateDate);
+                    let day60today = new Date();
+                    day60today.setDate(day60today.getDate() - 60);
+                    $('#adminroster-loadate').datepicker('setStartDate', day60today);
+                    if (deactivationdate < day60today) {
+                        $('#adminroster-loadate').datepicker('setStartDate', deactivationdate);
+                    }
+                    $("#adminroster-loadate").datepicker("setDate", deactivationdate);
+                }
+            }
             function loaddatepicker(deactivateDate) { /* , lastPayDate */
                 if (deactivateDate != null) {
                     let deactivationdate = new Date(deactivateDate);
