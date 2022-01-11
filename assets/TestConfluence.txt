@@ -1,1 +1,1 @@
-DemoClassTest,ReportDetailsController_test,ReportListController_Test
+DemoClassTest,RosterControllerTest
