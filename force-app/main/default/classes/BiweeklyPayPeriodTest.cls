@@ -37,6 +37,7 @@ public class BiweeklyPayPeriodTest {
         System.runAs(admin) {
         acc.Name = 'Test Account';
         acc.Pay_Period_Start_Date__c = system.today();
+        acc.Pay_Period_Days__c = 13;
         insert acc;
         Contact contact_1 = new Contact(AccountId = acc.Id, LastName = 'xgeek',External_Email__c='abc@gmail.com');
         insert contact_1;
@@ -92,9 +93,22 @@ public class BiweeklyPayPeriodTest {
         er.Maintenance_and_Tires__c = con.Maintenance_and_Tires__c;
         er.MPG__c = con.MPG__c;
         insert er;
+        
+        Bi_Weekly_Reimbursement__c br = new Bi_Weekly_Reimbursement__c();
+            br.Name = system.today()-13 + ' to ' + system.today() ; 
+            br.Contact__c = con.Id;
+            br.Start_Date__c = system.today()-13;
+            br.End_Date__c = system.today() ;
+            br.MPG__c = con.MPG__c;
+            br.Maintenance_and_Tires__c = con.Maintenance_and_Tires__c;
+            br.Fixed_Amount__c = con.Fixed_Amount__c;
+            br.Status__c = 'Pending';
+            br.Fuel_Price__c = 0;
+        Insert br;
 
         Employee_Mileage__c emp = new Employee_Mileage__c();
         emp.EmployeeReimbursement__c = er.id;
+        emp.Bi_Weekly_Reimbursement__c = br.Id;
         emp.Contact_Email_Id__c = con.External_Email__c;
         emp.Name = 'Test Mileage Record';
         emp.Trip_Status__c = StaticValues.noApprovedYet;
@@ -105,6 +119,7 @@ public class BiweeklyPayPeriodTest {
         emp.EndTime__c =  system.now();
         emp.Trip_Date__c = date.today().adddays(-1);
         insert emp;
+        
         Test.startTest();
         System.runAs(user_1) {
         BiweeklyPayPeriod.getTimeAndAttendance(con.Id, '2021');
@@ -112,6 +127,10 @@ public class BiweeklyPayPeriodTest {
         BiweeklyPayPeriod.getMileages1(system.today()-1, system.today(), con.Id);
         BiweeklyPayPeriod.ApproveTrips(system.today()-1, system.today(), con.Id);
         BiweeklyPayPeriod.calculateBiweekMil (String.valueof(system.today()-1),String.valueof(system.today()), con.Id);
+        BiweeklyPayPeriod.getBiweeklyReimbursement(String.valueOf(con.Id) ,2021);
+        BiweeklyPayPeriod.getBiweekMileages1(string.valueOf(br));
+        BiweeklyPayPeriod.ApproveBiWeekTrips(string.valueOf(br));
+            
       }
         Test.stopTest();
     }

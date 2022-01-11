@@ -68,6 +68,30 @@ public class DriverDashboardController_test {
         att.name = 'test';
         att.body = blob.valueOf('Test');
         insert att;
+        
+        Employee_Reimbursement__c er = new Employee_Reimbursement__c();
+        er.Contact_Id__c = obj_driver_contact[0].Id;
+        er.Name = 'Reimbersment Test';
+        er.Month__c = '03-2021';
+        er.Status__c = 'Pending';
+        er.Fuel_Price__c = 10.00; 
+        er.Fixed_Amount__c = obj_driver_contact[0].Fixed_Amount__c;
+        er.Status__c = 'Pending';
+        er.Maintenance_and_Tires__c = obj_driver_contact[0].Maintenance_and_Tires__c;
+        er.MPG__c = obj_driver_contact[0].MPG__c;
+        insert er;
+        
+        Bi_Weekly_Reimbursement__c br = new Bi_Weekly_Reimbursement__c();
+            br.Name = system.today()-13 + ' to ' + system.today() ; 
+            br.Contact__c = obj_driver_contact[0].Id;
+            br.Start_Date__c = system.today()-13;
+            br.End_Date__c = system.today() ;
+            br.MPG__c = obj_driver_contact[0].MPG__c;
+            br.Maintenance_and_Tires__c = obj_driver_contact[0].Maintenance_and_Tires__c;
+            br.Fixed_Amount__c = obj_driver_contact[0].Fixed_Amount__c;
+            br.Status__c = 'Pending';
+            br.Fuel_Price__c = 0;
+        Insert br;
 
         Test.startTest();
         System.runAs(user_1) {
@@ -93,7 +117,8 @@ public class DriverDashboardController_test {
             DriverDashboardController.getCompliance(String.valueOf(obj_driver_contact[0].Id));
             DriverDashboardController.getPacketandMeeting(String.valueOf(obj_driver_contact[0].Id));
             DriverDashboardController.biweeklyMileage(obj_driver_contact[0].id,2021);
-            DriverDashboardController.getBiweekMileages('2021-11-12','2021-12-30',obj_driver_contact[0].id);
+            //DriverDashboardController.getBiweekMileages('2021-11-12','2021-12-30',obj_driver_contact[0].id);
+            DriverDashboardController.getBiweekMileages(string.valueOf(br));
         }
         Test.stopTest();
     }

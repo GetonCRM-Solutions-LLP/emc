@@ -69,6 +69,18 @@ Public class drivermanagermydetailcontrollerTest{
         att.name = 'test';
         att.body = blob.valueOf('Test');
         insert att;
+        
+        Bi_Weekly_Reimbursement__c br = new Bi_Weekly_Reimbursement__c();
+            br.Name = system.today()-13 + ' to ' + system.today() ; 
+            br.Contact__c = obj_driver_contact[0].Id;
+            br.Start_Date__c = system.today()-13;
+            br.End_Date__c = system.today() ;
+            br.MPG__c = obj_driver_contact[0].MPG__c;
+            br.Maintenance_and_Tires__c = obj_driver_contact[0].Maintenance_and_Tires__c;
+            br.Fixed_Amount__c = obj_driver_contact[0].Fixed_Amount__c;
+            br.Status__c = 'Pending';
+            br.Fuel_Price__c = 0;
+        Insert br;
          
         Test.startTest();
         System.runAs(user_1) {
@@ -89,6 +101,8 @@ Public class drivermanagermydetailcontrollerTest{
             drivermanagermydetailcontroller.getPacketandMeeting(obj_driver_contact[0].Id);
             //drivermanagermydetailcontroller.readFromFileInchunk('test',att.Name,String.valueOf(att.Id),String.valueOf(obj_driver_contact[0].Id),String.valueOf(obj_acc.Id),null);
             drivermanagermydetailcontroller.TimeAttendance(obj_driver_contact[0].Id,'2021');
+            drivermanagermydetailcontroller.getBiweekMileages(string.valueOf(br));
+            drivermanagermydetailcontroller.ApproveBiweekMileages(string.valueOf(br));
         }
         Test.stopTest();
     }

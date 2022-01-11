@@ -101,6 +101,19 @@ public class ManagerDriverDashboardControllertest {
         //ManagerDriverDashboardController.approveReimbursements('2018',obj_driver_contact.Id,obj_acc.Id,obj_driver_contact.Manager__c,JSON.serialize(empReimWrapList));
         DateTime dt = DateTime.now();
         String monthName = dt.format('MMMMMMM');
+        
+        Bi_Weekly_Reimbursement__c br = new Bi_Weekly_Reimbursement__c();
+            br.Name = system.today()-13 + ' to ' + system.today() ; 
+            br.Contact__c = obj_driver_contact[0].Id;
+            br.Start_Date__c = system.today()-13;
+            br.End_Date__c = system.today() ;
+            br.MPG__c = obj_driver_contact[0].MPG__c;
+            br.Maintenance_and_Tires__c = obj_driver_contact[0].Maintenance_and_Tires__c;
+            br.Fixed_Amount__c = obj_driver_contact[0].Fixed_Amount__c;
+            br.Status__c = 'Pending';
+            br.Fuel_Price__c = 0;
+        Insert br;
+        
         Test.startTest();
         System.runAs(user_1) {
         //ManagerDriverDashboardController.approveMileages(JSON.serialize(empMileageList),String.valueOf(Date.today().year()),obj_driver_contact.Id);
@@ -117,8 +130,8 @@ public class ManagerDriverDashboardControllertest {
         ManagerDriverDashboardController.TimeAttendance(obj_driver_contact[0].Id,'2021');
         ManagerDriverDashboardController.getMileagesBasedTandAtt(String.valueOf(System.today()),String.valueOf(System.today()+1),string.valueOf(obj_driver_contact[0].Id));
         ManagerDriverDashboardController.biweeklyMileage(string.valueOf(obj_driver_contact[0].Id),2021);
-        ManagerDriverDashboardController.getBiweekMileages(String.valueOf(System.today()),String.valueOf(System.today()+1),string.valueOf(obj_driver_contact[0].Id));
-        ManagerDriverDashboardController.ApproveBiweekMileages(String.valueOf(System.today()),String.valueOf(System.today()+1),string.valueOf(obj_driver_contact[0].Id));
+        ManagerDriverDashboardController.getBiweekMileages(string.valueOf(br));
+        ManagerDriverDashboardController.ApproveBiweekMileages(string.valueOf(br));
         ManagerDriverDashboardController.UpdateReimbursementStatus(obj_Employee_Reimbursement_List[0].Id);
         }
         Test.stopTest();

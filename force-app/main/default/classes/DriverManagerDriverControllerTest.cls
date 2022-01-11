@@ -63,6 +63,17 @@ Public class DriverManagerDriverControllerTest{
             );
             insert user_1;
         }
+		Bi_Weekly_Reimbursement__c br = new Bi_Weekly_Reimbursement__c();
+            br.Name = system.today()-13 + ' to ' + system.today() ; 
+            br.Contact__c = obj_driver_contact[0].Id;
+            br.Start_Date__c = system.today()-13;
+            br.End_Date__c = system.today() ;
+            br.MPG__c = obj_driver_contact[0].MPG__c;
+            br.Maintenance_and_Tires__c = obj_driver_contact[0].Maintenance_and_Tires__c;
+            br.Fixed_Amount__c = obj_driver_contact[0].Fixed_Amount__c;
+            br.Status__c = 'Pending';
+            br.Fuel_Price__c = 0;
+        Insert br;
         
         List<Employee_Reimbursement__c> obj_Employee_Reimbursement_List = RecordUtilityClass.getEmployee_Reimbursement(obj_acc.id);
         List<EmployeeReimbursementDetailsAdmin> obj_EmployeeReimbursementDetailsAdmin_List = RecordUtilityClass.getListofEmployeeReimbursementDetailsAdmin(obj_Employee_Reimbursement_List);
@@ -100,7 +111,10 @@ Public class DriverManagerDriverControllerTest{
             //DriverManagerDriverDetailsController.getMileages('08','2021',obj_driver_contact.id);
             DriverManagerDriverDetailsController.getMileagesBasedTandAtt(string.valueof(system.today()), string.valueof(system.today()+1), obj_driver_contact[0].Id);
              DriverManagerDriverDetailsController.biweeklyMileage(String.valueof(obj_driver_contact[0].Id), 2021);  
+            DriverManagerDriverDetailsController.getBiweekMileages(string.valueOf(br));
+            DriverManagerDriverDetailsController.ApproveBiweekMileages(string.valueOf(br));
            // DriverManagerDriverDetailsController.approveMileages(null,null,null,obj_driver_contact.Name,obj_driver_contact.Email);
+           
             }
         Test.stopTest();
     }
