@@ -1490,8 +1490,8 @@
                 });
             }
 
-            $scope.processApproval = function (start, end) {
-                    Visualforce.remoting.Manager.invokeAction('{!$RemoteAction.DriverManagerDriverDetailsController.ApproveBiweekMileages}', start, end, $scope.id,
+            $scope.processApproval = function (biweekId) {
+                    Visualforce.remoting.Manager.invokeAction('{!$RemoteAction.DriverManagerDriverDetailsController.ApproveBiweekMileages}', biweekId,
                         function (result, event) {
                             if (event.status) {
                                 $('#spinner').hide();
@@ -1515,7 +1515,7 @@
                 for (var i = 0; i < $scope.reimbMileages.length; i++) {
                     if ($scope.reimbMileages[i].isSelected == true) {
                         // $scope.biweeklyreimbursements.push($scope.reimbMileages[i]);
-                        $scope.processApproval($scope.reimbMileages[i].startDate, $scope.reimbMileages[i].endDate);
+                        $scope.processApproval($scope.reimbMileages[i].biweekId);
                     }
                 }
                 // var firstList = _.head($scope.biweeklyreimbursements);
@@ -1631,7 +1631,7 @@
                 return time;
             }
              // Biweekly modal 
-             $scope.openbiweeklymodal = function (stDate, enDate) {
+             $scope.openbiweeklymodal = function (stDate, enDate, biweekId) {
                 $('#spinner').show();
                 $scope.modalType = 'Biweekly';
                 $scope.emailofemployee = '{!emailofEmployee}';
@@ -1640,7 +1640,7 @@
                 $scope.bEndDate = $filter('date')(new Date(enDate), "yyyy-MM-dd");
                 $scope.clickedPeriod = "Pay Period" + " " + $filter('date')(new Date(stDate), "MM/dd/yy") + " - " + $filter('date')(new Date(enDate), "MM/dd/yy")
                 Visualforce.remoting.Manager.invokeAction(
-                    '{!$RemoteAction.DriverManagerDriverDetailsController.getBiweekMileages}', $scope.bStartDate, $scope.bEndDate, $scope.id,
+                    '{!$RemoteAction.DriverManagerDriverDetailsController.getBiweekMileages}', biweekId,
                     function (result, event) {
                         if (event.status && result != null) {
                             if (result != '') {
@@ -2141,13 +2141,13 @@
                     });
              }
               
-            $scope.downloadReimbReport = function (stDate, enDate) {
+            $scope.downloadReimbReport = function (stDate, enDate, biweekId) {
                 $scope.exportReimbusList = [];
                 $scope.bStartDate = $filter('date')(new Date(stDate), "yyyy-MM-dd");
                 $scope.bEndDate = $filter('date')(new Date(enDate), "yyyy-MM-dd");
                 $scope.clickedPeriod = "Pay Period" + " " + $filter('date')(new Date(stDate), "MM/dd/yy") + " - " + $filter('date')(new Date(enDate), "MM/dd/yy")
                 Visualforce.remoting.Manager.invokeAction(
-                    '{!$RemoteAction.DriverManagerDriverDetailsController.getBiweekMileages}', $scope.bStartDate, $scope.bEndDate, $scope.id,
+                    '{!$RemoteAction.DriverManagerDriverDetailsController.getBiweekMileages}', biweekId,
                     function (result, event) {
                         if (event.status && result != null) {
                             if (result != '') {
@@ -2583,7 +2583,7 @@
                                                 </thead>
                                                 <tbody class="driver-dashboard-table table-a-link">
                                                     <tr ng-repeat="reimbml in reimbMileages | orderBy : '-startDate'">
-                                                        <td ng-click="openbiweeklymodal(reimbml.startDate, reimbml.endDate)">
+                                                        <td ng-click="openbiweeklymodal(reimbml.startDate, reimbml.endDate, reimbml.biweekId)">
                                                             <a>{{reimbml.startDate | date : "'MM/dd/yy"}}</a>
                                                         </td>
                                                         <td>{{reimbml.endDate | date : "'MM/dd/yy"}}</td>
@@ -2600,7 +2600,7 @@
                                                             </div>
                                                         </td>
                                                         <td>
-                                                            <i class="fa fa-download fa-lg cursor-type" ng-click="downloadReimbReport(reimbml.startDate, reimbml.endDate)"></i>
+                                                            <i class="fa fa-download fa-lg cursor-type" ng-click="downloadReimbReport(reimbml.startDate, reimbml.endDate, reimbml.biweekId)"></i>
                                                         </td>
                                                     </tr>
                                                     <tr ng-if="reimbMileages.length == 0">
