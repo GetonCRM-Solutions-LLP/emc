@@ -11,11 +11,18 @@ global without sharing class RosterController
     @date 26th Feb 2019
     @description RosterController is Default Constructor.    
     */
-    
+    public date accPayperiodStart {get; set;}
+    public string accPayDays {get; set;}
     public RosterController() 
     {
         query='';
-        
+        for(Account acc : [SELECT id, Pay_Period_Start_Date__c, 
+                                    Pay_Period_Days__c 
+                                FROM Account 
+                                WHERE id =: getAccountid() ]){
+            accPayperiodStart = acc.Pay_Period_Start_Date__c;
+            accPayDays = string.valueOf(acc.Pay_Period_Days__c);
+        }
     }
     public static String getAccountid() {
         if (ApexPages.currentPage().getParameters().containsKey('accid') && String.isNotBlank(ApexPages.currentPage().getParameters().get('accid'))) {
@@ -1123,13 +1130,100 @@ global without sharing class RosterController
         for(Integer i = 1; i < month; i++) {
             monthList.add( ( i < 10 ? '0' : '' ) + i + '-' + system.today().year());
         }
-
         return monthList;
+    }
+
+    @RemoteAction
+    public static ResultResponse SaveLOA(String addNewEmployee)
+    {
+        System.debug('addNewEmployee='+addNewEmployee);
+        ResultResponse result = new ResultResponse();
+        result.hasError = false;
+        result.message = '';
+        List<LOAWrapper> employeeList = new List<LOAWrapper>();
+        employeeList = (List<LOAWrapper>)Json.deserialize(addNewEmployee,List<LOAWrapper>.class);
+        System.debug('employeeList='+employeeList);
+        List<Bi_Weekly_Reimbursement__c> biWeekList = new List<Bi_Weekly_Reimbursement__c>();
+        for(LOAWrapper objWrap : employeeList){
+            Bi_Weekly_Reimbursement__c objBiweek = new Bi_Weekly_Reimbursement__c();
+            objBiweek.id = objWrap.BiweekId;
+            if(objWrap.LOAStartDate != null){
+                objBiweek.LOA_Start_Date__c = Date.valueOf(objWrap.LOAStartDate);
+            } else {
+                objBiweek.LOA_Start_Date__c = null;
+            }
+            if(objWrap.LOAEndDate != null){
+                objBiweek.LOA_End_Date__c = Date.valueOf(objWrap.LOAEndDate);
+            }  else {
+                objBiweek.LOA_End_Date__c = null;
+            }       
+            if(objWrap.HalfFixedAmount != null){
+                objBiweek.Fixed_Amount__c = (objWrap.HalfFixedAmount * 26)/12;
+            } else {
+                objBiweek.Fixed_Amount__c = 0;
+            }
+            biWeekList.add(objBiweek);
+        }
+        if(biWeekList.size() > 0){
+            try{
+                update biWeekList;
+            } catch (System.DmlException e){
+                result.hasError = true;
+                for (Integer i = 0; i < e.getNumDml(); i++) {
+                    result.message = e.getDmlId(i)+'=='+e.getDmlMessage(i);
+                }
+                return result;
+            }
+        }     
+        return result;   
+    }
+    @RemoteAction
+    public static List<LOAWrapper> BiweekReimRecord(String startdate,String enddate,String accID)
+    {
+        system.debug('startdate=='+ startdate);
+        system.debug('enddate=='+ enddate);
+        system.debug('accID=='+ accID);
+        List<LOAWrapper> biWeekWrapList = new List<LOAWrapper>();
+        for(Bi_Weekly_Reimbursement__c biweekReim : [SELECT id,Contact_Id_Name__c, Contact_Email__c,
+                                                                LOA_Start_Date__c, LOA_End_Date__c,
+                                                                Half_Fixed_Amount__c,name 
+                                                            FROM Bi_Weekly_Reimbursement__c 
+                                                            WHERE Contact__r.AccountId =:accID 
+                                                            AND Start_Date__c >=: Date.valueOf(startdate) 
+                                                            and End_Date__c <=: Date.valueOf(enddate) ]){
+            LOAWrapper objWrap = new LOAWrapper();  
+            objWrap.BiweekId = biweekReim.id;
+            objWrap.ContactEmail = biweekReim.Contact_Email__c;
+            //objWrap.LOAStartDate = String.valueOf(biweekReim.LOA_Start_Date__c);
+            //objWrap.LOAEndDate = String.valueOf(biweekReim.LOA_End_Date__c);
+            if(biweekReim.LOA_Start_Date__c != null){
+                objWrap.LOAStartDate = String.valueOf(biweekReim.LOA_Start_Date__c.month())+'/'+String.valueOf(biweekReim.LOA_Start_Date__c.day())+'/'+String.valueOf(biweekReim.LOA_Start_Date__c.year());
+            }
+            if(biweekReim.LOA_End_Date__c != null){
+                objWrap.LOAEndDate = String.valueOf(biweekReim.LOA_End_Date__c.month())+'/'+String.valueOf(biweekReim.LOA_End_Date__c.day())+'/'+String.valueOf(biweekReim.LOA_End_Date__c.year());
+            }
+            objWrap.HalfFixedAmount = biweekReim.Half_Fixed_Amount__c;
+            objWrap.ContactName = biweekReim.Contact_Id_Name__c;
+            biWeekWrapList.add(objWrap);
+            //2022-01-05
+            //m/dd/yyyy
+            
+        }
+        return biWeekWrapList;
     }
     public class ResultResponse {
         public Boolean hasError { get; set;}
         public string message { get; set;}
         public String result { get; set;}
     }
-
+    public class LOAWrapper {
+        public String BiweekId {get;set;} 
+        public String ContactEmail {get;set;} 
+        public String LOAStartDate {get;set;} 
+        public String LOAEndDate {get;set;} 
+        public Decimal HalfFixedAmount {get;set;} 
+        public String ContactName {get;set;} 
+        //public String Contact {get;set;} 
+        //public String Name {get;set;}
+    }
 }

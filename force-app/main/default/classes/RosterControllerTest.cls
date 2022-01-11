@@ -44,6 +44,7 @@ public class RosterControllerTest {
             insert obj_Manager_list;
 
             obj_Driver_list = RecordUtilityClass.buildDriverContact(obj_Account,obj_Manager_list[0]);
+            system.debug('obj_Account=='+ obj_Account);
             obj_Contact2 = obj_Driver_list[0];
             obj_Driver_list1 = new List<Contact>();
 
@@ -92,6 +93,7 @@ public class RosterControllerTest {
         List<EmployeeDetails> obj_list_EmployeeDetails = new List<EmployeeDetails>();
         obj_list_EmployeeDetails.add(empDetail);
         Test.startTest();
+        
         System.runAs(user_1) {
             Test.setCurrentPage(Page.roster);
             String conId = ApexPages.currentPage().getParameters().put('id',obj_admincontact.Id);
@@ -123,6 +125,28 @@ public class RosterControllerTest {
             for(contact cont:obj_Manager_list){
                 conIdList.add(cont.Id);
             }
+            
+            
+            
+            Bi_Weekly_Reimbursement__c br = new Bi_Weekly_Reimbursement__c();
+            br.Name = system.today()-13 + ' to ' + system.today() ; 
+            br.Contact__c = obj_Driver_list[0].Id;
+            br.Start_Date__c = date.valueOf('2021-12-23');
+            br.End_Date__c = date.valueOf('2021-12-28');
+            br.MPG__c = obj_Driver_list[0].MPG__c;
+            br.Maintenance_and_Tires__c = obj_Driver_list[0].Maintenance_and_Tires__c;
+            br.Fixed_Amount__c = obj_Driver_list[0].Fixed_Amount__c;
+            br.Status__c = 'Pending';
+            br.Fuel_Price__c = 0;
+            
+            RosterController.LOAWrapper empW = new RosterController.LOAWrapper();
+             empW.BiweekId = string.valueOf(br.Id);
+        	 empW.ContactEmail = 'rghgfhgf21212@gmail.com';  
+        	 empW.LOAStartDate = '2021-12-22'; 
+        	 empW.LOAEndDate  = '2021-12-29';
+             empW.HalfFixedAmount  = 234.43;
+        	 empW.ContactName = 'Test Name';
+            
             RosterController.massFreeze(JSON.serialize(conIdList),true);
             RosterController.editInlineNewEmployee(NULL,'','');
             empDetail.lastname='sdhshdgsag21212';
@@ -149,6 +173,8 @@ public class RosterControllerTest {
             RosterController.putHTTPConcurConnect(obj_Account.Id,JSON.serialize(insertedContactIDList));
             RosterController.deleteTrips(obj_Account.Id,'09-2021');
             RosterController.getLoginAsData(obj_Account.Id);
+            RosterController.BiweekReimRecord('2021-12-21','2021-12-30',String.valueOf(obj_Account.id));
+            RosterController.SaveLOA(string.valueOf( JSON.serialize(obj_list_EmployeeDetails)));
         }
         Test.stopTest();
     }
