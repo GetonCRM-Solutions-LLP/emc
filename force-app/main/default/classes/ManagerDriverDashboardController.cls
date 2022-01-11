@@ -202,19 +202,22 @@ public with sharing class ManagerDriverDashboardController
     } 
     @RemoteAction
     public static List<BiweeklyPayPeriod.BiweeklyWrap> biweeklyMileage(String conId,Integer year){
-        return BiweeklyPayPeriod.getBiweeklyMileage(conId,year);
+        //return BiweeklyPayPeriod.getBiweeklyMileage(conId,year);
+        return BiweeklyPayPeriod.getBiweeklyReimbursement(conId,year);
     }
 
     @RemoteAction
-    public static List<String> getBiweekMileages(string startdate,string enddate,String did)
+    public static List<String> getBiweekMileages(string biweekId)
     {
-        return BiweeklyPayPeriod.getMileages1(date.valueof(startdate),date.valueof(enddate),did);
+        //return BiweeklyPayPeriod.getMileages1(date.valueof(startdate),date.valueof(enddate),did);
+        return BiweeklyPayPeriod.getBiweekMileages1(biweekId);
     } 
 
     @RemoteAction
-    public static string ApproveBiweekMileages(string startdate,string enddate,String did)
+    public static string ApproveBiweekMileages(string biweekId)
     {
-        BiweeklyPayPeriod.ApproveTrips(date.valueof(startdate),date.valueof(enddate),did);
+        //BiweeklyPayPeriod.ApproveTrips(date.valueof(startdate),date.valueof(enddate),did);
+        BiweeklyPayPeriod.ApproveBiWeekTrips(biweekId);
         return 'sucess';
     } 
 }
