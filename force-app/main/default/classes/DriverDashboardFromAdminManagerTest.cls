@@ -93,6 +93,18 @@ public class DriverDashboardFromAdminManagerTest {
                 obj_EmployeeMileages_list1.add(obj);
             }
          }
+        
+        Bi_Weekly_Reimbursement__c br = new Bi_Weekly_Reimbursement__c();
+            br.Name = system.today()-13 + ' to ' + system.today() ; 
+            br.Contact__c = obj_driver_contact[0].Id;
+            br.Start_Date__c = system.today()-13;
+            br.End_Date__c = system.today() ;
+            br.MPG__c = obj_driver_contact[0].MPG__c;
+            br.Maintenance_and_Tires__c = obj_driver_contact[0].Maintenance_and_Tires__c;
+            br.Fixed_Amount__c = obj_driver_contact[0].Fixed_Amount__c;
+            br.Status__c = 'Pending';
+            br.Fuel_Price__c = 0;
+        Insert br;
             Test.startTest();
         System.runAs(user_1) {
             DriverDashboardFromAdminManager obj_DriverDashboardFromAdminManager = new DriverDashboardFromAdminManager();
@@ -117,8 +129,10 @@ public class DriverDashboardFromAdminManagerTest {
             DriverDashboardFromAdminManager.TimeAttendance(obj_driver_contact[0].Id,'2021');
             //DriverDashboardFromAdminManager.TripCallout(obj_driver_contact[0].Id, '09', '2021', 3.12,0.09, Json.serialize(obj_Employee_Reimbursement_List).Id, 16.50, 'Approved');
             DriverDashboardFromAdminManager.biweeklyMileage(String.valueof(obj_driver_contact[0].Id), 2021);
-            DriverDashboardFromAdminManager.getBiweekMileages('2021-11-12','2021-12-30',obj_driver_contact[0].id);
-            DriverDashboardFromAdminManager.ApproveBiweekMileages('2021-11-12','2021-12-30',obj_driver_contact[0].id);
+            //DriverDashboardFromAdminManager.getBiweekMileages('2021-11-12','2021-12-30',obj_driver_contact[0].id);
+            DriverDashboardFromAdminManager.getBiweekMileages(string.valueOf(br));
+            //DriverDashboardFromAdminManager.ApproveBiweekMileages('2021-11-12','2021-12-30',obj_driver_contact[0].id);
+            DriverDashboardFromAdminManager.ApproveBiweekMileages(string.valueOf(br));
             
             //DriverDashboardFromAdminManager.biweeklyMileage(obj_driver_contact.Id[0],'2021');          
          }
