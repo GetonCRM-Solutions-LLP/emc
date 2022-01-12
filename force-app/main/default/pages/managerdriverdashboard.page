@@ -1474,12 +1474,15 @@
             }
 
             $scope.CheckUncheckPendingTrip = function (ch, index) {
-                var totalfortrip = $('.approveChkForTrip').length;
+                var totalfortrip = 0;
                 var tripcount = 0;
                 angular.forEach($scope.reimbMileages, function (item, m) {
                     item.isSelected = (index === m) ? ch : item.isSelected;
                     if (item.isSelected) {
                         tripcount++;
+                    }
+                    if(item.checkPendingTrip){
+                        totalfortrip ++;
                     }
                 });
                 if (totalfortrip == tripcount)
