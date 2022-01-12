@@ -45,10 +45,15 @@ public with sharing class ComplianceReportPLM {
     {
          system.debug('insert into getComplianceContacts');
         List<ID> obj_list_id = new List<ID>();
-        for(Contact con : [SELECT id, compliancestatus__c, Name, Employee_ID__c,
-                                External_Email__c 
+        for(Contact con : [SELECT id, Employee_ID__c,Name,
+                                    External_Email__c,Division__c,
+                                    Added_Date__c,Insurance__c,compliancestatus__c,
+                                    Expiration_Date__c,Vehicle_Value_Check__c, 
+                                    Vehicle_Age__c, Total_BiWeek_Mileage__c,
+                                    No_of_Bi_Weekly_Reim_for_current_year__c,
+                                    Compliance_Need_Mileage__c  
                             FROM Contact 
-                            WHERE (compliancestatus__c ='Yes')
+                            WHERE (compliancestatus__c != 'Yes')
                                 AND Deactivated_Date__c = null 
                                 AND AccountId =: accountId 
                                 AND (Role__c =: StaticValues.roleAdminDriver 
@@ -59,6 +64,8 @@ public with sharing class ComplianceReportPLM {
                 obj_contact_map.put(con.id,con);    
             }
         }
+        system.debug('payperiodStart=='+ payperiodStart);
+        system.debug('payperiodEnd=='+ payperiodEnd);
         Map<String,List<Bi_Weekly_Reimbursement__c>> obj_map_Employee_Reimbursement = new Map<String,List<Bi_Weekly_Reimbursement__c>>();
         for(Bi_Weekly_Reimbursement__c biweekreim : [SELECT id,Total_Mileage__c,Total_Monthly_Reimbursement__c, 
                                                         Contact__c, Contact__r.Name, Contact__r.Employee_ID__c,
@@ -110,13 +117,22 @@ public with sharing class ComplianceReportPLM {
                 
                 if(obj_contact_map.containsKey(s)) {
                     wrapperTaxReport objw = new wrapperTaxReport();
-                    objw.drivername = obj_contact_map.get(s).Name;
-                    objw.employeeid =obj_contact_map.get(s).Employee_ID__c;
+                    objw.employeeid = obj_contact_map.get(s).Employee_ID__c;
+                    objw.drivername = obj_contact_map.get(s).Name;                    
                     objw.emailid = obj_contact_map.get(s).External_Email__c;
+                    objw.divison = String.valueOf(obj_contact_map.get(s).Division__c);
+                    objw.addedDate = String.valueOf(obj_contact_map.get(s).Added_Date__c);
+                    objw.insurance = obj_contact_map.get(s).Insurance__c;
+                    objw.complianceStatus = obj_contact_map.get(s).compliancestatus__c;
+                    objw.expirationDate = String.valueOf(obj_contact_map.get(s).Expiration_Date__c);
+                    objw.vehicleValue = obj_contact_map.get(s).Vehicle_Value_Check__c;
+                    objw.vehicleAge = obj_contact_map.get(s).Vehicle_Age__c;
+                    objw.noOfBiweek = String.valueOf(obj_contact_map.get(s).No_of_Bi_Weekly_Reim_for_current_year__c);
+                    objw.approvedmileages = totalmileages.setScale(2);
+                    objw.complianceMileage = obj_contact_map.get(s).Compliance_Need_Mileage__c;
+                    objw.totalreim = Decimal.valueOf(TotalActualReimbursements).setScale(2);
                     objw.iRSallowable = Decimal.valueOf(MaximumAllowable).setScale(2);
                     objw.imputedincome = Decimal.valueOf(AnnualTaxLiability).setScale(2);
-                    objw.approvedmileages = totalmileages.setScale(2);
-                    objw.totalreim = Decimal.valueOf(TotalActualReimbursements).setScale(2);
                     obj_ListwrapperTaxReport.add(objw);
                 }
             }    
@@ -125,10 +141,19 @@ public with sharing class ComplianceReportPLM {
     }
     public class wrapperTaxReport
     {
-        public String drivername {get;set;}
         public String employeeid {get;set;}
+        public String drivername {get;set;}
         public String emailid {get;set;}
+        public String divison {get;set;}
+        public String addedDate {get;set;}
+        public String insurance {get;set;}
+        public String complianceStatus {get;set;}
+        public String expirationDate {get;set;}
+        public String vehicleValue {get;set;}
+        public String vehicleAge {get;set;}        
+        public String noOfBiweek {get;set;}
         public Double approvedmileages {get;set;}
+        public Double complianceMileage {get;set;}
         public Double totalreim {get;set;}
         public Double iRSallowable {get;set;}
         public Double imputedincome {get;set;}
