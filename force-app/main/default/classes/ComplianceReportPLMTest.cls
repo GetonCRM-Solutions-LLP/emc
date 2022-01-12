@@ -88,9 +88,9 @@ public class ComplianceReportPLMTest {
             con1.LastName = 'Gajera';
             con1.AccountId = acc.Id;
             con1.External_Email__c = 'minkesjhh.patel1478@gmail.com';
-            con1.compliancestatus__c = 'Yes';
+            con1.compliancestatus__c = 'No Compliance';
             con1.Deactivated_Date__c = Null;
-            con1.Role__c = 'Driver/Admin';
+            con1.Role__c = 'Driver/Manager';
             con1.Insurance_Attachment_Id__c = Null;
             con1.Vehicle_Type__c = '2019 Full-Size Sedan';
             con1.Time_Zone__c = 'US/Eastern';
@@ -114,10 +114,10 @@ public class ComplianceReportPLMTest {
         }
         
         Bi_Weekly_Reimbursement__c br = new Bi_Weekly_Reimbursement__c();
-            br.Name = system.today()-13 + ' to ' + system.today() ; 
+            br.Name = '07/25/2021 to 08/08/2021'; 
             br.Contact__c = con1.Id;
-            br.Start_Date__c = system.today()-14;
-            br.End_Date__c = system.today()-1;
+            br.Start_Date__c = date.valueOf('2021-07-25');
+            br.End_Date__c = date.valueOf('2021-08-08');
             br.MPG__c = con1.MPG__c;
             br.Maintenance_and_Tires__c = con1.Maintenance_and_Tires__c;
             br.Fixed_Amount__c = con1.Fixed_Amount__c;
@@ -169,6 +169,15 @@ public class ComplianceReportPLMTest {
         wrp.totalreim = 21;
         wrp.iRSallowable = 212;
         wrp.imputedincome = 23;
+        wrp.divison = '11';
+        wrp.addedDate = string.valueOf(system.today());
+        wrp.insurance = 'gjdgk123345';
+        wrp.complianceStatus = 'Pending';
+        wrp.expirationDate = string.valueOf(system.today()+31);
+        wrp.vehicleValue = '3400';
+        wrp.vehicleAge = '6';
+        wrp.noOfBiweek = '8';
+        wrp.complianceMileage = 1230;
         
         Test.startTest();
         apexpages.currentpage().getparameters().put('accid',acc.Id);
