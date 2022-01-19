@@ -77,11 +77,14 @@ public with sharing class BiweeklyPayPeriod {
     }
     
     public static List<BiweeklyWrap> getBiweeklyMileage(String contactid,Integer years) {
+        system.debug('contactid=='+ contactid);
+        system.debug('years=='+ years);
         List<String> startEnddate = new List<String>();
         List<BiweeklyWrap> timeWrapList = new List<BiweeklyWrap>();
         BiweeklyWrap obj;
         List<String> dateRange = new List<String>();
         dateRange = getPayPeriodDates (contactid,years);
+        system.debug('dateRange=='+ dateRange);
         if(!dateRange.isEmpty())
         {
             Integer i = 0;    
@@ -198,7 +201,7 @@ public with sharing class BiweeklyPayPeriod {
     public static List<BiweeklyWrap> getBiweeklyReimbursement(String contactid,Integer years) {
         List<BiweeklyWrap> timeWrapList = new List<BiweeklyWrap>();
 
-        for(Bi_Weekly_Reimbursement__c biweekReim : [SELECT id,name,Start_Date__c, End_Date__c,
+        for(Bi_Weekly_Reimbursement__c biweekReim : [SELECT id,name,Start_Date__c, End_Date__c,Total_Approved__c,
                                                         Fuel_Price__c, Half_Fixed_Amount__c,Status__c,
                                                         Total_Mileage__c,Total_Monthly_Approved_Variable__c,
                                                         Total_Monthly_Reimbursement__c,Mileage_Lock_Date__c  
@@ -229,8 +232,13 @@ public with sharing class BiweeklyPayPeriod {
                 } else {
                     objWrap.fixedAmount = '0';
                 }
-                if(biweekReim.Total_Mileage__c != null ){
-                    objWrap.mileage = String.valueOf(biweekReim.Total_Mileage__c);
+                
+                if(biweekReim.End_Date__c != null && biweekReim.Total_Mileage__c != null && biweekReim.End_Date__c.month() == System.today().month() && biweekReim.End_Date__c.year() == System.today().year()){
+                    objWrap.mileage = String.valueOf(biweekReim.Total_Mileage__c );
+                } else if(biweekReim.End_Date__c != null && biweekReim.End_Date__c.month() == System.today().month() && biweekReim.End_Date__c.year() == System.today().year()){
+                     objWrap.mileage = '0';
+                } else if(biweekReim.Total_Approved__c != null){
+                    objWrap.mileage = String.valueOf(biweekReim.Total_Approved__c);
                 } else {
                     objWrap.mileage = '0';
                 }
@@ -387,21 +395,31 @@ public with sharing class BiweeklyPayPeriod {
     }
     
      public static List<String> getPayPeriodDates (String contactid,Integer years){
+         system.debug('contactidpayperiod=='+ contactid);
+         
          List<String> dateRange = new List<String>();
         String startDate;
         date activationdate;
         List <Contact> conList = [SELECT id,Activation_Date__c,Deactivated_Date__c,Account.Pay_Period_Start_Date__c 
                                         FROM Contact 
                                         WHERE Id =: contactid ];
-        
+        system.debug('conList==' + conList);
+         system.debug('Pay_Period_Start_Date__c==' + conList[0].Account.Pay_Period_Start_Date__c);
+         
         if(conList[0].Account.Pay_Period_Start_Date__c != null && conList[0].Activation_Date__c != null){
             startDate = String.valueOf(conList[0].Account.Pay_Period_Start_Date__c);
             activationdate = date.valueOf(conList[0].Activation_Date__c);
         }
         
-        for(integer i=0; i<=27; i++ ) {              
-            if(years == date.valueof(startDate).year()) {                
-                String enddate = String.valueof(date.valueof(startDate).addDays(13));      
+        for(integer i=0; i<=27; i++ ) {  
+	 system.debug('insert into if loop'); 
+            system.debug('yearsif=='+ years);
+            system.debug('startdateyear=='+ date.valueof(startDate).year());
+            if(years == date.valueof(startDate).year()) { 
+                system.debug('insert into if loop');            
+                String enddate = String.valueof(date.valueof(startDate).addDays(13));  
+                System.debug('enddate'+enddate);
+                System.debug('activationdate'+activationdate);
                 if(  conList.size() > 0 && conList[0].Deactivated_Date__c != null && activationdate != null && ( date.valueof(startdate) < date.valueOf(conList[0].Deactivated_Date__c) ) ) {  
                     //if(date.valueof(startdate) <= activationdate && date.valueof(enddate) >= activationdate){
                     if(activationdate <  date.valueof(enddate)) {
@@ -418,5 +436,6 @@ public with sharing class BiweeklyPayPeriod {
             }
         }
         return dateRange;
+         
      }
 }
