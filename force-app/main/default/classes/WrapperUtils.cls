@@ -931,7 +931,17 @@ public with sharing class WrapperUtils
         employeeReimbursement.month  = getMonthName(currentEmployeeReimbursement.Month__c);
         employeeReimbursement.intmonth  = getMonthInteger(currentEmployeeReimbursement.Month__c);
         employeeReimbursement.fuel  =String.valueOf(currentEmployeeReimbursement.Fuel_Price__c);
-        employeeReimbursement.mileage  =String.valueOf(currentEmployeeReimbursement.Total_Mileage__c);
+        //employeeReimbursement.mileage  =String.valueOf(currentEmployeeReimbursement.Total_Mileage__c);
+        Integer checkYear;
+        if(currentEmployeeReimbursement.Month__c.contains('-'))
+        {
+           checkYear = Integer.valueOf( currentEmployeeReimbursement.Month__c.split('-')[1]); 
+        }
+        if(employeeReimbursement.intmonth != null && employeeReimbursement.intmonth == system.today().month() && checkYear != null && checkYear == system.today().year()){
+            employeeReimbursement.mileage  =String.valueOf(currentEmployeeReimbursement.Total_Mileage__c);
+        } else {
+            employeeReimbursement.mileage  =String.valueOf(currentEmployeeReimbursement.Total_Approved__c);
+        }
         employeeReimbursement.maintainsAndTyres  =String.valueOf(currentEmployeeReimbursement.Maintenance_and_Tires__c);
         employeeReimbursement.mpg  =String.valueOf(currentEmployeeReimbursement.MPG__c );
         String fixedandvariable ='';
@@ -2225,16 +2235,16 @@ public with sharing class WrapperUtils
             if((monthList.size() > 0 && conList.isEmpty()) || (monthList.size() > 0 && !conList.isEmpty() && System.today().Month() == 1) || (monthList.size() > 0 && !conList.isEmpty() && Integer.valueOf(year) != System.today().year()))
             {
                 editedquery = setQueryParameters(monthList);
-                query = 'Select id,Contact_Email__c,Contact_Id__r.Driver_Type__c,Monthly_Fixed_Amount__c,Number_of_Pay_Period__c,Half_Fixed_Amount__c,Month__c,Total_Variable_Rate__c,Fuel_Price__c,Total_Mileage__c,Fixed_Amount__c,Variable_Rate__c,Total_Monthly_Reimbursement__c,Contact_Id__c,Approved_Date__c,Status__c,Total_Pending__c,Monthly_Variable_Amount__c,Total_Monthly_Approved_Variable__c,MPG__c,Maintenance_and_Tires__c from Employee_Reimbursement__c where Contact_Id__c=\''+did+'\' and Month__c IN '+ editedquery;
+                query = 'Select id,Contact_Email__c,Contact_Id__r.Driver_Type__c,Total_Approved__c,Monthly_Fixed_Amount__c,Number_of_Pay_Period__c,Half_Fixed_Amount__c,Month__c,Total_Variable_Rate__c,Fuel_Price__c,Total_Mileage__c,Fixed_Amount__c,Variable_Rate__c,Total_Monthly_Reimbursement__c,Contact_Id__c,Approved_Date__c,Status__c,Total_Pending__c,Monthly_Variable_Amount__c,Total_Monthly_Approved_Variable__c,MPG__c,Maintenance_and_Tires__c from Employee_Reimbursement__c where Contact_Id__c=\''+did+'\' and Month__c IN '+ editedquery;
             } 
             else if(monthList.size() > 0 && !conList.isEmpty() ) {
                 monthlist.remove(monthList.size()-1);
                 editedquery = setQueryParameters(monthList);
-                query = 'Select id,Contact_Email__c,Contact_Id__r.Driver_Type__c,Monthly_Fixed_Amount__c,Number_of_Pay_Period__c,Half_Fixed_Amount__c,Month__c,Total_Variable_Rate__c,Fuel_Price__c,Total_Mileage__c,Fixed_Amount__c,Variable_Rate__c,Total_Monthly_Reimbursement__c,Contact_Id__c,Approved_Date__c,Status__c,Total_Pending__c,Monthly_Variable_Amount__c,Total_Monthly_Approved_Variable__c,MPG__c,Maintenance_and_Tires__c from Employee_Reimbursement__c where Contact_Id__c=\''+did+'\' and Month__c IN '+ editedquery;
+                query = 'Select id,Contact_Email__c,Contact_Id__r.Driver_Type__c,Total_Approved__c,Monthly_Fixed_Amount__c,Number_of_Pay_Period__c,Half_Fixed_Amount__c,Month__c,Total_Variable_Rate__c,Fuel_Price__c,Total_Mileage__c,Fixed_Amount__c,Variable_Rate__c,Total_Monthly_Reimbursement__c,Contact_Id__c,Approved_Date__c,Status__c,Total_Pending__c,Monthly_Variable_Amount__c,Total_Monthly_Approved_Variable__c,MPG__c,Maintenance_and_Tires__c from Employee_Reimbursement__c where Contact_Id__c=\''+did+'\' and Month__c IN '+ editedquery;
             }
             else
             {
-                query = 'Select id,Month__c,Contact_Id__r.Driver_Type__c,Monthly_Fixed_Amount__c,Number_of_Pay_Period__c,Half_Fixed_Amount__c,Contact_Email__c,Total_Variable_Rate__c,Fuel_Price__c,Total_Mileage__c,Fixed_Amount__c,Variable_Rate__c,Total_Monthly_Reimbursement__c,Contact_Id__c,Approved_Date__c,Status__c,Total_Pending__c,Monthly_Variable_Amount__c,Total_Monthly_Approved_Variable__c,MPG__c,Maintenance_and_Tires__c from Employee_Reimbursement__c where Contact_Id__c=\''+did+'\'';
+                query = 'Select id,Month__c,Contact_Id__r.Driver_Type__c,Total_Approved__c,Monthly_Fixed_Amount__c,Number_of_Pay_Period__c,Half_Fixed_Amount__c,Contact_Email__c,Total_Variable_Rate__c,Fuel_Price__c,Total_Mileage__c,Fixed_Amount__c,Variable_Rate__c,Total_Monthly_Reimbursement__c,Contact_Id__c,Approved_Date__c,Status__c,Total_Pending__c,Monthly_Variable_Amount__c,Total_Monthly_Approved_Variable__c,MPG__c,Maintenance_and_Tires__c from Employee_Reimbursement__c where Contact_Id__c=\''+did+'\'';
             }              
 
             List<EmployeeReimbursements> reimbursementList =  new List<EmployeeReimbursements>();
