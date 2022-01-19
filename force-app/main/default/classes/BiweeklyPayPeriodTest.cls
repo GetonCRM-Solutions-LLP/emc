@@ -3,6 +3,8 @@ public class BiweeklyPayPeriodTest {
     public BiweeklyPayPeriodTest() {
     }
     public static testmethod void test1(){
+        
+        
         TriggerConfig__c customEmailSetting =  new TriggerConfig__c();
         customEmailSetting.Name = 'Defaulttrigger';
         customEmailSetting.ContactTriggersendEmailForNewContact__c = true;
@@ -36,7 +38,7 @@ public class BiweeklyPayPeriodTest {
         Contact con = new Contact();
         System.runAs(admin) {
         acc.Name = 'Test Account';
-        acc.Pay_Period_Start_Date__c = system.today();
+        acc.Pay_Period_Start_Date__c = date.parse('9/5/2021');
         acc.Pay_Period_Days__c = 13;
         insert acc;
         Contact contact_1 = new Contact(AccountId = acc.Id, LastName = 'xgeek',External_Email__c='abc@gmail.com');
@@ -95,10 +97,10 @@ public class BiweeklyPayPeriodTest {
         insert er;
         
         Bi_Weekly_Reimbursement__c br = new Bi_Weekly_Reimbursement__c();
-            br.Name = system.today()-13 + ' to ' + system.today() ; 
+            br.Name = 9/5/2021 + ' to ' + 9/18/2021 ; 
             br.Contact__c = con.Id;
-            br.Start_Date__c = system.today()-13;
-            br.End_Date__c = system.today() ;
+            br.Start_Date__c = date.parse('9/5/2021');
+            br.End_Date__c = date.parse('9/18/2021');
             br.MPG__c = con.MPG__c;
             br.Maintenance_and_Tires__c = con.Maintenance_and_Tires__c;
             br.Fixed_Amount__c = con.Fixed_Amount__c;
@@ -122,6 +124,7 @@ public class BiweeklyPayPeriodTest {
         
         Test.startTest();
         System.runAs(user_1) {
+            integer i = 0;
         BiweeklyPayPeriod.getTimeAndAttendance(con.Id, '2021');
         BiweeklyPayPeriod.getBiweeklyMileage(con.Id, 2021);
         BiweeklyPayPeriod.getMileages1(system.today()-1, system.today(), con.Id);
