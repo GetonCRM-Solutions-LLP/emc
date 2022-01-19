@@ -222,6 +222,9 @@
                 text-align: center;
             }
 
+            .pd-0{
+                padding: 0 !important
+            }
             .date-added-th {
                 width: 8vw;
                 cursor: pointer !important;
@@ -229,6 +232,11 @@
 
             .insurance-th {
                 width: 44vw;
+            }
+
+            .action-th{
+                width: 3vw;
+                padding: 0 !important;
             }
 
             .driver-th {
@@ -358,8 +366,8 @@
             })
 
             var app = angular.module('updateInsuranceModule', ['angularUtils.directives.dirPagination']);
-            app.controller('updateInsuranceController', ['$scope', '$filter',
-                function ($scope, $filter) {
+            app.controller('updateInsuranceController', ['$scope', '$filter', '$timeout',
+                function ($scope, $filter, $timeout) {
                     /** 
                    * EMC - 167 : Excel Download, Sorting, Compliance, Searching 
                    * Date Added : 16 Dec 2021 */
@@ -369,9 +377,13 @@
                     $scope.pageSize = 20;
                     $scope.showError = false;
                     $scope.IsVisibleUpdatebtn = false;
+                    $scope.showCancelActionBtn = false;
+                    $scope.checkboxobjActionShow = false;
                     $scope.updateInsuranceList = [];
                     $scope.compliancelist = [];
+                    $scope.empupdatelist = [];
                     $scope.queryBy = "name";
+                    $scope.actionBy = "default";
                     var url_string = $(location).attr("href");
                     var url = new URL(url_string);
                     var beforeUpdateInsurance = [];
@@ -381,6 +393,7 @@
                     angular.forEach($scope.complianceList, function (cop) {
                             cop.aDate = (cop.addedDate != null) ? $filter('date')(new Date(cop.addedDate), 'MM/dd/yy') : cop.addedDate;
                             cop.eDate = (cop.expirationDate != null) ? $filter('date')(new Date(cop.expirationDate), 'MM/dd/yy') : cop.expirationDate;
+                            cop.isActionDone = false;
                     })
                     $scope.insuranceList = angular.copy($scope.complianceList)
                     console.log("From List-> ", $scope.complianceList);
@@ -418,7 +431,7 @@
                             beforeUpdateInsurance = angular.copy($scope.insuranceList);
                         }
                     }
-                    $scope.keyPressed = function (keyEvent, len) {
+                    $scope.keyPressed = function (keyEvent, th) {
                         if ($scope.queryBy === undefined) {
                             toastr.error("Select column name for search");
                         }
@@ -431,6 +444,158 @@
                         $scope.$apply(function () {
                             location.reload();
                         });
+                    }
+
+                    /** 
+                     * EMC - 194 : Action button Functionality on Compliance Page
+                     * Date Added : 13 January 2022 */
+
+                    $scope.CheckUncheckAllForAction = function (CheckUncheckAllForAction) {
+                        $scope.checkboxobj.isCheckedAllForAction = CheckUncheckAllForAction;
+                        if ($scope.checkboxobj.isCheckedAllForAction == true) {
+                            $scope.showCancelActionBtn = true;
+                        }
+                        else {
+                            $scope.showCancelActionBtn = false;
+                        }
+                        if ($scope.search != undefined) {
+                            var searchKey = $scope.search[$scope.queryBy]
+                            var object = $scope.queryBy;
+                            $scope.filteredArray = $filter('filter')($scope.insuranceList, { [object]: searchKey });
+                            angular.forEach($scope.filteredArray, function (e) {
+                                e.isActionDone = $scope.checkboxobj.isCheckedAllForAction;
+                                $scope.empupdatelist.push(e);
+                            });
+                        } else {
+                            angular.forEach($scope.insuranceList, function (e) {
+                                e.isActionDone = $scope.checkboxobj.isCheckedAllForAction;
+                                $scope.empupdatelist.push(e);
+                            });
+                        }
+                    }
+
+                    $scope.displayCheckboxForAction = function (){
+                        $scope.checkboxobj = {}	
+                        $scope.checkboxobj.isCheckedAllForAction = false;
+                        angular.forEach($scope.insuranceList, function (item) {
+                              item.isActionDone = false;
+                        });
+                    }
+                    $scope.CheckUncheckForAction = function (e) {
+                            $scope.recordfoundindex = -1;
+                            var employeeLen = $scope.insuranceList.length;
+                            var count = 0;
+                            angular.forEach($scope.insuranceList, function (item) {
+                                if (item.isActionDone) {
+                                    count++;
+                                }
+                            });
+
+                            if (count > 0) {
+                                $scope.showCancelActionBtn = true;
+                            }
+                            else {
+                                $scope.showCancelActionBtn = false;
+                            }
+                            if (count === employeeLen) {
+                                $scope.checkboxobj.isCheckedAllForAction = true;
+                            } else {
+                                $scope.checkboxobj.isCheckedAllForAction = false;
+                            }
+
+                            if ($scope.empupdatelist.length > 0) {
+                                for (var i = 0; i < $scope.empupdatelist.length; i++) {
+                                    if ($scope.empupdatelist[i].contactId === e.contactId) {
+                                        $scope.recordfoundindex = i;
+                                        break;
+                                    }
+                                }
+
+                                if ($scope.recordfoundindex != -1) {
+                                    $scope.empupdatelist.splice($scope.recordfoundindex, 1);
+                                }
+
+                                else {
+                                    $scope.empupdatelist.push(e);
+                                }
+                            } else {
+                                $scope.empupdatelist.push(e);
+                            }
+                    }
+
+                    $scope.resetAction = function (action) {
+                        $scope.empupdatelist = [];
+                        if(action != "default"){
+                            $scope.checkboxobjActionShow = true;
+                            $scope.showCancelActionBtn = false;
+                            $scope.displayCheckboxForAction();
+                        }else{
+                            $scope.checkboxobj.isCheckedAllForAction = false;
+                            angular.forEach($scope.insuranceList, function (item) {
+                                item.isActionDone = false;
+                            });
+                            $scope.checkboxobjActionShow = false;
+                            $scope.showCancelActionBtn = false;
+                        }
+                       
+                    }
+
+                    $scope.resetEmployees = function() {
+                        if($scope.empupdatelist.length > 0) {
+                            angular.forEach($scope.empupdatelist, function (k) {
+                                    k.vehicleAge = (k.vehicleAge === "false") ? false : (k.vehicleAge === "true") ? true : k.vehicleAge;
+                                    k.vehicleValue = (k.vehicleValue === "false") ? false : (k.vehicleValue === "true") ? true : k.vehicleValue;
+                                    k.expirationDate = (k.expirationDate === null) ? k.expirationDate : $filter('date')(new Date(k.expirationDate), "yyyy-MM-dd");
+                                    k.addedDate = (k.addedDate === null) ? k.addedDate : $filter('date')(new Date(k.addedDate), "yyyy-MM-dd");
+                                });
+                                angular.forEach($scope.empupdatelist, function (k) {
+                                    k.vehicleAge = ($scope.actionBy === "vehicleAge") ? null : k.vehicleAge;
+                                    k.vehicleValue = ($scope.actionBy === "vehicleValue") ? null : k.vehicleValue;
+                                    k.complianceStatus = ($scope.actionBy === "complianceStatus") ? null : k.complianceStatus;
+                                    k.expirationDate = ($scope.actionBy === "expirationDate") ? null : k.expirationDate;
+                                });
+                                var listToReset = angular.copy($scope.empupdatelist);
+                                $scope.waiting = true;
+                                Visualforce.remoting.Manager.invokeAction('{!$RemoteAction.UpdateInsuranceDataController.editInlineNewEmployee}', JSON.stringify(listToReset),
+                                    function (result, event) {
+                                        if (event.status) {
+                                            if (result === 'Success') {
+                                                toastr.success("Records have been reset successfully");
+                                                angular.forEach($scope.empupdatelist, function (u) {
+                                                    u.isActionDone = false;
+                                                });
+                                                $scope.empupdatelist = [];
+                                                $scope.showCancelActionBtn = false;
+                                                $scope.waiting = false;
+                                                $scope.$apply();
+                                                $scope.refreshList();
+                                            } else {
+                                                toastr.error("Server Error Occured");
+                                            }
+                                        } else {
+                                            toastr.error("Server Error Occured");
+                                        }
+                                    },
+                                    { escape: false }
+                                );
+                        }else{
+                            toastr.error("No record available to reset");
+                        }
+                             
+                    }
+
+                    $scope.cancelActionProcess = function(){
+                       $timeout(function() {
+                            $('#single-action').val('default').trigger('change')
+                            $scope.actionBy = "default"
+                            $scope.showCancelActionBtn = false;
+                            $scope.checkboxobj.isCheckedAllForAction = false;
+                            angular.forEach($scope.insuranceList, function (item) {
+                                item.isActionDone = false;
+                            });
+                            $scope.checkboxobjActionShow = false;
+                            $scope.empupdatelist = [];
+                        }, 0)
                     }
                     /** 
                      * EMC - 167 : Excel Download 
@@ -519,8 +684,11 @@
                     $scope.formateDate = function (dateString) {
                         if (dateString != '' && dateString != null) {
                             let datesplit = dateString.split('/');
-                            if (datesplit[2].length > 2)
+                            if(datesplit[2] != undefined) {
+                                if (datesplit[2].length > 2)
                                 return (datesplit[0].padStart(2, '0') + '/' + datesplit[1].padStart(2, '0') + '/' + datesplit[2].substr(2, 3));
+                            }
+                         
                         }
 
                         return dateString;
@@ -931,21 +1099,49 @@
                         <option value="aDate">Date Added</option>
                     </select>
                 </div>
-                <!-- <div class="pl-0 pr-3 pt-1 pull-left">
-                    <i class="fa fa-hand-point-right fa-2x"></i>
-                </div> -->
                 <div id="search_filter" class="dataTables_filter pull-left d-block slds-m-bottom_small col-md-3 pl-0">
                     <div class="input-group">
                         <i id="filtericon" class="fa fa-search"></i>
                         <input class="form-control border-search" type="search" ng-model="search[queryBy]" placeholder="Search by driver name" aria-controls="example"
-                            id="example-search-input" ng-keypress="keyPressed($event, search.length)" 
+                            id="example-search-input" ng-keypress="keyPressed($event, this)" 
                             ondrop="return false;" oncopy="return false;" oninput="this.value = this.value.replace(/[^A-Za-z0-9-,.;'&/.() ]|^ /g,'')"
                         />
                     </div>
                 </div>
+                <div class="col-md-2 pl-0 pr-0 pull-left">
+                    <select id="single-action" class="js-example-basic-single js-states form-control" style="width: 90%" ng-model="actionBy" ng-change="resetAction(actionBy)">
+                        <option value="default">Action</option>
+                        <option value="complianceStatus">Reset Compliance Status</option>
+                        <option value="vehicleValue">Reset Vehicle Value</option>
+                        <option value="vehicleAge">Reset Vehicle Age</option>
+                        <option value="expirationDate">Reset Expiration Date</option>
+                    </select>
+                </div>
+                <div class="col-md-2 pl-0 pr-0 pull-left" ng-show="showCancelActionBtn">
+                    <button aria-expanded="true" class="slds-button float slds-button_neutral slds-button_dual-stateful slds-is-pressed" ng-click="resetEmployees()">
+                        <svg class="slds-button__icon slds-button__icon_left" aria-hidden="true">
+                            <use xlink:href="{!URLFOR($Asset.SLDS, '/assets/icons/utility-sprite/svg/symbols.svg#skip_forward')}"></use>
+                        </svg>
+                        <span class="slds-truncate">Reset</span>
+                    </button>
+                </div>
+                <div ng-show="showCancelActionBtn">
+                    <button aria-expanded="true" class="slds-button float slds-button_brand slds-button_dual-stateful slds-is-pressed" ng-click="cancelActionProcess()">
+                        <svg class="slds-button__icon slds-button__icon_left" aria-hidden="true">
+                            <use xlink:href="{!URLFOR($Asset.SLDS, '/assets/icons/utility-sprite/svg/symbols.svg#close')}"></use>
+                        </svg>
+                        <span class="slds-truncate" title="Cancel">Cancel Action</span>
+                    </button>
+                </div>
+                <!-- <div class="pl-0 pr-3 pt-1 pull-left">
+                    <i class="fa fa-hand-point-right fa-2x"></i>
+                </div> -->
+                
                 <table class="slds-table slds-table_cell-buffer slds-table_bordered slds-table_striped slds-table_col-bordered slds-table_fixed-layout slds-border_right slds-border_left">
                     <thead>
                         <tr class="slds-line-height_reset">
+                            <th class="action-th" ng-show="checkboxobjActionShow"><input type="checkbox" ng-model="checkboxobj.isCheckedAllForAction"  ng-click="CheckUncheckAllForAction(checkboxobj.isCheckedAllForAction);"
+                                /></th>
                             <th class="driver-th" ng-click="sort('name')">Driver Name
                                 <span class="slds-icon_container slds-icon-utility-chevronup" ng-show="reverse" ng-if="sortKey=='name'">
                                     <svg class="slds-icon slds-icon-text-default slds-icon_x-small" aria-hidden="true">
@@ -1021,6 +1217,9 @@
                     </thead>
                     <tbody>
                         <tr dir-paginate="list in insuranceList | filter:search  | itemsPerPage: pageSize" current-page="currentPage" ng-class="{'slds-selected slds-cell-edit slds-is-edited':list.contactId == selectedRow}">
+                            <td class="pd-0" ng-show="checkboxobjActionShow">
+                                <input type="checkbox" ng-model="list.isActionDone"  ng-change="CheckUncheckForAction(list);" />
+                            </td>
                             <td class="driver-name-td slds-cell-wrap"><a href="{{origin}}/{{list.contactId}}" class="driver-link" target="_blank">{{list.name}}</a></td>
                             <td class="driver-added">{{list.addedDate | date:"MM/dd/yy"}}</td>
                             <td ng-model="list.insurance" ng-show="!list.isEditable" ng-click="editInsurance(insurance,list.contactId);list.isEditable = !list.isEditable"
