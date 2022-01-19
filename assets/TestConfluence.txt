@@ -1,1 +1,1 @@
-DemoClassTest,BiweeklyPayPeriodTest,WrapperUtils_Test
+DemoClassTest,UpdateInsuranceDataController_Test
