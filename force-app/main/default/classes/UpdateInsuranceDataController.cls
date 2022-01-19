@@ -53,6 +53,7 @@ public with sharing class UpdateInsuranceDataController {
     {
         System.debug('editInlineNewEmployee'+listofemployee);
         List<Contact> updateEmployeeList = new List<Contact>();
+        map<id,Contact> conMap = new map<id,Contact>();
         if(listofemployee!=null)
         {
             List<ContactWrapper> conWrapUpdateList = new List<ContactWrapper>();
@@ -79,9 +80,10 @@ public with sharing class UpdateInsuranceDataController {
                 updateEmployeeList.add(currentContact);
             }
         }
-        if(!updateEmployeeList.isEmpty()){
-            System.debug('updateEmployeeList'+updateEmployeeList.size());
-            update updateEmployeeList;
+        conMap.putall(updateEmployeeList);
+        if(conMap.size() > 0){
+            
+            update conMap.values();
         }
         System.debug('2nd updatedNewEmployee');
         return 'Success';
@@ -98,7 +100,7 @@ public with sharing class UpdateInsuranceDataController {
         }
         return JSON.serialize(roleList);     
     }
-
+    
     public class ContactWrapper {
         public string contactId { get; set; }
         public string name { get; set; }
