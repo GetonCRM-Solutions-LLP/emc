@@ -524,6 +524,7 @@
                     }
 
                     $scope.resetAction = function (action) {
+                        $scope.empupdatelist = [];
                         if(action != "default"){
                             $scope.checkboxobjActionShow = true;
                             $scope.showCancelActionBtn = false;
@@ -593,6 +594,7 @@
                                 item.isActionDone = false;
                             });
                             $scope.checkboxobjActionShow = false;
+                            $scope.empupdatelist = [];
                         }, 0)
                     }
                     /** 
