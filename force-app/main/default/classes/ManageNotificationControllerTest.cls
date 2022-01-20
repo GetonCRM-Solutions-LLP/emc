@@ -31,7 +31,7 @@ public class ManageNotificationControllerTest {
         insert veh;
         
         daylight_saving_time_config__c customSetting2 =  new daylight_saving_time_config__c();
-        customSetting2.Name = '2021';
+        customSetting2.Name = '2022';
         customSetting2.Start_Date__c = System.today();
         customSetting2.End_Date__c = System.today() + 60;
         insert customSetting2;
@@ -129,11 +129,6 @@ public class ManageNotificationControllerTest {
       );
       insert user_1;
     }
-        
-        
-        
-        
-        
         Employee_Reimbursement__c reim = new Employee_Reimbursement__c();
         reim.Approved_Date__c = system.today();
         reim.Contact_Id__c = con2.id;
