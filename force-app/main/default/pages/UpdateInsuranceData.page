@@ -38,6 +38,12 @@
                 .insurance-td {
                     white-space: normal !important;
                 }
+                .vehicle-value-td{
+                    white-space: normal !important;
+                }
+                .vehicle-age-td{
+                    white-space: normal !important;
+                }
             }
 
             ::placeholder {
@@ -1367,7 +1373,7 @@
                                 <div class="">{{list.complianceStatus}}</div>
                             </td>
                             <td ng-model="list.vehicleValue" ng-show="!list.isEditable" ng-click="editInsurance(insurance,list.contactId);list.isEditable = !list.isEditable"
-                                class="cursor-pointer">
+                                class="cursor-pointer vehicle-value-td">
                                 <span class="slds-radio">
                                     <input type="radio" id="yes-vehicle-value" ng-model="list.vehicleValue" ng-checked="{{list.vehicleValue == 'Yes'}}" name="default-{{$index}}"
                                         disabled="true" />
@@ -1385,7 +1391,7 @@
                                     </label>
                                 </span>
                             </td>
-                            <td ng-model="list.vehicleValue" ng-show="list.isEditable">
+                            <td ng-model="list.vehicleValue" ng-show="list.isEditable" class="vehicle-value-td">
                                 <span class="slds-radio">
                                     <input type="radio" id="yes-vehicle-value-{{$index}}" ng-model="list.vehicleValue" name="vehval-{{$index}}" ng-change="vehicleChange(this)"
                                         ng-checked="{{list.vehicleValue  == 'Yes'}}" value="Yes" />
@@ -1404,7 +1410,7 @@
                                 </span>
                             </td>
                             <td ng-model="list.vehicleAge" ng-show="!list.isEditable" ng-click="editInsurance(insurance,list.contactId);list.isEditable = !list.isEditable"
-                                class="cursor-pointer">
+                                class="cursor-pointer vehicle-age-td">
                                 <span class="slds-radio">
                                     <input type="radio" id="yes-vehicle-age" name="vage-{{$index}}" ng-model="list.vehicleAge" ng-checked="{{list.vehicleAge == 'Yes'}}"
                                         disabled="true" />
@@ -1422,7 +1428,7 @@
                                     </label>
                                 </span>
                             </td>
-                            <td ng-model="list.vehicleAge" ng-show="list.isEditable">
+                            <td ng-model="list.vehicleAge" ng-show="list.isEditable" class="vehicle-age-td">
                                 <span class="slds-radio">
                                     <input type="radio" id="yes-vehicle-age-{{$index}}" name="vehicleage-{{$index}}" ng-model="list.vehicleAge" ng-change="vehicleAgeChange(this)"
                                         ng-checked="{{list.vehicleAge == 'Yes'}}" value="Yes" />
