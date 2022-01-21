@@ -1,5 +1,3 @@
 
 DemoClassTest,ManageNotificationControllerTest,UpdateInsuranceDataController_Test
 
-DemoClassTest,ManageNotificationControllerTest,UpdateInsuranceDataController_Test
-
