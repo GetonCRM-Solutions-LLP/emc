@@ -790,7 +790,7 @@
                             }
                             function payDate(date) {
                                 var st = new Date(date);
-                                var today = new Date();
+                                var today = new Date((new Date()).getFullYear(), 12, 0);
                                 var i = 0;
                                 var dateArr = [];
                                 var end;
@@ -806,9 +806,8 @@
                                                     dateArr.push(finaldate);
                                                 //}
                                                 st = new Date(end.setDate(end.getDate() + 1));
-                                            }
+                                          }
                                     }
-
                                     let arrByYear = dateArr.filter(filterByYear)
                                     console.log("List->", arrByYear);
                                     return arrByYear;
