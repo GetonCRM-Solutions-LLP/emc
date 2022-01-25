@@ -6,6 +6,7 @@ public class ContactTriggerHelperTest {
         customEmailSetting.Name = 'Defaulttrigger';
         customEmailSetting.ContactTriggersendEmailForNewContact__c = true;
         customEmailSetting.ContactTriCommunityReimCreate__c = true;
+        customEmailSetting.ContactTriBiReimCreate__c = true;
         insert customEmailSetting;
         
         List<IRS_Mileage_Rate__c> obj_IRS_Mileage_Rate =  RecordUtilityClass.insertIrsRate();
@@ -158,6 +159,7 @@ public class ContactTriggerHelperTest {
         customEmailSetting.Name = 'Defaulttrigger';
         customEmailSetting.ContactTriggersendEmailForNewContact__c = true;
         customEmailSetting.ContactTriCommunityReimCreate__c = true;
+        customEmailSetting.ContactTriBiReimCreate__c = true;
         insert customEmailSetting;
         
         List<IRS_Mileage_Rate__c> obj_IRS_Mileage_Rate =  RecordUtilityClass.insertIrsRate();
@@ -284,6 +286,7 @@ public class ContactTriggerHelperTest {
         customEmailSetting.Name = 'Defaulttrigger';
         customEmailSetting.ContactTriggersendEmailForNewContact__c = true;
         customEmailSetting.ContactTriCommunityReimCreate__c = true;
+        customEmailSetting.ContactTriBiReimCreate__c = true;
         insert customEmailSetting;
         
         List<IRS_Mileage_Rate__c> obj_IRS_Mileage_Rate =  RecordUtilityClass.insertIrsRate();
