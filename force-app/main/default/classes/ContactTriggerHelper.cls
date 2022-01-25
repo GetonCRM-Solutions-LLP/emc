@@ -245,7 +245,9 @@ public without sharing class ContactTriggerHelper {
                     TriggerConfig__c customSetting = TriggerConfig__c.getInstance('Defaulttrigger');
                     if(customSetting.ContactTriCommunityReimCreate__c == true) {
                         reimToInsert.add(CreateReimbursement(con));
-                        bireimToInsert.add(CreateBiweekReimbursement(con));
+                        if(customSetting.ContactTriBiReimCreate__c == true) {
+                            bireimToInsert.add(CreateBiweekReimbursement(con));
+                        }
                     }
                 }
             }
@@ -282,11 +284,16 @@ public without sharing class ContactTriggerHelper {
     public static void  CommunityReimCreate(List<Contact> contactList) {
         List<Employee_Reimbursement__c> reimToInsert   = new List<Employee_Reimbursement__c>();
         List<Bi_Weekly_Reimbursement__c> bireimToInsert   = new List<Bi_Weekly_Reimbursement__c>();
+        TriggerConfig__c customSetting = TriggerConfig__c.getInstance('Defaulttrigger');
         for(Contact con : contactList){
             putHTTP(con.AccountId,con.External_Email__c);
             if(con.Role__c != 'Admin' && con.Role__c != 'Manager' && con.Deactivated_Date__c == null) {
-                reimToInsert.add(CreateReimbursement(con));
-                bireimToInsert.add(CreateBiweekReimbursement(con));
+                if(con != null && customSetting.ContactTriCommunityReimCreate__c == true) {
+                   reimToInsert.add(CreateReimbursement(con));
+                   if(customSetting.ContactTriBiReimCreate__c == true) {
+                       bireimToInsert.add(CreateBiweekReimbursement(con)); 
+                   }
+                }               
             }
         }
         if(!reimToInsert.isEmpty()) {
@@ -299,7 +306,7 @@ public without sharing class ContactTriggerHelper {
     //This method is used to create a Bi-Weekly reimbursment
     public static Bi_Weekly_Reimbursement__c CreateBiweekReimbursement(Contact con){        
         contact contest = [select id,account.Pay_Period_Days__c,account.Pay_Period_Start_Date__c from contact where id =: con.id];
-        List<Date> dtList = new list<Date>();
+        List<String> dtList = new list<String>();
         Date payStartDate = contest.Account.Pay_Period_Start_Date__c;
         Date endDate;
         system.debug('contest=='+ contest);
@@ -308,8 +315,8 @@ public without sharing class ContactTriggerHelper {
             do {
                 endDate = payStartdate.addDays(Integer.valueof(contest.Account.Pay_Period_Days__c));
                 if(payStartdate != null && payStartdate <= System.today() && System.today() <= endDate) {
-                    dtList.add(payStartdate);
-                    dtList.add(endDate);
+                    dtList.add(String.valueof(payStartdate));
+                    dtList.add(String.valueof(endDate));
                 }
                 payStartdate = endDate.addDays(1);
             } while(endDate <= System.today());
@@ -317,16 +324,24 @@ public without sharing class ContactTriggerHelper {
         system.debug('contest.Account.Pay_Period_Start_Date__c=='+ contest.Account.Pay_Period_Start_Date__c);
         system.debug('contest.Account.Pay_Period_Days__c=='+ contest.Account.Pay_Period_Days__c);
         //List<IRS_Mileage_Rate__c> objIRSRate = [SELECT id,year__c,IRS_Rate__c FROM IRS_Mileage_Rate__c Where year__c =: String.valueOf(System.today().year()) Limit 1];
+        string splitStartDate;
+        string splitEndDate;
+        if(dtList.size() > 0){
+            string[] splitsdate = dtList[0].split('-');
+            splitStartDate = splitsdate[1]+'/'+splitsdate[2]+'/'+splitsdate[0];
+            string[] splitdate = dtList[1].split('-');
+            splitEndDate = splitdate[1]+'/'+splitdate[2]+'/'+splitdate[0];
+        }
         Bi_Weekly_Reimbursement__c er = new Bi_Weekly_Reimbursement__c();
         er.Fixed_Amount__c = con.Fixed_Amount__c;
         er.Status__c = 'Pending';
         er.Maintenance_and_Tires__c = con.Maintenance_and_Tires__c;
         er.MPG__c = con.MPG__c;
         er.Contact__c = con.id;
-        er.Name = dtList[0]+' to '+ dtList[1];
+        er.Name = splitStartDate+' to '+ splitEndDate;
         er.Fuel_Price__c = 0;
-        er.Start_Date__c = dtList[0];
-        er.End_Date__c = dtList[1];
+        er.Start_Date__c = Date.valueOf(dtList[0]);
+        er.End_Date__c = Date.valueOf(dtList[1]);
         // if(objIRSRate.size() > 0){
         //     er.IRS_Mileage_Rate__c = objIRSRate[0].ID;
         // }
