@@ -28,7 +28,7 @@ public class BiWeeklyReimReportforPLMController {
         Map<Id, Decimal> idVsIRSMap = new Map<Id, Decimal>();
         Map<Id, Decimal> DivisionMap = new Map<Id,decimal>();
         System.debug('***startDate***'+startDate+'***endDate***'+endDate);
-        if(Test.isRunningTest()) {
+       /* if(Test.isRunningTest()) {
             for(AggregateResult ar : [SELECT EmployeeReimbursement__r.Contact_Id__c rid, SUM(Variable__c) rtotal,
                                             SUM(Mileage__c) mtotal
                                     FROM Employee_Mileage__c 
@@ -49,33 +49,45 @@ public class BiWeeklyReimReportforPLMController {
                                                 idVsVariableMap.put((Id)ar.get('rid'), (Decimal) ar.get('rtotal')); 
                                                 idVsMileageMap.put((Id)ar.get('rid'), (Decimal) ar.get('mtotal')); 
             }
-        }
-        List<Employee_Reimbursement__c> reibursementList = new List<Employee_Reimbursement__c>();
+        } */
+        List<Bi_Weekly_Reimbursement__c> reibursementList = new List<Bi_Weekly_Reimbursement__c>();
+         
         if(Test.isRunningTest()) {
-            reibursementList = [SELECT id,Fixed_Amount__c,Half_Fixed_Amount__c,Contact_Id__c,Contact_Id__r.Division__c,
-                                            IRS_Mileage_Rate__r.IRS_Rate__c 
-                                FROM  Employee_Reimbursement__c
-                                WHERE Month__c =: monthValue];
+            reibursementList = [SELECT id,Fixed_Amount__c,Half_Fixed_Amount__c,
+                                    Contact__c,Contact__r.Division__c,
+                                    IRS_Mileage_Rate__r.IRS_Rate__c,
+                                    Start_Date__c,End_Date__c,
+                                    Monthly_Approved_Variable_Amount__c,
+                                    Total_Approved_Pending_Mileage__c
+                                 FROM Bi_Weekly_Reimbursement__c 
+                                 WHERE Start_Date__c =: Date.valueOf(startDate)
+                                     AND End_Date__c =: Date.valueOf(endDate)];
         } else {
-            reibursementList = [SELECT id,Fixed_Amount__c,Half_Fixed_Amount__c,Contact_Id__c,Contact_Id__r.Division__c,
-                                            IRS_Mileage_Rate__r.IRS_Rate__c 
-                                FROM  Employee_Reimbursement__c
-                                WHERE Contact_Id__r.AccountId =: System.Label.PLMarketing
-                                AND Month__c =: monthValue];
+            reibursementList = [SELECT id,Fixed_Amount__c,Half_Fixed_Amount__c,
+                                    Contact__c,Contact__r.Division__c,
+                                    IRS_Mileage_Rate__r.IRS_Rate__c,
+                                    Start_Date__c,End_Date__c,
+                                    Monthly_Approved_Variable_Amount__c,
+                                    Total_Approved_Pending_Mileage__c
+                                 FROM Bi_Weekly_Reimbursement__c 
+                                 WHERE Start_Date__c =: Date.valueOf(startDate)
+                                     AND End_Date__c =: Date.valueOf(endDate)
+                                     AND Contact__r.AccountId =: System.Label.PLMarketing];
         }
-        for(Employee_Reimbursement__c reimHalfFixedAmount : reibursementList){ 
-                                        
-                                        DivisionMap.put(reimHalfFixedAmount.Contact_Id__c, reimHalfFixedAmount.Contact_Id__r.Division__c );                                                                                                                               
-                                        idVsHalfFixedAmountMap.put(reimHalfFixedAmount.Contact_Id__c, reimHalfFixedAmount.Half_Fixed_Amount__c); 
+        for(Bi_Weekly_Reimbursement__c reimHalfFixedAmount : reibursementList){ 
+                                        idVsMileageMap.put(reimHalfFixedAmount.Contact__c, reimHalfFixedAmount.Total_Approved_Pending_Mileage__c);  
+                                        idVsVariableMap.put(reimHalfFixedAmount.Contact__c, reimHalfFixedAmount.Monthly_Approved_Variable_Amount__c);
+                                        DivisionMap.put(reimHalfFixedAmount.Contact__c, reimHalfFixedAmount.Contact__r.Division__c );                                                                                                                               
+                                        idVsHalfFixedAmountMap.put(reimHalfFixedAmount.Contact__c, reimHalfFixedAmount.Half_Fixed_Amount__c); 
                                         if(reimHalfFixedAmount.IRS_Mileage_Rate__r.IRS_Rate__c != null){
-                                            idVsIRSMap.put(reimHalfFixedAmount.Contact_Id__c, reimHalfFixedAmount.IRS_Mileage_Rate__r.IRS_Rate__c); 
+                                            idVsIRSMap.put(reimHalfFixedAmount.Contact__c, reimHalfFixedAmount.IRS_Mileage_Rate__r.IRS_Rate__c); 
                                         }                                        
-                                        if(idVsVariableMap.containsKey(reimHalfFixedAmount.Contact_Id__c)){
-                                            idVsHalfReimMap.put(reimHalfFixedAmount.Contact_Id__c, idVsVariableMap.get(reimHalfFixedAmount.Contact_Id__c) + reimHalfFixedAmount.Half_Fixed_Amount__c); 
+                                        if(reimHalfFixedAmount.Monthly_Approved_Variable_Amount__c != NULL || reimHalfFixedAmount.Monthly_Approved_Variable_Amount__c != 0){
+                                            idVsHalfReimMap.put(reimHalfFixedAmount.Contact__c, reimHalfFixedAmount.Monthly_Approved_Variable_Amount__c + reimHalfFixedAmount.Half_Fixed_Amount__c); 
                                         } else {
-                                            idVsHalfReimMap.put(reimHalfFixedAmount.Contact_Id__c, 0 + reimHalfFixedAmount.Half_Fixed_Amount__c); 
-                                        }                                                              
-                                        
+                                            idVsHalfReimMap.put(reimHalfFixedAmount.Contact__c, 0 + reimHalfFixedAmount.Half_Fixed_Amount__c); 
+                                        }   
+                                            
                                        }          
 
         List<Contact> contactList;  
@@ -85,7 +97,7 @@ public class BiWeeklyReimReportforPLMController {
                                             (Role__c !='Manager' AND Role__c != 'Admin')];
         } else {
             contactList = [SELECT id,Employee_ID__c,Name,Job_Title__c,External_Email__c,Division__c,Fixed_Amount__c,
-                                            Deactivated_Date__c FROM Contact WHERE 
+                                            Deactivated_Date__c FROM Contact WHERE Deactivated_Date__c = null AND
                                             (Role__c !='Manager' AND Role__c != 'Admin') AND AccountId =: System.Label.PLMarketing];
         }
         for(Contact currentContact : contactList){
@@ -115,13 +127,14 @@ public class BiWeeklyReimReportforPLMController {
             } else {
                 objWrapper.BiWeeklyTotalReim = 0;
             }
-            Decimal IRSRate;
+           /* Decimal IRSRate;
             if(idVsIRSMap.containsKey(currentContact.Id)){
                 IRSRate = (idVsIRSMap.get(currentContact.Id)).setScale(2);
             } else {
                 IRSRate = 0;
-            }
+            }*/
             objWrapper.payPeriodDate = startDate +' to '+ endDate;
+            system.debug('payPeriodDate=='+ objWrapper.payPeriodDate);
             objWrapper.Division = String.valueOf(currentContact.Division__c);
             if(currentContact.Deactivated_Date__c != null && date.valueOf(currentContact.Deactivated_Date__c) >= Date.valueOf(startDate) && date.valueOf(currentContact.Deactivated_Date__c) <= Date.valueOf(endDate)){
                 List<String> dateRange = new List<String>();

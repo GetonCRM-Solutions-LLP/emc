@@ -941,6 +941,33 @@ public with sharing class ReportDetailsController
                 return JSON.serialize(obj_contact_list);
             }  
         }
+        else if(query.contains('from Bi_Weekly_Reimbursement__c')) {
+            if(reporttype =='BiWeek Reimbursement Start and EndDate') {
+                if(selectedManager == null || selectedManager == '') {
+                    if(!query.contains('where')) {
+                        query = query+ ' where Start_Date__c ='+buildDateforactivation(tripStartDate)+' AND End_Date__c ='+buildDateforactivation(tripEndDate) + ' AND Contact__r.AccountId=\''+accountid+'\'';                        
+                    } else {
+                        query = query + ' AND Start_Date__c ='+buildDateforactivation(tripStartDate)+' AND End_Date__c ='+buildDateforactivation(tripEndDate) + ' AND Contact__r.AccountId=\''+accountid+'\''; 
+                    }                   
+                } else {
+                    if(driverormanager == 'Manager') {
+                        if(!query.contains('where')) {
+                            query = query+ ' where Start_Date__c ='+buildDateforactivation(tripStartDate)+' AND End_Date__c ='+buildDateforactivation(tripEndDate)+' AND Contact__r.Manager__c=\''+selectedManager+'\'' + ' AND Contact__r.accountid=\''+accountid+'\'';                    
+                        } else {
+                            query = query + ' AND Start_Date__c ='+buildDateforactivation(tripStartDate)+' AND End_Date__c ='+buildDateforactivation(tripEndDate)+' AND Contact__r.Manager__c=\''+selectedManager+'\'' + ' AND Contact__r.accountid=\''+accountid+'\''; 
+                        }
+                    } else {
+                        if(!query.contains('where')) {
+                            query = query+ ' where Start_Date__c ='+buildDateforactivation(tripStartDate)+' AND End_Date__c ='+buildDateforactivation(tripEndDate)+' AND Contact__c=\''+selectedManager+'\'' + ' AND Contact__r.AccountId=\''+accountid+'\'';                    
+                        } else {
+                            query = query + ' AND Start_Date__c ='+buildDateforactivation(tripStartDate)+' AND End_Date__c ='+buildDateforactivation(tripEndDate)+' AND Contact__c=\''+selectedManager+'\'' + ' AND Contact__r.AccountId=\''+accountid+'\''; 
+                        }
+                    }                    
+                }
+                List<Bi_Weekly_Reimbursement__c> obj_contact_list = Database.query(query);                    
+                return JSON.serialize(obj_contact_list);
+            }
+        }
         return '';
     }
     public static String getAllReportSoqlForDriver()
