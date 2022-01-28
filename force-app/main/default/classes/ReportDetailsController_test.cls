@@ -73,6 +73,12 @@ public class ReportDetailsController_test {
             insert rep4;
             ReportDetailsController.getAllReportSoql(rep4.Report_Soql__c,rep4.Report_Type__c,'','12/12/18','1/12/19',obj_admin.Id,obj_account.Id,rep4.Id,'Driver');
             ReportDetailsController.getAllReportSoql(rep4.Report_Soql__c,rep4.Report_Type__c,obj_manager.id,'12/12/18','1/12/19',obj_admin.Id,obj_account.Id,rep4.Id,'Driver');
+            
+            Custom_Report__c birep4 =createReport('select id from Bi_Weekly_Reimbursement__c','BiWeek Reimbursement Start and EndDate');
+            insert birep4 ;
+            ReportDetailsController.getAllReportSoql(birep4.Report_Soql__c,birep4.Report_Type__c,'','12/12/18','1/12/19',obj_admin.Id,obj_account.Id,birep4.Id,'Driver');
+            ReportDetailsController.getAllReportSoql(birep4.Report_Soql__c,birep4.Report_Type__c,obj_manager.id,'12/12/18','1/12/19',obj_admin.Id,obj_account.Id,birep4.Id,'Driver');
+            
             Custom_Report__c rep5 =createReport('Select id from Employee_Reimbursement__c','Reimbursements Between 2 Dates For Month Range');
             insert rep5;
             ReportDetailsController.getAllReportSoql(rep5.Report_Soql__c,rep5.Report_Type__c,'','12/12/18','1/12/19',obj_admin.Id,obj_account.Id,rep5.Id,'Driver');
@@ -151,7 +157,7 @@ public class ReportDetailsController_test {
         customEmailSetting.ContactTriCommunityReimCreate__c = false;
         insert customEmailSetting;
 
-        flag= false;  
+        flag= true;  
         UserRole userRole_1 = [SELECT Id FROM UserRole WHERE DeveloperName = 'EMD' LIMIT 1];
         Profile profile_1 = [SELECT Id FROM Profile WHERE Name = 'Customer Community Login User' LIMIT 1];
         User admin = [SELECT Id, Username, UserRoleId FROM User WHERE Profile.Name = 'System Administrator' AND UserRoleId = :userRole_1.Id LIMIT 1];
@@ -258,10 +264,16 @@ public class ReportDetailsController_test {
             insert rep12;
             ReportDetailsController.getAllReportSoql(rep12.Report_Soql__c,rep12.Report_Type__c,'','01/08/19','01/09/19',obj_admin.Id,obj_account.Id,rep12.Id,'Manager');
             ReportDetailsController.getAllReportSoql(rep12.Report_Soql__c,rep12.Report_Type__c,obj_manager.id,'01/08/19','01/09/19',obj_admin.Id,obj_account.Id,rep12.Id,'Manager');
-    
+              
             Custom_Report__c rep13 =createReport('Select id from Employee_Mileage__c','Mileages Between 2 Dates for Month Range');
             insert rep13;
-           
+            
+            Custom_Report__c rep15 = createReport('Select id from Employee_Mileage__c','Mileages Between 2 Trip Dates');
+            insert rep15;
+            ReportDetailsController.getAllReportSoql(rep15.Report_Soql__c,rep15.Report_Type__c,'','01/08/19','01/09/19',obj_admin.Id,obj_account.Id,rep13.Id,'Driver');
+            ReportDetailsController.getAllReportSoql(rep15.Report_Soql__c,rep15.Report_Type__c,obj_manager.id,'01/08/19','01/09/19',obj_admin.Id,obj_account.Id,rep13.Id,'Driver');
+            ReportDetailsController.getAllReportSoqlForDriver();
+            
             ReportDetailsController.getAllReportSoql(rep13.Report_Soql__c,rep13.Report_Type__c,'','01/08/19','01/09/19',obj_admin.Id,obj_account.Id,rep13.Id,'Manager');
             ReportDetailsController.getAllReportSoql(rep13.Report_Soql__c,rep13.Report_Type__c,obj_manager.id,'01/08/19','01/09/19',obj_admin.Id,obj_account.Id,rep13.Id,'Manager');
             ReportDetailsController.getAllReportSoqlForDriver();
