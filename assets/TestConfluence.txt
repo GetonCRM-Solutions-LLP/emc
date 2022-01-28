@@ -1,1 +1,1 @@
-DemoClassTest,UpdateBiWeeklyreimFuelPriceConTest,ContactTriggerHelperTest
+DemoClassTest,ReportDetailsController_test,BiWeeklyReimReportforPLMControllerTest
