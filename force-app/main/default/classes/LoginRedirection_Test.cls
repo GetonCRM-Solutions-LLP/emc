@@ -16,6 +16,11 @@ public with sharing class LoginRedirection_Test {
         veh.Year__c = '2019';
         insert veh;
         
+        SendEmail__c customSetting =  new SendEmail__c();
+        customSetting.Name = 'Send Email For Compliance';
+        customSetting.Send_email_from_code__c= true;
+        insert customSetting;
+        
         Account acc = new Account();     
         List<Contact> conList = new List<Contact>();
         Contact con1 = new Contact();    
@@ -93,25 +98,7 @@ public with sharing class LoginRedirection_Test {
             );
             insert user_1;
         }
-      /*  Account obj_account = new Account();
-        obj_account.name='Test';
-        obj_account.Pay_Period_Days__c = 13;
-        obj_account.Pay_Period_Start_Date__c = system.today().adddays(-130);
-        insert obj_account;
-
-        Contact obj_contact = new Contact();
-        obj_contact.Vehicle_Type__c = '2019 Full-Size Sedan';
-        obj_contact.firstname='test';
-        obj_contact.lastname='testlastname2';
-        obj_contact.email = 'testlastname2@gmail.com';
-        obj_contact.External_Email__c = 'testlastname2@gmail.com';
-        obj_contact.Role__c ='Manager';
-        obj_contact.Accountid=obj_account.id;        
-        obj_contact.isCommunityUser__c = true;
-        obj_contact.Driver_Type__c = 'Driver - Full Time';
-        obj_contact.IsCreatedFromCommunity__c = true;
-        insert obj_contact;
-        */
+    
         List<User> u = [Select id from User WHERE Profile.name='Customer Community Login User - Manager' and IsActive = true limit 1];
         Test.startTest();
         System.runAs(u[0]) {
@@ -138,7 +125,11 @@ public with sharing class LoginRedirection_Test {
         veh.vehicle__c =  'Full-Size Sedan';
         veh.Year__c = '2019';
         insert veh;
-       
+        SendEmail__c customSetting =  new SendEmail__c();
+        customSetting.Name = 'Send Email For Compliance';
+        customSetting.Send_email_from_code__c= true;
+        insert customSetting;
+        
         Account acc = new Account();     
         List<Contact> conList = new List<Contact>();
         Contact con1 = new Contact();    
@@ -259,7 +250,11 @@ public with sharing class LoginRedirection_Test {
         veh.vehicle__c =  'Full-Size Sedan';
         veh.Year__c = '2019';
         insert veh;
-
+        SendEmail__c customSetting =  new SendEmail__c();
+        customSetting.Name = 'Send Email For Compliance';
+        customSetting.Send_email_from_code__c= true;
+        insert customSetting;
+        
         Test.startTest();
         
         Account acc = new Account();     
@@ -382,7 +377,11 @@ public with sharing class LoginRedirection_Test {
         veh.vehicle__c =  'Full-Size Sedan';
         veh.Year__c = '2019';
         insert veh;
-
+        SendEmail__c customSetting =  new SendEmail__c();
+        customSetting.Name = 'Send Email For Compliance';
+        customSetting.Send_email_from_code__c= true;
+        insert customSetting;
+        
         Test.startTest();
        /* Account obj_account = new Account();
         obj_account.name='Test';
@@ -520,6 +519,11 @@ public with sharing class LoginRedirection_Test {
         veh.Year__c = '2019';
         insert veh;
         
+        SendEmail__c customSetting =  new SendEmail__c();
+        customSetting.Name = 'Send Email For Compliance';
+        customSetting.Send_email_from_code__c= true;
+        insert customSetting;
+        
         Account acc = new Account();     
         List<Contact> conList = new List<Contact>();
         Contact con1 = new Contact();    
@@ -597,26 +601,6 @@ public with sharing class LoginRedirection_Test {
             );
             insert user_1;
         }
-       
-      /*  Account obj_account = new Account();
-        obj_account.name='Test';
-        obj_account.Pay_Period_Days__c = 13;
-        obj_account.Pay_Period_Start_Date__c = system.today().adddays(-130);
-        insert obj_account;
-
-        Contact obj_contact = new Contact();
-        obj_contact.Vehicle_Type__c = '2019 Full-Size Sedan';
-        obj_contact.firstname='test';
-        obj_contact.lastname='testlastname2';
-        obj_contact.email = 'testlastname2@gmail.com';
-        obj_contact.External_Email__c = 'testlastname2@gmail.com';
-        obj_contact.Role__c ='Driver/Admin';
-        obj_contact.Accountid=obj_account.id;        
-        obj_contact.isCommunityUser__c = true;
-        obj_contact.Driver_Type__c = 'Driver - Full Time';
-        obj_contact.IsCreatedFromCommunity__c = true;
-        insert obj_contact;
-*/
          Test.startTest();
        List<User> u = [Select id from User WHERE Profile.name='Customer Community Login User - Super Manager/Driver' and IsActive = true limit 1];    
         System.runAs(u[0]) {      
