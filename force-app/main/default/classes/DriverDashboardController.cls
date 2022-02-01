@@ -22,6 +22,8 @@ public class DriverDashboardController
     public static Boolean showlastyear {get;set;}
     public static String logoDocument_id {get;set;}
     public static decimal TotalMonthlyCosts {get; set;}
+    public static Boolean checkErrorERMI {get;set;}
+    public static Boolean ConfirmTimeERMI {get;set;}
     /**
     @author Natavar Ghodasara
     @date 26th Feb 2019
@@ -58,6 +60,21 @@ public class DriverDashboardController
         {
             List<Account> accInsurances = [SELECT id,Bodily_Injury__c, Uninsured_Motorist__c, Property_Damage__c, Comprehensive__c, Collision__c,Umbrella_Coverage__c FROM account WHERE Id =: getAccountid()];
            accInsuranceList = String.escapeSingleQuotes( JSON.serialize(accInsurances));
+        }
+        if(getAccountid()!='' && getContactid()!='' &&  getAccountid() == System.label.ERMI_Account){
+            List<Bi_Weekly_Reimbursement__c> biWeekList = new List<Bi_Weekly_Reimbursement__c>();
+                    biWeekList = [SELECT id,name,Start_Date__c,
+                                        End_Date__c,Confirm_Hours__c,
+                                        Error_Hours__c 
+                                    FROM Bi_Weekly_Reimbursement__c 
+                                    WHERE Contact__c =: getContactid()
+                                    AND Start_Date__c != null 
+                                    AND End_Date__c <= TODAY 
+                                    Order By End_Date__c desc limit 1];
+                                    if(biWeekList.size() > 0 ){
+                                        checkErrorERMI =   biWeekList[0].Error_Hours__c;
+                                        ConfirmTimeERMI =   biWeekList[0].Confirm_Hours__c;
+                                    }                                    
         }
     }
     public static String getAccountid()
