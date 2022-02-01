@@ -374,6 +374,7 @@
                         $scope.id = url.searchParams.get("id");
                         $scope.accid = url.searchParams.get("accid");
                         $scope.gpsid = '0013r00002EkwWMAAZ';
+                        $scope.ERMIAcc = '{!($Label.ERMI_Account)}';
                         $scope.errorErmi = {!checkErrorERMI}
                         $scope.confirmErmi = {!ConfirmTimeERMI}
                         var url_locate = "/app/driverDashboardWeekly?accid="+$scope.accid+"&id="+$scope.id;
@@ -641,20 +642,25 @@
                                                     $('.modal-backdrop').remove();
                                                     $('#adminrosterImportProcess').modal('hide');
                                                     // location.reload();   
-                                                    if ($scope.empContact[0].Driver_Type__c != '' && $scope.empContact[0].Driver_Type__c != null && $scope.empContact[0].Driver_Type__c != undefined) {
-                                                        if ($scope.empContact[0].Driver_Type__c != 'Driver - Salary') {
-                                                            if ($scope.errorErmi === false && $scope.confirmErmi === false) {
-                                                                location.assign(url_locate);
-                                                            } else {
-                                                                if ($scope.errorErmi === true || $scope.confirmErmi === true) {
-                                                                    location.assign(url_dashboardlocate);
+                                                    if ($scope.accid === $scope.ERMIAcc) {
+                                                        if ($scope.empContact[0].Driver_Type__c != '' && $scope.empContact[0].Driver_Type__c != null && $scope.empContact[0].Driver_Type__c != undefined) {
+                                                            if ($scope.empContact[0].Driver_Type__c != 'Driver - Salary') {
+                                                                if ($scope.errorErmi === false && $scope.confirmErmi === false) {
+                                                                    location.assign(url_locate);
+                                                                } else {
+                                                                    if ($scope.errorErmi === true || $scope.confirmErmi === true) {
+                                                                        location.assign(url_dashboardlocate);
+                                                                    }
                                                                 }
+                                                            } else {
+                                                                location.assign(url_dashboardlocate);
                                                             }
-                                                        }else{
+                                                        }
+                                                        else {
                                                             location.assign(url_dashboardlocate);
                                                         }
-                                                    }else{
-                                                            location.assign(url_dashboardlocate);
+                                                    } else {
+                                                        location.assign(url_dashboardlocate);
                                                     }
                                                    
                                                     
