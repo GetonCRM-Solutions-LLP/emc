@@ -138,7 +138,9 @@ public class ConfirmTripTimeERMIControllerTest {
         Test.startTest();
         System.runAs(user_1) {
         string ConId = con1.Id;
-        String json = '[{"biWeekId":"a0v8H000000CtowQAC","confirmCheck":true,"errorCheck":false}]';
+        //String json = '[{"biWeekId":"'+br.id+'","confirmCheck":true,"errorCheck":false}]';
+        //String json = '[{\"biWeekId\":\" '+br.id + ' \","confirmCheck":true,"errorCheck":false}]';
+        String json = null;
         apexpages.currentpage().getparameters().put('id' , ConId);
         ConfirmTripTimeERMIController controller = new ConfirmTripTimeERMIController();
         ConfirmTripTimeERMIController.getDriverDetailsClone(Con1.Id);
