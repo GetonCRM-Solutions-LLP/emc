@@ -92,7 +92,14 @@ public class DriverDashboardController_test {
             br.Status__c = 'Pending';
             br.Fuel_Price__c = 0;
         Insert br;
-
+        
+        Attachment attach=new Attachment();     
+        attach.Name = 'Unit Test Attachment';
+        Blob bodyBlob = Blob.valueOf('Unit Test Attachment Body');
+        attach.body = bodyBlob;
+        attach.parentId = obj_driver_contact[0].id;
+        insert attach;
+        
         Test.startTest();
         System.runAs(user_1) {
             Test.setCurrentPage(Page.driverDashboardClone);
@@ -119,6 +126,7 @@ public class DriverDashboardController_test {
             DriverDashboardController.biweeklyMileage(obj_driver_contact[0].id,2021);
             //DriverDashboardController.getBiweekMileages('2021-11-12','2021-12-30',obj_driver_contact[0].id);
             DriverDashboardController.getBiweekMileages(string.valueOf(br));
+            DriverDashboardController.getdriverInsurance(attach.Id);
         }
         Test.stopTest();
     }
