@@ -443,6 +443,45 @@ public with sharing class ManageNotificationController {
         }
         return 'Success';
     }
+    @RemoteAction
+    public static String UploadLOA(string LOAData,string  accId,String startdate,String enddate) { 
+        System.debug('UploadLOA=='+LOAData);
+        map<string, Id> biweekIdMap = new map<string, Id>();
+        for(Bi_Weekly_Reimbursement__c bireim : [SELECT id,name,Contact__r.name,Contact__r.Employee_ID__c
+                                                    FROM Bi_Weekly_Reimbursement__c 
+                                                    WHERE Start_Date__c=: Date.valueOf(startdate) 
+                                                    AND End_Date__c =: Date.valueOf(enddate)
+                                                    AND Contact__r.AccountId =: accId ]){
+                                                        biweekIdMap.put(bireim.Contact__r.Employee_ID__c, bireim.id);
+                                            }
+                                          
+            List<LOAWrapper> loaWrapList = new List<LOAWrapper>();
+            if(LOAData != null) {
+                loaWrapList = (List<LOAWrapper>)Json.deserialize(LOAData,List<LOAWrapper>.class);
+                List<Bi_Weekly_Reimbursement__c> biweekList = new List<Bi_Weekly_Reimbursement__c>();
+                for(LOAWrapper loaWrap : loaWrapList){ 
+                    if(biweekIdMap.containsKey(loaWrap.employeeId)){
+                        Bi_Weekly_Reimbursement__c objBiWeek = new Bi_Weekly_Reimbursement__c();
+                        objBiWeek.id = biweekIdMap.get(loaWrap.employeeId);
+                        objBiWeek.LOA_Start_Date__c = (loaWrap.loaStart != null ? Date.parse(loaWrap.loaStart) : null);
+                        objBiWeek.LOA_End_Date__c = (loaWrap.loaEnd != null ? Date.parse(loaWrap.loaEnd) : null);                      
+                        if(loaWrap.proratedAmount != null && loaWrap.proratedAmount != ''){
+                            objBiWeek.Fixed_Amount__c = (Decimal.valueOf(loaWrap.proratedAmount)*26)/12;
+                        }                       
+                        biweekList.add(objBiWeek);
+                    }
+                }
+                if(biweekList.size() > 0){
+                    try {
+                        update biweekList;
+                    } catch(Exception e ){
+                        system.debug('e'+e);
+                    }                
+                }
+            }
+            
+        return 'Success';
+    }
     public class ContactWrapper {
         public string contactId { get; set; }
         public string triploguserid{ get; set; }
@@ -458,5 +497,12 @@ public with sharing class ManageNotificationController {
         public Boolean massEmail { get; set; }
         public date expirationDate { get; set; }
         public date notificationDate { get; set; }
+    }
+    public class LOAWrapper {
+        public string employeeId { get; set; }
+        public string proratedAmount{ get; set; }
+        public string name { get; set; }
+        public string loaStart { get; set; }
+        public string loaEnd { get; set; }
     }
 }
