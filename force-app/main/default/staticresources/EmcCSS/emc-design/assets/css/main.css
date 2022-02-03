@@ -85,12 +85,8 @@ header {
 
 li.nav-item.active {
   font-family: 'Proxima Nova SemiBold' !important;
+  border-top: 2px solid #fff;
 }
-
-.sticky .navbar-expand-md .navbar-nav .nav-link {
-  padding: 2px .5rem !important;
-}
-
 .sticky .navbar-brand img.img-fluid {
   height: 40px !important;
 }
