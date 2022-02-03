@@ -234,6 +234,7 @@
 
 .bar-item_active {
     font-weight: 600;
+    border-top: 2px solid #fff;
     font-family: 'Proxima Nova' !important;
 }
 
