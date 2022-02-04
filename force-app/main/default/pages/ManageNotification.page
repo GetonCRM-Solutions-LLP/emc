@@ -78,7 +78,6 @@
                 .resendCheck {
                     width: 2.7em;
                 }
-
             }
 
             /* Large screens ----------- */
@@ -149,6 +148,376 @@
                 }
             }
 
+            @media (min-width: 1237px) and (max-width: 1440px) {
+                #action-nav .action-nav-list a:before{
+                    width: 47px !important
+                }
+            }
+
+            .home {
+                position: relative;
+            }
+            .overlay-navigation {
+                position: fixed;
+                z-index: 99;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background-color: hsla(0, 0%, 0%, 0.8);
+                transform: translateY(-100%);
+            }
+             .overlay-slide-down {
+                transition: all .4s ease-in-out;
+                transform: translateY(0)
+            }
+
+            .overlay-slide-up {
+                transition: all .8s ease-in-out;
+                transform: translateY(-100%)
+            }
+
+            #action-nav,
+            #action-nav .un-list {
+                width: 100%;
+                height: 100%;
+                margin: 0;
+                padding: 0;
+            }
+
+            #action-nav .un-list {
+                display: flex;
+                list-style: none;
+            }
+
+            .flex_basis{
+                flex-basis: 35% !important;
+            }
+            .reverse-white{
+                color: #ffffff;
+            }
+            #action-nav .un-list .action-nav-list {
+                flex-basis: 100%;
+                justify-content: center;
+                align-items: center;
+                height: 100%;
+                overflow: hidden;
+                transform: translateY(-100%);
+             }
+
+            #action-nav .action-nav-list a {
+                position: relative;
+                top: 46%;
+                color: #fff;
+                text-transform: uppercase;
+                font-weight: 300;
+                letter-spacing: 4px;
+                text-decoration: none;
+                display: block;
+                text-align: center;
+                font-size: 1rem;
+            }
+
+            #action-nav .action-nav-list a:before {
+                content: '';
+                width: 70px;
+                height: 2px;
+                background-color: #fff;
+                position: absolute;
+                top: 50%;
+                left: 0;
+                z-index: 100;
+                transform: translateX(-100%);
+                opacity: 0;
+                transition: all .2s linear;
+            }
+
+            #action-nav .action-nav-list a:after {
+                content: attr(data-content);
+                font-size: 0.9rem;
+                transition: all .2s linear;
+                opacity: 0;
+                position: absolute;
+                z-index: 100;
+                color: #fff;
+                display: block;
+                margin-right: auto;
+                margin-left: auto;
+                left: 0;
+                right: 0;
+                bottom: -50px;
+                text-transform: none;
+                font-weight: 300;
+                font-style: italic;
+                letter-spacing: 0;
+            }
+
+            #action-nav .action-nav-list a:hover:before {
+                transform: translateX(0);
+                opacity: 1;
+             }
+
+            #action-nav .action-nav-list a:hover:after {
+                transform: translateY(15px);
+                opacity: 1;
+            }
+
+            #action-nav .action-nav-list:nth-of-type(1){background-color: #29363B}
+            #action-nav .action-nav-list:nth-of-type(2){background-color: #78b642} /*#EA495F*/
+            #action-nav .action-nav-list:nth-of-type(3){background-color: #919496 }  /* #F4837D */
+            #action-nav .action-nav-list:nth-of-type(4){background-color: #FDCEA9}
+            #action-nav .action-nav-list:nth-of-type(5){background-color: #99B998}
+
+            .slide-in-nav-item {
+                animation: slide-in-nav-item 0.4s linear 1 .2s both;
+            }
+
+            .slide-in-nav-item-delay-1 {
+                animation: slide-in-nav-item 0.4s linear 1 .4s both;
+            }
+
+            .slide-in-nav-item-delay-2 {
+                animation: slide-in-nav-item 0.4s linear 1 .6s both;
+            }
+
+            .slide-in-nav-item-delay-3 {
+                animation: slide-in-nav-item 0.4s linear 1 .8s both;
+            }
+
+            .slide-in-nav-item-delay-4 {
+                animation: slide-in-nav-item 0.4s linear 1 1s both;
+            }
+
+            .slide-in-nav-item-reverse {
+                animation: slide-in-nav-item-reverse .3s linear 1 .5s both;
+            }
+
+             .slide-in-nav-item-delay-1-reverse {
+                animation: slide-in-nav-item-reverse .3s linear 1 .4s both;
+            }
+
+            .slide-in-nav-item-delay-2-reverse {
+                animation: slide-in-nav-item-reverse .3s linear 1 .3s both;
+             }
+
+            .slide-in-nav-item-delay-3-reverse {
+                animation: slide-in-nav-item-reverse .3s linear 1 .2s both;
+            }
+
+            .slide-in-nav-item-delay-4-reverse {
+                animation: slide-in-nav-item-reverse .3s linear 1 both;
+            }
+
+            .open-overlay {
+                position: absolute;
+                border: 1px solid transparent;
+                cursor: pointer;
+                border-color: #0c0c0c;
+                right: 2.1rem;
+                /* z-index: 100; */
+                padding: 6px 20px;
+                display: block;
+                cursor: pointer;
+            }
+
+            .open-overlay span {
+                display: block;
+                height: 1px;
+                background-color: #fff;
+                cursor: pointer;
+                margin-top: 8px;
+            }
+
+            .animate-top-bar {
+                animation: animate-top-bar .6s linear 1 both
+            }
+
+            .animate-bottom-bar {
+                animation: animate-bottom-bar .6s linear 1 both
+            }
+
+            .animate-middle-bar {
+                animation: animate-middle-bar .6s linear 1 both
+            }
+
+            .animate-out-top-bar {
+                animation: animate-out-top-bar .6s linear 1 both
+            }
+
+             .animate-out-bottom-bar {
+                animation: animate-out-bottom-bar .6s linear 1 both
+            }
+
+            .animate-out-middle-bar {
+                animation: animate-out-middle-bar .6s linear 1 both
+            }
+
+
+                /* ====================================
+                Animation keyframes
+                ==================================== */
+
+            @keyframes slide-in-nav-item {
+                from {
+                    -webkit-transform: translateY(-100%);
+                    transform: translateY(-100%)
+                }
+                to {
+                    -webkit-transform: translateY(0);
+                    transform: translateY(0)
+                }
+            }
+
+            @keyframes slide-in-nav-item-reverse {
+                from {
+                    -webkit-transform: translateY(0);
+                    transform: translateY(0)
+                }
+                to {
+                    -webkit-transform: translateY(-100%);
+                    transform: translateY(-100%)
+                }
+            }
+
+            @keyframes animate-top-bar {
+                0% {
+                    background-color: #fff;
+                }
+                50% {
+                    -webkit-transform: translateY(9px);
+                    transform: translateY(9px)
+                }
+                80% {
+                    -webkit-transform: translateY(5px);
+                    transform: translateY(5px);
+                    background-color: #fff
+                }
+                100% {
+                    -webkit-transform: translateY(0);
+                    transform: translateY(0);
+                    background-color: #29363B;
+                }
+            }
+
+            @keyframes animate-bottom-bar {
+                0% {
+                    background-color: #fff;
+                }
+                50% {
+                    -webkit-transform: translateY(-9px);
+                    transform: translateY(-9px)
+                }
+                80% {
+                    -webkit-transform: translateY(-5px);
+                    transform: translateY(-5px);
+                    background-color: #fff;
+                }
+                100% {
+                    -webkit-transform: translateY(0);
+                    transform: translateY(0);
+                    background-color: #29363B;
+                }
+            }
+
+            @keyframes animate-middle-bar {
+                0% {
+                    background-color: #fff;
+                }
+                80% {
+                    background-color: #fff;
+                }
+                100% {
+                    background-color: #29363B;
+                }
+            }
+
+            @keyframes animate-out-top-bar {
+                0% {
+                    background-color: #29363B
+                }
+                50% {
+                    -webkit-transform: translateY(9px);
+                    transform: translateY(9px)
+                }
+                80% {
+                    -webkit-transform: translateY(5px);
+                    transform: translateY(5px);
+                    background-color: #29363B
+                }
+                100% {
+                    -webkit-transform: translateY(0);
+                    transform: translateY(0);
+                    background-color: #FFF;
+                }
+            }
+
+            @keyframes animate-out-bottom-bar {
+                0% {
+                    background-color: #29363B
+                }
+                50% {
+                    -webkit-transform: translateY(-9px);
+                    transform: translateY(-9px)
+                }
+                80% {
+                    -webkit-transform: translateY(-5px);
+                    transform: translateY(-5px);
+                    background-color: #29363B;
+                }
+                100% {
+                    -webkit-transform: translateY(0);
+                    transform: translateY(0);
+                    background-color: #FFF;
+                }
+            }
+
+            @keyframes animate-out-middle-bar {
+                0% {
+                    background-color: #29363B
+                }
+                80% {
+                    background-color: #29363B;
+                }
+                100% {
+                    background-color: #fff;
+                }
+            }
+             .menuToggler{
+                    position: fixed;
+                    top: 10px;
+                    cursor: pointer;
+                    z-index: 100;
+                    right: 5rem;
+             }
+            .home a{
+                font-family: "Work Sans", sans-serif;
+                color: #fff;
+                font-weight: 300;
+                font-size: 12px;
+                text-transform: uppercase;
+                text-decoration: none;
+                position: absolute;
+                z-index: 10;
+                top:50px;
+                left:50px;
+                padding-bottom: 3px;
+                border-bottom: 1px solid #fff;
+            }
+            @media (max-width: 640px) {
+                 #action-nav .un-list .action-nav-list a {
+                    font-size: 11px;
+                }
+                #action-nav .action-nav-list a:after {
+                    font-size: 0.6rem;
+                }
+                .open-overlay {
+                    right: 1rem;
+                }
+                #action-nav .action-nav-list a:before {
+                    width: 15px;
+                }
+             }
+
             /* custom width's */
 
             .em-8 {
@@ -179,7 +548,7 @@
                 font-family: 'Proxima Nova';
                 font-size: 1rem !important;
             }
-
+            
             nav {
                 display: flex !important;
             }
@@ -1077,6 +1446,8 @@
             $scope.search = {};
             $scope.uploadmileageProcess = false; /* EMC - 182 Added On 21 December 2021 */
             $scope.mileageBtn = true;  /* EMC - 182 Added On 21 December 2021 */
+            $scope.uploadloaProcess = false; /* EMC - 214 Added On 1 February 2022  */
+            $scope.loaBtn = true; /* EMC - 214 Added On 1 February 2022  */
             $scope.searchTerm = "fullname";
             $scope.search[$scope.searchTerm] = "";
             $scope.currentPage = 1;
@@ -1091,6 +1462,7 @@
             $scope.driverEmailList = [];
             $scope.nameOfLocationFile = 'sample_location_import.csv';
             $scope.nameOfMileageFile = 'sample_mileage_import.csv';
+            $scope.nameOfLOAFile = 'sample_LOA_import.csv';
             $scope.locationTemplate = [{
                 "Name (optional)": "The White House",
                 "Address": "1600 Pennsylvania Ave NW, Washington, DC 20500",
@@ -1115,8 +1487,18 @@
             }
             ];
 
+            $scope.loaTemplate = [{
+                "Employee": "",
+                "Name": "",
+                "Prorated Amount": "",
+                "LOA Start": "",
+                "LOA End": ""
+            }
+            ];
             /* action for resend insurance */
-            $scope.showResendBtn = true;
+            $scope.showResendBtn = false;
+            $scope.showMileageBtn = false;
+            $scope.showLOABtn = false;
             $scope.showLocationBtn = true;
             $scope.showEmailBtn = false;
             $scope.showCancelProBtn = false;
@@ -1139,6 +1521,16 @@
                 return today;
             }
 
+            function filterByYear(item) {
+                    var a = item.split(' to ');
+                    if (new Date(a[0]).getFullYear() === new Date().getFullYear()) {
+                        return true;
+                    } else {
+                        if (new Date(a[1]).getFullYear() === new Date().getFullYear()) {
+                            return true;
+                        }
+                    }
+                }
             function payDate(date) {
                 var st = new Date(date);
                 var today = new Date();
@@ -1148,7 +1540,7 @@
                 var currentYear = (new Date()).getFullYear();
                 if (date) {
                     for (i = 0; i <= dateArr.length; i++) {
-                        if (currentYear === st.getFullYear()) {
+                      //  if (currentYear === st.getFullYear()) {
                             if (st < today) {
                                 end = new Date(st);
                                 end = new Date(end.setDate(end.getDate() + 13));
@@ -1157,9 +1549,10 @@
                                 st = new Date(end.setDate(end.getDate() + 1));
                             }
 
-                        }
+                      //  }
                     }
-                    return dateArr;
+                    let arrByYear = dateArr.filter(filterByYear)
+                    return arrByYear;
                     console.log("List->", dateArr);
                 }
             }
@@ -1185,13 +1578,27 @@
                 }
             }
 
+            $scope.onPayPChange = function(period){
+                document.querySelector('.loa-file').value = "";
+                if (period != "Select Pay Period") {
+                    $scope.splitObj = period.split(' to ');
+                    $scope.stCustomDate = $scope.splitObj[0];
+                    $scope.enCustomDate = $scope.splitObj[1];
+                    $scope.convertedStartDate = $filter('date')(new Date($scope.stCustomDate), 'yyyy-MM-dd');
+                    $scope.convertedEndDate = $filter('date')(new Date($scope.enCustomDate), 'yyyy-MM-dd');
+                    $scope.loaBtn = false;
+                } else {
+                    $scope.loaBtn = true;
+                }
+            }
+
             /* EMC - 182 Ends */
             /* Toaster Option */
             this.setOptions = function () {
                 toastr.options.positionClass = "toast-top-right";
                 toastr.options.closeButton = true;
                 toastr.options.progressBar = true;
-                toastr.options.fadeOut = 3000;
+                toastr.options.fadeOut = 6000;
             };
 
             this.setOptions();
@@ -1249,6 +1656,55 @@
                     })
 
                 }
+            }
+
+            /* close Navigation */
+            function navToggle(){
+                var overlay_navigation = $('.overlay-navigation'),
+                    nav_item_1 = $('#action-nav .action-nav-list:nth-of-type(1)'),
+                    nav_item_2 = $('#action-nav .action-nav-list:nth-of-type(2)'),
+                    nav_item_3 = $('#action-nav .action-nav-list:nth-of-type(3)'),
+                    nav_item_4 = $('#action-nav .action-nav-list:nth-of-type(4)'),
+                    nav_item_5 = $('#action-nav .action-nav-list:nth-of-type(5)'),
+                    top_bar = $('.bar-top'),
+                    middle_bar = $('.bar-middle'),
+                    bottom_bar = $('.bar-bottom'),
+                    overlay = $('.open-overlay'),
+                    close_btn = $('.menuToggler');
+                    overlay_navigation.toggleClass('overlay-active');
+                    overlay.removeClass('d-none').addClass('d-block');
+                    close_btn.removeClass('d-block').addClass('d-none');
+                    top_bar.removeClass('animate-top-bar').addClass('animate-out-top-bar');
+                    middle_bar.removeClass('animate-middle-bar').addClass('animate-out-middle-bar');
+                    bottom_bar.removeClass('animate-bottom-bar').addClass('animate-out-bottom-bar');
+                    overlay_navigation.removeClass('overlay-slide-down').addClass('overlay-slide-up')
+                    nav_item_1.removeClass('slide-in-nav-item').addClass('slide-in-nav-item-reverse');
+                    nav_item_2.removeClass('slide-in-nav-item-delay-1').addClass('slide-in-nav-item-delay-1-reverse');
+                    nav_item_3.removeClass('slide-in-nav-item-delay-2').addClass('slide-in-nav-item-delay-2-reverse');
+                    nav_item_4.removeClass('slide-in-nav-item-delay-3').addClass('slide-in-nav-item-delay-3-reverse');
+                    nav_item_5.removeClass('slide-in-nav-item-delay-4').addClass('slide-in-nav-item-delay-4-reverse');
+            }
+            /* Navigate to Resend Insurance */
+            $scope.insuranceProcess = function(){
+                navToggle();
+                $scope.showResendBtn = true;
+                $scope.showMileageBtn = false;
+                $scope.showLOABtn = false;
+            }
+
+             /* Navigate to Mileage Upload*/
+            $scope.mileageProcess = function(){
+                navToggle();
+                $scope.showResendBtn = false;
+                $scope.showMileageBtn = true;
+                $scope.showLOABtn = false;
+            }
+
+            $scope.loaProcess = function(){
+                navToggle();
+                $scope.showResendBtn = false;
+                $scope.showMileageBtn = false;
+                $scope.showLOABtn = true;
             }
 
             $scope.export = function (sampleData) {
@@ -1635,6 +2091,7 @@
             $scope.filesChoose = [];
             $scope.locationChoose = [];
             $scope.mileageChoose = [];
+            $scope.loaChoose = [];
             var maxStringSize = 6000000;    //Maximum String size is 6,000,000 characters
             var maxFileSize = 4350000;      //After Base64 Encoding, this is the max file size
             var chunkSize = 950000;         //Maximum Javascript Remoting message size is 1,000,000
@@ -1884,6 +2341,31 @@
                 }
             }
 
+            function isNumber(num){
+                if(num != undefined ){
+                    var num1 = parseFloat(num);
+                    if(isNaN(num1) === true){
+                        return true
+                    }else{
+                        return false
+                    }
+                }else{
+                    return true
+                }
+            }
+
+            /* EMC - 214 Added On 1 February 2022  */
+            $scope.openModalForLOAUpload = function () {
+              $scope.uploadloaProcess = true;
+            }
+
+            /* EMC - 214 Added On 1 February 2022  */
+            $scope.closeLOAModal = function(){
+                $scope.uploadloaProcess = false;
+                $scope.loaBtn = true;
+                $scope.biweeklyPayRole = $scope.biweeklyDate[0];
+            }
+
             /* EMC - 182 Added On 21 December 2021 */
             $scope.openModalForUpload = function () {
               $scope.uploadmileageProcess = true;
@@ -1982,6 +2464,7 @@
                                 if (countApprove > 0) { toastr.error('Please enter valid approval date. Date format should be mm/dd/yyyy or m/dd/yyyy or m/dd/yy') }
                                 if (countStatus > 0) { toastr.error('Please enter trip status.') }
                                 if (countID > 0) { toastr.error('Please enter Employee Id.') }
+                                document.querySelector('.mileage-file').value = "";
                             }
 
                         })
@@ -2147,6 +2630,7 @@
                     return newItem;
                 });
             };
+
             function uploadLocationAttachment(json, usertriplogId, findexV) {
                 $('#spinner').show();
                 var newArray;
@@ -2247,6 +2731,164 @@
                     })
                 }
             }
+
+            /* EMC - 214 Added On 1 February 2022  */
+            $scope.loa_file_changed = function(element){
+                $('#spinner').show();
+                $('#loading').text("Uploading...");
+                chooseFileName = '';
+                attachment = '';
+                choosefile = '';
+                $scope.data = '';
+                choosefile = element;
+                var findex = (element.files[0].name).lastIndexOf(".");
+                var photofile = element.files[0];
+                chooseFileName = photofile.name;
+                //console.log('file size :- '+choosefile.files[0].size);
+                var strsubstring = (element.files[0].name).substring(findex, (element.files[0].name).length);
+                if (strsubstring == '.xls' || strsubstring == '.xlsx' || strsubstring == '.csv') {
+                    if (choosefile.files[0].size > 0 && choosefile.files[0].size < 4350000) {
+                        //console.log($('#file-column')[0].classList)
+                        choosefile = element;
+                        $scope.loaChoose.push(element);
+                    }
+                    else {
+                        toastr.error('Base 64 Encoded file is too large.  Maximum size is 4 MB .');
+                        $('#loading').text("");
+                        $('#spinner').hide();
+                    }
+                }
+                else {
+                    toastr.error('Please upload correct File. File extension should be .csv or .xls');
+                    $('#loading').text("");
+                    $('#spinner').hide();
+                }
+
+                var fLoa = choosefile.files[0].size;
+
+                $scope.$apply(function (scope) {
+                    choosenfileType = photofile.type;
+                    var reader = new FileReader();
+                    $scope.loafsize = element.files[0].size;
+                    reader.onload = function (e) {
+                        $scope.data = reader.result;
+                    };
+                    reader.readAsDataURL(photofile);
+                    $scope.uploadLOAInChunk(element);
+                });
+            }
+
+            $scope.uploadLOAInChunk = function (element) {
+                var loafile;
+                if (element != null || element != undefined) {
+                    angular.forEach($scope.loaChoose, function (fLoa) {
+                        loafile = fLoa.files[0];
+                    })
+                }
+
+                if (loafile != undefined) {
+                    var selectedFile = loafile;
+                    var reader = new FileReader();
+                    reader.onload = function (event) {
+                        var data = this.result;
+                        var workbook = XLSX.read(data, {
+                            type: 'binary',
+                            cellDates: true,
+                            dateNF: 'mm/dd/yyyy'
+                        });
+                
+                        workbook.SheetNames.forEach(function (sheetName) {
+                            var XL_row_object = XLSX.utils.sheet_to_row_object_array(workbook.Sheets[sheetName], { raw: false });
+                            var isValidStart, isValidEnd, isName, isEmployeeId, isAmount, countStart = 0, countEnd = 0, countName = 0, countID = 0, countAmt = 0;
+                            for (var R = 0; R < XL_row_object.length; R++) {
+                                isValidStart = TripDateIsValid(XL_row_object[R]["LOA Start"]);
+                                isValidEnd = TripDateIsValid(XL_row_object[R]["LOA End"]);
+                                isName = ValidateField(XL_row_object[R].Name);
+                                isEmployeeId = isNumber(XL_row_object[R].Employee);
+                                isAmount = isNumber(XL_row_object[R]["Prorated Amount"]);
+                                if (isNaN(isValidStart) === true) countStart++;
+                                if (isNaN(isValidEnd) === true) countEnd++;
+                                if (isName === false) countName++;
+                                if (isEmployeeId === true) countID++;
+                                if (isAmount === true) countAmt++;
+                            }
+                            if (countStart === 0 && countEnd === 0 && countName === 0 && countID === 0 && countAmt === 0) {
+                                var json_object = JSON.stringify(XL_row_object);
+                                uploadLoaAttachment(json_object);
+                            } else {
+                                $('#spinner').hide();
+                                if (countStart > 0) { toastr.error('Please enter valid loa start date. Date format should be mm/dd/yyyy or m/dd/yyyy or m/dd/yy') }
+                                if (countEnd > 0) { toastr.error('Please enter valid loa end date. Date format should be mm/dd/yyyy or m/dd/yyyy or m/dd/yy') }
+                                if (countName > 0) { toastr.error('Please enter name.') }
+                                if (isAmount > 0) { toastr.error('Please enter valid prorated amount.') }
+                                if (countID > 0) { toastr.error('Please enter valid Employee.') }
+                                document.querySelector('.loa-file').value = "";
+                            }
+
+                        })
+                    };
+
+                    reader.onerror = function (event) {
+                        console.error("File could not be read! Code " + event.target.error.code);
+                    };
+
+                    reader.readAsBinaryString(selectedFile);
+                }
+                console.log("from loa file", loafile);
+            }
+
+            function uploadLoaAttachment(json) {
+                $('#loading').text("");
+                $('#spinner').show();
+                var loalist=[], paySplit, payStartDate, payEndDate;
+                var jsonBody = JSON.parse(json);
+                if($scope.biweeklyPayRole!= null && $scope.biweeklyPayRole != '' && $scope.biweeklyPayRole!="Select Pay Period"){
+                    paySplit = $scope.biweeklyPayRole.split(" to ");
+                    payStartDate = $filter('date')(new Date(paySplit[0]), 'yyyy-MM-dd');
+                    payEndDate = $filter('date')(new Date(paySplit[1]), 'yyyy-MM-dd');
+                }
+                if (jsonBody[0] != null || jsonBody[0] != undefined) {
+                    var loaKeys = Object.keys(jsonBody[0]);
+                    var arrayList = jsonBody;
+                    arrayList.forEach((element)=>{
+                        var lRow = {};
+                        lRow.employeeId = element["Employee"];
+                        lRow.proratedAmount = element["Prorated Amount"];
+                        lRow.name = element["Name"];
+                        lRow.loaEnd = element["LOA End"];
+                        lRow.loaStart = element["LOA Start"];
+                        loalist.push(lRow);
+                    })
+                    if (loaKeys.includes("Name") || loaKeys.includes("Employee")
+                        || loaKeys.includes("Prorated Amount") || loaKeys.includes("LOA Start")
+                        || loaKeys.includes("LOA End")) {
+                        $scope.loaAttachment = JSON.stringify(loalist);
+                        Visualforce.remoting.Manager.invokeAction('{!$RemoteAction.ManageNotificationController.UploadLOA}', $scope.loaAttachment, $scope.accid, payStartDate, payEndDate,
+                            function (result, event) {
+                                if (event.status) {
+                                    $('#spinner').hide();
+                                    toastr.success("We have received your upload, the data will be processed and made available within 72 work hours");
+                                    location.reload();
+                                }
+                                else {
+                                    toastr.error('Some error has occur');
+                                    $('#spinner').hide();
+                                }
+                                $('#spinner').hide();
+                                $scope.$apply();
+                            },
+                            { buffer: true, escape: true, timeout: 120000 }
+                        );
+                    } else {
+                        $('#spinner').hide();
+                        toastr.error("The file you have uploaded is not valid for LOA details");
+                    }
+                } else {
+                    $('#spinner').hide();
+                    toastr.error("The file you have uploaded is not valid for LOA details");
+                }
+            }
+            /* EMC - 214 Ends  */
             }]);
         </script>
     </head>
@@ -2325,7 +2967,37 @@
                 </div>
             </div>
         </div>
+        <div class="overlay-navigation">
+            <nav role="navigation" id="action-nav">
+                <ul class="un-list">
+                    <li class="action-nav-list"  ng-class="{'flex_basis' : accid === PLMarketing}"><a ng-click="insuranceProcess()" data-content="Send email to driver/admin to submit your insurance declaration page">Insurance Reminder</a></li>
+                    <li class="action-nav-list" ng-if="accid === PLMarketing" ng-class="{'flex_basis' : accid === PLMarketing}"><a ng-click="mileageProcess()" data-content="Upload your trips with mileages in biweekly pay period">Mileage Upload</a></li>
+                    <li class="action-nav-list" ng-if="accid === PLMarketing" ng-class="{'flex_basis' : accid === PLMarketing}"><a ng-click="loaProcess()" data-content="Import Leave Of Absence details">Leave Of Absence Upload</a></li>
+                </ul>
+            </nav>
+        </div>
+
+<section class="home">
+  <div class="open-overlay slds-btn slds-btn-primary slds-btn-sm waves-effect bc-blue waves-light">
+    <div style="font-size: 14px">MENU <i class="fa fa-bars"></i></div> 
+    <!-- <span class="bar-top"></span>
+    <span class="bar-middle"></span>
+    <span class="bar-bottom"></span> -->
+  </div>
+<div class="menuToggler d-none">
+    <i class="fa fa-close fa-3x" ng-class="{'reverse-white' : accid != PLMarketing}"></i>
+</div>
+</section>
         <div class="slds-container">
+            <!-- <div id="myNav" class="overlay">
+                <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+                <div class="overlay-content">
+                  <a href="#">About</a>
+                  <a href="#">Services</a>
+                  <a href="#">Clients</a>
+                  <a href="#">Contact</a>
+                </div>
+              </div>           -->
             <div class="report-link">
                 <h3 class="mb-15 d-block">Communications</h3>
             </div>
@@ -2334,6 +3006,9 @@
                 <div class="process-container">
                     <input type="hidden" id="hidden_user_id" />
                     <div>
+                        <!-- <button class="slds-btn slds-btn-primary slds-btn-sm waves-effect bc-blue waves-light mleft-0"  ng-click="openNav()">
+                            Action List
+                        </button> -->
                         <button class="slds-btn slds-btn-primary slds-btn-sm waves-effect bc-blue waves-light mleft-0" ng-show="showResendBtn" ng-click="displayCheckboxForEmail()">
                             Resend Insurance Reminder
                         </button>
@@ -2344,7 +3019,7 @@
                         <button class="slds-btn slds-btn-primary slds-btn-sm waves-effect bc-green waves-light mleft-0" ng-show="showEmailBtn" ng-click="sendMassEmail()">
                             Send Email
                         </button>
-                        <button class="slds-btn slds-btn-primary slds-btn-sm waves-effect bc-black waves-light mleft" ng-show="showCancelProBtn"
+                        <button class="slds-btn slds-btn-primary slds-btn-sm waves-effect bc-black waves-light mleft cancelBtn" ng-show="showCancelProBtn"
                             ng-click="endProcess()">
                             Cancel Process
                         </button>
@@ -2369,12 +3044,20 @@
                                         onchange="angular.element(this).scope().mileage_file_changed(this)" />
                                 </div>
                             </div> -->
-                    <button class="slds-btn slds-btn-primary slds-btn-sm waves-effect bc-blue waves-light mleft-0" ng-click="openModalForUpload()" ng-if="accid === PLMarketing">
+                    <button class="slds-btn slds-btn-primary slds-btn-sm waves-effect bc-blue waves-light mleft-0" ng-click="openModalForUpload()"  ng-show="showMileageBtn"> <!-- ng-if="accid === PLMarketing"-->
                         <i class="fa fa-upload slds-p-right_xx-small"></i> Upload Mileage
                     </button>
                     <button  class="slds-btn slds-btn-primary slds-btn-sm waves-effect bc-grey waves-light mleft-0"
-                        ng-click="exportToCsv(mileageTemplate, nameOfMileageFile)" ng-if="accid === PLMarketing">
+                        ng-click="exportToCsv(mileageTemplate, nameOfMileageFile)"  ng-show="showMileageBtn"> <!-- ng-if="accid === PLMarketing"-->
                         <i class="fa fa-download slds-p-right_xx-small"></i> Download Mileage Template
+                    </button>
+
+                    <button class="slds-btn slds-btn-primary slds-btn-sm waves-effect bc-blue waves-light mleft-0" ng-click="openModalForLOAUpload()"  ng-show="showLOABtn"> <!-- ng-if="accid === PLMarketing"-->
+                        <i class="fa fa-upload slds-p-right_xx-small"></i> Upload LOA
+                    </button>
+                    <button  class="slds-btn slds-btn-primary slds-btn-sm waves-effect bc-grey waves-light mleft-0"
+                        ng-click="exportToCsv(loaTemplate, nameOfLOAFile)"  ng-show="showLOABtn"> <!-- ng-if="accid === PLMarketing"-->
+                        <i class="fa fa-download slds-p-right_xx-small"></i> Download LOA Template
                     </button>
                 </div>
                 <div class="mtop-1 slds-p-bottom_x-large" id="tableWrap">
@@ -2408,8 +3091,8 @@
                                         <input class="custom-check" type="checkbox" ng-model="info.massEmail" ng-change="CheckUncheckForEmail(info);" />
                                     </td>
                                     <td class="name-td em-10" ng-if="role != 'Admin' && role != 'Driver/Admin' ">{{info.name + ' ' + info.lastname}}</td>
-                                    <td class="name-td em-10" ng-if="role === 'Admin' || role === 'Driver/Admin' ">
-                                        <a ng-click="openProfile(info)" class="name-info-link">{{info.name + ' ' + info.lastname}}</a>
+                                    <td class="em-10" ng-if="role === 'Admin' || role === 'Driver/Admin' ">
+                                        <a ng-click="openProfile(info)" class="name-info-link name-td ">{{info.name + ' ' + info.lastname}}</a>
                                     </td>
                                     <td ng-model="info.insurance" class="em-10" ng-if="info.role != 'Manager'">
                                         <!-- {{info.insurance}} -->
@@ -2550,7 +3233,128 @@
                 </div>
             </section>
             <div class="slds-backdrop slds-backdrop_open" ng-show="uploadmileageProcess"></div>
+
+              <!-- EMC - 214 Added On 1 February 2022 -->
+              <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-id-1"
+              class="slds-modal slds-fade-in-open slds-modal_small slds-is-fixed" ng-show="uploadloaProcess">
+              <div class="slds-modal__container">
+                  <!-- Modal/Popup Box LWC header here -->
+                  <header class="slds-modal__header slds-clearfix">
+                      <button type="button" class="close popup-close-btn" data-dismiss="modal" aria-label="Close" ng-click="closeLOAModal()">
+                          <span aria-hidden="true">×</span>
+                      </button>
+                      <h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate slds-float_left slds-p-bottom_small">Upload Leave Of Absence Details</h2>
+                  </header>
+                  <!-- Modal/Popup Box LWC body starts here -->
+                  <div class="slds-modal__content slds-p-around_medium slds-scrollable" id="modal-content-id-1">
+                      <div class="slds-list_inline slds-p-bottom_xx-small">
+                          <label class="slds-text-color_weak slds-p-horizontal_x-small slds-p-top_xxx-small slds-col slds-size_1-of-1 slds-medium-size_6-of-12 slds-large-size_6-of-12">Pay Period :</label>
+                          <div class="slds-col slds-size_1-of-1 slds-medium-size_6-of-12 slds-large-size_10-of-12">
+                              <select ng-model="biweeklyPayRole" ng-change="onPayPChange(biweeklyPayRole)" class="browser-default custom-select custom-select-xl custom-payPeriod">
+                                  <option ng-repeat="bDate in biweeklyDate" ng-selected="{{biweeklyPayRole == bDate}}" value="{{bDate}}">{{bDate}}</option>
+                              </select>
+                          </div>
+                      </div>
+                  </div>
+                  <!-- Modal/Popup Box LWC footer starts here -->
+                  <footer class="slds-modal__footer">
+                      <div class="slds-clearfix">
+                          <div class="slds-float_right slds-m-right_small">
+                              <div class="file-field" ng-class="{'disable-div' : loaBtn === true}"><!-- ng-if="accid === PLMarketing" -->
+                                  <div class="slds-btn slds-btn-primary slds-btn-sm waves-effect bc-blue waves-light mleft-0" id="locationFileBtn-{{$index}}">
+                                      <i class="fa fa-upload slds-p-right_xx-small"></i><span>Upload</span>
+                                      <input type="file" class="loa-file"  multiple="false"  accept=".xls, .xlsx, .csv"
+                                          onchange="angular.element(this).scope().loa_file_changed(this)" />
+                                  </div>
+                              </div>
+                          </div>
+                      </div>
+                  </footer>
+              </div>
+          </section>
+          <div class="slds-backdrop slds-backdrop_open" ng-show="uploadloaProcess"></div>
         </div>
+        <script>
+            // function openNav() {
+            //     document.getElementById("myNav").style.width = "100%";
+            // }
+
+            // function closeNav() {
+            //     document.getElementById("myNav").style.width = "0%";
+            // }
+            $('.menuToggler').click(function() {
+                var overlay_navigation = $('.overlay-navigation'),
+                    nav_item_1 = $('#action-nav .action-nav-list:nth-of-type(1)'),
+                    nav_item_2 = $('#action-nav .action-nav-list:nth-of-type(2)'),
+                    nav_item_3 = $('#action-nav .action-nav-list:nth-of-type(3)'),
+                    nav_item_4 = $('#action-nav .action-nav-list:nth-of-type(4)'),
+                    nav_item_5 = $('#action-nav .action-nav-list:nth-of-type(5)'),
+                    top_bar = $('.bar-top'),
+                    middle_bar = $('.bar-middle'),
+                    bottom_bar = $('.bar-bottom'),
+                    overlay = $('.open-overlay'),
+                    close_btn = $('.menuToggler');
+                    overlay_navigation.toggleClass('overlay-active');
+                    overlay.removeClass('d-none').addClass('d-block');
+                    close_btn.removeClass('d-block').addClass('d-none');
+                    top_bar.removeClass('animate-top-bar').addClass('animate-out-top-bar');
+                    middle_bar.removeClass('animate-middle-bar').addClass('animate-out-middle-bar');
+                    bottom_bar.removeClass('animate-bottom-bar').addClass('animate-out-bottom-bar');
+                    overlay_navigation.removeClass('overlay-slide-down').addClass('overlay-slide-up')
+                    nav_item_1.removeClass('slide-in-nav-item').addClass('slide-in-nav-item-reverse');
+                    nav_item_2.removeClass('slide-in-nav-item-delay-1').addClass('slide-in-nav-item-delay-1-reverse');
+                    nav_item_3.removeClass('slide-in-nav-item-delay-2').addClass('slide-in-nav-item-delay-2-reverse');
+                    nav_item_4.removeClass('slide-in-nav-item-delay-3').addClass('slide-in-nav-item-delay-3-reverse');
+                    nav_item_5.removeClass('slide-in-nav-item-delay-4').addClass('slide-in-nav-item-delay-4-reverse');
+            })
+            $('.open-overlay').click(function() {
+                var overlay_navigation = $('.overlay-navigation'),
+                    nav_item_1 = $('#action-nav .action-nav-list:nth-of-type(1)'),
+                    nav_item_2 = $('#action-nav .action-nav-list:nth-of-type(2)'),
+                    nav_item_3 = $('#action-nav .action-nav-list:nth-of-type(3)'),
+                    nav_item_4 = $('#action-nav .action-nav-list:nth-of-type(4)'),
+                    nav_item_5 = $('#action-nav .action-nav-list:nth-of-type(5)'),
+                    top_bar = $('.bar-top'),
+                    middle_bar = $('.bar-middle'),
+                    bottom_bar = $('.bar-bottom'),
+                    overlay = $('.open-overlay'),
+                    close_btn = $('.menuToggler'),
+                    cancel_Btn_Css = $('.cancelBtn').css('display');
+
+                overlay_navigation.toggleClass('overlay-active');
+                if(cancel_Btn_Css === 'none'){
+                            if (overlay_navigation.hasClass('overlay-active')) {
+                            overlay.removeClass('d-block').addClass('d-none');
+                            close_btn.removeClass('d-none').addClass('d-block');
+                            top_bar.removeClass('animate-out-top-bar').addClass('animate-top-bar');
+                            middle_bar.removeClass('animate-out-middle-bar').addClass('animate-middle-bar');
+                            bottom_bar.removeClass('animate-out-bottom-bar').addClass('animate-bottom-bar');
+                            overlay_navigation.removeClass('overlay-slide-up').addClass('overlay-slide-down')
+                            nav_item_1.removeClass('slide-in-nav-item-reverse').addClass('slide-in-nav-item');
+                            nav_item_2.removeClass('slide-in-nav-item-delay-1-reverse').addClass('slide-in-nav-item-delay-1');
+                            nav_item_3.removeClass('slide-in-nav-item-delay-2-reverse').addClass('slide-in-nav-item-delay-2');
+                            nav_item_4.removeClass('slide-in-nav-item-delay-3-reverse').addClass('slide-in-nav-item-delay-3');
+                            nav_item_5.removeClass('slide-in-nav-item-delay-4-reverse').addClass('slide-in-nav-item-delay-4');
+                    }
+            }else{
+                toastr.info("Cancel the existing process first to access the menu");
+            }
+              
+                // } else {
+                // //    overlay.removeClass('d-none').addClass('d-block');
+                //     close_btn.removeClass('d-block').addClass('d-none');
+                //     top_bar.removeClass('animate-top-bar').addClass('animate-out-top-bar');
+                //     middle_bar.removeClass('animate-middle-bar').addClass('animate-out-middle-bar');
+                //     bottom_bar.removeClass('animate-bottom-bar').addClass('animate-out-bottom-bar');
+                //     overlay_navigation.removeClass('overlay-slide-down').addClass('overlay-slide-up')
+                //     nav_item_1.removeClass('slide-in-nav-item').addClass('slide-in-nav-item-reverse');
+                //     nav_item_2.removeClass('slide-in-nav-item-delay-1').addClass('slide-in-nav-item-delay-1-reverse');
+                //     nav_item_3.removeClass('slide-in-nav-item-delay-2').addClass('slide-in-nav-item-delay-2-reverse');
+                //     nav_item_4.removeClass('slide-in-nav-item-delay-3').addClass('slide-in-nav-item-delay-3-reverse');
+                //     nav_item_5.removeClass('slide-in-nav-item-delay-4').addClass('slide-in-nav-item-delay-4-reverse');
+                // }
+            })
+        </script>
     </body>
     <!-- End Default Content REMOVE THIS -->
 

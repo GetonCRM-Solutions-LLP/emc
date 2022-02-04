@@ -1,1 +1,1 @@
-DemoClassTest,ConfirmTripTimeERMIControllerTest,LoginRedirection_Test,DriverDashboardController_test
+DemoClassTest,ManageNotificationControllerTest
