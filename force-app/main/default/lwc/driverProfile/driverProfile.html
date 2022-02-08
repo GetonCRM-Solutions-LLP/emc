@@ -75,7 +75,13 @@
                                     <lightning-layout-item padding="small" size="6" class="custom-layout">
                                         <div class="carProfile slds-grid slds-wrap">
                                             <figure>
-                                                <img class="car-image" src={contactDetails.carImage} alt="icon" />
+                                                <template if:false={isShowMessage}>
+                                                    <img class="car-image-pl" src={contactDetails.carImage} alt="icon" />
+                                                </template>
+                                                <template if:true={isShowMessage}>
+                                                    <img class="car-image" src={contactDetails.carImage} alt="icon" />
+                                                </template>
+                                            
                                                 <figcaption>{contactDetails.vehicalType}</figcaption>
                                             </figure>
                                         </div>

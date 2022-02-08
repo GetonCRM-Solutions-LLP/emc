@@ -660,11 +660,13 @@
                                                 <td>Gas Rate</td>
                                             </tr>
                                             <tr>
-                                                <td class="col-12 col-lg-6 col-xl-4 col-md-6 col-sm-12">{{empContact[0].Maintenance__c| currency:"$":4}}</td>
+                                                <td class="col-12 col-lg-6 col-xl-4 col-md-6 col-sm-12" ng-if="empContact[0].Maintenance__c != undefined">{{empContact[0].Maintenance__c| currency:"$":4}}</td>
+                                                <td class="col-12 col-lg-6 col-xl-4 col-md-6 col-sm-12"  ng-if="empContact[0].Maintenance__c === undefined">{{0 |  currency:"$":4 }}</td>
                                                 <td >Oil/Maintenance</td>
                                             </tr>
                                             <tr>
-                                                <td class="col-12 col-lg-6 col-xl-4 col-md-6 col-sm-12">{{empContact[0].Tires__c| currency:"$":4}}</td>
+                                                <td class="col-12 col-lg-6 col-xl-4 col-md-6 col-sm-12" ng-if="empContact[0].Tires__c != undefined">{{empContact[0].Tires__c| currency:"$":4}}</td>
+                                                <td class="col-12 col-lg-6 col-xl-4 col-md-6 col-sm-12" ng-if="empContact[0].Tires__c === undefined">{{0 |  currency:"$":4 }}</td>
                                                 <td >Tires</td>
                                             </tr>
                                         </tbody>
