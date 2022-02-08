@@ -37,6 +37,7 @@ public class UpdateBiweeklyRemFuelPriceTest {
         System.runAs(admin) {
         acc.Name = 'Test Account';
         acc.Pay_Period_Start_Date__c = system.today();
+        acc.Pay_Period_Days__c = 13;
         insert acc;
         Contact contact_1 = new Contact(AccountId = acc.Id, LastName = 'xgeek',External_Email__c='abc@gmail.com');
         insert contact_1;
