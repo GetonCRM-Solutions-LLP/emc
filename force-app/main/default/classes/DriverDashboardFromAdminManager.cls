@@ -263,4 +263,9 @@ public  class DriverDashboardFromAdminManager
     {        
         return String.escapeSingleQuotes(WrapperUtils.getUnapprovedReimbursements(did,accid,boolean.valueOf(showTeamRecord),'Admin'));
     }  
+    @RemoteAction
+    public static List<String> getAllMileages(String startdate,String enddate,String did)
+    {
+        return BiweeklyPayPeriod.getAllBiweekMileages1(date.valueof(startdate),date.valueof(enddate),did);
+    } 
 }

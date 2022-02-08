@@ -259,7 +259,7 @@ public class BiWeeklyWrapperUtilsTest {
                                             Bi_Weekly_Reimbursement__r.month__c,Bi_Weekly_Reimbursement__r.Total_Pending__c,Stay_Time__c,
                                             Bi_Weekly_Reimbursement__r.Total_Mileage__c,Bi_Weekly_Reimbursement__r.Contact__c,Driving_Time__c,Total_Time__c,
                                             CreatedDate,Rejected__c,Origin_Name__c,Tracing_Style__c,StartTime__c,EndTime__c,Mileage_Lock_Date__c,
-                                            Day_Of_Week__c,Destination_Name__c,Bi_Weekly_Reimbursement__r.Contact__r.External_Email__c,
+                                            Day_Of_Week__c,Destination_Name__c,Bi_Weekly_Reimbursement__r.Contact__r.External_Email__c,Bi_Weekly_Reimbursement__r.Half_Fixed_Amount__c,
                                             Maintenance_and_Tires__c,Fuel_price__c,Bi_Weekly_Reimbursement__r.Total_Variable_Rate__c,ConvertedStartTime__c,ConvertedEndTime__c, 
                                             Bi_Weekly_Reimbursement__r.Total_Rejected__c,Notes__c,Bi_Weekly_Reimbursement__r.Mileage_Lock_Date__c,Activity__c 
                                         from Employee_Mileage__c where EmployeeReimbursement__c =: er[0].Id ];

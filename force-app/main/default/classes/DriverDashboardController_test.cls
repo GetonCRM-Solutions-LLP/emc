@@ -124,7 +124,7 @@ public class DriverDashboardController_test {
             DriverDashboardController.getCompliance(String.valueOf(obj_driver_contact[0].Id));
             DriverDashboardController.getPacketandMeeting(String.valueOf(obj_driver_contact[0].Id));
             DriverDashboardController.biweeklyMileage(obj_driver_contact[0].id,2021);
-            //DriverDashboardController.getBiweekMileages('2021-11-12','2021-12-30',obj_driver_contact[0].id);
+            DriverDashboardController.getAllMileages('2021-11-12','2021-12-30',obj_driver_contact[0].id);
             DriverDashboardController.getBiweekMileages(string.valueOf(br));
             DriverDashboardController.getdriverInsurance(attach.Id);
         }
