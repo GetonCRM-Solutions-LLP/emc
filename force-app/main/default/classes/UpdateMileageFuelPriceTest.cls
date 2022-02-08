@@ -1,11 +1,8 @@
 @isTest
-public class BiweeklyPayPeriodTest {
-    public BiweeklyPayPeriodTest() {
-    }
-    public static testmethod void test1(){
-        
-        
-        TriggerConfig__c customEmailSetting =  new TriggerConfig__c();
+private class UpdateMileageFuelPriceTest {
+    @isTest static void testUpdateMileageFuelPrice(){
+      //  UpdateMileageFuelPrice obj=new UpdateMileageFuelPrice('');
+       TriggerConfig__c customEmailSetting =  new TriggerConfig__c();
         customEmailSetting.Name = 'Defaulttrigger';
         customEmailSetting.ContactTriggersendEmailForNewContact__c = true;
         customEmailSetting.ContactTriCommunityReimCreate__c = true;
@@ -27,7 +24,7 @@ public class BiweeklyPayPeriodTest {
         Vehicle_URL_Mapping__c veh = new Vehicle_URL_Mapping__c();
         veh.URL__c = 'https://cdn2.hubspot.net/hubfs/2511299/iStock-494093356.jpg';
         veh.vehicle__c = 'Full-Size Sedan';
-        veh.Year__c = '2009';
+        veh.Year__c = '2019';
         insert veh;
 
         UserRole userRole_1 = [SELECT Id FROM UserRole WHERE DeveloperName = 'EMD' LIMIT 1];
@@ -37,13 +34,13 @@ public class BiweeklyPayPeriodTest {
         Account acc = new Account();
         Contact con = new Contact();
         System.runAs(admin) {
-        acc.Name = 'Test Account';
+        acc.Name = 'Test Account fuel price';
         acc.Pay_Period_Start_Date__c = date.parse('9/5/2021');
         acc.Pay_Period_Days__c = 13;
         insert acc;
         Contact contact_1 = new Contact(AccountId = acc.Id, LastName = 'xgeek',External_Email__c='abc@gmail.com');
         insert contact_1;
-        con.LastName = 'TestContact';
+        con.LastName = 'TestCont';
         con.Role__c = 'Driver';
         con.Car_Image__c = veh.URL__c;
         con.Vehicle_Type__c = veh.Year__c +' '+veh.vehicle__c;
@@ -80,61 +77,52 @@ public class BiweeklyPayPeriodTest {
         }
         
         IRS_Mileage_Rate__c objIRSRate = new IRS_Mileage_Rate__c();
-        objIRSRate.year__c = '2021';
+        objIRSRate.year__c = '2022';
         objIRSRate.IRS_Rate__c= 12.0;
         insert objIRSRate;
 
         Employee_Reimbursement__c er = new Employee_Reimbursement__c();
         er.Contact_Id__c = con.Id;
-        er.Name = 'Reimbersment Test';
-        er.Month__c = '03-2021';
+        er.Name = 'Reimbersment Fuel price Test';
+        er.Month__c = '02-2022';
         er.Status__c = 'Pending';
         er.Fuel_Price__c = 10.00; 
         er.Fixed_Amount__c = con.Fixed_Amount__c;
-        er.Status__c = 'Pending';
         er.Maintenance_and_Tires__c = con.Maintenance_and_Tires__c;
         er.MPG__c = con.MPG__c;
         insert er;
         
         Bi_Weekly_Reimbursement__c br = new Bi_Weekly_Reimbursement__c();
-            br.Name = 9/5/2021 + ' to ' + 9/18/2021 ; 
+            br.Name = '1/1/2022 to 1/15/2022' ; 
             br.Contact__c = con.Id;
-            br.Start_Date__c = date.parse('9/5/2021');
-            br.End_Date__c = date.parse('9/18/2021');
+            br.Start_Date__c = date.parse('1/1/2022');
+            br.End_Date__c = date.parse('1/15/2022');
             br.MPG__c = con.MPG__c;
             br.Maintenance_and_Tires__c = con.Maintenance_and_Tires__c;
             br.Fixed_Amount__c = con.Fixed_Amount__c;
             br.Status__c = 'Pending';
-            br.Fuel_Price__c = 0;
+            
         Insert br;
 
         Employee_Mileage__c emp = new Employee_Mileage__c();
         emp.EmployeeReimbursement__c = er.id;
         emp.Bi_Weekly_Reimbursement__c = br.Id;
         emp.Contact_Email_Id__c = con.External_Email__c;
-        emp.Name = 'Test Mileage Record';
+        emp.Name = 'Test Fuel Price Record';
         emp.Trip_Status__c = StaticValues.noApprovedYet;
         emp.Mileage__c = 10.00;
-        emp.Fuel_price__c = 10.00;
+       
         emp.TimeZone__c = 'US/Mountain' ;
         emp.StartTime__c = system.now();
         emp.EndTime__c =  system.now();
         emp.Trip_Date__c = date.today().adddays(-1);
         insert emp;
-        
+
         Test.startTest();
-        System.runAs(user_1) {
-            integer i = 0;
-        BiweeklyPayPeriod.getTimeAndAttendance(con.Id, '2021');
-        BiweeklyPayPeriod.getBiweeklyMileage(con.Id, 2021);
-        BiweeklyPayPeriod.getMileages1(system.today()-1, system.today(), con.Id);
-        BiweeklyPayPeriod.ApproveTrips(system.today()-1, system.today(), con.Id);
-        BiweeklyPayPeriod.calculateBiweekMil (String.valueof(system.today()-1),String.valueof(system.today()), con.Id);
-        BiweeklyPayPeriod.getBiweeklyReimbursement(String.valueOf(con.Id) ,2021);
-        BiweeklyPayPeriod.getBiweekMileages1(string.valueOf(br));
-        BiweeklyPayPeriod.ApproveBiWeekTrips(string.valueOf(br));
-            
-      }
+        
+        ApexPages.StandardController sc = new ApexPages.StandardController(br);
+        UpdateMileageFuelPrice testfuelprice = new UpdateMileageFuelPrice(sc);
+        testfuelprice.UpdateMileageFuelPrices();
         Test.stopTest();
     }
 }
