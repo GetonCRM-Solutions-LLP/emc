@@ -195,6 +195,7 @@ public with sharing class BiweeklyPayPeriod {
         public String fixedAmount { get; set; }
         public String mileage { get; set; }
         public String variable { get; set; }
+        public String variableRate { get; set; }
         public String totalReim { get; set; }
         public Boolean checkPendingTrip { get; set; }
     }
@@ -202,7 +203,7 @@ public with sharing class BiweeklyPayPeriod {
         List<BiweeklyWrap> timeWrapList = new List<BiweeklyWrap>();
 
         for(Bi_Weekly_Reimbursement__c biweekReim : [SELECT id,name,Start_Date__c, End_Date__c,Total_Approved__c,
-                                                        Fuel_Price__c, Half_Fixed_Amount__c,Status__c,
+                                                        Fuel_Price__c, Half_Fixed_Amount__c,Status__c,Total_Variable_Rate__c,
                                                         Total_Mileage__c,Total_Monthly_Approved_Variable__c,
                                                         Total_Monthly_Reimbursement__c,Mileage_Lock_Date__c  
                                                     FROM Bi_Weekly_Reimbursement__c 
@@ -246,6 +247,11 @@ public with sharing class BiweeklyPayPeriod {
                     objWrap.variable = String.valueOf(biweekReim.Total_Monthly_Approved_Variable__c);
                 } else {
                     objWrap.variable = '0';
+                }
+                if(biweekReim.Total_Variable_Rate__c != null ){
+                    objWrap.variableRate = String.valueOf(biweekReim.Total_Variable_Rate__c);
+                } else {
+                    objWrap.variableRate = '0';
                 }
                 if(biweekReim.Total_Monthly_Reimbursement__c != null ){
                     objWrap.totalReim = String.valueOf(biweekReim.Total_Monthly_Reimbursement__c);
@@ -328,12 +334,64 @@ public with sharing class BiweeklyPayPeriod {
                                                             Bi_Weekly_Reimbursement__r.Monthly_Approved_Variable_Amount__c,
                                                             Maintenance_and_Tires__c,Fuel_price__c,Activity__c,
                                                             Bi_Weekly_Reimbursement__r.Total_Mileage__c,
+                                                            Bi_Weekly_Reimbursement__r.Half_Fixed_Amount__c,
                                                             Bi_Weekly_Reimbursement__r.Total_Rejected__c,Notes__c,
                                                             TimeZone__c,Bi_Weekly_Reimbursement__r.Mileage_Lock_Date__c,
                                                             ConvertedStartTime__c,ConvertedEndTime__c,Driving_Time__c,
                                                             Total_Time__c,Tag__c,Mileage_Lock_Date__c,EmployeeReimbursement__c 
                                                         FROM Employee_Mileage__c 
                                                         WHERE  Bi_Weekly_Reimbursement__c =: biWeekId] ;
+        System.Debug(employeeMileageList);
+        List<String> mileagesList = new List<String>();    
+        double mileages=0;
+        double variableamount=0;
+        List<EmployeeMileages> reimbursementList = new List<EmployeeMileages>();
+        for(Employee_Mileage__c currentMileage : employeeMileageList)
+        {
+            mileages = mileages + (currentMileage.Mileage__c != null ? currentMileage.Mileage__c : 0);
+            variableamount = variableamount + (currentMileage.Variable__c != null ? currentMileage.Variable__c : 0);
+            reimbursementList.add(BiWeeklyWrapperUtils.getMileagesOfReimbursement(currentMileage));
+        }
+        mileagesList.add(JSON.serialize(reimbursementList));
+        mileagesList.add(String.valueOf(mileages));
+        mileagesList.add(String.valueOf(variableamount)); 
+        system.Debug(mileagesList[0]);       
+        if(mileagesList.size() > 0) 
+        {
+            return mileagesList;
+        }
+        else
+        {
+            return mileagesList;
+        }
+    }
+    public static List<String> getAllBiweekMileages1(date startdate,date enddate,String did)
+    {
+       
+        //String month = WrapperUtils.getMonthno(clickedMonth);      
+        //month = month +'-'+year;
+        List<Employee_Mileage__c> employeeMileageList = [SELECT id,Name,Trip_Date__c,Trip_Origin__c,
+                                                            Stay_Time__c,Trip_Destination__c,Mileage__c,
+                                                            Variable__c,Trip_Status__c,Approved_Date__c,
+                                                            Bi_Weekly_Reimbursement__c,Bi_Weekly_Reimbursement__r.month__c,
+                                                            Bi_Weekly_Reimbursement__r.Contact__c,CreatedDate,
+                                                            Rejected__c,Bi_Weekly_Reimbursement__r.Total_Variable_Rate__c,
+                                                            Bi_Weekly_Reimbursement__r.Total_Pending__c,Origin_Name__c,
+                                                            Tracing_Style__c,StartTime__c,EndTime__c,Day_Of_Week__c,
+                                                            Destination_Name__c,Bi_Weekly_Reimbursement__r.Contact__r.External_Email__c,
+                                                            Bi_Weekly_Reimbursement__r.Monthly_Variable_Amount__c,
+                                                            Bi_Weekly_Reimbursement__r.Monthly_Approved_Variable_Amount__c,
+                                                            Maintenance_and_Tires__c,Fuel_price__c,Activity__c,
+                                                            Bi_Weekly_Reimbursement__r.Total_Mileage__c,
+                                                            Bi_Weekly_Reimbursement__r.Total_Rejected__c,Notes__c,
+                                                            TimeZone__c,Bi_Weekly_Reimbursement__r.Mileage_Lock_Date__c,
+                                                            ConvertedStartTime__c,ConvertedEndTime__c,Driving_Time__c,
+                                                            Total_Time__c,Tag__c,Mileage_Lock_Date__c,EmployeeReimbursement__c,
+                                                            Bi_Weekly_Reimbursement__r.Half_Fixed_Amount__c 
+                                                        FROM Employee_Mileage__c 
+                                                        WHERE Trip_Date__c >=: startdate 
+                                                                AND Trip_Date__c <=: enddate 
+                                                                AND Bi_Weekly_Reimbursement__r.Contact__c =: did] ;
         System.Debug(employeeMileageList);
         List<String> mileagesList = new List<String>();    
         double mileages=0;
@@ -412,7 +470,7 @@ public with sharing class BiweeklyPayPeriod {
         }
         
         for(integer i=0; i<=27; i++ ) {  
-	 system.debug('insert into if loop'); 
+     system.debug('insert into if loop'); 
             system.debug('yearsif=='+ years);
             system.debug('startdateyear=='+ date.valueof(startDate).year());
             if(years == date.valueof(startDate).year()) { 

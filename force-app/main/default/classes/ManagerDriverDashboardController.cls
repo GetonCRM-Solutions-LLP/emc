@@ -220,4 +220,9 @@ public with sharing class ManagerDriverDashboardController
         BiweeklyPayPeriod.ApproveBiWeekTrips(biweekId);
         return 'sucess';
     } 
+    @RemoteAction
+    public static List<String> getAllMileages(String startdate,String enddate,String did)
+    {
+        return BiweeklyPayPeriod.getAllBiweekMileages1(date.valueof(startdate),date.valueof(enddate),did);
+    }
 }

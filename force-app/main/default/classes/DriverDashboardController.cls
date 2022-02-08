@@ -257,4 +257,9 @@ public class DriverDashboardController
         return BiweeklyPayPeriod.getBiweekMileages1(biweekId);
        //return null;
     } 
+    @RemoteAction
+    public static List<String> getAllMileages(String startdate,String enddate,String did)
+    {
+        return BiweeklyPayPeriod.getAllBiweekMileages1(date.valueof(startdate),date.valueof(enddate),did);
+    } 
 }
