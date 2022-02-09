@@ -2,7 +2,9 @@
 * Author :- GetOnCRM Solutions														 *	
 * Created Date:- 10/01/2022														 	 *
 * Description :- This Class is used to update fuel price field of 				     *
-* Biweekly Reimbursement based on gas price.										 *
+* Biweekly Reimbursement based on gas price of last month.                           *
+* EX :- If the start date of biweekly reim is 02/09/2022 than the fuel price of      *
+* biweekly Reim is update with fuel price of 01/01/2022 of gas price object.         *
 * ---------------------------------------------------------------------------------- *
 * Updated By :- Paras Dhanani || updated on 24/01/2022								 *														     
 **************************************************************************************/
@@ -20,7 +22,8 @@ public class UpdateBiWeeklyreimFuelPriceController {
     public UpdateBiWeeklyreimFuelPriceController(ApexPages.StandardController controller)
     {
         biWeeklyReimId = (Bi_Weekly_Reimbursement__c)controller.getRecord();
-        urltoredirect ='https://'+ URL.getSalesforceBaseUrl().getHost()+'/'+ biWeeklyReimId.id;        
+        urltoredirect ='https://'+ URL.getSalesforceBaseUrl().getHost()+'/'+ biWeeklyReimId.id;      
+        system.debug('biWeeklyReimId==' +biWeeklyReimId);
     } 
     
     public pagereference updatefuelprice() {
@@ -40,15 +43,18 @@ public class UpdateBiWeeklyreimFuelPriceController {
                                                                    biWeeklyEndDate = biweeklyreimList.End_Date__c;    
                                                                } 
                                                                
+                                                               
                                                                if(startdate != null && startdate.contains('-'))	{
                                                                    string[] startdatesplit = startdate.split('-');  
-                                                                   if(integer.valueOf(startdatesplit[1]) == 12){
-                                                                       mydate = date.valueOf(string.valueOf(integer.valueOf(startdatesplit[0])+1) + '-01' + '-01' );   
+                                                                   if(integer.valueOf(startdatesplit[1]) == 01){
+                                                                       mydate = date.valueOf(string.valueOf(integer.valueOf(startdatesplit[0])-1) + '-12' + '-01' );   
                                                                    } else {
-                                                                       mydate = date.valueOf(startdatesplit[0] + '-' + string.valueOf(integer.valueOf(startdatesplit[1])+1) + '-01');
+                                                                       mydate = date.valueOf(startdatesplit[0] + '-' + string.valueOf(integer.valueOf(startdatesplit[1])-1) + '-01');
                                                                    }
                                                                }
                                                            }
+       	system.debug('biWeeklyStartDate==' + biWeeklyStartDate);
+        system.debug('mydate==' + mydate);
         Set<string> conCity = new set<string>();
         Set<string> conState = new set<string>();
         Set<string> conId = new set<string>();
@@ -57,7 +63,8 @@ public class UpdateBiWeeklyreimFuelPriceController {
                                 WHERE AccountId =: accId
                                 	AND isCommunityUser__c = true 
                                 	AND Deactivated_Date__c = null 
-                                	AND (Role__c =: StaticValues.ROLE_DRIVER OR Role__c =: StaticValues.roleAdminDriver OR Role__c =: StaticValues.ROLE_DRIVERMANAGER)]) {
+                                	AND (Role__c =: StaticValues.ROLE_DRIVER OR Role__c =: StaticValues.roleAdminDriver OR Role__c =: StaticValues.ROLE_DRIVERMANAGER)])
+        {
                                     conCity.add(conList.MailingCity);
                                     conState.add(conList.MailingState);
                                     conId.add(conList.Id);
@@ -76,6 +83,7 @@ public class UpdateBiWeeklyreimFuelPriceController {
                                           	AND Month_Year__c =: mydate]) {
                                               monthStateCityVsFuelPriceMap.put(obj_GasPrice.Month_State_City__c, obj_GasPrice.Fuel_Price__c); 
                                           }
+        system.debug('monthStateCityVsFuelPriceMap=='+ monthStateCityVsFuelPriceMap); 
         List<Bi_Weekly_Reimbursement__c> updatefuelPriceList = new List<Bi_Weekly_Reimbursement__c>();
         for(Bi_Weekly_Reimbursement__c biweeklyreim : [SELECT id,
                                                        name,
