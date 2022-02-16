@@ -242,6 +242,7 @@ public class BiWeeklyWrapperUtilsTest {
         BiWeeklyWrapperUtils.getUnapprovedReimbursements(string.valueOf(con[0].Id), string.valueOf(acc[0].Id), false,'Manager');
         BiWeeklyWrapperUtils.getLastMonthReimbursements(string.valueOf(con[0].Id), string.valueOf(acc[0].Id),false,'Driver/Admin');
         BiWeeklyWrapperUtils.getLastMonthReimbursements(string.valueOf(con[0].Id), string.valueOf(acc[0].Id),true,'Manager');
+        BiWeeklyWrapperUtils.sendInsuranceEmail (string.valueOf(con[0].Id),'TestContact','test123@email.com');
         
     }
 
