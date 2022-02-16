@@ -177,6 +177,7 @@ public class ManageNotificationControllerTest {
        ManageNotificationController.getdriverInsurance(attach.id);
        ManageNotificationController.editInlineNewEmployee(json3 ,con2.id);
         ManageNotificationController.UploadLOA(json4,Acc.Id,'2021-06-30','2021-08-31');
+            ManageNotificationController.DeleteTrips(con2.id);
        }
     }
 }
