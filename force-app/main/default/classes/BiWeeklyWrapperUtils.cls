@@ -618,4 +618,49 @@ public with sharing class BiWeeklyWrapperUtils {
         }        
         return biWeekId;       
     }
+
+    public static void sendInsuranceEmail (String contactId,String Name,String driverEmail){
+        String adminName;
+        String adminEmail;
+        system.debug('contactId'+contactId);
+        system.debug('Name'+Name);
+        system.debug('driverEmail'+driverEmail);
+        if(contactId != null){
+            for(Contact conObj : [SELECT id,FirstName,External_Email__c
+                                FROM Contact 
+                                WHERE ID =: contactId]){
+                                    adminName = conObj.FirstName;
+                                    adminEmail = conObj.External_Email__c;
+            }
+        }
+        List<Messaging.SingleEmailMessage> emailist = new List<Messaging.SingleEmailMessage>();
+        EmailTemplate templateId;
+        String newemailBody;
+        OrgWideEmailAddress[] owea = [SELECT Id,Address from OrgWideEmailAddress where Address = 'driverservices@mburse.com'];
+        List<String> toAddress = new List<String>();
+        if(contactId != null && adminEmail != driverEmail) {
+            templateId = [SELECT Id, Subject,HtmlValue, body FROM EmailTemplate WHERE developerName = 'SendAdminInsuranceEmail' Limit 1];
+            newemailBody = templateId.HtmlValue;
+            if(adminName != null ){
+                newemailBody = newemailBody.replace('{!Contact.Manager__r}', adminName);
+            }
+            if(Name != null ){
+                newemailBody = newemailBody.replace('{drivername}', Name);
+            }            
+            toAddress.add(adminEmail);
+        } else {
+            templateId = [SELECT Id, Subject,HtmlValue, body FROM EmailTemplate WHERE developerName = 'SendDriverInsuranceEmail' Limit 1];
+            newemailBody = templateId.HtmlValue;
+            newemailBody = newemailBody.replace('{!ContactName}', Name);
+            toAddress.add(driverEmail);
+        }
+        List<Messaging.SingleEmailMessage> emails = new List<Messaging.SingleEmailMessage>();
+        newemailBody = newemailBody.replace('{!$Label.Driver_Forword_Logo}', System.Label.Driver_Forword_Logo);
+        messaging.singleEmailMessage email = Utils.CreateEmail(templateId.Subject,newemailBody,toAddress,null,null,null);
+        emailist.add(email); 
+        SendEmail__c  sendEmailObj = SendEmail__c.getValues('BiWeekWrapSendAdmin');
+        if(!emailist.isEmpty() && !Test.IsRunningTest() && sendEmailObj.Send_email_from_code__c == true) {                    
+            Messaging.SendEmailResult [] result = Messaging.sendEmail(emailist, false);
+        }
+    }
 }
