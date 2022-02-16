@@ -508,6 +508,9 @@
                                 }
                                 //AI-000427 --> Starts
 
+                                let _flagged = $filter("filter")(scope.showData, { isLockDate: false , isChecked: true});
+                                let _approved = $filter("filter")(scope.showData, {isLockDate: false, isSelected:true});
+                                var mileageLen = scope.showData.length;
                                 angular.forEach(scope.showData, function (item) {
                                     // item.drivingtime = scope.timeConversion(item.drivingtime);
                                     // item.staytime = scope.timeConversion(item.staytime);
@@ -528,7 +531,17 @@
                                     }
                                 }
                                 else {
-                                    scope.displayBtn = false;
+                                    if (mileageLen === lockdatecount) {
+                                        scope.displayBtn = false;
+                                    } else {
+                                        if (_flagged.length > 0 || _approved.length > 0) {
+                                            scope.displayBtn = true;
+                                        } else {
+                                            scope.displayBtn = false;
+                                        }
+                                        //scope.displayBtn = true;
+                                    }
+                                   // scope.displayBtn = false;
                                 }
 
                                 //AI-000427 --> Ends
@@ -569,6 +582,9 @@
                                 }
                                 //AI-000427 --> Starts
 
+                                let _flagged = $filter("filter")(scope.showData, { isLockDate: false , isChecked: true});
+                                let _approved = $filter("filter")(scope.showData, {isLockDate: false, isSelected:true});
+                                var mileageLen = scope.showData.length;
                                 angular.forEach(scope.showData, function (item) {
                                     // item.drivingtime = scope.timeConversion(item.drivingtime);
                                     // item.staytime = scope.timeConversion(item.staytime);
@@ -589,7 +605,17 @@
                                     }
                                 }
                                 else {
-                                    scope.displayBtn = false;
+                                    if (mileageLen === lockdatecount) {
+                                        scope.displayBtn = false;
+                                    } else {
+                                        if (_flagged.length > 0 || _approved.length > 0) {
+                                            scope.displayBtn = true;
+                                        } else {
+                                            scope.displayBtn = false;
+                                        }
+                                     //   scope.displayBtn = true;
+                                    }
+                                   // scope.displayBtn = false;
                                 }
 
                                 //AI-000427 --> Ends
@@ -791,10 +817,22 @@
                                 }
                                 var checktrues = $filter("filter")(scope.showData, { isChecked: true });
                                 var selectedtrues = $filter("filter")(scope.showData, { isSelected: true });
-
+                                var _flagged = $filter("filter")(scope.showData, { isLockDate: false , isChecked: true});
+                                var _approved = $filter("filter")(scope.showData, {isLockDate: false, isSelected:true});
+                                var pendingReq = $filter("filter")(scope.showData, { isLockDate: false , isChecked: false , isSelected: false});
+                                var mileageLen = scope.model.mileageList.length;
                                 if (checktrues.length > 0 || selectedtrues.length > 0) {
                                     if (lockdatecount > 0) {
-                                        scope.displayBtn = false;
+                                        if(lockdatecount === mileageLen){
+                                            scope.displayBtn = false;
+                                        }else{
+                                            if (_flagged.length > 0 || _approved.length > 0) {
+                                                scope.displayBtn = true;
+                                            } else {
+                                                scope.displayBtn = false;
+                                            }
+                                        }
+                                        //scope.displayBtn = false;
                                     } else {
                                         scope.displayBtn = true;
                                     }
@@ -854,6 +892,7 @@
                                 var total = scope.model.mileageList.length;
                                 var count = 0;
                                 var perpagecount = 0;
+                                var lockdatecount = 0;
                                 angular.forEach(scope.showData, function (item) {
                                     if (item.isSelected) {
                                         perpagecount++;
@@ -868,6 +907,9 @@
                                     }
                                     if(item.isUnapprove){
                                         scope.selectednotapprovemileageidlist.push(item.id);
+                                    }
+                                    if(item.isLockDate){
+                                        lockdatecount++;
                                     }
                                 });
                                 angular.forEach(scope.model.mileageList, function (em) {
@@ -895,12 +937,22 @@
                                     }
                                 }
                                 var trues = $filter("filter")(scope.showData, { isChecked: true });
+                                var pReq = $filter("filter")(scope.showData, { isLockDate: false, isChecked: true});
+                                var pSelect = $filter("filter")(scope.showData, {  isLockDate: false, isSelected: true});
                                 scope.chkselectcount = trues.length;
                                 if (perpagecount == 0 && scope.chkselectcount == 0) {
                                     scope.displayBtn = false;
                                 }
                                 else {
-                                    scope.displayBtn = true;
+                                    if(lockdatecount > 0){
+                                        if(pSelect.length > 0 || pReq.length > 0){
+                                            scope.displayBtn = true;
+                                        }else{
+                                            scope.displayBtn = false;
+                                        }
+                                    }else{
+                                        scope.displayBtn = true;
+                                    }
                                 }
                             }
 
@@ -963,7 +1015,7 @@
                                 var total = scope.model.mileageList.length;
                                 var count = 0;
                                 var perpagecount = 0;
-                              
+                                var lockdatecount = 0; 
                                 angular.forEach(scope.showData, function (item) {
                                     if (item.isChecked) {
                                         perpagecount++;
@@ -978,6 +1030,9 @@
                                     if(item.isUnapprove){
                                         perpagecount++;
                                         scope.selectednotapprovemileageidlist.push(item.mileage);
+                                    }
+                                    if(item.isLockDate){
+                                        lockdatecount++;
                                     }
                                 });
 
@@ -1005,13 +1060,23 @@
                                 }
                                 
                                 var trues = $filter("filter")(scope.showData, { isSelected: true });
+                                var pReq = $filter("filter")(scope.showData, { isLockDate: false, isChecked: true});
+                                var pSelect = $filter("filter")(scope.showData, {  isLockDate: false, isSelected: true});
                                 scope.chkselectcount = trues.length;
 
                                 if (perpagecount == 0 && scope.chkselectcount == 0) {
                                     scope.displayBtn = false;
                                 }
                                 else {
-                                    scope.displayBtn = true;
+                                    if(lockdatecount > 0){
+                                        if(pSelect.length > 0 || pReq.length > 0){
+                                            scope.displayBtn = true;
+                                        }else{
+                                            scope.displayBtn = false;
+                                        }
+                                    }else{
+                                        scope.displayBtn = true;
+                                    }
                                 }
                             };
                             scope.refreshpage = function (mileages) {
@@ -1201,6 +1266,10 @@
                                 return (epoch - new Date(Date.UTC(1899, 11, 30))) / (24 * 60 * 60 * 1000);
                             };
 
+                            // function getPosition(string, subString, index) {
+                            //     return string.split(subString, index).join(subString).length;
+                            // }
+                            
                             function getSheet(data, opts) {
                                 var ws = {};
                                 var range = { s: { c: 10000000, r: 10000000 }, e: { c: 0, r: 0 } };

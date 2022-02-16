@@ -3,11 +3,11 @@ public with sharing class ManageNotificationController {
     public static String adminId;
     public static String query;
     public static String role {get;set;}
-    public static String managerrole {get;set;}
+    public static String managerrole {get;set;} 
     public static String manrole {get;set;}
     public static String contactDataAsString {get; set;}
     public static String logoDocument_id {get;set;}
-    public string conWrapper {get; set;}
+    public string conWrapper {get; set;} 
     public string milWrapper {get; set;}
     
     public ManageNotificationController() {
@@ -447,12 +447,22 @@ public with sharing class ManageNotificationController {
     public static String UploadLOA(string LOAData,string  accId,String startdate,String enddate) { 
         System.debug('UploadLOA=='+LOAData);
         map<string, Id> biweekIdMap = new map<string, Id>();
-        for(Bi_Weekly_Reimbursement__c bireim : [SELECT id,name,Contact__r.name,Contact__r.Employee_ID__c
+        map<string, Id> contactIdMap = new map<string, Id>();
+        map<string, Date> empDeactivationMap = new map<string, Date>();
+        map<string, Date> conDeactivationMap = new map<string, Date>();
+        List<Contact> contactList = new List<Contact>();
+        for(Bi_Weekly_Reimbursement__c bireim : [SELECT id,name,Contact__r.name,
+                                                        Contact__r.Employee_ID__c,Contact__c,
+                                                        Contact_Id_Deactivated_Date__c
                                                     FROM Bi_Weekly_Reimbursement__c 
                                                     WHERE Start_Date__c=: Date.valueOf(startdate) 
                                                     AND End_Date__c =: Date.valueOf(enddate)
                                                     AND Contact__r.AccountId =: accId ]){
                                                         biweekIdMap.put(bireim.Contact__r.Employee_ID__c, bireim.id);
+                                                        contactIdMap.put(bireim.Contact__r.Employee_ID__c, bireim.Contact__c);
+                                                        if(bireim.Contact_Id_Deactivated_Date__c != null ){
+                                                            empDeactivationMap.put(bireim.Contact__r.Employee_ID__c, bireim.Contact_Id_Deactivated_Date__c);
+                                                        }                                                        
                                             }
                                           
             List<LOAWrapper> loaWrapList = new List<LOAWrapper>();
@@ -467,10 +477,28 @@ public with sharing class ManageNotificationController {
                         objBiWeek.LOA_End_Date__c = (loaWrap.loaEnd != null ? Date.parse(loaWrap.loaEnd) : null);                      
                         if(loaWrap.proratedAmount != null && loaWrap.proratedAmount != ''){
                             objBiWeek.Fixed_Amount__c = (Decimal.valueOf(loaWrap.proratedAmount)*26)/12;
-                        }                       
+                        }               
+                        if(loaWrap.conDeactivation != null && Date.parse(loaWrap.conDeactivation) != empDeactivationMap.get(loaWrap.employeeId)){
+                            conDeactivationMap.put(contactIdMap.get(loaWrap.employeeId), Date.parse(loaWrap.conDeactivation));
+                        }        
                         biweekList.add(objBiWeek);
                     }
                 }
+                daylight_saving_time_config__c DSTzconfig = daylight_saving_time_config__c.getValues(String.valueOf(System.today().year()));
+                if(conDeactivationMap.size() > 0){
+                    for(String mapkey : conDeactivationMap.keySet()){
+                        list<String> tripDateSplit = new list<String>();
+                        Contact contactObj = new Contact();
+                        contactObj.Id = mapkey;
+                        if(conDeactivationMap.get(mapkey) >=  DSTzconfig.Start_Date__c && conDeactivationMap.get(mapkey) <= DSTzconfig.End_Date__c){
+                            contactObj.Deactivated_Date__c = conDeactivationMap.get(mapkey).adddays(2);
+                        } else {
+                            contactObj.Deactivated_Date__c = conDeactivationMap.get(mapkey).adddays(1);
+                        }                           
+                        contactList.add(contactObj);
+                    }
+                }
+                
                 if(biweekList.size() > 0){
                     try {
                         update biweekList;
@@ -478,10 +506,37 @@ public with sharing class ManageNotificationController {
                         system.debug('e'+e);
                     }                
                 }
+                if(contactList.size() > 0){
+                    try {
+                        update contactList;
+                    } catch(Exception e ){
+                        system.debug('e'+e);
+                    }  
+                }
             }
             
         return 'Success';
     }
+    @RemoteAction
+    public static String DeleteTrips(string  conId) {
+        List<Employee_Mileage__c> mileageList = new List<Employee_Mileage__c>();
+        for(Employee_Mileage__c objMil : [SELECT id,CreatedBy.ContactId,CreatedDate 
+                                            FROM Employee_Mileage__c 
+                                            WHERE CreatedBy.ContactId =: conId]){
+            if(objMil.CreatedDate.date() == System.today()){
+                mileageList.add(objMil);
+            }
+        } 
+        if(mileageList.size() > 0){
+            delete mileageList;
+        }          
+        return 'sucess';
+    }
+    @RemoteAction
+    public static void sendInsuranceEmail (String Id,String Name,String email){
+        BiWeeklyWrapperUtils.sendInsuranceEmail(Id, Name, email);
+    }
+
     public class ContactWrapper {
         public string contactId { get; set; }
         public string triploguserid{ get; set; }
@@ -504,5 +559,6 @@ public with sharing class ManageNotificationController {
         public string name { get; set; }
         public string loaStart { get; set; }
         public string loaEnd { get; set; }
+        public string conDeactivation { get; set; }
     }
 }

@@ -150,7 +150,8 @@
                     $scope.PLMarketing = '{!($Label.PL_Marketing)}';
                     $scope.logoID = '{!logoDocument_id}';
                     $scope.modalType = "Monthly";
-                    console.log('-->', $scope.contactname);
+                 
+        
                     if ($scope.admindriver == undefined || $scope.admindriver == '') {
                         $scope.admindriver = false;
                     }
@@ -677,7 +678,6 @@
             }
             
             $scope.exportToDetail = function (){
-                debugger
                     var lenOfReimb, stDate, enDate, detailFileName;
                     $scope.exportReimDetailList = [];
                     $scope.reimbMileages.sort(compareArray);
@@ -689,7 +689,6 @@
                     Visualforce.remoting.Manager.invokeAction(
                         '{!$RemoteAction.drivermanagermydetailcontroller.getAllMileages}',  $scope.bStartDate,  $scope.bEndDate, $scope.id,
                         function (result, event) {
-                            debugger
                             if (event.status && result != null) {
                                 if (result != '') {
                                     console.log("All Mileages result", JSON.parse(result[0]));
@@ -746,69 +745,70 @@
 
             // download time and attendance detail report or reimbursement report
             $scope.downloadReport = function (startDt, endDt) {
-            $scope.timePeriodList = [];
-            $scope.contact = {!obj_current_contact_details};
-            $scope.driverName = $scope.contact[0].Name;
-            $scope.TDate = $filter('date')(new Date(), "MMddyyyyHHmmss");
-            $scope.excelFileName = $scope.driverName + '\'s Time And Attendance Report ' + $scope.TDate;
-            Visualforce.remoting.Manager.invokeAction('{!$RemoteAction.drivermanagermydetailcontroller.getMileagesBasedTandAtt}', startDt, endDt, $scope.id,
-                function (result, event) {
-                    if (event.status && result != null) {
-                        if (result != '') {
-                            var detailedList = JSON.parse(result);
-                            console.log(detailedList);
-                            $scope.exportPeriodList = [];
-                            $scope.exportPeriodList.push(["Contact Email", "Tracing Style", "Day Of Week", "Trip Date", "Start Time", "End Time", "Trip Origin", "Trip Destination", "Mileage", "Status", "Date Submitted", "Date Approved", "Maint/Tires", "Fuel Rate", "Variable Rate", "Variable Amount", "Drive Time", "Stay Time", "Total Time", "Notes", "Tags"]);
-                            angular.forEach(detailedList, function (item, key) {
-                                $scope.exportPeriodList.push([item.emailaddress, item.tracingstyle, item.dayofweek, item.tripdate, item.starttime, item.endtime, item.origin, item.destination, item.mileage, item.status, item.submitteddate, item.approveddate, item.maintTyre, item.fuelRate, item.variablerate, item.variableamount, item.drivingtime, item.staytime, item.totaltime, item.notes, item.tag]);
-                            });
-
-                            $scope.downloadToExcel($scope.exportPeriodList, $scope.excelFileName);
-                        }
-                        else {
-                            $scope.exportPeriodList = [];
-                            toastr.error("No mileage found between " + startDt + " to " + endDt);
-                        }
-                    } 
-                    $scope.$apply();
-                },
-                { escape: false }
-            );
-            }
-            
-             $scope.downloadReimbReportForERMI = function (reimYear , reimonth) {
-                $scope.exportReimbusList = [];
-                $scope.empObj = {!obj_current_contact_details};
-                $scope.driverName = $scope.empObj[0].Name;
+                $scope.timePeriodList = [];
+                $scope.contact = {!obj_current_contact_details};
+                $scope.driverName = $scope.contact[0].Name;
                 $scope.TDate = $filter('date')(new Date(), "MMddyyyyHHmmss");
-                $scope.excelFileName = $scope.driverName + '\'s Reimbursement Report ' + $scope.TDate;
-                Visualforce.remoting.Manager.invokeAction(
-                    '{!$RemoteAction.drivermanagermydetailcontroller.getMileages}', reimonth, reimYear, $scope.id,
+                $scope.excelFileName = $scope.driverName + '\'s Time And Attendance Report ' + $scope.TDate;
+                Visualforce.remoting.Manager.invokeAction('{!$RemoteAction.drivermanagermydetailcontroller.getMileagesBasedTandAtt}', startDt, endDt, $scope.id,
                     function (result, event) {
                         if (event.status && result != null) {
                             if (result != '') {
-                                var pattern = /&quot\;/g;
-                                 var resultdata = (result[0]).replace(pattern, '"')
-                                console.log(resultdata)
-                                var mileageReimbList = JSON.parse(resultdata);
-                                if (mileageReimbList.length > 0) {
-                                    $scope.exportReimbusList.push(["Contact Email", "Tracing Style", "Day Of Week", "Trip Date", "Start Time", "End Time", "Trip Origin", "Trip Destination", "Mileage", "Status", "Date Submitted", "Date Approved", "Maint/Tires", "Fuel Rate", "Variable Rate", "Variable Amount", "Total Time", "Notes", "Tags"]);
-                                    angular.forEach(mileageReimbList, function (item, key) {
-                                        $scope.exportReimbusList.push([item.emailaddress, item.tracingstyle, item.dayofweek, item.tripdate, item.starttime, item.endtime, item.origin, item.destination, item.mileage, item.status, item.submitteddate, item.approveddate, item.maintTyre, item.fuelRate, item.variablerate, item.variableamount, item.totaltime, item.notes, item.tag]);
-                                    });
-                                    $scope.downloadToExcel($scope.exportReimbusList, $scope.excelFileName);
-                                } else{
+                                var detailedList = JSON.parse(result);
+                                console.log(detailedList);
+                                $scope.exportPeriodList = [];
+                                $scope.exportPeriodList.push(["Contact Email", "Tracing Style", "Day Of Week", "Trip Date", "Start Time", "End Time", "Trip Origin", "Trip Destination", "Mileage", "Status", "Date Submitted", "Date Approved", "Maint/Tires", "Fuel Rate", "Variable Rate", "Variable Amount", "Drive Time", "Stay Time", "Total Time", "Notes", "Tags"]);
+                                angular.forEach(detailedList, function (item, key) {
+                                    $scope.exportPeriodList.push([item.emailaddress, item.tracingstyle, item.dayofweek, item.tripdate, item.starttime, item.endtime, item.origin, item.destination, item.mileage, item.status, item.submitteddate, item.approveddate, item.maintTyre, item.fuelRate, item.variablerate, item.variableamount, item.drivingtime, item.staytime, item.totaltime, item.notes, item.tag]);
+                                });
+
+                                $scope.downloadToExcel($scope.exportPeriodList, $scope.excelFileName);
+                            }
+                            else {
+                                $scope.exportPeriodList = [];
+                                toastr.error("No mileage found between " + startDt + " to " + endDt);
+                            }
+                        } 
+                        $scope.$apply();
+                    },
+                    { escape: false }
+                );
+            }
+            
+            $scope.downloadReimbReportForERMI = function (reimYear , reimonth) {
+                    $scope.exportReimbusList = [];
+                    $scope.empObj = {!obj_current_contact_details};
+                    $scope.driverName = $scope.empObj[0].Name;
+                    $scope.TDate = $filter('date')(new Date(), "MMddyyyyHHmmss");
+                    $scope.excelFileName = $scope.driverName + '\'s Reimbursement Report ' + $scope.TDate;
+                    Visualforce.remoting.Manager.invokeAction(
+                        '{!$RemoteAction.drivermanagermydetailcontroller.getMileages}', reimonth, reimYear, $scope.id,
+                        function (result, event) {
+                            if (event.status && result != null) {
+                                if (result != '') {
+                                    var pattern = /&quot\;/g;
+                                    var resultdata = (result[0]).replace(pattern, '"')
+                                    console.log(resultdata)
+                                    var mileageReimbList = JSON.parse(resultdata);
+                                    if (mileageReimbList.length > 0) {
+                                        $scope.exportReimbusList.push(["Contact Email", "Tracing Style", "Day Of Week", "Trip Date", "Start Time", "End Time", "Trip Origin", "Trip Destination", "Mileage", "Status", "Date Submitted", "Date Approved", "Maint/Tires", "Fuel Rate", "Variable Rate", "Variable Amount", "Total Time", "Notes", "Tags"]);
+                                        angular.forEach(mileageReimbList, function (item, key) {
+                                            $scope.exportReimbusList.push([item.emailaddress, item.tracingstyle, item.dayofweek, item.tripdate, item.starttime, item.endtime, item.origin, item.destination, item.mileage, item.status, item.submitteddate, item.approveddate, item.maintTyre, item.fuelRate, item.variablerate, item.variableamount, item.totaltime, item.notes, item.tag]);
+                                        });
+                                        $scope.downloadToExcel($scope.exportReimbusList, $scope.excelFileName);
+                                    } else{
+                                        $scope.exportReimbusList = [];
+                                        toastr.error("No mileage found for "+reimonth);
+                                    }
+                                }
+                                else{
                                     $scope.exportReimbusList = [];
                                     toastr.error("No mileage found for "+reimonth);
                                 }
                             }
-                            else{
-                                $scope.exportReimbusList = [];
-                                toastr.error("No mileage found for "+reimonth);
-                            }
-                        }
-                    });
-             }
+                        });
+            }
+
             $scope.downloadReimbReport = function (stDate, enDate, biweekId) {
                 $scope.exportReimbusList = [];
                 $scope.bStartDate = $filter('date')(new Date(stDate), "yyyy-MM-dd");
@@ -1047,7 +1047,7 @@
                     function (result, event) {
                         if (event.status) {
                             if (event.type === 'exception') {
-                                //console.log(event);
+                                console.log(event);
                             }
                             else if (event.status) {
                                 if (doneUploading == true) {
@@ -1057,7 +1057,16 @@
                                     //     $('.modal-backdrop').remove();
                                     // });
                                     document.getElementById('file').value = '';
-
+                                    let _name = $scope.empContact[0].Name;
+                                    let _email = $scope.empContact[0].Email;
+                                    Visualforce.remoting.Manager.invokeAction('{!$RemoteAction.drivermanagermydetailcontroller.sendInsuranceEmail}', $scope.id, _name, _email,
+                                        function (result, event) {
+                                            if (event.status) {
+                                            }
+                                            $scope.$apply();
+                                        },
+                                        { escape: false }
+                                    )
                                     Visualforce.remoting.Manager.invokeAction('{!$RemoteAction.drivermanagermydetailcontroller.getDriverDetailsClone}', $scope.id,
                                         function (result, event) {
                                             if (event.status) {
@@ -1459,7 +1468,6 @@
                     };
                 }
             ]);
-
 
         </script>
     </head>

@@ -262,4 +262,17 @@ public class DriverDashboardController
     {
         return BiweeklyPayPeriod.getAllBiweekMileages1(date.valueof(startdate),date.valueof(enddate),did);
     } 
+    @RemoteAction
+    public static void sendInsuranceEmail (String Id,String Name,String email){
+        BiWeeklyWrapperUtils.sendInsuranceEmail(Id, Name, email);
+    }
+   /* @RemoteAction
+    public static String syncTripsForErmi (String Id,String startdate,String enddate){
+        //BiWeeklyWrapperUtils.sendInsuranceEmail(Id, Name, email);
+        if( !Test.IsRunningTest()){
+            //GetTripCalloutforCommute.GetTripCalloutForCommuteMileage(reim.id, reim.Contact_Id__r.External_Email__c, reim.Contact_Id__c, startDate, endDate, String.valueOf(reim.Fuel_Price__c), String.valueOf(reim.MPG__c), String.valueOf(reim.Maintenance_and_Tires__c), reim.Contact_Id__r.Account.Triplog_API__c, tripStatus ,putcall, activity,reim.Contact_Id__r.Account.Bi_Weekly_Pay_Period__c);
+        }
+        return 'sucess';
+    }
+    */
 }
