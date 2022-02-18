@@ -578,6 +578,16 @@
                                     if(doneUploading == true) { 
                                    
                                         document.getElementById('file').value = '';
+                                        let _name = $scope.empContact[0].Name;
+                                        let _email = $scope.empContact[0].Email;
+                                        Visualforce.remoting.Manager.invokeAction('{!$RemoteAction.drivermanagermydetailcontroller.sendInsuranceEmail}', $scope.id, _name, _email,
+                                                    function (result, event) {
+                                                        if (event.status) {
+                                                        }
+                                                        $scope.$apply();
+                                                    },
+                                                    { escape: false }
+                                        )
                                         Visualforce.remoting.Manager.invokeAction('{!$RemoteAction.drivermanagermydetailcontroller.getDriverDetailsClone}',$scope.id,
                                             function(result, event) {
                                                
