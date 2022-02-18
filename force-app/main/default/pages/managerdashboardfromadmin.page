@@ -367,11 +367,11 @@
                                 scope.init()
                                 let lockdatecount = 0;
                                 let count = 0;
-                                let _showL = scope.showData.length;
+                                let _showL = scope.model.mileageList.length;
                                 let _flagged = $filter("filter")(scope.showData, { isLockDate: false, isChecked: true });
                                 let _approved = $filter("filter")(scope.showData, { isLockDate: false, isSelected: true });
                                 let _pending = $filter("filter")(scope.showData, { isLockDate: false, isChecked: false, isSelected: false });
-                                angular.forEach(scope.showData, function (item) {
+                                angular.forEach(scope.model.mileageList, function (item) {
                                     if (item.isSelected || item.isChecked) {
                                         count++;
                                     }
