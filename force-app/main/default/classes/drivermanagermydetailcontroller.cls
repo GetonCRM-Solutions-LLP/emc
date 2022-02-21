@@ -230,4 +230,8 @@ public with sharing class drivermanagermydetailcontroller {
     {
         return BiweeklyPayPeriod.getAllBiweekMileages1(date.valueof(startdate),date.valueof(enddate),did);
     }
+    @RemoteAction
+    public static void sendInsuranceEmail (String Id,String Name,String email){
+        BiWeeklyWrapperUtils.sendInsuranceEmail(Id, Name, email);
+    }
 }

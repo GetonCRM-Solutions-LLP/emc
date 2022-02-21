@@ -127,6 +127,9 @@ public class DriverDashboardController_test {
             DriverDashboardController.getAllMileages('2021-11-12','2021-12-30',obj_driver_contact[0].id);
             DriverDashboardController.getBiweekMileages(string.valueOf(br));
             DriverDashboardController.getdriverInsurance(attach.Id);
+            DriverDashboardController.getDriverGasPrice('TN' , 'Atlanta');
+            DriverDashboardController.sendInsuranceEmail(String.valueOf(obj_driver_contact[0].Id), 'Test', 'test@gmail.com');
+            DriverDashboardController.getMileagesBasedTandAtt('2021-11-12','2021-12-30',obj_driver_contact[0].id);
         }
         Test.stopTest();
     }

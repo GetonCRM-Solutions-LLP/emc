@@ -265,7 +265,7 @@
             #action-nav .action-nav-list:nth-of-type(1){background-color: #29363B}
             #action-nav .action-nav-list:nth-of-type(2){background-color: #78b642} /*#EA495F*/
             #action-nav .action-nav-list:nth-of-type(3){background-color: #919496 }  /* #F4837D */
-            #action-nav .action-nav-list:nth-of-type(4){background-color: #FDCEA9}
+            #action-nav .action-nav-list:nth-of-type(4){background-color: #99B998} /* background-color: #c3bfbf;*/
             #action-nav .action-nav-list:nth-of-type(5){background-color: #99B998}
 
             .slide-in-nav-item {
@@ -1412,1263 +1412,1292 @@
             var app = angular.module('manageNotificationModule', ['angularUtils.directives.dirPagination']);
             app.controller('manageNotificationController', ['$scope', '$filter',
                 function ($scope, $filter) {
-                    $scope.driverInfo = {!conWrapper                
-}
-                    $scope.role = '{!role}'
-                    $scope.manRole = '{!managerrole}'
-                    $scope.mburseUrl = ($scope.role === 'Admin') ? 'admindashboard' : ($scope.role === 'Driver/Manager') ? 'drivermanagerdashboard' : ($scope.role === 'Manager') ? 'managerdashboard' : 'admindriverdashboard';
-            console.log("role->", $scope.role, $scope.manRole);
-            if ($scope.driverInfo.length > 10) {
-                var elmHeight = document.getElementById("tableWrap").offsetHeight;
-                var screenHeight = window.screen.height;
-                var scrollHeight = screenHeight - elmHeight;
-                // console.log("scroll", scrollHeight, document.getElementById('style-2'));
-                document.getElementById('style-2').style.height = scrollHeight + "px";
-                // console.log("window.screen.height", window.screen.height);
-                // console.log("document.body.clientHeight", document.body.clientHeight);
-                // console.log("table", table);
-                // console.log("tableWrap", document.getElementById("tableWrap").offsetHeight , document.getElementById("tableWrap").clientHeight);
-                var nTable = document.getElementById('style-2').offsetHeight;
-            }
-            var url_string = $(location).attr("href");
-            var url = new URL(url_string);
-            $scope.id = url.searchParams.get("id");
-            $scope.accid = url.searchParams.get("accid");
-            $scope.PLMarketing = '{!($Label.PL_Marketing)}';
-            $scope.showteam = url.searchParams.get("showteam");
-            $scope.managerid = url.searchParams.get("managerid");
-            $scope.admindriver = false;
-            $scope.admindriver = url.searchParams.get("admindriver");
-            if ($scope.admindriver == undefined || $scope.admindriver == '') {
-                $scope.admindriver = false;
-            }
-            $('#spinner').hide();
-            $scope.search = {};
-            $scope.uploadmileageProcess = false; /* EMC - 182 Added On 21 December 2021 */
-            $scope.mileageBtn = true;  /* EMC - 182 Added On 21 December 2021 */
-            $scope.uploadloaProcess = false; /* EMC - 214 Added On 1 February 2022  */
-            $scope.loaBtn = true; /* EMC - 214 Added On 1 February 2022  */
-            $scope.searchTerm = "fullname";
-            $scope.search[$scope.searchTerm] = "";
-            $scope.currentPage = 1;
-            $scope.pageSize = 34;
-            $scope.maxPage = 0;
-            console.log("Driver Information  : ", $scope.driverInfo);
-            $scope.lengthofrecord = $scope.driverInfo.length;
-            $scope.maxPage = Math.ceil($scope.lengthofrecord / $scope.pageSize);
-            $scope.radioIndex;
-            $scope.notification = [];
-            $scope.driverInfoList;
-            $scope.driverEmailList = [];
-            $scope.nameOfLocationFile = 'sample_location_import.csv';
-            $scope.nameOfMileageFile = 'sample_mileage_import.csv';
-            $scope.nameOfLOAFile = 'sample_LOA_import.csv';
-            $scope.locationTemplate = [{
-                "Name (optional)": "The White House",
-                "Address": "1600 Pennsylvania Ave NW, Washington, DC 20500",
-                "Latitude (optional)": 38.683885,
-                "Longitude (optional)": -8.6109719,
-                "Default Activity (optional)": "Business"
-            }
-            ]
-            $scope.mileageTemplate = [{
-                "Trip_Date": "",
-                "Trip_Origin": "",
-                "Trip_Destination": "",
-                "Trip_Status": "",
-                "Approved_Date": "",
-                "Day_Of_Week": "",
-                "Notes": "",
-                "Actual_Mileage": 0.00,
-                "Activity": "",
-                "Contact_Email": "",
-                "Tag": "",
-                "EmployeeId": ""
-            }
-            ];
-
-            $scope.loaTemplate = [{
-                "Employee": "",
-                "Name": "",
-                "Prorated Amount": "",
-                "LOA Start": "",
-                "LOA End": ""
-            }
-            ];
-            /* action for resend insurance */
-            $scope.showResendBtn = false;
-            $scope.showMileageBtn = false;
-            $scope.showLOABtn = false;
-            $scope.showLocationBtn = true;
-            $scope.showEmailBtn = false;
-            $scope.showCancelProBtn = false;
-            $scope.checkboxShow = false;
-
-             /** EMC - 182
-              * Upload a trips after implemented biweekly functionality. 
-              * So before insertion of mileage user need to give a bi-weekly reimbursement value for that trip
-              * Added On 21 December 2021 */
-
-            // Format date in yyyy-MM-dd format
-            function FormatDate(elDate) {
-                var today = new Date(elDate);
-                var dd = String(today.getDate()).padStart(2, '0');
-                var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
-                var year = today.getFullYear();
-                var yy = year.toString().substr(-2);
-                // today = yyyy + '-' + mm + '-' + dd;
-                today = mm + '/' + dd + '/' + yy
-                return today;
-            }
-
-            function filterByYear(item) {
-                    var a = item.split(' to ');
-                    if (new Date(a[0]).getFullYear() === new Date().getFullYear()) {
-                        return true;
-                    } else {
-                        if (new Date(a[1]).getFullYear() === new Date().getFullYear()) {
-                            return true;
+                        $scope.driverInfo = {!conWrapper}
+                        $scope.role = '{!role}'
+                        $scope.manRole = '{!managerrole}'
+                        $scope.mburseUrl = ($scope.role === 'Admin') ? 'admindashboard' : ($scope.role === 'Driver/Manager') ? 'drivermanagerdashboard' : ($scope.role === 'Manager') ? 'managerdashboard' : 'admindriverdashboard';
+                        console.log("role->", $scope.role, $scope.manRole);
+                        if ($scope.driverInfo.length > 10) {
+                            var elmHeight = document.getElementById("tableWrap").offsetHeight;
+                            var screenHeight = window.screen.height;
+                            var scrollHeight = screenHeight - elmHeight;
+                            // console.log("scroll", scrollHeight, document.getElementById('style-2'));
+                            document.getElementById('style-2').style.height = scrollHeight + "px";
+                            // console.log("window.screen.height", window.screen.height);
+                            // console.log("document.body.clientHeight", document.body.clientHeight);
+                            // console.log("table", table);
+                            // console.log("tableWrap", document.getElementById("tableWrap").offsetHeight , document.getElementById("tableWrap").clientHeight);
+                            var nTable = document.getElementById('style-2').offsetHeight;
                         }
-                    }
-                }
-            function payDate(date) {
-                var st = new Date(date);
-                var today = new Date();
-                var i = 0;
-                var dateArr = [];
-                var end;
-                var currentYear = (new Date()).getFullYear();
-                if (date) {
-                    for (i = 0; i <= dateArr.length; i++) {
-                      //  if (currentYear === st.getFullYear()) {
-                            if (st < today) {
-                                end = new Date(st);
-                                end = new Date(end.setDate(end.getDate() + 13));
-                                let finaldate = FormatDate(st) + ' to ' + FormatDate(end)
-                                dateArr.push(finaldate);
-                                st = new Date(end.setDate(end.getDate() + 1));
-                            }
-
-                      //  }
-                    }
-                    let arrByYear = dateArr.filter(filterByYear)
-                    return arrByYear;
-                    console.log("List->", dateArr);
-                }
-            }
-
-            $scope.option = "Select Pay Period"
-            $scope.biweeklyDate = payDate('07/25/21');
-            $scope.biweeklyDate.splice(0, 0, $scope.option);
-            $scope.biweeklyPayRole = $scope.biweeklyDate[0];
-            $scope.stCustomDate = '';
-            $scope.enCustomDate = '';
-
-            $scope.onPayPeriodChange = function (period) {
-                document.querySelector('.mileage-file').value = "";
-                if (period != "Select Pay Period") {
-                    $scope.splitObj = period.split(' to ');
-                    $scope.stCustomDate = $scope.splitObj[0];
-                    $scope.enCustomDate = $scope.splitObj[1];
-                    $scope.convertedStartDate = $filter('date')(new Date($scope.stCustomDate), 'yyyy-MM-dd');
-                    $scope.convertedEndDate = $filter('date')(new Date($scope.enCustomDate), 'yyyy-MM-dd');
-                    $scope.mileageBtn = false;
-                } else {
-                    $scope.mileageBtn = true;
-                }
-            }
-
-            $scope.onPayPChange = function(period){
-                document.querySelector('.loa-file').value = "";
-                if (period != "Select Pay Period") {
-                    $scope.splitObj = period.split(' to ');
-                    $scope.stCustomDate = $scope.splitObj[0];
-                    $scope.enCustomDate = $scope.splitObj[1];
-                    $scope.convertedStartDate = $filter('date')(new Date($scope.stCustomDate), 'yyyy-MM-dd');
-                    $scope.convertedEndDate = $filter('date')(new Date($scope.enCustomDate), 'yyyy-MM-dd');
-                    $scope.loaBtn = false;
-                } else {
-                    $scope.loaBtn = true;
-                }
-            }
-
-            /* EMC - 182 Ends */
-            /* Toaster Option */
-            this.setOptions = function () {
-                toastr.options.positionClass = "toast-top-right";
-                toastr.options.closeButton = true;
-                toastr.options.progressBar = true;
-                toastr.options.fadeOut = 6000;
-            };
-
-            this.setOptions();
-            this.clear = function () {
-                toastr.clear();
-            };
-
-            /* Toaster Option Complete with clear funtion */
-
-            /* Sorting For table */
-            $scope.sortKey = 'name';
-            $scope.reverse = true;
-            $scope.sort = function (keyname) {
-
-                $scope.reverse = ($scope.sortKey === keyname) ? !$scope.reverse : false;
-                $scope.sortKey = keyname;
-                if (keyname === 'name' || keyname === 'insurance') {
-                    $scope.driverInfo.sort(function (a, b) {
-
-                        var nameA = (a[keyname] === null) ? '' : a[keyname].toLowerCase(),
-                            nameB = (b[keyname] === null) ? '' : b[keyname].toLowerCase()
-                        if ($scope.reverse) {
-                            if (nameA < nameB) //sort string ascending
-                                return -1
-                            if (nameA > nameB)
-                                return 1
-                            return 0 //default return value (no sorting)
-                        } else {
-                            if (nameA < nameB) //sort string ascending
-                                return 1
-                            if (nameA > nameB)
-                                return -1
-                            return 0 //default return value (no sorting)
+                        var url_string = $(location).attr("href");
+                        var url = new URL(url_string);
+                        $scope.id = url.searchParams.get("id");
+                        $scope.accid = url.searchParams.get("accid");
+                        $scope.PLMarketing = '{!($Label.PL_Marketing)}';
+                        $scope.showteam = url.searchParams.get("showteam");
+                        $scope.managerid = url.searchParams.get("managerid");
+                        $scope.admindriver = false;
+                        $scope.admindriver = url.searchParams.get("admindriver");
+                        if ($scope.admindriver == undefined || $scope.admindriver == '') {
+                            $scope.admindriver = false;
                         }
-                    })
-                }
-                if (keyname === 'expirationDate') {
-                    $scope.driverInfo.sort(function (a, b) {
-
-                        var nameA = (a[keyname] === null) ? '' : new Date(a[keyname].toLowerCase()),
-                            nameB = (b[keyname] === null) ? '' : new Date(b[keyname].toLowerCase())
-                        if ($scope.reverse) {
-                            if (nameA < nameB) //sort string ascending
-                                return -1
-                            if (nameA > nameB)
-                                return 1
-                            return 0 //default return value (no sorting)
-                        } else {
-                            if (nameA < nameB) //sort string ascending
-                                return 1
-                            if (nameA > nameB)
-                                return -1
-                            return 0 //default return value (no sorting)
+                        $('#spinner').hide();
+                        $scope.search = {};
+                        $scope.uploadmileageProcess = false; /* EMC - 182 Added On 21 December 2021 */
+                        $scope.mileageBtn = true;  /* EMC - 182 Added On 21 December 2021 */
+                        $scope.uploadloaProcess = false; /* EMC - 214 Added On 1 February 2022  */
+                        $scope.loaBtn = true; /* EMC - 214 Added On 1 February 2022  */
+                        $scope.deleteTripProcess = false; /* EMC - 217 Added On 8 February 2022 */
+                        $scope.searchTerm = "fullname";
+                        $scope.search[$scope.searchTerm] = "";
+                        $scope.currentPage = 1;
+                        $scope.pageSize = 34;
+                        $scope.maxPage = 0;
+                        console.log("Driver Information  : ", $scope.driverInfo);
+                        $scope.lengthofrecord = $scope.driverInfo.length;
+                        $scope.maxPage = Math.ceil($scope.lengthofrecord / $scope.pageSize);
+                        $scope.radioIndex;
+                        $scope.notification = [];
+                        $scope.driverInfoList;
+                        $scope.driverEmailList = [];
+                        $scope.nameOfLocationFile = 'sample_location_import.csv';
+                        $scope.nameOfMileageFile = 'sample_mileage_import.csv';
+                        $scope.nameOfLOAFile = 'sample_LOA_import.csv';
+                        $scope.locationTemplate = [{
+                            "Name (optional)": "The White House",
+                            "Address": "1600 Pennsylvania Ave NW, Washington, DC 20500",
+                            "Latitude (optional)": 38.683885,
+                            "Longitude (optional)": -8.6109719,
+                            "Default Activity (optional)": "Business"
                         }
-                    })
-
-                }
-            }
-
-            /* close Navigation */
-            function navToggle(){
-                var overlay_navigation = $('.overlay-navigation'),
-                    nav_item_1 = $('#action-nav .action-nav-list:nth-of-type(1)'),
-                    nav_item_2 = $('#action-nav .action-nav-list:nth-of-type(2)'),
-                    nav_item_3 = $('#action-nav .action-nav-list:nth-of-type(3)'),
-                    nav_item_4 = $('#action-nav .action-nav-list:nth-of-type(4)'),
-                    nav_item_5 = $('#action-nav .action-nav-list:nth-of-type(5)'),
-                    top_bar = $('.bar-top'),
-                    middle_bar = $('.bar-middle'),
-                    bottom_bar = $('.bar-bottom'),
-                    overlay = $('.open-overlay'),
-                    close_btn = $('.menuToggler');
-                    overlay_navigation.toggleClass('overlay-active');
-                    overlay.removeClass('d-none').addClass('d-block');
-                    close_btn.removeClass('d-block').addClass('d-none');
-                    top_bar.removeClass('animate-top-bar').addClass('animate-out-top-bar');
-                    middle_bar.removeClass('animate-middle-bar').addClass('animate-out-middle-bar');
-                    bottom_bar.removeClass('animate-bottom-bar').addClass('animate-out-bottom-bar');
-                    overlay_navigation.removeClass('overlay-slide-down').addClass('overlay-slide-up')
-                    nav_item_1.removeClass('slide-in-nav-item').addClass('slide-in-nav-item-reverse');
-                    nav_item_2.removeClass('slide-in-nav-item-delay-1').addClass('slide-in-nav-item-delay-1-reverse');
-                    nav_item_3.removeClass('slide-in-nav-item-delay-2').addClass('slide-in-nav-item-delay-2-reverse');
-                    nav_item_4.removeClass('slide-in-nav-item-delay-3').addClass('slide-in-nav-item-delay-3-reverse');
-                    nav_item_5.removeClass('slide-in-nav-item-delay-4').addClass('slide-in-nav-item-delay-4-reverse');
-            }
-            /* Navigate to Resend Insurance */
-            $scope.insuranceProcess = function(){
-                navToggle();
-                $scope.showResendBtn = true;
-                $scope.showMileageBtn = false;
-                $scope.showLOABtn = false;
-            }
-
-             /* Navigate to Mileage Upload*/
-            $scope.mileageProcess = function(){
-                navToggle();
-                $scope.showResendBtn = false;
-                $scope.showMileageBtn = true;
-                $scope.showLOABtn = false;
-            }
-
-            $scope.loaProcess = function(){
-                navToggle();
-                $scope.showResendBtn = false;
-                $scope.showMileageBtn = false;
-                $scope.showLOABtn = true;
-            }
-
-            $scope.export = function (sampleData) {
-                /* make the worksheet */
-                var ws = XLSX.utils.json_to_sheet(sampleData);
-
-                /* write workbook (use type 'binary') */
-                var csv = XLSX.utils.sheet_to_csv(ws, { raw: false, dateNF: 'yyyy-mm-dd HH:mm:ss' });
-
-                /* generate a download */
-                function s2ab(s) {
-                    var buf = new ArrayBuffer(s.length);
-                    var view = new Uint8Array(buf);
-                    for (var i = 0; i != s.length; ++i) view[i] = s.charCodeAt(i) & 0xFF;
-                    return buf;
-                }
-
-                saveAs(new Blob([s2ab(csv)], { type: "application/octet-stream" }), "sheetjs.csv");
-            }
-            /* Download location template */
-
-            $scope.exportToCsv = function (sampleData, csvName) {
-                // Building the CSV from the Data
-                // Each column is separated by ";" and new line "\n" for next row
-                let rowData = new Set();
-                let rowEnd = '\n';
-                var csvContent = '';
-                sampleData.forEach(function (info) {
-                    Object.keys(info).forEach(function (key) {
-                        rowData.add(key);
-                    });
-                });
-
-                rowData = Array.from(rowData);
-                csvContent += rowData.join(',');
-                csvContent += rowEnd;
-
-                sampleData.forEach(function (data) {
-                    let colVal = 0;
-                    rowData.forEach((row, ind) => {
-                        // Key value
-                        // Ex: Id, Name
-                        let rowKey = row;
-                        //  console.log(rowKey)
-                        // add , after every value except the first.
-                        if (colVal > 0) {
-                            csvContent += ',';
+                        ]
+                        $scope.mileageTemplate = [{
+                            "Trip_Date": "",
+                            "Trip_Origin": "",
+                            "Trip_Destination": "",
+                            "Trip_Status": "",
+                            "Approved_Date": "",
+                            "Day_Of_Week": "",
+                            "Notes": "",
+                            "Actual_Mileage": 0.00,
+                            "Activity": "",
+                            "Contact_Email": "",
+                            "Tag": "",
+                            "EmployeeId": ""
                         }
-                        // If the column is undefined, it as blank in the CSV file.
-                        //  console.log(this.csvFiledata[ind],filedata);
-                        let value = data[rowKey] === (undefined || null) ? '' : data[rowKey];
-                        if (value != null || value != '') {
-                            csvContent += '"' + value + '"';
+                        ];
+
+                        $scope.loaTemplate = [{
+                            "Employee": "",
+                            "Name": "",
+                            "Prorated Amount": "",
+                            "LOA Start": "",
+                            "LOA End": "",
+                            "Deactivation Date": ""
                         }
-                        colVal++;
-                    })
-                    csvContent += rowEnd;
-                });
-                // The download function takes a CSV string, the filename and mimeType as parameters
-                // Scroll/look down at the bottom of this snippet to see how download is called
-                var download = function (content, fileName, mimeType) {
-                    var a = document.createElement('a');
-                    mimeType = mimeType || 'application/octet-stream';
+                        ];
+                        /* action for resend insurance */
+                        $scope.showResendBtn = false;
+                        $scope.showMileageBtn = false;
+                        $scope.showLOABtn = false;
+                        $scope.showLocationBtn = true;
+                        $scope.showEmailBtn = false;
+                        $scope.showCancelProBtn = false;
+                        $scope.checkboxShow = false;
 
-                    if (navigator.msSaveBlob) { // IE10
-                        navigator.msSaveBlob(new Blob([content], {
-                            type: mimeType
-                        }), fileName);
-                    } else if (URL && 'download' in a) { //html5 A[download]
-                        a.href = URL.createObjectURL(new Blob([content], {
-                            type: mimeType,
-                            cellDates: true, dateNF: 'yyyy/mm/dd;@'
-                        }));
-                        a.setAttribute('download', fileName);
-                        document.body.appendChild(a);
-                        a.click();
-                        document.body.removeChild(a);
-                    } else {
-                        location.href = 'data:application/octet-stream,' + encodeURIComponent(content); // only this mime type is supported
-                    }
-                }
+                        /** EMC - 182
+                         * Upload a trips after implemented biweekly functionality. 
+                         * So before insertion of mileage user need to give a bi-weekly reimbursement value for that trip
+                         * Added On 21 December 2021 */
 
-                download(csvContent, csvName, 'text/csv;encoding:utf-8');
-            }
-            /*  Search input event */
-
-            $scope.keyPressed = function (keyEvent, len) {
-                if (keyEvent.keyCode == 13 || ((keyEvent.keyCode == 32 || keyEvent.keyCode == 39) && !len) || !(keyEvent.keyCode >= 65 && keyEvent.keyCode <= 90 || keyEvent.keyCode >= 97 && keyEvent.keyCode <= 122 || keyEvent.keyCode == 39 || keyEvent.keyCode == 32)) {
-                    event.preventDefault();
-                }
-                // return keyEvent.which !== 32;
-            }
-
-            $scope.resetSearch = function () {
-                $scope.search[$scope.searchTerm] = "";
-            }
-
-            $scope.openProfile = function (profile) {
-                var hidden = document.getElementById('hidden_user_id');
-                hidden.value = JSON.stringify(profile);
-                var url_locate;
-                if ($scope.admindriver) {
-                    url_locate = "/app/roster?accid=" + $scope.accid + "&id=" + $scope.id + "&showteam=" + $scope.showteam + "&admindriver=true";
-                } else {
-                    url_locate = "/app/roster?accid=" + $scope.accid + "&id=" + $scope.id + "&showteam=" + $scope.showteam;
-                }
-
-                window.open(url_locate);
-
-            }
-
-            /* EMC - 171 */
-            $scope.exportToExcel = function () {
-                var exportData = [];
-                var excelData = $scope.driverInfo
-                angular.forEach(excelData, function (l) {
-                    l.expirationDate = (l.expirationDate != null) ? $filter('date')(new Date(l.expirationDate), "MM/dd/yy") : l.expirationDate;
-                });
-
-                exportData.push(["Name", "Insurance Status", "Expires"]);
-                angular.forEach(excelData, function (l) {
-                    exportData.push([l.fullname, l.insurance, l.expirationDate]);
-                })
-
-                function datenum(v, date1904) {
-                    if (date1904) v += 1462;
-                    var epoch = Date.parse(v);
-                    return (epoch - new Date(Date.UTC(1899, 11, 30))) / (24 * 60 * 60 * 1000);
-                }
-                function getSheet(exportData) {
-                    var ws = {};
-                    var range = { s: { c: 10000000, r: 10000000 }, e: { c: 0, r: 0 } };
-
-                    for (var R = 0; R != exportData.length; ++R) {
-                        for (var C = 0; C != exportData[R].length; ++C) {
-                            if (range.s.r > R) range.s.r = R;
-                            if (range.s.c > C) range.s.c = C;
-                            if (range.e.r < R) range.e.r = R;
-                            if (range.e.c < C) range.e.c = C;
-                            var cell = { v: exportData[R][C] };
-                            if (cell.v == null) continue;
-                            var cell_ref = XLSX.utils.encode_cell({ c: C, r: R });
-                            // console.log('cell', cell)
-                            if (typeof cell.v === 'number') cell.t = 'n';
-                            else if (typeof cell.v === 'boolean') cell.t = 'b';
-                            else if (cell.v instanceof Date) {
-                                cell.t = 'n'; cell.z = XLSX.SSF._table[14];
-                                cell.v = datenum(cell.v);
-                            }
-                            else cell.t = 's';
-
-                            ws[cell_ref] = cell;
-                        }
-                    }
-                    if (range.s.c < 10000000) ws['!ref'] = XLSX.utils.encode_range(range);
-                    return ws;
-                }
-                function Workbook() {
-                    if (!(this instanceof Workbook)) return new Workbook();
-                    this.SheetNames = [];
-                    this.Sheets = {};
-                }
-
-                var wb = new Workbook(), ws = getSheet(exportData);
-
-                $scope.FromDate = $filter('date')(new Date(), "MMddyyyyHHmmss");
-                wb.SheetNames.push("Insurance Report");
-                wb.Sheets["Insurance Report"] = ws;
-                var wbout = XLSX.write(wb, { bookType: 'xlsx', bookSST: false, type: 'binary' });
-                function s2ab(s) {
-                    var buf = new ArrayBuffer(s.length);
-                    var view = new Uint8Array(buf);
-                    for (var i = 0; i != s.length; ++i) view[i] = s.charCodeAt(i) & 0xFF;
-                    return buf;
-                }
-                $scope.name = 'Insurance Report' + ' ' + $scope.FromDate + ".xlsx"
-                saveAs(new Blob([s2ab(wbout)], { type: "application/octet-stream" }), $scope.name);
-            }
-            /*  Search input event ends */
-            $scope.sendNotification = function (notifyObj, index) {
-                //  console.log("Sending notification", notifyObj, document.getElementById(`message-area${index}`).value);
-                var textInput = document.getElementById(`message-area${index}`).value;
-                if (notifyObj.notiMessage === null || notifyObj.notiMessage === "" || textInput === "") {
-                    $(`#span-error${index}`).removeClass("d-none");
-                    $(`#message-area${index}`).addClass("border-error");
-                } else {
-                    $(`#span-error${index}`).addClass("d-none");
-                    $(`#message-area${index}`).removeClass("border-error");
-                    $scope.notification.push(notifyObj);
-                    var notifyMessage = angular.copy($scope.notification);
-                    Visualforce.remoting.Manager.invokeAction('{!$RemoteAction.ManageNotificationController.editInlineNewEmployee}', JSON.stringify(notifyMessage), $scope.id,
-                        function (result, event) {
-                            if (event.status) {
-                                if (result === 'Success') {
-                                    toastr.success("Notification is send successfully to " + notifyObj.name + ' ' + notifyObj.lastname);
-                                    angular.forEach($scope.notification, function (n) {
-                                        n.isEditable = false;
-                                    });
-                                    $scope.notification = [];
-                                    $scope.refreshEmployees();
-                                    $scope.$apply();
-                                }
-                            }
-                        }
-                    );
-                }
-            }
-            $scope.pageChangeHandler = function (num) {
-                if ($scope.driverInfo.length > 10) {
-                    if (num === $scope.maxPage) {
-                        //  document.getElementById('style-2').style.height = nTable + "px";
-                        document.getElementById('style-2').style.height = "";
-                        document.getElementById('style-2').style.overflow = "hidden";
-                    } else {
-                        document.getElementById('style-2').style.height = nTable + "px";
-                        document.getElementById('style-2').style.overflow = '';
-                    }
-                }
-
-                //         var eheight = document.getElementById("tableWrap").offsetHeight;
-                //         //console.log("tableWrap", document.getElementById("tableWrap").offsetHeight, document.getElementById("tableWrap").clientHeight);
-                //         var scHeight = window.screen.height;
-                //         var scroll = scHeight - eheight;
-                //         console.log("scroll", scrollHeight, document.getElementById('notifyTable').offsetHeight);
-                //         document.getElementById('style-2').style.height = scroll + "px";
-                //         console.log("offsetHeight", eheight, num);
-            }
-            $scope.refreshEmployees = function () {
-                Visualforce.remoting.Manager.invokeAction(
-                    '{!$RemoteAction.ManageNotificationController.NewEmployeeData}', $scope.accid,
-                    function (result, event) {
-                        if (event.status) {
-                            $scope.$apply(function () {
-                                $scope.driverInfo = JSON.parse(result);
-                                //console.log('added->', JSON.parse(result));
-                            });
-                        } else {
-                            $scope.$apply(function () {
-                                $scope.driverInfo = [];
-                                //console.log('error in method NewEmployeeData ->', result);
-                            });
-                        }
-                    },
-                    { escape: false })
-            }
-
-            $scope.errorValidate = function (index) {
-                var span = $(`#span-error${index}`);
-                var messageArea = $(`#message-area${index}`);
-                if (!(span[0].className.includes("d-none"))) {
-                    $(`#span-error${index}`).addClass("d-none");
-                }
-                if (messageArea[0].className.includes("border-error")) {
-                    $(`#message-area${index}`).removeClass("border-error")
-                }
-                document.getElementById(`message-area${index}`).value = "";
-                document.getElementById(`notify-date${index}`).innerHTML = "";
-            }
-
-
-
-            $scope.endProcess = function () {
-                $scope.showCancelProBtn = false;
-                if ($scope.checkboxobj) {
-                    if ($scope.checkboxobj.isCheckedAllForEmail) {
-                        $scope.checkboxobj.isCheckedAllForEmail = false;
-                    }
-                }
-                $scope.showEmailBtn = false;
-                $scope.checkboxShow = false;
-                $scope.showResendBtn = true;
-                angular.forEach($scope.driverInfo, function (detail) {
-                    detail.massEmail = false;
-                });
-            }
-
-            $scope.sendMassEmail = function () {
-                var driverEmailInfo = angular.copy($scope.driverEmailList);
-                $('#spinner').show();
-                Visualforce.remoting.Manager.invokeAction('{!$RemoteAction.ManageNotificationController.sendAllInsuranceEmail}', JSON.stringify(driverEmailInfo), $scope.id,
-                    function (result, event) {
-                        if (event.status) {
-                            toastr.success('Email Sent Successfully');
-                            $('#spinner').hide();
-                            setTimeout(function () {
-                                location.reload();
-                            }, 2000);
-                        }
-                        else {
-                            toastr.error('Some error has occur');
-                            $('#spinner').hide();
-                        }
-                        $scope.$apply();
-                    }, { escape: false }
-                );
-            }
-
-            $scope.displayCheckboxForEmail = function () {
-                $scope.checkboxShow = true;
-                $scope.showCancelProBtn = true;
-                $scope.checkboxobj = {};
-                $scope.checkboxobj.isCheckedAllForEmail = false;
-            }
-
-            $scope.CheckUncheckAllForEmail = function (CheckUncheckAllForEmail) {
-                $scope.driverEmailList = [];
-                $scope.checkboxobj.isCheckedAllForEmail = CheckUncheckAllForEmail;
-                if ($scope.checkboxobj.isCheckedAllForEmail) {
-                    $scope.showResendBtn = false;
-                    $scope.showCancelProBtn = true;
-                    $scope.showEmailBtn = true;
-                }
-                else {
-                    $scope.checkboxShow = false;
-                    $scope.showResendBtn = true;
-                    $scope.showCancelProBtn = false;
-                    $scope.showEmailBtn = false;
-                }
-                angular.forEach($scope.driverInfo, function (detail) {
-                    detail.massEmail = $scope.checkboxobj.isCheckedAllForEmail;
-                    $scope.driverEmailList.push(detail);
-                });
-                // console.log($scope.driverEmailList);
-            }
-
-            $scope.CheckUncheckForEmail = function (detail) {
-                $scope.recordfoundindex = -1;
-                var total = $scope.driverInfo.length;
-                var count = 0;
-                angular.forEach($scope.driverInfo, function (item) {
-                    if (item.massEmail) {
-                        count++;
-                    }
-                });
-                if (count > 0) {
-                    $scope.showResendBtn = false;
-                    $scope.showCancelProBtn = true;
-                    $scope.showEmailBtn = true;
-                }
-                else {
-                    $scope.showResendBtn = true;
-                    $scope.showCancelProBtn = false;
-                    $scope.showEmailBtn = false;
-                    $scope.checkboxShow = false;
-                }
-
-                if (total == count && (total != 0)) {
-                    if ($scope.checkboxobj) {
-                        $scope.checkboxobj.isCheckedAllForEmail = true;
-                    }
-                }
-                else {
-                    if ($scope.checkboxobj != undefined) {
-                        $scope.checkboxobj.isCheckedAllForEmail = false;
-                    }
-                }
-
-                if ($scope.driverEmailList.length > 0) {
-                    for (var i = 0; i < $scope.driverEmailList.length; i++) {
-                        if ($scope.driverEmailList[i].contactId === detail.contactId) {
-                            $scope.recordfoundindex = i;
-                            break;
-                        }
-                    }
-
-                    if ($scope.recordfoundindex != -1) {
-                        $scope.driverEmailList.remove($scope.recordfoundindex);
-                    }
-
-                    else {
-                        $scope.driverEmailList.push(detail);
-                    }
-                } else {
-                    $scope.driverEmailList.push(detail);
-                }
-                // console.log($scope.driverEmailList);
-            }
-
-
-            /* For File Upload*/
-            $scope.filedata = '';
-            $scope.locationdata = '';
-            $scope.data = "";
-            $scope.filesChoose = [];
-            $scope.locationChoose = [];
-            $scope.mileageChoose = [];
-            $scope.loaChoose = [];
-            var maxStringSize = 6000000;    //Maximum String size is 6,000,000 characters
-            var maxFileSize = 4350000;      //After Base64 Encoding, this is the max file size
-            var chunkSize = 950000;         //Maximum Javascript Remoting message size is 1,000,000
-            var attachment;
-            var attachmentName;
-            var fileSize;
-            var fileIndex;
-            var choosefile;
-            var choosenfileType = '';
-            var chooseFileName = '';
-            var idOfContact = '';
-            $scope.file_changed = function (element) {
-                chooseFileName = '';
-                attachment = '';
-                choosefile = '';
-                $scope.filedata = '';
-                choosefile = element;
-                fileIndex = parseInt(element.name);
-                var findex = (element.files[0].name).lastIndexOf(".");
-                var photofile = element.files[0];
-                chooseFileName = photofile.name;
-                //console.log('file size :- '+choosefile.files[0].size);
-                var strsubstring = (element.files[0].name).substring(findex, (element.files[0].name).length);
-                var notiElement = document.querySelectorAll('#notifyColumn');
-                var fileElement = document.querySelectorAll('#file-column');
-                if (strsubstring == '.pdf' || strsubstring == '.docx' || strsubstring == '.xls' || strsubstring == '.xlsx' || strsubstring == '.doc') {
-                    $(`#file-path-wrap-${fileIndex}`).removeClass('d-none');
-                    document.getElementById(`file-name-${fileIndex}`).innerHTML = chooseFileName;
-                    if (choosefile.files[0].size > 0 && choosefile.files[0].size < 4350000) {
-                        $(`#fileBtn-${fileIndex}`).addClass('d-none');
-                        $(`#uploadBtn-${fileIndex}`).removeClass('d-none');
-                        if ($('#file-column')[0].classList.length > 1) {
-                            $("#insurance-thead").removeClass('em-10');
-                            $("#insurance-thead").addClass('em-20');
-                            // $('#file-column').removeClass('vw-12');
-                            // $('#file-column').addClass('w-19');
-                            angular.forEach(fileElement, function (n) {
-                                if (n.className.includes('vw-12')) {
-                                    n.classList.remove('vw-12');
-                                    n.classList.add('w-19');
-                                }
-                            })
-                            angular.forEach(notiElement, function (n) {
-                                if (n.className.includes('notify-para-width')) {
-                                    n.classList.remove('notify-para-width');
-                                    n.classList.add('n-width');
-                                }
-                            })
-                            // $('#notifyColumn').removeClass('notify-para-width')
-                            // $('#notifyColumn').addClass('n-width');
-                        }
-                        //console.log($('#file-column')[0].classList)
-                        choosefile = element;
-                        $scope.filesChoose.push(element);
-                    }
-                    else {
-                        // $scope.IsVisiblebtn = false;
-                        $(`#file-path-wrap-${fileIndex}`).addClass('d-none');
-                        document.getElementById(`file-name-${fileIndex}`).innerHTML = "";
-                        toastr.error('Base 64 Encoded file is too large.  Maximum size is 4 MB .');
-                    }
-                }
-                else {
-                    $(`#file-path-wrap-${fileIndex}`).addClass('d-none');
-                    document.getElementById(`file-name-${fileIndex}`).innerHTML = "";
-                    toastr.error('Please upload correct File. File extension should be .pdf, .doc , .docx or .xls');
-                }
-
-                var fl = choosefile.files[0].size;
-
-
-                $scope.$apply(function (scope) {
-                    choosenfileType = photofile.type;
-                    var reader = new FileReader();
-                    $scope.fsize = element.files[0].size;
-                    reader.onload = function (e) {
-                        $scope.filedata = reader.result;
-                    };
-                    reader.readAsDataURL(photofile);
-                });
-            };
-
-            $scope.uploadFileInChunk = function (element, insuranceId, conId, contact) {
-                var file;
-                idOfContact = conId;
-                if (element.currentTarget != null || element.currentTarget != undefined) {
-                    angular.forEach($scope.filesChoose, function (f) {
-                        if (f.name === element.currentTarget.name) {
-                            file = f.files[0];
-                            fileIndex = parseInt(element.currentTarget.name);
-                        }
-                    })
-                }
-
-                console.log(file);
-                //var file = choosefile.files[0];
-                if (file != undefined) {
-                    if (file.size <= maxFileSize) {
-                        attachmentName = file.name;
-                        var fileReader = new FileReader();
-                        fileReader.onloadend = function (e) {
-                            e.preventDefault();
-                            attachment = window.btoa(this.result);
-                            positionIndex = 0;
-                            fileSize = attachment.length;
-                            doneUploading = false;
-                            if (fileSize < maxStringSize) {
-                                uploadAttachment(null, insuranceId, conId, contact);
-                            } else {
-                                toastr.error('Base 64 Encoded file is too large.  Maximum size is " + maxStringSize + " your file is " + fileSize + "."');
-                            }
+                        // Format date in yyyy-MM-dd format
+                        function FormatDate(elDate) {
+                            var today = new Date(elDate);
+                            var dd = String(today.getDate()).padStart(2, '0');
+                            var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+                            var year = today.getFullYear();
+                            var yy = year.toString().substr(-2);
+                            // today = yyyy + '-' + mm + '-' + dd;
+                            today = mm + '/' + dd + '/' + yy
+                            return today;
                         }
 
-                        fileReader.onerror = function (e) {
-                            toastr.error('There was an error reading the file.  Please try again.');
-                        }
-                        fileReader.onabort = function (e) {
-                            toastr.error('There was an error reading the file.  Please try again.');
-                        }
-
-                        fileReader.readAsBinaryString(file);
-                    }
-                    else {
-                        toastr.error('File must be under 4.3 MB in size.  Your file is too large.  Please try again.');
-                    }
-                }
-                else {
-                    $(`#uploadBtn-${fileIndex}`).addClass('d-none');
-                    toastr.error('You must choose a file before trying to upload it');
-                }
-            }
-
-            function uploadAttachment(fileId, insuranceId, contactId, contact) {
-                $('#spinner').show();
-                var attachmentBody = "";
-
-                if (insuranceId != '' && insuranceId != null && insuranceId != undefined) {
-                    $scope.attachmentid = insuranceId;
-                    console.log("attachment-id", $scope.attachmentid);
-                }
-                else {
-                    $scope.attachmentid = "";
-                }
-                if (fileSize <= positionIndex + chunkSize) {
-                    attachmentBody = attachment.substring(positionIndex);
-                    doneUploading = true;
-                } else {
-                    attachmentBody = attachment.substring(positionIndex, positionIndex + chunkSize);
-                }
-                Visualforce.remoting.Manager.invokeAction('{!$RemoteAction.ManageNotificationController.readFromFileInchunk}', attachmentBody, attachmentName, fileId, contactId, $scope.accid, $scope.attachmentid,
-                    function (result, event) {
-                        if (event.status) {
-                            if (event.type === 'exception') {
-                                console.log("exception");
-                                console.log(event);
-                                $('#spinner').hide();
-                            }
-                            else if (event.status) {
-                                if (doneUploading == true) {
-                                    var notiDiv = document.querySelectorAll('#notifyColumn');
-                                    var filecolumn = document.querySelectorAll('#file-column');
-                                    toastr.success("We have received your upload, the data will be processed and made available within 72 work hours");
-                                    document.getElementById(`file-${fileIndex}`).value = '';
-                                    document.getElementById(`file-name-${fileIndex}`).innerHTML = '';
-                                    $(`#file-path-wrap-${fileIndex}`).addClass('d-none');
-                                    $(`#uploadBtn-${fileIndex}`).addClass('d-none');
-                                    $(`#fileBtn-${fileIndex}`).removeClass('d-none');
-                                    $("#insurance-thead").addClass('em-10');
-                                    $("#insurance-thead").removeClass('em-20');
-                                    // $('#file-column').addClass('vw-12');
-                                    // $('#file-column').removeClass('w-19');
-                                    angular.forEach(filecolumn, function (n) {
-                                        if (n.className.includes('w-19')) {
-                                            n.classList.remove('w-19');
-                                            n.classList.add('vw-12');
-                                        }
-                                    })
-                                    angular.forEach(notiDiv, function (n) {
-                                        if (n.className.includes('n-width')) {
-                                            n.classList.remove('n-width');
-                                            n.classList.add('notify-para-width');
-                                        }
-                                    })
-                                    if ($scope.filesChoose.length > 0) {
-                                        angular.forEach($scope.filesChoose, function (fl) {
-                                            if (fl.name === fileIndex.toString()) {
-                                                const findex = $scope.filesChoose.indexOf(fl);
-                                                if (findex !== -1) $scope.filesChoose.splice(findex, 1);
-                                            }
-                                        })
+                        function filterByYear(item) {
+                                var a = item.split(' to ');
+                                if (new Date(a[0]).getFullYear() === new Date().getFullYear()) {
+                                    return true;
+                                } else {
+                                    if (new Date(a[1]).getFullYear() === new Date().getFullYear()) {
+                                        return true;
                                     }
                                 }
+                            }
+                        function payDate(date) {
+                            var st = new Date(date);
+                            var today = new Date();
+                            var i = 0;
+                            var dateArr = [];
+                            var end;
+                            var currentYear = (new Date()).getFullYear();
+                            if (date) {
+                                for (i = 0; i <= dateArr.length; i++) {
+                                //  if (currentYear === st.getFullYear()) {
+                                        if (st < today) {
+                                            end = new Date(st);
+                                            end = new Date(end.setDate(end.getDate() + 13));
+                                            let finaldate = FormatDate(st) + ' to ' + FormatDate(end)
+                                            dateArr.push(finaldate);
+                                            st = new Date(end.setDate(end.getDate() + 1));
+                                        }
+
+                                //  }
+                                }
+                                let arrByYear = dateArr.filter(filterByYear)
+                                return arrByYear;
+                                console.log("List->", dateArr);
+                            }
+                        }
+
+                        $scope.option = "Select Pay Period"
+                        $scope.biweeklyDate = payDate('07/25/21');
+                        $scope.biweeklyDate.splice(0, 0, $scope.option);
+                        $scope.biweeklyPayRole = $scope.biweeklyDate[0];
+                        $scope.stCustomDate = '';
+                        $scope.enCustomDate = '';
+
+                        $scope.onPayPeriodChange = function (period) {
+                            document.querySelector('.mileage-file').value = "";
+                            if (period != "Select Pay Period") {
+                                $scope.splitObj = period.split(' to ');
+                                $scope.stCustomDate = $scope.splitObj[0];
+                                $scope.enCustomDate = $scope.splitObj[1];
+                                $scope.convertedStartDate = $filter('date')(new Date($scope.stCustomDate), 'yyyy-MM-dd');
+                                $scope.convertedEndDate = $filter('date')(new Date($scope.enCustomDate), 'yyyy-MM-dd');
+                                $scope.mileageBtn = false;
+                            } else {
+                                $scope.mileageBtn = true;
+                            }
+                        }
+
+                        $scope.onPayPChange = function(period){
+                            document.querySelector('.loa-file').value = "";
+                            if (period != "Select Pay Period") {
+                                $scope.splitObj = period.split(' to ');
+                                $scope.stCustomDate = $scope.splitObj[0];
+                                $scope.enCustomDate = $scope.splitObj[1];
+                                $scope.convertedStartDate = $filter('date')(new Date($scope.stCustomDate), 'yyyy-MM-dd');
+                                $scope.convertedEndDate = $filter('date')(new Date($scope.enCustomDate), 'yyyy-MM-dd');
+                                $scope.loaBtn = false;
+                            } else {
+                                $scope.loaBtn = true;
+                            }
+                        }
+
+                        /* EMC - 182 Ends */
+                        /* Toaster Option */
+                        this.setOptions = function () {
+                            toastr.options.positionClass = "toast-top-right";
+                            toastr.options.closeButton = true;
+                            toastr.options.progressBar = true;
+                            toastr.options.fadeOut = 10000;
+                        };
+
+                        this.setOptions();
+                        this.clear = function () {
+                            toastr.clear();
+                        };
+
+                        /* Toaster Option Complete with clear funtion */
+
+                        /* Sorting For table */
+                        $scope.sortKey = 'name';
+                        $scope.reverse = true;
+                        $scope.sort = function (keyname) {
+
+                            $scope.reverse = ($scope.sortKey === keyname) ? !$scope.reverse : false;
+                            $scope.sortKey = keyname;
+                            if (keyname === 'name' || keyname === 'insurance') {
+                                $scope.driverInfo.sort(function (a, b) {
+
+                                    var nameA = (a[keyname] === null) ? '' : a[keyname].toLowerCase(),
+                                        nameB = (b[keyname] === null) ? '' : b[keyname].toLowerCase()
+                                    if ($scope.reverse) {
+                                        if (nameA < nameB) //sort string ascending
+                                            return -1
+                                        if (nameA > nameB)
+                                            return 1
+                                        return 0 //default return value (no sorting)
+                                    } else {
+                                        if (nameA < nameB) //sort string ascending
+                                            return 1
+                                        if (nameA > nameB)
+                                            return -1
+                                        return 0 //default return value (no sorting)
+                                    }
+                                })
+                            }
+                            if (keyname === 'expirationDate') {
+                                $scope.driverInfo.sort(function (a, b) {
+
+                                    var nameA = (a[keyname] === null) ? '' : new Date(a[keyname].toLowerCase()),
+                                        nameB = (b[keyname] === null) ? '' : new Date(b[keyname].toLowerCase())
+                                    if ($scope.reverse) {
+                                        if (nameA < nameB) //sort string ascending
+                                            return -1
+                                        if (nameA > nameB)
+                                            return 1
+                                        return 0 //default return value (no sorting)
+                                    } else {
+                                        if (nameA < nameB) //sort string ascending
+                                            return 1
+                                        if (nameA > nameB)
+                                            return -1
+                                        return 0 //default return value (no sorting)
+                                    }
+                                })
+
+                            }
+                        }
+
+                        /* close Navigation */
+                        function navToggle(){
+                            var overlay_navigation = $('.overlay-navigation'),
+                                nav_item_1 = $('#action-nav .action-nav-list:nth-of-type(1)'),
+                                nav_item_2 = $('#action-nav .action-nav-list:nth-of-type(2)'),
+                                nav_item_3 = $('#action-nav .action-nav-list:nth-of-type(3)'),
+                                nav_item_4 = $('#action-nav .action-nav-list:nth-of-type(4)'),
+                                nav_item_5 = $('#action-nav .action-nav-list:nth-of-type(5)'),
+                                top_bar = $('.bar-top'),
+                                middle_bar = $('.bar-middle'),
+                                bottom_bar = $('.bar-bottom'),
+                                overlay = $('.open-overlay'),
+                                close_btn = $('.menuToggler');
+                                overlay_navigation.toggleClass('overlay-active');
+                                overlay.removeClass('d-none').addClass('d-block');
+                                close_btn.removeClass('d-block').addClass('d-none');
+                                top_bar.removeClass('animate-top-bar').addClass('animate-out-top-bar');
+                                middle_bar.removeClass('animate-middle-bar').addClass('animate-out-middle-bar');
+                                bottom_bar.removeClass('animate-bottom-bar').addClass('animate-out-bottom-bar');
+                                overlay_navigation.removeClass('overlay-slide-down').addClass('overlay-slide-up')
+                                nav_item_1.removeClass('slide-in-nav-item').addClass('slide-in-nav-item-reverse');
+                                nav_item_2.removeClass('slide-in-nav-item-delay-1').addClass('slide-in-nav-item-delay-1-reverse');
+                                nav_item_3.removeClass('slide-in-nav-item-delay-2').addClass('slide-in-nav-item-delay-2-reverse');
+                                nav_item_4.removeClass('slide-in-nav-item-delay-3').addClass('slide-in-nav-item-delay-3-reverse');
+                                nav_item_5.removeClass('slide-in-nav-item-delay-4').addClass('slide-in-nav-item-delay-4-reverse');
+                        }
+                        /* Navigate to Resend Insurance */
+                        $scope.insuranceProcess = function(){
+                            navToggle();
+                            $scope.showResendBtn = true;
+                            $scope.showMileageBtn = false;
+                            $scope.showLOABtn = false;
+                        }
+
+                        /* Navigate to Mileage Upload*/
+                        $scope.mileageProcess = function(){
+                            navToggle();
+                            $scope.showResendBtn = false;
+                            $scope.showMileageBtn = true;
+                            $scope.showLOABtn = false;
+                        }
+
+                        $scope.loaProcess = function(){
+                            navToggle();
+                            $scope.showResendBtn = false;
+                            $scope.showMileageBtn = false;
+                            $scope.showLOABtn = true;
+                        }
+
+                        $scope.export = function (sampleData) {
+                            /* make the worksheet */
+                            var ws = XLSX.utils.json_to_sheet(sampleData);
+
+                            /* write workbook (use type 'binary') */
+                            var csv = XLSX.utils.sheet_to_csv(ws, { raw: false, dateNF: 'yyyy-mm-dd HH:mm:ss' });
+
+                            /* generate a download */
+                            function s2ab(s) {
+                                var buf = new ArrayBuffer(s.length);
+                                var view = new Uint8Array(buf);
+                                for (var i = 0; i != s.length; ++i) view[i] = s.charCodeAt(i) & 0xFF;
+                                return buf;
+                            }
+
+                            saveAs(new Blob([s2ab(csv)], { type: "application/octet-stream" }), "sheetjs.csv");
+                        }
+                        /* Download location template */
+
+                        $scope.exportToCsv = function (sampleData, csvName) {
+                            // Building the CSV from the Data
+                            // Each column is separated by ";" and new line "\n" for next row
+                            let rowData = new Set();
+                            let rowEnd = '\n';
+                            var csvContent = '';
+                            sampleData.forEach(function (info) {
+                                Object.keys(info).forEach(function (key) {
+                                    rowData.add(key);
+                                });
+                            });
+
+                            rowData = Array.from(rowData);
+                            csvContent += rowData.join(',');
+                            csvContent += rowEnd;
+
+                            sampleData.forEach(function (data) {
+                                let colVal = 0;
+                                rowData.forEach((row, ind) => {
+                                    // Key value
+                                    // Ex: Id, Name
+                                    let rowKey = row;
+                                    //  console.log(rowKey)
+                                    // add , after every value except the first.
+                                    if (colVal > 0) {
+                                        csvContent += ',';
+                                    }
+                                    // If the column is undefined, it as blank in the CSV file.
+                                    //  console.log(this.csvFiledata[ind],filedata);
+                                    let value = data[rowKey] === (undefined || null) ? '' : data[rowKey];
+                                    if (value != null || value != '') {
+                                        csvContent += '"' + value + '"';
+                                    }
+                                    colVal++;
+                                })
+                                csvContent += rowEnd;
+                            });
+                            // The download function takes a CSV string, the filename and mimeType as parameters
+                            // Scroll/look down at the bottom of this snippet to see how download is called
+                            var download = function (content, fileName, mimeType) {
+                                var a = document.createElement('a');
+                                mimeType = mimeType || 'application/octet-stream';
+
+                                if (navigator.msSaveBlob) { // IE10
+                                    navigator.msSaveBlob(new Blob([content], {
+                                        type: mimeType
+                                    }), fileName);
+                                } else if (URL && 'download' in a) { //html5 A[download]
+                                    a.href = URL.createObjectURL(new Blob([content], {
+                                        type: mimeType,
+                                        cellDates: true, dateNF: 'yyyy/mm/dd;@'
+                                    }));
+                                    a.setAttribute('download', fileName);
+                                    document.body.appendChild(a);
+                                    a.click();
+                                    document.body.removeChild(a);
+                                } else {
+                                    location.href = 'data:application/octet-stream,' + encodeURIComponent(content); // only this mime type is supported
+                                }
+                            }
+
+                            download(csvContent, csvName, 'text/csv;encoding:utf-8');
+                        }
+                        /*  Search input event */
+
+                        $scope.keyPressed = function (keyEvent, len) {
+                            if (keyEvent.keyCode == 13 || ((keyEvent.keyCode == 32 || keyEvent.keyCode == 39) && !len) || !(keyEvent.keyCode >= 65 && keyEvent.keyCode <= 90 || keyEvent.keyCode >= 97 && keyEvent.keyCode <= 122 || keyEvent.keyCode == 39 || keyEvent.keyCode == 32)) {
+                                event.preventDefault();
+                            }
+                            // return keyEvent.which !== 32;
+                        }
+
+                        $scope.resetSearch = function () {
+                            $scope.search[$scope.searchTerm] = "";
+                        }
+
+                        $scope.openProfile = function (profile) {
+                            var hidden = document.getElementById('hidden_user_id');
+                            hidden.value = JSON.stringify(profile);
+                            var url_locate;
+                            if ($scope.admindriver) {
+                                url_locate = "/app/roster?accid=" + $scope.accid + "&id=" + $scope.id + "&showteam=" + $scope.showteam + "&admindriver=true";
+                            } else {
+                                url_locate = "/app/roster?accid=" + $scope.accid + "&id=" + $scope.id + "&showteam=" + $scope.showteam;
+                            }
+
+                            window.open(url_locate);
+
+                        }
+
+                        /* EMC - 171 */
+                        $scope.exportToExcel = function () {
+                            var exportData = [];
+                            var excelData = $scope.driverInfo
+                            angular.forEach(excelData, function (l) {
+                                l.expirationDate = (l.expirationDate != null) ? $filter('date')(new Date(l.expirationDate), "MM/dd/yy") : l.expirationDate;
+                            });
+
+                            exportData.push(["Name", "Insurance Status", "Expires"]);
+                            angular.forEach(excelData, function (l) {
+                                exportData.push([l.fullname, l.insurance, l.expirationDate]);
+                            })
+
+                            function datenum(v, date1904) {
+                                if (date1904) v += 1462;
+                                var epoch = Date.parse(v);
+                                return (epoch - new Date(Date.UTC(1899, 11, 30))) / (24 * 60 * 60 * 1000);
+                            }
+                            function getSheet(exportData) {
+                                var ws = {};
+                                var range = { s: { c: 10000000, r: 10000000 }, e: { c: 0, r: 0 } };
+
+                                for (var R = 0; R != exportData.length; ++R) {
+                                    for (var C = 0; C != exportData[R].length; ++C) {
+                                        if (range.s.r > R) range.s.r = R;
+                                        if (range.s.c > C) range.s.c = C;
+                                        if (range.e.r < R) range.e.r = R;
+                                        if (range.e.c < C) range.e.c = C;
+                                        var cell = { v: exportData[R][C] };
+                                        if (cell.v == null) continue;
+                                        var cell_ref = XLSX.utils.encode_cell({ c: C, r: R });
+                                        // console.log('cell', cell)
+                                        if (typeof cell.v === 'number') cell.t = 'n';
+                                        else if (typeof cell.v === 'boolean') cell.t = 'b';
+                                        else if (cell.v instanceof Date) {
+                                            cell.t = 'n'; cell.z = XLSX.SSF._table[14];
+                                            cell.v = datenum(cell.v);
+                                        }
+                                        else cell.t = 's';
+
+                                        ws[cell_ref] = cell;
+                                    }
+                                }
+                                if (range.s.c < 10000000) ws['!ref'] = XLSX.utils.encode_range(range);
+                                return ws;
+                            }
+                            function Workbook() {
+                                if (!(this instanceof Workbook)) return new Workbook();
+                                this.SheetNames = [];
+                                this.Sheets = {};
+                            }
+
+                            var wb = new Workbook(), ws = getSheet(exportData);
+
+                            $scope.FromDate = $filter('date')(new Date(), "MMddyyyyHHmmss");
+                            wb.SheetNames.push("Insurance Report");
+                            wb.Sheets["Insurance Report"] = ws;
+                            var wbout = XLSX.write(wb, { bookType: 'xlsx', bookSST: false, type: 'binary' });
+                            function s2ab(s) {
+                                var buf = new ArrayBuffer(s.length);
+                                var view = new Uint8Array(buf);
+                                for (var i = 0; i != s.length; ++i) view[i] = s.charCodeAt(i) & 0xFF;
+                                return buf;
+                            }
+                            $scope.name = 'Insurance Report' + ' ' + $scope.FromDate + ".xlsx"
+                            saveAs(new Blob([s2ab(wbout)], { type: "application/octet-stream" }), $scope.name);
+                        }
+                        /*  Search input event ends */
+                        $scope.sendNotification = function (notifyObj, index) {
+                            //  console.log("Sending notification", notifyObj, document.getElementById(`message-area${index}`).value);
+                            var textInput = document.getElementById(`message-area${index}`).value;
+                            if (notifyObj.notiMessage === null || notifyObj.notiMessage === "" || textInput === "") {
+                                $(`#span-error${index}`).removeClass("d-none");
+                                $(`#message-area${index}`).addClass("border-error");
+                            } else {
+                                $(`#span-error${index}`).addClass("d-none");
+                                $(`#message-area${index}`).removeClass("border-error");
+                                $scope.notification.push(notifyObj);
+                                var notifyMessage = angular.copy($scope.notification);
+                                Visualforce.remoting.Manager.invokeAction('{!$RemoteAction.ManageNotificationController.editInlineNewEmployee}', JSON.stringify(notifyMessage), $scope.id,
+                                    function (result, event) {
+                                        if (event.status) {
+                                            if (result === 'Success') {
+                                                toastr.success("Notification is send successfully to " + notifyObj.name + ' ' + notifyObj.lastname);
+                                                angular.forEach($scope.notification, function (n) {
+                                                    n.isEditable = false;
+                                                });
+                                                $scope.notification = [];
+                                                $scope.refreshEmployees();
+                                                $scope.$apply();
+                                            }
+                                        }
+                                    }
+                                );
+                            }
+                        }
+                        $scope.pageChangeHandler = function (num) {
+                            if ($scope.driverInfo.length > 10) {
+                                if (num === $scope.maxPage) {
+                                    //  document.getElementById('style-2').style.height = nTable + "px";
+                                    document.getElementById('style-2').style.height = "";
+                                    document.getElementById('style-2').style.overflow = "hidden";
+                                } else {
+                                    document.getElementById('style-2').style.height = nTable + "px";
+                                    document.getElementById('style-2').style.overflow = '';
+                                }
+                            }
+
+                            //         var eheight = document.getElementById("tableWrap").offsetHeight;
+                            //         //console.log("tableWrap", document.getElementById("tableWrap").offsetHeight, document.getElementById("tableWrap").clientHeight);
+                            //         var scHeight = window.screen.height;
+                            //         var scroll = scHeight - eheight;
+                            //         console.log("scroll", scrollHeight, document.getElementById('notifyTable').offsetHeight);
+                            //         document.getElementById('style-2').style.height = scroll + "px";
+                            //         console.log("offsetHeight", eheight, num);
+                        }
+                        $scope.refreshEmployees = function () {
+                            Visualforce.remoting.Manager.invokeAction(
+                                '{!$RemoteAction.ManageNotificationController.NewEmployeeData}', $scope.accid,
+                                function (result, event) {
+                                    if (event.status) {
+                                        $scope.$apply(function () {
+                                            $scope.driverInfo = JSON.parse(result);
+                                            //console.log('added->', JSON.parse(result));
+                                        });
+                                    } else {
+                                        $scope.$apply(function () {
+                                            $scope.driverInfo = [];
+                                            //console.log('error in method NewEmployeeData ->', result);
+                                        });
+                                    }
+                                },
+                                { escape: false })
+                        }
+
+                        $scope.errorValidate = function (index) {
+                            var span = $(`#span-error${index}`);
+                            var messageArea = $(`#message-area${index}`);
+                            if (!(span[0].className.includes("d-none"))) {
+                                $(`#span-error${index}`).addClass("d-none");
+                            }
+                            if (messageArea[0].className.includes("border-error")) {
+                                $(`#message-area${index}`).removeClass("border-error")
+                            }
+                            document.getElementById(`message-area${index}`).value = "";
+                            document.getElementById(`notify-date${index}`).innerHTML = "";
+                        }
+
+
+
+                        $scope.endProcess = function () {
+                            $scope.showCancelProBtn = false;
+                            if ($scope.checkboxobj) {
+                                if ($scope.checkboxobj.isCheckedAllForEmail) {
+                                    $scope.checkboxobj.isCheckedAllForEmail = false;
+                                }
+                            }
+                            $scope.showEmailBtn = false;
+                            $scope.checkboxShow = false;
+                            $scope.showResendBtn = true;
+                            angular.forEach($scope.driverInfo, function (detail) {
+                                detail.massEmail = false;
+                            });
+                        }
+
+                        $scope.sendMassEmail = function () {
+                            var driverEmailInfo = angular.copy($scope.driverEmailList);
+                            $('#spinner').show();
+                            Visualforce.remoting.Manager.invokeAction('{!$RemoteAction.ManageNotificationController.sendAllInsuranceEmail}', JSON.stringify(driverEmailInfo), $scope.id,
+                                function (result, event) {
+                                    if (event.status) {
+                                        toastr.success('Email Sent Successfully');
+                                        $('#spinner').hide();
+                                        setTimeout(function () {
+                                            location.reload();
+                                        }, 2000);
+                                    }
+                                    else {
+                                        toastr.error('Some error has occur');
+                                        $('#spinner').hide();
+                                    }
+                                    $scope.$apply();
+                                }, { escape: false }
+                            );
+                        }
+
+                        $scope.displayCheckboxForEmail = function () {
+                            $scope.checkboxShow = true;
+                            $scope.showCancelProBtn = true;
+                            $scope.checkboxobj = {};
+                            $scope.checkboxobj.isCheckedAllForEmail = false;
+                        }
+
+                        $scope.CheckUncheckAllForEmail = function (CheckUncheckAllForEmail) {
+                            $scope.driverEmailList = [];
+                            $scope.checkboxobj.isCheckedAllForEmail = CheckUncheckAllForEmail;
+                            if ($scope.checkboxobj.isCheckedAllForEmail) {
+                                $scope.showResendBtn = false;
+                                $scope.showCancelProBtn = true;
+                                $scope.showEmailBtn = true;
+                            }
+                            else {
+                                $scope.checkboxShow = false;
+                                $scope.showResendBtn = true;
+                                $scope.showCancelProBtn = false;
+                                $scope.showEmailBtn = false;
+                            }
+                            angular.forEach($scope.driverInfo, function (detail) {
+                                detail.massEmail = $scope.checkboxobj.isCheckedAllForEmail;
+                                $scope.driverEmailList.push(detail);
+                            });
+                            // console.log($scope.driverEmailList);
+                        }
+
+                        $scope.CheckUncheckForEmail = function (detail) {
+                            $scope.recordfoundindex = -1;
+                            var total = $scope.driverInfo.length;
+                            var count = 0;
+                            angular.forEach($scope.driverInfo, function (item) {
+                                if (item.massEmail) {
+                                    count++;
+                                }
+                            });
+                            if (count > 0) {
+                                $scope.showResendBtn = false;
+                                $scope.showCancelProBtn = true;
+                                $scope.showEmailBtn = true;
+                            }
+                            else {
+                                $scope.showResendBtn = true;
+                                $scope.showCancelProBtn = false;
+                                $scope.showEmailBtn = false;
+                                $scope.checkboxShow = false;
+                            }
+
+                            if (total == count && (total != 0)) {
+                                if ($scope.checkboxobj) {
+                                    $scope.checkboxobj.isCheckedAllForEmail = true;
+                                }
+                            }
+                            else {
+                                if ($scope.checkboxobj != undefined) {
+                                    $scope.checkboxobj.isCheckedAllForEmail = false;
+                                }
+                            }
+
+                            if ($scope.driverEmailList.length > 0) {
+                                for (var i = 0; i < $scope.driverEmailList.length; i++) {
+                                    if ($scope.driverEmailList[i].contactId === detail.contactId) {
+                                        $scope.recordfoundindex = i;
+                                        break;
+                                    }
+                                }
+
+                                if ($scope.recordfoundindex != -1) {
+                                    $scope.driverEmailList.remove($scope.recordfoundindex);
+                                }
+
                                 else {
-                                    positionIndex += chunkSize;
-                                    uploadAttachment(result, insuranceId, idOfContact, contact);
+                                    $scope.driverEmailList.push(detail);
                                 }
                             } else {
-                                console.log(event.message);
-                                $('#spinner').hide();
+                                $scope.driverEmailList.push(detail);
                             }
+                            // console.log($scope.driverEmailList);
                         }
-                        else {
-                            toastr.error('Some error has occur');
-                            $('#spinner').hide();
-                        }
-                        $('#spinner').hide();
-                        $scope.$apply();
-                    },
-                    { buffer: true, escape: true, timeout: 120000 }
-                );
-            }
 
-            /* convert excel date to js date */
-            function ExcelDateToJSDate(serial) {
-                var utc_days = Math.floor(serial - 25569);
-                var utc_value = utc_days * 86400;
-                var date_info = new Date(utc_value * 1000);
-                var fractional_day = serial - Math.floor(serial) + 0.0000001;
-                var total_seconds = Math.floor(86400 * fractional_day);
-                var seconds = total_seconds % 60;
-                total_seconds -= seconds;
-                var hours = Math.floor(total_seconds / (60 * 60));
-                var minutes = Math.floor(total_seconds / 60) % 60;
-                return new Date(date_info.getFullYear(), date_info.getMonth(), date_info.getDate(), hours, minutes, seconds);
-            }
 
-            /* check for date is valid */
-            function DateIsValid(date) {
-                if (date != undefined) {
-                    var timestamp = Date.parse(date);
-                    return timestamp
-                } else {
-                    return 1
-                }
-            }
-
-            function TripDateIsValid(date) {
-                var stamp = Date.parse(date);
-                return stamp
-            }
-
-            function ValidateField(field) {
-                if (field === undefined) {
-                    return false
-                } else {
-                    return true
-                }
-            }
-
-            function isNumber(num){
-                if(num != undefined ){
-                    var num1 = parseFloat(num);
-                    if(isNaN(num1) === true){
-                        return true
-                    }else{
-                        return false
-                    }
-                }else{
-                    return true
-                }
-            }
-
-            /* EMC - 214 Added On 1 February 2022  */
-            $scope.openModalForLOAUpload = function () {
-              $scope.uploadloaProcess = true;
-            }
-
-            /* EMC - 214 Added On 1 February 2022  */
-            $scope.closeLOAModal = function(){
-                $scope.uploadloaProcess = false;
-                $scope.loaBtn = true;
-                $scope.biweeklyPayRole = $scope.biweeklyDate[0];
-            }
-
-            /* EMC - 182 Added On 21 December 2021 */
-            $scope.openModalForUpload = function () {
-              $scope.uploadmileageProcess = true;
-            }
-
-            /* EMC - 182 Added On 21 December 2021 */
-            $scope.closeMileageModal = function () {
-                $scope.uploadmileageProcess = false;
-                $scope.mileageBtn = true;
-                $scope.biweeklyPayRole = $scope.biweeklyDate[0];
-            }
-
-            $scope.mileage_file_changed = function (element) {
-                $('#spinner').show();
-                $('#loading').text("Uploading...");
-                chooseFileName = '';
-                attachment = '';
-                choosefile = '';
-                $scope.data = '';
-                choosefile = element;
-                var findex = (element.files[0].name).lastIndexOf(".");
-                var photofile = element.files[0];
-                chooseFileName = photofile.name;
-                //console.log('file size :- '+choosefile.files[0].size);
-                var strsubstring = (element.files[0].name).substring(findex, (element.files[0].name).length);
-                if (strsubstring == '.xls' || strsubstring == '.xlsx' || strsubstring == '.csv') {
-                    if (choosefile.files[0].size > 0 && choosefile.files[0].size < 4350000) {
-                        //console.log($('#file-column')[0].classList)
-                        choosefile = element;
-                        $scope.mileageChoose.push(element);
-                    }
-                    else {
-                        toastr.error('Base 64 Encoded file is too large.  Maximum size is 4 MB .');
-                        $('#loading').text("");
-                        $('#spinner').hide();
-                    }
-                }
-                else {
-                    toastr.error('Please upload correct File. File extension should be .csv or .xls');
-                    $('#loading').text("");
-                    $('#spinner').hide();
-                }
-
-                var fl = choosefile.files[0].size;
-
-                $scope.$apply(function (scope) {
-                    choosenfileType = photofile.type;
-                    var reader = new FileReader();
-                    $scope.mileagefsize = element.files[0].size;
-                    reader.onload = function (e) {
-                        $scope.data = reader.result;
-                    };
-                    reader.readAsDataURL(photofile);
-                    $scope.uploadMileageInChunk(element);
-                });
-            }
-
-            $scope.uploadMileageInChunk = function (element) {
-                var lfile;
-                if (element != null || element != undefined) {
-                    angular.forEach($scope.mileageChoose, function (fl) {
-                        lfile = fl.files[0];
-                    })
-                }
-
-                if (lfile != undefined) {
-                    var selectedFile = lfile;
-                    var reader = new FileReader();
-                    reader.onload = function (event) {
-                        var data = this.result;
-                        var workbook = XLSX.read(data, {
-                            type: 'binary',
-                            cellDates: true,
-                            dateNF: 'mm/dd/yyyy'
-                        });
-                        workbook.SheetNames.forEach(function (sheetName) {
-                            var XL_row_object = XLSX.utils.sheet_to_row_object_array(workbook.Sheets[sheetName], { raw: false });
-                            var isValidApprove, isValidTrip, isTripStatus, isEmployeeId, countApprove = 0, countTrip = 0, countStatus = 0, countID = 0;
-                            for (var R = 0; R < XL_row_object.length; R++) {
-                                XL_row_object[R].Actual_Mileage = (XL_row_object[R].Actual_Mileage != "" || XL_row_object[R].Actual_Mileage != undefined) ? parseFloat(XL_row_object[R].Actual_Mileage) : 0;
-                                isValidApprove = DateIsValid(XL_row_object[R].Approved_Date);
-                                isValidTrip = TripDateIsValid(XL_row_object[R].Trip_Date);
-                                isTripStatus = ValidateField(XL_row_object[R].Trip_Status);
-                                isEmployeeId = ValidateField(XL_row_object[R].EmployeeId);
-                                if (isNaN(isValidApprove) === true) countApprove++;
-                                if (isNaN(isValidTrip) === true) countTrip++;
-                                if (isTripStatus === false) countStatus++;
-                                if (isEmployeeId === false) countID++;
-                            }
-                            if (countApprove === 0 && countTrip === 0 && countID === 0 && countStatus === 0) {
-                                var json_object = JSON.stringify(XL_row_object);
-                                uploadMileageAttachment(json_object);
-                            } else {
-                                $('#spinner').hide();
-                                if (countTrip > 0) { toastr.error('Please enter valid trip date. Date format should be mm/dd/yyyy or m/dd/yyyy or m/dd/yy') }
-                                if (countApprove > 0) { toastr.error('Please enter valid approval date. Date format should be mm/dd/yyyy or m/dd/yyyy or m/dd/yy') }
-                                if (countStatus > 0) { toastr.error('Please enter trip status.') }
-                                if (countID > 0) { toastr.error('Please enter Employee Id.') }
-                                document.querySelector('.mileage-file').value = "";
-                            }
-
-                        })
-                    };
-
-                    reader.onerror = function (event) {
-                        console.error("File could not be read! Code " + event.target.error.code);
-                    };
-
-                    reader.readAsBinaryString(selectedFile);
-                }
-                console.log("from mileage file", lfile);
-            }
-
-            function uploadMileageAttachment(json) {
-                $('#loading').text("");
-                $('#spinner').show();
-                var mileagelist, paySplit, payStartDate, payEndDate;
-                var jsonBody = JSON.parse(json);
-                if($scope.biweeklyPayRole!= null && $scope.biweeklyPayRole != '' && $scope.biweeklyPayRole!="Select Pay Period"){
-                    paySplit = $scope.biweeklyPayRole.split(" to ");
-                    payStartDate = $filter('date')(new Date(paySplit[0]), 'yyyy-MM-dd');
-                    payEndDate = $filter('date')(new Date(paySplit[1]), 'yyyy-MM-dd');
-                }
-                if (jsonBody[0] != null || jsonBody[0] != undefined) {
-                    var mileageKeys = Object.keys(jsonBody[0]);
-                    if (mileageKeys.includes("Trip_Date") || mileageKeys.includes("Trip_Origin")
-                        || mileageKeys.includes("Trip_Destination") || mileageKeys.includes("Trip_Status")
-                        || mileageKeys.includes("Approved_Date") || mileageKeys.includes("Day_Of_Week") || mileageKeys.includes("Notes")
-                        || mileageKeys.includes("Actual_Mileage") || mileageKeys.includes("Activity") || mileageKeys.includes("Contact_Email")
-                        || mileageKeys.includes("Tag") || mileageKeys.includes("EmployeeId")) {
-                        mileagelist = jsonBody;
-                        $scope.mileageAttachment = JSON.stringify(mileagelist);
-                        Visualforce.remoting.Manager.invokeAction('{!$RemoteAction.ManageNotificationController.UploadMileage}', $scope.mileageAttachment, $scope.accid, $scope.id, payStartDate, payEndDate,
-                            function (result, event) {
-                                if (event.status) {
-                                    $('#spinner').hide();
-                                    toastr.success("We have received your upload, the data will be processed and made available within 72 work hours");
-                                    location.reload();
+                        /* For File Upload*/
+                        $scope.filedata = '';
+                        $scope.locationdata = '';
+                        $scope.data = "";
+                        $scope.filesChoose = [];
+                        $scope.locationChoose = [];
+                        $scope.mileageChoose = [];
+                        $scope.loaChoose = [];
+                        var maxStringSize = 6000000;    //Maximum String size is 6,000,000 characters
+                        var maxFileSize = 4350000;      //After Base64 Encoding, this is the max file size
+                        var chunkSize = 950000;         //Maximum Javascript Remoting message size is 1,000,000
+                        var attachment;
+                        var attachmentName;
+                        var fileSize;
+                        var fileIndex;
+                        var choosefile;
+                        var choosenfileType = '';
+                        var chooseFileName = '';
+                        var idOfContact = '';
+                        $scope.file_changed = function (element) {
+                            chooseFileName = '';
+                            attachment = '';
+                            choosefile = '';
+                            $scope.filedata = '';
+                            choosefile = element;
+                            fileIndex = parseInt(element.name);
+                            var findex = (element.files[0].name).lastIndexOf(".");
+                            var photofile = element.files[0];
+                            chooseFileName = photofile.name;
+                            //console.log('file size :- '+choosefile.files[0].size);
+                            var strsubstring = (element.files[0].name).substring(findex, (element.files[0].name).length);
+                            var notiElement = document.querySelectorAll('#notifyColumn');
+                            var fileElement = document.querySelectorAll('#file-column');
+                            if (strsubstring == '.pdf' || strsubstring == '.docx' || strsubstring == '.xls' || strsubstring == '.xlsx' || strsubstring == '.doc') {
+                                $(`#file-path-wrap-${fileIndex}`).removeClass('d-none');
+                                document.getElementById(`file-name-${fileIndex}`).innerHTML = chooseFileName;
+                                if (choosefile.files[0].size > 0 && choosefile.files[0].size < 4350000) {
+                                    $(`#fileBtn-${fileIndex}`).addClass('d-none');
+                                    $(`#uploadBtn-${fileIndex}`).removeClass('d-none');
+                                    if ($('#file-column')[0].classList.length > 1) {
+                                        $("#insurance-thead").removeClass('em-10');
+                                        $("#insurance-thead").addClass('em-20');
+                                        // $('#file-column').removeClass('vw-12');
+                                        // $('#file-column').addClass('w-19');
+                                        angular.forEach(fileElement, function (n) {
+                                            if (n.className.includes('vw-12')) {
+                                                n.classList.remove('vw-12');
+                                                n.classList.add('w-19');
+                                            }
+                                        })
+                                        angular.forEach(notiElement, function (n) {
+                                            if (n.className.includes('notify-para-width')) {
+                                                n.classList.remove('notify-para-width');
+                                                n.classList.add('n-width');
+                                            }
+                                        })
+                                        // $('#notifyColumn').removeClass('notify-para-width')
+                                        // $('#notifyColumn').addClass('n-width');
+                                    }
+                                    //console.log($('#file-column')[0].classList)
+                                    choosefile = element;
+                                    $scope.filesChoose.push(element);
                                 }
                                 else {
-                                    toastr.error('Some error has occur');
+                                    // $scope.IsVisiblebtn = false;
+                                    $(`#file-path-wrap-${fileIndex}`).addClass('d-none');
+                                    document.getElementById(`file-name-${fileIndex}`).innerHTML = "";
+                                    toastr.error('Base 64 Encoded file is too large.  Maximum size is 4 MB .');
+                                }
+                            }
+                            else {
+                                $(`#file-path-wrap-${fileIndex}`).addClass('d-none');
+                                document.getElementById(`file-name-${fileIndex}`).innerHTML = "";
+                                toastr.error('Please upload correct File. File extension should be .pdf, .doc , .docx or .xls');
+                            }
+
+                            var fl = choosefile.files[0].size;
+
+
+                            $scope.$apply(function (scope) {
+                                choosenfileType = photofile.type;
+                                var reader = new FileReader();
+                                $scope.fsize = element.files[0].size;
+                                reader.onload = function (e) {
+                                    $scope.filedata = reader.result;
+                                };
+                                reader.readAsDataURL(photofile);
+                            });
+                        };
+
+                        $scope.uploadFileInChunk = function (element, insuranceId, conId, contact) {
+                            var file;
+                            idOfContact = conId;
+                            if (element.currentTarget != null || element.currentTarget != undefined) {
+                                angular.forEach($scope.filesChoose, function (f) {
+                                    if (f.name === element.currentTarget.name) {
+                                        file = f.files[0];
+                                        fileIndex = parseInt(element.currentTarget.name);
+                                    }
+                                })
+                            }
+
+                            console.log(file);
+                            //var file = choosefile.files[0];
+                            if (file != undefined) {
+                                if (file.size <= maxFileSize) {
+                                    attachmentName = file.name;
+                                    var fileReader = new FileReader();
+                                    fileReader.onloadend = function (e) {
+                                        e.preventDefault();
+                                        attachment = window.btoa(this.result);
+                                        positionIndex = 0;
+                                        fileSize = attachment.length;
+                                        doneUploading = false;
+                                        if (fileSize < maxStringSize) {
+                                            uploadAttachment(null, insuranceId, conId, contact);
+                                        } else {
+                                            toastr.error('Base 64 Encoded file is too large.  Maximum size is " + maxStringSize + " your file is " + fileSize + "."');
+                                        }
+                                    }
+
+                                    fileReader.onerror = function (e) {
+                                        toastr.error('There was an error reading the file.  Please try again.');
+                                    }
+                                    fileReader.onabort = function (e) {
+                                        toastr.error('There was an error reading the file.  Please try again.');
+                                    }
+
+                                    fileReader.readAsBinaryString(file);
+                                }
+                                else {
+                                    toastr.error('File must be under 4.3 MB in size.  Your file is too large.  Please try again.');
+                                }
+                            }
+                            else {
+                                $(`#uploadBtn-${fileIndex}`).addClass('d-none');
+                                toastr.error('You must choose a file before trying to upload it');
+                            }
+                        }
+
+                        function uploadAttachment(fileId, insuranceId, contactId, contact) {
+                            $('#spinner').show();
+                            var attachmentBody = "";
+
+                            if (insuranceId != '' && insuranceId != null && insuranceId != undefined) {
+                                $scope.attachmentid = insuranceId;
+                                console.log("attachment-id", $scope.attachmentid);
+                            }
+                            else {
+                                $scope.attachmentid = "";
+                            }
+                            if (fileSize <= positionIndex + chunkSize) {
+                                attachmentBody = attachment.substring(positionIndex);
+                                doneUploading = true;
+                            } else {
+                                attachmentBody = attachment.substring(positionIndex, positionIndex + chunkSize);
+                            }
+                            Visualforce.remoting.Manager.invokeAction('{!$RemoteAction.ManageNotificationController.readFromFileInchunk}', attachmentBody, attachmentName, fileId, contactId, $scope.accid, $scope.attachmentid,
+                                function (result, event) {
+                                    if (event.status) {
+                                        if (event.type === 'exception') {
+                                            console.log("exception");
+                                            console.log(event);
+                                            $('#spinner').hide();
+                                        }
+                                        else if (event.status) {
+                                            if (doneUploading == true) {
+                                                Visualforce.remoting.Manager.invokeAction('{!$RemoteAction.ManageNotificationController.sendInsuranceEmail}', $scope.id, contact.fullname , null,
+                                                    function (result, event) {
+                                                        if (event.status) {
+                                                        }
+                                                        $scope.$apply();
+                                                    },
+                                                    { escape: false }
+                                                )
+                                                var notiDiv = document.querySelectorAll('#notifyColumn');
+                                                var filecolumn = document.querySelectorAll('#file-column');
+                                                toastr.success("The insurance documentation has been successfully uploaded");
+                                                document.getElementById(`file-${fileIndex}`).value = '';
+                                                document.getElementById(`file-name-${fileIndex}`).innerHTML = '';
+                                                $(`#file-path-wrap-${fileIndex}`).addClass('d-none');
+                                                $(`#uploadBtn-${fileIndex}`).addClass('d-none');
+                                                $(`#fileBtn-${fileIndex}`).removeClass('d-none');
+                                                $("#insurance-thead").addClass('em-10');
+                                                $("#insurance-thead").removeClass('em-20');
+                                                // $('#file-column').addClass('vw-12');
+                                                // $('#file-column').removeClass('w-19');
+                                                angular.forEach(filecolumn, function (n) {
+                                                    if (n.className.includes('w-19')) {
+                                                        n.classList.remove('w-19');
+                                                        n.classList.add('vw-12');
+                                                    }
+                                                })
+                                                angular.forEach(notiDiv, function (n) {
+                                                    if (n.className.includes('n-width')) {
+                                                        n.classList.remove('n-width');
+                                                        n.classList.add('notify-para-width');
+                                                    }
+                                                })
+                                                if ($scope.filesChoose.length > 0) {
+                                                    angular.forEach($scope.filesChoose, function (fl) {
+                                                        if (fl.name === fileIndex.toString()) {
+                                                            const findex = $scope.filesChoose.indexOf(fl);
+                                                            if (findex !== -1) $scope.filesChoose.splice(findex, 1);
+                                                        }
+                                                    })
+                                                }
+                                            }
+                                            else {
+                                                positionIndex += chunkSize;
+                                                uploadAttachment(result, insuranceId, idOfContact, contact);
+                                            }
+                                        } else {
+                                            console.log(event.message);
+                                            $('#spinner').hide();
+                                        }
+                                    }
+                                    else {
+                                        toastr.error('Some error has occur');
+                                        $('#spinner').hide();
+                                    }
                                     $('#spinner').hide();
-                                }
-                                $('#spinner').hide();
-                                $scope.$apply();
-                            },
-                            { buffer: true, escape: true, timeout: 120000 }
-                        );
-                    } else {
-                        $('#spinner').hide();
-                        toastr.error("The file you have uploaded is not valid for mileage");
-                    }
-                } else {
-                    $('#spinner').hide();
-                    toastr.error("The file you have uploaded is not valid for mileage");
-                }
-            }
-
-            $scope.location_file_changed = function (element) {
-                chooseFileName = '';
-                attachment = '';
-                choosefile = '';
-                $scope.locationdata = '';
-                choosefile = element;
-                fileIndex = parseInt(element.name);
-                var findex = (element.files[0].name).lastIndexOf(".");
-                var photofile = element.files[0];
-                chooseFileName = photofile.name;
-                //console.log('file size :- '+choosefile.files[0].size);
-                var strsubstring = (element.files[0].name).substring(findex, (element.files[0].name).length);
-                var locationElement = document.querySelectorAll('#location-file-column');
-                if (strsubstring == '.xls' || strsubstring == '.xlsx' || strsubstring == '.csv') {
-                    $(`#location-path-wrap-${fileIndex}`).removeClass('d-none');
-                    document.getElementById(`location-file-name-${fileIndex}`).innerHTML = chooseFileName;
-                    if (choosefile.files[0].size > 0 && choosefile.files[0].size < 4350000) {
-                        $(`#locationFileBtn-${fileIndex}`).addClass('d-none');
-                        $(`#uploadLocationBtn-${fileIndex}`).removeClass('d-none');
-                        if ($('#location-file-column')[0].classList.length > 1) {
-                            // $('#file-column').removeClass('vw-12');
-                            // $('#file-column').addClass('w-19');
-                            $("#locate-thead").removeClass('em-10');
-                            $("#locate-thead").addClass('em-15');
-                            angular.forEach(locationElement, function (n) {
-                                if (n.className.includes('vw-12')) {
-                                    n.classList.remove('vw-12');
-                                    n.classList.add('w-14');
-                                }
-                            })
+                                    $scope.$apply();
+                                },
+                                { buffer: true, escape: true, timeout: 120000 }
+                            );
                         }
-                        //console.log($('#file-column')[0].classList)
-                        choosefile = element;
-                        $scope.locationChoose.push(element);
-                    }
-                    else {
-                        // $scope.IsVisiblebtn = false;
-                        $(`#location-path-wrap-${fileIndex}`).addClass('d-none');
-                        document.getElementById(`location-file-name-${fileIndex}`).innerHTML = "";
-                        toastr.error('Base 64 Encoded file is too large.  Maximum size is 4 MB .');
-                    }
-                }
-                else {
-                    $(`#location-path-wrap-${fileIndex}`).addClass('d-none');
-                    document.getElementById(`location-file-name-${fileIndex}`).innerHTML = "";
-                    toastr.error('Please upload correct File. File extension should be .csv or .xls');
-                }
 
-                var fl = choosefile.files[0].size;
-
-
-                $scope.$apply(function (scope) {
-                    choosenfileType = photofile.type;
-                    var reader = new FileReader();
-                    $scope.locationfsize = element.files[0].size;
-                    reader.onload = function (e) {
-                        $scope.locationdata = reader.result;
-                    };
-                    reader.readAsDataURL(photofile);
-                });
-            }
-
-            $scope.uploadLocationInChunk = function (element, contact) {
-                var lfile;
-                if (element.currentTarget != null || element.currentTarget != undefined) {
-                    angular.forEach($scope.locationChoose, function (fl) {
-                        if (fl.name === element.currentTarget.name) {
-                            lfile = fl.files[0];
-                            fileIndex = parseInt(element.currentTarget.name);
+                        /* convert excel date to js date */
+                        function ExcelDateToJSDate(serial) {
+                            var utc_days = Math.floor(serial - 25569);
+                            var utc_value = utc_days * 86400;
+                            var date_info = new Date(utc_value * 1000);
+                            var fractional_day = serial - Math.floor(serial) + 0.0000001;
+                            var total_seconds = Math.floor(86400 * fractional_day);
+                            var seconds = total_seconds % 60;
+                            total_seconds -= seconds;
+                            var hours = Math.floor(total_seconds / (60 * 60));
+                            var minutes = Math.floor(total_seconds / 60) % 60;
+                            return new Date(date_info.getFullYear(), date_info.getMonth(), date_info.getDate(), hours, minutes, seconds);
                         }
-                    })
-                }
 
-                if (lfile != undefined) {
-                    var selectedFile = lfile;
-                    var reader = new FileReader();
-                    reader.onload = function (event) {
-                        var data = this.result;
-                        var workbook = XLSX.read(data, {
-                            type: 'binary'
-                        });
-                        workbook.SheetNames.forEach(function (sheetName) {
-                            var XL_row_object = XLSX.utils.sheet_to_row_object_array(workbook.Sheets[sheetName]);
-                            var json_object = JSON.stringify(XL_row_object);
-                            uploadLocationAttachment(json_object, contact.triploguserid, fileIndex);
-                        })
-                    };
+                        /* check for date is valid */
+                        function DateIsValid(date) {
+                            if (date != undefined) {
+                                var timestamp = Date.parse(date);
+                                return timestamp
+                            } else {
+                                return 1
+                            }
+                        }
 
-                    reader.onerror = function (event) {
-                        console.error("File could not be read! Code " + event.target.error.code);
-                    };
+                        function TripDateIsValid(date) {
+                            var stamp = Date.parse(date);
+                            return stamp
+                        }
 
-                    reader.readAsBinaryString(selectedFile);
-                }
-                console.log("from location file", lfile);
-            }
+                        function ValidateField(field) {
+                            if (field === undefined) {
+                                return false
+                            } else {
+                                return true
+                            }
+                        }
 
-            const changeKeyObjects = (arr, replaceKeys) => {
-                return arr.map(item => {
-                    const newItem = {};
-                    Object.keys(item).forEach(key => {
-                        newItem[replaceKeys[key]] = item[[key]];
-                    });
-                    return newItem;
-                });
-            };
-
-            function uploadLocationAttachment(json, usertriplogId, findexV) {
-                $('#spinner').show();
-                var newArray;
-                var locationcolumn = document.querySelectorAll('#location-file-column');
-                var replaceKeys = { "Default Activity (optional)": "activity", "Latitude (optional)": "latitude", "Longitude (optional)": "longitude", "Name (optional)": "name", "Address": "address" };
-                var locationBody = JSON.parse(json);
-                if (locationBody[0] != null || locationBody[0] != undefined) {
-                    var locationKeys = Object.keys(locationBody[0]);
-                    if (locationKeys.includes("Default Activity (optional)") || locationKeys.includes("Latitude (optional)")
-                        || locationKeys.includes("Longitude (optional)") || locationKeys.includes("Name (optional)")
-                        || locationKeys.includes("Address")) {
-                        newArray = changeKeyObjects(locationBody, replaceKeys);
-                        newArray.forEach(ob => {
-                            ob.userId = usertriplogId
-                        });
-                        if (newArray.length > 100) {
-                            $('#spinner').hide();
-                            toastr.error("You can upload 100 locations at a time.");
-                            $(`locationFile-${fileIndex}`).value = '';
-                            $(`location-file-name-${fileIndex}`).innerHTML = '';
-                            $(`#location-path-wrap-${fileIndex}`).addClass('d-none');
-                            $(`#uploadLocationBtn-${fileIndex}`).addClass('d-none');
-                            $(`#locationFileBtn-${fileIndex}`).removeClass('d-none');
-                            $("#locate-thead").addClass('em-10');
-                            $("#locate-thead").removeClass('em-15');
-                            angular.forEach(locationcolumn, function (n) {
-                                if (n.className.includes('w-14')) {
-                                    n.classList.remove('w-14');
-                                    n.classList.add('vw-12');
+                        function isNumber(num){
+                            if(num != undefined ){
+                                var num1 = parseFloat(num);
+                                if(isNaN(num1) === true){
+                                    return true
+                                }else{
+                                    return false
                                 }
-                            })
-                        } else {
-                            $scope.locationAttachment = JSON.stringify(newArray);
-                            Visualforce.remoting.Manager.invokeAction('{!$RemoteAction.ManageNotificationController.UploadLocation}', $scope.locationAttachment, $scope.accid,
+                            }else{
+                                return true
+                            }
+                        }
+
+                        /* EMC - 217 Added On 8 February 2022  */
+                        $scope.openModalForDeleteTrips = function(){
+                            $scope.deleteTripProcess = true;
+                        }
+
+                        $scope.closeTripModal = function(){
+                            navToggle();
+                            $scope.deleteTripProcess = false;
+                            $scope.uploadloaProcess = false;
+                            $scope.uploadmileageProcess = false;
+                            $scope.showResendBtn = false;
+                            $scope.showMileageBtn = false;
+                            $scope.showLOABtn = false;
+                        }
+
+                        $scope.acceptRequest = function(){
+                            navToggle();
+                            $scope.deleteTripProcess = false;
+                            $('#loading').text("");
+                            $('#spinner').show();
+                            Visualforce.remoting.Manager.invokeAction('{!$RemoteAction.ManageNotificationController.DeleteTrips}', $scope.id,
                                 function (result, event) {
                                     if (event.status) {
                                         $('#spinner').hide();
-                                        toastr.success("We have received your upload, the data will be processed and made available within 72 work hours");
+                                        toastr.success("Successfully deleted recently uploaded trips");
+                                        setTimeout(function () {
+                                            location.reload();
+                                        }, 4000)
+                                    
+                                    }
+                                    else {
+                                        toastr.error('Some error has occur');
+                                        $('#spinner').hide();
+                                    }
+                                    $('#spinner').hide();
+                                    $scope.$apply();
+                                },
+                                { buffer: true, escape: true, timeout: 120000 }
+                            );
+                        }
+                        /* EMC - 214 Added On 1 February 2022  */
+                        $scope.openModalForLOAUpload = function () {
+                        $scope.uploadloaProcess = true;
+                        }
+
+                        /* EMC - 214 Added On 1 February 2022  */
+                        $scope.closeLOAModal = function(){
+                            $scope.uploadloaProcess = false;
+                            $scope.loaBtn = true;
+                            $scope.biweeklyPayRole = $scope.biweeklyDate[0];
+                        }
+
+                        /* EMC - 182 Added On 21 December 2021 */
+                        $scope.openModalForUpload = function () {
+                        $scope.uploadmileageProcess = true;
+                        }
+
+                        /* EMC - 182 Added On 21 December 2021 */
+                        $scope.closeMileageModal = function () {
+                            $scope.uploadmileageProcess = false;
+                            $scope.mileageBtn = true;
+                            $scope.biweeklyPayRole = $scope.biweeklyDate[0];
+                        }
+
+                        $scope.mileage_file_changed = function (element) {
+                            $('#spinner').show();
+                            $('#loading').text("Uploading...");
+                            chooseFileName = '';
+                            attachment = '';
+                            choosefile = '';
+                            $scope.data = '';
+                            choosefile = element;
+                            var findex = (element.files[0].name).lastIndexOf(".");
+                            var photofile = element.files[0];
+                            chooseFileName = photofile.name;
+                            //console.log('file size :- '+choosefile.files[0].size);
+                            var strsubstring = (element.files[0].name).substring(findex, (element.files[0].name).length);
+                            if (strsubstring == '.xls' || strsubstring == '.xlsx' || strsubstring == '.csv') {
+                                if (choosefile.files[0].size > 0 && choosefile.files[0].size < 4350000) {
+                                    //console.log($('#file-column')[0].classList)
+                                    choosefile = element;
+                                    $scope.mileageChoose.push(element);
+                                }
+                                else {
+                                    toastr.error('Base 64 Encoded file is too large.  Maximum size is 4 MB .');
+                                    $('#loading').text("");
+                                    $('#spinner').hide();
+                                }
+                            }
+                            else {
+                                toastr.error('Please upload correct File. File extension should be .csv or .xls');
+                                $('#loading').text("");
+                                $('#spinner').hide();
+                            }
+
+                            var fl = choosefile.files[0].size;
+
+                            $scope.$apply(function (scope) {
+                                choosenfileType = photofile.type;
+                                var reader = new FileReader();
+                                $scope.mileagefsize = element.files[0].size;
+                                reader.onload = function (e) {
+                                    $scope.data = reader.result;
+                                };
+                                reader.readAsDataURL(photofile);
+                                $scope.uploadMileageInChunk(element);
+                            });
+                        }
+
+                        $scope.uploadMileageInChunk = function (element) {
+                            var lfile;
+                            if (element != null || element != undefined) {
+                                angular.forEach($scope.mileageChoose, function (fl) {
+                                    lfile = fl.files[0];
+                                })
+                            }
+
+                            if (lfile != undefined) {
+                                var selectedFile = lfile;
+                                var reader = new FileReader();
+                                reader.onload = function (event) {
+                                    var data = this.result;
+                                    var workbook = XLSX.read(data, {
+                                        type: 'binary',
+                                        cellDates: true,
+                                        dateNF: 'mm/dd/yyyy'
+                                    });
+                                    workbook.SheetNames.forEach(function (sheetName) {
+                                        var XL_row_object = XLSX.utils.sheet_to_row_object_array(workbook.Sheets[sheetName], { raw: false });
+                                        var isValidApprove, isValidTrip, isTripStatus, isEmployeeId, countApprove = 0, countTrip = 0, countStatus = 0, countID = 0;
+                                        for (var R = 0; R < XL_row_object.length; R++) {
+                                            XL_row_object[R].Actual_Mileage = (XL_row_object[R].Actual_Mileage != "" || XL_row_object[R].Actual_Mileage != undefined) ? parseFloat(XL_row_object[R].Actual_Mileage) : 0;
+                                            isValidApprove = DateIsValid(XL_row_object[R].Approved_Date);
+                                            isValidTrip = TripDateIsValid(XL_row_object[R].Trip_Date);
+                                            isTripStatus = ValidateField(XL_row_object[R].Trip_Status);
+                                            isEmployeeId = ValidateField(XL_row_object[R].EmployeeId);
+                                            if (isNaN(isValidApprove) === true) countApprove++;
+                                            if (isNaN(isValidTrip) === true) countTrip++;
+                                            if (isTripStatus === false) countStatus++;
+                                            if (isEmployeeId === false) countID++;
+                                        }
+                                        if (countApprove === 0 && countTrip === 0 && countID === 0 && countStatus === 0) {
+                                            var json_object = JSON.stringify(XL_row_object);
+                                            uploadMileageAttachment(json_object);
+                                        } else {
+                                            $('#spinner').hide();
+                                            if (countTrip > 0) { toastr.error('Please enter valid trip date. Date format should be mm/dd/yyyy or m/dd/yyyy or m/dd/yy') }
+                                            if (countApprove > 0) { toastr.error('Please enter valid approval date. Date format should be mm/dd/yyyy or m/dd/yyyy or m/dd/yy') }
+                                            if (countStatus > 0) { toastr.error('Please enter trip status.') }
+                                            if (countID > 0) { toastr.error('Please enter Employee Id.') }
+                                            document.querySelector('.mileage-file').value = "";
+                                        }
+
+                                    })
+                                };
+
+                                reader.onerror = function (event) {
+                                    console.error("File could not be read! Code " + event.target.error.code);
+                                };
+
+                                reader.readAsBinaryString(selectedFile);
+                            }
+                            console.log("from mileage file", lfile);
+                        }
+
+                        function uploadMileageAttachment(json) {
+                            $('#loading').text("");
+                            $('#spinner').show();
+                            var mileagelist, paySplit, payStartDate, payEndDate;
+                            var jsonBody = JSON.parse(json);
+                            if($scope.biweeklyPayRole!= null && $scope.biweeklyPayRole != '' && $scope.biweeklyPayRole!="Select Pay Period"){
+                                paySplit = $scope.biweeklyPayRole.split(" to ");
+                                payStartDate = $filter('date')(new Date(paySplit[0]), 'yyyy-MM-dd');
+                                payEndDate = $filter('date')(new Date(paySplit[1]), 'yyyy-MM-dd');
+                            }
+                            if (jsonBody[0] != null || jsonBody[0] != undefined) {
+                                var mileageKeys = Object.keys(jsonBody[0]);
+                                if (mileageKeys.includes("Trip_Date") || mileageKeys.includes("Trip_Origin")
+                                    || mileageKeys.includes("Trip_Destination") || mileageKeys.includes("Trip_Status")
+                                    || mileageKeys.includes("Approved_Date") || mileageKeys.includes("Day_Of_Week") || mileageKeys.includes("Notes")
+                                    || mileageKeys.includes("Actual_Mileage") || mileageKeys.includes("Activity") || mileageKeys.includes("Contact_Email")
+                                    || mileageKeys.includes("Tag") || mileageKeys.includes("EmployeeId")) {
+                                    mileagelist = jsonBody;
+                                    $scope.mileageAttachment = JSON.stringify(mileagelist);
+                                    Visualforce.remoting.Manager.invokeAction('{!$RemoteAction.ManageNotificationController.UploadMileage}', $scope.mileageAttachment, $scope.accid, $scope.id, payStartDate, payEndDate,
+                                        function (result, event) {
+                                            if (event.status) {
+                                                $('#spinner').hide();
+                                                toastr.success("We have received your upload, the data will be processed and made available within 72 work hours");
+                                                location.reload();
+                                            }
+                                            else {
+                                                toastr.error('Some error has occur');
+                                                $('#spinner').hide();
+                                            }
+                                            $('#spinner').hide();
+                                            $scope.$apply();
+                                        },
+                                        { buffer: true, escape: true, timeout: 120000 }
+                                    );
+                                } else {
+                                    $('#spinner').hide();
+                                    toastr.error("The file you have uploaded is not valid for mileage");
+                                }
+                            } else {
+                                $('#spinner').hide();
+                                toastr.error("The file you have uploaded is not valid for mileage");
+                            }
+                        }
+
+                        $scope.location_file_changed = function (element) {
+                            chooseFileName = '';
+                            attachment = '';
+                            choosefile = '';
+                            $scope.locationdata = '';
+                            choosefile = element;
+                            fileIndex = parseInt(element.name);
+                            var findex = (element.files[0].name).lastIndexOf(".");
+                            var photofile = element.files[0];
+                            chooseFileName = photofile.name;
+                            //console.log('file size :- '+choosefile.files[0].size);
+                            var strsubstring = (element.files[0].name).substring(findex, (element.files[0].name).length);
+                            var locationElement = document.querySelectorAll('#location-file-column');
+                            if (strsubstring == '.xls' || strsubstring == '.xlsx' || strsubstring == '.csv') {
+                                $(`#location-path-wrap-${fileIndex}`).removeClass('d-none');
+                                document.getElementById(`location-file-name-${fileIndex}`).innerHTML = chooseFileName;
+                                if (choosefile.files[0].size > 0 && choosefile.files[0].size < 4350000) {
+                                    $(`#locationFileBtn-${fileIndex}`).addClass('d-none');
+                                    $(`#uploadLocationBtn-${fileIndex}`).removeClass('d-none');
+                                    if ($('#location-file-column')[0].classList.length > 1) {
+                                        // $('#file-column').removeClass('vw-12');
+                                        // $('#file-column').addClass('w-19');
+                                        $("#locate-thead").removeClass('em-10');
+                                        $("#locate-thead").addClass('em-15');
+                                        angular.forEach(locationElement, function (n) {
+                                            if (n.className.includes('vw-12')) {
+                                                n.classList.remove('vw-12');
+                                                n.classList.add('w-14');
+                                            }
+                                        })
+                                    }
+                                    //console.log($('#file-column')[0].classList)
+                                    choosefile = element;
+                                    $scope.locationChoose.push(element);
+                                }
+                                else {
+                                    // $scope.IsVisiblebtn = false;
+                                    $(`#location-path-wrap-${fileIndex}`).addClass('d-none');
+                                    document.getElementById(`location-file-name-${fileIndex}`).innerHTML = "";
+                                    toastr.error('Base 64 Encoded file is too large.  Maximum size is 4 MB .');
+                                }
+                            }
+                            else {
+                                $(`#location-path-wrap-${fileIndex}`).addClass('d-none');
+                                document.getElementById(`location-file-name-${fileIndex}`).innerHTML = "";
+                                toastr.error('Please upload correct File. File extension should be .csv or .xls');
+                            }
+
+                            var fl = choosefile.files[0].size;
+
+
+                            $scope.$apply(function (scope) {
+                                choosenfileType = photofile.type;
+                                var reader = new FileReader();
+                                $scope.locationfsize = element.files[0].size;
+                                reader.onload = function (e) {
+                                    $scope.locationdata = reader.result;
+                                };
+                                reader.readAsDataURL(photofile);
+                            });
+                        }
+
+                        $scope.uploadLocationInChunk = function (element, contact) {
+                            var lfile;
+                            if (element.currentTarget != null || element.currentTarget != undefined) {
+                                angular.forEach($scope.locationChoose, function (fl) {
+                                    if (fl.name === element.currentTarget.name) {
+                                        lfile = fl.files[0];
+                                        fileIndex = parseInt(element.currentTarget.name);
+                                    }
+                                })
+                            }
+
+                            if (lfile != undefined) {
+                                var selectedFile = lfile;
+                                var reader = new FileReader();
+                                reader.onload = function (event) {
+                                    var data = this.result;
+                                    var workbook = XLSX.read(data, {
+                                        type: 'binary'
+                                    });
+                                    workbook.SheetNames.forEach(function (sheetName) {
+                                        var XL_row_object = XLSX.utils.sheet_to_row_object_array(workbook.Sheets[sheetName]);
+                                        var json_object = JSON.stringify(XL_row_object);
+                                        uploadLocationAttachment(json_object, contact.triploguserid, fileIndex);
+                                    })
+                                };
+
+                                reader.onerror = function (event) {
+                                    console.error("File could not be read! Code " + event.target.error.code);
+                                };
+
+                                reader.readAsBinaryString(selectedFile);
+                            }
+                            console.log("from location file", lfile);
+                        }
+
+                        const changeKeyObjects = (arr, replaceKeys) => {
+                            return arr.map(item => {
+                                const newItem = {};
+                                Object.keys(item).forEach(key => {
+                                    newItem[replaceKeys[key]] = item[[key]];
+                                });
+                                return newItem;
+                            });
+                        };
+
+                        function uploadLocationAttachment(json, usertriplogId, findexV) {
+                            $('#spinner').show();
+                            var newArray;
+                            var locationcolumn = document.querySelectorAll('#location-file-column');
+                            var replaceKeys = { "Default Activity (optional)": "activity", "Latitude (optional)": "latitude", "Longitude (optional)": "longitude", "Name (optional)": "name", "Address": "address" };
+                            var locationBody = JSON.parse(json);
+                            if (locationBody[0] != null || locationBody[0] != undefined) {
+                                var locationKeys = Object.keys(locationBody[0]);
+                                if (locationKeys.includes("Default Activity (optional)") || locationKeys.includes("Latitude (optional)")
+                                    || locationKeys.includes("Longitude (optional)") || locationKeys.includes("Name (optional)")
+                                    || locationKeys.includes("Address")) {
+                                    newArray = changeKeyObjects(locationBody, replaceKeys);
+                                    newArray.forEach(ob => {
+                                        ob.userId = usertriplogId
+                                    });
+                                    if (newArray.length > 100) {
+                                        $('#spinner').hide();
+                                        toastr.error("You can upload 100 locations at a time.");
                                         $(`locationFile-${fileIndex}`).value = '';
                                         $(`location-file-name-${fileIndex}`).innerHTML = '';
                                         $(`#location-path-wrap-${fileIndex}`).addClass('d-none');
@@ -2682,213 +2711,234 @@
                                                 n.classList.add('vw-12');
                                             }
                                         })
+                                    } else {
+                                        $scope.locationAttachment = JSON.stringify(newArray);
+                                        Visualforce.remoting.Manager.invokeAction('{!$RemoteAction.ManageNotificationController.UploadLocation}', $scope.locationAttachment, $scope.accid,
+                                            function (result, event) {
+                                                if (event.status) {
+                                                    $('#spinner').hide();
+                                                    toastr.success("We have received your upload, the data will be processed and made available within 72 work hours");
+                                                    $(`locationFile-${fileIndex}`).value = '';
+                                                    $(`location-file-name-${fileIndex}`).innerHTML = '';
+                                                    $(`#location-path-wrap-${fileIndex}`).addClass('d-none');
+                                                    $(`#uploadLocationBtn-${fileIndex}`).addClass('d-none');
+                                                    $(`#locationFileBtn-${fileIndex}`).removeClass('d-none');
+                                                    $("#locate-thead").addClass('em-10');
+                                                    $("#locate-thead").removeClass('em-15');
+                                                    angular.forEach(locationcolumn, function (n) {
+                                                        if (n.className.includes('w-14')) {
+                                                            n.classList.remove('w-14');
+                                                            n.classList.add('vw-12');
+                                                        }
+                                                    })
+                                                }
+                                                else {
+                                                    toastr.error('Some error has occur');
+                                                    $('#spinner').hide();
+                                                }
+                                                $('#spinner').hide();
+                                                $scope.$apply();
+                                            },
+                                            { buffer: true, escape: true, timeout: 120000 }
+                                        );
+                                        //   console.log(newArray);
+
                                     }
-                                    else {
-                                        toastr.error('Some error has occur');
-                                        $('#spinner').hide();
-                                    }
+
+                                } else {
                                     $('#spinner').hide();
-                                    $scope.$apply();
-                                },
-                                { buffer: true, escape: true, timeout: 120000 }
-                            );
-                            //   console.log(newArray);
-
-                        }
-
-                    } else {
-                        $('#spinner').hide();
-                        toastr.error("The file you have uploaded is not valid for location");
-                        $(`locationFile-${fileIndex}`).value = '';
-                        $(`location-file-name-${fileIndex}`).innerHTML = '';
-                        $(`#location-path-wrap-${fileIndex}`).addClass('d-none');
-                        $(`#uploadLocationBtn-${fileIndex}`).addClass('d-none');
-                        $(`#locationFileBtn-${fileIndex}`).removeClass('d-none');
-                        $("#locate-thead").addClass('em-10');
-                        $("#locate-thead").removeClass('em-15');
-                        angular.forEach(locationcolumn, function (n) {
-                            if (n.className.includes('w-14')) {
-                                n.classList.remove('w-14');
-                                n.classList.add('vw-12');
-                            }
-                        })
-                    }
-                } else {
-                    $('#spinner').hide();
-                    toastr.error("The file you have uploaded is not valid for location");
-                    $(`locationFile-${fileIndex}`).value = '';
-                    $(`location-file-name-${fileIndex}`).innerHTML = '';
-                    $(`#location-path-wrap-${fileIndex}`).addClass('d-none');
-                    $(`#uploadLocationBtn-${fileIndex}`).addClass('d-none');
-                    $(`#locationFileBtn-${fileIndex}`).removeClass('d-none');
-                    $("#locate-thead").addClass('em-10');
-                    $("#locate-thead").removeClass('em-15');
-                    angular.forEach(locationcolumn, function (n) {
-                        if (n.className.includes('w-14')) {
-                            n.classList.remove('w-14');
-                            n.classList.add('vw-12');
-                        }
-                    })
-                }
-            }
-
-            /* EMC - 214 Added On 1 February 2022  */
-            $scope.loa_file_changed = function(element){
-                $('#spinner').show();
-                $('#loading').text("Uploading...");
-                chooseFileName = '';
-                attachment = '';
-                choosefile = '';
-                $scope.data = '';
-                choosefile = element;
-                var findex = (element.files[0].name).lastIndexOf(".");
-                var photofile = element.files[0];
-                chooseFileName = photofile.name;
-                //console.log('file size :- '+choosefile.files[0].size);
-                var strsubstring = (element.files[0].name).substring(findex, (element.files[0].name).length);
-                if (strsubstring == '.xls' || strsubstring == '.xlsx' || strsubstring == '.csv') {
-                    if (choosefile.files[0].size > 0 && choosefile.files[0].size < 4350000) {
-                        //console.log($('#file-column')[0].classList)
-                        choosefile = element;
-                        $scope.loaChoose.push(element);
-                    }
-                    else {
-                        toastr.error('Base 64 Encoded file is too large.  Maximum size is 4 MB .');
-                        $('#loading').text("");
-                        $('#spinner').hide();
-                    }
-                }
-                else {
-                    toastr.error('Please upload correct File. File extension should be .csv or .xls');
-                    $('#loading').text("");
-                    $('#spinner').hide();
-                }
-
-                var fLoa = choosefile.files[0].size;
-
-                $scope.$apply(function (scope) {
-                    choosenfileType = photofile.type;
-                    var reader = new FileReader();
-                    $scope.loafsize = element.files[0].size;
-                    reader.onload = function (e) {
-                        $scope.data = reader.result;
-                    };
-                    reader.readAsDataURL(photofile);
-                    $scope.uploadLOAInChunk(element);
-                });
-            }
-
-            $scope.uploadLOAInChunk = function (element) {
-                var loafile;
-                if (element != null || element != undefined) {
-                    angular.forEach($scope.loaChoose, function (fLoa) {
-                        loafile = fLoa.files[0];
-                    })
-                }
-
-                if (loafile != undefined) {
-                    var selectedFile = loafile;
-                    var reader = new FileReader();
-                    reader.onload = function (event) {
-                        var data = this.result;
-                        var workbook = XLSX.read(data, {
-                            type: 'binary',
-                            cellDates: true,
-                            dateNF: 'mm/dd/yyyy'
-                        });
-                
-                        workbook.SheetNames.forEach(function (sheetName) {
-                            var XL_row_object = XLSX.utils.sheet_to_row_object_array(workbook.Sheets[sheetName], { raw: false });
-                            var isValidStart, isValidEnd, isName, isEmployeeId, isAmount, countStart = 0, countEnd = 0, countName = 0, countID = 0, countAmt = 0;
-                            for (var R = 0; R < XL_row_object.length; R++) {
-                                isValidStart = TripDateIsValid(XL_row_object[R]["LOA Start"]);
-                                isValidEnd = TripDateIsValid(XL_row_object[R]["LOA End"]);
-                                isName = ValidateField(XL_row_object[R].Name);
-                                isEmployeeId = isNumber(XL_row_object[R].Employee);
-                                isAmount = isNumber(XL_row_object[R]["Prorated Amount"]);
-                                if (isNaN(isValidStart) === true) countStart++;
-                                if (isNaN(isValidEnd) === true) countEnd++;
-                                if (isName === false) countName++;
-                                if (isEmployeeId === true) countID++;
-                                if (isAmount === true) countAmt++;
-                            }
-                            if (countStart === 0 && countEnd === 0 && countName === 0 && countID === 0 && countAmt === 0) {
-                                var json_object = JSON.stringify(XL_row_object);
-                                uploadLoaAttachment(json_object);
+                                    toastr.error("The file you have uploaded is not valid for location");
+                                    $(`locationFile-${fileIndex}`).value = '';
+                                    $(`location-file-name-${fileIndex}`).innerHTML = '';
+                                    $(`#location-path-wrap-${fileIndex}`).addClass('d-none');
+                                    $(`#uploadLocationBtn-${fileIndex}`).addClass('d-none');
+                                    $(`#locationFileBtn-${fileIndex}`).removeClass('d-none');
+                                    $("#locate-thead").addClass('em-10');
+                                    $("#locate-thead").removeClass('em-15');
+                                    angular.forEach(locationcolumn, function (n) {
+                                        if (n.className.includes('w-14')) {
+                                            n.classList.remove('w-14');
+                                            n.classList.add('vw-12');
+                                        }
+                                    })
+                                }
                             } else {
                                 $('#spinner').hide();
-                                if (countStart > 0) { toastr.error('Please enter valid loa start date. Date format should be mm/dd/yyyy or m/dd/yyyy or m/dd/yy') }
-                                if (countEnd > 0) { toastr.error('Please enter valid loa end date. Date format should be mm/dd/yyyy or m/dd/yyyy or m/dd/yy') }
-                                if (countName > 0) { toastr.error('Please enter name.') }
-                                if (isAmount > 0) { toastr.error('Please enter valid prorated amount.') }
-                                if (countID > 0) { toastr.error('Please enter valid Employee.') }
-                                document.querySelector('.loa-file').value = "";
+                                toastr.error("The file you have uploaded is not valid for location");
+                                $(`locationFile-${fileIndex}`).value = '';
+                                $(`location-file-name-${fileIndex}`).innerHTML = '';
+                                $(`#location-path-wrap-${fileIndex}`).addClass('d-none');
+                                $(`#uploadLocationBtn-${fileIndex}`).addClass('d-none');
+                                $(`#locationFileBtn-${fileIndex}`).removeClass('d-none');
+                                $("#locate-thead").addClass('em-10');
+                                $("#locate-thead").removeClass('em-15');
+                                angular.forEach(locationcolumn, function (n) {
+                                    if (n.className.includes('w-14')) {
+                                        n.classList.remove('w-14');
+                                        n.classList.add('vw-12');
+                                    }
+                                })
                             }
+                        }
 
-                        })
-                    };
-
-                    reader.onerror = function (event) {
-                        console.error("File could not be read! Code " + event.target.error.code);
-                    };
-
-                    reader.readAsBinaryString(selectedFile);
-                }
-                console.log("from loa file", loafile);
-            }
-
-            function uploadLoaAttachment(json) {
-                $('#loading').text("");
-                $('#spinner').show();
-                var loalist=[], paySplit, payStartDate, payEndDate;
-                var jsonBody = JSON.parse(json);
-                if($scope.biweeklyPayRole!= null && $scope.biweeklyPayRole != '' && $scope.biweeklyPayRole!="Select Pay Period"){
-                    paySplit = $scope.biweeklyPayRole.split(" to ");
-                    payStartDate = $filter('date')(new Date(paySplit[0]), 'yyyy-MM-dd');
-                    payEndDate = $filter('date')(new Date(paySplit[1]), 'yyyy-MM-dd');
-                }
-                if (jsonBody[0] != null || jsonBody[0] != undefined) {
-                    var loaKeys = Object.keys(jsonBody[0]);
-                    var arrayList = jsonBody;
-                    arrayList.forEach((element)=>{
-                        var lRow = {};
-                        lRow.employeeId = element["Employee"];
-                        lRow.proratedAmount = element["Prorated Amount"];
-                        lRow.name = element["Name"];
-                        lRow.loaEnd = element["LOA End"];
-                        lRow.loaStart = element["LOA Start"];
-                        loalist.push(lRow);
-                    })
-                    if (loaKeys.includes("Name") || loaKeys.includes("Employee")
-                        || loaKeys.includes("Prorated Amount") || loaKeys.includes("LOA Start")
-                        || loaKeys.includes("LOA End")) {
-                        $scope.loaAttachment = JSON.stringify(loalist);
-                        Visualforce.remoting.Manager.invokeAction('{!$RemoteAction.ManageNotificationController.UploadLOA}', $scope.loaAttachment, $scope.accid, payStartDate, payEndDate,
-                            function (result, event) {
-                                if (event.status) {
-                                    $('#spinner').hide();
-                                    toastr.success("We have received your upload, the data will be processed and made available within 72 work hours");
-                                    location.reload();
+                        /* EMC - 214 Added On 1 February 2022  */
+                        $scope.loa_file_changed = function(element){
+                            $('#spinner').show();
+                            $('#loading').text("Uploading...");
+                            chooseFileName = '';
+                            attachment = '';
+                            choosefile = '';
+                            $scope.data = '';
+                            choosefile = element;
+                            var findex = (element.files[0].name).lastIndexOf(".");
+                            var photofile = element.files[0];
+                            chooseFileName = photofile.name;
+                            //console.log('file size :- '+choosefile.files[0].size);
+                            var strsubstring = (element.files[0].name).substring(findex, (element.files[0].name).length);
+                            if (strsubstring == '.xls' || strsubstring == '.xlsx' || strsubstring == '.csv') {
+                                if (choosefile.files[0].size > 0 && choosefile.files[0].size < 4350000) {
+                                    //console.log($('#file-column')[0].classList)
+                                    choosefile = element;
+                                    $scope.loaChoose.push(element);
                                 }
                                 else {
-                                    toastr.error('Some error has occur');
+                                    toastr.error('Base 64 Encoded file is too large.  Maximum size is 4 MB .');
+                                    $('#loading').text("");
                                     $('#spinner').hide();
                                 }
+                            }
+                            else {
+                                toastr.error('Please upload correct File. File extension should be .csv or .xls');
+                                $('#loading').text("");
                                 $('#spinner').hide();
-                                $scope.$apply();
-                            },
-                            { buffer: true, escape: true, timeout: 120000 }
-                        );
-                    } else {
-                        $('#spinner').hide();
-                        toastr.error("The file you have uploaded is not valid for LOA details");
-                    }
-                } else {
-                    $('#spinner').hide();
-                    toastr.error("The file you have uploaded is not valid for LOA details");
-                }
-            }
-            /* EMC - 214 Ends  */
+                            }
+
+                            var fLoa = choosefile.files[0].size;
+
+                            $scope.$apply(function (scope) {
+                                choosenfileType = photofile.type;
+                                var reader = new FileReader();
+                                $scope.loafsize = element.files[0].size;
+                                reader.onload = function (e) {
+                                    $scope.data = reader.result;
+                                };
+                                reader.readAsDataURL(photofile);
+                                $scope.uploadLOAInChunk(element);
+                            });
+                        }
+
+                        $scope.uploadLOAInChunk = function (element) {
+                            var loafile;
+                            if (element != null || element != undefined) {
+                                angular.forEach($scope.loaChoose, function (fLoa) {
+                                    loafile = fLoa.files[0];
+                                })
+                            }
+
+                            if (loafile != undefined) {
+                                var selectedFile = loafile;
+                                var reader = new FileReader();
+                                reader.onload = function (event) {
+                                    var data = this.result;
+                                    var workbook = XLSX.read(data, {
+                                        type: 'binary',
+                                        cellDates: true,
+                                        dateNF: 'mm/dd/yyyy'
+                                    });
+                            
+                                    workbook.SheetNames.forEach(function (sheetName) {
+                                        var XL_row_object = XLSX.utils.sheet_to_row_object_array(workbook.Sheets[sheetName], { raw: false });
+                                        var isValidStart, isValidEnd, isName, isEmployeeId, isAmount, countStart = 0, countEnd = 0, countName = 0, countID = 0, countAmt = 0;
+                                        for (var R = 0; R < XL_row_object.length; R++) {
+                                            isValidStart = TripDateIsValid(XL_row_object[R]["LOA Start"]);
+                                            isValidEnd = TripDateIsValid(XL_row_object[R]["LOA End"]);
+                                            isName = ValidateField(XL_row_object[R].Name);
+                                            isEmployeeId = isNumber(XL_row_object[R].Employee);
+                                            isAmount = isNumber(XL_row_object[R]["Prorated Amount"]);
+                                            if (isNaN(isValidStart) === true) countStart++;
+                                            if (isNaN(isValidEnd) === true) countEnd++;
+                                            if (isName === false) countName++;
+                                            if (isEmployeeId === true) countID++;
+                                            if (isAmount === true) countAmt++;
+                                        }
+                                        if (countStart === 0 && countEnd === 0 && countName === 0 && countID === 0 && countAmt === 0) {
+                                            var json_object = JSON.stringify(XL_row_object);
+                                            uploadLoaAttachment(json_object);
+                                        } else {
+                                            $('#spinner').hide();
+                                            if (countStart > 0) { toastr.error('Please enter valid loa start date. Date format should be mm/dd/yyyy or m/dd/yyyy or m/dd/yy') }
+                                            if (countEnd > 0) { toastr.error('Please enter valid loa end date. Date format should be mm/dd/yyyy or m/dd/yyyy or m/dd/yy') }
+                                            if (countName > 0) { toastr.error('Please enter name.') }
+                                            if (isAmount > 0) { toastr.error('Please enter valid prorated amount.') }
+                                            if (countID > 0) { toastr.error('Please enter valid Employee.') }
+                                            document.querySelector('.loa-file').value = "";
+                                        }
+
+                                    })
+                                };
+
+                                reader.onerror = function (event) {
+                                    console.error("File could not be read! Code " + event.target.error.code);
+                                };
+
+                                reader.readAsBinaryString(selectedFile);
+                            }
+                            console.log("from loa file", loafile);
+                        }
+
+                        function uploadLoaAttachment(json) {
+                            $('#loading').text("");
+                            $('#spinner').show();
+                            var loalist=[], paySplit, payStartDate, payEndDate;
+                            var jsonBody = JSON.parse(json);
+                            if($scope.biweeklyPayRole!= null && $scope.biweeklyPayRole != '' && $scope.biweeklyPayRole!="Select Pay Period"){
+                                paySplit = $scope.biweeklyPayRole.split(" to ");
+                                payStartDate = $filter('date')(new Date(paySplit[0]), 'yyyy-MM-dd');
+                                payEndDate = $filter('date')(new Date(paySplit[1]), 'yyyy-MM-dd');
+                            }
+                            if (jsonBody[0] != null || jsonBody[0] != undefined) {
+                                var loaKeys = Object.keys(jsonBody[0]);
+                                var arrayList = jsonBody;
+                                arrayList.forEach((element)=>{
+                                    var lRow = {};
+                                    lRow.employeeId = element["Employee"];
+                                    lRow.proratedAmount = element["Prorated Amount"];
+                                    lRow.name = element["Name"];
+                                    lRow.loaEnd = element["LOA End"];
+                                    lRow.loaStart = element["LOA Start"];
+                                    lRow.conDeactivation = element["Deactivation Date"];
+                                    loalist.push(lRow);
+                                })
+                                if (loaKeys.includes("Name") || loaKeys.includes("Employee")
+                                    || loaKeys.includes("Prorated Amount") || loaKeys.includes("LOA Start")
+                                    || loaKeys.includes("LOA End")) {
+                                    $scope.loaAttachment = JSON.stringify(loalist);
+                                    Visualforce.remoting.Manager.invokeAction('{!$RemoteAction.ManageNotificationController.UploadLOA}', $scope.loaAttachment, $scope.accid, payStartDate, payEndDate,
+                                        function (result, event) {
+                                            if (event.status) {
+                                                $('#spinner').hide();
+                                                toastr.success("We have received your upload, the data will be processed and made available within 72 work hours");
+                                                location.reload();
+                                            }
+                                            else {
+                                                toastr.error('Some error has occur');
+                                                $('#spinner').hide();
+                                            }
+                                            $('#spinner').hide();
+                                            $scope.$apply();
+                                        },
+                                        { buffer: true, escape: true, timeout: 120000 }
+                                    );
+                                } else {
+                                    $('#spinner').hide();
+                                    toastr.error("The file you have uploaded is not valid for LOA details");
+                                }
+                            } else {
+                                $('#spinner').hide();
+                                toastr.error("The file you have uploaded is not valid for LOA details");
+                            }
+                        }
+                        /* EMC - 214 Ends  */
             }]);
         </script>
     </head>
@@ -2972,7 +3022,8 @@
                 <ul class="un-list">
                     <li class="action-nav-list"  ng-class="{'flex_basis' : accid === PLMarketing}"><a ng-click="insuranceProcess()" data-content="Send email to driver/admin to submit your insurance declaration page">Insurance Reminder</a></li>
                     <li class="action-nav-list" ng-if="accid === PLMarketing" ng-class="{'flex_basis' : accid === PLMarketing}"><a ng-click="mileageProcess()" data-content="Upload your trips with mileages in biweekly pay period">Mileage Upload</a></li>
-                    <li class="action-nav-list" ng-if="accid === PLMarketing" ng-class="{'flex_basis' : accid === PLMarketing}"><a ng-click="loaProcess()" data-content="Import Leave Of Absence details">Leave Of Absence Upload</a></li>
+                    <li class="action-nav-list" ng-if="accid === PLMarketing" ng-class="{'flex_basis' : accid === PLMarketing}"><a ng-click="loaProcess()" data-content="Import Leave Of Absence details">Leave Of Absence<br/> Upload</a></li>
+                    <li class="action-nav-list" ng-if="accid === PLMarketing" ng-class="{'flex_basis' : accid === PLMarketing}"><a ng-click="openModalForDeleteTrips()" data-content="Delete recently uploaded trips">Delete Trips</a></li>
                 </ul>
             </nav>
         </div>
@@ -3273,6 +3324,41 @@
               </div>
           </section>
           <div class="slds-backdrop slds-backdrop_open" ng-show="uploadloaProcess"></div>
+
+           <!-- EMC - 217 Added On 8 February 2022 -->
+           <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-id-1"
+           class="slds-modal slds-fade-in-open slds-modal_small slds-is-fixed" ng-show="deleteTripProcess">
+           <div class="slds-modal__container">
+               <!-- Modal/Popup Box LWC header here -->
+               <header class="slds-modal__header slds-clearfix">
+                   <button type="button" class="close popup-close-btn" data-dismiss="modal" aria-label="Close" ng-click="closeTripModal()">
+                       <span aria-hidden="true">×</span>
+                   </button>
+                   <h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate slds-float_left slds-p-bottom_small">Delete Trips</h2>
+               </header>
+               <!-- Modal/Popup Box LWC body starts here -->
+               <div class="slds-modal__content slds-p-around_medium slds-scrollable" id="modal-content-id-1">
+                   <div class="slds-align_absolute-center">
+                        Are you sure you want to delete recently uploaded trips ?
+                   </div>
+               </div>
+               <!-- Modal/Popup Box LWC footer starts here -->
+               <footer class="slds-modal__footer">
+                   <div class="slds-clearfix">
+                       <div class="slds-float_right slds-m-right_small">
+                        <button class="slds-btn slds-btn-primary slds-btn-sm waves-effect bc-blue waves-light mleft-0" data-dismiss="modal" ng-click="closeTripModal()"> <!-- ng-if="accid === PLMarketing"-->
+                             No
+                        </button>
+                        <button  class="slds-btn slds-btn-primary slds-btn-sm waves-effect bc-grey waves-light mleft-0"
+                            ng-click="acceptRequest()"> 
+                            Yes
+                        </button>
+                       </div>
+                   </div>
+               </footer>
+           </div>
+       </section>
+       <div class="slds-backdrop slds-backdrop_open" ng-show="deleteTripProcess"></div>
         </div>
         <script>
             // function openNav() {
