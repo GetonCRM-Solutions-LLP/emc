@@ -311,6 +311,7 @@
     margin-bottom: 0.25rem;
     margin-top: 0.25rem;
     flex-direction: row-reverse;
+    padding: 10px 0px !important;
 }
 
 .img-fluid {
