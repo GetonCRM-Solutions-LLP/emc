@@ -235,9 +235,10 @@ table tr td {
     border-radius: 0px; */
 }
 .car-image-pl{
-    min-height: 9rem !important;
-    max-height: 9rem !important;
+    min-height: 8rem !important;
+    max-height: 8rem !important;
     width: fit-content !important;
+    object-fit: cover;
 }
 .car-image{
     min-height: 9rem !important;
