@@ -68,14 +68,14 @@ public class BiWeeklyReimReportforPLMController {
                                             
                                        }          
 
-        List<Contact> contactList;  
+        List<Contact> contactList; 
         if(Test.isRunningTest()) {
             contactList = [SELECT id,Employee_ID__c,Name,Job_Title__c,External_Email__c,Division__c,Fixed_Amount__c,
                                             Deactivated_Date__c FROM Contact WHERE 
                                             (Role__c !='Manager' AND Role__c != 'Admin')];
         } else {
             contactList = [SELECT id,Employee_ID__c,Name,Job_Title__c,External_Email__c,Division__c,Fixed_Amount__c,
-                                            Deactivated_Date__c FROM Contact WHERE Deactivated_Date__c >=: Datetime.valueOf(startDate) AND Deactivated_Date__c <=: Datetime.valueOf(endDate) 
+                                            Deactivated_Date__c FROM Contact WHERE ((Deactivated_Date__c >=: Date.valueOf(startDate) AND Deactivated_Date__c <=: Date.valueOf(endDate)) OR Deactivated_Date__c = null)
                                             AND (Role__c !='Manager' AND Role__c != 'Admin') AND AccountId =: System.Label.PLMarketing];
         }
         for(Contact currentContact : contactList){
