@@ -1,1 +1,1 @@
-DemoClassTest,BiWeeklyReimReportforPLMControllerTest
+DemoClassTest,ImportAdminDriverInformationTest,ContactTriggerHelperTest
