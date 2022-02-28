@@ -96,8 +96,7 @@ public class ContactTriggerHelperTest {
             con.IsCreatedFromCommunity__c = true; 
             con.Vehicle_Type__c  = '2019 Full-Size Sedan';
             con.compliancestatus__c = 'Yes';
-            insert con;
-            con.Deactivated_Date__c = null;
+            insert con;            
             con.compliancestatus__c = 'No – Vehicle Age';
             update con;
 
@@ -124,6 +123,7 @@ public class ContactTriggerHelperTest {
             con1.compliancestatus__c = 'No – Vehicle Age';
             insert con1;
             con1.compliancestatus__c = 'Yes';
+            con1.Deactivated_Date__c =null;            
             update con1;
 
             user_1 = new User( 
@@ -144,12 +144,19 @@ public class ContactTriggerHelperTest {
         }     
         Test.startTest();
         System.runAs(user_1) {
-        Map<String,String> contactInfo = new Map<String,String>();
-        Map<String,String> accountInfo = new Map<String,String>();
-        contactInfo.put(con1.Triplog_UserID__c, con1.Phone);
-        accountInfo.put(con1.Triplog_UserID__c, acc.Triplog_API__c);
-        ContactTriggerHelper.putHTTPEnableUserTriplog(con1.Id);
-        ContactTriggerHelper.putHTTPUpdateUserPhoneTriplog(contactInfo,accountInfo);
+            Map<String,String> contactInfo = new Map<String,String>();
+            Map<String,String> accountInfo = new Map<String,String>();
+            contactInfo.put(con1.Triplog_UserID__c, con1.Phone);
+            accountInfo.put(con1.Triplog_UserID__c, acc.Triplog_API__c);
+            ContactTriggerHelper.putHTTPEnableUserTriplog(con1.Id);
+            ContactTriggerHelper.putHTTPUpdateUserPhoneTriplog(contactInfo,accountInfo);
+            List<Contact> newCon = new List<Contact>();
+            newCon.add(con1);
+            Map<ID, Contact> conOldMap = new Map<ID, Contact>();
+            conOldMap.put(con1.Id,con1);
+            ContactTriggerHelper.createReimRecord(newCon ,conOldMap );
+            ContactTriggerHelper.updateComplianceStatus(newCon,conOldMap);
+            ContactTriggerHelper.TrackHistory(conOldMap,newCon ,accountInfo );
         }
         Test.stopTest();
     }
