@@ -137,9 +137,7 @@ global class ImportAdminDriverInformation implements Database.Batchable<String>,
         //below two field added to not activate community user when contact is created.
         conObj.isCommunityUser__c = false;
         conObj.IsCreatedFromCommunity__c = false;
-        //bello field is only for testing purpose
-        conObj.TestContact__c = true;
-
+    
         conObj.LastName = csvRecordData[4];
         conObj.Email = csvRecordData[5];
         conObj.External_Email__c = csvRecordData[5];  
