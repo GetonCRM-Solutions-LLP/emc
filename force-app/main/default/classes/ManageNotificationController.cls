@@ -269,6 +269,7 @@ public with sharing class ManageNotificationController {
         map<string, Id> biweekIdMap = new map<string, Id>();
         map<string, Decimal> empIdvsMPGMap = new map<string, Decimal>();
         map<string, Decimal> empIdvsMaintireMap = new map<string, Decimal>();
+        map<string, Decimal> empIdvsFuelPriceMap = new map<string, Decimal>();
         List<Employee_Mileage__c> empNotSendMilList = new List<Employee_Mileage__c>();
         for(Employee_Reimbursement__c reimList : [SELECT id,name,Contact_Id__r.External_Email__c,Month__c,MPG__c,Maintenance_and_Tires__c, Contact_Id__r.Employee_ID__c
                                                   FROM Employee_Reimbursement__c 
@@ -277,28 +278,32 @@ public with sharing class ManageNotificationController {
                                                   AND Contact_Id__r.AccountId =: accId]) {
                                                     if(reimList.Contact_Id__r.Employee_ID__c != null) {
                                                         reimIdMap.put(reimList.Contact_Id__r.Employee_ID__c +':'+reimList.Month__c, reimList.Id);
-                                                        empIdvsEmailMap.put(reimList.Contact_Id__r.Employee_ID__c +':'+reimList.Month__c, reimList.Contact_Id__r.External_Email__c);
-                                                        if(reimList.MPG__c != null){
-                                                            empIdvsMPGMap.put(reimList.Contact_Id__r.Employee_ID__c+':'+reimList.Month__c,reimList.MPG__c); 
-                                                        } else {
-                                                            empIdvsMPGMap.put(reimList.Contact_Id__r.Employee_ID__c+':'+reimList.Month__c,0);  
-                                                        }
-                                                        if(reimList.Maintenance_and_Tires__c != 0){
-                                                            empIdvsMaintireMap.put(reimList.Contact_Id__r.Employee_ID__c+':'+reimList.Month__c,reimList.Maintenance_and_Tires__c);     
-                                                        } else {
-                                                            empIdvsMaintireMap.put(reimList.Contact_Id__r.Employee_ID__c+':'+reimList.Month__c,0);      
-                                                        }  
+                                                        empIdvsEmailMap.put(reimList.Contact_Id__r.Employee_ID__c +':'+reimList.Month__c, reimList.Contact_Id__r.External_Email__c);  
                                                     }
-                                                  }
-                                                 
-                                                  
-        for(Bi_Weekly_Reimbursement__c bireim : [SELECT id,name,Contact__r.name,Contact__r.Employee_ID__c
+        }                         
+        for(Bi_Weekly_Reimbursement__c bireim : [SELECT id,name,Contact__r.name,Contact__r.Employee_ID__c,
+                                                        Fuel_Price__c,MPG__c,Maintenance_and_Tires__c
                                                     FROM Bi_Weekly_Reimbursement__c 
                                                     WHERE Start_Date__c=: Date.valueOf(startdate) 
                                                     AND End_Date__c =:Date.valueOf(enddate)
                                                     AND Contact__r.Employee_ID__c IN: employeeIdList
                                                     AND Contact__r.AccountId =: accId ]){
                                                         biweekIdMap.put(bireim.Contact__r.Employee_ID__c, bireim.id);
+                                                        if(bireim.Maintenance_and_Tires__c != 0){
+                                                            empIdvsMaintireMap.put(bireim.Contact__r.Employee_ID__c,bireim.Maintenance_and_Tires__c);     
+                                                        } else {
+                                                            empIdvsMaintireMap.put(bireim.Contact__r.Employee_ID__c,0);      
+                                                        }
+                                                        if(bireim.MPG__c != null){
+                                                            empIdvsMPGMap.put(bireim.Contact__r.Employee_ID__c,bireim.MPG__c); 
+                                                        } else {
+                                                            empIdvsMPGMap.put(bireim.Contact__r.Employee_ID__c,0);  
+                                                        }
+                                                        if(bireim.MPG__c != null){
+                                                            empIdvsFuelPriceMap.put(bireim.Contact__r.Employee_ID__c,bireim.Fuel_Price__c); 
+                                                        } else {
+                                                            empIdvsFuelPriceMap.put(bireim.Contact__r.Employee_ID__c,0);  
+                                                        }
         }
         daylight_saving_time_config__c DSTzconfig = daylight_saving_time_config__c.getValues(String.valueOf(System.today().year()));
         List<Employee_Mileage__c> empMilList = new List<Employee_Mileage__c>();
@@ -356,11 +361,14 @@ public with sharing class ManageNotificationController {
                 if(empIdvsEmailMap.containsKey(mapKey)) {
                     mil.Contact_Email_Id__c = empIdvsEmailMap.get(mapKey);
                 }
-                if(empIdvsMPGMap.containsKey(mapKey)) {
-                    mil.MPG__c = empIdvsMPGMap.get(mapKey);
+                if(empIdvsMPGMap.containsKey(string.valueOf(objJson.EmployeeId))) {
+                    mil.MPG__c = empIdvsMPGMap.get(string.valueOf(objJson.EmployeeId));
                 }
-                if(empIdvsMaintireMap.containsKey(mapKey)) {
-                    mil.Maintenance_and_Tires__c = empIdvsMaintireMap.get(mapKey);
+                if(empIdvsMaintireMap.containsKey(string.valueOf(objJson.EmployeeId))) {
+                    mil.Maintenance_and_Tires__c = empIdvsMaintireMap.get(string.valueOf(objJson.EmployeeId));
+                }
+                if(empIdvsFuelPriceMap.containsKey(string.valueOf(objJson.EmployeeId))) {
+                    mil.Fuel_price__c = empIdvsFuelPriceMap.get(string.valueOf(objJson.EmployeeId));
                 }
                 if(reimIdMap.containsKey(mapKey) && biweekIdMap.containsKey(string.valueOf(objJson.EmployeeId))) {
                     mil.EmployeeReimbursement__c = string.valueOf(reimIdMap.get(mapKey));
