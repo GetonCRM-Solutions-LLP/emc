@@ -1,1 +1,1 @@
-DemoClassTest,ImportAdminDriverInformationTest,ContactTriggerHelperTest
+DemoClassTest,ManageNotificationControllerTest
