@@ -252,10 +252,15 @@ public without sharing class ContactTriggerHelper {
                 }
             }
             if(!reimToInsert.isEmpty()){
-                upsert reimToInsert;
-                if(!bireimToInsert.isEmpty()){
-                    upsert bireimToInsert;
-                }                
+                try{
+                    upsert reimToInsert;
+                    if(!bireimToInsert.isEmpty()){
+                        upsert bireimToInsert;
+                    } 
+                } catch (DMLException e) {
+                    system.debug('DMLException='+e);
+                }
+                               
                 ContactTriggerHelper.putHTTPEnableUserTriplog(con.id);
                 RosterController.resetPassword(con.id);
                 putHTTP(con.AccountId,con.External_Email__c);
@@ -285,8 +290,13 @@ public without sharing class ContactTriggerHelper {
         List<Employee_Reimbursement__c> reimToInsert   = new List<Employee_Reimbursement__c>();
         List<Bi_Weekly_Reimbursement__c> bireimToInsert   = new List<Bi_Weekly_Reimbursement__c>();
         TriggerConfig__c customSetting = TriggerConfig__c.getInstance('Defaulttrigger');
+        System.debug('customSetting-->'+customSetting);
         for(Contact con : contactList){
-            putHTTP(con.AccountId,con.External_Email__c);
+            System.debug('con-->'+con);
+            if(!System.isBatch()){
+                System.debug('con-->'+con);
+                putHTTP(con.AccountId,con.External_Email__c);
+            }
             if(con.Role__c != 'Admin' && con.Role__c != 'Manager' && con.Deactivated_Date__c == null) {
                 if(con != null && customSetting.ContactTriCommunityReimCreate__c == true) {
                    reimToInsert.add(CreateReimbursement(con));
@@ -350,6 +360,10 @@ public without sharing class ContactTriggerHelper {
     //This method is used send a welcome email from triplog or mlog to install a application.
     @future (callout=true)
     Public static void putHTTP(String accountID,String empEmail) {
+        putHTTPCallout(AccountId, empEmail);
+    }
+ 
+    Public static void putHTTPCallout(String accountID,String empEmail) {
         String MLOGACCOUNT = System.Label.Triplog_New_URL;
         
         String body, apiToken;
@@ -379,7 +393,7 @@ public without sharing class ContactTriggerHelper {
          putReq.setTimeout(120000);
          putReq.setHeader('Authorization', 'apikey ' + apiToken);
          putReq.setHeader('Content-Type', 'application/json');
-        
+         System.debug('putReq-->'+putReq);
         if(!Test.isRunningTest() && objTriplog.TriplogPut__c == true){
              if(objTriplog.TriplogPut__c == true){
                  putRes = putHTTP.send(putReq);
@@ -388,6 +402,8 @@ public without sharing class ContactTriggerHelper {
                  jsonSubset = JSON.serialize(jsonMap.get('message'));
             }
          }   
+         System.debug('putRes-->'+putRes.getbody());
+         System.debug('putRes-->'+putRes.getstatusCode());
     }
     @Future(callout = true)
     public static void putHTTPEnableUserTriplog(String conId) {
