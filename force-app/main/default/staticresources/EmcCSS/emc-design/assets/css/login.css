@@ -7,8 +7,9 @@
 
 body {
   font-family: 'Proxima Nova';
-  background-color: #d0d0ce;
-  min-height: 100vh;
+  background: url("../images/mBurse-login/Blue.png") center / contain no-repeat;
+  background-size: cover;
+  background-attachment: fixed;
 }
 
 .brand-wrapper {
@@ -36,7 +37,7 @@ body {
 }
 
 .login-card .card-body {
-  padding: 85px 60px 60px;
+  padding: 85px 60px 34px;
 }
 
 @media (max-width: 422px) {
@@ -49,13 +50,18 @@ body {
   font-size: 25px;
   color: #000;
   font-weight: normal;
-  margin-bottom: 23px;
+  margin-bottom: 16px;
 }
 
-.login-card form {
+/* .login-card form {
   max-width: 326px;
+} */
+.form-group{
+  margin-bottom: 0 !important
 }
-
+.mb-4{ 
+  margin-bottom: 4px !important;
+}
 .login-card .form-control {
   border: 1px solid #d5dae2;
   padding: 15px 25px;
@@ -64,6 +70,7 @@ body {
   font-size: 16px;
   line-height: 15;
   font-weight: normal;
+  width: 65% !important;
 }
 
 .login-card .form-control::-webkit-input-placeholder {
@@ -94,7 +101,7 @@ body {
   font-weight: bold;
   line-height: 20px;
   color: #fff;
-  margin-bottom: 24px;
+  margin-bottom: 6px;
 }
 
 .login-card .login-btn:hover {
@@ -107,6 +114,7 @@ body {
   font-size: 14px;
   color: #919aa3;
   margin-bottom: 12px;
+  padding-left: 3px;
 }
 
 .login-card-footer-text {
