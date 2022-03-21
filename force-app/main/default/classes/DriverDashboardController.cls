@@ -77,7 +77,7 @@ public class DriverDashboardController
                                         ConfirmTimeERMI =   biWeekList[0].Confirm_Hours__c;
                                     }                                    
         }
-        try{
+        /*try{
             List<ContentDocumentLink> contentDocLink = [SELECT ContentDocumentId,LinkedEntityId FROM ContentDocumentLink where LinkedEntityId  =: getContactid()];
             Set<Id> ids = new Set<Id>();
             for(ContentDocumentLink obj:  contentDocLink){
@@ -86,7 +86,7 @@ public class DriverDashboardController
             ContentDistribution contentDist = [SELECT id,ContentDownloadUrl from ContentDistribution where ContentDocumentId in : ids and Name=: Constants.signedDocument order by createddate desc limit 1];
             obj_content_version = contentDist.ContentDownloadUrl;
             System.debug('obj_content_version-->'+obj_content_version);
-        }catch(Exception e){System.debug('Exception:-->'+e.getmessage()+'--'+e.getLineNumber());}
+        }catch(Exception e){System.debug('Exception:-->'+e.getmessage()+'--'+e.getLineNumber());}*/
     }
     public static String getAccountid()
     {

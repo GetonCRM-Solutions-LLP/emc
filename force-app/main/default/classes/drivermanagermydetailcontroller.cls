@@ -49,7 +49,7 @@ public with sharing class drivermanagermydetailcontroller {
             List<Account> accInsurances = [SELECT id,Bodily_Injury__c, Uninsured_Motorist__c, Property_Damage__c, Comprehensive__c, Collision__c,Umbrella_Coverage__c FROM account WHERE Id =: getAccountid()];
            accInsuranceList = String.escapeSingleQuotes( JSON.serialize(accInsurances));
         }
-        try{
+        /*try{
             List<ContentDocumentLink> contentDocLink = [SELECT ContentDocumentId,LinkedEntityId FROM ContentDocumentLink where LinkedEntityId  =: getContactid()];
             Set<Id> ids = new Set<Id>();
             for(ContentDocumentLink obj:  contentDocLink){
@@ -58,7 +58,7 @@ public with sharing class drivermanagermydetailcontroller {
             ContentDistribution contentDist = [SELECT id,ContentDownloadUrl from ContentDistribution where ContentDocumentId in : ids and Name=: Constants.signedDocument order by createddate desc limit 1];
             obj_content_version = contentDist.ContentDownloadUrl;
             System.debug('obj_content_version-->'+obj_content_version);
-        }catch(Exception e){System.debug('Exception:-->'+e.getmessage()+'--'+e.getLineNumber());}
+        }catch(Exception e){System.debug('Exception:-->'+e.getmessage()+'--'+e.getLineNumber());}*/
     }
     public static String getAccountid()
     {
