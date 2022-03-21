@@ -2120,7 +2120,7 @@
                     <div class="tab-pane fade" id="pills-admin-dashbord-mileage">
 
 
-                        <c:PlanInfoComponent driverPacketDocCount="{!obj_driverpacket_attachementsize}" contentVersionUrl="{!obj_content_version}"  insuranceDocCount="{!obj_attachementsize}"
+                        <c:PlanInfoComponent driverPacketDocCount="{!obj_driverpacket_attachementsize}"   insuranceDocCount="{!obj_attachementsize}"
                             mvrCheckDocCount="{!obj_driverpacket_attachMVRsize}" driverPacketId="{!If(obj_driverpacket_attachementsize > 0, obj_driver_driverpacket[0], null)}"
                             insuranceId="{!If(obj_attachementsize > 0, obj_driver_insurance[0], null)}" mvrCheckId="{!If(obj_driverpacket_attachMVRsize > 0, obj_driver_driverMVR[0], null)}"
                         />
