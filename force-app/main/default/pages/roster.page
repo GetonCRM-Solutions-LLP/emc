@@ -473,7 +473,7 @@
                 width: 100%;
                 height: 100%;
                 background: #000;
-                opacity: 0.4;
+                opacity: 0.8;
                 top: 0px;
                 left: 0px;
                 position: fixed;
@@ -1664,7 +1664,7 @@
             $scope.showMassUnFreezeEmployeebtn = false;
 
             //Pagination
-
+            $('#spinner').show();
             $scope.pageSizeOptions = ['15', '25', '50', '100', '200'];
             $scope.itemPerPage = $scope.pageSizeOptions[3];
             $scope.pageSizeChanged = function () {
@@ -3589,6 +3589,9 @@
 
             /* Contact Insert Before Check Is already available or not */
                 $scope.createUpdateContact = function (con, elementId, sourceId, suffix, form, update) {
+                    if(con.userid != "" && con.userid != undefined){
+                        con.monthlyReimbursement = true
+                    }
                     if (form.$dirty != true) {
                         toastr.error("There is no change to update");
                         setTimeout(function () {

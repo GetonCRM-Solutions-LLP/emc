@@ -17,6 +17,7 @@ public  class DriverDashboardFromAdminManager
     public static Boolean showlastyear {get;set;}
     public static String nameofEmployee{get;set;}
     public static String emailofEmployee{get;set;}
+    public String obj_content_version {get;set;}
     //public static String htmlContent{get;set;}
 
     public DriverDashboardFromAdminManager() 
@@ -41,6 +42,16 @@ public  class DriverDashboardFromAdminManager
             gaspriceforpreviosmonth = getDriverGasPrice(obj_currect_contact[0].MailingState,obj_currect_contact[0].MailingCity);
             gasVariableRatePreviosMonth = WrapperUtils.getDriverFuelVariableRate(obj_currect_contact[0].Id);
         }
+        try{
+            List<ContentDocumentLink> contentDocLink = [SELECT ContentDocumentId,LinkedEntityId FROM ContentDocumentLink where LinkedEntityId  =: getDriverid()];
+            Set<Id> ids = new Set<Id>();
+            for(ContentDocumentLink obj:  contentDocLink){
+                ids.add(obj.ContentDocumentId);
+            }
+            ContentDistribution contentDist = [SELECT id,ContentDownloadUrl from ContentDistribution where ContentDocumentId in : ids and Name=: Constants.signedDocument order by createddate desc limit 1];
+            obj_content_version = contentDist.ContentDownloadUrl;
+            System.debug('obj_content_version-->'+obj_content_version);
+        }catch(Exception e){System.debug('Exception:-->'+e.getmessage()+'--'+e.getLineNumber());}
         //getpastYearReimbursement();
 
     }
@@ -136,10 +147,10 @@ public  class DriverDashboardFromAdminManager
     }
     
     @RemoteAction
-    public Static String getAllReimbursements(String year,String did,String accid) 
+    public Static String getAllReimbursements(String year,String contactId,String accountId) 
     {       
          System.debug('year'+year);
-        return String.escapeSingleQuotes(WrapperUtils.getAllReimbursements(year,did,accid));
+        return String.escapeSingleQuotes(WrapperUtils.getAllReimbursements(year,contactId,accountId));
     }
     
     public static String getReimbursementsList()
@@ -157,7 +168,9 @@ public  class DriverDashboardFromAdminManager
                                         Fixed_Amount__c, compliancestatus__c, Car_Image__c, Account.Name, Account.Logo_Document_Id__c, 
                                         Vehicle_Type__c,Insurance_Attachment_Id__c, Account.Triplog_API__c, Email,
                                         Maintenance__c,Tires__c, Insurance_Rate__c, License_Ragistration__c, Taxes__c,
-                                        Depreciation__c, Total_Monthly_Costs__c, Business_Use__c,Fixed_Cost_Adjustment__c
+                                        Depreciation__c, Total_Monthly_Costs__c, Business_Use__c,Fixed_Cost_Adjustment__c,
+                                        Monthly_Reimbursement__c,Biweek_Reimbursement__c,Time_Attandance__c,
+                                        Account.Bi_Weekly_Pay_Period__c
                                     FROM Contact 
                                     WHERE id =: getDriverid()];
         return String.escapeSingleQuotes(JSON.serialize(obj_currect_contact));
@@ -167,9 +180,9 @@ public  class DriverDashboardFromAdminManager
         return WrapperUtils.getDriverGasPrice(MailingState,MailingCity);
     }
     @RemoteAction
-    public static String approveReimbursements(String year,String did,String accid,String reimbursements)
+    public static String approveReimbursements(String year,String contactId,String accountId,String reimbursements)
     {
-        return WrapperUtils.approveReimbursements(year,did,accid,reimbursements);
+        return WrapperUtils.approveReimbursements(year,contactId,accountId,reimbursements);
     }
     @RemoteAction
     public static String approveMileages(String checked,String selected,String unapprove,String name,String emailaddress)
@@ -178,21 +191,21 @@ public  class DriverDashboardFromAdminManager
         return WrapperUtils.approveMileagesForAdminDash(checked,selected,unapprove,name,emailaddress);
     }
     @RemoteAction
-    public static String getMileages(String clickedMonth,String clickedYear,String did)
+    public static String getMileages(String clickedMonth,String clickedYear,String contactId)
     {
-        return String.escapeSingleQuotes(WrapperUtils.getMileages(clickedMonth,clickedYear,did));
+        return String.escapeSingleQuotes(WrapperUtils.getMileages(clickedMonth,clickedYear,contactId));
     } 
     @RemoteAction
-    public static List<String> getCompliance(String did)
+    public static List<String> getCompliance(String contactId)
     {
-    System.debug('getCompliance'+did);
-        return WrapperUtils.getComplianceCalculation(did,String.valueOf(System.today().year()));
+    System.debug('getCompliance'+contactId);
+        return WrapperUtils.getComplianceCalculation(contactId,String.valueOf(System.today().year()));
        
     }
     @RemoteAction
-    public static List<String > getPacketandMeeting(String did)
+    public static List<String > getPacketandMeeting(String contactId)
     {
-        return WrapperUtils.getPacketandMeetingDetails(did);
+        return WrapperUtils.getPacketandMeetingDetails(contactId);
     }   
 
     //method is use for fatch mileages from triplog 
@@ -223,9 +236,9 @@ public  class DriverDashboardFromAdminManager
     }
 
     @RemoteAction
-    public static String getMileagesBasedTandAtt(String startdate,String enddate,String did)
+    public static String getMileagesBasedTandAtt(String startdate,String enddate,String contactId)
     {
-        return String.escapeSingleQuotes(WrapperUtils.getMileagesBasedTA(startdate,enddate,did));
+        return String.escapeSingleQuotes(WrapperUtils.getMileagesBasedTA(startdate,enddate,contactId));
     } 
 
     @RemoteAction
@@ -234,17 +247,20 @@ public  class DriverDashboardFromAdminManager
         return BiweeklyPayPeriod.getBiweeklyReimbursement(conId,year);
     }
 
+    /*EMC-260 
+    Author : Sanket Goswami
+    Description : This method is used to get mileages with biweekly reimbursement data based on biweekly reimbursement selected by user*/
     @RemoteAction
     public static List<String> getBiweekMileages(String biweekId)
     {
-        //return BiweeklyPayPeriod.getMileages1(date.valueof(startdate),date.valueof(enddate),did);
+        //return BiweeklyPayPeriod.getMileages1(date.valueof(startdate),date.valueof(enddate),contactId);
         return BiweeklyPayPeriod.getBiweekMileages1(biweekId);
     } 
 
     @RemoteAction
     public static string ApproveBiweekMileages(String biweekId)
     {
-        //BiweeklyPayPeriod.ApproveTrips(date.valueof(startdate),date.valueof(enddate),did);
+        //BiweeklyPayPeriod.ApproveTrips(date.valueof(startdate),date.valueof(enddate),contactId);
         BiweeklyPayPeriod.ApproveBiWeekTrips(biweekId);
         return 'sucess';
     } 
@@ -255,17 +271,17 @@ public  class DriverDashboardFromAdminManager
         return String.escapeSingleQuotes(WrapperUtils.getUnapprovedMileages(reimbursementDetails));
     }
     @AuraEnabled
-    public static string getAllDriversLastMonthUpdatedReimbursements(String did, String accid,String showTeamRecord) {
-        return String.escapeSingleQuotes(WrapperUtils.getLastMonthReimbursements(did,accid,boolean.valueOf(showTeamRecord),'Admin'));
+    public static string getAllDriversLastMonthUpdatedReimbursements(String contactId, String accountId,String showTeamRecord) {
+        return String.escapeSingleQuotes(WrapperUtils.getLastMonthReimbursements(contactId,accountId,boolean.valueOf(showTeamRecord),'Admin'));
     }  
     @AuraEnabled
-    public static string getAllDriversLastMonthUnapprovedReimbursementsClone(String did, String accid,String showTeamRecord) 
+    public static string getAllDriversLastMonthUnapprovedReimbursementsClone(String contactId, String accountId,String showTeamRecord) 
     {        
-        return String.escapeSingleQuotes(WrapperUtils.getUnapprovedReimbursements(did,accid,boolean.valueOf(showTeamRecord),'Admin'));
+        return String.escapeSingleQuotes(WrapperUtils.getUnapprovedReimbursements(contactId,accountId,boolean.valueOf(showTeamRecord),'Admin'));
     }  
     @RemoteAction
-    public static List<String> getAllMileages(String startdate,String enddate,String did)
+    public static List<String> getAllMileages(String startdate,String enddate,String contactId)
     {
-        return BiweeklyPayPeriod.getAllBiweekMileages1(date.valueof(startdate),date.valueof(enddate),did);
+        return BiweeklyPayPeriod.getAllBiweekMileages1(date.valueof(startdate),date.valueof(enddate),contactId);
     } 
 }

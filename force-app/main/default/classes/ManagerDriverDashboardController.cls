@@ -17,6 +17,7 @@ public with sharing class ManagerDriverDashboardController
     public static String nameofEmployee{get;set;}
     public static String emailofEmployee{get;set;}
     public Integer obj_driverpacket_attachMVRsize {get;set;}
+    public String obj_content_version {get;set;}
     public ManagerDriverDashboardController() 
     {
         obj_currect_contact = new List<contact>();
@@ -36,113 +37,87 @@ public with sharing class ManagerDriverDashboardController
         obj_driverpacket_attachementsize = obj_driver_driverpacket.size();
         obj_driver_driverMVR = [SELECT Id, Body, Name FROM Attachment WHERE ParentId=:ApexPages.currentPage().getParameters().get('id') and Name LIKE '%MVR%' limit 1];
         obj_driverpacket_attachMVRsize = obj_driver_driverMVR.size();
-
+        try{
+            List<ContentDocumentLink> contentDocLink = [SELECT ContentDocumentId,LinkedEntityId FROM ContentDocumentLink where LinkedEntityId  =: getDriverid()];
+            Set<Id> ids = new Set<Id>();
+            for(ContentDocumentLink obj:  contentDocLink){
+                ids.add(obj.ContentDocumentId);
+            }
+            ContentDistribution contentDist = [SELECT id,ContentDownloadUrl from ContentDistribution where ContentDocumentId in : ids and Name=: Constants.signedDocument order by createddate desc limit 1];
+            obj_content_version = contentDist.ContentDownloadUrl;
+            System.debug('obj_content_version-->'+obj_content_version);
+        }catch(Exception e){System.debug('Exception:-->'+e.getmessage()+'--'+e.getLineNumber());}
     }
-    public static String getAccountid()
-    {
-        if(ApexPages.currentPage().getParameters().containsKey('accid'))
-        {
+    public static String getAccountid() {
+        if(ApexPages.currentPage().getParameters().containsKey('accid')) {
            return ApexPages.currentPage().getParameters().get('accid');
-        }
-        else
-        {
+        } else {
             return '';
         } 
     }    
-    public static String getManagerid()
-    {
+    public static String getManagerid() {
         // manager id
-        if(ApexPages.currentPage().getParameters().containsKey('manid'))
-        {
+        if(ApexPages.currentPage().getParameters().containsKey('manid')) {
            return ApexPages.currentPage().getParameters().get('manid');
-        }
-        else
-        {
+        } else {
             return '';
         } 
     }
-    public static String getDriverid()
-    {
-        
-        if(ApexPages.currentPage().getParameters().containsKey('id'))
-        {
+    public static String getDriverid() {        
+        if(ApexPages.currentPage().getParameters().containsKey('id')) {
            return ApexPages.currentPage().getParameters().get('id');
-        }
-        else
-        {
+        } else {
             return '';
         } 
     }
-    public static PageReference getRedirected()
-    {
-        
-        if(getManagerid()!=''&& getAccountid()!='' && getDriverid()!='')
-        {
+    public static PageReference getRedirected() {        
+        if(getManagerid()!=''&& getAccountid()!='' && getDriverid()!='') {
             return null;
-        }
-        else
-        {
+        } else {
             // redirect to error page
             return null;
-        }
-        
+        }        
     }
     public static void setEmployeeName() {
         Contact employee= [select Name,External_Email__c from Contact where id =: getManagerid()];
-        if(employee!=null)
-        {
+        if(employee!=null) {
             nameofEmployee= String.escapeSingleQuotes(employee.Name); // Name of the Employee
             emailofEmployee = employee.External_Email__c;
-        }
-        else
-        {
+        } else {
             nameofEmployee='';
             emailofEmployee ='';
-            
         }       
     } 
-    public static String getLast2Years()
-    {
+    public static String getLast2Years() {
       //  getpastYearReimbursement();
         return String.escapeSingleQuotes(WrapperUtils.getpastYearReimbursement(getDriverid()));
     }
-    // public static void getpastYearReimbursement(){
-        
-    //     if(WrapperUtils.getpastYearReimbursement(getDriverid()) > 0)
-    //     {
-    //         showlastyear = true;
-    //     }
-    //     else
-    //     {
-    //         showlastyear = false;
-    //     }   
-    // }
     @RemoteAction
-    public Static String getAllReimbursements(String year,String did,String accid) 
+    public Static String getAllReimbursements(String year,String contactId,String accountId) 
     {       
-       return String.escapeSingleQuotes(WrapperUtils.getAllReimbursements(year,did,accid));
+       return String.escapeSingleQuotes(WrapperUtils.getAllReimbursements(year,contactId,accountId));
     }
     public static String getReimbursementsList()
     {       
-         return String.escapeSingleQuotes(WrapperUtils.getReimbursementsList(getDriverid(),''));     
+        return String.escapeSingleQuotes(WrapperUtils.getReimbursementsList(getDriverid(),''));     
     }
-    public static String getDriverDetails()
-    {
-            
+    public static String getDriverDetails() {
         //List<contact> obj_currect_contact = new List<contact>();
         obj_currect_contact = [SELECT id,Name,MailingPostalCode,MailingState,MailingCity,
                                             Driver_Type__c,Fixed_Amount__c,compliancestatus__c,Car_Image__c,
                                             Accountid,Account.Name,Account.Logo_Document_Id__c,
                                             Vehicle_Type__c,Insurance_Attachment_Id__c,Maintenance__c,Tires__c,
                                             Insurance_Rate__c, License_Ragistration__c, Taxes__c,
-                                            Depreciation__c, Total_Monthly_Costs__c, Business_Use__c,Fixed_Cost_Adjustment__c 
+                                            Depreciation__c, Total_Monthly_Costs__c, Business_Use__c,Fixed_Cost_Adjustment__c,
+                                            Monthly_Reimbursement__c,Biweek_Reimbursement__c,Time_Attandance__c,
+                                            Account.Bi_Weekly_Pay_Period__c 
                                         FROM Contact where id=:getDriverid()];
         return String.escapeSingleQuotes(JSON.serialize(obj_currect_contact));
     }
     @RemoteAction
-    public static String approveReimbursements(String year,String did,String accid,String reimbursements)
+    public static String approveReimbursements(String year,String contactId,String accountId,String reimbursements)
     {       
-        return WrapperUtils.approveReimbursements(year,did,accid,reimbursements);
+        return WrapperUtils.approveReimbursements(year,contactId,accountId,reimbursements);
     }
     @RemoteAction
     public static String approveMileages(String checked,String selected,String unapprove,String name,String emailaddress)
@@ -150,9 +125,9 @@ public with sharing class ManagerDriverDashboardController
         return WrapperUtils.approveMileagesForAdminDash(checked,selected,unapprove,name,emailaddress);
     }
     @RemoteAction
-    public static String getMileages(String clickedMonth,String clickedYear,String did)
+    public static String getMileages(String clickedMonth,String clickedYear,String contactId)
     {
-         return String.escapeSingleQuotes(WrapperUtils.getMileages(clickedMonth,clickedYear,did));
+         return String.escapeSingleQuotes(WrapperUtils.getMileages(clickedMonth,clickedYear,contactId));
     }
     public static String getDriverGasPrice(String MailingState,String MailingCity)
     {   
@@ -164,15 +139,14 @@ public with sharing class ManagerDriverDashboardController
         return String.escapeSingleQuotes(WrapperUtils.getReimbursementsListClone(driverid));   
     }
     @RemoteAction
-    public static List<String> getPacketandMeeting(String did)
+    public static List<String> getPacketandMeeting(String contactId)
     {
-        return WrapperUtils.getPacketandMeetingDetails(did);
+        return WrapperUtils.getPacketandMeetingDetails(contactId);
     }  
     @RemoteAction
-    public static List<String> getCompliance(String did)
+    public static List<String> getCompliance(String contactId)
     {
-        return WrapperUtils.getComplianceCalculation(did,String.valueOf(System.today().year()));
-       
+        return WrapperUtils.getComplianceCalculation(contactId,String.valueOf(System.today().year()));
     }
 
     //method is use for fatch mileages from triplog 
@@ -196,9 +170,9 @@ public with sharing class ManagerDriverDashboardController
     }
 
     @RemoteAction
-    public static String getMileagesBasedTandAtt(String startdate,String enddate,String did)
+    public static String getMileagesBasedTandAtt(String startdate,String enddate,String contactId)
     {
-        return String.escapeSingleQuotes(WrapperUtils.getMileagesBasedTA(startdate,enddate,did));
+        return String.escapeSingleQuotes(WrapperUtils.getMileagesBasedTA(startdate,enddate,contactId));
     } 
     @RemoteAction
     public static List<BiweeklyPayPeriod.BiweeklyWrap> biweeklyMileage(String conId,Integer year){
@@ -206,23 +180,26 @@ public with sharing class ManagerDriverDashboardController
         return BiweeklyPayPeriod.getBiweeklyReimbursement(conId,year);
     }
 
+    /*EMC-260 
+    Author : Sanket Goswami
+    Description : This method is used to get mileages with biweekly reimbursement data based on biweekly reimbursement selected by user*/
     @RemoteAction
     public static List<String> getBiweekMileages(string biweekId)
     {
-        //return BiweeklyPayPeriod.getMileages1(date.valueof(startdate),date.valueof(enddate),did);
+        //return BiweeklyPayPeriod.getMileages1(date.valueof(startdate),date.valueof(enddate),contactId);
         return BiweeklyPayPeriod.getBiweekMileages1(biweekId);
     } 
 
     @RemoteAction
     public static string ApproveBiweekMileages(string biweekId)
     {
-        //BiweeklyPayPeriod.ApproveTrips(date.valueof(startdate),date.valueof(enddate),did);
+        //BiweeklyPayPeriod.ApproveTrips(date.valueof(startdate),date.valueof(enddate),contactId);
         BiweeklyPayPeriod.ApproveBiWeekTrips(biweekId);
         return 'sucess';
     } 
     @RemoteAction
-    public static List<String> getAllMileages(String startdate,String enddate,String did)
+    public static List<String> getAllMileages(String startdate,String enddate,String contactId)
     {
-        return BiweeklyPayPeriod.getAllBiweekMileages1(date.valueof(startdate),date.valueof(enddate),did);
+        return BiweeklyPayPeriod.getAllBiweekMileages1(date.valueof(startdate),date.valueof(enddate),contactId);
     }
 }

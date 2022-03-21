@@ -36,17 +36,25 @@ public with sharing class EmployeeReimbursements
     */
     public Integer intmonth {get;set;}
     /*******************************************************************************************************
-    * @description year is Employee_Reimbursement__c's year.
-    */
-    /*public String year {get;set;}*/
-    /*******************************************************************************************************
     * @description fuel is Employee_Reimbursement__c's Fuel_Price__c.
     */
     public String fuel {get;set;}
+    /* EMC-260  START
+        Added a new field : Total_Approved__c,Total_Mileage__c, Total_Pending__c  
+        Modified By : Sanket Goswami */
     /*******************************************************************************************************
     * @description mileage is Employee_Reimbursement__c's Total_Mileage__c.
     */
     public String mileage {get;set;}
+    /*******************************************************************************************************
+    * @description pendingMileage is Employee_Reimbursement__c's Total_Pending__c.
+    */
+    public String pendingMileage {get;set;}
+    /*******************************************************************************************************
+    * @description approveMileage is Employee_Reimbursement__c's Total_Approved__c.
+    */
+    public String approveMileage {get;set;}
+    /* EMC-260  END */
     /*******************************************************************************************************
     * @description varibleAndFixedReimbursements is Employee_Reimbursement__c's Fixed_Amount__c + Employee_Reimbursement__c's Variable_Rate__c.
     */
@@ -55,17 +63,32 @@ public with sharing class EmployeeReimbursements
     * @description totalReimbursements is Employee_Reimbursement__c's Total_Monthly_Reimbursement__c.
     */
     public String totalReimbursements {get;set;}
-
+    /*******************************************************************************************************
+    * @description maintainsAndTyres is Employee_Reimbursement__c's Maintenance_and_Tires__c.
+    */
     public String maintainsAndTyres {get;set;}
-
+    /*******************************************************************************************************
+    * @description mpg is Employee_Reimbursement__c's MPG__c.
+    */
     public String mpg {get; set;}
-    
+    /*******************************************************************************************************
+    * @description varibleAmount is Employee_Reimbursement__c's Monthly_Variable_Amount__c.
+    */
     public String varibleAmount {get;set;}
     public String fixed1 {get; set;}
     public String fixed2 {get; set;}
     public String fixed3 {get; set;}
+    /*******************************************************************************************************
+    * @description totalFixedAmount is Number of pay period * Employee_Reimbursement__c's Half_Fixed_Amount__c.
+    */
     public String totalFixedAmount {get;set;}
+    /*******************************************************************************************************
+    * @description contactEmail is Employee_Reimbursement__c's Contact_Email__c.
+    */
     public String contactEmail {get; set;}
+    /*******************************************************************************************************
+    * @description contactdrivertype is Employee_Reimbursement__r.Contact_Id__r.Driver_Type__c.
+    */
     public String contactdrivertype {get;set;}
     /**
     @author Natavar Ghodasara

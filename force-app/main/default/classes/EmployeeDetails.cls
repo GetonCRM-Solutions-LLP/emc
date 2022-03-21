@@ -122,4 +122,11 @@ public with sharing class EmployeeDetails
     public boolean isleaveofabsence{get;set;}
     public string finalPayrollAmount {get;set;}
     public string firstPayrollPer {get;set;}
+    /*EMC-260 START 
+    This field is used to check that particular driver is monthly or biweekly driver.based on value of checkbox display a data on driver page*/
+    public Boolean monthlyReimbursement{ get; set; }
+    public Boolean biWeekReimbursement{ get; set; }
+    // timeAttandance is only use for ERMI account
+    public Boolean timeAttandance{ get; set; }
+    /* END */
 }
