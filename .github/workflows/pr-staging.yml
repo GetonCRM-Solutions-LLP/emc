@@ -62,7 +62,7 @@ jobs:
           git fetch --all
           git checkout -b pr
           git --no-pager diff --name-status pr origin/$GITHUB_BASE_REF
-          sgd --to pr --from origin/$GITHUB_BASE_REF --repo . --output .
+          sfdx sgd:source:delta --to pr --from origin/$GITHUB_BASE_REF --repo . --output .
           cat package/package.xml
       
       # convert
