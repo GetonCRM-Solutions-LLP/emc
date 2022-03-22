@@ -30,7 +30,7 @@ jobs:
       # ./sfdx-cli/install
       - name: 'Build and Deploy'
         run: |
-            wget https://developer.salesforce.com/media/salesforce-cli/sfdx/channels/stable/sfdx-linux-x64.tar.xz
+            wget https://developer.salesforce.com/media/salesforce-cli/sfdx-cli/channels/stable/sfdx-cli-v7.83.0-eba9c6a927-linux-arm.tar.xz
             mkdir sfdx-cli
             tar xJf sfdx-linux-x64.tar.xz -C sfdx-cli --strip-components 1
             ./sfdx-cli/install
