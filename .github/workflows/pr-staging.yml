@@ -21,19 +21,16 @@ jobs:
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
-      - name: Setup node 16
-        uses: actions/setup-node@v2
-        with:
-          node-version: 16.x
       
       # Install Salesforce CLI
       # wget https://developer.salesforce.com/media/salesforce-cli/sfdx-linux-amd64.tar.xz
+      # https://developer.salesforce.com/media/salesforce-cli/sfdx/channels/stable/sfdx-linux-x64.tar.xz
       # mkdir sfdx-cli
       # tar xJf sfdx-linux-amd64.tar.xz -C sfdx-cli --strip-components 1
       # ./sfdx-cli/install
       - name: 'Build and Deploy'
         run: |
-            wget https://developer.salesforce.com/media/salesforce-cli/sfdx-linux-amd64.tar.xz
+            wget https://developer.salesforce.com/media/salesforce-cli/sfdx/channels/stable/sfdx-linux-x64.tar.xz
             mkdir sfdx-cli
             tar xJf sfdx-linux-amd64.tar.xz -C sfdx-cli --strip-components 1
             ./sfdx-cli/install
