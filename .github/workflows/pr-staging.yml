@@ -59,12 +59,13 @@ jobs:
       # sudo npm install sfdx-git-delta@latest -g
       - name: 'Install App and Create Delta'
         run: |
+          sfdx update
           sfdx plugins:install sfdx-git-delta
           git config remote.origin.fetch '+refs/heads/*:refs/remotes/origin/*'
           git fetch --all
           git checkout -b pr
           git --no-pager diff --name-status pr origin/$GITHUB_BASE_REF
-          sfdx sgd:source:delta --to pr --from origin/$GITHUB_BASE_REF --repo . --output .
+          sgd --to pr --from origin/$GITHUB_BASE_REF --repo . --output .
           cat package/package.xml
       
       # convert
