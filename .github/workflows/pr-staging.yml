@@ -29,7 +29,7 @@ jobs:
       # ./sfdx-cli/install
       - name: 'Build and Deploy'
         run: |
-            npm install sfdx-git-delta@latest --global
+            npm install sfdx-cli --global
                   
       # Decrypt file
       - name: 'Decrypt file'
