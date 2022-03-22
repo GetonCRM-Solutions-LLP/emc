@@ -2737,7 +2737,6 @@
                         <a class="nav-link" data-toggle="pill" href="#pills-admin-dashbord-mileage">Plan Info</a>
                     </li>
                 </ul>
-                 <!-- EMC 260 : -->
                 <div class="tab-content timeline">
                     <div class="tab-pane active" id="pills-admin-dashbord-myteam">
                         <div id="accordion" role="tablist">
