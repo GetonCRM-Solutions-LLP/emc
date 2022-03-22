@@ -29,7 +29,10 @@ jobs:
       # ./sfdx-cli/install
       - name: 'Build and Deploy'
         run: |
-            npm install sfdx-cli --global
+            wget https://developer.salesforce.com/media/salesforce-cli/sfdx-linux-amd64.tar.xz
+            mkdir sfdx-cli
+            tar xJf sfdx-linux-amd64.tar.xz -C sfdx-cli --strip-components 1
+            ./sfdx-cli/install
                   
       # Decrypt file
       - name: 'Decrypt file'
@@ -59,7 +62,8 @@ jobs:
       # sudo npm install sfdx-git-delta@latest -g
       - name: 'Install App and Create Delta'
         run: |
-          sfdx plugins:install sfdx-git-delta
+          sudo npm install sfdx-git-delta@latest --global
+          sgd --version
           git config remote.origin.fetch '+refs/heads/*:refs/remotes/origin/*'
           git fetch --all
           git checkout -b pr
