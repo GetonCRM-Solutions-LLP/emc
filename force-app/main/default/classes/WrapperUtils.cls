@@ -127,7 +127,16 @@ public with sharing class WrapperUtils
         } else {
             currentEmployeeDetail.monthlymileage ='';
         }
-
+        if(String.isNotBlank(String.valueOf(currentContact.Final_Payroll_Amount__c))) {
+            currentEmployeeDetail.finalPayrollAmount = String.valueOf(currentContact.Final_Payroll_Amount__c);
+        } else {
+            currentEmployeeDetail.finalPayrollAmount ='';
+        }
+        if(String.isNotBlank(String.valueOf(currentContact.First_Payroll__c))) {
+            currentEmployeeDetail.firstPayrollPer = String.valueOf(currentContact.First_Payroll__c);
+        } else {
+            currentEmployeeDetail.firstPayrollPer ='';
+        }
         if(currentContact.Sage_100_ID__c!=null) {
             currentEmployeeDetail.sage100ID = currentContact.Sage_100_ID__c;
         } else {
@@ -365,6 +374,16 @@ public with sharing class WrapperUtils
         currentContact.Job_Title__c = currentEmployeeDetail.jobtitle;
         currentContact.Manager__c = currentEmployeeDetail.managerId;
         currentContact.Vehicle_Type__c = currentEmployeeDetail.vehicalType;
+        if(String.isNotBlank(currentEmployeeDetail.finalPayrollAmount)){
+            currentContact.Final_Payroll_Amount__c = Decimal.valueOf(currentEmployeeDetail.finalPayrollAmount);
+        } else {
+            currentContact.Final_Payroll_Amount__c = null;
+        }
+        if(String.isNotBlank(currentEmployeeDetail.firstPayrollPer)){
+            currentContact.First_Payroll__c = currentEmployeeDetail.firstPayrollPer;
+        } else {
+            currentContact.First_Payroll__c = null;
+        }
         if(currentEmployeeDetail.lastPayDate  !=  null)
         {
             List<String> lastPaydateSplitted = new List<String>();
@@ -720,6 +739,7 @@ public with sharing class WrapperUtils
     }
     public static Contact getNewContact(EmployeeDetails currentEmployeeDetail)
     {
+        system.debug('getNewContact');
         Contact currentContact = new Contact();       
         currentContact.firstname=currentEmployeeDetail.firstName;
         currentContact.lastname = currentEmployeeDetail.lastName;
@@ -745,16 +765,13 @@ public with sharing class WrapperUtils
         {
             currentContact.Branch_Name__c ='';
         }
-         if(String.IsNotBlank(currentEmployeeDetail.branchNumber))
+        if(String.IsNotBlank(currentEmployeeDetail.branchNumber))
         {
             currentContact.Branch_Number__c = String.valueOf(currentEmployeeDetail.branchNumber);
-        }
-        else 
-        {
+        } else {
             currentContact.Branch_Number__c ='';
         } 
-        if(currentEmployeeDetail.cellphone!=null)
-        {
+        if(currentEmployeeDetail.cellphone!=null) {
             currentContact.Phone = currentEmployeeDetail.cellphone;
             currentContact.MobilePhone = currentEmployeeDetail.cellphone;
         }
@@ -813,6 +830,13 @@ public with sharing class WrapperUtils
         currentContact.Department = currentEmployeeDetail.deptPL ;
         if(String.isNotBlank(currentEmployeeDetail.divison)){
          currentContact.Division__c = Decimal.valueOf(currentEmployeeDetail.divison) ;
+        }
+        if(String.isNotBlank(currentEmployeeDetail.finalPayrollAmount)){
+            currentContact.Final_Payroll_Amount__c = Decimal.valueOf(currentEmployeeDetail.finalPayrollAmount);
+        }
+       
+        if(String.isNotBlank(currentEmployeeDetail.firstPayrollPer)){
+            currentContact.First_Payroll__c = currentEmployeeDetail.firstPayrollPer;
         }
         currentContact.Driver_Type__c = currentEmployeeDetail.driverType;
         currentContact.Employee_Netchex_Id__c = currentEmployeeDetail.netchexEmployeeID;
@@ -907,7 +931,17 @@ public with sharing class WrapperUtils
         employeeReimbursement.month  = getMonthName(currentEmployeeReimbursement.Month__c);
         employeeReimbursement.intmonth  = getMonthInteger(currentEmployeeReimbursement.Month__c);
         employeeReimbursement.fuel  =String.valueOf(currentEmployeeReimbursement.Fuel_Price__c);
-        employeeReimbursement.mileage  =String.valueOf(currentEmployeeReimbursement.Total_Mileage__c);
+        //employeeReimbursement.mileage  =String.valueOf(currentEmployeeReimbursement.Total_Mileage__c);
+        Integer checkYear;
+        if(currentEmployeeReimbursement.Month__c.contains('-'))
+        {
+           checkYear = Integer.valueOf( currentEmployeeReimbursement.Month__c.split('-')[1]); 
+        }
+        if(employeeReimbursement.intmonth != null && employeeReimbursement.intmonth == system.today().month() && checkYear != null && checkYear == system.today().year()){
+            employeeReimbursement.mileage  =String.valueOf(currentEmployeeReimbursement.Total_Mileage__c);
+        } else {
+            employeeReimbursement.mileage  =String.valueOf(currentEmployeeReimbursement.Total_Approved__c);
+        }
         employeeReimbursement.maintainsAndTyres  =String.valueOf(currentEmployeeReimbursement.Maintenance_and_Tires__c);
         employeeReimbursement.mpg  =String.valueOf(currentEmployeeReimbursement.MPG__c );
         String fixedandvariable ='';
@@ -1564,7 +1598,7 @@ public with sharing class WrapperUtils
               {
                  totalmileages1 = quaterWiseWrapperTaxMap.get(1).Mileages;
               } 
-              if(totalmileages1>2500)
+              if(totalmileages1>5000)
               {
                 wrapppertaxQuater1 = quaterWiseWrapperTaxMap.get(1);
                 wrapppertaxQuater1.ImputedAmount = 0;
@@ -1600,7 +1634,7 @@ public with sharing class WrapperUtils
               {
                  totalmileages1 =totalmileages1+quaterWiseWrapperTaxMap.get(2).Mileages;
               }
-              if(totalmileages1>2500)
+              if(totalmileages1>5000)
               {
                 if(quaterWiseWrapperTaxMap.containsKey(1))
                 {
@@ -1663,7 +1697,7 @@ public with sharing class WrapperUtils
                 totalmileages1 =totalmileages1+quaterWiseWrapperTaxMap.get(3).Mileages; 
               }
               
-              if(totalmileages1>2500)
+              if(totalmileages1>5000)
               {
                 if(quaterWiseWrapperTaxMap.containsKey(1))
                 {
@@ -1751,7 +1785,7 @@ public with sharing class WrapperUtils
               {
                 totalmileages1 =totalmileages1+quaterWiseWrapperTaxMap.get(4).Mileages; 
               } 
-              if(totalmileages1>2500)
+              if(totalmileages1>5000)
               {
                 if(quaterWiseWrapperTaxMap.containsKey(1))
                 {        
@@ -1874,7 +1908,7 @@ public with sharing class WrapperUtils
           {
               if(currentDriver.compliancestatus__c =='Yes')
               {
-                if(totalmileages1 < 2500)
+                if(totalmileages1 < 5000)
                 {
                     system.debug('totalmileages1'+totalmileages1);
                     message=label.compliancenotmeeting;
@@ -2148,19 +2182,24 @@ public with sharing class WrapperUtils
         
     public static String getDriverGasPrice(String MailingState,String MailingCity)
     {   
-       
         String gaspriceyearmonth = '';
-        if(System.today().month() == 1)
-        {
+        if(System.today().month() == 1) {
             gaspriceyearmonth = MailingCity + MailingState + 12+ String.valueOf(System.today().year()-1); 
-        }
-        else
-        {
+        } else {
             gaspriceyearmonth = MailingCity + MailingState + String.valueOf(System.today().month()-1) + String.valueOf(System.today().year()); 
         }
         List<Gas_Prices__c> gasPriceList = new List<Gas_Prices__c>();
         gasPriceList = [SELECT id,Fuel_Price__c FROM Gas_Prices__c WHERE Month_State_City__c =: gaspriceyearmonth];
         return JSON.serialize(gasPriceList);
+    }
+    public static String getDriverFuelVariableRate(String conId){
+        String lastMonth = Utils.fetchMonths(1, 0)[0];
+        String fuelVariableRate = '';
+        List<Employee_Reimbursement__c> reimList = [SELECT id,Fuel_Variable_Rate__c FROM Employee_Reimbursement__c WHERE Contact_Id__c =: conId and Month__c =: lastMonth ];
+        if(!reimList.isEmpty()){
+            fuelVariableRate = String.valueOf(reimList[0].Fuel_Variable_Rate__c);
+        }
+        return fuelVariableRate;
     }
     public Static String getAllReimbursements(String year,String did,String accid) 
     { 
@@ -2196,16 +2235,16 @@ public with sharing class WrapperUtils
             if((monthList.size() > 0 && conList.isEmpty()) || (monthList.size() > 0 && !conList.isEmpty() && System.today().Month() == 1) || (monthList.size() > 0 && !conList.isEmpty() && Integer.valueOf(year) != System.today().year()))
             {
                 editedquery = setQueryParameters(monthList);
-                query = 'Select id,Contact_Email__c,Contact_Id__r.Driver_Type__c,Monthly_Fixed_Amount__c,Number_of_Pay_Period__c,Half_Fixed_Amount__c,Month__c,Total_Variable_Rate__c,Fuel_Price__c,Total_Mileage__c,Fixed_Amount__c,Variable_Rate__c,Total_Monthly_Reimbursement__c,Contact_Id__c,Approved_Date__c,Status__c,Total_Pending__c,Monthly_Variable_Amount__c,Total_Monthly_Approved_Variable__c,MPG__c,Maintenance_and_Tires__c from Employee_Reimbursement__c where Contact_Id__c=\''+did+'\' and Month__c IN '+ editedquery;
+                query = 'Select id,Contact_Email__c,Contact_Id__r.Driver_Type__c,Total_Approved__c,Monthly_Fixed_Amount__c,Number_of_Pay_Period__c,Half_Fixed_Amount__c,Month__c,Total_Variable_Rate__c,Fuel_Price__c,Total_Mileage__c,Fixed_Amount__c,Variable_Rate__c,Total_Monthly_Reimbursement__c,Contact_Id__c,Approved_Date__c,Status__c,Total_Pending__c,Monthly_Variable_Amount__c,Total_Monthly_Approved_Variable__c,MPG__c,Maintenance_and_Tires__c from Employee_Reimbursement__c where Contact_Id__c=\''+did+'\' and Month__c IN '+ editedquery;
             } 
             else if(monthList.size() > 0 && !conList.isEmpty() ) {
                 monthlist.remove(monthList.size()-1);
                 editedquery = setQueryParameters(monthList);
-                query = 'Select id,Contact_Email__c,Contact_Id__r.Driver_Type__c,Monthly_Fixed_Amount__c,Number_of_Pay_Period__c,Half_Fixed_Amount__c,Month__c,Total_Variable_Rate__c,Fuel_Price__c,Total_Mileage__c,Fixed_Amount__c,Variable_Rate__c,Total_Monthly_Reimbursement__c,Contact_Id__c,Approved_Date__c,Status__c,Total_Pending__c,Monthly_Variable_Amount__c,Total_Monthly_Approved_Variable__c,MPG__c,Maintenance_and_Tires__c from Employee_Reimbursement__c where Contact_Id__c=\''+did+'\' and Month__c IN '+ editedquery;
+                query = 'Select id,Contact_Email__c,Contact_Id__r.Driver_Type__c,Total_Approved__c,Monthly_Fixed_Amount__c,Number_of_Pay_Period__c,Half_Fixed_Amount__c,Month__c,Total_Variable_Rate__c,Fuel_Price__c,Total_Mileage__c,Fixed_Amount__c,Variable_Rate__c,Total_Monthly_Reimbursement__c,Contact_Id__c,Approved_Date__c,Status__c,Total_Pending__c,Monthly_Variable_Amount__c,Total_Monthly_Approved_Variable__c,MPG__c,Maintenance_and_Tires__c from Employee_Reimbursement__c where Contact_Id__c=\''+did+'\' and Month__c IN '+ editedquery;
             }
             else
             {
-                query = 'Select id,Month__c,Contact_Id__r.Driver_Type__c,Monthly_Fixed_Amount__c,Number_of_Pay_Period__c,Half_Fixed_Amount__c,Contact_Email__c,Total_Variable_Rate__c,Fuel_Price__c,Total_Mileage__c,Fixed_Amount__c,Variable_Rate__c,Total_Monthly_Reimbursement__c,Contact_Id__c,Approved_Date__c,Status__c,Total_Pending__c,Monthly_Variable_Amount__c,Total_Monthly_Approved_Variable__c,MPG__c,Maintenance_and_Tires__c from Employee_Reimbursement__c where Contact_Id__c=\''+did+'\'';
+                query = 'Select id,Month__c,Contact_Id__r.Driver_Type__c,Total_Approved__c,Monthly_Fixed_Amount__c,Number_of_Pay_Period__c,Half_Fixed_Amount__c,Contact_Email__c,Total_Variable_Rate__c,Fuel_Price__c,Total_Mileage__c,Fixed_Amount__c,Variable_Rate__c,Total_Monthly_Reimbursement__c,Contact_Id__c,Approved_Date__c,Status__c,Total_Pending__c,Monthly_Variable_Amount__c,Total_Monthly_Approved_Variable__c,MPG__c,Maintenance_and_Tires__c from Employee_Reimbursement__c where Contact_Id__c=\''+did+'\'';
             }              
 
             List<EmployeeReimbursements> reimbursementList =  new List<EmployeeReimbursements>();
@@ -3020,7 +3059,7 @@ public with sharing class WrapperUtils
     //AI-000429
     public static void TripCallout(Id driverId, String month, String year, String fuel, String maintTyre, Id empReID,String mpg,String status){
         List<contact> obj_currect_contact1 = new List<contact>();
-        obj_currect_contact1 = [SELECT id, Email, Account.Triplog_API__c 
+        obj_currect_contact1 = [SELECT id, Email, Account.Triplog_API__c,Account.Bi_Weekly_Pay_Period__c 
                                     FROM Contact 
                                     WHERE id =: driverId];
 
@@ -3032,10 +3071,10 @@ public with sharing class WrapperUtils
         String priMax = String.valueOf(Date.valueOf(priMin).addDays(date.daysInMonth(Integer.valueOf(year), Integer.valueOf(monthNumberMap.get(month))) - 1));
     
         String apiToken = obj_currect_contact1[0].Account.Triplog_API__c ;
-        
+        Boolean checkBiWeek = obj_currect_contact1[0].Account.Bi_Weekly_Pay_Period__c;
         if(apiToken != null && !Test.isRunningTest() ){
             System.debug('----------------------------');
-            GetTripCallout.GetTripCalloutForMileage(empReID, obj_currect_contact1[0].Email,obj_currect_contact1[0].id,priMin,priMax,fuel,mpg,maintTyre,apiToken,status,false);
+            GetTripCallout.GetTripCalloutForMileage(empReID, obj_currect_contact1[0].Email,obj_currect_contact1[0].id,priMin,priMax,fuel,mpg,maintTyre,apiToken,status,false,checkBiWeek);
         }
     }
 

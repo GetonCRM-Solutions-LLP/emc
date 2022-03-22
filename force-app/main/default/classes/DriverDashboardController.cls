@@ -10,6 +10,7 @@ public class DriverDashboardController
     public static String totalvariableamount{get;set;}
     public static String contactDataAsString {get; set;}
     public static String gaspriceforpreviosmonth {get; set;}
+    public static String gasVariableRatePreviosMonth {get; set;}
     public String accInsuranceList {get; set;}
     public static String currentDriverDetails {get;set;}
     public List<Attachment> driverInsuranceAttachmentList {get;set;}
@@ -21,6 +22,8 @@ public class DriverDashboardController
     public static Boolean showlastyear {get;set;}
     public static String logoDocument_id {get;set;}
     public static decimal TotalMonthlyCosts {get; set;}
+    public static Boolean checkErrorERMI {get;set;}
+    public static Boolean ConfirmTimeERMI {get;set;}
     /**
     @author Natavar Ghodasara
     @date 26th Feb 2019
@@ -31,14 +34,12 @@ public class DriverDashboardController
         List<contact> currentDriverList = new List<contact>();
         obj_driver_driverMVR = new List<Attachment>();
         currentDriverDetails = getDriverDetails();
-        if(currentDriverDetails!=null)
-        {
-            System.debug('sdhjahsdhaksh'+JSON.deserialize(currentDriverDetails,List<Contact>.Class));
+        if(currentDriverDetails!=null) {
             currentDriverList = (List<Contact>)JSON.deserialize(currentDriverDetails,List<Contact>.Class);
         }
-        if(currentDriverList.size()>0)
-        {
+        if(currentDriverList.size()>0) {
             gaspriceforpreviosmonth = WrapperUtils.getDriverGasPrice(currentDriverList[0].MailingState,currentDriverList[0].MailingCity);
+            gasVariableRatePreviosMonth = WrapperUtils.getDriverFuelVariableRate(currentDriverList[0].Id);
         }
         driverInsuranceAttachmentList = new List<Attachment>();
         driverPacketAttachmentList = new List<Attachment>();
@@ -59,6 +60,21 @@ public class DriverDashboardController
         {
             List<Account> accInsurances = [SELECT id,Bodily_Injury__c, Uninsured_Motorist__c, Property_Damage__c, Comprehensive__c, Collision__c,Umbrella_Coverage__c FROM account WHERE Id =: getAccountid()];
            accInsuranceList = String.escapeSingleQuotes( JSON.serialize(accInsurances));
+        }
+        if(getAccountid()!='' && getContactid()!='' &&  getAccountid() == System.label.ERMI_Account){
+            List<Bi_Weekly_Reimbursement__c> biWeekList = new List<Bi_Weekly_Reimbursement__c>();
+                    biWeekList = [SELECT id,name,Start_Date__c,
+                                        End_Date__c,Confirm_Hours__c,
+                                        Error_Hours__c 
+                                    FROM Bi_Weekly_Reimbursement__c 
+                                    WHERE Contact__c =: getContactid()
+                                    AND Start_Date__c != null 
+                                    AND End_Date__c <= TODAY 
+                                    Order By End_Date__c desc limit 1];
+                                    if(biWeekList.size() > 0 ){
+                                        checkErrorERMI =   biWeekList[0].Error_Hours__c;
+                                        ConfirmTimeERMI =   biWeekList[0].Confirm_Hours__c;
+                                    }                                    
         }
     }
     public static String getAccountid()
@@ -180,7 +196,7 @@ public class DriverDashboardController
                                         Fixed_Amount__c, compliancestatus__c, Car_Image__c, Account.Name, Account.Logo_Document_Id__c, 
                                         Vehicle_Type__c,Insurance_Attachment_Id__c, Account.Triplog_API__c, Email,
                                         Maintenance__c,Tires__c, Insurance_Rate__c, License_Ragistration__c, Taxes__c,
-                                        Depreciation__c, Total_Monthly_Costs__c, Business_Use__c
+                                        Depreciation__c, Total_Monthly_Costs__c, Business_Use__c,Fixed_Cost_Adjustment__c
                                     FROM Contact 
                                     WHERE id =: contactid];
         return JSON.serialize(driverDataList ).unescapeHtml4();
@@ -230,13 +246,33 @@ public class DriverDashboardController
     
     @RemoteAction
     public static List<BiweeklyPayPeriod.BiweeklyWrap> biweeklyMileage(String conId,Integer year){
-        return BiweeklyPayPeriod.getBiweeklyMileage(conId,year);
+        //return BiweeklyPayPeriod.getBiweeklyMileage(conId,year);
+        return BiweeklyPayPeriod.getBiweeklyReimbursement(conId,year);
     }
 
     @RemoteAction
-    public static List<String> getBiweekMileages(string startdate,string enddate,String did)
+    public static List<String> getBiweekMileages(String biweekId)
     {
-        return BiweeklyPayPeriod.getMileages1(date.valueof(startdate),date.valueof(enddate),did);
+        //return BiweeklyPayPeriod.getMileages1(date.valueof(startdate),date.valueof(enddate),did);
+        return BiweeklyPayPeriod.getBiweekMileages1(biweekId);
        //return null;
     } 
+    @RemoteAction
+    public static List<String> getAllMileages(String startdate,String enddate,String did)
+    {
+        return BiweeklyPayPeriod.getAllBiweekMileages1(date.valueof(startdate),date.valueof(enddate),did);
+    } 
+    @RemoteAction
+    public static void sendInsuranceEmail (String Id,String Name,String email){
+        BiWeeklyWrapperUtils.sendInsuranceEmail(Id, Name, email);
+    }
+   /* @RemoteAction
+    public static String syncTripsForErmi (String Id,String startdate,String enddate){
+        //BiWeeklyWrapperUtils.sendInsuranceEmail(Id, Name, email);
+        if( !Test.IsRunningTest()){
+            //GetTripCalloutforCommute.GetTripCalloutForCommuteMileage(reim.id, reim.Contact_Id__r.External_Email__c, reim.Contact_Id__c, startDate, endDate, String.valueOf(reim.Fuel_Price__c), String.valueOf(reim.MPG__c), String.valueOf(reim.Maintenance_and_Tires__c), reim.Contact_Id__r.Account.Triplog_API__c, tripStatus ,putcall, activity,reim.Contact_Id__r.Account.Bi_Weekly_Pay_Period__c);
+        }
+        return 'sucess';
+    }
+    */
 }

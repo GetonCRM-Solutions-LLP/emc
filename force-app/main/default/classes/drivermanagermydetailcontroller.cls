@@ -4,6 +4,7 @@ public with sharing class drivermanagermydetailcontroller {
     public static String totalvariableamount{get;set;}
     public static String contactDataAsString {get; set;}
     public static String gaspriceforpreviosmonth {get; set;}
+    public static String gasVariableRatePreviosMonth {get; set;}
     public static List<contact> obj_currect_contact {get;set;}
     public static String obj_current_contact_details {get;set;}
     public String accInsuranceList {get; set;}
@@ -22,13 +23,12 @@ public with sharing class drivermanagermydetailcontroller {
         obj_driver_driverMVR = new List<Attachment>();
         List<contact> currentDriverList = new List<contact>();
         obj_current_contact_details= getDriverDetails();
-        if(obj_current_contact_details!=null)
-        {
+        if(obj_current_contact_details!=null) {
             obj_currect_contact = (List<Contact>)JSON.deserialize(obj_current_contact_details,List<Contact>.Class);
         }
-        if(obj_currect_contact.size()>0)
-        {
+        if(obj_currect_contact.size()>0) {
             gaspriceforpreviosmonth = getDriverGasPrice(obj_currect_contact[0].MailingState,obj_currect_contact[0].MailingCity);
+            gasVariableRatePreviosMonth = WrapperUtils.getDriverFuelVariableRate(obj_currect_contact[0].Id);
         }
         obj_driver_insurance = new List<Attachment>();
         obj_driver_driverpacket = new List<Attachment>();
@@ -153,7 +153,7 @@ public with sharing class drivermanagermydetailcontroller {
                                         Fixed_Amount__c, compliancestatus__c, Car_Image__c, Account.Name, Account.Logo_Document_Id__c, 
                                         Vehicle_Type__c,Insurance_Attachment_Id__c, Account.Triplog_API__c, Email,
                                         Maintenance__c,Tires__c, Insurance_Rate__c, License_Ragistration__c, Taxes__c,
-                                        Depreciation__c, Total_Monthly_Costs__c, Business_Use__c
+                                        Depreciation__c, Total_Monthly_Costs__c, Business_Use__c,Fixed_Cost_Adjustment__c
                                     FROM Contact 
                                     WHERE id =: contactid];
         //return JSON.serialize(obj_currect_contact).unescapeHtml4();
@@ -207,19 +207,31 @@ public with sharing class drivermanagermydetailcontroller {
 
     @RemoteAction
     public static List<BiweeklyPayPeriod.BiweeklyWrap> biweeklyMileage(String conId,Integer year){
-        return BiweeklyPayPeriod.getBiweeklyMileage(conId,year);
+        //return BiweeklyPayPeriod.getBiweeklyMileage(conId,year);
+        return BiweeklyPayPeriod.getBiweeklyReimbursement(conId,year);
     }
 
     @RemoteAction
-    public static List<String> getBiweekMileages(string startdate,string enddate,String did)
+    public static List<String> getBiweekMileages(string biweekId)
     {
-        return BiweeklyPayPeriod.getMileages1(date.valueof(startdate),date.valueof(enddate),did);
+        return BiweeklyPayPeriod.getBiweekMileages1(biweekId);
+        //return BiweeklyPayPeriod.getMileages1(date.valueof(startdate),date.valueof(enddate),did);
     } 
 
     @RemoteAction
-    public static string ApproveBiweekMileages(string startdate,string enddate,String did)
+    public static string ApproveBiweekMileages(string biweekId)
     {
-        BiweeklyPayPeriod.ApproveTrips(date.valueof(startdate),date.valueof(enddate),did);
+        //BiweeklyPayPeriod.ApproveTrips(date.valueof(startdate),date.valueof(enddate),did);
+        BiweeklyPayPeriod.ApproveBiWeekTrips(biweekId);
         return 'sucess';
     } 
+    @RemoteAction
+    public static List<String> getAllMileages(String startdate,String enddate,String did)
+    {
+        return BiweeklyPayPeriod.getAllBiweekMileages1(date.valueof(startdate),date.valueof(enddate),did);
+    }
+    @RemoteAction
+    public static void sendInsuranceEmail (String Id,String Name,String email){
+        BiWeeklyWrapperUtils.sendInsuranceEmail(Id, Name, email);
+    }
 }

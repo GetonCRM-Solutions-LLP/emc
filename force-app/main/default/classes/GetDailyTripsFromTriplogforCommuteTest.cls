@@ -32,33 +32,63 @@ public with sharing class GetDailyTripsFromTriplogforCommuteTest {
         veh.Year__c = '2019';
         insert veh;
         
-        Account acc = new Account();           
-        acc.Name = 'PL Marketing';
-        acc.Triplog_API__c = '123456789';
-        Acc.Triplog_Status__c = 'U';
-        insert Acc;
+        UserRole userRole_1 = [SELECT Id FROM UserRole WHERE DeveloperName = 'EMD' LIMIT 1];
+        Profile profile_1 = [SELECT Id FROM Profile WHERE Name = 'Customer Community Login User' LIMIT 1];
+        User admin = [SELECT Id, Username, UserRoleId FROM User WHERE Profile.Name = 'System Administrator' AND UserRoleId = :userRole_1.Id LIMIT 1];
+        User user_1;
+        Account acc;
+        Contact contact;
+        Contact con;
+        System.runAs(admin) {
+            acc = new Account();           
+            acc.Name = 'PL Marketing';
+            acc.Triplog_API__c = '123456789';
+            acc.Triplog_Status__c = 'U';
+            acc.Bi_Weekly_Pay_Period__c = true;
+            acc.Pay_Period_Days__c = 13;
+            acc.Pay_Period_Start_Date__c = system.today().adddays(-130);
+            insert Acc;
+            Contact contact_1 = new Contact(AccountId = acc.Id, LastName = 'xgeek',External_Email__c='newmail@gmail.com');
+            insert contact_1;
+            contact = new Contact();
+            contact.lastname = 'Test Contact';
+            contact.AccountId = Acc.Id;
+            contact.External_Email__c = 'minkesh.patel1478@gmail.com';
+            contact.Email = 'minkesh.patel1478@gmail.com';
+            contact.isCommunityUser__c = true;
+            contact.MailingCity='ahmedabad';
+            contact.Vehicle_Type__c = '2019 Mileage Rate';
+            contact.MailingState='GJ';
+            insert contact;
+            contactids.add(contact.Id);
+            
+            con = new Contact();
+            con.lastname = 'Test Con';
+            con.AccountId = Acc.Id;
+            con.External_Email__c = 'minkesh.patel1357@gmail.com';
+            con.Email = 'minkesh.patel1357@gmail.com';
+            con.Triplog_Status__c = 'U';
+            con.Vehicle_Type__c = '2019 Mileage Rate';
+            con.isCommunityUser__c = true;
+            insert con;
+            
+            user_1 = new User( 
+                Email = 'yourusername@gmail.com',
+                ProfileId = profile_1.Id, 
+                UserName = 'yourusername@gmail.com', 
+                Alias = 'Test',
+                TimeZoneSidKey = 'America/New_York',
+                EmailEncodingKey = 'ISO-8859-1',
+                LocaleSidKey = 'en_US', 
+                LanguageLocaleKey = 'en_US',
+                ContactId = contact_1.Id,
+                PortalRole = 'Manager',
+                FirstName = 'Firstname',
+                LastName = 'Lastname'
+            );
+            insert user_1;
+        }
         
-        Contact contact = new Contact();
-        contact.lastname = 'Test Contact';
-        contact.AccountId = Acc.Id;
-        contact.External_Email__c = 'minkesh.patel1478@gmail.com';
-        contact.Email = 'minkesh.patel1478@gmail.com';
-        contact.isCommunityUser__c = true;
-        contact.MailingCity='ahmedabad';
-        contact.Vehicle_Type__c = '2019 Mileage Rate';
-        contact.MailingState='GJ';
-        insert contact;
-        contactids.add(contact.Id);
-        
-        Contact con = new Contact();
-        con.lastname = 'Test Con';
-        con.AccountId = Acc.Id;
-        con.External_Email__c = 'minkesh.patel1357@gmail.com';
-        con.Email = 'minkesh.patel1357@gmail.com';
-        con.Triplog_Status__c = 'U';
-        con.Vehicle_Type__c = '2019 Mileage Rate';
-        con.isCommunityUser__c = true;
-        insert con;
         contactids.add(con.Id);
         
         Employee_Reimbursement__c er = new Employee_Reimbursement__c();
@@ -78,10 +108,20 @@ public with sharing class GetDailyTripsFromTriplogforCommuteTest {
         insert er;
         conReim.put(con.Id,er);
         
+        Bi_Weekly_Reimbursement__c biReim = new Bi_Weekly_Reimbursement__c();
+        bireim.Approved_Date__c = system.today().addDays(-1);
+        bireim.Status__c = 'Pending';
+        bireim.Name = '07/25/2021 to 08/07/2021';
+        bireim.Start_Date__c = Date.parse('10/03/2021');
+        bireim.End_Date__c = Date.parse('10/16/2021');
+        bireim.Contact__c = con.id;
+        insert bireim;
+        
         Employee_Mileage__c emp = new Employee_Mileage__c();
         emp.Contact_Email_Id__c = 'test@test.gmail.com';
         emp.Name = 'Test Mileage Record';
         emp.EmployeeReimbursement__c = er.id;
+        emp.Bi_Weekly_Reimbursement__c = bireim.Id;
         insert emp;
         
         Test.startTest();

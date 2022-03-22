@@ -11,7 +11,10 @@ export default class DriverProfile extends LightningElement {
     @api GasPrice;
     @api unapproveMileage;
     @api chartInfo;
+    @api plMarketing;
+    @api accountId;
     isNotify = false;
+    isShowMessage = false;
     isInformation = false;
     isExpand = false;
     contactChart;
@@ -85,6 +88,11 @@ export default class DriverProfile extends LightningElement {
             }
             if (this.contactDetails.vehicleValue) {
                 this.vehicleValue = this.formatNumber(this.contactDetails.vehicleValue);
+            }
+            if(this.accountId === this.plMarketing){
+                this.isShowMessage = false;
+            }else{
+                this.isShowMessage = true;
             }
             this.driverNotification();
         }

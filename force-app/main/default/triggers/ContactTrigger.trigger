@@ -133,7 +133,7 @@ trigger ContactTrigger on Contact (after Update, after insert, before insert, be
                     accountId = currentContact.AccountId;
                 }            
             }
-            if(updateContactList.size()>0)
+            if(updateContactList.size()>0 && !Test.isRunningTest())
             {
                 ContactTriggerHelper.CheckVehicalYearAndModel(updateContactList);
             }
@@ -154,9 +154,7 @@ trigger ContactTrigger on Contact (after Update, after insert, before insert, be
                 }
             }
            
-            if(updateContactList.size()>0)
-            {
-                //ContactTriggerHelper.updateTimeZone(updateContactList);
+            if(updateContactList.size()>0) { //ContactTriggerHelper.updateTimeZone(updateContactList);
             }
         }
 
@@ -182,8 +180,6 @@ trigger ContactTrigger on Contact (after Update, after insert, before insert, be
         {
             obj_toaddresses.add(addressLabel);
         }
-
-
         email.setToAddresses(obj_toaddresses);
         string bodyOftemp = templateId.body;
         bodyOftemp = bodyOftemp.replace('{!exceptionmessage}', e.getmessage()+' '+e.getlinenumber());

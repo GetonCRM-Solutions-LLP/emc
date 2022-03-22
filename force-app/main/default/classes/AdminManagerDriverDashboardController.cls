@@ -5,6 +5,7 @@ public with sharing class AdminManagerDriverDashboardController
     public static String totalvariableamount{get;set;}
     public static String contactDataAsString {get; set;}
     public static String gaspriceforpreviosmonth {get; set;}
+    public static String gasVariableRatePreviosMonth {get; set;}
     public static String obj_current_contact_details {get;set;}
     public Integer obj_attachementsize {get;set;}
     public static String nameofEmployee{get;set;}
@@ -25,6 +26,7 @@ public with sharing class AdminManagerDriverDashboardController
         if(obj_currect_contact.size()>0)
         {
             gaspriceforpreviosmonth = WrapperUtils.getDriverGasPrice(obj_currect_contact[0].MailingState,obj_currect_contact[0].MailingCity);
+            gasVariableRatePreviosMonth = WrapperUtils.getDriverFuelVariableRate(obj_currect_contact[0].Id);
         }
         obj_driver_insurance = new List<Attachment>();
         obj_driver_driverpacket = new List<Attachment>();
@@ -145,7 +147,8 @@ public with sharing class AdminManagerDriverDashboardController
                                             Accountid,Account.Name,Account.Logo_Document_Id__c,
                                             Vehicle_Type__c,Insurance_Attachment_Id__c,Maintenance__c,Tires__c,
                                             Insurance_Rate__c, License_Ragistration__c, Taxes__c,
-                                            Depreciation__c, Total_Monthly_Costs__c, Business_Use__c 
+                                            Depreciation__c, Total_Monthly_Costs__c, Business_Use__c,
+                                            Fixed_Cost_Adjustment__c 
                                         FROM Contact  
                                     WHERE Id =: getDriverid()];
         return String.escapeSingleQuotes(JSON.serialize(obj_currect_contact));
@@ -218,19 +221,26 @@ public with sharing class AdminManagerDriverDashboardController
     } 
     @RemoteAction
     public static List<BiweeklyPayPeriod.BiweeklyWrap> biweeklyMileage(String conId,Integer year){
-        return BiweeklyPayPeriod.getBiweeklyMileage(conId,year);
+        //return BiweeklyPayPeriod.getBiweeklyMileage(conId,year);
+        return BiweeklyPayPeriod.getBiweeklyReimbursement(conId,year);
     }
 
     @RemoteAction
-    public static List<String> getBiweekMileages(string startdate,string enddate,String did)
+    public static List<String> getBiweekMileages(string biweekId)
     {
-        return BiweeklyPayPeriod.getMileages1(date.valueof(startdate),date.valueof(enddate),did);
+        //return BiweeklyPayPeriod.getMileages1(date.valueof(startdate),date.valueof(enddate),did);
+        return BiweeklyPayPeriod.getBiweekMileages1(biweekId);
     } 
 
     @RemoteAction
-    public static string ApproveBiweekMileages(string startdate,string enddate,String did)
+    public static string ApproveBiweekMileages(string biweekId)
     {
-        BiweeklyPayPeriod.ApproveTrips(date.valueof(startdate),date.valueof(enddate),did);
+        //BiweeklyPayPeriod.ApproveTrips(date.valueof(startdate),date.valueof(enddate),did);
+        BiweeklyPayPeriod.ApproveBiWeekTrips(biweekId);
         return 'sucess';
+    } 
+    @RemoteAction
+    public static List<String> getAllMileages(String startdate,String enddate,String did) {
+        return BiweeklyPayPeriod.getAllBiweekMileages1(date.valueof(startdate),date.valueof(enddate),did);
     } 
 }

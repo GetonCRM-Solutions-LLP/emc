@@ -5,6 +5,7 @@ public  class DriverDashboardFromAdminManager
     public static String totalvariableamount{get;set;}
     public static String contactDataAsString {get; set;}
     public static String gaspriceforpreviosmonth {get; set;}
+    public static String gasVariableRatePreviosMonth {get; set;}
     public static List<contact>  obj_currect_contact {get;set;}
     public static String obj_current_contact_details {get;set;}
     public List<Attachment>  obj_driver_insurance {get;set;}
@@ -36,9 +37,9 @@ public  class DriverDashboardFromAdminManager
         setEmployeeName();
         obj_driver_insurance = [SELECT id, Body, Name FROM Attachment WHERE id=:obj_currect_contact[0].Insurance_Attachment_Id__c limit 1];
         obj_attachementsize = obj_driver_insurance.size();
-        if(obj_currect_contact.size() > 0)
-        {
+        if(obj_currect_contact.size() > 0) {
             gaspriceforpreviosmonth = getDriverGasPrice(obj_currect_contact[0].MailingState,obj_currect_contact[0].MailingCity);
+            gasVariableRatePreviosMonth = WrapperUtils.getDriverFuelVariableRate(obj_currect_contact[0].Id);
         }
         //getpastYearReimbursement();
 
@@ -156,7 +157,7 @@ public  class DriverDashboardFromAdminManager
                                         Fixed_Amount__c, compliancestatus__c, Car_Image__c, Account.Name, Account.Logo_Document_Id__c, 
                                         Vehicle_Type__c,Insurance_Attachment_Id__c, Account.Triplog_API__c, Email,
                                         Maintenance__c,Tires__c, Insurance_Rate__c, License_Ragistration__c, Taxes__c,
-                                        Depreciation__c, Total_Monthly_Costs__c, Business_Use__c
+                                        Depreciation__c, Total_Monthly_Costs__c, Business_Use__c,Fixed_Cost_Adjustment__c
                                     FROM Contact 
                                     WHERE id =: getDriverid()];
         return String.escapeSingleQuotes(JSON.serialize(obj_currect_contact));
@@ -229,19 +230,42 @@ public  class DriverDashboardFromAdminManager
 
     @RemoteAction
     public static List<BiweeklyPayPeriod.BiweeklyWrap> biweeklyMileage(String conId,Integer year){
-        return BiweeklyPayPeriod.getBiweeklyMileage(conId,year);
+        //return BiweeklyPayPeriod.getBiweeklyMileage(conId,year);
+        return BiweeklyPayPeriod.getBiweeklyReimbursement(conId,year);
     }
 
     @RemoteAction
-    public static List<String> getBiweekMileages(string startdate,string enddate,String did)
+    public static List<String> getBiweekMileages(String biweekId)
     {
-        return BiweeklyPayPeriod.getMileages1(date.valueof(startdate),date.valueof(enddate),did);
+        //return BiweeklyPayPeriod.getMileages1(date.valueof(startdate),date.valueof(enddate),did);
+        return BiweeklyPayPeriod.getBiweekMileages1(biweekId);
     } 
 
     @RemoteAction
-    public static string ApproveBiweekMileages(string startdate,string enddate,String did)
+    public static string ApproveBiweekMileages(String biweekId)
     {
-        BiweeklyPayPeriod.ApproveTrips(date.valueof(startdate),date.valueof(enddate),did);
+        //BiweeklyPayPeriod.ApproveTrips(date.valueof(startdate),date.valueof(enddate),did);
+        BiweeklyPayPeriod.ApproveBiWeekTrips(biweekId);
         return 'sucess';
+    } 
+    @AuraEnabled
+    public static String getUnapprovedMileages(String reimbursementDetails) // Please change the method body,UI Dev require to pass the several parameters
+    {
+        system.debug('inside getUnapprovedMileages'+reimbursementDetails);
+        return String.escapeSingleQuotes(WrapperUtils.getUnapprovedMileages(reimbursementDetails));
+    }
+    @AuraEnabled
+    public static string getAllDriversLastMonthUpdatedReimbursements(String did, String accid,String showTeamRecord) {
+        return String.escapeSingleQuotes(WrapperUtils.getLastMonthReimbursements(did,accid,boolean.valueOf(showTeamRecord),'Admin'));
+    }  
+    @AuraEnabled
+    public static string getAllDriversLastMonthUnapprovedReimbursementsClone(String did, String accid,String showTeamRecord) 
+    {        
+        return String.escapeSingleQuotes(WrapperUtils.getUnapprovedReimbursements(did,accid,boolean.valueOf(showTeamRecord),'Admin'));
+    }  
+    @RemoteAction
+    public static List<String> getAllMileages(String startdate,String enddate,String did)
+    {
+        return BiweeklyPayPeriod.getAllBiweekMileages1(date.valueof(startdate),date.valueof(enddate),did);
     } 
 }

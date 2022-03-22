@@ -6,7 +6,7 @@ import {
 } from 'lwc';
 import getMilegesData from '@salesforce/apex/GetDriverData.getMilegesData';
 import getMilegesDataSize from '@salesforce/apex/GetDriverData.getMilegesDataSize';
-
+import getInsuranceStatus from '@salesforce/apex/GetDriverData.getInsuranceStatus';
 export default class HomePageComponent extends LightningElement {
     ready = false;
     rowLimit;
@@ -28,6 +28,7 @@ export default class HomePageComponent extends LightningElement {
     @track reporturl;
     @track notificationUrl;
     @track myDetailurl;
+    @track myDetailInsuranceurl;
     @api searchList = [];
     @track drivername;
     @track loadingSpinner = false;
@@ -81,6 +82,7 @@ export default class HomePageComponent extends LightningElement {
     managerLoggedIn = false;
     unapproveCheck = false;
     isSyncType = true;
+    isInsurance = false;
     // mileageRecordSize(accId, drId, StDate, EnDate, OrName,
     //     DestName, ActDriver,
     //     StMileage,
@@ -745,6 +747,16 @@ export default class HomePageComponent extends LightningElement {
     }
     connectedCallback() {
         this.ready = true;
+        getInsuranceStatus({
+            conId: this.Id,
+        })
+        .then((data) => {
+            this.isInsurance = data;
+            console.log("from insurance", data);
+        })
+        .catch((error) => {
+            console.log(error);
+        });
         if(this.accountId === this.plMarketing){
             this.showSync = (this.ProfileId === '00e31000001FRDYAA4' ||this.ProfileId === '00e31000001FRDZAA4') ? true : false;
             //this.showSync = false;
@@ -784,6 +796,7 @@ export default class HomePageComponent extends LightningElement {
             this.reporturl = "/app/reportlist?accid=" + this.accountId + "&id=" + this.Id + "&showteam=" + this.showTeam;
             this.notificationUrl = "/app/ManageNotification?accid=" + this.accountId + "&id=" + this.Id + "&showteam=" + this.showTeam;
             this.myDetailurl = "/app/driveradminmanagermydetail?accid=" + this.accountId + "&id=" + this.Id + "&showteam=" + this.showTeam;
+            this.myDetailInsuranceurl = "/app/drivermanagermydetailInsurance?accid="+ this.accountId + "&id=" + this.Id + "&showteam=" + this.showTeam;
         } else if (this.ProfileId === '00e31000001FRDZAA4') {
             this.admindriverLoggedIn = true;
             this.drivermanagerLoggedIn = false;
@@ -794,6 +807,7 @@ export default class HomePageComponent extends LightningElement {
             this.notificationUrl = "/app/ManageNotification?accid=" + this.accountId + "&id=" + this.Id + "&showteam=" + this.showTeam + "&admindriver=" + this.admindriver;
             this.reporturl = "/app/reportlist?accid=" + this.accountId + "&id=" + this.Id + "&showteam=" + this.showTeam + "&admindriver=" + this.admindriver;
             this.myDetailurl = "/app/driveradminmanagermydetail?accid=" + this.accountId + "&id=" + this.Id + "&showteam=" + this.showTeam + "&admindriver=" + this.admindriver;
+            this.myDetailInsuranceurl = "/app/drivermanagermydetailInsurance?accid="+ this.accountId + "&id=" + this.Id + "&showteam=" + this.showTeam + "&admindriver=" + this.admindriver;
         }
     }
 

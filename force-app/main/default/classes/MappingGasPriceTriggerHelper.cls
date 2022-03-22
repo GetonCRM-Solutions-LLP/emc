@@ -50,6 +50,55 @@ public without sharing class MappingGasPriceTriggerHelper{
         }
     }
 
+    public static void updateBiweekReimId(List<Employee_Mileage__c> mileagesList){
+        System.debug('***updateBiweekReimId***');
+        set<Id> reimIds = new Set<Id>();
+        Map<String,String> reimContactID = new Map<String,String>();
+        Map<String,Date> reimAccPayDates = new Map<String,Date>();
+        Map<String,Integer> reimAccPayDays = new Map<String,Integer>();
+        for(Employee_Mileage__c currentMileage : mileagesList) {
+            reimIds.add(currentMileage.EmployeeReimbursement__c);
+        }
+        for(Employee_Reimbursement__c currentReimbursement : [SELECT id, Contact_Id__c,Contact_Id__r.Account.Pay_Period_Start_Date__c,Contact_Id__r.Account.Pay_Period_Days__c FROM Employee_Reimbursement__c WHERE id IN: reimIds])
+        {   
+            if(!reimContactID.containsKey(currentReimbursement.id)) {
+                reimContactID.put(currentReimbursement.id,currentReimbursement.Contact_Id__c);
+                reimAccPayDates.put(currentReimbursement.id, currentReimbursement.Contact_Id__r.Account.Pay_Period_Start_Date__c);
+                reimAccPayDays.put(currentReimbursement.id,Integer.valueOf(currentReimbursement.Contact_Id__r.Account.Pay_Period_Days__c));
+            } 
+        }
+        for(Employee_Mileage__c currentMileage : mileagesList)
+        {
+            currentMileage.Bi_Weekly_Reimbursement__c = getBiweekReimId(reimContactID.get(currentMileage.EmployeeReimbursement__c), reimAccPayDates.get(currentMileage.EmployeeReimbursement__c), reimAccPayDays.get(currentMileage.EmployeeReimbursement__c), currentMileage.Trip_Date__c);
+        }
+    }
+    public static string getBiweekReimId (String contactId,Date payStartdate,Integer paydays,Date tripdate){
+        System.debug('***getBiweekReimId***');
+        String biWeekId;
+        Date endDate;
+        List<Date> dtList = new list<Date>();
+        do {
+            endDate = payStartdate.addDays(paydays);
+            if(payStartdate <= tripdate && tripdate <= endDate) {
+                dtList.add(payStartdate);
+                dtList.add(endDate);
+            }
+            payStartdate = endDate.addDays(1);
+        } while(endDate <= System.today());
+        System.debug('***dtList***'+dtList);
+        if(dtList.size() > 0){
+            for(Bi_Weekly_Reimbursement__c biWeekObj: [SELECT id,Start_Date__c, End_Date__c,Contact__c 
+                                                    FROM Bi_Weekly_Reimbursement__c 
+                                                    WHERE Contact__c =: contactId 
+                                                        AND Start_Date__c =: date.valueof(dtList[0])
+                                                        AND End_Date__c =: date.valueof(dtList[1])] ) {
+                                                            System.debug('***inside for  ***');
+                                                            biWeekId = biWeekObj.Id;
+            }
+        }
+        System.debug('***biWeekId***'+biWeekId);
+        return biWeekId;
+    }
     static Integer getPacificOffset(Integer year, Integer month, Integer day, String timezonestr)
     {
         return TimeZone.getTimeZone(timezonestr)

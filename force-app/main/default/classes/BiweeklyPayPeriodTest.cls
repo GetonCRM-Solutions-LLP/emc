@@ -3,6 +3,8 @@ public class BiweeklyPayPeriodTest {
     public BiweeklyPayPeriodTest() {
     }
     public static testmethod void test1(){
+        
+        
         TriggerConfig__c customEmailSetting =  new TriggerConfig__c();
         customEmailSetting.Name = 'Defaulttrigger';
         customEmailSetting.ContactTriggersendEmailForNewContact__c = true;
@@ -25,7 +27,7 @@ public class BiweeklyPayPeriodTest {
         Vehicle_URL_Mapping__c veh = new Vehicle_URL_Mapping__c();
         veh.URL__c = 'https://cdn2.hubspot.net/hubfs/2511299/iStock-494093356.jpg';
         veh.vehicle__c = 'Full-Size Sedan';
-        veh.Year__c = '2019';
+        veh.Year__c = '2009';
         insert veh;
 
         UserRole userRole_1 = [SELECT Id FROM UserRole WHERE DeveloperName = 'EMD' LIMIT 1];
@@ -36,7 +38,8 @@ public class BiweeklyPayPeriodTest {
         Contact con = new Contact();
         System.runAs(admin) {
         acc.Name = 'Test Account';
-        acc.Pay_Period_Start_Date__c = system.today();
+        acc.Pay_Period_Start_Date__c = date.parse('9/5/2021');
+        acc.Pay_Period_Days__c = 13;
         insert acc;
         Contact contact_1 = new Contact(AccountId = acc.Id, LastName = 'xgeek',External_Email__c='abc@gmail.com');
         insert contact_1;
@@ -92,9 +95,22 @@ public class BiweeklyPayPeriodTest {
         er.Maintenance_and_Tires__c = con.Maintenance_and_Tires__c;
         er.MPG__c = con.MPG__c;
         insert er;
+        
+        Bi_Weekly_Reimbursement__c br = new Bi_Weekly_Reimbursement__c();
+            br.Name = 9/5/2021 + ' to ' + 9/18/2021 ; 
+            br.Contact__c = con.Id;
+            br.Start_Date__c = date.parse('9/5/2021');
+            br.End_Date__c = date.parse('9/18/2021');
+            br.MPG__c = con.MPG__c;
+            br.Maintenance_and_Tires__c = con.Maintenance_and_Tires__c;
+            br.Fixed_Amount__c = con.Fixed_Amount__c;
+            br.Status__c = 'Pending';
+            br.Fuel_Price__c = 0;
+        Insert br;
 
         Employee_Mileage__c emp = new Employee_Mileage__c();
         emp.EmployeeReimbursement__c = er.id;
+        emp.Bi_Weekly_Reimbursement__c = br.Id;
         emp.Contact_Email_Id__c = con.External_Email__c;
         emp.Name = 'Test Mileage Record';
         emp.Trip_Status__c = StaticValues.noApprovedYet;
@@ -105,13 +121,19 @@ public class BiweeklyPayPeriodTest {
         emp.EndTime__c =  system.now();
         emp.Trip_Date__c = date.today().adddays(-1);
         insert emp;
+        
         Test.startTest();
         System.runAs(user_1) {
+            integer i = 0;
         BiweeklyPayPeriod.getTimeAndAttendance(con.Id, '2021');
         BiweeklyPayPeriod.getBiweeklyMileage(con.Id, 2021);
         BiweeklyPayPeriod.getMileages1(system.today()-1, system.today(), con.Id);
         BiweeklyPayPeriod.ApproveTrips(system.today()-1, system.today(), con.Id);
         BiweeklyPayPeriod.calculateBiweekMil (String.valueof(system.today()-1),String.valueof(system.today()), con.Id);
+        BiweeklyPayPeriod.getBiweeklyReimbursement(String.valueOf(con.Id) ,2021);
+        BiweeklyPayPeriod.getBiweekMileages1(string.valueOf(br));
+        BiweeklyPayPeriod.ApproveBiWeekTrips(string.valueOf(br));
+            
       }
         Test.stopTest();
     }

@@ -44,11 +44,20 @@
                                 <span class="slds-truncate" title="Menu Item">Communications</span>
                             </a>
                         </li>
-                        <li class="slds-context-bar-item">
-                            <a href={myDetailurl} class="slds-context-bar__label-action" title="Menu Item">
-                                <span class="slds-truncate" title="Menu Item">My Details</span>
-                            </a>
-                        </li>
+                        <template if:true={isInsurance}>
+                            <li class="slds-context-bar-item">
+                                <a href={myDetailurl} class="slds-context-bar__label-action" title="Menu Item">
+                                    <span class="slds-truncate" title="Menu Item">My Details</span>
+                                </a>
+                            </li>
+                        </template>
+                        <template if:false={isInsurance}>
+                            <li class="slds-context-bar-item">
+                                <a href={myDetailInsuranceurl} class="slds-context-bar__label-action" title="Menu Item">
+                                    <span class="slds-truncate" title="Menu Item">My Details</span>
+                                </a>
+                            </li>
+                        </template>
                     </template>
                     <template if:true={adminLoggedIn}>
                         <li class="slds-context-bar-item">
@@ -84,11 +93,21 @@
                                 <span class="slds-truncate" title="Menu Item">Reports</span>
                             </a>
                         </li>
-                        <li class="slds-context-bar-item">
-                            <a href={myDetailurl} class="slds-context-bar__label-action" title="Menu Item">
-                                <span class="slds-truncate" title="Menu Item">My Details</span>
-                            </a>
-                        </li>
+                        <template if:true={isInsurance}>
+                            <li class="slds-context-bar-item">
+                                <a href={myDetailurl} class="slds-context-bar__label-action" title="Menu Item">
+                                    <span class="slds-truncate" title="Menu Item">My Details</span>
+                                </a>
+                            </li>
+                        </template>
+                        <template if:false={isInsurance}>
+                            <li class="slds-context-bar-item">
+                                <a href={myDetailInsuranceurl} class="slds-context-bar__label-action" title="Menu Item">
+                                    <span class="slds-truncate" title="Menu Item">My Details</span>
+                                </a>
+                            </li>
+                        </template>
+                       
                     </template>
 
                     <li class="slds-context-bar-item">
