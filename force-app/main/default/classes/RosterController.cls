@@ -401,7 +401,8 @@ global without sharing class RosterController
                                             Department__c,Job_Title__c,Employee_Netchex_Id__c,Dept__c,
                                             Average_Mileage__c,Average_Reimbursement__c,Deactivated_By__c,
                                             Division__c,Department,LOA_Start_Date__c,LOA_End_Date__c,LOA_Fixed_Amount__c,
-                                            Payroll_Period__c,Final_Payroll_Amount__c,First_Payroll__c
+                                            Payroll_Period__c,Final_Payroll_Amount__c,First_Payroll__c,
+                                            Monthly_Reimbursement__c, Biweek_Reimbursement__c, Time_Attandance__c
                                         FROM Contact 
                                         WHERE Accountid=:accid]) //Branch_Number__c,Branch_Name__c 
         {                
@@ -876,7 +877,7 @@ global without sharing class RosterController
     @RemoteAction
     public static String editEmployeeDetails(String editUserID) {
         Contact loggedinContact = new Contact();
-        query = 'Select id,Name,FirstName,Lastname,Email,External_Email__c, Division__c,Final_Payroll_Amount__c,First_Payroll__c,Department,Deactivated_Date__c,Role__c,Manager__c,Manager__r.Name,MailingPostalCode,Driving_States__c,MailingState,MailingCity,Employee_ID__c,Activation_Date__c,Vehicle_Type__c,Last_Pay_Date__c,Monthly_Mileage_Limit__c,Added_Date__c,Fixed_Amount__c,compliancestatus__c,Total_Reimbursement__c,IsDeactivated__c,Monthly__c,Sage_100_ID__c,GL_Code__c,App__c,MobilePhone,Phone,Branch_Name__c,Branch_Number__c,Freeze__c,Driver_Type__c,Territory__c,Code__c,District__c,Department__c,Dept__c,Job_Title__c,Employee_Netchex_Id__c,Deactivated_By__c,LOA_Start_Date__c,LOA_End_Date__c,LOA_Fixed_Amount__c,Payroll_Period__c from Contact where id=\''+editUserID+'\''; 
+        query = 'Select id,Name,FirstName,Lastname,Email,External_Email__c, Division__c,Final_Payroll_Amount__c,First_Payroll__c,Department,Deactivated_Date__c,Role__c,Manager__c,Manager__r.Name,MailingPostalCode,Driving_States__c,MailingState,MailingCity,Employee_ID__c,Activation_Date__c,Vehicle_Type__c,Last_Pay_Date__c,Monthly_Mileage_Limit__c,Added_Date__c,Fixed_Amount__c,compliancestatus__c,Total_Reimbursement__c,IsDeactivated__c,Monthly__c,Sage_100_ID__c,GL_Code__c,App__c,MobilePhone,Phone,Branch_Name__c,Branch_Number__c,Freeze__c,Driver_Type__c,Territory__c,Code__c,District__c,Department__c,Dept__c,Job_Title__c,Employee_Netchex_Id__c,Deactivated_By__c,LOA_Start_Date__c,LOA_End_Date__c,LOA_Fixed_Amount__c,Payroll_Period__c,Monthly_Reimbursement__c, Biweek_Reimbursement__c, Time_Attandance__c from Contact where id=\''+editUserID+'\''; 
         List<EmployeeDetails> employeeList = new List<EmployeeDetails>();
         List<Contact> managerlist = (List<Contact>)ExecuteQueryUtil.getRecordListFromsObject(query);
         

@@ -24,6 +24,7 @@ public class DriverDashboardController
     public static decimal TotalMonthlyCosts {get; set;}
     public static Boolean checkErrorERMI {get;set;}
     public static Boolean ConfirmTimeERMI {get;set;}
+    public String obj_content_version {get;set;}
     /**
     @author Natavar Ghodasara
     @date 26th Feb 2019
@@ -76,6 +77,16 @@ public class DriverDashboardController
                                         ConfirmTimeERMI =   biWeekList[0].Confirm_Hours__c;
                                     }                                    
         }
+        /*try{
+            List<ContentDocumentLink> contentDocLink = [SELECT ContentDocumentId,LinkedEntityId FROM ContentDocumentLink where LinkedEntityId  =: getContactid()];
+            Set<Id> ids = new Set<Id>();
+            for(ContentDocumentLink obj:  contentDocLink){
+                ids.add(obj.ContentDocumentId);
+            }
+            ContentDistribution contentDist = [SELECT id,ContentDownloadUrl from ContentDistribution where ContentDocumentId in : ids and Name=: Constants.signedDocument order by createddate desc limit 1];
+            obj_content_version = contentDist.ContentDownloadUrl;
+            System.debug('obj_content_version-->'+obj_content_version);
+        }catch(Exception e){System.debug('Exception:-->'+e.getmessage()+'--'+e.getLineNumber());}*/
     }
     public static String getAccountid()
     {
@@ -130,9 +141,9 @@ public class DriverDashboardController
     //     }   
     // }
     @RemoteAction
-    public Static String getAllReimbursements(String year,String did,String accid) 
+    public Static String getAllReimbursements(String year,String contactId,String accountId) 
     {       
-        return String.escapeSingleQuotes(WrapperUtils.getAllReimbursements(year,did,accid));
+        return String.escapeSingleQuotes(WrapperUtils.getAllReimbursements(year,contactId,accountId));
     }   
     public static String getReimbursementsList()
     {         
@@ -196,33 +207,35 @@ public class DriverDashboardController
                                         Fixed_Amount__c, compliancestatus__c, Car_Image__c, Account.Name, Account.Logo_Document_Id__c, 
                                         Vehicle_Type__c,Insurance_Attachment_Id__c, Account.Triplog_API__c, Email,
                                         Maintenance__c,Tires__c, Insurance_Rate__c, License_Ragistration__c, Taxes__c,
-                                        Depreciation__c, Total_Monthly_Costs__c, Business_Use__c,Fixed_Cost_Adjustment__c
+                                        Depreciation__c, Total_Monthly_Costs__c, Business_Use__c,Fixed_Cost_Adjustment__c,
+                                        Monthly_Reimbursement__c,Biweek_Reimbursement__c,Time_Attandance__c,
+                                        Account.Bi_Weekly_Pay_Period__c
                                     FROM Contact 
                                     WHERE id =: contactid];
         return JSON.serialize(driverDataList ).unescapeHtml4();
     }
     @RemoteAction
-    public static List<String> getMileages(String clickedMonth,String year,String did)
+    public static List<String> getMileages(String clickedMonth,String year,String contactId)
     {
-        return WrapperUtils.getMileages1(clickedMonth,year,did);
+        return WrapperUtils.getMileages1(clickedMonth,year,contactId);
        //return null;
     }    
    
     @RemoteAction
-    public static String readFromFileInchunk(String attachmentBody, String attachmentName, String attachmentId,String did,String accid,String contactattachementid)
+    public static String readFromFileInchunk(String attachmentBody, String attachmentName, String attachmentId,String contactId,String accountId,String contactattachementid)
     {
-        return  WrapperUtils.readFromFileInchunk(attachmentBody,attachmentName,attachmentId,did,accid,contactattachementid);   
+        return  WrapperUtils.readFromFileInchunk(attachmentBody,attachmentName,attachmentId,contactId,accountId,contactattachementid);   
     }
     @RemoteAction
-    public static List<String> getCompliance(String did)
+    public static List<String> getCompliance(String contactId)
     {
-        return WrapperUtils.getComplianceCalculation(did,String.valueOf(System.today().year()));
+        return WrapperUtils.getComplianceCalculation(contactId,String.valueOf(System.today().year()));
         
     }
     @RemoteAction
-    public static List<String> getPacketandMeeting(String did)
+    public static List<String> getPacketandMeeting(String contactId)
     {
-        return WrapperUtils.getPacketandMeetingDetails(did);
+        return WrapperUtils.getPacketandMeetingDetails(contactId);
     }   
 
 
@@ -239,9 +252,9 @@ public class DriverDashboardController
     }
 
     @RemoteAction
-    public static String getMileagesBasedTandAtt(String startdate,String enddate,String did)
+    public static String getMileagesBasedTandAtt(String startdate,String enddate,String contactId)
     {
-        return String.escapeSingleQuotes(WrapperUtils.getMileagesBasedTA(startdate,enddate,did));
+        return String.escapeSingleQuotes(WrapperUtils.getMileagesBasedTA(startdate,enddate,contactId));
     } 
     
     @RemoteAction
@@ -250,17 +263,20 @@ public class DriverDashboardController
         return BiweeklyPayPeriod.getBiweeklyReimbursement(conId,year);
     }
 
+    /*EMC-260 
+    Author : Sanket Goswami
+    Description : This method is used to get mileages with biweekly reimbursement data based on biweekly reimbursement selected by user*/
     @RemoteAction
     public static List<String> getBiweekMileages(String biweekId)
     {
-        //return BiweeklyPayPeriod.getMileages1(date.valueof(startdate),date.valueof(enddate),did);
+        //return BiweeklyPayPeriod.getMileages1(date.valueof(startdate),date.valueof(enddate),contactId);
         return BiweeklyPayPeriod.getBiweekMileages1(biweekId);
        //return null;
     } 
     @RemoteAction
-    public static List<String> getAllMileages(String startdate,String enddate,String did)
+    public static List<String> getAllMileages(String startdate,String enddate,String contactId)
     {
-        return BiweeklyPayPeriod.getAllBiweekMileages1(date.valueof(startdate),date.valueof(enddate),did);
+        return BiweeklyPayPeriod.getAllBiweekMileages1(date.valueof(startdate),date.valueof(enddate),contactId);
     } 
     @RemoteAction
     public static void sendInsuranceEmail (String Id,String Name,String email){

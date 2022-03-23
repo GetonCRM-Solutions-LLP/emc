@@ -75,7 +75,7 @@ public class RosterControllerTest {
         }
          
         EmployeeDetails empDetail = WrapperUtils.getEmployeeDetails(obj_Driver_list1[0],120.34,230.43);
-        EmployeeDetails empDetail1 = WrapperUtils.getEmployeeDetails(obj_Contact2,120.34,230.43);
+        EmployeeDetails empDetail1 = WrapperUtils.getEmployeeDetails(obj_Driver_list1[0],120.34,230.43);
          String str = 'Employee_ID__c,Firstname,LastName,External_Email__c,' + 
                             'Vehicle_Type__c,Role__c,MailingCity,MailingState,' + 
                             'MailingPostalCode,AccountId,Activation_Date__c,Manager__c,MobilePhone, Driving_States__c\n'+
@@ -141,11 +141,11 @@ public class RosterControllerTest {
             
             RosterController.LOAWrapper empW = new RosterController.LOAWrapper();
              empW.BiweekId = string.valueOf(br.Id);
-        	 empW.ContactEmail = 'rghgfhgf21212@gmail.com';  
-        	 empW.LOAStartDate = '2021-12-22'; 
-        	 empW.LOAEndDate  = '2021-12-29';
+             empW.ContactEmail = 'rghgfhgf21212@gmail.com';  
+             empW.LOAStartDate = '2021-12-22'; 
+             empW.LOAEndDate  = '2021-12-29';
              empW.HalfFixedAmount  = 234.43;
-        	 empW.ContactName = 'Test Name';
+             empW.ContactName = 'Test Name';
             
             RosterController.massFreeze(JSON.serialize(conIdList),true);
             RosterController.editInlineNewEmployee(NULL,'','');

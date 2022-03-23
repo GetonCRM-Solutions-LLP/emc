@@ -2028,7 +2028,7 @@
                             //     $scope.exportReimList.push([item.emailaddress, item.dayofweek,item.tripdate,item.starttime,item.endtime,item.originname,item.origin,item.destinationname,item.destination,item.mileage,item.tracingstyle,item.status,item.submitteddate,item.approveddate,item.maintTyre,item.fuelRate,item.variablerate,item.variableamount,item.notes]);
 
                             // });
-                            $scope.fileName = $scope.name + '\'s Mileages ' + $scope.FromDate;
+                            $scope.fileName = $scope.name + '\'s Mileage ' + $scope.FromDate;
                             $scope.reimbursementDialog.open($scope.fileName, $scope.name, mileageList1.mileagesList, $scope.name, $scope.emailOfEmployee);
                             $('#spinner').hide();
                         } else {
