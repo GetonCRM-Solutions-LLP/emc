@@ -25,10 +25,7 @@ jobs:
       # Install Salesforce CLI
       - name: 'Build and Deploy'
         run: |
-            wget https://developer.salesforce.com/media/salesforce-cli/sfdx-linux-amd64.tar.xz
-            mkdir sfdx-cli
-            tar xJf sfdx-linux-amd64.tar.xz -C sfdx-cli --strip-components 1
-            ./sfdx-cli/install
+            sudo npm install sfdx-cli --global
                   
       # Decrypt file
       - name: 'Decrypt file'
@@ -62,7 +59,7 @@ jobs:
           git fetch --all
           git checkout -b pr
           git --no-pager diff --name-status pr origin/$GITHUB_BASE_REF
-          sfdx sgd:source:delta --to pr --from origin/$GITHUB_BASE_REF --repo . --output .
+          sgd --to pr --from origin/$GITHUB_BASE_REF --repo . --output .
           cat package/package.xml
       
       # convert
