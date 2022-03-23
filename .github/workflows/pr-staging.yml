@@ -23,20 +23,9 @@ jobs:
       - uses: actions/checkout@v2
       
       # Install Salesforce CLI
-      # wget https://developer.salesforce.com/media/salesforce-cli/sfdx-linux-amd64.tar.xz
-      # https://developer.salesforce.com/media/salesforce-cli/sfdx-linux-amd64.tar.xz
-      # https://developer.salesforce.com/media/salesforce-cli/sfdx/channels/stable/sfdx-linux-x64.tar.xz
-      # mkdir sfdx-cli
-      # tar xJf sfdx-linux-amd64.tar.xz -C sfdx-cli --strip-components 1
-      # ./sfdx-cli/install
       - name: 'Build and Deploy'
         run: |
-            wget https://developer.salesforce.com/media/salesforce-cli/sfdx-linux-amd64.tar.xz
-            mkdir sfdx-cli
-            tar xJf sfdx-linux-amd64.tar.xz -C sfdx-cli --strip-components 1
-            ./sfdx-cli/install
-            sdfx --version
-            npm install sfdx-cli --global
+            sudo npm install sfdx-cli --global
                   
       # Decrypt file
       - name: 'Decrypt file'
@@ -63,16 +52,14 @@ jobs:
         run: sfdx auth:jwt:grant --clientid=${{secrets.PRODUCTION_CONSUMER_KEY}} --username=${{secrets.PRODUCTION_USERNAME}} --instanceurl=${{secrets.SFDC_LOGIN_PRODUCTION_URL}} --jwtkeyfile server.key --setdefaultdevhubusername --setalias=hub-org
       
       # Create Delta
-      # sudo npm install sfdx-git-delta@latest -g
       - name: 'Install App and Create Delta'
         run: |
-          sfdx --version
-          sudo npm install sfdx-git-delta@latest --global
+          echo y | sfdx plugins:install sfdx-git-delta
           git config remote.origin.fetch '+refs/heads/*:refs/remotes/origin/*'
           git fetch --all
           git checkout -b pr
           git --no-pager diff --name-status pr origin/$GITHUB_BASE_REF
-          sgd --to pr --from origin/$GITHUB_BASE_REF --repo . --output .
+          sfdx sgd:source:delta --to pr --from origin/$GITHUB_BASE_REF --repo . --output .
           cat package/package.xml
       
       # convert
