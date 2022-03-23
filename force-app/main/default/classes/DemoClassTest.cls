@@ -5,6 +5,6 @@ Private class DemoClassTest {
     @isTest static void doValidate() { 
         //tested
         DemoClass a = new DemoClass();
-        System.assertEquals(1, 1);
+        System.assertEquals(2, 2);
     }
 }
