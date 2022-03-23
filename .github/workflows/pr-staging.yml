@@ -26,6 +26,7 @@ jobs:
       - name: 'Build and Deploy'
         run: |
             sudo npm install sfdx-cli --global
+            sfdx --version
                   
       # Decrypt file
       - name: 'Decrypt file'
@@ -54,7 +55,9 @@ jobs:
       # Create Delta
       - name: 'Install App and Create Delta'
         run: |
+          echo y
           sfdx plugins:install sfdx-git-delta
+          sfdx plugins
           git config remote.origin.fetch '+refs/heads/*:refs/remotes/origin/*'
           git fetch --all
           git checkout -b pr
