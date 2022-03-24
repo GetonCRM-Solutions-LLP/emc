@@ -1,1 +1,1 @@
-DemoClassTest,GetTripCalloutforCommmiteTripTest
+DemoClassTest,GetTripCalloutforCommmiteTripTest,GetDailyTripsFromTriplogforCommuteTest
