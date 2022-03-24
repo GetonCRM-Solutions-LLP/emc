@@ -92,7 +92,6 @@ public with sharing class GetDailyTripsFromTriplogTest {
         
         Employee_Reimbursement__c er = new Employee_Reimbursement__c();
         er.Contact_Id__c = contact.Id;
-        
         er.month__c = '08-2020';
         er.Name = contact.lastname+':'+er.month__c;
         er.Status__c = 'Pending';
@@ -106,13 +105,14 @@ public with sharing class GetDailyTripsFromTriplogTest {
         er.Triplog_Status__c = 'U';
         insert er;
         conReim.put(con.Id,er);
+        
         Bi_Weekly_Reimbursement__c biReim = new Bi_Weekly_Reimbursement__c();
         bireim.Approved_Date__c = system.today().addDays(-1);
         bireim.Status__c = 'Pending';
         bireim.Name = '07/25/2021 to 08/07/2021';
-        bireim.Start_Date__c = Date.parse('10/03/2021');
-        bireim.End_Date__c = Date.parse('10/16/2021');
-        bireim.Contact__c = con.id;
+        bireim.Start_Date__c = Date.parse('07/25/2021');
+        bireim.End_Date__c = Date.parse('08/07/2021');
+        bireim.Contact__c = contact.id;
         insert bireim;
         
         Employee_Mileage__c emp = new Employee_Mileage__c();

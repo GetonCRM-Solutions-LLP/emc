@@ -2855,7 +2855,7 @@ public with sharing class WrapperUtils
     //AI-000429
     public static void TripCallout(Id driverId, String month, String year, String fuel, String maintTyre, Id empReID,String mpg,String status){
         List<contact> obj_currect_contact1 = new List<contact>();
-        obj_currect_contact1 = [SELECT id, Email, Account.Triplog_API__c,Account.Bi_Weekly_Pay_Period__c 
+        obj_currect_contact1 = [SELECT id, Email, Account.Triplog_API__c,Biweek_Reimbursement__c 
                                     FROM Contact 
                                     WHERE id =: driverId];
 
@@ -2867,10 +2867,10 @@ public with sharing class WrapperUtils
         String priMax = String.valueOf(Date.valueOf(priMin).addDays(date.daysInMonth(Integer.valueOf(year), Integer.valueOf(monthNumberMap.get(month))) - 1));
     
         String apiToken = obj_currect_contact1[0].Account.Triplog_API__c ;
-        Boolean checkBiWeek = obj_currect_contact1[0].Account.Bi_Weekly_Pay_Period__c;
+        Boolean checkBiWeek = obj_currect_contact1[0].Biweek_Reimbursement__c;
         if(apiToken != null && !Test.isRunningTest() ){
             System.debug('----------------------------');
-            GetTripCallout.GetTripCalloutForMileage(empReID, obj_currect_contact1[0].Email,obj_currect_contact1[0].id,priMin,priMax,fuel,mpg,maintTyre,apiToken,status,false,checkBiWeek);
+            GetTripCallout.GetTripCalloutForMileage(empReID, obj_currect_contact1[0].Email,obj_currect_contact1[0].id,priMin,priMax,fuel,mpg,maintTyre,apiToken,status,false,checkBiWeek,null);
         }
     }
 

@@ -36,9 +36,9 @@ global class GetDailyTripsFromTriplog implements Database.Batchable<sObject>,Dat
         }
         TripStatus = trips;
         if(Test.isRunningTest()) {
-            query = 'SELECT Id, Name,Account.Name,Account.Bi_Weekly_Pay_Period__c, External_Email__c, Email, Account.Triplog_API__c FROM Contact WHERE External_Email__c = \'minkesh.patel1478@gmail.com\' LIMIT 1';
+            query = 'SELECT Id, Name,Account.Name,Biweek_Reimbursement__c, External_Email__c, Email, Account.Triplog_API__c FROM Contact WHERE External_Email__c = \'minkesh.patel1478@gmail.com\' LIMIT 1';
         } else {
-            query = 'SELECT Id, Name,Account.Name,Account.Bi_Weekly_Pay_Period__c, External_Email__c, Email, Account.Triplog_API__c FROM Contact WHERE '+querybuilding+' (Deactivated_Date__c = NULL OR Deactivated_Date__c >= LAST_N_DAYS:90) AND Account.isUsingTriplog__c = true AND (Role__c = \''+StaticValues.roleAdminDriver+'\' OR Role__c = \'Driver\' OR Role__c = \'Driver/Manager\')';
+            query = 'SELECT Id, Name,Account.Name,Biweek_Reimbursement__c, External_Email__c, Email, Account.Triplog_API__c FROM Contact WHERE '+querybuilding+' (Deactivated_Date__c = NULL OR Deactivated_Date__c >= LAST_N_DAYS:90) AND Account.isUsingTriplog__c = true AND (Role__c = \''+StaticValues.roleAdminDriver+'\' OR Role__c = \'Driver\' OR Role__c = \'Driver/Manager\')';
         }
     }
 
@@ -61,7 +61,7 @@ global class GetDailyTripsFromTriplog implements Database.Batchable<sObject>,Dat
         }
 
         obj_monthformileagesCurrentMonth.add(Utils.fetchMonths(1, -1)[0]);  
-        for(Employee_Reimbursement__c empReim : [SELECT Id,Contact_Id__c,Contact_Id__r.Account.Bi_Weekly_Pay_Period__c, Total_Mileage_WithOut_Previous__c, Contact_Id__r.Monthly_Mileage_Limit__c,Contact_Email__c,Month__c,Fuel_price__c, MPG__c, Maintenance_and_Tires__c FROM Employee_Reimbursement__c WHERE month__c =: obj_monthformileagesCurrentMonth AND Contact_Id__c IN: contactIdList]) {
+        for(Employee_Reimbursement__c empReim : [SELECT Id,Contact_Id__c,Contact_Id__r.Biweek_Reimbursement__c , Total_Mileage_WithOut_Previous__c, Contact_Id__r.Monthly_Mileage_Limit__c,Contact_Email__c,Month__c,Fuel_price__c, MPG__c, Maintenance_and_Tires__c FROM Employee_Reimbursement__c WHERE month__c =: obj_monthformileagesCurrentMonth AND Contact_Id__c IN: contactIdList]) {
             contactEmployeeReimbursementMap.put(empReim.Contact_Email__c+'-'+empReim.Month__c,empReim);            
         }
         
@@ -74,10 +74,10 @@ global class GetDailyTripsFromTriplog implements Database.Batchable<sObject>,Dat
                     String reimFuel = String.valueof(reim.Fuel_price__c) != null ? String.valueof(reim.Fuel_price__c):'';
                     String reimMPG = String.valueof(reim.MPG__c) != null ? String.valueof(reim.MPG__c):'';
                     String reimMAT = String.valueof(reim.Maintenance_and_Tires__c) != null ? String.valueof(reim.Maintenance_and_Tires__c):'';
-                    Boolean checkBiweek = reim.Contact_Id__r.Account.Bi_Weekly_Pay_Period__c != null ? reim.Contact_Id__r.Account.Bi_Weekly_Pay_Period__c : false;
+                    Boolean checkBiweek = reim.Contact_Id__r.Biweek_Reimbursement__c != null ? reim.Contact_Id__r.Biweek_Reimbursement__c : false;
                     if(reim != null && con.Email != null) {
                         reimbursementIds.add(reim.id);
-                        GetTripCallout.GetTripCalloutForMileage(reim.id, con.Email,con.id,startMonthDate, lastMonthDate, reimFuel, reimMPG, reimMAT, con.Account.Triplog_API__c, TripStatus,putCall,checkBiweek);
+                        GetTripCallout.GetTripCalloutForMileage(reim.id, con.Email,con.id,startMonthDate, lastMonthDate, reimFuel, reimMPG, reimMAT, con.Account.Triplog_API__c, TripStatus,putCall,checkBiweek,null);
                     }
                 }
             }
