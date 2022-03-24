@@ -51,7 +51,7 @@ global class GetTripCalloutforCommute {
             Date minTripdate;
             Date maxtripdate;
             Map<String, Id> biWeeklyReimMap = new Map<String, Id>();
-            if(checkByWeek == true && biWeekReimId != null && biWeekReimId != '') {
+            if(checkByWeek) {
                 for(TripLogJSONClass.Trips lt : listTrips) 
                 {
                     if(!CheckNull(lt.startTime)) {
@@ -276,12 +276,15 @@ global class GetTripCalloutforCommute {
         if(tripDate == null)  return null;
 
         for(String key : biWeeklyMap.keySet()) {
-            Date st = Date.parse(key.split(':')[0]);
-            Date et = Date.parse(key.split(':')[1]);
-            
-            if(tripdate >= st && tripDate <= et) {
-                return biWeeklyMap.get(key);
-            }
+            system.debug('key== '+key );
+            if(key.contains(':')){
+                Date st = Date.parse(key.split(':')[0]);
+                Date et = Date.parse(key.split(':')[1]);
+                
+                if(tripdate >= st && tripDate <= et) {
+                    return biWeeklyMap.get(key);
+                }
+            }            
         }
         return null;
     }
