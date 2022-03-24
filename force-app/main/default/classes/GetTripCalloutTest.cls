@@ -122,7 +122,7 @@ public class GetTripCalloutTest {
 
         Employee_Mileage__c emp1 = new Employee_Mileage__c();
         emp1.Contact_Email_Id__c = 'test@test.gmail.com';
-        emp1.Name = 'Test Mileage Record';
+        emp1.Name = 'Test1 Mileage Record';
         emp1.EmployeeReimbursement__c = er.id;
         emp1.Bi_Weekly_Reimbursement__c = bob.id;
         emp1.Trip_Status__c = 'Approved';
@@ -130,7 +130,7 @@ public class GetTripCalloutTest {
 
         Employee_Mileage__c emp2 = new Employee_Mileage__c();
         emp2.Contact_Email_Id__c = 'test@test.gmail.com';
-        emp2.Name = 'Test Mileage Record';
+        emp2.Name = 'Test2 Mileage Record';
         emp2.EmployeeReimbursement__c = er.id;
         emp2.Bi_Weekly_Reimbursement__c = bob.id;
         emp2.StartTime__c = null;
@@ -138,7 +138,7 @@ public class GetTripCalloutTest {
 
         Employee_Mileage__c emp3 = new Employee_Mileage__c();
         emp3.Contact_Email_Id__c = 'test@test.gmail.com';
-        emp3.Name = 'Test Mileage Record';
+        emp3.Name = 'Test3 Mileage Record';
         emp3.EmployeeReimbursement__c = er.id;
         emp3.Bi_Weekly_Reimbursement__c = bob.id;
         emp3.EndTime__c = null;
@@ -152,7 +152,7 @@ public class GetTripCalloutTest {
         
         Test.startTest();
         Test.setMock(HttpCalloutMock.class, new GetTripCalloutMock());
-        GetTripCallout.GetTripCalloutForMileage(er.id, currentContact.External_Email__c,currentContact.id, priMin, priMax, fuelPrice, mpg, mat, account.Triplog_API__c, er.Triplog_Status__c,true,false);
+        GetTripCallout.GetTripCalloutForMileage(er.id, currentContact.External_Email__c,currentContact.id, priMin, priMax, fuelPrice, mpg, mat, account.Triplog_API__c, er.Triplog_Status__c,true,false,'');
         
         String body = 'test';
         String apiToken = 'test';

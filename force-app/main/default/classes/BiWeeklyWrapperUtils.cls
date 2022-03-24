@@ -577,6 +577,31 @@ public with sharing class BiWeeklyWrapperUtils {
         return currentEmployeeMileage;
     }
 
+    public static Map<String, Id> getBiweeklyReimMap (String contactId,Date minTripdate, Date maxTripDate, Boolean checkBiweekAcc){
+        Map<String, Id> biWeeklyReimMap = new Map<String, Id>();
+        if(checkBiweekAcc) {
+            for(Bi_Weekly_Reimbursement__c biWeekObj: [SELECT id,Start_Date__c, End_Date__c,Contact__c 
+                                                        FROM Bi_Weekly_Reimbursement__c 
+                                                        WHERE Contact__c =: contactId 
+                                                            AND Start_Date__c >=: minTripdate
+                                                            AND End_Date__c <=: maxTripDate
+                                                            AND Start_Date__c != null
+                                                            AND End_Date__c != null] ) 
+            {
+               biWeeklyReimMap.put(biWeekObj.Start_Date__c.format() + ':' + biWeekObj.End_Date__c.format(),  biWeekObj.Id);                                   
+            }
+        } else {
+            List<Bi_Weekly_Reimbursement__c> biWeekObjlist = [SELECT id,Start_Date__c, End_Date__c,Contact__c 
+                                                                FROM Bi_Weekly_Reimbursement__c 
+                                                                WHERE Contact__c =: contactId 
+                                                                    Limit 1];
+            biWeeklyReimMap.put(biWeekObjlist.get(0).Id, biWeekObjlist.get(0).Id);
+        
+        }
+            
+        return biWeeklyReimMap;
+    }
+    
     public static string getBiweekReimId (String contactId,Date tripdate,Boolean checkBiweekAcc){
         String biWeekId;
         if(checkBiweekAcc == true ){

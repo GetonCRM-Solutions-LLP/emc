@@ -19,9 +19,9 @@ global class MassSyncTrips implements Database.Batchable<sObject>,Database.State
         String query;
         //String lastMonth = Utils.fetchMonths(1, 0)[0];
         if(!Test.isRunningTest()){
-            query = 'SELECT Id,Contact_Id__c,Contact_Id__r.External_Email__c,Contact_Id__r.Account.Triplog_API__c,Contact_Id__r.Account.Bi_Weekly_Pay_Period__c,Total_Mileage_WithOut_Previous__c,Status__c, Contact_Id__r.Monthly_Mileage_Limit__c,Contact_Email__c,Month__c,Fuel_Price__c, MPG__c, Maintenance_and_Tires__c FROM Employee_Reimbursement__c WHERE Status__c = \'Pending\' AND Month__c = \''+lastMonth+'\' AND Contact_Id__r.AccountId = \''+accid+'\' ';
+            query = 'SELECT Id,Contact_Id__c,Contact_Id__r.External_Email__c,Contact_Id__r.Account.Triplog_API__c,Contact_Id__r.Biweek_Reimbursement__c,Total_Mileage_WithOut_Previous__c,Status__c, Contact_Id__r.Monthly_Mileage_Limit__c,Contact_Email__c,Month__c,Fuel_Price__c, MPG__c, Maintenance_and_Tires__c FROM Employee_Reimbursement__c WHERE Status__c = \'Pending\' AND Month__c = \''+lastMonth+'\' AND Contact_Id__r.AccountId = \''+accid+'\' ';
         } else {
-            query = 'SELECT Id,Contact_Id__c,Contact_Id__r.External_Email__c,Contact_Id__r.Account.Triplog_API__c,Contact_Id__r.Account.Bi_Weekly_Pay_Period__c,Total_Mileage_WithOut_Previous__c,Status__c, Contact_Id__r.Monthly_Mileage_Limit__c,Contact_Email__c,Month__c,Fuel_Price__c, MPG__c, Maintenance_and_Tires__c FROM Employee_Reimbursement__c';
+            query = 'SELECT Id,Contact_Id__c,Contact_Id__r.External_Email__c,Contact_Id__r.Account.Triplog_API__c,Contact_Id__r.Biweek_Reimbursement__c,Total_Mileage_WithOut_Previous__c,Status__c, Contact_Id__r.Monthly_Mileage_Limit__c,Contact_Email__c,Month__c,Fuel_Price__c, MPG__c, Maintenance_and_Tires__c FROM Employee_Reimbursement__c';
         }
         System.debug('query'+query);
         return Database.getQueryLocator(query);
@@ -34,7 +34,7 @@ global class MassSyncTrips implements Database.Batchable<sObject>,Database.State
         {
             reimbursementIds.add(reim.id);
             if( !Test.IsRunningTest()){
-                GetTripCallout.GetTripCalloutForMileage(reim.id, reim.Contact_Id__r.External_Email__c, reim.Contact_Id__c, startDate, endDate, String.valueOf(reim.Fuel_Price__c), String.valueOf(reim.MPG__c), String.valueOf(reim.Maintenance_and_Tires__c), reim.Contact_Id__r.Account.Triplog_API__c, tripStatus ,putcall,reim.Contact_Id__r.Account.Bi_Weekly_Pay_Period__c);
+                GetTripCallout.GetTripCalloutForMileage(reim.id, reim.Contact_Id__r.External_Email__c, reim.Contact_Id__c, startDate, endDate, String.valueOf(reim.Fuel_Price__c), String.valueOf(reim.MPG__c), String.valueOf(reim.Maintenance_and_Tires__c), reim.Contact_Id__r.Account.Triplog_API__c, tripStatus ,putcall,reim.Contact_Id__r.Biweek_Reimbursement__c,null);
             }
         }
     }

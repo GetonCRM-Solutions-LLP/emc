@@ -150,7 +150,7 @@ public class GetTripCalloutforCommmiteTripTest {
         
         Test.startTest();
         Test.setMock(HttpCalloutMock.class, new GetTripCalloutMock());
-        GetTripCalloutforCommute.GetTripCalloutForCommuteMileage(er.id, currentContact.External_Email__c,currentContact.id, priMin, priMax, fuelPrice, mpg, mat, account.Triplog_API__c, er.Triplog_Status__c,true,'Business',false);
+        GetTripCalloutforCommute.GetTripCalloutForCommuteMileage(er.id, currentContact.External_Email__c,currentContact.id, priMin, priMax, fuelPrice, mpg, mat, account.Triplog_API__c, er.Triplog_Status__c,true,'Business',false,'');
         
         String body = 'test';
         String apiToken = 'test';
