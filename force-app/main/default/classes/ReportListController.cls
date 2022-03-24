@@ -8,6 +8,10 @@ public with sharing class ReportListController
     public List<reimbursementWrapper> reimWrapperList {get; set;}
     public string reimburName {get; set;}
     public boolean checkTripStatus {get; set;}
+    public date accPayperiodStart {get; set;}
+    public string accPayDays {get; set;}
+    public static Integer AccountYear{get;set;} 
+
     public ReportListController() 
     {  
         reimWrapperList = new List<reimbursementWrapper>();
@@ -28,7 +32,7 @@ public with sharing class ReportListController
             for(Contact currentContact : [SELECT id,Name 
                                             FROM Contact 
                                             WHERE isCommunityUser__c = true 
-                                                AND AccountId =: System.Label.FramptonConstruction 
+                                                AND Account.Name = 'Frampton Construction' 
                                                 Order By FirstName ]) {
                 reimbursementWrapper objWrapper = new reimbursementWrapper();
                 objWrapper.reimbId = currentContact.id;
@@ -37,9 +41,15 @@ public with sharing class ReportListController
             }
         }
         reimburName = JSON.serialize(reimWrapperList);
-        for(Account acc : [SELECT id,Trip_Status_Lock__c 
+        for(Account acc : [SELECT id,Trip_Status_Lock__c,
+                                    Pay_Period_Start_Date__c, 
+                                    Pay_Period_Days__c,
+                                    CreatedDate  
                                 FROM Account 
                                 WHERE id =: getAccountid() ]){
+            accPayperiodStart = acc.Pay_Period_Start_Date__c;
+            accPayDays = string.valueOf(acc.Pay_Period_Days__c);
+            AccountYear = Date.valueof(acc.CreatedDate).year();
             if(acc.Trip_Status_Lock__c != null){
                 checkTripStatus = false;
             } else {
@@ -257,7 +267,9 @@ public with sharing class ReportListController
     @RemoteAction
     public static DateTime DeleteNetchexCallout(String startDate,String endDate){
         DateTime runTime = System.Now();
-        NetchexDeleteCallout.DeletedataFromNetchex(startDate,endDate,runTime);
+        if(!Test.isRunningTest()){
+            NetchexDeleteCallout.DeletedataFromNetchex(startDate,endDate,runTime);
+        }
         return runTime;
     }
 

@@ -3,11 +3,13 @@ public with sharing class ManageNotificationController {
     public static String adminId;
     public static String query;
     public static String role {get;set;}
-    public static String managerrole {get;set;}
+    public static String managerrole {get;set;} 
     public static String manrole {get;set;}
     public static String contactDataAsString {get; set;}
     public static String logoDocument_id {get;set;}
-    public string conWrapper {get; set;}
+    public string conWrapper {get; set;} 
+    public string milWrapper {get; set;}
+    
     public ManageNotificationController() {
         accId = ApexPages.currentPage().getParameters().get('accId');
         adminId = ApexPages.currentPage().getParameters().get('id');
@@ -247,6 +249,301 @@ public with sharing class ManageNotificationController {
            
         return null;
     }
+    @RemoteAction
+    public static String UploadMileage(string mileage,string  accId,String adminId,String startdate,String enddate) { 
+        List<JSONMilList> MilJson = JSONMilList.parse(mileage);
+        set<string> employeeIdList = new set<string>(); 
+        set<string> monthList = new set<String>();
+        for(JSONMilList objJson : MilJson ){
+            if(objJson.EmployeeId != null){
+                employeeIdList.add(string.valueOf(objJson.EmployeeId));
+            }
+            if(objJson.Trip_Date != null && objJson.Trip_Date.contains('/')){
+                String ExtractedDate = objJson.Trip_Date;
+                list<String> lstSplitDate = ExtractedDate.split('/');
+                monthList.add(lstSplitDate[0]+'-'+ lstSplitDate[2]); 
+            }
+        }
+        map<string, string> empIdvsEmailMap = new map<string, string>();
+        map<string, Id> reimIdMap = new map<string, Id>();
+        map<string, Id> biweekIdMap = new map<string, Id>();
+        map<string, Decimal> empIdvsMPGMap = new map<string, Decimal>();
+        map<string, Decimal> empIdvsMaintireMap = new map<string, Decimal>();
+        map<string, Decimal> empIdvsFuelPriceMap = new map<string, Decimal>();
+        List<Employee_Mileage__c> empNotSendMilList = new List<Employee_Mileage__c>();
+        for(Employee_Reimbursement__c reimList : [SELECT id,name,Contact_Id__r.External_Email__c,Month__c,MPG__c,Maintenance_and_Tires__c, Contact_Id__r.Employee_ID__c
+                                                  FROM Employee_Reimbursement__c 
+                                                  WHERE Contact_Id__r.Employee_ID__c IN: employeeIdList 
+                                                  AND Month__C IN: monthList
+                                                  AND Contact_Id__r.AccountId =: accId]) {
+                                                    if(reimList.Contact_Id__r.Employee_ID__c != null) {
+                                                        reimIdMap.put(reimList.Contact_Id__r.Employee_ID__c +':'+reimList.Month__c, reimList.Id);
+                                                        empIdvsEmailMap.put(reimList.Contact_Id__r.Employee_ID__c +':'+reimList.Month__c, reimList.Contact_Id__r.External_Email__c);  
+                                                    }
+        }                         
+        for(Bi_Weekly_Reimbursement__c bireim : [SELECT id,name,Contact__r.name,Contact__r.Employee_ID__c,
+                                                        Fuel_Price__c,MPG__c,Maintenance_and_Tires__c
+                                                    FROM Bi_Weekly_Reimbursement__c 
+                                                    WHERE Start_Date__c=: Date.valueOf(startdate) 
+                                                    AND End_Date__c =:Date.valueOf(enddate)
+                                                    AND Contact__r.Employee_ID__c IN: employeeIdList
+                                                    AND Contact__r.AccountId =: accId ]){
+                                                        biweekIdMap.put(bireim.Contact__r.Employee_ID__c, bireim.id);
+                                                        if(bireim.Maintenance_and_Tires__c != 0){
+                                                            empIdvsMaintireMap.put(bireim.Contact__r.Employee_ID__c,bireim.Maintenance_and_Tires__c);     
+                                                        } else {
+                                                            empIdvsMaintireMap.put(bireim.Contact__r.Employee_ID__c,0);      
+                                                        }
+                                                        if(bireim.MPG__c != null){
+                                                            empIdvsMPGMap.put(bireim.Contact__r.Employee_ID__c,bireim.MPG__c); 
+                                                        } else {
+                                                            empIdvsMPGMap.put(bireim.Contact__r.Employee_ID__c,0);  
+                                                        }
+                                                        if(bireim.MPG__c != null){
+                                                            empIdvsFuelPriceMap.put(bireim.Contact__r.Employee_ID__c,bireim.Fuel_Price__c); 
+                                                        } else {
+                                                            empIdvsFuelPriceMap.put(bireim.Contact__r.Employee_ID__c,0);  
+                                                        }
+        }
+        daylight_saving_time_config__c DSTzconfig = daylight_saving_time_config__c.getValues(String.valueOf(System.today().year()));
+        List<Employee_Mileage__c> empMilList = new List<Employee_Mileage__c>();
+        for(JSONMilList objJson : MilJson){
+        
+            if(objJson.Contact_Email != null ) {
+                list<String> tripDateSplit = new list<String>();
+                string mapKey;
+                Employee_Mileage__c mil = new Employee_Mileage__c();
+                if(objJson.Trip_Date != null && objJson.Trip_Date.contains('/')){
+                    tripDateSplit = objJson.Trip_Date.split('/');
+                  mapKey = objJson.EmployeeId+':'+tripDateSplit[0]+'-'+tripDateSplit[2];
+                }
+                
+                if(tripDateSplit.size() > 0) { 
+                    Date tripdatecreate = date.valueof(Date.parse(tripDateSplit[0]+'/'+tripDateSplit[1] +'/'+tripDateSplit[2]));
+                    if(tripdatecreate >= DSTzconfig.Start_Date__c && tripdatecreate <= DSTzconfig.End_Date__c){
+                        mil.Trip_Date__c = date.valueof(Date.parse(tripDateSplit[0]+'/'+tripDateSplit[1] +'/'+tripDateSplit[2])).adddays(1);                    
+                        mil.ConvertedStartTime__c = date.valueof(Date.parse(tripDateSplit[0]+'/'+tripDateSplit[1] +'/'+tripDateSplit[2])).adddays(2);  
+                    } else {
+                        mil.Trip_Date__c = date.valueof(Date.parse(tripDateSplit[0]+'/'+tripDateSplit[1] +'/'+tripDateSplit[2]));                    
+                        mil.ConvertedStartTime__c = date.valueof(Date.parse(tripDateSplit[0]+'/'+tripDateSplit[1] +'/'+tripDateSplit[2])).adddays(1);  
+                    }
+                    
+                       //mil.Trip_Date__c = date.valueof(Date.parse(tripDateSplit[0]+'/'+tripDateSplit[1] +'/'+tripDateSplit[2]));                    
+                        //mil.ConvertedStartTime__c = date.valueof(Date.parse(tripDateSplit[0]+'/'+tripDateSplit[1] +'/'+tripDateSplit[2]));                 
+                    system.debug('mil.Trip_Date__'+ mil.Trip_Date__c);
+                    system.debug('mil.ConvertedStartTime__c '+ mil.ConvertedStartTime__c );
+                }
+                mil.Trip_Origin__c = objJson.Trip_Origin;
+                mil.Trip_Destination__c = objJson.Trip_Destination;
+                mil.Trip_Status__c = objJson.Trip_Status;
+                if(objJson.Trip_Status == 'Approved' || objJson.Trip_Status == 'Rejected') {
+                    if(objJson.Approved_Date != null && objJson.Approved_Date.contains('/') ){
+                        list<String> approvedDateSplit = objJson.Approved_Date.split('/'); 
+                        Date createApproval = date.valueof(Date.parse(approvedDateSplit[0]+'/'+approvedDateSplit[1] +'/'+approvedDateSplit[2]));
+                        if(createApproval >= DSTzconfig.Start_Date__c && createApproval <= DSTzconfig.End_Date__c){
+                            mil.Approved_Date__c = date.valueof(Date.parse(approvedDateSplit[0]+'/'+approvedDateSplit[1] +'/'+approvedDateSplit[2])).adddays(1);
+                        } else {
+                            mil.Approved_Date__c = date.valueof(Date.parse(approvedDateSplit[0]+'/'+approvedDateSplit[1] +'/'+approvedDateSplit[2]));
+                        }
+                       //mil.Approved_Date__c = date.valueof(Date.parse(approvedDateSplit[0]+'/'+approvedDateSplit[1] +'/'+approvedDateSplit[2])); 
+                    } else {
+                        mil.Approved_Date__c = system.today();
+                    }
+                } else {
+                    mil.Approved_Date__c = null;
+                }
+                mil.Day_Of_Week__c = objJson.Day_Of_Week;
+                mil.Notes__c = objJson.Notes;
+                mil.EMP_Mileage__c = objJson.Actual_Mileage;
+                mil.Activity__c = objJson.Activity;
+                mil.Tag__c = objJson.Tag;
+                mil.Employee_ID__c = objJson.EmployeeId;
+                if(empIdvsEmailMap.containsKey(mapKey)) {
+                    mil.Contact_Email_Id__c = empIdvsEmailMap.get(mapKey);
+                }
+                if(empIdvsMPGMap.containsKey(string.valueOf(objJson.EmployeeId))) {
+                    mil.MPG__c = empIdvsMPGMap.get(string.valueOf(objJson.EmployeeId));
+                }
+                if(empIdvsMaintireMap.containsKey(string.valueOf(objJson.EmployeeId))) {
+                    mil.Maintenance_and_Tires__c = empIdvsMaintireMap.get(string.valueOf(objJson.EmployeeId));
+                }
+                if(empIdvsFuelPriceMap.containsKey(string.valueOf(objJson.EmployeeId))) {
+                    mil.Fuel_price__c = empIdvsFuelPriceMap.get(string.valueOf(objJson.EmployeeId));
+                }
+                if(reimIdMap.containsKey(mapKey) && biweekIdMap.containsKey(string.valueOf(objJson.EmployeeId))) {
+                    mil.EmployeeReimbursement__c = string.valueOf(reimIdMap.get(mapKey));
+                    mil.Bi_Weekly_Reimbursement__c = string.valueOf(biweekIdMap.get(string.valueOf(objJson.EmployeeId)));
+                    empMilList.add(mil);
+                } else {
+                    empNotSendMilList.add(mil);
+                }
+                
+            }
+        }
+        Database.SaveResult[] srList = Database.insert(empMilList, false);
+        Map<Integer,String> errorMap = new Map<Integer,String>();
+        Integer tripcount= 0;
+        if(srList.size() > 0){
+            for (Database.SaveResult sr : srList) {
+                if (sr.isSuccess() == false) {
+                    for(Database.Error objErr : sr.getErrors()) {
+                        errorMap.put(tripcount, objErr.getMessage());
+                    }
+                }
+                tripcount++;
+            }
+        }
+        Messaging.EmailFileAttachment attach = new Messaging.EmailFileAttachment();
+        if(errorMap.keySet().size() > 0 || empNotSendMilList.size() > 0){
+            blob excel;
+            if(errorMap.keySet().size() > 0){
+                string header ='Trip_Date'+'\t'+'Trip_Origin'+'\t'+'Trip_Destination'+'\t'+ 'Trip_Status'+'\t'+'Approved_Date'+'\t'+'Day_Of_Week'+'\t'+'Notes'+'\t'+'Actual_Mileage'+'\t'+'Activity'+'\t'+'Contact_Email'+'\t'+'Tag'+'\t'+'EmployeeId'+'\t'+'Error Message'+' \n';
+                String finalstr = header;
+                for(Integer mapkey : errorMap.keySet()){
+                    String Recordstring = empMilList.get(mapkey).Trip_Date__c+'\t'+empMilList.get(mapkey).Trip_Origin__c+'\t'+empMilList.get(mapkey).Trip_Destination__c+'\t'+empMilList.get(mapkey).Trip_Status__c+'\t'+empMilList.get(mapkey).Approved_Date__c+'\t'+empMilList.get(mapkey).Day_Of_Week__c+'\t'+empMilList.get(mapkey).Notes__c+'\t'+empMilList.get(mapkey).EMP_Mileage__c+'\t'+empMilList.get(mapkey).Activity__c+'\t'+empMilList.get(mapkey).Contact_Email_Id__c+'\t'+empMilList.get(mapkey).Tag__c+'\t'+empMilList.get(mapkey).Employee_ID__c+'\t'+errorMap.get(mapkey)+'    \n';
+                    finalstr = finalstr + Recordstring;
+                }
+                attach.setFileName('Trips not inserted.xls');
+                excel = blob.valueOf(finalstr);                
+            }
+            attach.setBody(excel);
+            List<Contact> conList = [SELECT id,FirstName,External_Email__c
+                                    FROM Contact 
+                                    WHERE id =:adminId];
+            EmailTemplate templateId = [SELECT Id, Subject,HtmlValue, body FROM EmailTemplate WHERE developerName = 'Bi_weekly_Not_Inserted_Trips' Limit 1];
+            OrgWideEmailAddress[] owea = [SELECT Id,Address from OrgWideEmailAddress where Address = 'driverservices@mburse.com'];
+            List<String> toAddress = new List<String>();
+            SendEmail__c  sendEmailObj = SendEmail__c.getValues('ManageNotificationController');
+            List<Messaging.SingleEmailMessage> emails = new List<Messaging.SingleEmailMessage>();
+            String newemailBody = templateId.HtmlValue;
+            Date todayDate = system.today();
+            newemailBody = newemailBody.replace('{!$Label.Driver_Forword_Logo}', System.Label.Driver_Forword_Logo);
+            newemailBody = newemailBody.replace('{Contact.Name}', conList[0].FirstName);
+            toAddress.add(conList[0].External_Email__c);
+            //toAddress.add('Sanket.goswami@getoncrm.com');
+            Messaging.EmailFileAttachment attach2 = new Messaging.EmailFileAttachment();
+            attach2.setFileName('Wrong employee ID.xls');
+            blob excel2;
+            if(empNotSendMilList.size() > 0){
+                string header1 ='Trip_Date'+'\t'+'Trip_Origin'+'\t'+'Trip_Destination'+'\t'+ 'Trip_Status'+'\t'+'Approved_Date'+'\t'+'Day_Of_Week'+'\t'+'Notes'+'\t'+'Actual_Mileage'+'\t'+'Activity'+'\t'+'Contact_Email'+'\t'+'Tag'+'\t'+'EmployeeId'+'\t'+'Error Message'+' \n';
+                String finalstr1 = header1;
+                for(Employee_Mileage__c objMil : empNotSendMilList){
+                    String Recordstring = objMil.Trip_Date__c+'\t'+objMil.Trip_Origin__c+'\t'+objMil.Trip_Destination__c+'\t'+objMil.Trip_Status__c+'\t'+objMil.Approved_Date__c+'\t'+objMil.Day_Of_Week__c+'\t'+objMil.Notes__c+'\t'+objMil.EMP_Mileage__c+'\t'+objMil.Activity__c+'\t'+objMil.Contact_Email_Id__c+'\t'+objMil.Tag__c+'\t'+objMil.Employee_ID__c+'\t'+'Please check Employee Id,Trip date,Contact Email and Deactivation Date'+'    \n';
+                    finalstr1 = finalstr1 + Recordstring;
+                }
+                excel2 = blob.valueOf(finalstr1);
+            }
+            attach2.setBody(excel2);
+            messaging.singleEmailMessage email = Utils.CreateEmail('Not Inserted Trips From Communication Page',newemailBody,toAddress,null,null,null);
+            if(attach.getBody()  != null && attach2.getBody() != null){
+                email.setFileAttachments(new Messaging.EmailFileAttachment[]{attach,attach2});
+            } else if(attach.getBody() != null){
+                email.setFileAttachments(new Messaging.EmailFileAttachment[]{attach});
+            } else if(attach2.getBody() != null){
+                email.setFileAttachments(new Messaging.EmailFileAttachment[]{attach2});
+            }
+            email.setOrgWideEmailAddressId(owea.get(0).Id);
+            emails.add(email);  
+            if(!emails.isEmpty() && !Test.IsRunningTest() && sendEmailObj.Send_email_from_code__c == true) {                    
+                Messaging.SendEmailResult [] result = Messaging.sendEmail(emails, false);
+                System.debug('send email=========='+result);
+            }
+        }
+        return 'Success';
+    }
+    @RemoteAction
+    public static String UploadLOA(string LOAData,string  accId,String startdate,String enddate) { 
+        System.debug('UploadLOA=='+LOAData);
+        map<string, Id> biweekIdMap = new map<string, Id>();
+        map<string, Id> contactIdMap = new map<string, Id>();
+        map<string, Date> empDeactivationMap = new map<string, Date>();
+        map<string, Date> conDeactivationMap = new map<string, Date>();
+        List<Contact> contactList = new List<Contact>();
+        for(Bi_Weekly_Reimbursement__c bireim : [SELECT id,name,Contact__r.name,
+                                                        Contact__r.Employee_ID__c,Contact__c,
+                                                        Contact_Id_Deactivated_Date__c
+                                                    FROM Bi_Weekly_Reimbursement__c 
+                                                    WHERE Start_Date__c=: Date.valueOf(startdate) 
+                                                    AND End_Date__c =: Date.valueOf(enddate)
+                                                    AND Contact__r.AccountId =: accId ]){
+                                                        biweekIdMap.put(bireim.Contact__r.Employee_ID__c, bireim.id);
+                                                        contactIdMap.put(bireim.Contact__r.Employee_ID__c, bireim.Contact__c);
+                                                        if(bireim.Contact_Id_Deactivated_Date__c != null ){
+                                                            empDeactivationMap.put(bireim.Contact__r.Employee_ID__c, bireim.Contact_Id_Deactivated_Date__c);
+                                                        }                                                        
+                                            }
+                                          
+            List<LOAWrapper> loaWrapList = new List<LOAWrapper>();
+            if(LOAData != null) {
+                loaWrapList = (List<LOAWrapper>)Json.deserialize(LOAData,List<LOAWrapper>.class);
+                List<Bi_Weekly_Reimbursement__c> biweekList = new List<Bi_Weekly_Reimbursement__c>();
+                for(LOAWrapper loaWrap : loaWrapList){ 
+                    if(biweekIdMap.containsKey(loaWrap.employeeId)){
+                        Bi_Weekly_Reimbursement__c objBiWeek = new Bi_Weekly_Reimbursement__c();
+                        objBiWeek.id = biweekIdMap.get(loaWrap.employeeId);
+                        objBiWeek.LOA_Start_Date__c = (loaWrap.loaStart != null ? Date.parse(loaWrap.loaStart) : null);
+                        objBiWeek.LOA_End_Date__c = (loaWrap.loaEnd != null ? Date.parse(loaWrap.loaEnd) : null);                      
+                        if(loaWrap.proratedAmount != null && loaWrap.proratedAmount != ''){
+                            objBiWeek.Fixed_Amount__c = (Decimal.valueOf(loaWrap.proratedAmount)*26)/12;
+                        }               
+                        if(loaWrap.conDeactivation != null && Date.parse(loaWrap.conDeactivation) != empDeactivationMap.get(loaWrap.employeeId)){
+                            conDeactivationMap.put(contactIdMap.get(loaWrap.employeeId), Date.parse(loaWrap.conDeactivation));
+                        }        
+                        biweekList.add(objBiWeek);
+                    }
+                }
+                daylight_saving_time_config__c DSTzconfig = daylight_saving_time_config__c.getValues(String.valueOf(System.today().year()));
+                if(conDeactivationMap.size() > 0){
+                    for(String mapkey : conDeactivationMap.keySet()){
+                        list<String> tripDateSplit = new list<String>();
+                        Contact contactObj = new Contact();
+                        contactObj.Id = mapkey;
+                        if(conDeactivationMap.get(mapkey) >=  DSTzconfig.Start_Date__c && conDeactivationMap.get(mapkey) <= DSTzconfig.End_Date__c){
+                            contactObj.Deactivated_Date__c = conDeactivationMap.get(mapkey).adddays(2);
+                        } else {
+                            contactObj.Deactivated_Date__c = conDeactivationMap.get(mapkey).adddays(1);
+                        }                           
+                        contactList.add(contactObj);
+                    }
+                }
+                
+                if(biweekList.size() > 0){
+                    try {
+                        update biweekList;
+                    } catch(Exception e ){
+                        system.debug('e'+e);
+                    }                
+                }
+                if(contactList.size() > 0){
+                    try {
+                        update contactList;
+                    } catch(Exception e ){
+                        system.debug('e'+e);
+                    }  
+                }
+            }
+            
+        return 'Success';
+    }
+    @RemoteAction
+    public static String DeleteTrips(string  conId) {
+        List<Employee_Mileage__c> mileageList = new List<Employee_Mileage__c>();
+        for(Employee_Mileage__c objMil : [SELECT id,CreatedBy.ContactId,CreatedDate 
+                                            FROM Employee_Mileage__c 
+                                            WHERE CreatedBy.ContactId =: conId]){
+            if(objMil.CreatedDate.date() == System.today()){
+                mileageList.add(objMil);
+            }
+        } 
+        if(mileageList.size() > 0){
+            delete mileageList;
+        }          
+        return 'sucess';
+    }
+    @RemoteAction
+    public static void sendInsuranceEmail (String Id,String Name,String email){
+        BiWeeklyWrapperUtils.sendInsuranceEmail(Id, Name, email);
+    }
 
     public class ContactWrapper {
         public string contactId { get; set; }
@@ -263,5 +560,13 @@ public with sharing class ManageNotificationController {
         public Boolean massEmail { get; set; }
         public date expirationDate { get; set; }
         public date notificationDate { get; set; }
+    }
+    public class LOAWrapper {
+        public string employeeId { get; set; }
+        public string proratedAmount{ get; set; }
+        public string name { get; set; }
+        public string loaStart { get; set; }
+        public string loaEnd { get; set; }
+        public string conDeactivation { get; set; }
     }
 }

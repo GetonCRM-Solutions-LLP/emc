@@ -16,6 +16,7 @@ public class WrapperUtils_Test {
         RecordUtilityClass.enableMappingGasPriceTrigger();
         RecordUtilityClass.vehicleUrlMapping();
         
+<<<<<<< HEAD
         Account obj_Account = RecordUtilityClass.buildAccount();
         insert obj_Account;
 
@@ -27,6 +28,45 @@ public class WrapperUtils_Test {
 
         List<Contact> obj_Driver_list = RecordUtilityClass.buildDriverContact(obj_Account,obj_Manager_list[0]);
         insert obj_Driver_list;
+=======
+        UserRole userRole_1 = [SELECT Id FROM UserRole WHERE DeveloperName = 'EMD' LIMIT 1];
+        Profile profile_1 = [SELECT Id FROM Profile WHERE Name = 'Customer Community Login User' LIMIT 1];
+        User admin = [SELECT Id, Username, UserRoleId FROM User WHERE Profile.Name = 'System Administrator' AND UserRoleId = :userRole_1.Id LIMIT 1];
+        User user_1;
+        Account obj_Account;
+        Contact obj_admincontact;
+        List<Contact> obj_Manager_list;
+        List<Contact> obj_Driver_list;
+        System.runAs(admin) {
+            obj_Account = RecordUtilityClass.buildAccount();
+            insert obj_Account;
+            Contact contact_1 = new Contact(AccountId = obj_Account.Id, LastName = 'xgeek',External_Email__c= 'abc@gmail.com');
+            insert contact_1;
+            obj_admincontact = RecordUtilityClass.buildAdminContact(obj_Account);
+            insert obj_admincontact;       
+    
+            obj_Manager_list = RecordUtilityClass.buildManagerContact(obj_Account,obj_admincontact);
+            insert obj_Manager_list;
+    
+            obj_Driver_list = RecordUtilityClass.buildDriverContact(obj_Account,obj_Manager_list[0]);
+            insert obj_Driver_list;
+          user_1 = new User( 
+            Email = 'yourusername@gmail.com',
+            ProfileId = profile_1.Id, 
+            UserName = 'yourusername@gmail.com', 
+            Alias = 'Test',
+            TimeZoneSidKey = 'America/New_York',
+            EmailEncodingKey = 'ISO-8859-1',
+            LocaleSidKey = 'en_US', 
+            LanguageLocaleKey = 'en_US',
+            ContactId = contact_1.Id,
+            PortalRole = 'Manager',
+            FirstName = 'Firstname',
+            LastName = 'Lastname'
+          );
+          insert user_1;
+        }
+>>>>>>> 9c0e9c3978f9058b2535348ae9c19249a77825fe
 
         list<Gas_Prices__c> gaslist = RecordUtilityClass.buildGasPrice();
         insert gaslist;
@@ -34,7 +74,10 @@ public class WrapperUtils_Test {
         list<Employee_Reimbursement__c> obj_Employee_Reimbursement_list = RecordUtilityClass.buildPendingEmployee_Reimbursement(obj_Driver_list);
         insert obj_Employee_Reimbursement_list;       
         
-        List<Employee_Mileage__c> obj_Employee_Mileage_list = RecordUtilityClass.buildNoApprovedYetEmployeeMileages(obj_Employee_Reimbursement_list);
+        list<Bi_Weekly_Reimbursement__c> empBIweekReimbursementList1 = RecordUtilityClass.buildPendingBiReimbursement(obj_Driver_list);
+        insert empBIweekReimbursementList1;
+        
+        List<Employee_Mileage__c> obj_Employee_Mileage_list = RecordUtilityClass.buildNoApprovedYetEmployeeMileages(obj_Employee_Reimbursement_list, empBIweekReimbursementList1[0].id);
         insert obj_Employee_Mileage_list;
 
         List<Employee_Reimbursement__c> obj_newreimbursements = new List<Employee_Reimbursement__c>();
@@ -91,7 +134,9 @@ public class WrapperUtils_Test {
             
         }
         insert obj_newreimbursements;
-        List<Employee_Mileage__c> obj_Employee_Mileage_list1 = RecordUtilityClass.buildNoApprovedYetEmployeeMileages(obj_newreimbursements);
+        
+        
+        List<Employee_Mileage__c> obj_Employee_Mileage_list1 = RecordUtilityClass.buildNoApprovedYetEmployeeMileages(obj_newreimbursements, empBIweekReimbursementList1[0].Id);
         insert obj_Employee_Mileage_list1;
 
         List<Employee_Reimbursement__c> obj_Employee_Reimbursement_List3 = RecordUtilityClass.getEmployee_Reimbursement(obj_Account.id);
@@ -176,6 +221,7 @@ public class WrapperUtils_Test {
             List<EmployeeDetails> obj_list_EmployeeDetails1 = new List<EmployeeDetails>();
             obj_list_EmployeeDetails1.add(obj_EmployeeDetails);
             
+<<<<<<< HEAD
             WrapperUtils.getContact(obj_EmployeeDetails);
             WrapperUtils.getNewContact(obj_EmployeeDetails);
             WrapperUtils.getMonthName('11-2019');
@@ -212,6 +258,38 @@ public class WrapperUtils_Test {
             //WrapperUtils.approveMileagesClone1(JSON.serialize(obj_list_mileages));
             WrapperUtils.TripCallout(obj_Driver_list[0].id,'February','2020','1.0','12',obj_Employee_Reimbursement_list[0].id,'2.1','U');
             WrapperUtils.readFromFileInchunk('test',att.Name,String.valueOf(att.Id),String.valueOf(obj_Driver_list[0].Id),String.valueOf(obj_Account.Id),null);
+=======
+                WrapperUtils.getPacketandMeetingDetails(obj_Driver_list[0].id);
+                List<String> reimbusementidList = new List<String>();
+                reimbusementidList.add(obj_Employee_Reimbursement_list_update1[0]);
+                WrapperUtils.updateReimbursements(JSON.serialize(reimbusementidList));
+                WrapperUtils.updateContactThresholdLimit(JSON.serialize(obj_Employee_Reimbursement_list));
+                WrapperUtils.getManager(obj_Driver_list[0].id,obj_admincontact.id);
+                WrapperUtils.getadminname(obj_Driver_list[0].id);
+                // ManagerDashboard Class Methods
+                Attachment att = new Attachment();
+                att.parentID = obj_Driver_list[0].Id;
+                att.name = 'test';
+                att.body = blob.valueOf('Test');
+                insert att;
+                WrapperUtils.getDriverGasPrice('CA','ON');
+                WrapperUtils.getAllReimbursements(String.valueOf(System.today().Year()),String.valueOf(obj_Driver_list[0].id),obj_Account.id);
+                WrapperUtils.getReimbursementsList(obj_Driver_list[0].id,'Approved');
+                WrapperUtils.getMileages('November','2019',obj_Driver_list[0].id);
+                WrapperUtils.getMileages1('November',String.valueOf(system.today().year()),obj_Driver_list[0].id);
+                WrapperUtils.getpastYearReimbursement(obj_Driver_list[0].id);
+                WrapperUtils.getLast2Years();
+                WrapperUtils.getReimbursementsListClone(obj_Driver_list[0].id);
+                WrapperUtils.approveReimbursements('2019',obj_Driver_list[0].id,obj_Account.id,JSON.serialize(obj_EmployeeReimbursements_list2));
+                WrapperUtils.updateLockDate(obj_Account.id,obj_Driver_list[0].id);
+                WrapperUtils.UpdateReimbursementStatus(obj_Employee_Reimbursement_list[0].id);
+                WrapperUtils.getMileagesBasedTA('2020-01-01','2021-12-01',obj_Driver_list[0].id);
+                //WrapperUtils.approveMileagesClone1(JSON.serialize(obj_list_mileages));
+                WrapperUtils.TripCallout(obj_Driver_list[0].id,'February','2020','1.0','12',obj_Employee_Reimbursement_list[0].id,'2.1','U');
+                WrapperUtils.readFromFileInchunk('test',att.Name,String.valueOf(att.Id),String.valueOf(obj_Driver_list[0].Id),String.valueOf(obj_Account.Id),null);
+               
+            }
+>>>>>>> 9c0e9c3978f9058b2535348ae9c19249a77825fe
         Test.stopTest();   
     }
     public static testmethod void wrapperUtilstestMethod1() {
@@ -229,6 +307,7 @@ public class WrapperUtils_Test {
         RecordUtilityClass.sendEmailforCompliance();
         RecordUtilityClass.enableMappingGasPriceTrigger();
         RecordUtilityClass.vehicleUrlMapping();
+<<<<<<< HEAD
 
         Account obj_Account = RecordUtilityClass.buildAccount();
         insert obj_Account;
@@ -245,6 +324,50 @@ public class WrapperUtils_Test {
             currentContact.compliancestatus__c='No – Vehicle Age';
         }
         insert obj_Driver_list;
+=======
+        
+        UserRole userRole_1 = [SELECT Id FROM UserRole WHERE DeveloperName = 'EMD' LIMIT 1];
+        Profile profile_1 = [SELECT Id FROM Profile WHERE Name = 'Customer Community Login User' LIMIT 1];
+        User admin = [SELECT Id, Username, UserRoleId FROM User WHERE Profile.Name = 'System Administrator' AND UserRoleId = :userRole_1.Id LIMIT 1];
+        User user_1;
+        Account obj_Account;
+        Contact obj_admincontact;
+        List<Contact> obj_Manager_list;
+        List<Contact> obj_Driver_list;
+        System.runAs(admin) {            
+            obj_Account = RecordUtilityClass.buildAccount();
+            insert obj_Account;
+            Contact contact_1 = new Contact(AccountId = obj_Account.Id, LastName = 'xgeek',External_Email__c= 'abc@gmail.com');
+            insert contact_1;
+            obj_admincontact = RecordUtilityClass.buildAdminContact(obj_Account);
+            insert obj_admincontact;       
+    
+            obj_Manager_list = RecordUtilityClass.buildManagerContact(obj_Account,obj_admincontact);
+            insert obj_Manager_list;
+    
+            obj_Driver_list = RecordUtilityClass.buildDriverContact(obj_Account,obj_Manager_list[0]);
+            for(Contact currentContact:obj_Driver_list)
+            {
+                currentContact.compliancestatus__c='No – Vehicle Age';
+            }
+            insert obj_Driver_list;
+          user_1 = new User( 
+            Email = 'yourusername@gmail.com',
+            ProfileId = profile_1.Id, 
+            UserName = 'yourusername@gmail.com', 
+            Alias = 'Test',
+            TimeZoneSidKey = 'America/New_York',
+            EmailEncodingKey = 'ISO-8859-1',
+            LocaleSidKey = 'en_US', 
+            LanguageLocaleKey = 'en_US',
+            ContactId = contact_1.Id,
+            PortalRole = 'Manager',
+            FirstName = 'Firstname',
+            LastName = 'Lastname'
+          );
+          insert user_1;
+        }
+>>>>>>> 9c0e9c3978f9058b2535348ae9c19249a77825fe
         
         list<Gas_Prices__c> gaslist = RecordUtilityClass.buildGasPrice();
         insert gaslist;
@@ -256,7 +379,10 @@ public class WrapperUtils_Test {
         empClass = WrapperUtils.getEmployeeReimbursementDetails(obj_Employee_Reimbursement_list[0]); 
         WrapperUtils.getMonthNamefromno(11);
         
-        List<Employee_Mileage__c> obj_Employee_Mileage_list = RecordUtilityClass.buildNoApprovedYetEmployeeMileages(obj_Employee_Reimbursement_list);
+        list<Bi_Weekly_Reimbursement__c> empBIweekReimbursementList2 = RecordUtilityClass.buildPendingBiReimbursement(obj_Driver_list);
+        insert empBIweekReimbursementList2;
+        
+        List<Employee_Mileage__c> obj_Employee_Mileage_list = RecordUtilityClass.buildNoApprovedYetEmployeeMileages(obj_Employee_Reimbursement_list, empBIweekReimbursementList2[0].Id);
         insert obj_Employee_Mileage_list;
 
         List<Employee_Reimbursement__c> obj_newreimbursements = new List<Employee_Reimbursement__c>();
@@ -314,7 +440,10 @@ public class WrapperUtils_Test {
         }
         insert obj_newreimbursements;
     
-        List<Employee_Mileage__c> obj_Employee_Mileage_list1 = RecordUtilityClass.buildNoApprovedYetEmployeeMileages(obj_newreimbursements);
+        list<Bi_Weekly_Reimbursement__c> empBIweekReimbursementList3 = RecordUtilityClass.buildPendingBiReimbursement(obj_Driver_list);
+        insert empBIweekReimbursementList3;
+        
+        List<Employee_Mileage__c> obj_Employee_Mileage_list1 = RecordUtilityClass.buildNoApprovedYetEmployeeMileages(obj_newreimbursements , empBIweekReimbursementList3[0].Id);
         insert obj_Employee_Mileage_list1;
 
         List<Employee_Reimbursement__c> obj_Employee_Reimbursement_List3 = RecordUtilityClass.getEmployee_Reimbursement(obj_Account.id);
@@ -449,6 +578,7 @@ public class WrapperUtils_Test {
         RecordUtilityClass.sendEmailforCompliance();
         RecordUtilityClass.enableMappingGasPriceTrigger();
         RecordUtilityClass.vehicleUrlMapping();
+<<<<<<< HEAD
 
         Account obj_Account = RecordUtilityClass.buildAccount();
         insert obj_Account;
@@ -465,14 +595,62 @@ public class WrapperUtils_Test {
             currentContact.compliancestatus__c='Resubmit Insurance – you submitted an insurance card';
         }
         insert obj_Driver_list;
+=======
+        
+        UserRole userRole_1 = [SELECT Id FROM UserRole WHERE DeveloperName = 'EMD' LIMIT 1];
+        Profile profile_1 = [SELECT Id FROM Profile WHERE Name = 'Customer Community Login User' LIMIT 1];
+        User admin = [SELECT Id, Username, UserRoleId FROM User WHERE Profile.Name = 'System Administrator' AND UserRoleId = :userRole_1.Id LIMIT 1];
+        User user_1;
+        Account obj_Account;
+        Contact obj_admincontact;
+        List<Contact> obj_Manager_list;
+        List<Contact> obj_Driver_list;
+        System.runAs(admin) {            
+            obj_Account = RecordUtilityClass.buildAccount();
+            insert obj_Account;
+            Contact contact_1 = new Contact(AccountId = obj_Account.Id, LastName = 'xgeek',External_Email__c= 'abc@gmail.com');
+            insert contact_1;
+            obj_admincontact = RecordUtilityClass.buildAdminContact(obj_Account);
+            insert obj_admincontact;       
+
+            obj_Manager_list = RecordUtilityClass.buildManagerContact(obj_Account,obj_admincontact);
+            insert obj_Manager_list;
+
+            obj_Driver_list = RecordUtilityClass.buildDriverContact(obj_Account,obj_Manager_list[0]);
+            for(Contact currentContact:obj_Driver_list)
+            {
+            currentContact.compliancestatus__c='Resubmit Insurance – you submitted an insurance card';
+            }
+            insert obj_Driver_list;
+
+          user_1 = new User( 
+            Email = 'yourusername@gmail.com',
+            ProfileId = profile_1.Id, 
+            UserName = 'yourusername@gmail.com', 
+            Alias = 'Test',
+            TimeZoneSidKey = 'America/New_York',
+            EmailEncodingKey = 'ISO-8859-1',
+            LocaleSidKey = 'en_US', 
+            LanguageLocaleKey = 'en_US',
+            ContactId = contact_1.Id,
+            PortalRole = 'Manager',
+            FirstName = 'Firstname',
+            LastName = 'Lastname'
+          );
+          insert user_1;
+        }
+>>>>>>> 9c0e9c3978f9058b2535348ae9c19249a77825fe
         
         list<Gas_Prices__c> gaslist = RecordUtilityClass.buildGasPrice();
         insert gaslist;
 
         list<Employee_Reimbursement__c> obj_Employee_Reimbursement_list = RecordUtilityClass.buildPendingEmployee_Reimbursement(obj_Driver_list);
-        insert obj_Employee_Reimbursement_list;       
+        insert obj_Employee_Reimbursement_list;  
         
-        List<Employee_Mileage__c> obj_Employee_Mileage_list = RecordUtilityClass.buildNoApprovedYetEmployeeMileages(obj_Employee_Reimbursement_list);
+        list<Bi_Weekly_Reimbursement__c> empBIweekReimbursementList4 = RecordUtilityClass.buildPendingBiReimbursement(obj_Driver_list);
+        insert empBIweekReimbursementList4;
+        
+        List<Employee_Mileage__c> obj_Employee_Mileage_list = RecordUtilityClass.buildNoApprovedYetEmployeeMileages(obj_Employee_Reimbursement_list, empBIweekReimbursementList4[0].id);
         insert obj_Employee_Mileage_list;
 
         List<Employee_Reimbursement__c> obj_newreimbursements = new List<Employee_Reimbursement__c>();
@@ -529,8 +707,11 @@ public class WrapperUtils_Test {
             
         }
         insert obj_newreimbursements;
+        
+         list<Bi_Weekly_Reimbursement__c> empBIweekReimbursementList5 = RecordUtilityClass.buildPendingBiReimbursement(obj_Driver_list);
+        insert empBIweekReimbursementList5;
     
-        List<Employee_Mileage__c> obj_Employee_Mileage_list1 = RecordUtilityClass.buildNoApprovedYetEmployeeMileages(obj_newreimbursements);
+        List<Employee_Mileage__c> obj_Employee_Mileage_list1 = RecordUtilityClass.buildNoApprovedYetEmployeeMileages(obj_newreimbursements, empBIweekReimbursementList5[0].id);
         insert obj_Employee_Mileage_list1;
 
         List<Employee_Reimbursement__c> obj_Employee_Reimbursement_List3 = RecordUtilityClass.getEmployee_Reimbursement(obj_Account.id);
@@ -615,6 +796,7 @@ public class WrapperUtils_Test {
             List<EmployeeDetails> obj_list_EmployeeDetails1 = new List<EmployeeDetails>();
             obj_list_EmployeeDetails1.add(obj_EmployeeDetails);
             
+<<<<<<< HEAD
             WrapperUtils.getContact(obj_EmployeeDetails);
             WrapperUtils.getNewContact(obj_EmployeeDetails);
             WrapperUtils.getMonthName('11-2019');
@@ -647,6 +829,39 @@ public class WrapperUtils_Test {
             WrapperUtils.approveReimbursements('2019',obj_Driver_list[0].id,obj_Account.id,JSON.serialize(obj_EmployeeReimbursements_list2));
             WrapperUtils.updateLockDate(obj_Account.id,obj_Driver_list[0].id);
             WrapperUtils.readFromFileInchunk('test',att.Name,String.valueOf(att.Id),String.valueOf(obj_Driver_list[0].Id),String.valueOf(obj_Account.Id),null);
+=======
+                WrapperUtils.getPacketandMeetingDetails(obj_Driver_list[0].id);
+                List<String> reimbusementidList = new List<String>();
+                reimbusementidList.add(obj_Employee_Reimbursement_list_update1[0]);
+                WrapperUtils.updateReimbursements(JSON.serialize(reimbusementidList));
+                WrapperUtils.updateContactThresholdLimit(JSON.serialize(obj_Employee_Reimbursement_list));
+                WrapperUtils.getManager(obj_Driver_list[0].id,obj_admincontact.id);
+                WrapperUtils.getadminname(obj_Driver_list[0].id);
+                // ManagerDashboard Class Methods
+                Attachment att = new Attachment();
+                att.parentID = obj_Driver_list[0].Id;
+                att.name = 'test';
+                att.body = blob.valueOf('Test');
+                insert att;
+                WrapperUtils.getDriverGasPrice('CA','ON');
+                WrapperUtils.getAllReimbursements(String.valueOf(System.today().Year()),String.valueOf(obj_Driver_list[0].id),obj_Account.id);
+                WrapperUtils.getReimbursementsList(obj_Driver_list[0].id,'Approved');
+                WrapperUtils.getMileages('November','2019',obj_Driver_list[0].id);
+                WrapperUtils.getMileages1('November',String.valueOf(system.today().year()),obj_Driver_list[0].id);
+                WrapperUtils.getpastYearReimbursement(obj_Driver_list[0].id);
+                WrapperUtils.getLast2Years();
+                WrapperUtils.getReimbursementsListClone(obj_Driver_list[0].id);
+                WrapperUtils.approveReimbursements('2019',obj_Driver_list[0].id,obj_Account.id,JSON.serialize(obj_EmployeeReimbursements_list2));
+                WrapperUtils.updateLockDate(obj_Account.id,obj_Driver_list[0].id);
+                WrapperUtils.readFromFileInchunk('test',att.Name,String.valueOf(att.Id),String.valueOf(obj_Driver_list[0].Id),String.valueOf(obj_Account.Id),null);
+                WrapperUtils.getUnapprovedReimbursements(String.valueOf(obj_Driver_list[0].Id), String.valueOf(obj_Account.Id), true, 'Driver');
+                 WrapperUtils.getDriverFuelVariableRate(String.valueOf(obj_Driver_list[0].Id));
+                WrapperUtils.getLastMonthReimbursements(String.valueOf(obj_Driver_list[0].Id), String.valueOf(obj_Account.Id), true, 'Driver');
+               
+                
+                //WrapperUtils.approveMileagesClone1(String.valueOf(obj_list_mileages[0].Id));
+            }
+>>>>>>> 9c0e9c3978f9058b2535348ae9c19249a77825fe
         Test.stopTest();   
     }
 }

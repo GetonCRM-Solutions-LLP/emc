@@ -207,6 +207,7 @@
                 $scope.id = url.searchParams.get("id");
                 $scope.showteam = url.searchParams.get("showteam");
                 $scope.accid = url.searchParams.get("accid");
+                $scope.PLMarketing = '{!($Label.PL_Marketing)}';
                 $scope.admindriver = false;
                 $scope.admindriver = url.searchParams.get("admindriver");
                 if($scope.admindriver == undefined || $scope.admindriver == ''){

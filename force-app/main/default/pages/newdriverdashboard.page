@@ -155,6 +155,7 @@
        var url = new URL(url_string);
        var accid = url.searchParams.get("accid");
        var id = url.searchParams.get("id");
+       var plMarketing = '{!($Label.PL_Marketing)}';
        var currentDay = new Date();
        var currentYear;
        var selectedYear;
@@ -189,6 +190,8 @@
         $Lightning.use("c:LWCLightningApp", function () {
             $Lightning.createComponent("c:driverProfile", {
                 //pass parameter values to lwc js controller
+                "accountId": accid,
+                "plMarketing": plMarketing,
                 "Role": role,
                 "mileageList": listOfMileages,
                 "contactDetails": details,

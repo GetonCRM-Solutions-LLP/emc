@@ -234,7 +234,17 @@ table tr td {
     border-image: initial;
     border-radius: 0px; */
 }
-
+.car-image-pl{
+    min-height: 8rem !important;
+    max-height: 8rem !important;
+    width: fit-content !important;
+    object-fit: cover;
+}
+.car-image{
+    min-height: 9rem !important;
+    max-height: 9rem !important;
+    width: fit-content !important;
+}
 .dProfileGrid {
     height: auto;
     /* height: 16rem; */
