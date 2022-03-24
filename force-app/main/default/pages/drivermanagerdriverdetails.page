@@ -6,6 +6,75 @@
         <script src="{!URLFOR($Resource.modelJs)}"></script>
         <script src="{!URLFOR($Resource.dirPagination)}"></script>
         <style type="text/css">
+              /* Large screens ----------- */
+              @media (min-width: 2560px)  {
+                .fuel_td{
+                    width: 15rem;
+                }
+                .month_td{
+                    width: 15rem;
+                }
+            }
+            @media (min-width: 1800px) and (max-width: 2559px) {
+                .fuel_td{
+                    width: 9rem;
+                }
+                .month_td{
+                    width: 9rem;
+                }
+            }
+
+            /* Desktops and laptops ----------- */
+            @media (min-width : 1600px) and (max-width : 1799px){
+                .fuel_td{
+                    width: 8rem;
+                }
+                .month_td{
+                    width: 8rem;
+                }
+            }
+            @media (min-width : 1224px) and (max-width : 1600px){
+                .fuel_td{
+                    width: 5rem;
+                }
+                .month_td{
+                    width: 6rem;
+                }
+            }
+
+             /* For Desktop View ----------- */
+             @media  (min-width: 1024px) and (max-width: 1224px){
+                .fuel_td{
+                    width: 6rem;
+                }
+                .month_td{
+                    width: 6rem;
+                }
+             }
+
+             /* For Tablet View ----------- */
+            @media screen and (min-device-width: 768px)
+            and (max-device-width: 1024px) {
+                .fuel_td{
+                    width: 6rem;
+                }
+            }
+
+            /* For iPhone 4 Portrait or Landscape View ----------- */
+            @media screen and (min-device-width: 320px)
+            and (-webkit-min-device-pixel-ratio: 2) {
+                .fuel_td{
+                    width: 6rem;
+                }
+            }
+
+            /* For iPhone 5 Portrait or Landscape View ----------- */
+            @media (device-height: 568px) and (device-width: 320px)
+            and (-webkit-min-device-pixel-ratio: 2) {
+                .fuel_td{
+                    width: 6rem;
+                }
+            }
             @media screen and (max-width: 767px) and (min-width: 320px) {
                 #driver-dashboard-monthrecord #example_filter {
                     right: 0px !important;
@@ -1373,21 +1442,26 @@
                             $scope.pacekt = $scope.pacektstatus[0].Packet__c;
                             $scope.meeting = $scope.pacektstatus[0].Meeting__c;
                             if ($scope.pacekt == 'Being Generated') {
-                                document.getElementById("downloadbtn").style.visibility = "hidden";
+                                if(document.getElementById("downloadbtn")){
+                                    document.getElementById("downloadbtn").style.visibility = "hidden";
+                                }
                                 angular.element(document.querySelector("#beinggenratedsignature")).addClass(" active");
                                 angular.element(document.querySelector("#sentforsignature")).removeClass("active");
                                 angular.element(document.querySelector("#waitingforsignature")).removeClass("active");
+                               // angular.element(document.querySelector("#waitingforadminsignature")).removeClass("active");
                                 angular.element(document.querySelector("#completesignature")).removeClass("active");
                                 angular.element(document.querySelector("#beinggenratedsignature")).addClass("btn.btn-secondary.pull-right");
                             }
                             else if ($scope.pacekt == 'Sent for Signature') {
-                                //document.getElementById("downloadbtn").style.visibility = "hidden";
+                                if(document.getElementById("downloadbtn")){
+                                    document.getElementById("downloadbtn").style.visibility = "hidden";
+                                }
                                 angular.element(document.querySelector("#beinggenratedsignature")).removeClass(" active");
                                 angular.element(document.querySelector("#sentforsignature")).addClass("active");
                                 angular.element(document.querySelector("#waitingforsignature")).removeClass("active");
+                               // angular.element(document.querySelector("#waitingforadminsignature")).removeClass("active");
                                 angular.element(document.querySelector("#completesignature")).removeClass("active");
                                 angular.element(document.querySelector("#sentforsignature")).addClass("btn.btn-secondary.pull-right");
-
                             }
                             else if ($scope.pacekt == 'Waiting for Signature') {
                                 document.getElementById("downloadbtn").style.visibility = "hidden";
@@ -1395,12 +1469,32 @@
                                 angular.element(document.querySelector("#sentforsignature")).removeClass("active");
                                 angular.element(document.querySelector("#waitingforsignature")).addClass(" active");
                                 angular.element(document.querySelector("#completesignature")).removeClass("active");
-
                             }
+                            /*else if ($scope.pacekt == 'Driver Signature') {
+                                if(document.getElementById("downloadbtn")){
+                                    document.getElementById("downloadbtn").style.visibility = "hidden";
+                                }
+                                angular.element(document.querySelector("#beinggenratedsignature")).removeClass(" active");
+                                angular.element(document.querySelector("#sentforsignature")).removeClass("active");
+                                angular.element(document.querySelector("#waitingforsignature")).addClass("active");
+                                angular.element(document.querySelector("#waitingforadminsignature")).removeClass("active");
+                                angular.element(document.querySelector("#completesignature")).removeClass("active");
+                            }
+                            else if ($scope.pacekt == 'Admin Signature') {
+                                if(document.getElementById("downloadbtn")){
+                                    document.getElementById("downloadbtn").style.visibility = "hidden";
+                                }
+                                angular.element(document.querySelector("#beinggenratedsignature")).removeClass(" active");
+                                angular.element(document.querySelector("#sentforsignature")).removeClass("active");
+                                angular.element(document.querySelector("#waitingforadminsignature")).addClass(" active");
+                                angular.element(document.querySelector("#waitingforsignature")).removeClass("active");
+                                angular.element(document.querySelector("#completesignature")).removeClass("active");
+                            }*/
                             else if ($scope.pacekt == 'Complete') {
                                 angular.element(document.querySelector("#beinggenratedsignature")).removeClass("active");
                                 angular.element(document.querySelector("#sentforsignature")).removeClass("active");
                                 angular.element(document.querySelector("#waitingforsignature")).removeClass("active");
+                                //angular.element(document.querySelector("#waitingforadminsignature")).removeClass(" active");
                                 angular.element(document.querySelector("#completesignature")).addClass("active");
                                 angular.element(document.querySelector("#completesignature")).removeClass("btn-secondary");
                             }
@@ -1408,6 +1502,7 @@
                                 angular.element(document.querySelector("#beinggenratedsignature")).addClass("blank-stepper");
                                 angular.element(document.querySelector("#sentforsignature")).addClass("blank-stepper");
                                 angular.element(document.querySelector("#waitingforsignature")).addClass("blank-stepper");
+                                //angular.element(document.querySelector("#waitingforadminsignature")).addClass("blank-stepper");
                                 angular.element(document.querySelector("#completesignature")).addClass("blank-stepper");
                             }
 
@@ -1469,7 +1564,7 @@
                 var Bicount = 0;
                 $scope.checkAllShowForBiweekly = false;
                 angular.forEach($scope.reimbMileages, function (item, key) {
-                    if (item.checkPendingTrip === true) {
+                    if (item.checkPendingTrip === true && item.totalPending > '0.00') {
                         Bicount++;
                     }
                 });
@@ -1514,7 +1609,7 @@
                     $scope.displayBiWeeklyTeamRecordBtn = false;
 
                 angular.forEach($scope.reimbMileages, function (item) {
-                    if(item.checkPendingTrip){
+                    if(item.checkPendingTrip && item.totalPending > '0.00'){
                         item.isSelected = $scope.model.isChecked;
                     }
                 });
@@ -1528,7 +1623,7 @@
                     if (item.isSelected) {
                         tripcount++;
                     }
-                    if(item.checkPendingTrip){
+                    if(item.checkPendingTrip && item.totalPending > '0.00'){
                         totalfortrip ++;
                     }
                 });
@@ -1718,12 +1813,14 @@
              // Biweekly modal 
              $scope.openbiweeklymodal = function (stDate, enDate, biweekId) {
                 $('#spinner').show();
+                let stArr = stDate.split('-');
+                let enArr = enDate.split('-');
                 $scope.modalType = 'Biweekly';
                 $scope.emailofemployee = '{!emailofEmployee}';
                 $scope.nameofEmployee = '{!nameofEmployee}';
-                $scope.bStartDate = $filter('date')(new Date(stDate), "yyyy-MM-dd");
-                $scope.bEndDate = $filter('date')(new Date(enDate), "yyyy-MM-dd");
-                $scope.clickedPeriod = "Pay Period" + " " + $filter('date')(new Date(stDate), "MM/dd/yy") + " - " + $filter('date')(new Date(enDate), "MM/dd/yy")
+                $scope.bStartDate = stArr[1] + '/' + stArr[2] + '/' + stArr[0].substring(2,4);
+                $scope.bEndDate = enArr[1] + '/' + enArr[2] + '/' + enArr[0].substring(2,4);
+                $scope.clickedPeriod = "Pay Period" + " " +  $scope.bStartDate + " - " +  $scope.bEndDate
                 Visualforce.remoting.Manager.invokeAction(
                     '{!$RemoteAction.DriverManagerDriverDetailsController.getBiweekMileages}', biweekId,
                     function (result, event) {
@@ -1871,6 +1968,8 @@
             };
 
             $scope.empContact = {!obj_current_contact_details};
+            $scope.driverConDetails = $scope.empContact[0];
+            $scope.biWeekContact = $scope.empContact[0].Account.Bi_Weekly_Pay_Period__c;
             $scope.driverType = $scope.empContact[0].Driver_Type__c;
             if ($scope.empContact[0].Car_Image__c == null || $scope.empContact[0].Car_Image__c == '' || $scope.empContact[0].Car_Image__c == undefined) {
                 $scope.empContact[0].Car_Image__c = '';
@@ -2169,8 +2268,23 @@
                 );
             }
 
-              //Summary Report For Reimbursement
-              $scope.exportToSummary = function(){
+             //Summary Report For Monthly Reimbursement
+             $scope.exportToMonthSummary = function () {
+                    var summaryFile;
+                    $scope.excelSummary = [];
+                    $scope.excelSummary.push(["Month", "Fuel Rate", "Total Mileage", "Approved Mileage","Fixed Amount", "Variable Amount", "Total Reimbursement"]);
+                    angular.forEach($scope.mileages, function (item) {
+                        let variableFixed = item.varibleAndFixedReimbursements;
+                        let fixedAndVariable = variableFixed.split(/[\s$+ ]+/);
+                        $scope.excelSummary.push([item.month, item.fuel, item.mileage, item.approveMileage, fixedAndVariable[1], fixedAndVariable[2], item.totalReimbursements]);
+                    })
+
+                    summaryFile = $scope.adminname + '\'s  Summary Report';
+                    $scope.downloadToExcel($scope.excelSummary, summaryFile);
+            }
+
+            //Summary Report For Reimbursement
+            $scope.exportToSummary = function(){
                     var summaryFile;
                   $scope.excelSummary = [];
                   $scope.excelSummary.push(["Start Date", "End Date", "Gas Prices", "Mileage", "Variable Rate", "Variable Amount", "Fixed Amount", "Total Reimbursement"]);
@@ -2205,7 +2319,7 @@
                     $scope.bStartDate = $filter('date')(new Date(stDate), "yyyy-MM-dd");
                     $scope.bEndDate = $filter('date')(new Date(enDate), "yyyy-MM-dd");
                     Visualforce.remoting.Manager.invokeAction(
-                        '{!$RemoteAction.DriverManagerDriverDetailsController.getAllMileages}',  $scope.bStartDate,  $scope.bEndDate, $scope.id,
+                        '{!$RemoteAction.DriverManagerDriverDetailsController.getAllMileages}', stDate,  enDate, $scope.id,
                         function (result, event) {
                             if (event.status && result != null) {
                                 if (result != '') {
@@ -2608,31 +2722,42 @@
                             <div class="card insurance-declatarion-card" ng-repeat="yr in years">
                                 <div class="card-header" role="tab" id="Cardheading">
                                     <h5 class="mb-0">
-                                        <a class="collapsed" data-toggle="collapse" href="#collapseCard{{$index}}" aria-expanded="false" aria-controls="collapseCard"
+                                        <a  ng-show="driverConDetails.Monthly_Reimbursement__c" class="collapsed" data-toggle="collapse" href="#collapseCard{{$index}}" aria-expanded="false" aria-controls="collapseCard"
                                             ng-click="fetchMileage(yr)">
                                             {{yr}}
                                         </a>
+                                        <!-- Year Link For Pl Marketing Account -->
+                                        <a ng-show="driverConDetails.Biweek_Reimbursement__c && biWeekContact" class="collapsed" data-toggle="collapse" href="#collapseReimbPLCard{{$index}}" aria-expanded="false" aria-controls="collapseReimbPLCard"
+                                        ng-click="fetchReimbMileage(yr)">
+                                        {{yr}}
+                                        </a>
+                                        <!-- Year Link For ERMI Account-->
+                                        <a ng-show="driverConDetails.Biweek_Reimbursement__c && !biWeekContact" class="collapsed" data-toggle="collapse" href="#collapseReimbCard{{$index}}" aria-expanded="false" aria-controls="collapseReimbCard"
+                                        ng-click="fetchErmiReimbMileage(yr)">
+                                        {{yr}}
+                                        </a>
                                     </h5>
-                                    <h5 class="mb-0 ml-5" ng-if="accid === ERMIAcc && driverType != 'Driver - Salary' ">
+                                    <!-- Time And Attendance For Account-->
+                                      <h5 class="mb-0 ml-5" ng-show="driverConDetails.Time_Attandance__c"> <!--  ng-if="accid === ERMIAcc && driverType != 'Driver - Salary' " -->
                                         <a class="collapsed" data-toggle="collapse" href="#collapseTimeCard{{$index}}" aria-expanded="false" aria-controls="collapseTimeCard"
                                             ng-click="fetchTimeAttendence(yr)">
                                             T &amp; A
                                         </a>
                                     </h5>
-                                    <h5 class="mb-0 ml-5"  ng-if="accid === ERMIAcc && driverType != 'Driver - Salary' ">
-                                        <a class="collapsed" data-toggle="collapse" href="#collapseReimbCard{{$index}}" aria-expanded="false" aria-controls="collapseReimbCard"
-                                            ng-click="fetchErmiReimbMileage(yr)">
-                                            Reimbursement
-                                        </a>
-                                    </h5>
-                                    <h5 class="mb-0 ml-5" ng-if="accid == PLMarketing">
+                                   <!-- <h5 class="mb-0 ml-5" ng-if="accid == PLMarketing">
                                         <a class="collapsed" data-toggle="collapse" href="#collapseReimbCard{{$index}}" aria-expanded="false" aria-controls="collapseReimbCard"
                                             ng-click="fetchReimbMileage(yr)">
                                             Reimbursement
                                         </a>
                                     </h5>
+                                      <h5 class="mb-0 ml-5"  ng-if="accid === ERMIAcc && driverType != 'Driver - Salary' ">
+                                        <a class="collapsed" data-toggle="collapse" href="#collapseReimbCard{{$index}}" aria-expanded="false" aria-controls="collapseReimbCard"
+                                            ng-click="fetchErmiReimbMileage(yr)">
+                                            Reimbursement
+                                        </a>
+                                    </h5> -->
                                 </div>
-                                <div id="collapseCard{{$index}}" class="collapse" role="tabpanel" aria-labelledby="Cardheading" data-parent="#accordion">
+                                <div  ng-show="driverConDetails.Monthly_Reimbursement__c" id="collapseCard{{$index}}" class="collapse" role="tabpanel" aria-labelledby="Cardheading" data-parent="#accordion">
                                     <div class="card-body pad-0">
                                         <div class="table-responsive">
                                             <table id="driver-dashbord" class="table table-striped dt-responsive nowrap dataTable" cellspacing="0" width="100%">
@@ -2645,8 +2770,11 @@
                                                         <th>Fuel
                                                             <span class="sort-icon pull-right" ng-show="sortKey=='Fuel'" ng-class="{'fa fa-chevron-up':reverse,'fa fa-chevron-down':!reverse}"></span>
                                                         </th>
-                                                        <th>Mileage
+                                                        <th>Total Mileage
                                                             <span class="sort-icon pull-right" ng-show="sortKey=='mileage'" ng-class="{'fa fa-chevron-up':reverse,'fa fa-chevron-down':!reverse}"></span>
+                                                        </th>
+                                                        <th>Approved Mileage
+                                                            <span class="sort-icon pull-right" ng-show="sortKey=='approveMileage'" ng-class="{'fa fa-chevron-up':reverse,'fa fa-chevron-down':!reverse}"></span>
                                                         </th>
                                                         <th>Fixed + Variable
                                                             <span class="sort-icon pull-right" ng-show="sortKey=='Reimbursements'" ng-class="{'fa fa-chevron-up':reverse,'fa fa-chevron-down':!reverse}">
@@ -2670,12 +2798,13 @@
                                                             <button class="btn btn-primary syncMileageBtn" ng-click="syncMileages(ml.month,ml.fuel,ml.maintainsAndTyres,ml.employeeReimbursementId,ml.mpg)"
                                                                 ng-if="ml.month == syncMonth">Mileage</button>
                                                         </td>
-                                                        <td ng-click="openmodal(ml.month)">
+                                                        <td ng-click="openmodal(ml.month)" class="month_td">
                                                             <a>{{ml.month}}</a>
                                                         </td>
-                                                        <td ng-if="ml.fuel != null && ml.fuel != ''">${{ml.fuel}}</td>
-                                                        <td ng-if="ml.fuel == null || ml.fuel == ''"></td>
+                                                        <td ng-if="ml.fuel != null && ml.fuel != ''" class="fuel_td">${{ml.fuel}}</td>
+                                                        <td ng-if="ml.fuel == null || ml.fuel == ''" class="fuel_td"></td>
                                                         <td>{{ml.mileage | currency:value=""}}</td>
+                                                        <td>{{ml.approveMileage | currency:value=""}}</td>
                                                         <td>{{ml.varibleAndFixedReimbursements}}</td>
                                                         <td>${{ml.totalReimbursements}}</td>
                                                         <td>
@@ -2683,7 +2812,7 @@
                                                             </div>
                                                             <div ng-model="ml.status" ng-if="ml.status=='Rejected' "> {{ml.status}} on {{ml.approveddate}}
                                                             </div>
-                                                            <div class="pull-right1 mr-11 margin_top-5" ng-if="ml.status !='Approved' && ml.mileage > '0.00'">
+                                                            <div class="pull-right1 mr-11 margin_top-5" ng-if="ml.status !='Approved' && ml.pendingMileage > '0.00'">
                                                                 <input type="checkbox" ng-model="ml.isSelected" ng-change="CheckUncheckHeader()" class="approveChkForcurrentyear" />
                                                             </div>
                                                         </td>
@@ -2694,8 +2823,18 @@
                                             <!-- <dir-pagination-controls max-size="5" direction-links="true" boundary-links="true" autoHide="true" responsive="true" class="pull-right"></dir-pagination-controls> -->
                                         </div>
                                     </div>
+                                    <!-- <div class="card-footer text-muted" ng-if="mileages.length > 0">
+                                        <div class="card-inner-text">
+                                            <button class="btn btn-primary font-16 mr-11 cursor-type f-btn" ng-click="exportToMonthSummary()">Summary
+                                                <i class="fa fa-download"></i>
+                                            </button>
+                                            <button class="btn btn-primary font-16 mr-11 cursor-type f-btn" ng-click="exportToMonthDetail()">Detail
+                                                <i class="fa fa-download"></i>
+                                            </button>
+                                        </div>
+                                    </div> -->
                                 </div>
-                                <div ng-if="accid == PLMarketing" id="collapseReimbCard{{$index}}" class="collapse" role="tabpanel" aria-labelledby="Cardheading" data-parent="#accordion">
+                                <div ng-show="driverConDetails.Biweek_Reimbursement__c && biWeekContact" id="collapseReimbPLCard{{$index}}" class="collapse" role="tabpanel" aria-labelledby="Cardheading" data-parent="#accordion">
                                     <div class="card-body pad-0">
                                         <div class="table-responsive">
                                             <table id="driver-dashbord" class="table table-striped dt-responsive nowrap dataTable" cellspacing="0" width="100%">
@@ -2714,8 +2853,11 @@
                                                             <span class="sort-icon pull-right" ng-show="sortKey=='fixedAmount'" ng-class="{'fa fa-chevron-up':reverse,'fa fa-chevron-down':!reverse}">
                                                             </span>
                                                         </th>
-                                                        <th>Mileage
+                                                        <th>Total Mileage
                                                             <span class="sort-icon pull-right" ng-show="sortKey=='mileage'" ng-class="{'fa fa-chevron-up':reverse,'fa fa-chevron-down':!reverse}"></span>
+                                                        </th>
+                                                        <th>Approved Mileage
+                                                            <span class="sort-icon pull-right" ng-show="sortKey=='totalApproved'" ng-class="{'fa fa-chevron-up':reverse,'fa fa-chevron-down':!reverse}"></span>
                                                         </th>
                                                         <th>Variable Amount
                                                             <span class="sort-icon pull-right" ng-show="sortKey=='variable'" ng-class="{'fa fa-chevron-up':reverse,'fa fa-chevron-down':!reverse}">
@@ -2742,10 +2884,11 @@
                                                         <td ng-if="reimbml.fuel == null || reimbml.fuel == ''"></td>
                                                         <td>{{reimbml.fixedAmount}}</td>
                                                         <td>{{reimbml.mileage | currency:value=""}}</td>
+                                                        <td>{{reimbml.totalApproved | currency:value=""}}</td>
                                                         <td>{{reimbml.variable | currency:value=""}}</td>
                                                         <td>{{reimbml.totalReim}}</td>
                                                         <td>
-                                                            <div class="pull-right1 mr-11" ng-if="reimbml.checkPendingTrip === true">
+                                                            <div class="pull-right1" ng-if="reimbml.checkPendingTrip === true && reimbml.totalPending > '0.00'" style="margin-right: 14px !important">
                                                                 <input type="checkbox" ng-model="reimbml.isSelected" ng-change="CheckUncheckPendingTrip(reimbml.isSelected, $index)" class="approveChkForTrip"
                                                                 />
                                                             </div>
@@ -2774,7 +2917,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                 <div ng-if="accid === ERMIAcc && driverType != 'Driver - Salary' " id="collapseTimeCard{{$index}}" class="collapse" role="tabpanel" aria-labelledby="Cardheading"
+                                 <div  ng-show="driverConDetails.Time_Attandance__c"  id="collapseTimeCard{{$index}}" class="collapse" role="tabpanel" aria-labelledby="Cardheading"
                                     data-parent="#accordion">
                                     <div class="card-body pad-0">
                                         <div class="table-responsive">
@@ -2822,7 +2965,7 @@
 
                                     </div>
                                 </div>
-                                <div ng-if="accid === ERMIAcc && driverType != 'Driver - Salary' " id="collapseReimbCard{{$index}}" class="collapse" role="tabpanel" aria-labelledby="Cardheading"
+                                <div ng-show="driverConDetails.Biweek_Reimbursement__c && !biWeekContact"  id="collapseReimbCard{{$index}}" class="collapse" role="tabpanel" aria-labelledby="Cardheading"
                                     data-parent="#accordion">
                                     <div class="card-body pad-0">
                                         <div class="table-responsive">
@@ -2866,7 +3009,9 @@
                                                 </thead>
                                                 <tbody class="driver-dashboard-table table-a-link">
                                                     <tr ng-repeat="reimbml in reimbMileagesERMI |orderBy:sortKey:reverse">
-                                                        <td>{{reimbml.month}}</td>
+                                                        <td ng-click="openmodal(reimbml.month)">
+                                                            <a>{{reimbml.month}}</a>
+                                                        </td>
                                                         <td ng-if="reimbml.fuel != null && reimbml.fuel != ''" >${{reimbml.fuel}}</td>
                                                         <td ng-if="reimbml.fuel == null || reimbml.fuel == ''" ></td>
                                                         <td>{{reimbml.mileage | currency:value=""}}</td>
