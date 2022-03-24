@@ -61,7 +61,7 @@ global class GetDailyTripsFromTriplogforCommuteTrips implements Database.Batchab
         }
 
         obj_monthformileagesCurrentMonth.add(Utils.fetchMonths(1, -1)[0]);  
-        for(Employee_Reimbursement__c empReim : [SELECT Id,Contact_Id__c,Contact_Id__r.Account.Bi_Weekly_Pay_Period__c,Total_Mileage_WithOut_Previous__c, Contact_Id__r.Monthly_Mileage_Limit__c,Contact_Email__c,Month__c,Fuel_price__c, MPG__c, Maintenance_and_Tires__c FROM Employee_Reimbursement__c WHERE month__c =: obj_monthformileagesCurrentMonth AND Contact_Id__c IN: contactIdList]) {
+        for(Employee_Reimbursement__c empReim : [SELECT Id,Contact_Id__c,Contact_Id__r.Biweek_Reimbursement__c,Total_Mileage_WithOut_Previous__c, Contact_Id__r.Monthly_Mileage_Limit__c,Contact_Email__c,Month__c,Fuel_price__c, MPG__c, Maintenance_and_Tires__c FROM Employee_Reimbursement__c WHERE month__c =: obj_monthformileagesCurrentMonth AND Contact_Id__c IN: contactIdList]) {
             contactEmployeeReimbursementMap.put(empReim.Contact_Email__c+'-'+empReim.Month__c,empReim);            
         }
         
@@ -74,11 +74,11 @@ global class GetDailyTripsFromTriplogforCommuteTrips implements Database.Batchab
                     String reimFuel = String.valueof(reim.Fuel_price__c) != null ? String.valueof(reim.Fuel_price__c):'';
                     String reimMPG = String.valueof(reim.MPG__c) != null ? String.valueof(reim.MPG__c):'';
                     String reimMAT = String.valueof(reim.Maintenance_and_Tires__c) != null ? String.valueof(reim.Maintenance_and_Tires__c):'';
-                    Boolean checkBiweek = reim.Contact_Id__r.Account.Bi_Weekly_Pay_Period__c != null ? reim.Contact_Id__r.Account.Bi_Weekly_Pay_Period__c : false;
+                    Boolean checkBiweek = reim.Contact_Id__r.Biweek_Reimbursement__c != null ? reim.Contact_Id__r.Biweek_Reimbursement__c : false;
                     //String biweekReimId = MappingGasPriceTriggerHelper.getBiweekReimId(con.Id,con.Account.Pay_Period_Start_Date__c,Integer.valueOf(con.Account.Pay_Period_Days__c),System.today()-1);
                     if(reim != null && con.Email != null) {
                         reimbursementIds.add(reim.id);
-                       GetTripCalloutforCommute.GetTripCalloutForCommuteMileage(reim.id, con.Email,con.id,startMonthDate, lastMonthDate, reimFuel, reimMPG, reimMAT, con.Account.Triplog_API__c, TripStatus,putCall,'Commute',checkBiweek);
+                       GetTripCalloutforCommute.GetTripCalloutForCommuteMileage(reim.id, con.Email,con.id,startMonthDate, lastMonthDate, reimFuel, reimMPG, reimMAT, con.Account.Triplog_API__c, TripStatus,putCall,'Commute',checkBiweek,null);
                     }
                 }
             }
