@@ -46,5 +46,8 @@ public class EmployeeDetailTest {
         empDetail.payRollPeriod = 'asc';
         empDetail.loaFixedAmount = '450';
         empDetail.isleaveofabsence = false;
+        empDetail.monthlyReimbursement = true;
+        empDetail.biWeekReimbursement = false;
+        empDetail.timeAttandance = false;
     }
 }

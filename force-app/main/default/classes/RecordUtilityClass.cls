@@ -372,6 +372,7 @@ public with sharing class RecordUtilityClass
             c.Territory__c = 'sed';
             c.Freeze__c = System.today();
             c.Vehicle_Type__c = '2019 Mileage Rate';
+            c.Monthly_Reimbursement__c = true;
             obj_Driver_list.add(c);
         }
         return obj_Driver_list;
@@ -395,17 +396,18 @@ public with sharing class RecordUtilityClass
             c.MailingCity = 'Test City';
             c.MailingState = 'ON';
             c.MailingPostalCode = '123';
-            c.MailingCountry = 'CA';            
+            c.MailingCountry = 'CA';  
             c.External_Email__c = 'minkesh.pateldriver01'+i+'@gmail.com';
             c.Deactivated_Date__c = null;
             c.IsCommunityUser__c = true;
             c.Role__c = 'Manager';
-            //c.Vehicle_Type__c = '2019 Full-Size Sedan12';
+            c.Vehicle_Type__c = '2021 Mileage Rate';
             c.email='minkesh.pateldriver01'+i+'@gmail.com';
             c.Monthly_Mileage_Limit__c = 210;
             c.Manager__c = adminContact.Id;
             c.Added_Date__c = System.today();
             c.Activation_Date__c = System.today();
+            c.Monthly_Reimbursement__c = true;
             obj_Manager_list.add(c);
         }
         return obj_Manager_list;
@@ -467,7 +469,7 @@ public with sharing class RecordUtilityClass
         co.IsCreatedFromCommunity__c = true;      
         co.Role__c = 'Admin';
         co.Monthly_Mileage_Limit__c = 210;
-        //co.Vehicle_Type__c = '2019 Mileage Rate';
+        co.Monthly_Reimbursement__c = true;
         return co;       
     }
     public static EmployeeReimbursementDetailsAdmin getEmployeeReimbursementDetails(Employee_Reimbursement__c obj_current_Employee_Reimbursement)

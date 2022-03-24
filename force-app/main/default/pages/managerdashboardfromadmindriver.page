@@ -1566,7 +1566,7 @@
                             angular.forEach(mileageList1.mileagesList, function (item, key) {
                                 $scope.exportReimList.push([item.emailaddress, item.tracingstyle, item.dayofweek, item.tripdate, item.starttime, item.endtime, item.origin, item.destination, item.mileage, item.status, item.submitteddate, item.approveddate, item.maintTyre, item.fuelRate, item.variablerate, item.variableamount, item.drivingtime, item.staytime, item.totaltime, item.notes, item.tag]);
                             });
-                            $scope.fileName = $scope.name + '\'s Mileages ' + $scope.FromDate;
+                            $scope.fileName = $scope.name + '\'s Mileage ' + $scope.FromDate;
                             $scope.reimbursementDialog.open($scope.fileName, $scope.name, mileageList1.mileagesList, $scope.emailOfEmployee);
                             $('#spinner').hide();
                         }

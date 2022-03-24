@@ -82,9 +82,11 @@ header {
   color: #ffffff;
   line-height: 30px;
 }
-
+li.nav-item{
+    border-top: 2px solid transparent;
+}
 li.nav-item.active {
-  font-family: 'Proxima Nova SemiBold' !important;
+  font-family: 'Proxima Nova' !important;
   border-top: 2px solid #fff;
 }
 .sticky .navbar-brand img.img-fluid {
@@ -723,9 +725,14 @@ table input[type=text], table select {
 .form-lable {
   font-family: 'Proxima Nova Bold';
   color: #78bc42;
-  font-size: 18px;
+  font-size: 16px;
 }
-
+.pd-label{
+  padding-left: 15px;
+}
+.pr-10x{
+  padding-right: 10px;
+}
 .form-divider {
   border-top: 2px solid #78bc42;
   margin-top: 40px;
