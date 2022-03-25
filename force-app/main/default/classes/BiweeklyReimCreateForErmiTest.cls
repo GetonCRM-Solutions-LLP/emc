@@ -45,9 +45,10 @@ public class BiweeklyReimCreateForErmiTest {
             account_1.Pay_Period_Start_Date__c = system.today().adddays(-130);
             insert account_1;
             
-             Contact contact_1 = new Contact(AccountId = account_1.Id, LastName = 'xgeek',External_Email__c='abc@gmail.com');
+             Contact contact_1 = new Contact(AccountId = account_1.Id, LastName = 'xgeek',External_Email__c='abc@gmail.com',MailingCity = 'Atlanta',
+                MailingState = 'GJ');
             insert contact_1;
-            
+          /*  
             for(Integer i; i<=10; i++){
                 
                 Contact con = new Contact();        
@@ -66,7 +67,7 @@ public class BiweeklyReimCreateForErmiTest {
                 conList.add(con);
             }
             insert conList;
-            
+           */ 
             con1.FirstName = 'Priyanka';
             con1.LastName = 'Gajera';
             con1.AccountId = account_1.Id;
@@ -76,6 +77,8 @@ public class BiweeklyReimCreateForErmiTest {
             con1.Role__c = 'Driver';
             con1.Insurance_Attachment_Id__c = Null;
             con1.Vehicle_Type__c = '2019 Full-Size Sedan';
+            con1.MailingCity = 'Atlanta';
+            con1.MailingState = 'GJ';
             insert con1;
             
             user_1 = new User( 
@@ -104,7 +107,8 @@ public class BiweeklyReimCreateForErmiTest {
             br.Maintenance_and_Tires__c = con1.Maintenance_and_Tires__c;
             br.Fixed_Amount__c = con1.Fixed_Amount__c;
             br.Status__c = 'Pending';
-            br.Fuel_Price__c = 0;
+            br.Fuel_Price__c =  gasprice.Fuel_Price__c;
+        	 br.Count_Error_Check__c = 0;
         Insert br;
         
         Test.startTest();
