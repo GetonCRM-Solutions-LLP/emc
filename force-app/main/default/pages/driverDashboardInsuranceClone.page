@@ -370,26 +370,22 @@
                         var url = new URL(url_string);
                         $scope.insurance_parameters = [];
                         $scope.insurance_parameters = JSON.parse('{!accInsuranceList}');
+                        $scope.biweekList = {!biWeekData};
                         console.log("insurance->",$scope.insurance_parameters);
                         $scope.id = url.searchParams.get("id");
                         $scope.accid = url.searchParams.get("accid");
                         $scope.gpsid = '0013r00002EkwWMAAZ';
                         $scope.ERMIAcc = '{!($Label.ERMI_Account)}';
-                        $scope.errorErmi = {!checkErrorERMI}
-                        $scope.confirmErmi = {!ConfirmTimeERMI}
                         var url_locate = "/app/driverDashboardWeekly?accid="+$scope.accid+"&id="+$scope.id;
                         var url_dashboardlocate = "/app/driverDashboardClone?accid="+$scope.accid+"&id="+$scope.id;
-                       // console.log(url_locate);
+                       console.log("biweek->",{!biWeekData});
                         $scope.logodocumentid ='{!logoDocument_id}';
                         $scope.insurancecount = {!insuranceSize};
                         var choosenfileType = '';
                         var chooseFileName = '';
-
-                        
                         $('#spinner').hide();
-                       
-                        
-                        $scope.empContact = JSON.parse('{!DriverDetails}');
+                        var _driverDetail = {!DriverDetails}
+                        $scope.empContact = _driverDetail;
                         console.log("Emp Contact: " , $scope.empContact);
                         $scope.contactname ='{!contactDataAsString}';
                     
@@ -616,6 +612,16 @@
                                                 // });
                                             
                                                 document.getElementById('file').value = '';
+                                                let _name = $scope.empContact[0].Name;
+                                                let _email = $scope.empContact[0].Email;
+                                                Visualforce.remoting.Manager.invokeAction('{!$RemoteAction.DriverDashboardController.sendInsuranceEmail}', $scope.id, _name, _email,
+                                                    function (result, event) {
+                                                        if (event.status) {
+                                                        }
+                                                        $scope.$apply();
+                                                    },
+                                                    { escape: false }
+                                                )
                                                 Visualforce.remoting.Manager.invokeAction('{!$RemoteAction.DriverDashboardController.getDriverDetailsClone}',$scope.id,
                                                     function(result, event) {
                                                         if(event.status){
@@ -645,10 +651,12 @@
                                                     if ($scope.accid === $scope.ERMIAcc) {
                                                         if ($scope.empContact[0].Driver_Type__c != '' && $scope.empContact[0].Driver_Type__c != null && $scope.empContact[0].Driver_Type__c != undefined) {
                                                             if ($scope.empContact[0].Driver_Type__c != 'Driver - Salary') {
-                                                                if ($scope.errorErmi === false && $scope.confirmErmi === false) {
+                                                                if ($scope.biweekList[0].Confirm_Hours__c === false && $scope.biweekList[0].Count_Error_Check__c < 3) {
                                                                     location.assign(url_locate);
                                                                 } else {
-                                                                    if ($scope.errorErmi === true || $scope.confirmErmi === true) {
+                                                                    if($scope.biweekList[0].Error_Hours__c === $scope.biweekList[0].Confirm_Hours__c && $scope.biweekList[0].Count_Error_Check__c > 3){
+                                                                        location.assign(url_dashboardlocate);
+                                                                    }else{
                                                                         location.assign(url_dashboardlocate);
                                                                     }
                                                                 }
