@@ -8,6 +8,23 @@
         <apex:include pageName="EMC_Common_Scripts" />
         <script src="{!URLFOR($Resource.dirPagination)}"></script>
         <style type="text/css">
+            .a-setcolor-pointer {
+                color: #78bc42 !important;
+                text-decoration: none !important;
+                cursor: pointer;
+            }
+            .head-pad{
+                padding: 0.45rem 1.25rem !important;
+            }
+            .footer-pad{
+                padding: 0.25rem 1.25rem !important;
+            }
+            .head-font{
+                color: #78bc42;
+            }
+            .align_items{
+                width: 70%;
+            }
             .table thead th {
                 border-bottom: none !important;
                 border: 1px solid #000 !important;
@@ -15,8 +32,13 @@
             .table td{
                 border: 1px solid #000 !important
             }
-            .table-borderless{
+            .width-of-table{
                 width: 50%;
+            }
+            .td-all td{
+                padding: 0.45rem !important
+            }
+            .table-borderless{
                 margin:  0 auto;
             }
             .valign-middle{
@@ -25,8 +47,19 @@
            .table-borderless td{
                border: 0 !important;
            }
+           .align_items td{
+               text-align:  left;
+               padding: 0.25rem !important;
+               font-size: 16px !important;
+           }
            .text-td{
                 text-align: left;
+           }
+           .fs-18{
+               font-size: 18px !important;
+           }
+           .green-text{
+               color: #78bc42 !important;
            }
            .font-style{
                color: #000000 !important;
@@ -46,9 +79,18 @@
                 padding-right: 40px !important;
                 padding-left: 40px !important;
             }
-             #toast-container>div{
-                top: 35rem !important;
+            .toast-info {
+                background-color: #002366;
+             }
+            .toast-error {
+                background-color: #FF0000 !important;
             }
+            #toast-container > div {
+                opacity: 5.8 !important;
+                border-radius: 3px 3px 3px 3px !important;
+                width: 100% !important;
+                margin: 10px;
+             }
             .alignitemscenter {
                 align-items: center;
             }
@@ -222,8 +264,25 @@
                 /* bring your own prefixes */
                 transform: translate(-50%, -50%);
             }
+            .sync-info{
+                position: fixed;
+                top: 50%;
+                left: 50%;
+                /* bring your own prefixes */
+                transform: translate(-50%, -44%);
+            }
+            .cd-pad{
+                padding: 0.5rem !important;
+            }
+            .mt-05{
+                margin-top: 0.5rem !important;
+            }
             .mt-1{
                 margin-top: 1rem !important;
+            }
+            p{
+                padding-top: 3px;
+                margin-bottom : 0 !important;
             }
         </style>
         <script>
@@ -231,18 +290,63 @@
                 app.controller('ConfirmTripTimeERMIController', ['$scope','$filter','$timeout',
                     function($scope,$filter,$timeout) {
                         var url_string = $(location).attr("href");
+                        var referrer = window.performance.navigation.type;
                         console.log("mileageDetailWrapper", {!mileageDetailWrapper})
                         //console.log(url_string);
                         var url = new URL(url_string);
                         $scope.id = url.searchParams.get("id");
                         $scope.accid = url.searchParams.get("accid");
+                        $scope.showteam = url.searchParams.get("showteam");
+                        $scope.admindriver = url.searchParams.get("admindriver");
+                        $scope.syncParam = url.searchParams.get("sync");
+                        $scope.role = url.searchParams.get("role");
                         $scope.mileageDetail = {!mileageDetailWrapper}
                         var url_locate = "/app/driverDashboardClone?accid="+$scope.accid+"&id="+$scope.id;
+                        var driverManager_url = "/app/drivermanagerdashboard?accid="+$scope.accid+"&id="+$scope.id+"&showteam="+$scope.showteam;
+                        var admindriver_url = "/app/admindriverdashboard?accid="+$scope.accid+"&id="+$scope.id+"&admindriver="+$scope.admindriver+"&showteam="+$scope.showteam;
                         var choosenfileType = '';
                         var chooseFileName = '';
+                        $scope.notAccurate = false;
+                        $scope.isHours = true;
                         $scope.payPeriodName = ($scope.mileageDetail[0] != undefined && $scope.mileageDetail[0].biWeekPayperiod != undefined) ? $scope.mileageDetail[0].biWeekPayperiod :  "";
                         $('#spinner').hide();
+                        if($scope.mileageDetail[0].countErrorCheck === 2){
+                            document.getElementById('Error_td').innerHTML = "There are still hours on my Weekly Time Sheet Contact Support"
+                        }
+                        if (window.performance.navigation.type != 1 && $scope.syncParam != undefined) {
+                            Visualforce.remoting.Manager.invokeAction('{!$RemoteAction.ConfirmTripTimeERMIController.sendErrorEmail}', $scope.mileageDetail[0].driverEmail, $scope.mileageDetail[0].driverName, $scope.mileageDetail[0].biWeekPayperiod,
+                                $scope.mileageDetail[0].mileage, $scope.mileageDetail[0].driveTime, $scope.mileageDetail[0].stayTime, $scope.mileageDetail[0].totalTime, $scope.mileageDetail[0].countErrorCheck,
+                                function (result, event) {
+                                    if (event.status) {
+                                    } else {
+                                    }
+                                    $scope.$apply();
+                                },
+                                { escape: false }
+                            )
+                        } 
+                        this.setOptions = function () {
+                            toastr.options.positionClass = "toast-bottom-right";
+                            toastr.options.closeButton = true;
+                            toastr.options.progressBar = true;
+                            toastr.options.timeOut = 4000;
+                        };
+                        this.setOptions();
+                        this.clear = function () {
+                            toastr.clear();
+                        };
+                        // if($scope.mileageDetail[0].errorCheck){
+                        //     $scope.notAccurate = true;
+                        //     $scope.isHours = false;
+                        // }else{
+                        //     $scope.notAccurate = false;
+                        //     $scope.isHours = true;
+                        // }
                         $scope.submitRequestBtn = true;
+                        $scope.submitRequestSyncBtn = true;
+                        $scope.completeChange = function(co){
+                            $scope.submitRequestSyncBtn = (co === true) ? false : true;
+                        }
                         $scope.confirmChange = function(c){
                             $scope.mileageDetail[0].confirmCheck = c;
                             $scope.mileageDetail[0].errorCheck = false;
@@ -257,254 +361,96 @@
                             $scope.submitRequestBtn = ($scope.mileageDetail[0].errorCheck === true) ? false : true;
                         }
 
-                        $scope.submitRequest = function(){
+                        $scope.submitRequestSync = function(){
                             $('#spinner').show();
-                            $scope.requestInfo = [];
-                            angular.forEach($scope.mileageDetail, function(md){
-                                var m = {}
-                                m.biWeekId = md.biWeekId;
-                                m.confirmCheck = md.confirmCheck;
-                                m.errorCheck = md.errorCheck;
-                                $scope.requestInfo.push(m);
-                            })
-
-                            Visualforce.remoting.Manager.invokeAction('{!$RemoteAction.ConfirmTripTimeERMIController.UpdateBiWeekData}', JSON.stringify($scope.requestInfo),
+                            var  _stDate , _endDate, _splitList;
+                            _splitList =   $scope.mileageDetail[0].biWeekPayperiod.split(" to ");
+                            _stDate = _splitList[0];
+                            _endDate = _splitList[1];
+                            Visualforce.remoting.Manager.invokeAction('{!$RemoteAction.ConfirmTripTimeERMIController.syncTripsForErmi}', $scope.id, _stDate, _endDate,
                                             function(result, event) {
-                                                if(event.status){
+                                                if(result === 'sucess'){
+                                                    $scope.errorCheck = false;
+                                                    $scope.submitRequestBtn = true;
                                                     $("#spinner").hide();
-                                                    location.assign(url_locate);
+                                                    if ($scope.admindriver === "true") {
+                                                        window.location.href =  "/app/driverDashboardWeekly?accid="+$scope.accid+"&admindriver="+$scope.admindriver+"&id="+$scope.id+"&showteam="+$scope.showteam+"&sync="+$scope.mileageDetail[0].countErrorCheck;
+                                                    } else if ($scope.role === "managerdriver") {
+                                                        window.location.href =  "/app/driverDashboardWeekly?accid="+$scope.accid+"&id="+$scope.id+"&role="+$scope.role+"&showteam="+$scope.showteam+"&sync="+$scope.mileageDetail[0].countErrorCheck;
+                                                    } else {
+                                                        window.location.href =  "/app/driverDashboardWeekly?accid="+$scope.accid+"&id="+$scope.id+"&sync="+$scope.mileageDetail[0].countErrorCheck;
+                                                    }
+                                                  //  location.reload();
+                                                }else{
+                                                    $("#spinner").hide();
                                                 }
                                                 $scope.$apply();  
                                             },
                                             {escape: false}
                             )
-                            console.log("Request->", $scope.requestInfo)
                         }
 
-                        $scope.displymodal = function() {
-                            angular.element(document.querySelector("#driver-dashboard-upload-insurancebtn")).removeClass("displaynone");
-                            angular.element(document.querySelector("#driver-dashboard-upload-insurancebtn")).addClass("displayblock");
-                        }
-
-               
-                        /* For File Upload*/
-                        $scope.filedata = '';
-                        $scope.uploadVisible = true;
-                        $scope.IsVisiblebtn = false;
-                        var choosefile;
-                    
-                        $scope.loadDropfile = function(files) {
-                            chooseFileName = '';
-                            attachment = '';
-                            choosefile = '';
-                            choosefile = files;
-                            var file = files[0]
-                            choosenfileType = files[0].type;
-                            chooseFileName = files[0].name;
-                            choosefile = files;
-                            if(files[0].size > 0  &&  files[0].size < 4350000){
-                                document.getElementById("uploadBtn").style.visibility = "hidden";
-                                $scope.uploadVisible = false;
-                                $scope.IsVisiblebtn = true;
-                                choosefile = files;
-                            }
-                            else{
-                                $scope.IsVisiblebtn = false;
-                                toastr.error('Base 64 Encoded file is too large.  Maximum size is 4 MB .'); 
-                            }
-                            var reader = new FileReader();
-                            reader.onload = function(e) {                                
-                                $scope.filedata = reader.result;  
-                            };
-                            reader.readAsDataURL(file);
-                            $scope.$apply(); 
-                        }
-                        
-                        $scope.file_changed = function(element) {
-                            chooseFileName = '';
-                            attachment = '';
-                            choosefile = '';
-                            $scope.filedata = '';
-                            choosefile = element;
-                            //console.log('file size :- '+choosefile.files[0].size);
-                            if(choosefile.files[0].size > 0  &&  choosefile.files[0].size < 4350000){
-                                document.getElementById("uploadBtn").style.visibility = "hidden";
-                                $scope.uploadVisible = false;
-                                $scope.IsVisiblebtn = true;
-                                choosefile = element;
-                            }
-                            else{
-                                $scope.IsVisiblebtn = false;
-                                toastr.error('Base 64 Encoded file is too large.  Maximum size is 4 MB .'); 
-                            }
-                            var fl = choosefile.files[0].size;
-                        
-                            
-                            $scope.$apply(function(scope) {
-                                var photofile = element.files[0];
-                                choosenfileType = photofile.type;
-                                chooseFileName = photofile.name;
-                                var reader = new FileReader();
-                                $scope.fsize = element.files[0].size;
-                                reader.onload = function(e) {
-                                    $scope.filedata = reader.result;    
-                                };
-                                reader.readAsDataURL(photofile);
-                            });
-                        }
-
-                        var maxStringSize = 6000000;    //Maximum String size is 6,000,000 characters
-                        var maxFileSize = 4350000;      //After Base64 Encoding, this is the max file size
-                        var chunkSize = 950000;         //Maximum Javascript Remoting message size is 1,000,000 
-                        var attachment;
-                        var attachmentName;
-                        var fileSize;
-                        var positionIndex;
-                        var doneUploading;
-
-                        $scope.uploadFileInChunk = function(element) {
-                            // console.log(choosefile.files[0]);*/
-                            var file = choosefile.files[0];     
-                                                
-                            if(file != undefined) {
-                                if(file.size <= maxFileSize) {
-                                    
-                                    attachmentName = chooseFileName;
-                                    var fileReader = new FileReader();
-                                    fileReader.onloadend = function(e) {
-                                        e.preventDefault();
-                                        attachment = window.btoa(this.result);  
-                                        positionIndex=0;
-                                        fileSize = attachment.length;
-                                        doneUploading = false;
-                                        
-                                        if(fileSize < maxStringSize) {
-                                            uploadAttachment(null);
-                                        
-                                        } else {
-
-                                            toastr.error('Base 64 Encoded file is too large.  Maximum size is " + maxStringSize + " your file is " + fileSize + "."'); 
-                                        }
-                                    }
-                                
-                                    fileReader.onerror = function(e) {
-                                        toastr.error('There was an error reading the file.  Please try again.'); 
-                                    }
-                                    fileReader.onabort = function(e) {
-                                        toastr.error('There was an error reading the file.  Please try again.');
-                                    }
-                                
-                                    fileReader.readAsBinaryString(file);
-                                    angular.element(document.querySelector("#driver-dashboard-upload-insurancebtn")).removeClass("displayblock");
-                                    angular.element(document.querySelector("#driver-dashboard-upload-insurancebtn")).addClass("displaynone");
-                                    $('#adminrosterImportProcess').modal('show');
-                                
-                                } 
-                                else 
-                                {
-                                    toastr.error('File must be under 4.3 MB in size.  Your file is too large.  Please try again.');
-                                    //angular.element(document.querySelector("#adminrosterImportProcess")).addClass("displaynone");
-                                    /*alert("File must be under 4.3 MB in size.  Your file is too large.  Please try again.");*/
-
-                                    //angular.element(document.querySelector("#box__uploading")).addClass("displaynone");
-                                    //angular.element(document.querySelector("#box__input")).addClass("displayblock");
-                                    //angular.element(document.querySelector("#driver-dashboard-upload-insurancebtn")).addClass("displayblock");
-                                }
-                            } 
-                            else 
-                            {
-                                $scope.IsVisiblebtn = false;    
-                                toastr.error('You must choose a file before trying to upload it');
-                                $('#adminrosterImportProcess').modal('hide');
-                            }
-                        }
-                        $scope.uploadedInsurance = function(){
-                            angular.element(document.querySelector("#uploadedInsurance")).addClass("displayblock");
-                            angular.element(document.querySelector("#notuploadedInsurance")).addClass("displaynone");
-                        }
-                        $scope.dismismodal = function() {
-                            angular.element(document.querySelector("#driver-dashboard-upload-insurancebtn")).removeClass("displayblock");
-                            angular.element(document.querySelector("#driver-dashboard-upload-insurancebtn")).addClass("displaynone");
-                            $('.modal-backdrop').remove();
-                        }
-               
-               
-                        function uploadAttachment(fileId) {
-                                        $scope.showUpload = false;
-                                        var attachmentBody = "";
-                                        
-                                        if(fileSize <= positionIndex + chunkSize) {
-                                        
-                                            attachmentBody = attachment.substring(positionIndex);
-                                            doneUploading = true;
-                                        } else {
-                                        
-                                            attachmentBody = attachment.substring(positionIndex, positionIndex + chunkSize);
-                                        }
-                                        Visualforce.remoting.Manager.invokeAction('{!$RemoteAction.ConfirmTripTimeERMIController.readFromFileInchunk}',attachmentBody, attachmentName, fileId,$scope.id,$scope.accid,$scope.attachmentid,
-                                            function(result, event) {
-                                                if(event.status) {
-                                                    if(event.type === 'exception') {
-                                                        console.log("exception");
-                                                        console.log(event);
-                                                    }
-                                                    else if(event.status) {
-                                                        if(doneUploading == true) { 
-                                                            //$('#adminrosterImportProcess').modal('toggle');
-                                                            // $scope.$apply(function(){
-                                                            //     $('.modal-backdrop').remove();
-                                                            // });
-                                                        
-                                                            document.getElementById('file').value = '';
-                                                            Visualforce.remoting.Manager.invokeAction('{!$RemoteAction.ConfirmTripTimeERMIController.getDriverDetailsClone}',$scope.id,
-                                                                function(result, event) {
-                                                                    if(event.status){
-                                                                        if($scope.empContact[0].Insurance_Attachment_Id__c != '' && $scope.empContact[0].Insurance_Attachment_Id__c != null && $scope.empContact[0].Insurance_Attachment_Id__c != undefined) {
-                                                                            $scope.attachmentid = $scope.empContact[0].Insurance_Attachment_Id__c ;
-                                                                        }
-                                                                        else
-                                                                        {
-                                                                            $scope.attachmentid = null;
-                                                                        }    
-                                                                        
-                                                                    }
-                                                                    $scope.$apply();
-                                                                
-                                                                },
-                                                            
-                                                                {escape: false}
-                                                            );
-                                                            toastr.success("We review and assess compliance status once a month.Your interim compliance status will not affect your reimbursement amount.");
-                                                            $scope.loadDriverInsurance();
-                                                            $scope.IsVisiblebtn = false;
-                                                            setTimeout(function(){
-                                                                $('.modal-backdrop').remove();
-                                                                $('#adminrosterImportProcess').modal('hide');
-                                                                // location.reload();   
-                                                                location.assign(url_locate);    
-                                                            }, 4000);   
-                                                        // location.reload();
-                                                        
-                                                        } 
-                                                        else 
-                                                        {
-                                                            positionIndex += chunkSize;
-                                                            uploadAttachment(result);
-                                                        }
+                        $scope.submitRequest = function(){
+                            $('#spinner').show();
+                            $scope.requestInfo = [];
+                            $scope.mileageDetail[0].countErrorCheck =  ($scope.mileageDetail[0].errorCheck === true) ? (($scope.mileageDetail[0].countErrorCheck) + 1) : $scope.mileageDetail[0].countErrorCheck;
+                            angular.forEach($scope.mileageDetail, function(md){
+                                var m = {}
+                                m.biWeekId = md.biWeekId;
+                                m.confirmCheck = md.confirmCheck;
+                                m.errorCheck = md.errorCheck;
+                                m.countErrorCheck = md.countErrorCheck;
+                                m.driverEmail = md.driverEmail;
+                                m.driverName = md.driverName;
+                                m.biWeekPayperiod = md.biWeekPayperiod;
+                                m.mileage = md.mileage;
+                                m.driveTime = md.driveTime;
+                                m.stayTime = md.stayTime;
+                                m.totalTime = md.totalTime;
+                                $scope.requestInfo.push(m);
+                            })
+                          
+                            Visualforce.remoting.Manager.invokeAction('{!$RemoteAction.ConfirmTripTimeERMIController.updateBiWeekData}', JSON.stringify($scope.requestInfo),
+                                        function(result, event) {
+                                            if(event.status){
+                                                $("#spinner").hide();
+                                                    if ($scope.requestInfo[0].errorCheck === true && $scope.requestInfo[0].countErrorCheck < 3) {
+                                                            $scope.notAccurate = true;
+                                                            $scope.completeSync = false;
+                                                            $scope.submitRequestSyncBtn = true;
+                                                            $scope.isHours = false;
                                                     } else {
-                                                        console.log(event.message);
-                                                    } 
-                                                }
-                                                else
-                                                {
-                                                    $('#adminrosterImportProcess').modal('show');
-                                                    toastr.error('Some error has occur');
-                                                }
-                                            },
-                                            {buffer: true, escape: true, timeout: 120000}
-                                        );
+                                                        if($scope.requestInfo[0].errorCheck === true && $scope.requestInfo[0].countErrorCheck === 3){
+                                                            toastr.info("A support team member will contact you M-F between 7:00 am - 6:00 pm MST.")
+                                                            document.getElementById("weekly-time").style.pointerEvents = "none";
+                                                            setTimeout(function() {
+                                                                if($scope.admindriver === "true") {
+                                                                    location.assign(admindriver_url);
+                                                                }else if($scope.role === "managerdriver"){
+                                                                    location.assign(driverManager_url);
+                                                                }else{
+                                                                    location.assign(url_locate);
+                                                                }
+                                                            }, 3000)
+                                                        }else{
+                                                            if ($scope.admindriver === "true") {
+                                                                location.assign(admindriver_url);
+                                                            } else if ($scope.role === "managerdriver") {
+                                                                location.assign(driverManager_url);
+                                                            } else {
+                                                                location.assign(url_locate);
+                                                            }
+                                                        }
+                                                     
+                                                    }
+                                             }
+                                                $scope.$apply();  
+                                        },
+                                        {escape: false}
+                            )
+                           
                         }
-               
+
                         $scope.showToast = function(message, error) {
                             if(error)
                                 toastr.error(message);
@@ -562,88 +508,10 @@
                 </div>
             </div>
         </div>
-        <!-- Upload Insurance button Model -->
-        <div class="modal fade driver-dashboard-upload-insurancebtn" tabindex="-1" role="dialog" aria-labelledby="driver-dashboard-upload-insurancebtn"
-            id="driver-dashboard-upload-insurancebtn">
-            <div class="modal-dialog modal-xl modal-dialog-centered">
-                <div class="modal-content rounded-0">
-                    <button type="button" class="close popup-close-btn" data-dismiss="modal" ng-click="dismismodal()" aria-label="Close">
-                        <!-- ng-click ="dismismodal()" -->
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                    <div class="modal-body">
-                        <div class="container">
-                            <div class="row">
-                                <div class="offset-md-3 offset-lg-3 offset-xl-3 col-12 col-sm-12 col-md-6 col-lg-6 col-xl-6 px-0">
-                                    <div class="text-center my-3 my-sm-3 my-md-3 my-lg-3">
-                                        <img src="{!URLFOR($Resource.EmcCSS,'emc-design/assets/images/adminroster-importfile.png')}" class="img-fluid" alt="Admin roster import file"
-                                        />
-                                        <div class="image-Insurancetext">
-                                            <span class="greenText">Insurance</span>
-                                            <span class="greenText2">Dec Page</span>
-                                        </div>
-                                        <div class="image-cardtext">
-                                            <span class="redText">Insurance Card</span>
-                                        </div>
-                                        <div class=" my-3 my-sm-3 my-md-3 my-lg-3 insDiv">
-                                            <p class="fileupload-title">
-                                                <span class="font-weight-bold">
-                                                    Upload your insurance declaration page
-                                                    <span class="underline">NOT</span> your insurance card
-                                                    <a class="tagquestion" href="https://www.thebalance.com/what-is-an-insurance-declaration-page-2645728" title="What is an insurance dec page?<br/>(https://hubs.ly/H0mmxzz0)"
-                                                        data-toggle="tooltip" data-html="true" data-placement="top" target="_blank">
-                                                        <i class="fa fa-question"></i>
-                                                    </a>
-                                                </span>
-                                            </p>
-                                        </div>
-                                    </div>
-                                    <form method="post" id="boxform1" action="" enctype="multipart/form-data" class="box">
-                                        <div class="box__input" accept="application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
-                                            id="box__input">
-                                            <svg class="box__icon" xmlns="" width="50" height="43" viewBox="0 0 50 43">
-                                                <path d="M48.4 26.5c-.9 0-1.7.7-1.7 1.7v11.6h-43.3v-11.6c0-.9-.7-1.7-1.7-1.7s-1.7.7-1.7 1.7v13.2c0 .9.7 1.7 1.7 1.7h46.7c.9 0 1.7-.7 1.7-1.7v-13.2c0-1-.7-1.7-1.7-1.7zm-24.5 6.1c.3.3.8.5 1.2.5.4 0 .9-.2 1.2-.5l10-11.6c.7-.7.7-1.7 0-2.4s-1.7-.7-2.4 0l-7.1 8.3v-25.3c0-.9-.7-1.7-1.7-1.7s-1.7.7-1.7 1.7v25.3l-7.1-8.3c-.7-.7-1.7-.7-2.4 0s-.7 1.7 0 2.4l10 11.6z"
-                                                />
-                                            </svg>
-
-                                            <input type="file" name="file" id="file" class="box__file" multiple="false" accept="application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
-                                                onchange="angular.element(this).scope().file_changed(this)" />
-                                            <label class="w-100 text-center">
-                                                <strong>Drop your files here or</strong>
-                                            </label>
-                                            <button class="btn btn-outline-secondary box__dragndrop" id="uploadBtn" type="button">
-                                                <span class="uploadtxt" ng-show="uploadVisible">Upload</span>
-                                            </button>
-                                            <!--<span
-                                                        class="box__dragndrop"> or drag it here</span>.-->
-                                            <!-- <button type="submit"
-                                                    class="btn btn-primary justify-content-center box__button" ng-click="uploadFileInChunk($event)" ng-hide = "true" >Upload file</button> -->
-                                            <button class="btn btn-outline-secondary justify-content-center box__dragndrop" ng-click="uploadFileInChunk($event)" ng-show="IsVisiblebtn">
-                                                <span class="uploadtxt">Upload</span>
-                                            </button>
-                                        </div>
-                                        <div class="box__error w-100 text-center">Error!
-                                            <span></span>. Try again!</div>
-                                        <div class="box__uploading w-100 text-center" id="box__uploading">
-                                            <img src="{!URLFOR($Resource.EmcCSS,'emc-design/assets/images/adminroster-importfile-loader.svg')}
-                                            " />
-                                        </div>
-                                        <div class="box__success w-100 text-center">Done! </div>
-                                        <div class="box__error w-100 text-center">Error!
-                                            <span></span>. Try again!</div>
-                                    </form>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
         <!-- Weekly Timesheet -->
-        <section class="d_fluid">
+        <section class="d_fluid" ng-show="isHours">
             <div class="fluid">
-                <div class="weekly-info col-12 col-sm-6 col-md-8">
+                <div class="weekly-info col-12 col-sm-6 col-md-8" id="weekly-time">
                     <div class="card text-center">
                         <div class="card-header">
                             Weekly Time Sheet
@@ -661,21 +529,21 @@
                                       <tbody>
                                         <tr  ng-repeat="m in mileageDetail">
                                           <td>{{m.mileage}}</td>
-                                          <td>{{m.DriveTime}}</td>
-                                          <td>{{m.StayTime}}</td>
-                                          <td>{{m.TotalTime}}</td>
+                                          <td>{{m.driveTime}}</td>
+                                          <td>{{m.stayTime}}</td>
+                                          <td>{{m.totalTime}}</td>
                                         </tr>
                                       </tbody>
                                 </table>
                             </div>
                             <div>
-                                <table class="table table-borderless">
+                                <table class="table table-borderless width-of-table">
                                     <tr>
                                         <td class="font-style text-td">I confirm the hours are correct for this week</td>
                                         <td><div class="check-input"><input type="checkbox" name="confirm-checkbox"  ng-model="confirmCheck" ng-change="confirmChange(confirmCheck)"/ ></div></td>
                                     </tr>
                                     <tr>
-                                        <td class="font-style text-td">There are errors on my time/mileage</td>
+                                        <td class="font-style text-td" id="Error_td">There are errors on my time/mileage</td>
                                         <td><div class="check-input"><input type="checkbox"  name="error-checkbox"  ng-model="errorCheck" ng-change="errorChange(errorCheck)"/ ></div></td>
                                     </tr>
                                 </table>
@@ -692,6 +560,58 @@
           
         </section>
 
+        <section class="d_fluid" ng-show="notAccurate"> 
+            <div class="fluid">
+                <div class="sync-info col-12 col-sm-6 col-md-8">
+                    <div class="card text-center">
+                        <div class="card-header font-weight-bold head-font head-pad">
+                            Instructions
+                        </div>
+                        <div class="card-body cd-pad">
+                            <h5 class="card-title font-weight-bold">Please follow these instructions to correct your weekly time and attendance</h5>
+                            <div class="mt-05">
+                                <table class="table table-borderless align_items">
+                                      <tbody>
+                                        <tr>
+                                          <td>Step 1. </td>
+                                          <td>Review your trips (Ensure all trips are categorized properly)</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Step 2. </td>
+                                            <td>Add any new or manual trips</td>
+                                          </tr>
+                                          <tr>
+                                            <td>Step 3. </td>
+                                            <td>
+                                                <iframe width="457" height="215" src="https://www.youtube.com/embed/Yc21UqzygTU" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen="allowfullscreen"></iframe>
+                                                 <p>Once all edits and additional are complete resync your data <a class="a-setcolor-pointer font-weight-bold" href="https://www.mburse.com/video-resource/ios-mileage-sync" target="_blank">HERE</a></p></td>
+                                          </tr>
+                                          <tr>
+                                            <td>Step 4. </td>
+                                            <td class="font-weight-bold text-uppercase">Do not close this window until your sync is complete</td>
+                                          </tr>
+                                      </tbody>
+                                </table>
+                            </div>
+                            <div>
+                                <table class="table table-borderless width-of-table td-all">
+                                    <tr>
+                                        <td class="text-td green-text fs-18 font-weight-bold">I have completed all of the steps</td>
+                                        <td><div class="check-input"><input type="checkbox"   name="complete-checkbox"  ng-model="completeSync" ng-change="completeChange(completeSync)"/ ></div></td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="card-footer text-muted footer-pad">
+                            <button class="btn btn-primary"  type="button" ng-click="submitRequestSync()" ng-disabled="submitRequestSyncBtn">
+                                Submit
+                            </button>
+                        </div>
+                    </div> 
+                </div>
+                </div>
+          
+        </section>
         <!-- The Import file Modal -->
         <div class="modal fade adminrosterImportProcess" tabindex="-1" role="dialog" aria-labelledby="adminrosterImportProcess" id="adminrosterImportProcess">
             <div class="modal-dialog modal-lg modal-dialog-centered">

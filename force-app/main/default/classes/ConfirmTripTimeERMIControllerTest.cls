@@ -140,12 +140,12 @@ public class ConfirmTripTimeERMIControllerTest {
         string ConId = con1.Id;
         //String json = '[{"biWeekId":"'+br.id+'","confirmCheck":true,"errorCheck":false}]';
         //String json = '[{\"biWeekId\":\" '+br.id + ' \","confirmCheck":true,"errorCheck":false}]';
-        String json = null;
+        String json = '[{\"biWeekId\":\"'+br.id + '\",\"confirmCheck\":true,\"errorCheck\":false,\"countErrorCheck\":0,\"driverEmail\":\"meghac.mobio@gmail.com\",\"driverName\":\"Megha\",\"biWeekPayperiod\":\"03/09/2022 to 03/22/2022\",\"mileage\":0,\"driveTime\":\"0\",\"stayTime\":\"0\",\"totalTime\":\"0\"}]';
+        //String json = null;
         apexpages.currentpage().getparameters().put('id' , ConId);
         ConfirmTripTimeERMIController controller = new ConfirmTripTimeERMIController();
-        ConfirmTripTimeERMIController.getDriverDetailsClone(Con1.Id);
-        ConfirmTripTimeERMIController.getDriverDetails();  
-        ConfirmTripTimeERMIController.getdriverInsurance(attach.id); 
+        //ConfirmTripTimeERMIController.getDriverDetails();  
+        ConfirmTripTimeERMIController.syncTripsForErmi (Con1.Id,'03/07/2022','03/12/2022'); 
         ConfirmTripTimeERMIController.UpdateBiWeekData(json );      
         }
         Test.stopTest();

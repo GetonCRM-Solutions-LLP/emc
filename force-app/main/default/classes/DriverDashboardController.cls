@@ -22,9 +22,8 @@ public class DriverDashboardController
     public static Boolean showlastyear {get;set;}
     public static String logoDocument_id {get;set;}
     public static decimal TotalMonthlyCosts {get; set;}
-    public static Boolean checkErrorERMI {get;set;}
-    public static Boolean ConfirmTimeERMI {get;set;}
     public String obj_content_version {get;set;}
+    public String biWeekData {get;set;}
     /**
     @author Natavar Ghodasara
     @date 26th Feb 2019
@@ -62,21 +61,21 @@ public class DriverDashboardController
             List<Account> accInsurances = [SELECT id,Bodily_Injury__c, Uninsured_Motorist__c, Property_Damage__c, Comprehensive__c, Collision__c,Umbrella_Coverage__c FROM account WHERE Id =: getAccountid()];
            accInsuranceList = String.escapeSingleQuotes( JSON.serialize(accInsurances));
         }
-        if(getAccountid()!='' && getContactid()!='' &&  getAccountid() == System.label.ERMI_Account){
+        if(getAccountid() != '' && getContactid() != '' &&  getAccountid() == System.label.ERMI_Account){
             List<Bi_Weekly_Reimbursement__c> biWeekList = new List<Bi_Weekly_Reimbursement__c>();
-                    biWeekList = [SELECT id,name,Start_Date__c,
+                    biWeekList = [SELECT name,Start_Date__c,
                                         End_Date__c,Confirm_Hours__c,
-                                        Error_Hours__c 
+                                        Error_Hours__c,Count_Error_Check__c 
                                     FROM Bi_Weekly_Reimbursement__c 
                                     WHERE Contact__c =: getContactid()
                                     AND Start_Date__c != null 
                                     AND End_Date__c <= TODAY 
-                                    Order By End_Date__c desc limit 1];
-                                    if(biWeekList.size() > 0 ){
-                                        checkErrorERMI =   biWeekList[0].Error_Hours__c;
-                                        ConfirmTimeERMI =   biWeekList[0].Confirm_Hours__c;
-                                    }                                    
-        }
+                                    AND ( Contact__r.Driver_Type__c = 'Driver - Part Time' 
+                                        OR Contact__r.Driver_Type__c = 'Driver - Full Time' )
+                                    Order By End_Date__c desc limit 1];  
+                                    system.debug('biWeekList===='+biWeekList);   
+                                    biWeekData = Json.serialize(biWeekList) ;                          
+        }  
         /*try{
             List<ContentDocumentLink> contentDocLink = [SELECT ContentDocumentId,LinkedEntityId FROM ContentDocumentLink where LinkedEntityId  =: getContactid()];
             Set<Id> ids = new Set<Id>();
