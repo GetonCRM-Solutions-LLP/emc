@@ -75,9 +75,11 @@ public class DriverDashboardController
                                     AND ( Contact__r.Driver_Type__c = 'Driver - Part Time' 
                                         OR Contact__r.Driver_Type__c = 'Driver - Full Time' )
                                     Order By End_Date__c desc limit 1];   
-                                    checkErrorERMI =   biWeekList[0].Error_Hours__c;
-                                    ConfirmTimeERMI =   biWeekList[0].Confirm_Hours__c; 
-                                    biWeekData = Json.serialize(biWeekList) ;                          
+                                    if(biWeekList.size() > 0 ){
+                                        checkErrorERMI =   biWeekList[0].Error_Hours__c;
+                                        ConfirmTimeERMI =   biWeekList[0].Confirm_Hours__c; 
+                                        biWeekData = Json.serialize(biWeekList) ; 
+                                    }                                                             
         }  
         /*try{
             List<ContentDocumentLink> contentDocLink = [SELECT ContentDocumentId,LinkedEntityId FROM ContentDocumentLink where LinkedEntityId  =: getContactid()];
