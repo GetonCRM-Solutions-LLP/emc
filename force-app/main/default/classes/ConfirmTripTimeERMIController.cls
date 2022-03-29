@@ -11,7 +11,6 @@ public with sharing class ConfirmTripTimeERMIController {
     public string mileageDetailWrapper {get; set;}
     public ConfirmTripTimeERMIController (){
         contactId = ApexPages.currentPage().getParameters().get('id');
-        system.debug('contactId=='+ contactId);
          if(contactId != null){
            mileageDetailWrapper = getMileageData();
         }
@@ -91,12 +90,12 @@ public with sharing class ConfirmTripTimeERMIController {
         } else if(countError == 1 ){
             templateId = [SELECT Id, Subject,HtmlValue, body FROM EmailTemplate WHERE developerName = 'Ermi_Error_Count_1' Limit 1];
             //bccAddress.add('eizelp@mburse.com');
-            bccAddress.add('gatsnehal2@gmail.com');
+            bccAddress.add(System.Label.CountError1Ermi);
             
         } else if(countError == 2 ){
             templateId = [SELECT Id, Subject,HtmlValue, body FROM EmailTemplate WHERE developerName = 'Ermi_Error_Count_2' Limit 1];
             //bccAddress.add('driverservices@mburse.com');
-            bccAddress.add('gatsnehal2@gmail.com');
+            bccAddress.add(System.Label.DriverServicesEmail);
         }
         //conEmail = 'sjg.it22@gmail.com';
         toAddress.add(conEmail);
@@ -122,7 +121,8 @@ public with sharing class ConfirmTripTimeERMIController {
             email = Utils.CreateEmail(templateId.Subject,newemailBody,toAddress,null,bccAddress,null);
         }        
         emailist.add(email);
-        if(emailist.size() > 0 && !Test.isRunningTest()){
+        SendEmail__c  sendEmailObj = SendEmail__c.getValues('ConfirmTripTimeERMIController');
+        if(emailist.size() > 0 && !Test.isRunningTest() && sendEmailObj.Send_email_from_code__c == true){
             Messaging.SendEmailResult [] result = Messaging.sendEmail(emailist, false);
         }
         
@@ -135,9 +135,7 @@ public with sharing class ConfirmTripTimeERMIController {
             sendConfirmEmail(conEmail,driverName,biweekName,mileage,driveTime,stayTime,totalTime,countError);
         }
     }
-    // public static void sendErrorEmail1 (String conEmail,String driverName,String biweekName,Decimal mileage,String driveTime,String stayTime,String totalTime){
-        
-    // }
+
     //This method is use for sync trips for Ermi account.When driver has any issue on synced trips then this method is clicked.
     @RemoteAction
     public static String syncTripsForErmi (String contactId,String startdate,String enddate){
@@ -147,22 +145,17 @@ public with sharing class ConfirmTripTimeERMIController {
             String contactEmail;
             if(startdate.contains('/')) {
                 list<String> lstSplitDate = startdate.split('/');
-                system.debug('lstSplitDate =='+ lstSplitDate[0]);
                // lstSplitDate[0] = Integer.valueOf(lstSplitDate[0]) > 9 ? lstSplitDate[0] : '0'+lstSplitDate[0];
-                system.debug('lstSplitDate[0]=='+ lstSplitDate[0]);
                 monthList.add(lstSplitDate[0]+'-'+ lstSplitDate[2]); 
             }
             Id reimId;
-            system.debug('monthList=='+ monthList);
             if(monthList.size() > 0){
-            system.debug('inserted in if');
                 for(Employee_Reimbursement__c reim : [SELECT id 
                                                     FROM Employee_Reimbursement__c 
                                                     WHERE Month__c IN: monthList 
                                                     AND Contact_Id__c =: contactId ]){
                                                         reimId = reim.ID;
                 }
-            system.debug('reimId ' + reimId );
             }
             for(Bi_Weekly_Reimbursement__c bireim : [SELECT id,name,Contact__r.FirstName,
                                                             Start_Date__c, End_Date__c, 
@@ -193,7 +186,6 @@ public with sharing class ConfirmTripTimeERMIController {
             if(contactName != null){
                  newemailBody = newemailBody.replace('{!ContactName}', contactName);
             }           
-            contactEmail = 'snehal.gat@kiwiqa.com';
             toAddress.add(contactEmail);
             newemailBody = newemailBody.replace('{!$Label.Driver_Forword_Logo}', System.Label.Driver_Forword_Logo);
             messaging.singleEmailMessage email = new messaging.singleEmailMessage();
@@ -209,12 +201,14 @@ public with sharing class ConfirmTripTimeERMIController {
             }            
             List<String> toAddressDriver = new List<String>();
             //String contactDriverEmail = 'a.wright@ermi-motion.com';
-            String contactDriverEmail = 'gatsnehal2@gmail.com';
-            toAddressDriver.add(contactDriverEmail);
+            toAddressDriver.add(System.Label.ErmiAdminAlexis);
             messaging.singleEmailMessage email2 = new messaging.singleEmailMessage();
             email2 = Utils.CreateEmail(subjectModify,newAdminEmailBody,toAddressDriver,null,null,null);
-            emailist.add(email2);             
-            Messaging.SendEmailResult [] result2 = Messaging.sendEmail(emailist, false);
+            emailist.add(email2);   
+            SendEmail__c  sendEmailObj = SendEmail__c.getValues('ConfirmTripSyncErmi'); 
+            if(emailist.size() > 0 && !Test.isRunningTest() && sendEmailObj.Send_email_from_code__c == true){
+                Messaging.SendEmailResult [] result2 = Messaging.sendEmail(emailist, false);
+            }                     
         }
         return 'sucess';
     }
