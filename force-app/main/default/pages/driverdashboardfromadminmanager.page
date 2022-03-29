@@ -1470,7 +1470,7 @@
                     this.checkForMVR = function(list){
                         for(var i=0; i < list.length; i++){
                             if($scope.accid === list[i]){
-                                $scope.isMVR = false;
+                                $scope.isMVR = true;
                             }
                         }
                     }

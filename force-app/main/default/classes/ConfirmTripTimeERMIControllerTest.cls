@@ -14,6 +14,16 @@ public class ConfirmTripTimeERMIControllerTest {
         customSetting1.Send_email_from_code__c= true;
         insert customSetting1;
         
+        SendEmail__c customSetting2 =  new SendEmail__c();
+        customSetting2.Name = 'ConfirmTripTimeERMIController';
+        customSetting2.Send_email_from_code__c= true;
+        insert customSetting2;
+        
+        SendEmail__c customSetting3 =  new SendEmail__c();
+        customSetting3.Name = 'ConfirmTripSyncErmi';
+        customSetting3.Send_email_from_code__c= true;
+        insert customSetting3;
+        
         Vehicle_URL_Mapping__c veh = new Vehicle_URL_Mapping__c();
         veh.URL__c = 'https://cdn2.hubspot.net/hubfs/2511299/iStock-494093356.jpg';
         veh.vehicle__c =  'Full-Size Sedan';
@@ -140,12 +150,12 @@ public class ConfirmTripTimeERMIControllerTest {
         string ConId = con1.Id;
         //String json = '[{"biWeekId":"'+br.id+'","confirmCheck":true,"errorCheck":false}]';
         //String json = '[{\"biWeekId\":\" '+br.id + ' \","confirmCheck":true,"errorCheck":false}]';
-        String json = null;
+        String json = '[{\"biWeekId\":\"'+br.id + '\",\"confirmCheck\":true,\"errorCheck\":false,\"countErrorCheck\":0,\"driverEmail\":\"meghac.mobio@gmail.com\",\"driverName\":\"Megha\",\"biWeekPayperiod\":\"03/09/2022 to 03/22/2022\",\"mileage\":0,\"driveTime\":\"0\",\"stayTime\":\"0\",\"totalTime\":\"0\"}]';
+        //String json = null;
         apexpages.currentpage().getparameters().put('id' , ConId);
         ConfirmTripTimeERMIController controller = new ConfirmTripTimeERMIController();
-        ConfirmTripTimeERMIController.getDriverDetailsClone(Con1.Id);
-        ConfirmTripTimeERMIController.getDriverDetails();  
-        ConfirmTripTimeERMIController.getdriverInsurance(attach.id); 
+        //ConfirmTripTimeERMIController.getDriverDetails();  
+        ConfirmTripTimeERMIController.syncTripsForErmi (Con1.Id,'03/07/2022','03/12/2022'); 
         ConfirmTripTimeERMIController.UpdateBiWeekData(json );      
         }
         Test.stopTest();
