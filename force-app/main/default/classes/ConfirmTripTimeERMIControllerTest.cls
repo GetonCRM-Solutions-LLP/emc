@@ -14,6 +14,16 @@ public class ConfirmTripTimeERMIControllerTest {
         customSetting1.Send_email_from_code__c= true;
         insert customSetting1;
         
+        SendEmail__c customSetting2 =  new SendEmail__c();
+        customSetting2.Name = 'ConfirmTripTimeERMIController';
+        customSetting2.Send_email_from_code__c= true;
+        insert customSetting2;
+        
+        SendEmail__c customSetting3 =  new SendEmail__c();
+        customSetting3.Name = 'ConfirmTripSyncErmi';
+        customSetting3.Send_email_from_code__c= true;
+        insert customSetting3;
+        
         Vehicle_URL_Mapping__c veh = new Vehicle_URL_Mapping__c();
         veh.URL__c = 'https://cdn2.hubspot.net/hubfs/2511299/iStock-494093356.jpg';
         veh.vehicle__c =  'Full-Size Sedan';
