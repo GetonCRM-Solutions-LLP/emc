@@ -24,6 +24,8 @@ public class DriverDashboardController
     public static decimal TotalMonthlyCosts {get; set;}
     public String obj_content_version {get;set;}
     public String biWeekData {get;set;}
+    public static Boolean checkErrorERMI {get;set;}
+    public static Boolean ConfirmTimeERMI {get;set;}
     /**
     @author Natavar Ghodasara
     @date 26th Feb 2019
@@ -72,8 +74,9 @@ public class DriverDashboardController
                                     AND End_Date__c <= TODAY 
                                     AND ( Contact__r.Driver_Type__c = 'Driver - Part Time' 
                                         OR Contact__r.Driver_Type__c = 'Driver - Full Time' )
-                                    Order By End_Date__c desc limit 1];  
-                                    system.debug('biWeekList===='+biWeekList);   
+                                    Order By End_Date__c desc limit 1];   
+                                    checkErrorERMI =   biWeekList[0].Error_Hours__c;
+                                    ConfirmTimeERMI =   biWeekList[0].Confirm_Hours__c; 
                                     biWeekData = Json.serialize(biWeekList) ;                          
         }  
         /*try{
