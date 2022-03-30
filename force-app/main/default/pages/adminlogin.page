@@ -11,6 +11,8 @@
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" />
         <link rel="stylesheet" href="{!URLFOR($Resource.EmcCSS,'emc-design/assets/css/login.css')}" />
         <link rel="stylesheet" href="{!URLFOR($Resource.EmcCSS,'emc-design/assets/css/main.css')}" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/fontawesome.min.css"  />
+        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v6.1.1/css/all.css"/>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.css" />
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.js"></script>
@@ -24,6 +26,14 @@
                 }
                 input{
                     font-family: 'Proxima Nova' !important;
+                }
+                #togglePassword{
+                    display: block;
+                    position: absolute;
+                    right: 0;
+                    padding: 15px;
+                    cursor: pointer;
+                    z-index: 4;
                 }
                 .btn:focus{
                     box-shadow: none !important;
@@ -199,8 +209,24 @@
         </style>
         <script>
             $ = jQuery.noConflict();
-
+            var isToggle = false;
             $(document).ready(function () {
+                    //* EMC - 277 Addition of Eye Icon In Password Field */
+                $("#togglePassword").click(function () {
+                        // toggle type attribute
+                        isToggle = true;
+                        var password = document.getElementById('password');
+                        const type = password.getAttribute("type") === "password" ? "text" : "password";
+                            password.setAttribute("type", type);
+                            //toggle eye icon in password field
+                            if($(this).hasClass('fa-solid fa-eye-slash') && password.getAttribute("type") == "text"){
+                                $(this).addClass('fa-eye').removeClass('fa-eye-slash');   
+                            }else{
+                                $(this).removeClass('fa-eye').addClass('fa-eye-slash');   
+                            }
+                           // $(this).toggleClass("fa-eye");
+                })
+
                 var validator = $("form[id='createform']").validate({
                     debug: false,
                     // onkeyup: false, 
@@ -320,13 +346,15 @@
             };
 
             forgotPassword = function(){
+                /* EMC - 277 */
+                var h_email = document.getElementById("hidden_email");
+                h_email.value = document.getElementById("username").value;
                 Visualforce.remoting.Manager.invokeAction(
                             '{!$RemoteAction.adminLoginController.redirectToMyVF}',
                             function (result, event) {
                                 if (event.status) {
                                     if (result != null) {
-                                        window.location.href = result;
-                                        console.log(result);
+                                        window.location.href = result + "?email=" + h_email.value;
                                     } else {
                                         $.confirm({
                                             title: 'Encountered an error!',
@@ -364,6 +392,7 @@
     <body>
         <div class="login-form">    
             <form action="" class="needs-validation" id="createform" autocomplete="off">
+                <input type="hidden" id="hidden_email"/>
                 <div class="login100-form-title p-b-35"><img src="{!URLFOR($Resource.DashboardCSS,'dashboardfinal/images/mBurse.png')}" alt="logo" class="logo" /></div>
                 <p class="form-modal-title">Sign in with your email and password</p>
                 <div class="loginError" id="errorMsg">
@@ -373,7 +402,9 @@
                     <input type="text" class="form-control" name="username" id="username"  placeholder="Work Email Address" required="true"  />
                 </div>
                 <div class="form-group icon password-icon">
-                    <input type="text" class="form-control" name="password" id="password" placeholder="Password" required="true" onfocus="if(this.value !=''){setAttribute('type', 'password')}" onkeyup="if(this.value !=''){setAttribute('type', 'password')}" />
+                   <!-- EMC - 277 -->
+                    <i class="fa-solid fa-eye-slash" id="togglePassword"></i>
+                    <input type="text" class="form-control" name="password" id="password" placeholder="Password" required="true" onfocus="if(this.value !='' && !isToggle){setAttribute('type', 'password')}" onkeyup="if(this.value !='' && !isToggle){setAttribute('type', 'password')}" />
                 </div>
                 <input name="login" id="login" class="btn btn-block login-btn" type="submit" value="LOG IN" />     
                 <div style="text-align: center; padding-bottom: 20px;">
