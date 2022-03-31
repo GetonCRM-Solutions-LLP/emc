@@ -30,7 +30,7 @@ public with sharing class EmployeeReimbursementTriggerHandlerTest {
         veh.Year__c = '2019';
         insert veh;
 		
-        Account acc = new Account();
+        Account acc = new Account(); 
         Account acc2 = new Account();
         Account acc3 = new Account();
         Contact con = new Contact();
@@ -48,13 +48,22 @@ public with sharing class EmployeeReimbursementTriggerHandlerTest {
        
         
         
-        acc.Name = 'Test Account';
+        
+         //acc = RecordUtilityClass.buildAccount();
+            acc.Name = 'Test Account';
+            acc.Pay_Period_Days__c = 13;
+            acc.Pay_Period_Start_Date__c = system.today().adddays(-13);
         insert acc;
-       
-        acc2.Name = 'Rayner';
+      // acc2 = RecordUtilityClass.buildAccount();
+       acc2.Name = 'Rayner';
+       acc.Pay_Period_Days__c = 13;
+       acc.Pay_Period_Start_Date__c = system.today().adddays(-13);
         insert acc2;
         
+       //acc3 = RecordUtilityClass.buildAccount(); 
         acc3.Name = 'CATCO';
+        acc.Pay_Period_Days__c = 13;
+        acc.Pay_Period_Start_Date__c = system.today().adddays(-13);
         insert acc3;
             
         //Contact con = new Contact();
