@@ -30,9 +30,12 @@ public with sharing class EmployeeReimbursementTriggerHandlerTest {
         veh.Year__c = '2019';
         insert veh;
 		
-        Account acc = new Account(); 
-        Account acc2 = new Account();
-        Account acc3 = new Account();
+        //Account acc = new Account(); 
+        //Account acc2 = new Account();
+        //Account acc3 = new Account();
+        Account acc ;
+        Account acc2 ;
+        Account acc3 ;
         Contact con = new Contact();
         Contact con2 = new Contact();
         Contact con3 = new Contact();
@@ -45,27 +48,22 @@ public with sharing class EmployeeReimbursementTriggerHandlerTest {
         User admin = [SELECT Id, Username, UserRoleId FROM User WHERE Profile.Name = 'System Administrator' AND UserRoleId = :userRole_1.Id LIMIT 1];
         User user_1;
         System.runAs(admin) {
-       
-        
-        
-        
-         //acc = RecordUtilityClass.buildAccount();
-            acc.Name = 'Test Account';
-            acc.Pay_Period_Days__c = 13;
-            acc.Pay_Period_Start_Date__c = system.today().adddays(-13);
-        insert acc;
-      // acc2 = RecordUtilityClass.buildAccount();
-       acc2.Name = 'Rayner';
-       acc.Pay_Period_Days__c = 13;
-       acc.Pay_Period_Start_Date__c = system.today().adddays(-13);
-        insert acc2;
-        
-       //acc3 = RecordUtilityClass.buildAccount(); 
-        acc3.Name = 'CATCO';
-        acc.Pay_Period_Days__c = 13;
-        acc.Pay_Period_Start_Date__c = system.today().adddays(-13);
-        insert acc3;
+
+            acc = RecordUtilityClass.buildAccount();
+            Insert acc;
+           
+            acc2 = RecordUtilityClass.buildAccount();
+            insert acc2;
+            acc2.Name = 'Rayner';
+            update acc2;
             
+            acc3 = RecordUtilityClass.buildAccount();
+            insert acc3;
+            acc3.Name = 'CATCO';
+            update acc3;
+        //acc.Pay_Period_Days__c = 13;
+        //acc.Pay_Period_Start_Date__c = system.today().adddays(-13);
+    
         //Contact con = new Contact();
         con.FirstName = 'FirstCont';
         con.LastName = 'TestContact';
