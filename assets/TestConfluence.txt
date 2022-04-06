@@ -1,1 +1,1 @@
-DemoClassTest,EmployeeReimbursementTriggerHandlerTest,RecordUtilityClass_Test
+DemoClassTest,GetTripCalloutTest
