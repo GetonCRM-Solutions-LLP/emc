@@ -51,7 +51,7 @@ global class GetTripCallout {
             Date minTripdate;
             Date maxtripdate;
             Map<String, Id> biWeeklyReimMap = new Map<String, Id>();
-            if(checkByWeek == true && biWeekReimId != null && biWeekReimId != '') {
+            if(checkByWeek == true && biWeekReimId == null) {
                 for(TripLogJSONClass.Trips lt : listTrips) 
                 {
                     if(!CheckNull(lt.startTime)) {
@@ -67,7 +67,7 @@ global class GetTripCallout {
                     maxtripdate = maxtripdate.addDays(payDays);
                     biWeeklyReimMap = BiWeeklyWrapperUtils.getBiweeklyReimMap (contactId, minTripDate, maxTripDate, true);
                 }
-            } else {
+            } else {           
                 biWeeklyReimMap = BiWeeklyWrapperUtils.getBiweeklyReimMap (contactId, minTripDate, maxTripDate, false);
             }
             /**** Create Employee Mileage Record ****/
@@ -273,13 +273,15 @@ global class GetTripCallout {
     }
     public Static string getReimId(Date tripDate, Map<String, Id> biWeeklyMap) {
         if(tripDate == null)  return null;
-
         for(String key : biWeeklyMap.keySet()) {
-            Date st = Date.parse(key.split(':')[0]);
-            Date et = Date.parse(key.split(':')[1]);
-            
-            if(tripdate >= st && tripDate <= et) {
+            if(key == String.valueOf(biWeeklyMap.get(key))){
                 return biWeeklyMap.get(key);
+            } else {
+                Date st = Date.parse(key.split(':')[0]);
+                Date et = Date.parse(key.split(':')[1]); 
+                if(tripdate >= st && tripDate <= et) {
+                    return biWeeklyMap.get(key);
+                }
             }
         }
         return null;
