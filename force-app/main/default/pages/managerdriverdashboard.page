@@ -2271,6 +2271,44 @@
                                     item.totalForReimbursement = calculateReimb(item.fixed1, item.fixed2, item.fixed3, item.varibleAmount)
                                 })
                                 console.log($scope.reimbMileages);
+                                $scope.resultMonth = [];
+                                        angular.forEach($scope.reimbMileages, function (o) {
+                                            if (o.month) {
+                                                $scope.resultMonth.push(o.month);
+                                                // $scope.syncHeader = true;
+                                            }
+                                        });
+                                        var monthCheck = $scope.resultMonth.includes($scope.syncMonth);
+                                        if ($scope.syncMonth === 'December') {
+                                            if ($scope.lastYear === $scope.selectedYear) {
+                                                if (monthCheck == false) {
+                                                    if ($scope.selectedYear === $scope.preYear) {
+                                                        $scope.syncHeader = true;
+                                                    } else {
+                                                        $scope.syncHeader = false;
+                                                    }
+                                                }else{
+                                                    $scope.syncHeader = true;
+                                                }
+                                            } else {
+                                                if ($scope.selectedYear === $scope.preYear) {
+                                                    $scope.syncHeader = true;
+                                                } else {
+                                                    $scope.syncHeader = false;
+                                                }
+                                            }
+                                        }
+                                        else {
+                                            if ($scope.lastYear === $scope.selectedYear) {
+                                                if (monthCheck) {
+                                                    $scope.syncHeader = true;
+                                                } else {
+                                                    $scope.syncHeader = false;
+                                                }
+                                            }else{
+                                                $scope.syncHeader = false;
+                                            }
+                                        }
                             }
                             else {
                                 $scope.reimbMileages = [];
@@ -2827,6 +2865,7 @@
                                             <table id="driver-dashbord" class="table table-striped dt-responsive nowrap dataTable" cellspacing="0" width="100%">
                                                 <thead>
                                                     <tr>
+                                                        <th ng-if="yr == lastYear || yr == preYear" ng-show="syncHeader">Sync</th>
                                                         <th>Month
                                                             <span class="sort-icon pull-right"></span>
                                                         </th>
@@ -2864,6 +2903,10 @@
                                                 </thead>
                                                 <tbody class="driver-dashboard-table table-a-link">
                                                     <tr ng-repeat="reimbml in reimbMileages |orderBy:sortKey:reverse">
+                                                        <td class="w-10rem" ng-if="yr == lastYear || yr == preYear" ng-show="syncHeader">
+                                                            <button class="btn btn-primary syncMileageBtn" ng-click="syncMileages(reimbml.month,reimbml.fuel,reimbml.maintainsAndTyres,reimbml.employeeReimbursementId,reimbml.mpg)"
+                                                                ng-if="reimbml.month === syncMonth">Mileage</button>
+                                                        </td>
                                                         <td ng-click="openmodal(reimbml.month)">
                                                             <a>{{reimbml.month}}</a>
                                                         </td>
