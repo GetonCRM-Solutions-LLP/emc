@@ -1457,11 +1457,11 @@
                     function (result, event) {
                         if (event.status) {
                             document.getElementById('messageContainer').classList.remove('left-style');
-                            document.getElementById('processMessage').innerHTML = 'Syncing unapprove mileages..'
+                            document.getElementById('processMessage').innerHTML = 'Synching mileage....'
                             Visualforce.remoting.Manager.invokeAction('{!$RemoteAction.DriverDashboardFromAdminManager.TripCallout}', $scope.id, $scope.getMonth, $scope.getYear, $scope.getFuel, $scope.getmaintTyre, $scope.empReID, $scope.mpg, 'U',
                                 function (result, event) {
                                     if (event.status) {
-                                        document.getElementById('processMessage').innerHTML = 'Syncing submitted mileages...'
+                                        document.getElementById('processMessage').innerHTML = 'Synching mileage....'
                                         Visualforce.remoting.Manager.invokeAction('{!$RemoteAction.DriverDashboardFromAdminManager.TripCallout}', $scope.id, $scope.getMonth, $scope.getYear, $scope.getFuel, $scope.getmaintTyre, $scope.empReID, $scope.mpg, 'S',
                                             function (result, event) {
                                                 if (event.status) {

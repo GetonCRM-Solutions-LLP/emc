@@ -310,9 +310,10 @@
                         $scope.isHours = true;
                         $scope.payPeriodName = ($scope.mileageDetail[0] != undefined && $scope.mileageDetail[0].biWeekPayperiod != undefined) ? $scope.mileageDetail[0].biWeekPayperiod :  "";
                         $('#spinner').hide();
-                        if($scope.mileageDetail[0].countErrorCheck === 2){
-                            document.getElementById('Error_td').innerHTML = "There are still hours on my Weekly Time Sheet Contact Support"
+                        if ($scope.mileageDetail[0] != undefined && $scope.mileageDetail[0].countErrorCheck === 2) {
+                                document.getElementById('Error_td').innerHTML = "There are still hours on my Weekly Time Sheet Contact Support"
                         }
+                       
                         if (window.performance.navigation.type != 1 && $scope.syncParam != undefined) {
                             Visualforce.remoting.Manager.invokeAction('{!$RemoteAction.ConfirmTripTimeERMIController.sendErrorEmail}', $scope.mileageDetail[0].driverEmail, $scope.mileageDetail[0].driverName, $scope.mileageDetail[0].biWeekPayperiod,
                                 $scope.mileageDetail[0].mileage, $scope.mileageDetail[0].driveTime, $scope.mileageDetail[0].stayTime, $scope.mileageDetail[0].totalTime, $scope.mileageDetail[0].countErrorCheck,
