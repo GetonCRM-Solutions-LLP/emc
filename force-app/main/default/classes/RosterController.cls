@@ -1093,16 +1093,20 @@ global without sharing class RosterController
     //This method is used to create a community user.
     @RemoteAction
     public static void massEnableUser(String contactListID){
+        System.debug('contactListID'+contactListID);
         List<String> contactIds = new List<String>();
         List<Contact> contactList = new List<Contact>();
         contactIds = (List<String>) System.JSON.deserialize(contactListID, List<String>.class);
-        for(Contact conObj : [SELECT Id,IsCreatedFromCommunity__c FROM Contact WHERE Id In : contactIds AND IsCreatedFromCommunity__c = false AND Deactivated_Date__c = null]){
+        for(Contact conObj : [SELECT Id,IsCreatedFromCommunity__c,Role__c,FirstName,LastName,External_Email__c FROM Contact WHERE Id In : contactIds AND IsCreatedFromCommunity__c = false AND Deactivated_Date__c = null]){
+        System.debug('conObj '+conObj );
             conObj.IsCreatedFromCommunity__c = true ;
             contactList.add(conObj);
         }
 
         if(!contactList.isEmpty()){
-            update contactList;
+        System.debug('contactList'+contactList);
+            update contactList;            
+            ContactTriggerHelper.CommunityUserCreate(contactList);
         }
     }
     
