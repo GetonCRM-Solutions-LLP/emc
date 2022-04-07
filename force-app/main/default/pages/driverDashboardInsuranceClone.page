@@ -370,7 +370,7 @@
                         var url = new URL(url_string);
                         $scope.insurance_parameters = [];
                         $scope.insurance_parameters = JSON.parse('{!accInsuranceList}');
-                        $scope.biweekList = {!biWeekData};
+                        $scope.biweekList = {!biWeekData}
                         console.log("insurance->",$scope.insurance_parameters);
                         $scope.id = url.searchParams.get("id");
                         $scope.accid = url.searchParams.get("accid");
@@ -378,7 +378,6 @@
                         $scope.ERMIAcc = '{!($Label.ERMI_Account)}';
                         var url_locate = "/app/driverDashboardWeekly?accid="+$scope.accid+"&id="+$scope.id;
                         var url_dashboardlocate = "/app/driverDashboardClone?accid="+$scope.accid+"&id="+$scope.id;
-                       console.log("biweek->",{!biWeekData});
                         $scope.logodocumentid ='{!logoDocument_id}';
                         $scope.insurancecount = {!insuranceSize};
                         var choosenfileType = '';
@@ -449,6 +448,7 @@
                         var choosefile;
                     
                         $scope.loadDropfile = function(files) {
+                            debugger
                             chooseFileName = '';
                             attachment = '';
                             choosefile = '';
@@ -519,6 +519,7 @@
 
                         
                         $scope.uploadFileInChunk = function(element) {
+                            debugger
                             // console.log(choosefile.files[0]);*/
                             var file = choosefile.files[0];     
                                                 
