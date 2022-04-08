@@ -1,8 +1,13 @@
 public without sharing class ContactTriggerHelper {
     public static Boolean isRecursive = false;
     public static Boolean isFirstTime = true;
+    Public static date fuelPriceDate;
+    Public static string[] splitdate;
+    Public static map<string, Decimal> monthStateCityVsFuelPriceMap = new map<string, Decimal>(); 
+    Public static map<string, Decimal> monthStateCityVsFuelPricereimMap = new map<string, Decimal>(); 
+   
     
-    public static void CheckVehicalYearAndModel(List<Contact> contactList){
+    public static void checkVehicalYearAndModel(List<Contact> contactList){
         Map<String,String> urlMap = new Map<String,String>();
         set<String> vehicleNamesset = new set<String>();
 
@@ -90,15 +95,18 @@ public without sharing class ContactTriggerHelper {
             
             for(Contact conObj : contactList) {
                 if(conObj.IsCreatedFromCommunity__c == true && profilemap.containskey(conObj.Role__c))  {
+                system.debug('*******for loop******');
                     createUserList.add(CreateUserFromCommunity(conObj,profilemap.get(conObj.Role__c)));
                 }
             }
             if(createUserList.size()>0) {
+             system.debug('*******createUserList******');
                 insert createUserList;
             }            
     }
 
     public static User CreateUserFromCommunity(Contact contObj, Id profileId){
+    system.debug('*******CreateUserFromCommunity******');
         User userObj = new User();
         userObj.FirstName = contObj.FirstName;
         userObj.LastName = contObj.LastName; 
@@ -269,6 +277,30 @@ public without sharing class ContactTriggerHelper {
     }
     
     public static Employee_Reimbursement__c CreateReimbursement(Contact con){
+       //EMC-283 Update Fuel Price based on the contact city and state as past month's fuel price from Gas price object. 
+        String currentDate = String.valueOf(system.today());
+        String[] splitDate = currentDate.split('-');
+        
+        if(integer.valueOf(splitDate[1]) == 01){
+            fuelPriceDate = date.valueOf(string.valueOf(integer.valueOf(splitDate[0])-1) + '-12' + '-01' );   
+        } else {
+            fuelPriceDate = date.valueOf(splitDate[0] + '-' + string.valueOf(integer.valueOf(splitDate[1])-1) + '-01');
+        } 
+
+        for(Gas_Prices__c objGasPrice : [SELECT id,
+        name,
+        City__c,
+        State__c, 
+        Fuel_Price__c, 
+        Month_Year__c,
+        Month_State_City__c 
+        FROM Gas_Prices__c 
+        WHERE  Month_Year__c =: date.valueOf(fuelPriceDate)
+        WITH SECURITY_ENFORCED ]) {
+            
+          monthStateCityVsFuelPricereimMap.put(objGasPrice.Month_State_City__c, objGasPrice.Fuel_Price__c); 
+        }
+
         List<IRS_Mileage_Rate__c> objIRSRate = [SELECT id,year__c,IRS_Rate__c FROM IRS_Mileage_Rate__c Where year__c =: String.valueOf(System.today().year()) Limit 1];
         String lastMonth = Utils.fetchMonths(1, -1)[0];
         Employee_Reimbursement__c er = new Employee_Reimbursement__c();
@@ -279,14 +311,28 @@ public without sharing class ContactTriggerHelper {
         er.Contact_Id__c = con.id;
         er.Name = con.Name__c + ':' + lastMonth;
         er.Month__c = lastMonth;
-        er.Fuel_Price__c = 0;
+        
+        if(integer.valueOf(splitDate[1]) == 01){
+            if (monthStateCityVsFuelPricereimMap.containsKey(con.MailingCity+ con.MailingState + '12' + string.valueOf(integer.valueOf(splitDate[0])-1)) ) {
+                er.Fuel_Price__c = monthStateCityVsFuelPricereimMap.get(con.MailingCity+ con.MailingState + '12' + string.valueOf(integer.valueOf(splitDate[0])-1)) ;
+            }   else {
+                er.Fuel_Price__c = 0;
+            }
+        }   else {   
+            if (monthStateCityVsFuelPricereimMap.containsKey(con.MailingCity + con.MailingState + string.valueOf(integer.valueOf(splitDate[1])-1) + splitDate[0]) ) {
+                er.Fuel_Price__c = monthStateCityVsFuelPricereimMap.get(con.MailingCity + con.MailingState + string.valueOf(integer.valueOf(splitDate[1])-1) + splitDate[0]);
+            }   else {
+                er.Fuel_Price__c = 0;
+            }
+        }
         if(objIRSRate.size() > 0){
             er.IRS_Mileage_Rate__c = objIRSRate[0].ID;
         }
         return er;
+       
     }
-
-    public static void  CommunityReimCreate(List<Contact> contactList) {
+    
+    public static void  communityReimCreate(List<Contact> contactList) {
         List<Employee_Reimbursement__c> reimToInsert   = new List<Employee_Reimbursement__c>();
         List<Bi_Weekly_Reimbursement__c> bireimToInsert   = new List<Bi_Weekly_Reimbursement__c>();
         TriggerConfig__c customSetting = TriggerConfig__c.getInstance('Defaulttrigger');
@@ -339,8 +385,28 @@ public without sharing class ContactTriggerHelper {
         if(dtList.size() > 0){
             string[] splitsdate = dtList[0].split('-');
             splitStartDate = splitsdate[1]+'/'+splitsdate[2]+'/'+splitsdate[0];
-            string[] splitdate = dtList[1].split('-');
+            splitdate = dtList[1].split('-');
             splitEndDate = splitdate[1]+'/'+splitdate[2]+'/'+splitdate[0];
+        //EMC -283 use to update fuel price of biweekly reim based on the contact city and state of past month's fuel price from gas price object
+            if(integer.valueOf(splitdate[1]) == 01){
+                fuelPriceDate = date.valueOf(string.valueOf(integer.valueOf(splitdate[0])-1) + '-12' + '-01' );   
+            } else {
+                fuelPriceDate = date.valueOf(splitdate[0] + '-' + string.valueOf(integer.valueOf(splitdate[1])-1) + '-01');
+            } 
+
+       
+        for(Gas_Prices__c objGasPrice : [SELECT id,
+                                          name,
+                                          City__c,
+                                          State__c, 
+                                          Fuel_Price__c, 
+                                          Month_Year__c,
+                                          Month_State_City__c 
+                                          FROM Gas_Prices__c 
+                                          WHERE  Month_Year__c =: date.valueOf(fuelPriceDate)]) {
+                                              
+                                              monthStateCityVsFuelPriceMap.put(objGasPrice.Month_State_City__c, objGasPrice.Fuel_Price__c); 
+                                          }
         }
         Bi_Weekly_Reimbursement__c er = new Bi_Weekly_Reimbursement__c();
         er.Fixed_Amount__c = con.Fixed_Amount__c;
@@ -349,7 +415,22 @@ public without sharing class ContactTriggerHelper {
         er.MPG__c = con.MPG__c;
         er.Contact__c = con.id;
         er.Name = splitStartDate+' to '+ splitEndDate;
-        er.Fuel_Price__c = 0;
+        er.Count_Error_Check__c = 0;
+        //er.Fuel_Price__c = 0;
+        if(integer.valueOf(splitdate[1]) == 01){
+            if (monthStateCityVsFuelPriceMap.containsKey(con.MailingCity+ con.MailingState + '12' + string.valueOf(integer.valueOf(splitdate[0])-1)) ) {
+                er.Fuel_Price__c = monthStateCityVsFuelPriceMap.get(con.MailingCity+ con.MailingState + '12' + string.valueOf(integer.valueOf(splitdate[0])-1)) ;
+            }   else {
+                er.Fuel_Price__c = 0;
+            }
+        }   else {
+            if (monthStateCityVsFuelPriceMap.containsKey(con.MailingCity+ con.MailingState + string.valueOf(integer.valueOf(splitdate[1])-1) + splitdate[0]) ) {
+                er.Fuel_Price__c = monthStateCityVsFuelPriceMap.get(con.MailingCity+ con.MailingState + string.valueOf(integer.valueOf(splitdate[1])-1) + splitdate[0]);
+                system.debug(' br.Fuel_Price__c=='+  er.Fuel_Price__c);
+            }   else {
+                er.Fuel_Price__c = 0;
+            }
+        }
         er.Start_Date__c = Date.valueOf(dtList[0]);
         er.End_Date__c = Date.valueOf(dtList[1]);
         // if(objIRSRate.size() > 0){
