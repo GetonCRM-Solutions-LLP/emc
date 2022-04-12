@@ -280,10 +280,6 @@
             .mt-1{
                 margin-top: 1rem !important;
             }
-            p{
-                padding-top: 3px;
-                margin-bottom : 0 !important;
-            }
         </style>
         <script>
                 var app = angular.module('driverDashboardWeeklyModule',['ui.bootstrap','angularUtils.directives.dirPagination']);
@@ -579,13 +575,14 @@
                                         </tr>
                                         <tr>
                                             <td>Step 2. </td>
-                                            <td>Add any new or manual trips</td>
+                                            <td>Add or edit your mileage</td>
                                           </tr>
                                           <tr>
                                             <td>Step 3. </td>
                                             <td>
+                                                <p>Resync your mileage</p>
                                                 <iframe width="457" height="215" src="https://www.youtube.com/embed/Yc21UqzygTU" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen="allowfullscreen"></iframe>
-                                                 <p>Once all edits and additional are complete resync your data <a class="a-setcolor-pointer font-weight-bold" href="https://www.mburse.com/video-resource/ios-mileage-sync" target="_blank">HERE</a></p></td>
+                                            </td>
                                           </tr>
                                           <tr>
                                             <td>Step 4. </td>
