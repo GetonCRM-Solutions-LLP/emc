@@ -1,1 +1,1 @@
-DemoClassTest,ContactTriggerHelperTest 
+DemoClassTest,WeeklyTimeSheetControllerTest 
