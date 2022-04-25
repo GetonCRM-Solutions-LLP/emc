@@ -33,39 +33,22 @@ Public class UploadInsuranceNotificationBatch implements Database.Batchable<sObj
             system.debug('con==' + con);
             date activationDate = con.Activation_Date__c;
             date currentDate = system.today();
+             system.debug('activationDate== '+ activationDate);
             integer numberDaysDue = currentDate.daysBetween(activationDate);
+             system.debug('numberDaysDue== '+ numberDaysDue);
             integer remainder = Math.Mod(numberDaysDue,5);
+            system.debug('remainder== '+ remainder);
             string activationplus30 = String.valueOf(con.Activation_Date__c.adddays(30));
             String[] splitDate = activationplus30.split('-');
             system.debug('splitDate[0]==' + splitDate[0]);
             system.debug('splitDate[1]==' + splitDate[1]);
             system.debug('splitDate[2]==' + splitDate[2]);
-            if(Integer.valueOf(splitDate[1]) == 01){
-                after30DaysDate = 'January ' + splitDate[2] + ',' + splitDate[0];
-            }   else if (Integer.valueOf(splitDate[1]) == 02) {
-                after30DaysDate = 'February ' + splitDate[2] + ',' + splitDate[0];
-            }   else if (Integer.valueOf(splitDate[1]) == 03) {
-                after30DaysDate = 'March ' + splitDate[2] + ',' + splitDate[0];
-            }   else if (Integer.valueOf(splitDate[1]) == 04) {
-                after30DaysDate = 'April ' + splitDate[2] + ',' + splitDate[0];
-            }  else if (Integer.valueOf(splitDate[1]) == 05) {
-                after30DaysDate = 'May ' + splitDate[2] + ',' + splitDate[0];
-            }  else if (Integer.valueOf(splitDate[1]) == 06) {
-                after30DaysDate = 'June ' + splitDate[2] + ',' + splitDate[0];
-            }  else if (Integer.valueOf(splitDate[1]) == 07) {
-                after30DaysDate = 'July ' + splitDate[2] + ',' + splitDate[0];
-            }   else if (Integer.valueOf(splitDate[1]) == 08) {
-                after30DaysDate = 'August ' + splitDate[2] + ',' + splitDate[0];
-            }   else if (Integer.valueOf(splitDate[1]) == 09) {
-                after30DaysDate = 'September ' + splitDate[2] + ',' + splitDate[0];
-            }   else if (Integer.valueOf(splitDate[1]) == 10) {
-                after30DaysDate = 'Octomber ' + splitDate[2] + ',' + splitDate[0];
-            }   else if (Integer.valueOf(splitDate[1]) == 11) {
-                after30DaysDate = 'November ' + splitDate[2] + ',' + splitDate[0];
-            }   else if(Integer.valueOf(splitDate[1]) == 12) {
-                after30DaysDate = 'December ' + splitDate[2] + ',' + splitDate[0];
-            }
             
+             string monthName = WrapperUtils.getMonthNamefromno(Integer.valueof(splitDate[1]));
+            system.debug('monthName==' + monthName);
+            after30DaysDate = monthName + ' ' + splitDate[2] + ',' + splitDate[0];
+            system.debug('after30DaysDate==' + after30DaysDate);
+
             if(remainder == 0)  {
                 system.debug('Insertinto if condition==' + remainder);
                 List<String> sendingTo = new List<String>();
@@ -76,6 +59,7 @@ Public class UploadInsuranceNotificationBatch implements Database.Batchable<sObj
                 }
                 // sendingTo.add(con.External_Email__c);
                 sendingTo.add('snehal.gat@kiwiqa.com');
+                //sendingTo.add('paras.dhanani@getoncrm.com');
                 mail.setToAddresses(sendingTo);
                 mail.setSubject(temp[0].Subject);
                 htmlbody = temp[0].HTMLValue;

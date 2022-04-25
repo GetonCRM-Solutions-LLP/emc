@@ -21,7 +21,7 @@ public with sharing class UploadInsuranceNotificationBatchTest {
             objDriverContact[0].isCommunityUser__c = false;
             objDriverContact[0].Insurance_Declaration_Status__c = 'Skip';
 			objDriverContact[0].Insurance_Attachment_Id__c = null;
-            objDriverContact[0].Activation_Date__c  = System.today().addDays(-5);
+            objDriverContact[0].Activation_Date__c  = System.today().addDays(-4);
              system.assertEquals(1, objadminContact.size(), True);
             
             Insert objDriverContact[0];
