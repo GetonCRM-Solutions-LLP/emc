@@ -21,13 +21,13 @@ public with sharing class UploadInsuranceNotificationBatchTest {
             objDriverContact[0].isCommunityUser__c = false;
             objDriverContact[0].Insurance_Declaration_Status__c = 'Skip';
 			objDriverContact[0].Insurance_Attachment_Id__c = null;
-            objDriverContact[0].Activation_Date__c  = System.today().addDays(-4);
+            objDriverContact[0].Activation_Date__c  = System.today().addDays(-5);
              system.assertEquals(1, objadminContact.size(), True);
             
             Insert objDriverContact[0];
             userObj = TestDataFactory.createUser(True, profileObj.Id, objDriverContact[0].Id);
         }
-        Test.startTest();
+        Test.startTest(); 
         UploadInsuranceNotificationBatch uploadInsurance = new UploadInsuranceNotificationBatch();
         database.executebatch(uploadInsurance, 1);
         Test.stopTest();

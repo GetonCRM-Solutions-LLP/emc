@@ -1,1 +1,1 @@
-DemoClassTest,UploadInsuranceNotificationBatchTest
+DemoClassTest,UploadInsuranceNotificationBatchTest,EmployeeReimbursementTriggerHandlerTest
