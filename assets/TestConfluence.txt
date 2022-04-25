@@ -1,1 +1,1 @@
-DemoClassTest,WrapperUtils_Test,UploadInsuranceNotificationBatchTest
+DemoClassTest,UploadInsuranceNotificationBatchTest
