@@ -333,6 +333,11 @@ public with sharing class EmployeeReimbursementTriggerHandler {
     // Maintanace and tires are set as the IRS Mileage Rate of that year which is in IRS Mileage rate.
 
     public static void  IRSVehicleCheck(Set<Id> reimIdslst) {
+        string accId = System.Label.IRS_Vehicle_Check;
+        List<String> accIdList = new List<String>();
+        accIdList=accId.split(',');
+        system.debug('accIdList==' + accIdList);
+        system.debug('accIdListsize==' + accIdList.size());
         
         List<Employee_Reimbursement__c> reimList = new List<Employee_Reimbursement__c>();
         Map<String, Decimal> yearvsIRSMap = new Map<String, Decimal>();
@@ -343,7 +348,8 @@ public with sharing class EmployeeReimbursementTriggerHandler {
         
         for(Employee_Reimbursement__c  reim : [SELECT id,name,MPG__c, Maintenance_and_Tires__c, Fuel_Price__c, Year__C 
                                                 FROM Employee_Reimbursement__c   
-                                                WHERE Contact_id__r.Deactivated_Date__c = null 
+                                                WHERE Contact_id__r.Deactivated_Date__c = null
+                                               			AND Contact_Id__r.AccountId  =: accIdList 
                                                         AND Id IN: reimIdslst
                                                         AND Contact_id__r.Vehicle_Type__c LIKE '%IRS Mileage%']){
             reim.Fuel_Price__c = 0;
