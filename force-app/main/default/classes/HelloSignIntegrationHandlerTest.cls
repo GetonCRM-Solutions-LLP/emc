@@ -38,6 +38,5 @@ public class HelloSignIntegrationHandlerTest {
     }
     public static testmethod void test1() {
         Vehicle_URL_Mapping__c vum = [select id from Vehicle_URL_Mapping__c limit 1];
-        system.debug('vum-->'+vum);
     }   
 }
