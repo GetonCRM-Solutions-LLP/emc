@@ -28,6 +28,19 @@ public with sharing class TestDataFactory {
         }
         return customSetting;
     }
+
+    public static SendEmailonDeactivation__c sendEmailCustomSetting(Boolean doInsert,String name, String bccEmailId){
+    SendEmailonDeactivation__c objSendEmail = new SendEmailonDeactivation__c();
+        objSendEmail.Name = name; //YearToDateReimbursementStatement
+        objSendEmail.BCCEmailaddresses__c = bccEmailId;
+        objSendEmail.Send_to_Driver__c = true;
+        
+        if(doInsert){
+            insert objSendEmail;
+        }
+        return objSendEmail;
+
+    }
      /** 
     * ********************************************************
     * This method is test data for send email to me custom setting.
@@ -59,7 +72,7 @@ public with sharing class TestDataFactory {
         customSetting.MappingGasStayTime__c = true;
         customSetting.MapTriAppReje__c = true;
         customSetting.Mileage_Lockdate__c = true;
-        customSetting.mileageremoveapprovaldate__c	 = true;
+        customSetting.mileageremoveapprovaldate__c   = true;
         customSetting.TrackHistory__c = true;
         customSetting.UserTrigger__c = true;
         if(doInsert){
@@ -67,7 +80,7 @@ public with sharing class TestDataFactory {
         }
         return customSetting;        
     }
-     /** 
+    /** 
     * ********************************************************
     * This method is test data for NewDashboard Message custom setting.
     * ********************************************************
@@ -81,6 +94,24 @@ public with sharing class TestDataFactory {
         }
         return newMsg;
     }
+    
+    /** 
+    * ********************************************************
+    * This method is test data for Hello sign custom setting.
+    * ********************************************************
+    */
+    public static Hello_Sign__c helloSignCustomSetting(Boolean doInsert){
+        Hello_Sign__c customHello = new Hello_Sign__c();
+        customHello.Name = 'Hello_Sign';
+        customHello.Admin_Email__c = 'test@gmail.com';
+        customHello.Admin_Name__c = 'Test';
+        customHello.TestMode__c = true;
+        if(doInsert){
+            insert customHello;
+        }
+        return customHello;
+    }
+
 
     /** 
     * ********************************************************
@@ -133,9 +164,9 @@ public with sharing class TestDataFactory {
     */
     public static User createUser(Boolean doInsert,Id profileId,Id contactId) {   
         User userObj = new User( 
-            Email = 'yourusername@gmail.com',
+            Email = 'abc@gmail.com',
             ProfileId = profileId, 
-            UserName = 'yourusername@gmail.com', 
+            UserName = 'abc@gmail.com', 
             Alias = 'Test',
             TimeZoneSidKey = 'America/New_York',
             EmailEncodingKey = 'ISO-8859-1',
@@ -195,15 +226,17 @@ public with sharing class TestDataFactory {
             con.Employee_ID__c = '123456';
             con.AccountId = accountId;
             con.External_Email__c = emailName + i + '@gmail.com';
+            con.Phone = '1234566787';
             con.Driver_Type__c = 'Driver - Full Time';
             con.Deactivated_Date__c = null;
             con.Insurance_Attachment_Id__c = Null;
             con.Vehicle_Type__c = vehicleName;  
             con.Role__c = role;
             con.compliancestatus__c = 'Yes';
-            con.isCommunityUser__c = True;
-            con.IsCreatedFromCommunity__c = true;
+            con.isCommunityUser__c = false;
+            con.IsCreatedFromCommunity__c = false;
             con.Triplog_UserID__c = '23rcdsf';
+            con.ReimbursementStatementBatch__c = true;
             
             
             //con.compliancestatus__c = 'No – Vehicle Age';
