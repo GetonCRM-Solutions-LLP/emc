@@ -1,0 +1,36 @@
+<template>
+    <div class="transition">
+        <div>
+            <c-m-burse-header-text head-text="Step 4 - mLog Preview"></c-m-burse-header-text>
+        </div>
+        <div class="slds-text-heading_small slds-text-align_center slds-p-bottom_x-large font-style emcFont p_bottom">Take a moment to
+            watch this video to learn more about mLog.
+        </div>
+        <div class="slds-align_absolute-center video-container">
+            <iframe class="video-frame" width={videoWidth} height={videoHeight} src={mLogVideoUrl}  title="Video player" frameborder="0"  allow="accelerometer; autoplay; gyroscope; picture-in-picture" allowfullscreen="" sandbox=""></iframe>
+        </div>
+        <div class="slds-clearfix slds-p-top_x-large m-left m-right p_top">
+            <div class="footer-text slds-float_left">
+                <div class="font-style"><strong>Track mileage easily and accurately with mLog</strong>
+                    <ul class="slds-list_dotted slds-p-top_x-small">
+                        <li>We do not share your current location and any of your personal trips</li>
+                        <li>Review our Privacy Pledge  <a href={privacyPledgeUrl} target="_blank">HERE</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-button slds-float_right mright-0 mleft-0">
+                <button if:false={render} class="slds-btn slds-btn-primary slds-btn-sm waves-effect bc-blue waves-light" onclick={mLogDownload}>
+                    Next Download mLog
+                </button>
+                <button if:true={render} class="slds-btn slds-btn-primary slds-btn-sm waves-effect bc-blue waves-light" onclick={mLogDownload}>
+                    Next Sign In To mLog
+                </button>
+                <div if:true={isShow}>
+                    <div class="back_to_previous slds-float_left">
+                        <a class="font-ms" onclick={backToPage}><i class="fa-solid fa-angle-left"></i>Back</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</template>
