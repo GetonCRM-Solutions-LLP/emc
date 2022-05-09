@@ -210,6 +210,7 @@ export default class DashboardInsuranceUpload extends LightningElement {
         }
     }
 
+    
     nextDoneUpload() {
             events(this, 'Next Driver Packet');
     }
