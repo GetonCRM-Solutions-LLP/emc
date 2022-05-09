@@ -1133,18 +1133,18 @@
                         $scope.packetstatus = JSON.parse(result);
                         $scope.packet = $scope.packetstatus[0].Packet__c;
                         $scope.meeting = $scope.packetstatus[0].Meeting__c;
-                        if ($scope.packet == 'Being Generated') {
+                        if ($scope.packet == 'Sent to Driver') {
                             if(document.getElementById("downloadbtn")){
                                     document.getElementById("downloadbtn").style.visibility = "hidden";
                                 }
                                 angular.element(document.querySelector("#beinggenratedsignature")).addClass(" active");
                                 angular.element(document.querySelector("#sentforsignature")).removeClass("active");
                                 angular.element(document.querySelector("#waitingforsignature")).removeClass("active");
-                               // angular.element(document.querySelector("#waitingforadminsignature")).removeClass("active");
+                                angular.element(document.querySelector("#waitingforadminsignature")).removeClass("active");
                                 angular.element(document.querySelector("#completesignature")).removeClass("active");
                                 angular.element(document.querySelector("#beinggenratedsignature")).addClass("btn.btn-secondary.pull-right");
                         }
-                        else if ($scope.packet == 'Sent for Signature') {
+                        /*else if ($scope.packet == 'Sent for Signature') {
                             if(document.getElementById("downloadbtn")){
                                     document.getElementById("downloadbtn").style.visibility = "hidden";
                                 }
@@ -1161,8 +1161,8 @@
                             angular.element(document.querySelector("#sentforsignature")).removeClass("active");
                             angular.element(document.querySelector("#waitingforsignature")).addClass(" active");
                             angular.element(document.querySelector("#completesignature")).removeClass("active");
-                        }
-                        /*else if ($scope.packet == 'Driver Signature') {
+                        }*/
+                        else if ($scope.packet == 'Driver Signed') {
                                 if(document.getElementById("downloadbtn")){
                                     document.getElementById("downloadbtn").style.visibility = "hidden";
                                 }
@@ -1172,7 +1172,7 @@
                                 angular.element(document.querySelector("#waitingforadminsignature")).removeClass("active");
                                 angular.element(document.querySelector("#completesignature")).removeClass("active");
                         }
-                        else if ($scope.packet == 'Admin Signature') {
+                        else if ($scope.packet == 'Admin Signed') {
                                 if(document.getElementById("downloadbtn")){
                                     document.getElementById("downloadbtn").style.visibility = "hidden";
                                 }
@@ -1181,12 +1181,12 @@
                                 angular.element(document.querySelector("#waitingforadminsignature")).addClass(" active");
                                 angular.element(document.querySelector("#waitingforsignature")).removeClass("active");
                                 angular.element(document.querySelector("#completesignature")).removeClass("active");
-                        }*/
+                        }
                         else if ($scope.packet == 'Complete') {
                             angular.element(document.querySelector("#beinggenratedsignature")).removeClass("active");
                             angular.element(document.querySelector("#sentforsignature")).removeClass("active");
                             angular.element(document.querySelector("#waitingforsignature")).removeClass("active");
-                            //angular.element(document.querySelector("#waitingforadminsignature")).removeClass(" active");
+                            angular.element(document.querySelector("#waitingforadminsignature")).removeClass(" active");
                             angular.element(document.querySelector("#completesignature")).addClass("active");
                             angular.element(document.querySelector("#completesignature")).removeClass("btn-secondary");
                         }
@@ -1194,7 +1194,7 @@
                             angular.element(document.querySelector("#beinggenratedsignature")).addClass("blank-stepper");
                             angular.element(document.querySelector("#sentforsignature")).addClass("blank-stepper");
                             angular.element(document.querySelector("#waitingforsignature")).addClass("blank-stepper");
-                            //angular.element(document.querySelector("#waitingforadminsignature")).addClass("blank-stepper");
+                            angular.element(document.querySelector("#waitingforadminsignature")).addClass("blank-stepper");
                             angular.element(document.querySelector("#completesignature")).addClass("blank-stepper");
                         }
 

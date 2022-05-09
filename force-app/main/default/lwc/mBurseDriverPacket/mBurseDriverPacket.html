@@ -1,0 +1,62 @@
+<template>
+    <div if:false={packetSent} class="transition">
+        <div>
+            <c-m-burse-header-text head-text="Step 3 - Request and Sign Driver Packet"></c-m-burse-header-text>
+        </div>
+        <div class="slds-text-heading_small slds-text-align_center font-style emcFont">Select <strong>Send to Review &amp; Sign</strong></div>
+        <div class="m-left m-right">
+            <div class="box__img">
+                <img class="packet__img" src={packetCss} />
+            </div>
+        </div>
+        <div class="slds-clearfix  m-left m-right">
+            <div class="footer-text slds-float_left">
+                <div class="font-style"><strong>Make sure you sign your driver packet pages within 30 days. You:</strong>
+                    <ul class="slds-list_dotted slds-p-top_x-small font-style">
+                        <li>Do not have to sign now</li>
+                        <li>Can review the packet and sign it later</li>
+                        <li>Failure to sign within 30 days can result in forfeiture of your fixed amount (car allowance) until it is signed</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-button slds-float_right mright-0 mleft-0">
+                <button if:false={isPacket} class="slds-btn slds-btn-primary slds-btn-sm waves-effect bc-blue waves-light"
+                    onclick={sendDriverPacket}>
+                    Send Driver Packet
+                </button>
+                <div>
+                    <div class="back_to_previous back-position slds-float_left" if:true={isShowUpload}>
+                        <a class="font-s" onclick={backToPage}><i class="fa-solid fa-angle-left"></i> Back</a>
+                    </div>
+                    <div class="back_to_previous  back-position slds-float_right" if:false={isPacket}>
+                        <a class="font-s" onclick={skipToPage}>Skip<i class="fa-solid fa-angle-right"></i></a>
+                    </div>
+                </div>
+            </div>
+           
+        </div>
+    </div>
+    <div if:true={packetSent} class="transition">
+        <div>
+            <c-m-burse-header-text head-text="Step 3 - Driver Packet Sent"></c-m-burse-header-text>
+        </div>
+        <div class="slds-text-heading_small slds-text-align_center font-style emcFont">Check <strong>your email, the packet was sent to {emailOfDriver}.</strong><br/>
+            If the packet is not in your inbox, please check your spam folder
+        </div>
+        <div class="m-left m-right">
+            <div class="box__img">
+                <img class="sent__packet__img" src={packetCss} />
+            </div>
+        </div>
+        <div class="m-top m-right">
+            <div class="footer-button slds-float_right mright-10 mleft-0">
+                <button class="slds-btn slds-btn-primary slds-btn-sm waves-effect bc-blue waves-light packet_btn" onclick={nextmLogPreview}>
+                    {renderText}
+                </button>
+                <div class="back_to_previous slds-float_left back-btn" if:true={isShowUpload}>
+                    <a class="font-s" onclick={backToPacket}><i class="fa-solid fa-angle-left"></i> Back</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</template>

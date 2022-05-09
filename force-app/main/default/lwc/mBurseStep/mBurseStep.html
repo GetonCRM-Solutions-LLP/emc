@@ -1,0 +1,47 @@
+<template>
+    <div class="slds-grid slds-gutters slds-p-top_small m-left m-right panel">
+        <lightning-layout horizontal-align="spread">
+            <lightning-layout-item padding="around-small">
+                <div class="step">
+                    <img class="step-num" src={number1} />
+                    <img class="p-step" src={step1Url} />
+                    <div class="step-info">Watch the <br/> <strong>Plan Preview</strong></div>
+                </div>
+            </lightning-layout-item>
+            <lightning-layout-item padding="around-small">
+                <div class="step">
+                    <img class="step-num" src={number2} />
+                    <img class="p-step" src={step2Url} />
+                    <div class="step-info">Upload Your  <br/> <strong>Insurance</strong></div>
+                </div>
+            </lightning-layout-item>
+            <lightning-layout-item padding="around-small">
+                <div class="step">
+                    <img class="step-num" src={number3} />
+                    <img class="p-step" src={step3Url} />
+                    <div class="step-info">Review &amp; Sign your  <br/><strong>Driver Packet</strong></div>
+                </div>
+            </lightning-layout-item>
+            <lightning-layout-item padding="around-small">
+                <div class="step">
+                    <img class="step-num" src={number4} />
+                    <img class="p-step" src={step4Url}/>
+                    <div class="step-info" if:true={phone}>Sign into the <br/><strong>mLog app</strong></div>
+                    <div class="step-info" if:false={phone}>Download &amp; Install  <br/><strong>the mLog app</strong></div>
+                </div>
+            </lightning-layout-item>
+            <lightning-layout-item padding="around-small">
+                <div class="step" if:true={accountType}>
+                    <img class="step-num" src={number5} />
+                    <img class="p-step" src={step5Url} />
+                    <div class="step-info">Schedule your  <br/> <strong>Driver Meeting</strong></div>
+                </div>
+                <div class="step" if:false={accountType}>
+                    <img class="step-num" src={number5} />
+                    <img class="p-step" src={step1Url} />
+                    <div class="step-info">Watch your  <br/> <strong>Driver Meeting</strong></div>
+                </div>
+            </lightning-layout-item>
+            </lightning-layout>
+    </div>
+</template>
