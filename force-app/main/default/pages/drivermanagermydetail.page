@@ -476,7 +476,7 @@
                                 angular.element(document.querySelector("#completesignature")).removeClass("active");
 
                             }
-                            else if ($scope.pacekt == 'Complete') {
+                            else if ($scope.pacekt == 'Completed') {
                                 angular.element(document.querySelector("#beinggenratedsignature")).removeClass("active");
                                 angular.element(document.querySelector("#sentforsignature")).removeClass("active");
                                 angular.element(document.querySelector("#waitingforsignature")).removeClass("active");

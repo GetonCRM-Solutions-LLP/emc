@@ -1,138 +1,73 @@
 @isTest
 public class ManagerDriverDashboardControllertest {
-    public static testmethod void ManagerDriverDashboardControllerTestMethod() {
-        TriggerConfig__c customEmailSetting =  new TriggerConfig__c();
-        customEmailSetting.Name = 'Defaulttrigger';
-        customEmailSetting.ContactTriggersendEmailForNewContact__c = true;
-        customEmailSetting.ContactTriCommunityReimCreate__c = true;
-        customEmailSetting.ContactTriBiReimCreate__c  = true;
-        insert customEmailSetting;
+    @isTest
+    public static void managerDriverDashboardControllerTestMethod() {
+
+        TriggerConfig__c triggerConfigCustomSetting = TestDataFactory.triggerConfigCustomSetting(True);
+        SendEmail__c sendEmailCustomSetting = TestDataFactory.sendEmailCustomSetting(True, 'Send Email For Compliance');
+        Vehicle_URL_Mapping__c vehType = TestDataFactory.createVehicleData(True, 3);
+        IRS_Mileage_Rate__c objIRSMileageRate = TestDataFactory.createIRSRate(True, 3);
+       
+        UserRole userRole = TestDataFactory.getUserRole();
+        Profile profileObj = TestDataFactory.getUserProfile();
+        User admin = TestDataFactory.getSystemAdminUser(userRole.Id);
+        User userObj;
         
-        SendEmail__c customSetting =  new SendEmail__c();
-        customSetting.Name = 'Send Email For Compliance';
-        customSetting.Send_email_from_code__c= true;
-        insert customSetting;
-        
-        List<IRS_Mileage_Rate__c> obj_IRS_Mileage_Rate =  RecordUtilityClass.insertIrsRate();
-        Vehicle_URL_Mapping__c veh = new Vehicle_URL_Mapping__c();
-        veh.URL__c = 'https://cdn2.hubspot.net/hubfs/2511299/iStock-494093356.jpg';
-        veh.vehicle__c =  'Mileage Rate';
-        veh.Year__c = '2019';
-        insert veh;
-        UserRole userRole_1 = [SELECT Id FROM UserRole WHERE DeveloperName = 'EMD' LIMIT 1];
-        Profile profile_1 = [SELECT Id FROM Profile WHERE Name = 'Customer Community Login User' LIMIT 1];
-        User admin = [SELECT Id, Username, UserRoleId FROM User WHERE Profile.Name = 'System Administrator' AND UserRoleId = :userRole_1.Id LIMIT 1];
-        User user_1;
-        Contact obj_admin_contact;
-        Account obj_acc;
-        List<Contact> obj_Manager_list;
-        List<Contact> obj_driver_contact;
+        List<Contact> objadminContact;
+        Account objAcc;
+        List<Contact> objManagerList;
+        List<Contact> objDriverContact;
         System.runAs(admin) {
-            obj_acc= new Account( Name = 'PL Marketing');
-            obj_acc.Bi_Weekly_Pay_Period__c = true;
-            obj_acc.Pay_Period_Days__c = 13;
-            obj_acc.Pay_Period_Start_Date__c = system.today().adddays(-130);
-            obj_acc.Triplog_API__c = '28beeea973f34daf89050a9b6a3b1a71';
-            insert obj_acc;
-           
-            obj_admin_contact = RecordUtilityClass.buildAdminContact(obj_acc);
-            insert obj_admin_contact;   
-            
-            obj_Manager_list = RecordUtilityClass.buildManagerContact(obj_acc,obj_admin_contact);
-            insert obj_Manager_list;
-    
-            obj_driver_contact = RecordUtilityClass.buildDriverContact(obj_acc,obj_Manager_list[0]);
-            insert obj_driver_contact ;
-            
-            Contact contact_2 = new Contact(AccountId = obj_acc.Id, LastName = 'xgeek',External_Email__c='abc@gmail.com');
-            insert contact_2 ;
-            
-            user_1 = new User( 
-                Email = 'yourusername@gmail.com',
-                ProfileId = profile_1.Id, 
-                UserName = 'yourusername@gmail.com', 
-                Alias = 'Test',
-                TimeZoneSidKey = 'America/New_York',
-                EmailEncodingKey = 'ISO-8859-1',
-                LocaleSidKey = 'en_US', 
-                LanguageLocaleKey = 'en_US',
-                ContactId = contact_2.Id,
-                PortalRole = 'Manager',
-                FirstName = 'Firstname',
-                LastName = 'Lastname'
-            );
-            insert user_1;
+            objAcc = TestDataFactory.createAccount(True, 'PL Marketing', True);
+
+            objadminContact = TestDataFactory.createDriverContact(True, objAcc.Id, 'Admin', vehType.Name, 'paras.dhanani', 1);
+            objManagerList = TestDataFactory.createDriverContact(True, objAcc.Id, 'Manager', vehType.Name, 'paras.patel', 1);
+            objDriverContact = TestDataFactory.createDriverContact(False, objAcc.Id, 'Driver', vehType.Name, 'parasm.patel', 1);
+            objDriverContact[0].manager__C = String.valueOf(objManagerList[0].Id);
+            objDriverContact[0].IsCreatedFromCommunity__c = false;
+            objDriverContact[0].isCommunityUser__c = false;
+            Insert objDriverContact[0];
+
+            userObj = TestDataFactory.createUser(True, profileObj.Id, objDriverContact[0].Id);
+            system.debug('objManagerList.size()==' + objManagerList.size());
+            system.assertEquals(1, objManagerList.size(), True);
         }
 
         Test.setCurrentPage(Page.managerdriverdashboard);
-        String conId = ApexPages.currentPage().getParameters().put('id',obj_driver_contact[0].Id);
-        String accId = ApexPages.currentPage().getParameters().put('accid',obj_acc.Id);
-        String manid = ApexPages.currentPage().getParameters().put('manid',obj_driver_contact[0].Manager__c);
+        String conId = ApexPages.currentPage().getParameters().put('id',objDriverContact[0].Id);
+        String accId = ApexPages.currentPage().getParameters().put('accid',objAcc.Id);
+        String manid = ApexPages.currentPage().getParameters().put('manid',objDriverContact[0].Manager__c);
         ManagerDriverDashboardController mddc = new ManagerDriverDashboardController();
-        List<Employee_Reimbursement__c> obj_Employee_Reimbursement_List = RecordUtilityClass.getDriverEmployee_Reimbursement(obj_driver_contact[0].id);
-        List<EmployeeReimbursements> obj_list =  RecordUtilityClass.getEmployeeReimbursements(obj_Employee_Reimbursement_List);
-        List<Employee_Mileage__c> obj_list_mileages =  RecordUtilityClass.getMileagesList();
-        List<EmployeeMileages> obj_EmployeeMileages_list1=new List<EmployeeMileages>();
-        List<EmployeeMileages> obj_EmployeeMileages_list=RecordUtilityClass.getallEmployeeMileages(obj_list_mileages);
-        if(obj_EmployeeMileages_list!=null && obj_EmployeeMileages_list.size()>0)
-        {
-            Integer i=0;
-            for(EmployeeMileages obj:obj_EmployeeMileages_list)
-            {
-                if(i==0)
-                {
-                    i++;
-                    obj.isSelected=true;
-    
 
-                }
-                else
-                {
-                    i--;
-                    obj.isChecked = true;
-                }
-                obj_EmployeeMileages_list1.add(obj);
-            }
-        }
-       // ManagerDriverDashboardController.approveMileages(JSON.serialize(obj_EmployeeMileages_list1),'April',obj_driver_contact.id);
-        //ManagerDriverDashboardController.approveMileages();
-        //ManagerDriverDashboardController.approveReimbursements();
-        //ManagerDriverDashboardController.approveReimbursements(String.valueOf(Date.today().year()),obj_driver_contact.Id,obj_acc.Id,obj_driver_contact.Manager__c,JSON.serialize(empReimWrapList));
-        //ManagerDriverDashboardController.approveReimbursements('2018',obj_driver_contact.Id,obj_acc.Id,obj_driver_contact.Manager__c,JSON.serialize(empReimWrapList));
+        List<Employee_Reimbursement__c> objEmpReimList = TestDataFactory.createPendingReimbursement(True, objDriverContact, 1, objIRSMileageRate.Id);     
+        List<Employee_Reimbursement__c> objEmpReimListApproved = TestDataFactory.createPendingReimbursement(True, objDriverContact, 1, objIRSMileageRate.Id); 
+        objEmpReimListApproved[0].Approved_Date__c = System.today();
+        objEmpReimListApproved[0].Status__c    = 'Approved';
+        update objEmpReimListApproved[0]; 
+
+        List<Bi_Weekly_Reimbursement__c> biWeeklyReimList = TestDataFactory.createBiweeklyReim (True, objDriverContact, System.today().addDays(-13),System.today(), 1, objIRSMileageRate.Id);
         DateTime dt = DateTime.now();
         String monthName = dt.format('MMMMMMM');
         
-        Bi_Weekly_Reimbursement__c br = new Bi_Weekly_Reimbursement__c();
-            br.Name = system.today()-13 + ' to ' + system.today() ; 
-            br.Contact__c = obj_driver_contact[0].Id;
-            br.Start_Date__c = system.today()-13;
-            br.End_Date__c = system.today() ;
-            br.MPG__c = obj_driver_contact[0].MPG__c;
-            br.Maintenance_and_Tires__c = obj_driver_contact[0].Maintenance_and_Tires__c;
-            br.Fixed_Amount__c = obj_driver_contact[0].Fixed_Amount__c;
-            br.Status__c = 'Pending';
-            br.Fuel_Price__c = 0;
-        Insert br;
-        
         Test.startTest();
-        System.runAs(user_1) {
+        System.runAs(userObj) {
         //ManagerDriverDashboardController.approveMileages(JSON.serialize(empMileageList),String.valueOf(Date.today().year()),obj_driver_contact.Id);
         ManagerDriverDashboardController.getRedirected();
         ManagerDriverDashboardController.getLast2Years();
-        ManagerDriverDashboardController.approveReimbursements('2019',obj_driver_contact[0].Id,obj_acc.Id,JSON.serialize(obj_list));
+        //ManagerDriverDashboardController.approveReimbursements('2019',objDriverContact[0].Id,objAcc.Id,JSON.serialize(objEmpReimList));
         ManagerDriverDashboardController.getReimbursementsList();
         ManagerDriverDashboardController.getDriverDetails();
-        ManagerDriverDashboardController.getAllReimbursements('2019',obj_driver_contact[0].Id,obj_acc.Id);
-        ManagerDriverDashboardController.getReimbursementsListClone(obj_driver_contact[0].Id);
-        ManagerDriverDashboardController.getPacketandMeeting(obj_driver_contact[0].Id);
-        ManagerDriverDashboardController.getCompliance(obj_driver_contact[0].Id);
-        ManagerDriverDashboardController.getMileages(monthName,'2019',obj_driver_contact[0].Id);
-        ManagerDriverDashboardController.TimeAttendance(obj_driver_contact[0].Id,'2021');
-        ManagerDriverDashboardController.getMileagesBasedTandAtt(String.valueOf(System.today()),String.valueOf(System.today()+1),string.valueOf(obj_driver_contact[0].Id));
-        ManagerDriverDashboardController.biweeklyMileage(string.valueOf(obj_driver_contact[0].Id),2021);
-        ManagerDriverDashboardController.getBiweekMileages(string.valueOf(br));
-        ManagerDriverDashboardController.ApproveBiweekMileages(string.valueOf(br));
-        ManagerDriverDashboardController.UpdateReimbursementStatus(obj_Employee_Reimbursement_List[0].Id);
+        ManagerDriverDashboardController.getAllReimbursements('2019',objDriverContact[0].Id,objAcc.Id);
+        ManagerDriverDashboardController.getReimbursementsListClone(objDriverContact[0].Id);
+        ManagerDriverDashboardController.getPacketandMeeting(objDriverContact[0].Id);
+        ManagerDriverDashboardController.getCompliance(objDriverContact[0].Id);
+        ManagerDriverDashboardController.getMileages(monthName,'2019',objDriverContact[0].Id);
+        ManagerDriverDashboardController.TimeAttendance(objDriverContact[0].Id,'2021');
+        ManagerDriverDashboardController.getMileagesBasedTandAtt(String.valueOf(System.today()),String.valueOf(System.today()+1),string.valueOf(objDriverContact[0].Id));
+        ManagerDriverDashboardController.biweeklyMileage(string.valueOf(objDriverContact[0].Id),2021);
+        ManagerDriverDashboardController.getBiweekMileages(string.valueOf(biWeeklyReimList[0].Id));
+        ManagerDriverDashboardController.ApproveBiweekMileages(string.valueOf(biWeeklyReimList[0].Id));
+        ManagerDriverDashboardController.UpdateReimbursementStatus(objEmpReimList[0].Id);
         }
         Test.stopTest();
     }

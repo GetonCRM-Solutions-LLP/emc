@@ -1,0 +1,111 @@
+<apex:page showHeader="false" title="Welcome to mBurse" sidebar="false" lightningStylesheets="true" standardStylesheets="false" showChat="false">
+    <!-- Meta Tag Description -->
+    <head>
+        <meta charset="UTF-8"/>
+        <link rel="stylesheet" href="{!URLFOR($Resource.LwcDesignCss,'lwcDesign/assets/css/customstyle.css')}" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/fontawesome.min.css"  />
+        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v6.1.1/css/all.css"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+        <script src="https://code.jquery.com/jquery-2.1.3.min.js"></script>
+        <style type="text/css">
+            *{
+                user-select: none;
+            }
+            ::-webkit-scrollbar {
+                width: 0;  /* Remove scrollbar space */
+                background: transparent;  /* Optional: just make scrollbar invisible */
+            }
+            body{
+                font-family: 'Proxima Nova' !important;
+                max-width: 100%;
+            }
+            @keyframes rotation {
+                0% { transform: rotate(0deg) }
+                100% { transform: rotate(360deg) }
+            }
+            @keyframes rotationBack {
+                0% { transform: rotate(0deg) }
+                100% { transform: rotate(-360deg) }
+            }
+            @media screen and (min-width: 960px) {
+                html {
+                    margin-left: calc(100vw - 100%);
+                    margin-right: 0;
+                }
+            }
+            .spinner-background{
+                width: 100%;
+                height: 108%;
+                background: #404b5b;
+                opacity: 1;
+                top: 0px;
+                left: 0px;
+                position: fixed;
+                z-index: 1000000;
+            }
+            .mburseLoader{
+                position: fixed;
+                top: 49%;
+                left: 49%;
+                z-index: 1000000;
+            }
+            .mbloader-text{
+                color: #ffffff;
+                font-family: 'Proxima Nova' !important;
+                font-size: 16px;
+                margin: 8px 0;
+            }
+            .mbloader {
+                width: 48px;
+                height: 48px;
+                border: 3px dotted #FFF;
+                border-style: solid solid dotted dotted;
+                border-radius: 50%;
+                display: inline-block;
+                position: relative;
+                -webkit-animation: rotation 2s linear infinite;
+                animation: rotation 2s linear infinite;
+            }
+            .mbloader:after {
+                content: "";
+                position: absolute;
+                left: 0;
+                right: 0;
+                top: 0;
+                bottom: 0;
+                margin: auto;
+                border: 3px dotted #78bc42;
+                border-style: solid solid dotted;
+                width: 24px;
+                height: 24px;
+                border-radius: 50%;
+                -webkit-animation: rotationBack 1s linear infinite;
+                animation: rotationBack 1s linear infinite;
+                transform-origin: center center;
+            }
+        </style>
+    </head>
+    <apex:slds />
+    <div id="mSpinner">
+        <div class="spinner-background"></div>
+        <div class="mburseLoader">
+            <div class="mbloader"></div>
+            <div class="mbloader-text">Loading...</div>
+        </div>
+    </div>
+    <apex:includeLightning />
+    <div id="mBursePlan" />
+    <script>
+        $("#mSpinner").show();
+        $Lightning.use("c:LWCLightningApp",function(){
+            $Lightning.createComponent("c:mBursePlanInfo",{
+                //pass parameter values to lwc js controller
+            },"mBursePlan", function(c){ 
+                document.querySelector('c-m-burse-plan-info').addEventListener('spinner', (e) => {
+                    $("#mSpinner").hide();
+                });
+                console.log("component created successfully")
+            })
+        })
+    </script>
+</apex:page>

@@ -5,6 +5,7 @@
     <apex:attribute name="driverPacketId" description="Size of Insurance document" type="Id" />
     <apex:attribute name="insuranceId" description="Size of Insurance document" type="Id" />
     <apex:attribute name="mvrCheckId" description="Size of MVR Check document" type="Id" />
+    <apex:attribute name="contentVersionUrl" description="Document Download url" type="String" />
         <style type="text/css">
             @media (min-width: 320px) and (max-width: 767px) {
                 .emc_new_insurance_tab_pills .plan-info-timeline {
@@ -95,11 +96,28 @@
                     } 
                 } */
 
+            @media  (min-width: 1920px) {
+                    /*For Projectors or Higher Resolution Screens (Full HD)*/
+                .plan-info-input::after,
+                .plan-info-input::before {
+                    width: 65px !important;
+                    right: 0px !important;
+                }
+            }
+            @media (min-width: 3840px) {
+            /*For 4K Displays (Ultra HD)*/
+                .plan-info-input::after,
+                .plan-info-input::before {
+                    width: 64px;
+                    right: 0px;
+                }
+
+            }
             @media (min-width: 1250px) {
                 .plan-info-input::after,
                 .plan-info-input::before {
-                    width: 6.5vw !important;
-                    right: 0px !important;
+                    width: 65px;
+                    right: 0px;
                 }
                 .emc_insurance_tab_pills .plan-info-input::after, .emc_insurance_tab_pills .plan-info-input::before {
                     width: 8.5vw !important;
@@ -117,11 +135,20 @@
                 .plan-info-input::after {
                     width: 12vw !important;
                 }
+
+                .emc_insurance_tab_pills .plan-info-input::after, .emc_insurance_tab_pills .plan-info-input::before {
+                    width: 9.5vw !important;
+                    right: 0px !important;
+                }
             }
 
             @media (min-width: 1024px) and (max-width: 1366px) {
+                .emc_insurance_tab_pills .plan-info-input::after, .emc_insurance_tab_pills .plan-info-input::before {
+                    width: 113px !important;
+                    right: 0px !important;
+                }
                 #uploaded.plan-info-input::before {
-                    right: 24px !important;
+                    right: 22px !important;
                     width: 7vw !important;
                 }
             }
@@ -158,7 +185,7 @@
 
             @media (min-width: 1024px) and (max-width: 1200px) {
                 .emc_new_tab_pills .plan-info-input::before, .emc_new_tab_pills .plan-info-input::after {
-                    width: 13vw !important;
+                    width: 12vw !important;
                 }
                 .emc_new_insurance_tab_pills .plan-info-input::before, .emc_new_insurance_tab_pills .plan-info-input::after {
                     width: 16vw !important;
@@ -229,11 +256,13 @@
             }
 
             .input-flex-container {
-
                 justify-content: space-evenly !important;
                 /*mobio:remove space after hiding completed div*/
                 margin-right: 460px !important;
                 height: 200px !important;
+            }
+            .emc_driver_packet_padding{
+                padding-left:  26px;
             }
             .emc_new_insurance_tab_pills .input-flex-container-driver {
                 margin-right: 340px !important;
@@ -246,7 +275,7 @@
                 z-index: 0 !important;
                 justify-content: space-evenly !important;
                 /*mobio:remove space after hiding completed div*/
-                margin-right: 270px !important;
+                margin-right: 317px !important;
                 height: 115px !important;
             }
 
@@ -290,7 +319,7 @@
             }
 
             .plan-info-input span::after {
-                width: 100px !important;
+                width: 95px !important;
                 text-align: left !important;
                 transform: translate(-10%) !important;
                 word-break: normal !important;
@@ -382,8 +411,8 @@
                 font-size: 18px !important;
             }
         </style>
-    <!-- 0010Z000024KpO4QAK -->
-        <ul class="nav nav-pills pt-3 pb-3">
+    
+        <ul class="nav nav-pills pt-3 pb-3" >
             <li class="nav-item emc_nav_tab">
                 <a class="nav-link active" data-toggle="pill" href="#pills-timeline-driving-packet">Driver Packet</a>
             </li>
@@ -399,49 +428,64 @@
             <li class="nav-item emc_nav_tab">
                 <a class="nav-link" data-toggle="pill"  href="#pills-timeline-reimbursement">My Reimbursement</a>
             </li>
-            <li class="nav-item emc_nav_tab" ng-if="accid === WeiserAccID" ng-show="isMVR">
+            <li class="nav-item emc_nav_tab"  ng-show="isMVR">
                 <a class="nav-link" data-toggle="pill"  data-target="#pills-timeline-mvrCheck">MVR Check</a>
             </li>
         </ul>
         <div class="p-41">
-    
             <div class="tab-content ">
                 <div class="tab-pane active" id="pills-timeline-driving-packet">
                     <div class="tab-pills-width ng-pristine ng-valid emc_new_tab_pills">
                         <div class="plan-info-timeline">
                             <div class="flex-parent">
-                                <div class="input-flex-container-driver">
+                                <div class="input-flex-container-driver emc_driver_packet_padding">
                                     <div class="plan-info-input" id="beinggenratedsignature">
                                         <div class="input-ring"></div>
-                                        <span data-year="Being Generated" data-info=""></span>
+                                        <span data-year="Sent to Driver" data-info=""></span>
                                     </div>
-                                    <div class="plan-info-input" id="sentforsignature">
+                                    <!-- <div class="plan-info-input" id="sentforsignature">
                                         <div class="input-ring"></div>
                                         <span data-year="Sent For Signature" data-info=""></span>
-                                    </div>
-                                    <div class="plan-info-input" id="waitingforsignature">
+                                    </div> -->
+                                     <!-- <div class="plan-info-input" id="waitingforsignature">
                                         <div class="input-ring"></div>
                                         <span data-year="Waiting For Signature" data-info=""></span>
+                                    </div>  -->
+                                    <div class="plan-info-input" id="waitingforsignature">
+                                        <div class="input-ring"></div>
+                                        <span data-year="Driver Signed" data-info=""></span>
+                                    </div>
+                                    <div class="plan-info-input" id="waitingforadminsignature">
+                                        <div class="input-ring"></div>
+                                        <span data-year="Admin Signed" data-info=""></span>
                                     </div>
                                     <div class="plan-info-input" id="completesignature">
                                         <div class="input-ring"></div>
-                                        <span data-year="Complete" data-info=""></span>
+                                        <span data-year="Packet Completed" data-info=""></span>
                                     </div>
                                 </div>
                             </div>
     
                             <!--mobio-->
-    
                             <div class="col-lg-12">
                                 <apex:form html-ng-non-bindable="true">
-                                    <apex:outputPanel rendered="{!driverPacketDocCount > 0}">
-                                        <div class="plan-info-timeline plan-new-info-timeline">
-                                            <a id="downloadbtn" class="btn btn-secondary pull-right emc-btn-download emc_new_btn_download" target="_blank" href="{!URLFOR($Action.Attachment.Download, driverPacketId)}">Download</a>
+                                    <apex:outputPanel rendered="{!contentVersionUrl != null}">
+                                        <div class="plan-info-timeline plan-new-info-timeline"> 
+                                            <a id="downloadbtn1" class="btn btn-secondary pull-right emc-btn-download emc_new_btn_download" target="_blank" href="{!contentVersionUrl}">Download Signed Document</a>
                                         </div>
                                     </apex:outputPanel>
                                 </apex:form>
                             </div>
-                        </div>
+                            <!-- <div class="col-lg-12">
+                                <apex:form html-ng-non-bindable="true">
+                                    <apex:outputPanel rendered="{!driverPacketDocCount > 0}">
+                                        <div class="plan-info-timeline plan-new-info-timeline">
+                                            <a id="downloadbtn" style="margin-left: 10px" class="btn btn-secondary pull-right  emc_new_btn_download" target="_blank" href="{!URLFOR($Action.Attachment.Download, driverPacketId)}">Download</a>
+                                        </div>
+                                    </apex:outputPanel>
+                                </apex:form>
+                            </div> -->
+                        </div> 
                     </div>
                 </div>
                 <div class="tab-pane" id="pills-timeline-driver-meeting">
