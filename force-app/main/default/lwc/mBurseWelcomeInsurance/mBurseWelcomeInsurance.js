@@ -2,7 +2,6 @@ import { LightningElement, wire, api } from 'lwc';
 import getCustomSettings from '@salesforce/apex/NewAccountDriverController.getCustomSettings';
 import updateContactDetail from '@salesforce/apex/NewAccountDriverController.updateContactDetail';
 import contactInfo from  '@salesforce/apex/NewAccountDriverController.getContactDetail';
-import background from '@salesforce/resourceUrl/videoBackground';
 import { events, skipEvents } from 'c/utils';
 export default class MBurseWelcomeInsurance extends LightningElement {
     host;
@@ -17,7 +16,6 @@ export default class MBurseWelcomeInsurance extends LightningElement {
     nextShow = false;
     isPlay = false;
     renderInitialized = false;
-    backgroundVideo = background;
     driverDetails;
     @api dayLeft;
     @api contactId;
