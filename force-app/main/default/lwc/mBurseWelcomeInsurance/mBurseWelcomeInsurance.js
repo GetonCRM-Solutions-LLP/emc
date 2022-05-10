@@ -16,6 +16,7 @@ export default class MBurseWelcomeInsurance extends LightningElement {
     nextShow = false;
     isPlay = false;
     renderInitialized = false;
+    promiseError = false;
     driverDetails;
     @api dayLeft;
     @api contactId;
@@ -62,6 +63,10 @@ export default class MBurseWelcomeInsurance extends LightningElement {
            }
           }
         })
+        .catch((error)=>{
+            // If the promise rejects, we enter this code block
+            console.log(error); 
+        })
     }
     playVideo(){
         this.isPlay = true;
@@ -75,18 +80,27 @@ export default class MBurseWelcomeInsurance extends LightningElement {
     }
     skipToPage(){
         var contactData, beforeUpdate, toUpdate, listFrom;
-        listFrom = this.driverDetails
-        contactData = this.proxyToObject(listFrom);
-        beforeUpdate =  contactData[0].insuranceStatus;
-        toUpdate = "Skip";
-        if(beforeUpdate !== toUpdate) {
-            contactData[0].insuranceStatus = "Skip";
-            console.log(JSON.stringify(contactData));
-            updateContactDetail({
-                contactData: JSON.stringify(contactData)
-            }).then(()=>{
-                this.toggleHide();
-            })
+        if(this.driverDetails){
+            this.promiseError = false;
+            listFrom = this.driverDetails
+            contactData = this.proxyToObject(listFrom);
+            beforeUpdate =  contactData[0].insuranceStatus;
+            toUpdate = "Skip";
+            if(beforeUpdate !== toUpdate) {
+                contactData[0].insuranceStatus = "Skip";
+                console.log(JSON.stringify(contactData));
+                updateContactDetail({
+                    contactData: JSON.stringify(contactData)
+                }).then(()=>{
+                    this.toggleHide();
+                })
+                .catch((error)=>{
+                    // If the promise rejects, we enter this code block
+                    this.errorMessage = 'Disconnected! Please check your connection and log in';
+                    this.promiseError = true;
+                    console.log(error); 
+                })
+            }
         }
         skipEvents(this, 'Next Declaration Upload');
     }

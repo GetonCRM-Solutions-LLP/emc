@@ -11,6 +11,7 @@ export default class MBurseDriverPacket extends LightningElement {
     isShow = false;
     isPacket = false;
     renderInitialized = false;
+    promiseError = false;
     driverDetails;
     @api days
     @api cellType;
@@ -45,6 +46,7 @@ export default class MBurseDriverPacket extends LightningElement {
         contactInfo({contactId: this.contactId})
         .then((data) => {
           if (data) {
+            this.promiseError = false;
             this.driverDetails = data;
             list = this.proxyToObject(data);
             packetStatus = list[0].driverPacketStatus;
@@ -62,21 +64,28 @@ export default class MBurseDriverPacket extends LightningElement {
             this.isPacket = (packetStatus === 'Uploaded') ? true : false;
           }
         })
+        .catch((error)=>{
+            // If the promise rejects, we enter this code block
+            this.errorMessage = 'Disconnected! Please check your connection and log in';
+            this.promiseError = true;
+            console.log(error);
+        })
     }
     skipToPage(){
         var contactData, beforeUpdate, toUpdate, listToContact;
-        listToContact = this.driverDetails;
-        contactData = this.proxyToObject(listToContact);
-        beforeUpdate = contactData[0].driverPacketStatus;
-        toUpdate = 'Skip';
-        if(beforeUpdate !== toUpdate){
-            contactData[0].driverPacketStatus = "Skip";
-            updateContactDetail({contactData: JSON.stringify(contactData)}).then(()=>{
-            }).catch(error =>{
-                console.log("error", error)
-            })
+        if(this.driverDetails){
+            listToContact = this.driverDetails;
+            contactData = this.proxyToObject(listToContact);
+            beforeUpdate = contactData[0].driverPacketStatus;
+            toUpdate = 'Skip';
+            if(beforeUpdate !== toUpdate){
+                contactData[0].driverPacketStatus = "Skip";
+                updateContactDetail({contactData: JSON.stringify(contactData)}).then(()=>{
+                }).catch(error =>{
+                    console.log("error", error)
+                })
+            }
         }
-      
         skipEvents(this, 'Next mLog Preview');
     }
 

@@ -42,6 +42,10 @@ export default class MBurseFinal extends LightningElement {
             }
           }
         })
+        .catch((error)=>{
+            // If the promise rejects, we enter this code block
+            console.log(error);
+        })
         
     }
 

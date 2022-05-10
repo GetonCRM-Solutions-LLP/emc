@@ -1,4 +1,7 @@
 <template>
+    <template if:true={promiseError}>
+        <c-m-burse-error message={errorMessage}></c-m-burse-error>
+    </template>
     <div class="transition">
         <div>
             <c-m-burse-header-text head-text="Step 4 - mLog Preview"></c-m-burse-header-text>

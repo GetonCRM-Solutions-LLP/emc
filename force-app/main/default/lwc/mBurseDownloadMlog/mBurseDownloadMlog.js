@@ -135,7 +135,7 @@ export default class MBurseDownloadMlog extends LightningElement {
     // Event handler for watch driver meeting button click
     nextDriverMeeting(){
         var list, d;
-        contactInfo({
+            contactInfo({
                 contactId: this.contactId
             })
             .then((data) => {
@@ -155,6 +155,10 @@ export default class MBurseDownloadMlog extends LightningElement {
                         window.open(this.meeting)
                     }
                 }
+            })
+            .catch((error)=>{
+                // If the promise rejects, we enter this code block
+                console.log(error);
             })
         // let d = this.arrayList;
         // console.log("mlogApp before", d[0].mlogApp)
