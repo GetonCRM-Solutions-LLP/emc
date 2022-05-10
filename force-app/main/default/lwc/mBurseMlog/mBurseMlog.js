@@ -16,6 +16,7 @@ export default class MBurseMlog extends LightningElement {
     mLogVideoUrl;
     isShow = false;
     renderInitialized = false;
+    promiseError = false;
     @api contactId;
     @api cellType;
     @wire(getCustomSettings)
@@ -35,11 +36,16 @@ export default class MBurseMlog extends LightningElement {
         contactInfo({contactId: this.contactId})
         .then((data) => {
           if (data) {
+            this.promiseError = false;
             list = this.proxyToObject(data);
             this.arrayList = list;
             status = list[0].driverPacketStatus;
             this.isShow = (status === 'Uploaded') ? false : true;
           }
+        })
+        .catch((error)=>{
+            // If the promise rejects, we enter this code block
+            console.log(error); 
         })
     }
     mLogDownload(){
@@ -47,6 +53,7 @@ export default class MBurseMlog extends LightningElement {
         contactInfo({contactId: this.contactId})
         .then((data) => {
           if (data) {
+            this.promiseError = false;
             list = this.proxyToObject(data);
             let u;
             u = list;
@@ -54,6 +61,12 @@ export default class MBurseMlog extends LightningElement {
             updateContactDetail({contactData: JSON.stringify(u)})
             events(this, 'Next Download mLog');
           }
+        })
+        .catch((error)=>{
+            // If the promise rejects, we enter this code block
+            this.errorMessage = 'Disconnected! Please check your connection and log in';
+            this.promiseError = true;
+            console.log(error); 
         })
     }
     backToPage(){

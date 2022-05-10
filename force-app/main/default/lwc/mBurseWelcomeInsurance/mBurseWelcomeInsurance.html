@@ -1,4 +1,7 @@
 <template>
+    <template if:true={promiseError}>
+        <c-m-burse-error message={errorMessage}></c-m-burse-error>
+    </template>
     <div if:true={welcomeInsurance} class="transition">
         <div>
             <c-m-burse-header-text head-text="Step 1 - Plan Preview"></c-m-burse-header-text>

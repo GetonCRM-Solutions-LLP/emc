@@ -49,6 +49,7 @@ export default class MBurseUploadDeclaration extends LightningElement {
     isSpinner = false;
     isUploaded = false;
     renderInitialized = false;
+    promiseError = false;
     uploaded = mBurseCss + '/emc-design/assets/images/file-uploaded.png';
     @api 
     get client(){
@@ -257,6 +258,7 @@ export default class MBurseUploadDeclaration extends LightningElement {
         contactInfo({contactId: this.contactId})
         .then((data) => {
           if (data) {
+            this.promiseError = false;
             this.driverDetails = data;
             list = this.proxyToObject(data);
             status = list[0].insuranceStatus;
@@ -269,23 +271,36 @@ export default class MBurseUploadDeclaration extends LightningElement {
              this.dPacket = (list[0].driverPacketStatus === 'Uploaded') ? true : false;
           }
         })
+        .catch((error)=>{
+            // If the promise rejects, we enter this code block
+            console.log(error); 
+        })
     } 
 
     skipToPage() {
         var contactData, beforeUpdate, toUpdate, tempList;
-        tempList = this.driverDetails;
-        contactData = this.proxyToObject(tempList);
-        beforeUpdate =  contactData[0].insuranceStatus;
-        toUpdate = "Skip";
-        if(beforeUpdate !== toUpdate) {
-            console.log("inside")
-            contactData[0].insuranceStatus = "Skip";
-            updateContactDetail({
-                contactData: JSON.stringify(contactData)
-            }).then(()=>{
-                this.toggleHide();
-            })
-        }
+        if(this.driverDetails){
+            this.promiseError = false;
+            tempList = this.driverDetails;
+            contactData = this.proxyToObject(tempList);
+            beforeUpdate =  contactData[0].insuranceStatus;
+            toUpdate = "Skip";
+            if(beforeUpdate !== toUpdate) {
+                contactData[0].insuranceStatus = "Skip";
+                updateContactDetail({
+                    contactData: JSON.stringify(contactData)
+                })
+                .then(()=>{
+                    this.toggleHide();
+                })
+                .catch((error)=>{
+                    // If the promise rejects, we enter this code block
+                    this.errorMessage = 'Disconnected! Please check your connection and log in';
+                    this.promiseError = true;
+                    console.log(error); 
+                })
+            }
+        } 
         skipEvents(this, 'Next Declaration Upload');
     }
 
