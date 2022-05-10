@@ -1,5 +1,8 @@
 <template>
     <c-file-upload-spinner show-spinner={isSpinner}></c-file-upload-spinner>
+    <template if:true={promiseError}>
+        <c-m-burse-error message={errorMessage}></c-m-burse-error>
+    </template>
     <div class="transition"  if:true={isUploadShow}>
             <div>
                 <c-m-burse-header-text head-text="Step 2 - Upload Insurance"></c-m-burse-header-text>
