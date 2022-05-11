@@ -23,7 +23,6 @@ public with sharing class NewAccountDriverController {
                                                 Activation_Date__c, 
                                                 Schedule_Driver_Meeting__c,
                                                 Account.Goto_Driver_Meeting__c,
-                                                Account.Goto_Register__c,
                                                 Account.Schedule_Goto_Meeting__c,
                                                 Account.Bodily_Injury__c, 
                                                 Account.Uninsured_Motorist__c, 
@@ -43,7 +42,6 @@ public with sharing class NewAccountDriverController {
                                                 contactWrapper.accountStatus =  contactobj.Account.Account_Status__c != null ? contactobj.Account.Account_Status__c : null;
                                                 contactWrapper.insuranceStatus =  contactobj.Insurance_Declaration_Status__c != null ? contactobj.Insurance_Declaration_Status__c : null;
                                                 contactWrapper.driverPacketStatus =  contactobj.Driver_Packet_Status__c != null ? contactobj.Driver_Packet_Status__c : null;
-                                                contactWrapper.ragisterLink =  contactobj.Account.Goto_Register__c != null ? contactobj.Account.Goto_Register__c : null;
                                                 contactWrapper.meetingVideoLink =  contactobj.Account.Goto_Driver_Meeting__c != null ? contactobj.Account.Goto_Driver_Meeting__c : null;
                                                 contactWrapper.scheduleLink =  contactobj.Account.Schedule_Goto_Meeting__c != null ? contactobj.Account.Schedule_Goto_Meeting__c : null;
                                                 contactWrapper.bodilyInjury =  contactobj.Account.Bodily_Injury__c != null ? contactobj.Account.Bodily_Injury__c : null;
@@ -71,7 +69,7 @@ public with sharing class NewAccountDriverController {
     }
     /*This method is used to save current contact data */
     @AuraEnabled
-    public static string updateContactDetail(String contactData){
+    public static string updateContactDetail(String contactData,Boolean driverPacket){
         List<Contact> contactList = new List<Contact> ();
         try {
             if(contactData != null){
@@ -82,7 +80,7 @@ public with sharing class NewAccountDriverController {
                     conObj.Id = Id.valueOf(conWrap.contactId);
                     conObj.Cell_Phone__c = conWrap.cellPhone != null ? conWrap.cellPhone : null ;
                     conObj.Insurance_Declaration_Status__c = conWrap.insuranceStatus != null ? conWrap.insuranceStatus : null ;
-                    if(conObj.Insurance_Declaration_Status__c == 'Skip'){
+                    if(conObj.Insurance_Declaration_Status__c == 'Skip' && (driverPacket != true)){
                         sendEmailToDriver(contactData,conWrap.contactName,conWrap.contactId);
                     }
                     conObj.Driver_Packet_Status__c = conWrap.driverPacketStatus != null ? conWrap.driverPacketStatus : null ;
@@ -103,21 +101,16 @@ public with sharing class NewAccountDriverController {
     /*This method is used to send a email to driver when driver skip insurance upload functionality. */
     @TestVisible 
     private static void sendEmailToDriver (String contactData,String driverName,String contactId) {
-        system.debug('contactData==' + contactData);
-        system.debug('driverName==' + driverName);
-        system.debug('contactId==' + contactId);
         OrgWideEmailAddress[] owea = [SELECT Id,Address from OrgWideEmailAddress where Address = 'driverservices@mburse.com'];
         List<Messaging.SingleEmailMessage> emailist = new List<Messaging.SingleEmailMessage>();
         List<String> toAddress = new List<String>();
         EmailTemplate templateId;
         String newemailBody;
-        system.debug('contactId==' + contactId);
         try {
             if(contactId != null){
                 templateId = [SELECT Id, Subject,HtmlValue, body FROM EmailTemplate WHERE developerName = 'Skip_Insurance_Upload' Limit 1];
             } else {
                 templateId = [SELECT Id, Subject,HtmlValue, body FROM EmailTemplate WHERE developerName = 'Driver_Packet_Sign' Limit 1];
-                system.debug('templateId==' + templateId);
             }          
         } catch(System.QueryException qe) {
             System.debug(qe.getMessage());
@@ -142,18 +135,11 @@ public with sharing class NewAccountDriverController {
         newemailBody = newemailBody.replace('{!$Label.Driver_Forword_Logo}', System.Label.Driver_Forword_Logo);
         List<Messaging.SingleEmailMessage> emails = new List<Messaging.SingleEmailMessage>();
         messaging.singleEmailMessage email;
-        //if(contactId != null){
-          //  email = Utils.CreateEmail(templateId.Subject,newemailBody,toAddress,null,null,null);
-        //}  else {
-            email = Utils.CreateEmail(templateId.Subject,newemailBody,toAddress,null,null,null);
-        //}        
+        email = Utils.CreateEmail(templateId.Subject,newemailBody,toAddress,null,null,null);    
         emailist.add(email);
-        system.debug('emailist==' + emailist);
         SendEmail__c  sendEmailObj = SendEmail__c.getValues('ConfirmTripTimeERMIController');
         if(emailist.size() > 0 && !Test.isRunningTest() && sendEmailObj.Send_email_from_code__c == true){
-            system.debug('emailist==');
             Messaging.SendEmailResult [] result = Messaging.sendEmail(emailist, false);
-            system.debug('result==' + result);
         }        
     }
     /*This method is used to display data on page */
@@ -193,8 +179,6 @@ public with sharing class NewAccountDriverController {
     /*This method is use for Hello sign integration.It will send driver packet to Driver */
     @AuraEnabled(cacheable = true) 
     public static string sendSignatureRequestForDriver(String userEmail,String contactName){
-        system.debug('userEmail==' + userEmail);
-        system.debug('contactName==' + contactName);
         sendEmailToDriver(userEmail,contactName,null);
         Set<String> newUserEmailSet = new Set<String>();
         newUserEmailSet.add(userEmail);
@@ -233,13 +217,10 @@ public with sharing class NewAccountDriverController {
                 //AI-000414
                 if(biWeekList.size() > 0){
                     if(biWeekList[0].Confirm_Hours__c == false &&  contactObj.Insurance_Attachment_Id__c != null && biWeekList[0].Count_Error_Check__c < 3){
-                        System.debug('======1');
                         pageRef = '/app/driverDashboardWeekly?accid='+contactObj.Accountid+'&id='+contactId;
                     } else if((biWeekList[0].Confirm_Hours__c == true || (biWeekList[0].Count_Error_Check__c != null && biWeekList[0].Count_Error_Check__c > 2)) && contactObj.Insurance_Attachment_Id__c != null ){
-                        System.debug('=====2');
                         pageRef = '/app/driverDashboardClone?accid='+contactObj.Accountid+'&id='+contactId;
                     } else if(contactObj.Insurance_Attachment_Id__c == null){
-                        System.debug('====3');
                         pageRef = '/app/driverDashboardInsuranceClone?accid='+contactObj.Accountid+'&id='+contactId;
                     } 
                 } else {
@@ -285,7 +266,6 @@ public with sharing class NewAccountDriverController {
         public string accountStatus { get; set; }        
         public string insuranceStatus { get; set; }
         public string driverPacketStatus {get; set;}
-        public string ragisterLink {get; set;}
         public string meetingVideoLink {get; set;}
         public string scheduleLink {get; set;}
         public string bodilyInjury {get; set;}

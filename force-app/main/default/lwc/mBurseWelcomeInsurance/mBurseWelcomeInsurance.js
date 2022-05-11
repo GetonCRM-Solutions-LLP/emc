@@ -90,7 +90,8 @@ export default class MBurseWelcomeInsurance extends LightningElement {
                 contactData[0].insuranceStatus = "Skip";
                 console.log(JSON.stringify(contactData));
                 updateContactDetail({
-                    contactData: JSON.stringify(contactData)
+                    contactData: JSON.stringify(contactData),
+                    driverPacket: false
                 }).then(()=>{
                     this.toggleHide();
                 })

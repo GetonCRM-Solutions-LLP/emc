@@ -27,7 +27,7 @@ export default class MBurseDriverPacket extends LightningElement {
             mLogList = this.driverDetails;
             contactList = this.proxyToObject(mLogList);
             contactList[0].driverPacketStatus = "Uploaded";
-            updateContactDetail({contactData: JSON.stringify(contactList)}).then(() =>{
+            updateContactDetail({contactData: JSON.stringify(contactList),driverPacket : true}).then(() =>{
                 this.toggleHide();
             })
         })
@@ -80,7 +80,8 @@ export default class MBurseDriverPacket extends LightningElement {
             toUpdate = 'Skip';
             if(beforeUpdate !== toUpdate){
                 contactData[0].driverPacketStatus = "Skip";
-                updateContactDetail({contactData: JSON.stringify(contactData)}).then(()=>{
+                updateContactDetail({contactData: JSON.stringify(contactData), driverPacket: false})
+                .then(()=>{
                 }).catch(error =>{
                     console.log("error", error)
                 })

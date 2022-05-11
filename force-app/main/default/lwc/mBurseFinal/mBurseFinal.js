@@ -55,6 +55,10 @@ export default class MBurseFinal extends LightningElement {
             let url = window.location.origin + result;
             window.open(url, '_self');
         })
+        .catch((error)=>{
+            // If the promise rejects, we enter this code block
+            console.log(error);
+        })
     }
 
     renderedCallback(){
