@@ -23,9 +23,9 @@ public class HelloSignIntegrationHandlerTest {
             acc.Enable_Email_For_Managers__c = true;
             acc.Approval_Template_Message__c = 'test message';
             insert acc;        
-            con2List = TestDataFactory.createDriverContact(false, acc.Id, 'Driver', vehicleType.Name, 'paras.patel',  1);
-            con2List[0].IsCreatedFromCommunity__c = true;
-            insert con2List;
+            con2List = TestDataFactory.createDriverContact(true, acc.Id, 'Driver', vehicleType.Name, 'paras.patel',  1);
+            //con2List[0].IsCreatedFromCommunity__c = true;
+            //insert con2List;
             userObj = TestDataFactory.createUser(true,profileObj.Id,contactObj.Id);
         }
 
@@ -35,6 +35,9 @@ public class HelloSignIntegrationHandlerTest {
         versionObj.pathOnClient ='Driver Agreement.pdf';
         versionObj.FirstPublishLocationId = con2List[0].Id; 
         insert versionObj;        
+        Set<String> newUserEmailSet = new Set<String>();
+        newUserEmailSet.add(con2List[0].External_Email__c);
+        HelloSignIntegrationHandler.sendSignatureRequestForDriver(newUserEmailSet);
     }
     public static testmethod void test1() {
         Vehicle_URL_Mapping__c vum = [select id from Vehicle_URL_Mapping__c limit 1];

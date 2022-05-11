@@ -58,7 +58,7 @@ export default class MBurseMlog extends LightningElement {
             let u;
             u = list;
             u[0].mlogApp = true;
-            updateContactDetail({contactData: JSON.stringify(u)})
+            updateContactDetail({contactData: JSON.stringify(u),driverPacket : true})
             events(this, 'Next Download mLog');
           }
         })

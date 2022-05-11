@@ -2470,7 +2470,7 @@
                         driverPacketId="{!If(packetSize> 0, driverPacketAttachmentList[0], null)}" insuranceId="{!If(insuranceSize > 0, driverInsuranceAttachmentList[0], null)}"
                         /> -->
                         <c:PlanInfoComponent driverPacketDocCount="{!packetSize}"   insuranceDocCount="{!insuranceSize}" mvrCheckDocCount="{!obj_driverpacket_attachMVRsize}"
-                            driverPacketId="{!If(packetSize> 0, driverPacketAttachmentList[0], null)}" insuranceId="{!If(insuranceSize > 0, driverInsuranceAttachmentList[0], null)}"
+                            contentVersionUrl="{!obj_content_version}" driverPacketId="{!If(packetSize> 0, driverPacketAttachmentList[0], null)}" insuranceId="{!If(insuranceSize > 0, driverInsuranceAttachmentList[0], null)}"
                             mvrCheckId="{!If(obj_driverpacket_attachMVRsize > 0, obj_driver_driverMVR[0], null)}" />
                     </div>
                 </div>
