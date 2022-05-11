@@ -42,8 +42,7 @@ public class NewAccountDriverControllerTest {
             conWrap.cellPhone = string.valueOf(conList[0].Phone);
             conWrap.accountStatus = 'New Account';
             conWrap.insuranceStatus = 'Uploaded';
-            conWrap.driverPacketStatus = 'Uploaded';
-            conWrap.ragisterLink = 'www.google.com';
+            conWrap.driverPacketStatus = 'Uploaded';            
             conWrap.meetingVideoLink = 'www.gmeet.com';
             conWrap.scheduleLink = 'www.gmeetSchedule.com';
             conWrap.bodilyInjury = '100,000/300,000';
@@ -60,7 +59,7 @@ public class NewAccountDriverControllerTest {
         Test.startTest();
         NewAccountDriverController.getContactDetail(string.valueOf(conList[0].Id));
         NewAccountDriverController.getDriverDetailsClone(string.valueOf(conList[0].Id));
-        NewAccountDriverController.updateContactDetail(JSON.serialize(conWrapList));
+        NewAccountDriverController.updateContactDetail(JSON.serialize(conWrapList),false);
         NewAccountDriverController.loginRedirection(string.valueOf(conList[0].Id));
         NewAccountDriverController.sendInsuranceEmail(string.valueOf(conList[0].Id),'Test', 'test.account@gmail.com' );
         NewAccountDriverController.sendEmailToDriver( JSON.serialize(conWrapList) , 'Test', string.valueOf(conList[0].Id));

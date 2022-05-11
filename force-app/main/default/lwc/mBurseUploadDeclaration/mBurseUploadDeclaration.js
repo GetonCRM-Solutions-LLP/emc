@@ -158,13 +158,17 @@ export default class MBurseUploadDeclaration extends LightningElement {
                             contact = this.proxyToObject(this.driverDetails);
                             contact[0].insuranceStatus = "Uploaded";
                             updateContactDetail({
-                                contactData: JSON.stringify(contact)
+                                contactData: JSON.stringify(contact),
+                                driverPacket: false
                             })
                             // eslint-disable-next-line @lwc/lwc/no-api-reassignments
                             this.isSpinner = false;
                             this.isUploaded = true;
                             this.isUploadShow = false;
                         })
+                        .catch((error) => {
+                            console.log(error);
+                        });
                 } else {
                     this.isSpinner = false;
                     this.positionIndex += this.chunkSize;
@@ -288,7 +292,8 @@ export default class MBurseUploadDeclaration extends LightningElement {
             if(beforeUpdate !== toUpdate) {
                 contactData[0].insuranceStatus = "Skip";
                 updateContactDetail({
-                    contactData: JSON.stringify(contactData)
+                    contactData: JSON.stringify(contactData),
+                    driverPacket: false
                 })
                 .then(()=>{
                     this.toggleHide();

@@ -145,7 +145,8 @@ export default class MBurseDownloadMlog extends LightningElement {
                     d = this.arrayList;
                     d[0].checkDriverMeeting = true;
                     updateContactDetail({
-                        contactData: JSON.stringify(d)
+                        contactData: JSON.stringify(d),
+                        driverPacket: true
                     })
                     events(this, 'Next mBursement Plan Preview');
                     if (d[0].accountStatus === 'New Account') {
