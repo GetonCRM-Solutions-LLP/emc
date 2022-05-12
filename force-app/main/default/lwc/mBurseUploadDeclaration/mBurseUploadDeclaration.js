@@ -101,6 +101,7 @@ export default class MBurseUploadDeclaration extends LightningElement {
             }else{
                 this.toggleBoxError();
                 this.errorUploading = 'There was an error uploading the file. Please try again'
+                console.error('There was an error uploading the file. Please try again');
             }
         } else {
             this.toggleBoxError();
