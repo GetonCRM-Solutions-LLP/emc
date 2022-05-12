@@ -80,7 +80,6 @@ export default class MBurseUploadDeclaration extends LightningElement {
             photofile, reader, fileExt, i = 0,
             exactSize, fIndex, subString;
         this.choosefile = baseTarget;
-        console.log(this.choosefile.files)
         fileSize = this.choosefile.files[0].size;
         photofile = baseTarget.files[0];
         choosenfileType = photofile.type;
@@ -89,14 +88,19 @@ export default class MBurseUploadDeclaration extends LightningElement {
         fIndex = this.chooseFileName.lastIndexOf(".");
         subString = this.chooseFileName.substring(fIndex, this.chooseFileName.length);
         if (subString === '.pdf') {
-            if (this.choosefile.files[0].size > 0 && this.choosefile.files[0].size < 4350000) {
-                this.choosefile = baseTarget;
-                this.toggleBox();
-                this.errorUploading = '';
-            } else {
+            if(this.choosefile){
+                if (this.choosefile.files[0].size > 0 && this.choosefile.files[0].size < 4350000) {
+                    this.choosefile = baseTarget;
+                    this.toggleBox();
+                    this.errorUploading = '';
+                } else {
+                    this.toggleBoxError();
+                    this.errorUploading = 'Base 64 Encoded file is too large.  Maximum size is 4 MB .';
+                    console.error('Base 64 Encoded file is too large.  Maximum size is 4 MB .');
+                }
+            }else{
                 this.toggleBoxError();
-                this.errorUploading = 'Base 64 Encoded file is too large.  Maximum size is 4 MB .';
-                console.error('Base 64 Encoded file is too large.  Maximum size is 4 MB .');
+                this.errorUploading = 'There was an error uploading the file. Please try again'
             }
         } else {
             this.toggleBoxError();
