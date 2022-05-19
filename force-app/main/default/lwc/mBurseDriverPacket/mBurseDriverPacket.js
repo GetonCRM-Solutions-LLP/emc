@@ -80,7 +80,7 @@ export default class MBurseDriverPacket extends LightningElement {
             toUpdate = 'Skip';
             if(beforeUpdate !== toUpdate){
                 contactData[0].driverPacketStatus = "Skip";
-                updateContactDetail({contactData: JSON.stringify(contactData), driverPacket: false})
+                updateContactDetail({contactData: JSON.stringify(contactData), driverPacket: true})
                 .then(()=>{
                 }).catch(error =>{
                     console.log("error", error)

@@ -124,9 +124,9 @@ public with sharing class NewAccountDriverController {
                     toAddress.add(conWrap.contactEmail);
                     newemailBody = newemailBody.replace('{!bodily}', String.valueOf(conWrap.bodilyInjury));
                     newemailBody = newemailBody.replace('{!uninsuredMotorist}', String.valueOf(conWrap.unInsuranceMotorist));
-                    newemailBody = newemailBody.replace('{!property}', String.valueOf(conWrap.propertyDamage));
-                    newemailBody = newemailBody.replace('{!collisionDeduct}', String.valueOf(conWrap.collision));
-                    newemailBody = newemailBody.replace('{!compreDeduct}', String.valueOf(conWrap.comprehensive));
+                    newemailBody = newemailBody.replace('{!property}', (conWrap.propertyDamage).format());
+                    newemailBody = newemailBody.replace('{!collisionDeduct}', (conWrap.collision).format());
+                    newemailBody = newemailBody.replace('{!compreDeduct}', (conWrap.comprehensive).format());
                 }
         } else {
             toAddress.add(contactData);
