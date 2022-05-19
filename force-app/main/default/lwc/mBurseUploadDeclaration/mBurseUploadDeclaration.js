@@ -80,50 +80,52 @@ export default class MBurseUploadDeclaration extends LightningElement {
             photofile, reader, fileExt, i = 0,
             exactSize, fIndex, subString;
         this.choosefile = baseTarget;
-        fileSize = this.choosefile.files[0].size;
-        photofile = baseTarget.files[0];
-        choosenfileType = photofile.type;
-        this.fileList = photofile;
-        this.chooseFileName = photofile.name;
-        fIndex = this.chooseFileName.lastIndexOf(".");
-        subString = this.chooseFileName.substring(fIndex, this.chooseFileName.length);
-        if (subString === '.pdf') {
-            if(this.choosefile){
-                if (this.choosefile.files[0].size > 0 && this.choosefile.files[0].size < 4350000) {
-                    this.choosefile = baseTarget;
-                    this.toggleBox();
-                    this.errorUploading = '';
-                } else {
+        if(this.choosefile){
+            fileSize = this.choosefile.files[0].size;
+            photofile = baseTarget.files[0];
+            choosenfileType = photofile.type;
+            this.fileList = photofile;
+            this.chooseFileName = photofile.name;
+            fIndex = this.chooseFileName.lastIndexOf(".");
+            subString = this.chooseFileName.substring(fIndex, this.chooseFileName.length);
+            if (subString === '.pdf') {
+                if(this.choosefile){
+                    if (this.choosefile.files[0].size > 0 && this.choosefile.files[0].size < 4350000) {
+                        this.choosefile = baseTarget;
+                        this.toggleBox();
+                        this.errorUploading = '';
+                    } else {
+                        this.toggleBoxError();
+                        this.errorUploading = 'Base 64 Encoded file is too large.  Maximum size is 4 MB .';
+                        console.error('Base 64 Encoded file is too large.  Maximum size is 4 MB .');
+                    }
+                }else{
                     this.toggleBoxError();
-                    this.errorUploading = 'Base 64 Encoded file is too large.  Maximum size is 4 MB .';
-                    console.error('Base 64 Encoded file is too large.  Maximum size is 4 MB .');
+                    this.errorUploading = 'There was an error uploading the file. Please try again'
+                    console.error('There was an error uploading the file. Please try again');
                 }
-            }else{
+            } else {
                 this.toggleBoxError();
-                this.errorUploading = 'There was an error uploading the file. Please try again'
-                console.error('There was an error uploading the file. Please try again');
+                this.errorUploading = 'Please upload correct File. File extension should be .pdf'
             }
-        } else {
-            this.toggleBoxError();
-            this.errorUploading = 'Please upload correct File. File extension should be .pdf'
-        }
 
-        reader = new FileReader();
-        reader.onload = function () {
-            this.fileResult = reader.result;
-        };
-        reader.readAsDataURL(photofile);
-        fileExt = new Array('Bytes', 'KB', 'MB', 'GB');
-        while (fileSize > 900) {
-            fileSize /= 1024;
-            i++;
+            reader = new FileReader();
+            reader.onload = function () {
+                this.fileResult = reader.result;
+            };
+            reader.readAsDataURL(photofile);
+            fileExt = new Array('Bytes', 'KB', 'MB', 'GB');
+            while (fileSize > 900) {
+                fileSize /= 1024;
+                i++;
+            }
+            exactSize = (Math.round(fileSize * 100) / 100) + ' ' + fileExt[i];
+            this.fileName = this.chooseFileName;
+            this.fSize = exactSize;
+            console.log("File Size-----", fileSize);
+            console.log("choosenfileType------", choosenfileType);
+            console.log("chooseFileName-------", this.chooseFileName);
         }
-        exactSize = (Math.round(fileSize * 100) / 100) + ' ' + fileExt[i];
-        this.fileName = this.chooseFileName;
-        this.fSize = exactSize;
-        console.log("File Size-----", fileSize);
-        console.log("choosenfileType------", choosenfileType);
-        console.log("chooseFileName-------", this.chooseFileName);
     }
 
     fileChanged(event) {
