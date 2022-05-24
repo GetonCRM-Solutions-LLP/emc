@@ -26,35 +26,31 @@ public with sharing class EmployeeReimbursementTriggerHandlerTest {
         User userObj;
 
         System.runAs(admin) {
-
             acc = TestDataFactory.createAccount(True, 'Test Account', False);
             acc2 = TestDataFactory.createAccount(True, 'Rayner', False);
             acc3 = TestDataFactory.createAccount(True, 'CATCO', False);
 
-       con = TestDataFactory.createDriverContact(False, acc.Id, 'Driver', vehicleType.Name, 'Paras.Patel', 2);
-       con[0].IsCreatedFromCommunity__c = false;
-       Insert con;
-       con2 = TestDataFactory.createDriverContact(True, acc2.Id, 'Driver', vehicleType.Name, 'ParasP.Patel', 1);
-       con3 = TestDataFactory.createDriverContact(False, acc2.Id, 'Driver', vehicleType.Name, 'ParasM.Patel', 1);
-       con3[0].Manager__c = con2[0].Id;
-       insert con3[0];
+            con = TestDataFactory.createDriverContact(False, acc.Id, 'Driver', vehicleType.Name, 'Paras.Patel', 2);
+            con[0].IsCreatedFromCommunity__c = false;
+            Insert con;
+            con2 = TestDataFactory.createDriverContact(True, acc2.Id, 'Driver', vehicleType.Name, 'ParasP.Patel', 1);
+            con3 = TestDataFactory.createDriverContact(False, acc2.Id, 'Driver', vehicleType.Name, 'ParasM.Patel', 1);
+            con3[0].Manager__c = con2[0].Id;
+            insert con3[0];
 
-       con4 = TestDataFactory.createDriverContact(True, acc3.Id, 'Admin', vehicleType.Name, 'ParasD.Patel', 1);
-       con5 = TestDataFactory.createDriverContact(False, acc3.Id, 'Driver/Manager', vehicleType.Name, 'ParasD.Patels', 1);
-       con5[0].Manager__c = con4[0].Id;
-       Insert con5[0];
+            con4 = TestDataFactory.createDriverContact(True, acc3.Id, 'Admin', vehicleType.Name, 'ParasD.Patel', 1);
+            con5 = TestDataFactory.createDriverContact(False, acc3.Id, 'Driver/Manager', vehicleType.Name, 'ParasD.Patels', 1);
+            con5[0].Manager__c = con4[0].Id;
+            Insert con5[0];
 
-       con6 = TestDataFactory.createDriverContact(False, acc3.Id, 'Driver', vehicleType.Name, 'Parass.Patel', 1);
-       con6[0].Manager__c = con5[0].Id;
-       Insert con6[0];
-
-        userObj = TestDataFactory.createUser(True, profileObj.Id, con[0].Id);
+            con6 = TestDataFactory.createDriverContact(False, acc3.Id, 'Driver', vehicleType.Name, 'Parass.Patel', 1);
+            con6[0].Manager__c = con5[0].Id;
+            Insert con6[0];
+            userObj = TestDataFactory.createUser(True, profileObj.Id, con[0].Id);
         }
-        Test.startTest();
-      
+        Test.startTest();      
         Map<id,Employee_Reimbursement__c> oldmap = new Map<id,Employee_Reimbursement__c>();
         Map<id,Employee_Reimbursement__c> newmap = new Map<id,Employee_Reimbursement__c>();
-
         List<Employee_Reimbursement__c> er = TestDataFactory.createPendingReimbursement(False, con, 1, createIRSRate.Id);
         er[0].Approved_Date__c = system.today()-4;
         er[0].Month__c = '09-2017';
@@ -121,12 +117,11 @@ public with sharing class EmployeeReimbursementTriggerHandlerTest {
         br = TestDataFactory.createBiweeklyReim (false, con, System.today().addDays(-13),System.today().addDays(0), 1, createIRSRate.Id);
         insert br;
        
-     List<Employee_Mileage__c> emp1 = TestDataFactory.getEmpMileage (False, 1, er, br);
-     emp1[0].Trip_Status__c = 'Approved';
-     emp1[0].Approved_Date__c = system.today();
-     Insert emp1[0];
-    system.assertEquals(2, emp1.size(), true);
-
+        List<Employee_Mileage__c> emp1 = TestDataFactory.getEmpMileage (False, 1, er, br);
+        emp1[0].Trip_Status__c = 'Approved';
+        emp1[0].Approved_Date__c = system.today();
+        Insert emp1[0];
+        system.assertEquals(2, emp1.size(), true);
         EmployeeReimbursementTriggerHandler.mileagefieldupdate(empReimList, oldmap, newmap);
         Test.stopTest();
     }
