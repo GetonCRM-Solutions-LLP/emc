@@ -29,7 +29,8 @@ public with sharing class NewAccountDriverController {
                                                 Account.Property_Damage__c, 
                                                 Account.Comprehensive__c, 
                                                 Account.Collision__c,
-                                                Account.Umbrella_Coverage__c 
+                                                Account.Umbrella_Coverage__c,
+                                                Account.MburseDashboardRedirect__c 
                                             FROM Contact  
                                             WHERE Id =: contactId
                                             WITH SECURITY_ENFORCED]){
@@ -52,6 +53,7 @@ public with sharing class NewAccountDriverController {
                                                 contactWrapper.umbrella =  contactobj.Account.Umbrella_Coverage__c != null ? contactobj.Account.Umbrella_Coverage__c : null;
                                                 contactWrapper.mlogApp =  contactobj.mlog_App__c != null ? contactobj.mlog_App__c : false;
                                                 contactWrapper.checkDriverMeeting =  contactobj.Schedule_Driver_Meeting__c != null ? contactobj.Schedule_Driver_Meeting__c : false;
+                                                contactWrapper.mburseDashboard =  contactobj.Account.MburseDashboardRedirect__c != null ? contactobj.Account.MburseDashboardRedirect__c : false;
                                                 date activationDate = contactobj.Activation_Date__c != null ? contactobj.Activation_Date__c : null;
                                                 //contactWrapper.daysBetweenActivation = activationDate != null ? currentDate.daysBetween(activationDate) : null;
                                                 contactWrapper.daysBetweenActivation = activationDate != null ? activationDate.daysBetween(currentDate) : null;
@@ -277,6 +279,7 @@ public with sharing class NewAccountDriverController {
         public Boolean mlogApp {get; set;}
         public Boolean checkDriverMeeting {get; set;}
         public Boolean checkActivationDate {get; set;}
+        public Boolean mburseDashboard {get; set;}
         public integer daysBetweenActivation {get; set;}
     }
 }
