@@ -59,13 +59,11 @@ public with sharing class EmployeeReimbursementTriggerHandler {
             update updateReimbersments;
         }
     }*/
-    	static string accId = System.Label.IRS_Vehicle_Check;
-        static List<String> accIdList =  accId.split(',');
-		static List<Employee_Reimbursement__c> reimList;    
-        				//accIdList =
+        static List<Employee_Reimbursement__c> reimList;   
     static List<IRS_Mileage_Rate__c> objIRSRate;
-    //static Integer objIRSrateValues ;
     static String tempYear = String.valueOf(date.today().Year());
+    static List<string> vehicleTypeList =  System.Label.Vehicle_Type.split(',');
+
     public static Void mileagefieldupdate(List<Employee_Reimbursement__c> empReimbursList, Map<Id,Employee_Reimbursement__c> empReimburseOld, Map<Id,Employee_Reimbursement__c> empReimburseNew) {         
         
         //Set<Id> empReimbursId = new Set<Id>();
@@ -296,8 +294,8 @@ public with sharing class EmployeeReimbursementTriggerHandler {
         for(Employee_Reimbursement__c empReimb : empReimbursList){
             if(empReimb.Contact_Id_Deactivated_Date__c != null ){
                 Datetime convertDateTimeToDate = empReimb.Contact_Id_Deactivated_Date__c;  
-                Date ModifiedDate = convertDateTimeToDate.Date();
-                if(ModifiedDate != System.today()){
+                Date modifiedDate = convertDateTimeToDate.Date();
+                if(modifiedDate != System.today()){
                     empReimb.AddError('User is deactivated so you can not create a reimbursement.');
                 }
             }
@@ -336,29 +334,30 @@ public with sharing class EmployeeReimbursementTriggerHandler {
     // if vehicle type is 'IRS Mileage Rate' than the mpg and fuel price is set to 0 for the reimbursement and 
     // Maintanace and tires are set as the IRS Mileage Rate of that year which is in IRS Mileage rate.
 
+    
     public static void  IRSVehicleCheck(Set<Id> reimIdslst) {
-        
-        system.debug('accIdList== ' + accIdList);
         List<Employee_Reimbursement__c> reimList = new List<Employee_Reimbursement__c>();
+        List<Employee_Reimbursement__c> reimListtoUpdate = new List<Employee_Reimbursement__c>();
         Map<String, Decimal> yearvsIRSMap = new Map<String, Decimal>();
         
-        for(IRS_Mileage_Rate__c irsRate : [SELECT id,year__c,IRS_Rate__c FROM IRS_Mileage_Rate__c]){
+        for(IRS_Mileage_Rate__c irsRate : [SELECT id,year__c,IRS_Rate__c FROM IRS_Mileage_Rate__c WITH SECURITY_ENFORCED]){
             yearvsIRSMap.put(irsRate.year__c, irsRate.IRS_Rate__c);
         }
         
          if(!Test.isRunningTest()){
-        reimList = [SELECT id,name,MPG__c, Maintenance_and_Tires__c, Fuel_Price__c, Year__C 
-                                                FROM Employee_Reimbursement__c   
-                                                WHERE Contact_id__r.Deactivated_Date__c = null
-                                               			AND Contact_Id__r.AccountId  =: accIdList 
-                                                        AND Id IN: reimIdslst
-                                                        AND Contact_id__r.Vehicle_Type__c LIKE '%IRS Mileage%'];
-         }	else {
              reimList = [SELECT id,name,MPG__c, Maintenance_and_Tires__c, Fuel_Price__c, Year__C 
                                                 FROM Employee_Reimbursement__c   
                                                 WHERE Contact_id__r.Deactivated_Date__c = null
                                                         AND Id IN: reimIdslst
-                                                        AND Contact_id__r.Vehicle_Type__c LIKE '%IRS Mileage%'];
+                                                       AND Contact_id__r.Vehicle_Type__c =: vehicleTypeList
+                                                       WITH SECURITY_ENFORCED];
+         }  else {
+             reimList = [SELECT id,name,MPG__c, Maintenance_and_Tires__c, Fuel_Price__c, Year__C 
+                                                FROM Employee_Reimbursement__c   
+                                                WHERE Contact_id__r.Deactivated_Date__c = null
+                                                        AND Id IN: reimIdslst
+                                                        AND Contact_id__r.Vehicle_Type__c =: vehicleTypeList 
+                                                        WITH SECURITY_ENFORCED limit 1];
          }
         for(Employee_Reimbursement__c  reim : reimList){
             reim.Fuel_Price__c = 0;
@@ -366,12 +365,11 @@ public with sharing class EmployeeReimbursementTriggerHandler {
             IF(yearvsIRSMap.containsKey(String.valueOf(reim.Year__C))){
                 reim.Maintenance_and_Tires__c = yearvsIRSMap.get(String.valueOf(reim.Year__C));
             }
-            reimList.add(reim);
-			system.debug('reimListsize==' +reimList.size());
+            reimListtoUpdate.add(reim);
         }
         try {
             if(!reimList.isEmpty()){
-                Update reimList;
+                Update reimListtoUpdate;
             }
         } catch (DMLException e) {
             System.debug('The following exception has occurred: ' + e.getMessage());
