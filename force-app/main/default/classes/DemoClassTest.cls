@@ -6,6 +6,6 @@ Private class DemoClassTest {
         //tested demo
         DemoClass a = new DemoClass();
         System.assertEquals(2, 2);
-        //
+        
     }
 }
