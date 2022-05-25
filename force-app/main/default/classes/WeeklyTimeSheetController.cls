@@ -1,16 +1,16 @@
 /**********************************************************************************************************
- * Author :- GetOnCRM Solutions	LLP																		  *
- * Created Date :- 16/03/2022																			  *
+ * Author :- GetOnCRM Solutions LLP                                                                       *
+ * Created Date :- 16/03/2022                                                                             *
  * Description :- Send an email to the Ermi's Part-time and Full-time driver to shown on the notification *
- * 				  page for the confirm or correct  weekly time and mileage for the week of 				  *
- * 				  last completed pay period.															  *
+ *                page for the confirm or correct  weekly time and mileage for the week of                *
+ *                last completed pay period.                                                              *
  * -------------------------------------------------------------------------------------------------------*
- * Modified by :- PARAS DHANANI																			  *
- * Modified Date :- 16/03/2022																			  *
+ * Modified by :- PARAS DHANANI                                                                           *
+ * Modified Date :- 16/03/2022                                                                            *
  **********************************************************************************************************/ 
 
 
-Global with sharing  class WeeklyTimeSheetController {
+Global with sharing  class WeeklyTimeSheetController Implements Schedulable  {
 
     Global  List<EmailTemplate> temp;
     Global  OrgWideEmailAddress[] owea;
@@ -20,10 +20,13 @@ Global with sharing  class WeeklyTimeSheetController {
     Global WeeklyTimeSheetController() {
          temp = new List<EmailTemplate>([SELECT id, Subject, body, HTMLValue 
                                          FROM EmailTemplate 
-											WHERE DeveloperName = 'Weekly_Time_Sheet_for_All_Drivers']);
+                                            WHERE DeveloperName = 'Weekly_Time_Sheet_for_All_Drivers']);
          owea = [select Id from OrgWideEmailAddress where Address =:'driverservices@mburse.com'];
     } 
 
+    global void execute(SchedulableContext sc) {
+        getWeeklyDriversData();
+    }
     Global void getWeeklyDriversData (){
         system.debug('reimEndDate==' + reimEndDate);
         Messaging.SingleEmailMessage mail;
@@ -52,8 +55,8 @@ Global with sharing  class WeeklyTimeSheetController {
             htmlbody = htmlbody.replace('{!$Label.Driver_Forword_Logo}', System.Label.Driver_Forword_Logo);
             mail.setPlainTextBody(htmlbody);
             List<String> bccaddress = new list<String>();
-            //bccaddress.add('driverservices@mburse.com');
-            //mail.setBccAddresses(bccaddress);
+            bccaddress.add('driverservices@mburse.com');
+            mail.setBccAddresses(bccaddress);
             mail.setHtmlBody(htmlbody);
             mail_list.add(mail);
         }

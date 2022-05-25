@@ -162,19 +162,21 @@ public with sharing class LoginRedirection_Test {
         User userObj;
         System.runAs(admin) {
           
-        acc = TestDataFactory.createAccount(True, 'Test Account', True);
+        acc = TestDataFactory.createAccount(false, 'Test Account', True);
+        acc.MburseDashboardRedirect__c = true;
+        insert acc;
         conList = TestDataFactory.createDriverContact(false, acc.Id, 'Driver', vehicleType.Name, 'Paras.Patel', 2);
         conList[0].IsCreatedFromCommunity__c = false;
-        Insert conList[0];
+        Insert conList;
         system.assertEquals(2, conList.size(), true);
-       
+        List<Bi_Weekly_Reimbursement__c> biWeeklyReimList = TestDataFactory.createBiweeklyReim (True, conList, System.today().addDays(-13),System.today(), 1, createIRSRate.Id);
          userObj = TestDataFactory.createUser(True, profileObj.Id, conList[0].Id);
         }
         Test.startTest();
        List<User> u = [Select id from User WHERE Profile.name='Customer Community Login User - Super Manager/Driver' and IsActive = true limit 1];    
         System.runAs(u[0]) {      
-            Contact obj = [select id from contact limit 1];
-            ApexPages.currentPage().getParameters().put('id',obj.Id);
+            //Contact obj = [select id from contact limit 1];
+            ApexPages.currentPage().getParameters().put('id',conList[0].Id);
             LoginRedirection objLoginRedirection = new LoginRedirection();
             objLoginRedirection.redirectOnPage();              
           }

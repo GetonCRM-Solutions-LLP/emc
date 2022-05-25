@@ -228,7 +228,7 @@ public with sharing class EmployeeReimbursementTriggerHandler {
         List<Employee_Reimbursement__c> reimListtoUpdate = new List<Employee_Reimbursement__c>();
         Map<String, Decimal> yearvsIRSMap = new Map<String, Decimal>();
         
-        for(IRS_Mileage_Rate__c irsRate : [SELECT id,year__c,IRS_Rate__c FROM IRS_Mileage_Rate__c WITH SECURITY_ENFORCED]){
+        for(IRS_Mileage_Rate__c irsRate : [SELECT id,year__c,IRS_Rate__c FROM IRS_Mileage_Rate__c]){
             yearvsIRSMap.put(irsRate.year__c, irsRate.IRS_Rate__c);
         }
         
@@ -237,15 +237,13 @@ public with sharing class EmployeeReimbursementTriggerHandler {
                                                 FROM Employee_Reimbursement__c   
                                                 WHERE Contact_id__r.Deactivated_Date__c = null
                                                         AND Id IN: reimIdslst
-                                                       AND Contact_id__r.Vehicle_Type__c =: vehicleTypeList
-                                                       WITH SECURITY_ENFORCED];
+                                                       AND Contact_id__r.Vehicle_Type__c =: vehicleTypeList];
          }  else {
              reimList = [SELECT id,name,MPG__c, Maintenance_and_Tires__c, Fuel_Price__c, Year__C 
                                                 FROM Employee_Reimbursement__c   
                                                 WHERE Contact_id__r.Deactivated_Date__c = null
                                                         AND Id IN: reimIdslst
-                                                        AND Contact_id__r.Vehicle_Type__c =: vehicleTypeList 
-                                                        WITH SECURITY_ENFORCED limit 1];
+                                                        AND Contact_id__r.Vehicle_Type__c =: vehicleTypeList limit 1];
          }
         for(Employee_Reimbursement__c  reim : reimList){
             reim.Fuel_Price__c = 0;

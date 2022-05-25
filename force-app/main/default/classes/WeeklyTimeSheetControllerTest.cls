@@ -84,7 +84,12 @@ public with sharing class WeeklyTimeSheetControllerTest {
             br.Fuel_Price__c = 0;
         Insert br;
         
+        Test.startTest();
         WeeklyTimeSheetController objbatch = new WeeklyTimeSheetController();
         objbatch.getWeeklyDriversData();
+        WeeklyTimeSheetController millock1 = new WeeklyTimeSheetController();
+            String sch = '0 0 2 * * ?'; 
+      system.schedule('Test Territory Check', sch, millock1);
+      Test.stopTest();
     }
 }

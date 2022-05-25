@@ -2,9 +2,6 @@
     <c-file-upload-spinner show-spinner={isSpinner}></c-file-upload-spinner>
     <div class="transition"  if:true={isUploadShow}>
             <div>
-                <div class="back_to_previous">
-                        <a class="font-ms" onclick={backToPrevious}><i class="fa-solid fa-angle-left"></i> Back</a>
-                </div>
                 <c-m-burse-header-text head-text="Upload Insurance"></c-m-burse-header-text>
             </div>
             <div class="slds-text-heading_small slds-text-align_center slds-p-bottom_x-large font-style">Please <strong>upload your
@@ -22,7 +19,6 @@
                             <path class="b"
                                 d="M51.12,332.94c-10.67,.11-20.45,9.83-20.24,20.47v139.22c0,10.57,9.64,20.18,20.24,20.18h464.68c10.59,0,20.24-9.62,20.24-20.18v-139.22c.16-10.67-9.54-20.47-20.24-20.47s-20.39,9.8-20.24,20.47v119.03H71.36v-119.03c.24-10.78-9.43-20.58-20.24-20.47Z">
                             </path>
-                            
                             <path class="b"
                                 d="M283.44,38.12c-4.82,.18-10.41,2.19-13.91,5.48l-114.67,107.93c-6.56,7.32-9.27,21.34-1.69,29.51,7.48,8.06,22,7.8,29.51-.21l80.53-75.89V394.14c0,11.17,9.06,20.24,20.24,20.24s20.24-9.06,20.24-20.24V104.94l80.53,75.89c6.93,6.9,21.95,8.19,29.51,.21,7.56-7.96,5.14-22.5-1.69-29.51l-114.67-107.93c-3.93-3.69-8.54-5.48-13.91-5.48h0Z">
                             </path>
@@ -49,7 +45,9 @@
                     <span class="box__dragndrop slds-align_absolute-center"> or drag and drop files here</span>
                 </form>
             </div>
-        
+            <div class="back_to_previous">
+                <a class="font-ms" onclick={backToPrevious}><i class="fa-solid fa-angle-left"></i> Back</a>
+            </div>
             <div class="slds-align_absolute-center slds-p-top_large">
                 <div class="footer-text slds-float_left">
                     <div class="font-color"><strong>My company insurance minimums are:</strong>
@@ -83,13 +81,6 @@
                         </table>
                     </div>
                 </div>
-                <!-- <div class="footer-button slds-float_right mright-0 mleft-0">
-                    <div>
-                        <div class="back_to_previous slds-float_left">
-                            <a class="font-ms" onclick={backToPrevious}><i class="fa-solid fa-angle-left"></i> Back</a>
-                        </div>
-                    </div>
-                </div> -->
             </div>
     </div>
 

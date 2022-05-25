@@ -167,7 +167,7 @@
   }
   .font-ms{
     color: #000000 !important;
-    font-size: 18px;
+    font-size: 16px;
     text-decoration: none !important;
   }
   .box.has-advanced-upload {
@@ -309,9 +309,13 @@
     margin-left: 112px;
   }
   .back_to_previous{
-      padding-left: 40px;
+      /* padding-top: 40px;
+      padding-right: 200px;
       margin: 0px;
-      position: relative;
+      position: relative; */
+      position: fixed;
+      right: 15%;
+      top: 75%;
       text-decoration: none;
       display: block;
   }
