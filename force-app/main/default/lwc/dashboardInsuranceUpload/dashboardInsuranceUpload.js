@@ -12,19 +12,43 @@ import {
 } from 'c/utils';
 export default class DashboardInsuranceUpload extends LightningElement {
 /* eslint-disable @lwc/lwc/no-api-reassignments */
+    /* Flag to show upload */
     @api isUploadShow;
-    @api isUploadSkip;
+
+    /*Id of contact*/
     @api contactId;
+
+    /*Id of Account*/
     @api accountId;
+
+    /* Id of attachment (insurance) */
     @api attachmentid;
+
+    /* Id of contact name */
     @api contactName;
+
+    /* Id of contact email */
     @api contactEmail;
+
+    /* Flag for if user comes after 30 days*/
     @api dayLeft;
+
+    /* Wrapper details of contact */
     driverDetails;
+
+    /* Stores File Name */
     fileName;
+
+    /* Stores file size */
     fSize;
+
+    /* flag for error */ 
     errorUploading;
+
+    /* Flag for result */
     fileResult;
+
+    /* other fields */
     choosefile;
     fileList = {};
     chooseFileName = '';
@@ -35,15 +59,22 @@ export default class DashboardInsuranceUpload extends LightningElement {
     positionIndex;
     doneUploading;
     driverObject;
-    dPacket = false;
-    nextShow = false;
-    nextPacketShow = false;
     isError = false;
     isVisible = false;
+
+    /* Hide / Show Spinner */
     isSpinner = false;
+
+    /* checks if file is uploaded successfully */
     isUploaded = false;
+
+    /*flag for rendered callback*/
     renderInitialized = false;
+
+    /*static resource file */
     uploaded = mBurseCss + '/emc-design/assets/images/file-uploaded.png';
+
+    /*getter setter method for insurance minimums */
     @api 
     get client(){
         return this.driverObject;
@@ -53,6 +84,8 @@ export default class DashboardInsuranceUpload extends LightningElement {
         this.driverDetails = value;
         this.driverObject = tempObject[0];
     }
+
+    /* Styling for error messages */
     toggleBoxError() {
         this.isError = true;
         this.isVisible = false;
@@ -61,6 +94,8 @@ export default class DashboardInsuranceUpload extends LightningElement {
         this.template.querySelector('.file-message').classList.add('pd-10');
         this.template.querySelector('.file-message').classList.remove('pd-3');
     }
+
+     /* Styling for default file upload UI */
     toggleBox() {
         this.isError = false;
         this.isVisible = true;
@@ -69,59 +104,74 @@ export default class DashboardInsuranceUpload extends LightningElement {
         this.template.querySelector('.file-message').classList.remove('pd-10');
         this.template.querySelector('.file-message').classList.add('pd-3');
     }
+
+    /* Function to read the file */
     fileReader(baseTarget) {
         var fileSize, choosenfileType = '',
             photofile, reader, fileExt, i = 0,
             exactSize, fIndex, subString;
-        this.choosefile = baseTarget;
-        console.log(this.choosefile.files)
-        fileSize = this.choosefile.files[0].size;
-        photofile = baseTarget.files[0];
-        choosenfileType = photofile.type;
-        this.fileList = photofile;
-        this.chooseFileName = photofile.name;
-        fIndex = this.chooseFileName.lastIndexOf(".");
-        subString = this.chooseFileName.substring(fIndex, this.chooseFileName.length);
-        if (subString === '.pdf') {
-            if (this.choosefile.files[0].size > 0 && this.choosefile.files[0].size < 4350000) {
-                this.choosefile = baseTarget;
-                this.toggleBox();
-                this.errorUploading = '';
-            } else {
-                this.toggleBoxError();
-                this.errorUploading = 'Base 64 Encoded file is too large.  Maximum size is 4 MB .';
-                console.error('Base 64 Encoded file is too large.  Maximum size is 4 MB .');
+            this.choosefile = baseTarget;
+            if(this.choosefile){
+                    console.log(this.choosefile.files)
+                    fileSize = this.choosefile.files[0].size;
+                    photofile = baseTarget.files[0];
+                    choosenfileType = photofile.type;
+                    this.fileList = photofile;
+                    this.chooseFileName = photofile.name;
+                    fIndex = this.chooseFileName.lastIndexOf(".");
+                    subString = this.chooseFileName.substring(fIndex, this.chooseFileName.length);
+                    if (subString === '.pdf') {
+                        if(this.choosefile){
+                            if (this.choosefile.files[0].size > 0 && this.choosefile.files[0].size < 4350000) {
+                                this.choosefile = baseTarget;
+                                this.toggleBox();
+                                this.errorUploading = '';
+                            } else {
+                                this.toggleBoxError();
+                                this.errorUploading = 'Base 64 Encoded file is too large.  Maximum size is 4 MB .';
+                                console.error('Base 64 Encoded file is too large.  Maximum size is 4 MB .');
+                            }
+                        }else{
+                            this.toggleBoxError();
+                            this.errorUploading = 'There was an error uploading the file. Please try again'
+                            console.error('There was an error uploading the file. Please try again');
+                        }
+                    } else {
+                        this.toggleBoxError();
+                        this.errorUploading = 'Please upload correct File. File extension should be .pdf'
+                    }
+            
+                    reader = new FileReader();
+                    reader.onload = function () {
+                        this.fileResult = reader.result;
+                    };
+                    reader.readAsDataURL(photofile);
+                    fileExt = new Array('Bytes', 'KB', 'MB', 'GB');
+                    while (fileSize > 900) {
+                        fileSize /= 1024;
+                        i++;
+                    }
+                    exactSize = (Math.round(fileSize * 100) / 100) + ' ' + fileExt[i];
+                    this.fileName = this.chooseFileName;
+                    this.fSize = exactSize;
+                    console.log("File Size-----", fileSize);
+                    console.log("choosenfileType------", choosenfileType);
+                    console.log("chooseFileName-------", this.chooseFileName);
             }
-        } else {
-            this.toggleBoxError();
-            this.errorUploading = 'Please upload correct File. File extension should be .pdf'
-        }
-
-        reader = new FileReader();
-        reader.onload = function () {
-            this.fileResult = reader.result;
-        };
-        reader.readAsDataURL(photofile);
-        fileExt = new Array('Bytes', 'KB', 'MB', 'GB');
-        while (fileSize > 900) {
-            fileSize /= 1024;
-            i++;
-        }
-        exactSize = (Math.round(fileSize * 100) / 100) + ' ' + fileExt[i];
-        this.fileName = this.chooseFileName;
-        this.fSize = exactSize;
-        console.log("File Size-----", fileSize);
-        console.log("choosenfileType------", choosenfileType);
-        console.log("chooseFileName-------", this.chooseFileName);
     }
 
+    /* Function on file change */
     fileChanged(event) {
         console.log('File change')
         this.fileReader(event.target)
     }
+
+    /* convert string to array */
     proxyToObject(e) {
         return JSON.parse(e)
     }
+
+    /* Function on file upload */
     uploadAttachment(fileId) {
         var attachmentBody = "";
         this.isSpinner = true;
@@ -142,6 +192,7 @@ export default class DashboardInsuranceUpload extends LightningElement {
             })
             .then((file) => {
                 if (this.doneUploading === true) {
+                    /*Send Email for upload insurance */
                     sendInsuranceEmail({
                             id: this.contactId,
                             name: this.contactName,
@@ -152,13 +203,17 @@ export default class DashboardInsuranceUpload extends LightningElement {
                             contact = this.proxyToObject(this.driverDetails);
                             contact[0].insuranceStatus = "Uploaded";
                             updateContactDetail({
-                                contactData: JSON.stringify(contact)
+                                contactData: JSON.stringify(contact),
+                                driverPacket : false
                             })
                             // eslint-disable-next-line @lwc/lwc/no-api-reassignments
                             this.isSpinner = false;
                             this.isUploaded = true;
                             this.isUploadShow = false;
                         })
+                        .catch((error) => {
+                            console.log(error);
+                        });
                 } else {
                     this.isSpinner = false;
                     this.positionIndex += this.chunkSize;
@@ -210,11 +265,12 @@ export default class DashboardInsuranceUpload extends LightningElement {
         }
     }
 
-    
+    /* on done click */
     nextDoneUpload() {
             events(this, 'Next Driver Packet');
     }
 
+    /* on back click */
     backToPrevious() {
         backEvents(this, 'Next Declaration Upload');
     }
@@ -232,6 +288,7 @@ export default class DashboardInsuranceUpload extends LightningElement {
         }
     }
 
+    /* Drag and drop function */
     handleDropFile(event) {
         // prevent default action (open as link for some elements)
         var files;
@@ -259,10 +316,12 @@ export default class DashboardInsuranceUpload extends LightningElement {
         event.preventDefault();
         this.template.querySelector('.box').classList.add('is-dragover');
     }
+
     onDragLeave(event) {
         event.preventDefault();
         this.template.querySelector('.box').classList.remove('is-dragover');
     }
+
     handleFormSubmit(event) {
         event.preventDefault();
     }

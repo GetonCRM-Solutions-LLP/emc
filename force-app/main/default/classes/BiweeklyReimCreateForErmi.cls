@@ -35,7 +35,6 @@ Global class BiweeklyReimCreateForErmi Implements Database.Batchable<sObject> , 
                        AND Role__c != 'Manager' 
                        AND Deactivated_Date__c = NULL 
                        AND Account.isUsingTriplog__c = true
-                       AND Driver_Type__c != 'Driver - Salary'
                        AND Driver_Type__c != NULL
                        AND Activation_Date__c <=: myDate];
         } else {
@@ -84,7 +83,6 @@ Global class BiweeklyReimCreateForErmi Implements Database.Batchable<sObject> , 
            }
 
         List<Bi_Weekly_Reimbursement__c> biweeklyreimToInsert   = new List<Bi_Weekly_Reimbursement__c>();
-       // MAP<Id,Bi_Weekly_Reimbursement__c> accMap = new MAP<Id,Bi_Weekly_Reimbursement__c>();
         for(contact con :  (List<Contact>) conList) {
             Bi_Weekly_Reimbursement__c br = new Bi_Weekly_Reimbursement__c();
             br.Name = splitStartDate + ' to ' + splitEndDate ; 
@@ -114,19 +112,9 @@ Global class BiweeklyReimCreateForErmi Implements Database.Batchable<sObject> , 
             }
             biweeklyreimToInsert.add(br);
         }
-        system.debug('biweeklyreimToInsert=='+ biweeklyreimToInsert);
-        system.debug('biweeklyreimToInsertsize=='+ biweeklyreimToInsert.size());
-        
-        //accMap.putall(biweeklyreimToInsert);
         if(!biweeklyreimToInsert.isEmpty() && !Test.isRunningTest()){
-            //Insert biweeklyreimToInsert;
             Database.insert(biweeklyreimToInsert, false);
         }
-       /*if(!accMap.isEmpty() && !Test.isRunningTest()) {
-            system.debug('accMap=='+ accmap.values().size());
-            insert accmap.values();
-            system.debug('accMapvalue=='+ accmap.values().size());
-        }*/
     } 
     Global void finish(Database.BatchableContext BC){}   
 }

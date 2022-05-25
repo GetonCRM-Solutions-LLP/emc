@@ -1380,6 +1380,7 @@
                     $scope.accid = url.searchParams.get("accid");
                     $scope.id = url.searchParams.get("id");
                     $scope.manid = url.searchParams.get("manid");
+                    $scope.login = url.searchParams.get("loginAS");
                     $scope.showteam = url.searchParams.get("showteam");
                     $('#processSpinner').hide();
                     $scope.years = {!Last2Years
@@ -1390,6 +1391,11 @@
             $scope.approvalTopMsg = '{!($Label.mileageApprovalTopMsg)}';
             $scope.approvalBottomMsg = '{!($Label.mileageApprovalBottomMsg)}';
             $scope.PLMarketing = '{!($Label.PL_Marketing)}';
+            $scope.admindriver = false;
+            $scope.admindriver = url.searchParams.get("admindriver");
+            if ($scope.admindriver == undefined || $scope.admindriver == '') {
+                    $scope.admindriver = false;
+            }
             $scope.years.sort(function (a, b) {
                 var numA = parseInt(a),
                     numB = parseInt(b);
@@ -2640,17 +2646,30 @@
                                             
                                         </ul> -->
                                     <ul class="navbar-nav alignitemscenter flex-row">
-                                        <li class="nav-item active">
+                                        <li class="nav-item active" ng-show="!login" >
                                             <a class="nav-link text-white" href="/app/drivermanagerdashboard?accid={{accid}}&id={{manid}}&showteam={{showteam}}">Dashboard</a>
                                         </li>
-                                        <li class="nav-item">
+                                        <li class="nav-item active" ng-show="login">
+                                            <a class="nav-link text-white" ng-show="!admindriver" href="/app/admindashboard?accid={{accid}}&id={{manid}}&showteam={{showteam}}">Dashboard</a>
+                                            <a class="nav-link text-white" ng-show="admindriver" href="/app/admindriverdashboard?accid={{accid}}&admindriver=true&id={{manid}}&showteam={{showteam}}">Dashboard</a>
+                                        </li>
+                                        <li class="nav-item" ng-show="!login">
                                             <a class="nav-link text-white" href="/app/MileageDashboard?accid={{accid}}&id={{manid}}&showteam={{showteam}}">Mileage</a>
                                         </li>
-                                        <li class="nav-item" ng-if="accid == PLMarketing">
+                                        <li class="nav-item" ng-show="login">
+                                            <a class="nav-link text-white" href="/app/MileageDashboard?accid={{accid}}&id={{manid}}&managerid={{id}}&showteam={{showteam}}&loginAS=true">Mileage</a>
+                                        </li>
+                                        <li class="nav-item" ng-show="!login" ng-if="accid == PLMarketing">
                                             <a class="nav-link text-white" href="/app/ManageNotification?accid={{accid}}&id={{manid}}&showteam={{showteam}}">Communications</a>
                                         </li>
-                                        <li class="nav-item">
+                                        <li class="nav-item" ng-show="login" ng-if="accid == PLMarketing">
+                                            <a class="nav-link text-white" href="/app/ManageNotification?accid={{accid}}&id={{manid}}&managerid={{id}}&showteam={{showteam}}&loginAS=true">Communications</a>
+                                        </li>
+                                        <li class="nav-item" ng-show="!login">
                                             <a class="nav-link text-white" href="/app/driveradminmanagermydetail?accid={{accid}}&id={{manid}}&showteam={{showteam}}">My Details</a>
+                                        </li>
+                                        <li class="nav-item" ng-show="login">
+                                            <a class="nav-link text-white" href="/app/driveradminmanagermydetail?accid={{accid}}&id={{manid}}&manid={{id}}&showteam={{showteam}}&loginAS=true">My Details</a>
                                         </li>
                                         <!-- <li class="nav-item">
                                                 <a class="nav-link text-white" href="/app/reportlistformanager?accid={{accid}}&id={{manid}}&showteam={{showteam}}">Reports</a>

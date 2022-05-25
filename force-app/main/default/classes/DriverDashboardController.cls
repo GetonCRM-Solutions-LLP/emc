@@ -26,6 +26,7 @@ public class DriverDashboardController
     public String biWeekData {get;set;}
     public static Boolean checkErrorERMI {get;set;}
     public static Boolean ConfirmTimeERMI {get;set;}
+    public static String managerrole {get;set;} 
     /**
     @author Natavar Ghodasara
     @date 26th Feb 2019
@@ -55,7 +56,15 @@ public class DriverDashboardController
 
         obj_driver_driverMVR = [SELECT Id, Body, Name FROM Attachment WHERE ParentId=:ApexPages.currentPage().getParameters().get('id') and Name LIKE '%MVR%' limit 1];
         obj_driverpacket_attachMVRsize = obj_driver_driverMVR.size();
-
+        if(ApexPages.currentPage().getParameters().containsKey('manid') && String.isNotBlank(ApexPages.currentPage().getParameters().get('manid'))) {
+            List<Contact> conList = [SELECT id,name,Role__c 
+                                    FROM Contact 
+                                    WHERE id =: ApexPages.currentPage().getParameters().get('manid')];
+            if(conList.size() > 0 && conList[0].Role__c != null){
+                managerrole = conList[0].Role__c ;   
+            }
+        }
+        
         accInsuranceList = '[]';
         biWeekData = '[]';
         //AI-000414
@@ -135,7 +144,7 @@ public class DriverDashboardController
     @RemoteAction
     public static String getDriverDetailsClone(String contactid) {            
         List<contact> driverDataList = new List<contact>();
-        driverDataList = [SELECT id, Name, MailingPostalCode, MailingState, MailingCity,Driver_Type__c, 
+        driverDataList = [SELECT id, Name, MailingPostalCode, MailingState, MailingCity,Driver_Type__c,Role__c, 
                                         Fixed_Amount__c, compliancestatus__c, Car_Image__c, Account.Name, Account.Logo_Document_Id__c, 
                                         Vehicle_Type__c,Insurance_Attachment_Id__c, Account.Triplog_API__c, Email,
                                         Maintenance__c,Tires__c, Insurance_Rate__c, License_Ragistration__c, Taxes__c,

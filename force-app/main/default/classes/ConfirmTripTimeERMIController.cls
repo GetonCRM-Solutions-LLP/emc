@@ -9,25 +9,34 @@
 public with sharing class ConfirmTripTimeERMIController {
     public static String contactId;
     public string mileageDetailWrapper {get; set;}
+    public OrgWideEmailAddress[] owea;
     public ConfirmTripTimeERMIController (){
         contactId = ApexPages.currentPage().getParameters().get('id');
          if(contactId != null){
            mileageDetailWrapper = getMileageData();
+        }
+        try {
+            owea = [SELECT Id,Address from OrgWideEmailAddress where Address = 'driverservices@mburse.com' WITH SECURITY_ENFORCED];
+        }  catch(System.QueryException qe) {
+            System.debug(qe.getMessage());
         }
     }
     /*This method is used to display biweekly reimbursement data of last completed biweekly reimbursment period */
     public static string getMileageData(){
         system.debug('getMileageData.contactId=='+ contactId);
         List<MileageWrapper> mileageWrapList = new List<MileageWrapper >();
-        for(Bi_Weekly_Reimbursement__c  biweek : [SELECT id, name, Confirm_Hours__c, Error_Hours__c,
+        try {
+            for(Bi_Weekly_Reimbursement__c  biweek : [SELECT id, name, Confirm_Hours__c, Error_Hours__c,
                                                          Total_Time__c, Total_Drive_Time__c,Count_Error_Check__c, 
                                                          Total_Stay_Time__c, Total_Approved_Pending_Mileage__c,
-                                                         Contact__r.FirstName, Contact_Email__c  
+                                                         Contact__r.FirstName, Contact_Email__c, Contact__r.Role__c, Contact__r.Driver_Type__c 
                                                       FROM Bi_Weekly_Reimbursement__c 
                                                       WHERE Contact__c =: contactId 
                                                       AND Start_Date__c != null 
                                                       AND End_Date__c != null 
-                                                      AND End_Date__c <= TODAY order by End_Date__c desc limit 1 ]){
+                                                      AND End_Date__c <= TODAY 
+                                                      WITH SECURITY_ENFORCED
+                                                      order by End_Date__c desc limit 1 ]){
                     MileageWrapper milWrap = new MileageWrapper(); 
                     milWrap.biWeekId = biweek.Id;   
                     milWrap.biWeekPayperiod = biweek.Name;  
@@ -36,12 +45,17 @@ public with sharing class ConfirmTripTimeERMIController {
                     milWrap.mileage = biweek.Total_Approved_Pending_Mileage__c ;
                     milWrap.confirmCheck = biweek.Confirm_Hours__c;
                     milWrap.errorCheck = biweek.Error_Hours__c;
+                    milWrap.driverRole = biweek.Contact__r.Role__c;
+                    milWrap.driverType = biweek.Contact__r.Driver_Type__c;  /*Added by Megha */                               
                     milWrap.driveTime = Utils.ConvertMinuteToHours(Integer.valueOf(biweek.Total_Drive_Time__c));
                     milWrap.stayTime = Utils.ConvertMinuteToHours(Integer.valueOf(biweek.Total_Stay_Time__c));
                     milWrap.totalTime = Utils.ConvertMinuteToHours(Integer.valueOf(biweek.Total_Time__c));
                     milWrap.countErrorCheck = biweek.Count_Error_Check__c != null ? Integer.valueOf(biweek.Count_Error_Check__c) : 0;
                     mileageWrapList.add(milWrap);
-        }
+            }
+        }  catch(System.QueryException qe) {
+            System.debug(qe.getMessage());
+        }        
         String wrapjson = JSON.serialize(mileageWrapList);
         return wrapjson;
     }
@@ -66,7 +80,7 @@ public with sharing class ConfirmTripTimeERMIController {
                 biweek.Count_Error_Check__c = conwrap.countErrorCheck ;
                 if(biweek.Confirm_Hours__c == true){
                     Integer countError = 0;
-                    sendConfirmEmail(conwrap.driverEmail,conwrap.driverName,conwrap.biWeekPayperiod,conwrap.mileage,conwrap.DriveTime,conwrap.StayTime,conwrap.TotalTime,countError);
+                    sendConfirmEmail(conwrap.driverEmail,conwrap.driverName,conwrap.biWeekPayperiod,conwrap.mileage,conwrap.DriveTime,conwrap.StayTime,conwrap.TotalTime,countError,conwrap.driverType);
                 }
                 updateBiweekList.add(biweek );                
             }
@@ -78,34 +92,42 @@ public with sharing class ConfirmTripTimeERMIController {
         return 'Success';
     }
     /*This method is used to send a email to driver and admin when he click on confirm or error checkbox */
-    public static void sendConfirmEmail (String conEmail,String driverName,String biweekName,Decimal mileage,String driveTime,String stayTime,String totalTime,Integer countError){
+    private static void sendConfirmEmail (String conEmail,String driverName,String biweekName,Decimal mileage,String driveTime,String stayTime,String totalTime,Integer countError,String driverType){
         List<Messaging.SingleEmailMessage> emailist = new List<Messaging.SingleEmailMessage>();
-        OrgWideEmailAddress[] owea = [SELECT Id,Address from OrgWideEmailAddress where Address = 'driverservices@mburse.com' ];
         List<String> toAddress = new List<String>();
         List<String> bccAddress = new List<String>();
         EmailTemplate templateId;
         String newemailBody;
-        if(countError == 0 ){
-            templateId = [SELECT Id, Subject,HtmlValue, body FROM EmailTemplate WHERE developerName = 'Ermi_Time_And_Mileage_Correct' Limit 1];
-        } else if(countError == 1 ){
-            templateId = [SELECT Id, Subject,HtmlValue, body FROM EmailTemplate WHERE developerName = 'Ermi_Error_Count_1' Limit 1];
-            //bccAddress.add('eizelp@mburse.com');
-            bccAddress.add(System.Label.CountError1Ermi);
-            
-        } else if(countError == 2 ){
-            templateId = [SELECT Id, Subject,HtmlValue, body FROM EmailTemplate WHERE developerName = 'Ermi_Error_Count_2' Limit 1];
-            //bccAddress.add('driverservices@mburse.com');
-            bccAddress.add(System.Label.DriverServicesEmail);
+        try {
+            if(countError == 0 && driverType == 'Driver - Salary'){    
+                templateId = [SELECT Id, Subject,HtmlValue, body FROM EmailTemplate WHERE developerName = 'Ermi_Mileage_Correct' Limit 1];
+            } else if(countError == 0 && driverType != 'Driver - Salary'){
+                templateId = [SELECT Id, Subject,HtmlValue, body FROM EmailTemplate WHERE developerName = 'Ermi_Time_And_Mileage_Correct' Limit 1];
+            } else if(countError == 1 ) {
+                templateId = [SELECT Id, Subject,HtmlValue, body FROM EmailTemplate WHERE developerName = 'Ermi_Error_Count_1' Limit 1];
+                bccAddress.add(System.Label.CountError1Ermi);            
+            } else if(countError == 2 ) {
+                templateId = [SELECT Id, Subject,HtmlValue, body FROM EmailTemplate WHERE developerName = 'Ermi_Error_Count_2' Limit 1];
+                bccAddress.add(System.Label.DriverServicesEmail);
+            }
+        } catch(System.QueryException qe) {
+            System.debug(qe.getMessage());
         }
-        //conEmail = 'sjg.it22@gmail.com';
         toAddress.add(conEmail);
         newemailBody = templateId.HtmlValue;
-        if(countError != 2){
+        if(countError != 2 && driverType != 'Driver - Salary'){
             String htmlTemplate = '<tr align="center" style="border:2px solid black;"> <td style="border:1px solid black;">'  
                                 + mileage +'</td><td style="border:2px solid black;">'
                                 + driveTime+'</td><td style="border:2px solid black;">' 
                                 + stayTime+'</td><td style="border:2px solid black;">'
                                 + totalTime +'</td>'                         
+                                +'</tr>';
+            
+            newemailBody = newemailBody.replace('{tableDynamicData}', htmlTemplate);
+            newemailBody = newemailBody.replace('{!BiweekName}', biweekName);
+        } else if(countError != 2 && driverType == 'Driver - Salary'){
+            String htmlTemplate = '<tr align="center" style="border:2px solid black;"> <td style="border:1px solid black;">'  
+                                + mileage +'</td>'                                    
                                 +'</tr>';
             
             newemailBody = newemailBody.replace('{tableDynamicData}', htmlTemplate);
@@ -124,15 +146,14 @@ public with sharing class ConfirmTripTimeERMIController {
         SendEmail__c  sendEmailObj = SendEmail__c.getValues('ConfirmTripTimeERMIController');
         if(emailist.size() > 0 && !Test.isRunningTest() && sendEmailObj.Send_email_from_code__c == true){
             Messaging.SendEmailResult [] result = Messaging.sendEmail(emailist, false);
-        }
-        
+        }        
     }
     @RemoteAction
-    public static void sendErrorEmail (String conEmail,String driverName,String biweekName,Decimal mileage,String driveTime,String stayTime,String totalTime,Integer countError){
+    public static void sendErrorEmail (String conEmail,String driverName,String biweekName,Decimal mileage,String driveTime,String stayTime,String totalTime,Integer countError,String driverType){
         if(countError != null && countError == 1){
-            sendConfirmEmail(conEmail,driverName,biweekName,mileage,driveTime,stayTime,totalTime,countError);
+            sendConfirmEmail(conEmail,driverName,biweekName,mileage,driveTime,stayTime,totalTime,countError,driverType);
         } else if(countError != null && countError == 2){
-            sendConfirmEmail(conEmail,driverName,biweekName,mileage,driveTime,stayTime,totalTime,countError);
+            sendConfirmEmail(conEmail,driverName,biweekName,mileage,driveTime,stayTime,totalTime,countError,driverType);
         }
     }
 
@@ -145,19 +166,19 @@ public with sharing class ConfirmTripTimeERMIController {
             String contactEmail;
             if(startdate.contains('/')) {
                 list<String> lstSplitDate = startdate.split('/');
-               // lstSplitDate[0] = Integer.valueOf(lstSplitDate[0]) > 9 ? lstSplitDate[0] : '0'+lstSplitDate[0];
                 monthList.add(lstSplitDate[0]+'-'+ lstSplitDate[2]); 
             }
             Id reimId;
-            if(monthList.size() > 0){
-                for(Employee_Reimbursement__c reim : [SELECT id 
+            if(monthList.size() > 0) {
+                try {
+                    for(Employee_Reimbursement__c reim : [SELECT id 
                                                     FROM Employee_Reimbursement__c 
                                                     WHERE Month__c IN: monthList 
-                                                    AND Contact_Id__c =: contactId ]){
+                                                    AND Contact_Id__c =: contactId 
+                                                    WITH SECURITY_ENFORCED]){
                                                         reimId = reim.ID;
-                }
-            }
-            for(Bi_Weekly_Reimbursement__c bireim : [SELECT id,name,Contact__r.FirstName,
+                    }
+                    for(Bi_Weekly_Reimbursement__c bireim : [SELECT id,name,Contact__r.FirstName,
                                                             Start_Date__c, End_Date__c, 
                                                             Contact__r.External_Email__c, 
                                                             Contact__c, MPG__c, Maintenance_and_Tires__c, 
@@ -165,46 +186,66 @@ public with sharing class ConfirmTripTimeERMIController {
                                                         FROM Bi_Weekly_Reimbursement__c 
                                                         WHERE Start_Date__c =: Date.parse(startdate)
                                                             AND End_Date__c =: Date.parse(enddate)
-                                                            AND Contact__c =: contactId ]){
+                                                            AND Contact__c =: contactId 
+                                                            WITH SECURITY_ENFORCED ]){
                                                                 contactName = bireim.Contact__r.FirstName;
                                                                 contactEmail = bireim.Contact__r.External_Email__c;
                                                                 system.debug('bireim ' + bireim );
-                if(!Test.isRunningTest() && reimId != null){
-                system.debug('inserted in if');
-                date sd = date.parse(startdate);
-                date ed = date.parse(enddate);
-                    GetTripCalloutforCommute.GetTripCalloutForCommuteMileage(reimId, bireim.Contact__r.External_Email__c, bireim.Contact__c, String.valueof(sd), String.valueof(ed), String.valueOf(bireim.Fuel_Price__c), String.valueOf(bireim.MPG__c), String.valueOf(bireim.Maintenance_and_Tires__c), bireim.Contact__r.Account.Triplog_API__c, 'U' ,false, 'Business',true,bireim.Id);
-                }
-            }  
+                        if(!Test.isRunningTest() && reimId != null){
+                        system.debug('inserted in if');
+                        date sd = date.parse(startdate);
+                        date ed = date.parse(enddate);
+                            GetTripCalloutforCommute.GetTripCalloutForCommuteMileage(reimId, bireim.Contact__r.External_Email__c, bireim.Contact__c, String.valueof(sd), String.valueof(ed), String.valueOf(bireim.Fuel_Price__c), String.valueOf(bireim.MPG__c), String.valueOf(bireim.Maintenance_and_Tires__c), bireim.Contact__r.Account.Triplog_API__c, 'U' ,false, 'Business',true,bireim.Id);
+                        }
+                    } 
+                } catch(Exception qe) {
+                    System.debug(qe.getMessage());
+                }                
+            }
+             
             List<Messaging.SingleEmailMessage> emailist = new List<Messaging.SingleEmailMessage>();
             EmailTemplate templateId;
+            EmailTemplate adminTemplateId;
             String newemailBody;
-            OrgWideEmailAddress[] owea = [SELECT Id,Address from OrgWideEmailAddress where Address = 'driverservices@mburse.com' ];
             List<String> toAddress = new List<String>();
-            templateId = [SELECT Id, Subject,HtmlValue, body FROM EmailTemplate WHERE developerName = 'SendDriverConfirmTA' Limit 1];
-            newemailBody = templateId.HtmlValue;
-            if(contactName != null){
-                 newemailBody = newemailBody.replace('{!ContactName}', contactName);
-            }           
-            toAddress.add(contactEmail);
-            newemailBody = newemailBody.replace('{!$Label.Driver_Forword_Logo}', System.Label.Driver_Forword_Logo);
-            messaging.singleEmailMessage email = new messaging.singleEmailMessage();
-            email = Utils.CreateEmail(templateId.Subject,newemailBody,toAddress,null,null,null);
-            emailist.add(email); 
-            EmailTemplate adminTemplateId = [SELECT Id, Subject,HtmlValue, body FROM EmailTemplate WHERE developerName = 'SendAdminConfirmTA' Limit 1];
-            String newAdminEmailBody = adminTemplateId.HtmlValue;
-            newAdminEmailBody = newAdminEmailBody.replace('{!ContactName}', 'Alexis');
-            newAdminEmailBody = newAdminEmailBody.replace('{!$Label.Driver_Forword_Logo}', System.Label.Driver_Forword_Logo);
-            String subjectModify = adminTemplateId.Subject;
-            if(contactName != null){
-                subjectModify = subjectModify.replace('{!DriverName}', contactName);
-            }            
-            List<String> toAddressDriver = new List<String>();
-            //String contactDriverEmail = 'a.wright@ermi-motion.com';
-            toAddressDriver.add(System.Label.ErmiAdminAlexis);
-            messaging.singleEmailMessage email2 = new messaging.singleEmailMessage();
-            email2 = Utils.CreateEmail(subjectModify,newAdminEmailBody,toAddressDriver,null,null,null);
-            emailist.add(email2);   
+            try {
+                templateId = [SELECT Id, Subject,HtmlValue, body FROM EmailTemplate WHERE developerName = 'SendDriverConfirmTA' Limit 1];
+                adminTemplateId = [SELECT Id, Subject,HtmlValue, body FROM EmailTemplate WHERE developerName = 'SendAdminConfirmTA' Limit 1];
+            } catch(System.QueryException qe) {
+                System.debug(qe.getMessage());
+            }
+            if(templateId != null){
+                newemailBody = templateId.HtmlValue;
+                String subjectModify;
+                subjectModify = templateId.Subject;
+                if(contactName != null){
+                    newemailBody = newemailBody.replace('{!ContactName}', contactName) ;
+                    subjectModify = subjectModify.replace('{!ContactName}', contactName);
+                }
+                toAddress.add(contactEmail);
+                newemailBody = newemailBody.replace('{!$Label.Driver_Forword_Logo}', System.Label.Driver_Forword_Logo);
+                messaging.singleEmailMessage email = new messaging.singleEmailMessage();
+                email = Utils.CreateEmail(subjectModify,newemailBody,toAddress,null,null,null);
+                emailist.add(email);  
+            }                      
+            
+            String newAdminEmailBody;
+            String subjectModify;
+            if(adminTemplateId != null){
+                newAdminEmailBody = adminTemplateId.HtmlValue;
+                newAdminEmailBody = newAdminEmailBody.replace('{!ContactName}', 'Alexis');
+                newAdminEmailBody = newAdminEmailBody.replace('{!$Label.Driver_Forword_Logo}', System.Label.Driver_Forword_Logo);
+                subjectModify = adminTemplateId.Subject;
+                if(contactName != null){
+                    subjectModify = subjectModify.replace('{!DriverName}', contactName);
+                } 
+                messaging.singleEmailMessage email2 = new messaging.singleEmailMessage();
+                List<String> toAddressDriver = new List<String>();
+                toAddressDriver.add(System.Label.ErmiAdminAlexis);
+                email2 = Utils.CreateEmail(subjectModify,newAdminEmailBody,toAddressDriver,null,null,null);
+                emailist.add(email2); 
+            }                                   
+            
             SendEmail__c  sendEmailObj = SendEmail__c.getValues('ConfirmTripSyncErmi'); 
             if(emailist.size() > 0 && !Test.isRunningTest() && sendEmailObj.Send_email_from_code__c == true){
                 Messaging.SendEmailResult [] result2 = Messaging.sendEmail(emailist, false);
@@ -221,6 +262,8 @@ public with sharing class ConfirmTripTimeERMIController {
         public string totalTime { get; set; }
         public string driverEmail {get; set;}
         public string driverName {get; set;}
+        public string driverRole {get; set;}
+        public string driverType {get;set;} /*Added by Megha */ 
         public Boolean confirmCheck { get; set; }
         public Boolean errorCheck { get; set; }
         public Integer countErrorCheck { get; set; }

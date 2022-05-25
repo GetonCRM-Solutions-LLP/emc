@@ -1,4 +1,3 @@
-
 const events  = (component, param) => {
     const e = new CustomEvent('navigate', {detail: param});
     component.dispatchEvent(e);
