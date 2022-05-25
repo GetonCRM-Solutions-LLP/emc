@@ -218,20 +218,20 @@ public with sharing class NewAccountDriverController {
             if(contactObj.Role__c == StaticValues.ROLE_DRIVER) {
                 //AI-000414
                 if(biWeekList.size() > 0){
-                    if(biWeekList[0].Confirm_Hours__c == false &&  contactObj.Insurance_Attachment_Id__c != null && biWeekList[0].Count_Error_Check__c < 3){
+                    if(biWeekList[0].Confirm_Hours__c == false && biWeekList[0].Count_Error_Check__c < 3){
                         pageRef = '/app/driverDashboardWeekly?accid='+contactObj.Accountid+'&id='+contactId;
-                    } else if((biWeekList[0].Confirm_Hours__c == true || (biWeekList[0].Count_Error_Check__c != null && biWeekList[0].Count_Error_Check__c > 2)) && contactObj.Insurance_Attachment_Id__c != null ){
+                    } else if((biWeekList[0].Confirm_Hours__c == true || (biWeekList[0].Count_Error_Check__c != null && biWeekList[0].Count_Error_Check__c > 2)) ){
                         pageRef = '/app/driverDashboardClone?accid='+contactObj.Accountid+'&id='+contactId;
-                    } else if(contactObj.Insurance_Attachment_Id__c == null){
-                        pageRef = '/app/driverDashboardInsuranceClone?accid='+contactObj.Accountid+'&id='+contactId;
-                    } 
+                    } /* else if(contactObj.Insurance_Attachment_Id__c == null){
+                        pageRef = '/app/uploadInsurance?accid='+contactObj.Accountid+'&id='+contactid; 
+                    } */
                 } else {
-                    if(contactObj.Insurance_Attachment_Id__c != null ){
+                    /*if(contactObj.Insurance_Attachment_Id__c != null ){
                         pageRef = '/app/driverDashboardClone?accid='+contactObj.Accountid+'&id='+contactId;
                     } else {
-                        //pageRef = '/app/driverDashboardInsuranceClone?accid='+contactObj.Accountid+'&id='+contactId;
-                        pageRef = '/app/uploadInsurance?accid='+contactObj.Accountid+'&id='+contactid;                             
-                    }
+                        pageRef = '/app/driverDashboardInsuranceClone?accid='+contactObj.Accountid+'&id='+contactId; }
+                        pageRef = '/app/uploadInsurance?accid='+contactObj.Accountid+'&id='+contactid;  */                           
+                        pageRef = '/app/driverDashboardClone?accid='+contactObj.Accountid+'&id='+contactId;
                 }
                 return pageRef;
             } else if(contactObj.Role__c == StaticValues.ROLE_DRIVERMANAGER ) {
