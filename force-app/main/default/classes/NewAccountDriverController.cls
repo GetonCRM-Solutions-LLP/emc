@@ -229,7 +229,8 @@ public with sharing class NewAccountDriverController {
                     if(contactObj.Insurance_Attachment_Id__c != null ){
                         pageRef = '/app/driverDashboardClone?accid='+contactObj.Accountid+'&id='+contactId;
                     } else {
-                        pageRef = '/app/driverDashboardInsuranceClone?accid='+contactObj.Accountid+'&id='+contactId;
+                        //pageRef = '/app/driverDashboardInsuranceClone?accid='+contactObj.Accountid+'&id='+contactId;
+                        pageRef = '/app/uploadInsurance?accid='+contactObj.Accountid+'&id='+contactid;                             
                     }
                 }
                 return pageRef;
