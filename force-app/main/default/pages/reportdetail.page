@@ -265,6 +265,7 @@
                 $scope.admindriver = false;
                 $scope.newArray = [];
                 $scope.admindriver = url.searchParams.get("admindriver");
+                $scope.plMAcc = '{!($Label.PLMarketing)}';
                 if($scope.admindriver == undefined || $scope.admindriver == ''){
                     $scope.admindriver = false;
                 }
@@ -1045,10 +1046,6 @@
                                             <a class="nav-link text-white" ng-show="admindriver" href="/app/MileageDashboard?accid={{accid}}&id={{id}}&showteam={{showteam}}&admindriver=true">Mileage</a>
                                             <a class="nav-link text-white" ng-show="!admindriver" href="/app/MileageDashboard?accid={{accid}}&id={{id}}&showteam={{showteam}}">Mileage</a>
                                         </li>
-                                          <li class="nav-item" ng-show="!manVisible">
-                                            <a class="nav-link text-white" ng-show="!admindriver"  href="/app/ManageNotification?accid={{accid}}&id={{id}}&showteam={{showteam}}">Communications</a>
-                                            <a class="nav-link text-white" ng-show="admindriver"  href="/app/ManageNotification?accid={{accid}}&id={{id}}&showteam={{showteam}}&admindriver=true">Communications</a>
-                                        </li>
                                         <li class="nav-item" ng-show="!manVisible">
                                             <a class="nav-link text-white" ng-show="!admindriver" href="/app/roster?accid={{accid}}&id={{id}}&showteam={{showteam}}">Drivers</a>
                                             <a class="nav-link text-white" ng-show="admindriver" href="/app/roster?accid={{accid}}&id={{id}}&showteam={{showteam}}&admindriver=true">Drivers</a>
@@ -1056,6 +1053,14 @@
                                         <li class="nav-item" ng-show="manVisible">
                                             <a class="nav-link text-white" ng-show="!admindriver" href="/app/roster?managerid={{manId}}&accid={{accid}}&id={{id}}&showteam={{showteam}}">Drivers</a>
                                             <a class="nav-link text-white" ng-show="admindriver" href="/app/roster?managerid={{manId}}&accid={{accid}}&id={{id}}&showteam={{showteam}}&admindriver=true">Drivers</a>
+                                        </li>
+                                        <li class="nav-item" ng-show="!manVisible">
+                                            <a class="nav-link text-white" ng-show="!admindriver" href="/app/ManageNotification?accid={{accid}}&id={{id}}&showteam={{showteam}}">Communications</a>
+                                            <a class="nav-link text-white" ng-show="admindriver" href="/app/ManageNotification?accid={{accid}}&id={{id}}&showteam={{showteam}}&admindriver=true">Communications</a>
+                                        </li>
+                                        <li class="nav-item" ng-show="manVisible && accid === plMAcc">
+                                            <a class="nav-link text-white" ng-show="!admindriver" href="/app/ManageNotification?managerid={{manId}}&accid={{accid}}&id={{id}}&showteam={{showteam}}">Communications</a>
+                                            <a class="nav-link text-white" ng-show="admindriver" href="/app/ManageNotification?managerid={{manId}}&accid={{accid}}&id={{id}}&showteam={{showteam}}&admindriver=true">Communications</a>
                                         </li>
                                         <li class="nav-item active" ng-show="!manVisible">
                                             <a class="nav-link text-white" ng-show="!admindriver" href="/app/reportlist?accid={{accid}}&id={{id}}&showteam={{showteam}}">Reports</a>
@@ -1065,8 +1070,11 @@
                                             <a class="nav-link text-white" ng-show="!admindriver" href="/app/reportlist?managerid={{manId}}&accid={{accid}}&id={{id}}&showteam={{showteam}}">Reports</a>
                                             <a class="nav-link text-white" ng-show="admindriver" href="/app/reportlist?managerid={{manId}}&accid={{accid}}&id={{id}}&showteam={{showteam}}&admindriver=true">Reports</a>
                                         </li>
-                                        <li class="nav-item">
-                                            <a class="nav-link text-white" ng-show="admindriver" href="/app/managerid={{manId}}&driveradminmanagermydetail?accid={{accid}}&id={{id}}&showteam={{showteam}}&admindriver=true">My Details</a>
+                                        <li class="nav-item" ng-show="manVisible">
+                                            <a class="nav-link text-white" ng-show="admindriver" href="/app/driveradminmanagermydetail?managerid={{manId}}&accid={{accid}}&id={{id}}&showteam={{showteam}}&admindriver=true">My Details</a>
+                                        </li>
+                                        <li class="nav-item" ng-show="!manVisible">
+                                            <a class="nav-link text-white" ng-show="admindriver" href="/app/driveradminmanagermydetail?accid={{accid}}&id={{id}}&showteam={{showteam}}&admindriver=true">My Details</a>
                                         </li>
                                         <li class="nav-item">
                                             <a class="nav-link text-white" href="/app/secur/logout.jsp">Logout</a>
@@ -1227,6 +1235,9 @@
         <script>
         var el,table,currPage;
             $(document).ready(function () {
+                var url_string = $(location).attr("href");
+                var url = new URL(url_string);
+                var report_Id =  url.searchParams.get("reportid");
                 var currentDate = new Date();
                 var defaultFromDate = new Date(currentDate.getFullYear(), currentDate.getMonth() -1);
                 var defaultToDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), 0);
@@ -1234,7 +1245,16 @@
                 $('#adminreport-to').datepicker('setDate', defaultToDate);
 
                 // AI-000226 -- Start
-                var minDate = new Date();
+                
+                // For Sonora Quest Account, Bi-Weekly Fixed Amount - Report -- Starts
+                //var minDate = new Date();
+                var minDate;
+                if(report_Id === 'a0Q3r00000Iq5fQEAR'){
+                    minDate = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0);
+                }else{
+                    minDate = new Date();
+                }
+                  // For Sonora Quest Account, Bi-Weekly Fixed Amount - Report -- ends
                 minDate.setDate(minDate.getDate());
                 var disabled = minDate;
                 $('#adminreport-to').datepicker('setEndDate', disabled);

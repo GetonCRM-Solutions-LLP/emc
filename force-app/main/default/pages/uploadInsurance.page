@@ -1,0 +1,52 @@
+<apex:page showHeader="false" title="My Insurance Upload" sidebar="false" lightningStylesheets="true" controller="DriverDashboardController"
+    standardStylesheets="false" showChat="false">
+
+    <head>
+        <meta charset="UTF-8" />
+        <link rel="stylesheet" href="{!URLFOR($Resource.LwcDesignCss,'lwcDesign/assets/css/customstyle.css')}" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/fontawesome.min.css" />
+        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v6.1.1/css/all.css" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+        <script src="https://code.jquery.com/jquery-2.1.3.min.js"></script>
+        <style type="text/css">
+            * {
+                user-select: none;
+            }
+
+            ::-webkit-scrollbar {
+                width: 0;
+                /* Remove scrollbar space */
+                background: transparent;
+                /* Optional: just make scrollbar invisible */
+            }
+
+            body {
+                font-family: 'Proxima Nova' !important;
+                max-width: 100%;
+            }
+        </style>
+    </head>
+    <apex:includeLightning />
+    <apex:slds />
+    <div id="lightning"></div>
+    <script>
+        var _driverDetail, empContact, empRole, manRole, plMarketing;
+        _driverDetail = {!DriverDetails}
+        empContact = _driverDetail;
+        empRole = empContact[0].Role__c;
+        manRole = '{!managerrole}'
+        plMarketing =  '{!($Label.PL_Marketing)}'
+        $Lightning.use("c:LWCLightningApp", function () {
+            $Lightning.createComponent("c:dashboardUploadInsurance", {
+                //pass parameter values to lwc js controller
+                "role": empRole,
+                "manRole": manRole,
+                "pLMarketing": plMarketing
+            }, "lightning", function (cmp) {
+                console.log("component created successfully");
+                // do some stuff
+            }
+            );
+        });
+    </script>
+</apex:page>

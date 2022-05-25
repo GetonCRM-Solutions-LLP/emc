@@ -2139,10 +2139,10 @@ function ($filter) {
                                 <a class="nav-link text-white" ng-show="admindriver" href="/app/reportlist?accid={{accid}}&id={{aid}}&showteam={{showteam}}&admindriver={{admindriver}}">Reports</a>
                             </li>
                             <li class="nav-item"> 
-                                <a class="nav-link text-white" ng-show="!admindriver && insurancePage" href="/app/driveradminmanagermydetail?accid={{accid}}&id={{aid}}&showteam={{showteam}}">My Details</a>
-                                <a class="nav-link text-white" ng-show="admindriver && !insurancePage"  href="/app/driveradminmanagermydetailInsurance?accid={{accid}}&id={{aid}}&showteam={{showteam}}&admindriver={{admindriver}}">My Details</a>
-                                <a class="nav-link text-white" ng-show="admindriver && insurancePage"  href="/app/driveradminmanagermydetail?accid={{accid}}&id={{aid}}&showteam={{showteam}}&admindriver={{admindriver}}">My Details</a>
-                                <a class="nav-link text-white" ng-show="!admindriver && !insurancePage"  href="/app/driveradminmanagermydetailInsurance?accid={{accid}}&id={{aid}}&showteam={{showteam}}">My Details</a>
+                                <a class="nav-link text-white" ng-show="!admindriver" href="/app/driveradminmanagermydetail?accid={{accid}}&id={{aid}}&showteam={{showteam}}">My Details</a>
+                                <!-- <a class="nav-link text-white" ng-show="admindriver && !insurancePage"  href="/app/driveradminmanagermydetailInsurance?accid={{accid}}&id={{aid}}&showteam={{showteam}}&admindriver={{admindriver}}">My Details</a> -->
+                                <a class="nav-link text-white" ng-show="admindriver"  href="/app/driveradminmanagermydetail?accid={{accid}}&id={{aid}}&showteam={{showteam}}&admindriver={{admindriver}}">My Details</a>
+                                <!-- <a class="nav-link text-white" ng-show="!admindriver && !insurancePage"  href="/app/driveradminmanagermydetailInsurance?accid={{accid}}&id={{aid}}&showteam={{showteam}}">My Details</a> -->
                             </li>
                             <li class="nav-item"> 
                                 <a class="nav-link text-white" href="/app/secur/logout.jsp">Logout</a>

@@ -103,9 +103,11 @@
             Id = "{!$CurrentPage.parameters.id}",
             showTeam = "{!$CurrentPage.parameters.showteam}",
             admindriver = "{!$CurrentPage.parameters.admindriver}",
+            loginID = ("{!$CurrentPage.parameters.loginAS}" === "") ? null : "{!$CurrentPage.parameters.loginAS}",
+            managerid = ("{!$CurrentPage.parameters.manid}" == '' || "{!$CurrentPage.parameters.manid}" == undefined) ?  "{!$CurrentPage.parameters.managerid}" : "{!$CurrentPage.parameters.manid}",
             ProfileId = "{!$User.ProfileId}";
             plMarketing = '{!($Label.PL_Marketing)}';
-            console.log("ProfileId: " + ProfileId);
+            console.log("ProfileId: " + ProfileId + ": {!$Profile.Name}");
             
         $Lightning.use("c:LWCLightningApp", function () {
             $Lightning.createComponent("c:homePageComponent", {
@@ -116,6 +118,8 @@
                 "admindriver": admindriver,
                 "ProfileId": ProfileId,
                 "plMarketing": plMarketing,
+                "loginId" : loginID,
+                "managerid" : managerid
             }, "lwcDemo", function (cmp) {
                 $("#spinner").hide();
                 console.log("Component Created Successfully");
