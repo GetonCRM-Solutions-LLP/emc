@@ -1199,7 +1199,7 @@
                                     Visualforce.remoting.Manager.invokeAction('{!$RemoteAction.drivermanagermydetailcontroller.getDriverDetailsClone}', $scope.id,
                                         function (result, event) {
                                             if (event.status) {
-                                                $scope.empContact = JSON.parse('{!DriverDetails}');
+                                              //  $scope.empContact = JSON.parse('{!DriverDetails}');
                                                 if ($scope.empContact[0].Insurance_Attachment_Id__c != '' && $scope.empContact[0].Insurance_Attachment_Id__c != null && $scope.empContact[0].Insurance_Attachment_Id__c != undefined) {
                                                     $scope.$apply(function () {
                                                         $scope.attachmentid = $scope.empContact[0].Insurance_Attachment_Id__c;
