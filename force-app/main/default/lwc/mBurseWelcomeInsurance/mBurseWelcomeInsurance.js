@@ -9,8 +9,6 @@ export default class MBurseWelcomeInsurance extends LightningElement {
     pathname;
     search;
     video;
-    iframeV;
-    vfHost;
     videoWidth = 380;
     videoHeight = 214;
     welcomeVideoUrl;
@@ -45,16 +43,12 @@ export default class MBurseWelcomeInsurance extends LightningElement {
         // eslint-disable-next-line @lwc/lwc/no-api-reassignments
         this.insuranceDeclaration = true;
         this.isPlay = false;
-        // this.template.querySelector('.video-frame').contentWindow.postMessage('test', '*');
     }
     proxyToObject(e) {
         return JSON.parse(e)
     }
     toggleHide(){
         var list, status, packetStatus;
-        var message = 'testing';
-        console.log(this.template.querySelector("iframe").contentWindow.postMessage("Send message", window.location.origin))
-        this.template.querySelector('iframe').contentWindow.postMessage(message, 'https://mburse--partialdev--c.visualforce.com')
         contactInfo({contactId: this.contactId})
         .then((data) => {
           if (data) {
@@ -83,9 +77,6 @@ export default class MBurseWelcomeInsurance extends LightningElement {
           }
         this.renderInitialized = true;
         this.toggleHide();
-        // this.iframeV = this.template.querySelector("iframe").contentWindow;
-        // console.log(window.location.origin)
-        // Fire an event to send data to visualforce page
     }
     skipToPage(){
         var contactData, beforeUpdate, toUpdate, listFrom;
@@ -120,25 +111,5 @@ export default class MBurseWelcomeInsurance extends LightningElement {
         this.isPlay = false;
         // eslint-disable-next-line @lwc/lwc/no-api-reassignments
         this.insuranceDeclaration = false;
-    }
-    handleFireToVf(){
-        var vfData = {
-             vfHeight: this.videoHeight,
-             vfWidth: this.videoWidth,
-             vfSource: this.welcomeVideoUrl,
-         }
-         console.log("Vf data", JSON.stringify(vfData));
-        //  let url = window.location.origin;
-        //  let urlHost = url + '/apex/resourceVideoFrame';
-        //  this.vfHost = urlHost;   
-        //  this.iframeV = this.template.querySelector("iframe").contentWindow;
-        //  console.log(window.location.origin)
-        //  // Fire an event to send data to visualforce page
-        //  this.iframeV.postMessage("message",  window.location.origin);
-     }
-     connectedCallback() {
-        // let url = window.location.origin;
-        // let urlHost = url + '/app/mBurseVideoFrame';
-        // this.vfHost = urlHost;
     }
 }
