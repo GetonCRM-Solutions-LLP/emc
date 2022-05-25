@@ -808,7 +808,7 @@ export default class HomePageComponent extends LightningElement {
             this.reporturl = "/app/reportlist?accid=" + this.accountId + "&id=" + this.Id + "&showteam=" + this.showTeam;
             this.notificationUrl = "/app/ManageNotification?accid=" + this.accountId + "&id=" + this.Id + "&showteam=" + this.showTeam;
             this.myDetailurl = "/app/driveradminmanagermydetail?accid=" + this.accountId + "&id=" + this.Id + "&showteam=" + this.showTeam;
-            this.myDetailInsuranceurl = "/app/drivermanagermydetailInsurance?accid="+ this.accountId + "&id=" + this.Id + "&showteam=" + this.showTeam;
+            this.myDetailInsuranceurl = "/app/uploadInsurance?accid="+ this.accountId + "&id=" + this.Id + "&showteam=" + this.showTeam;
         } else if (this.ProfileId === '00e31000001FRDZAA4') {
             if(this.loginId != null) {
                 this.drivermanagerLoggedIn = true;
@@ -818,6 +818,7 @@ export default class HomePageComponent extends LightningElement {
                 this.mileageurl = "/app/MileageDashboard?accid=" + this.accountId + "&id=" + this.Id + "&manid="+ this.managerid + "&showteam=" + this.showTeam + "&loginAS=true";
                 this.notificationUrl = "/app/ManageNotification?accid=" + this.accountId + "&id=" + this.Id + "&managerid="+ this.managerid + "&showteam=" + this.showTeam + "&loginAS=true";
                 this.myDetailurl = "/app/driveradminmanagermydetail?accid=" + this.accountId + "&id=" + this.Id + "&manid="+ this.managerid + "&showteam=" + this.showTeam + "&loginAS=true";
+                this.myDetailInsuranceurl = "/app/uploadInsurance?accid="+ this.accountId + "&id=" + this.Id + "&managerid="+ this.managerid + "&showteam=" + this.showTeam  + "&loginAS=true";
             }else{
                 this.admindriverLoggedIn = true;
                 this.drivermanagerLoggedIn = false;
@@ -828,6 +829,7 @@ export default class HomePageComponent extends LightningElement {
                 this.notificationUrl = "/app/ManageNotification?accid=" + this.accountId + "&id=" + this.Id + "&showteam=" + this.showTeam + "&admindriver=" + this.admindriver;
                 this.reporturl = "/app/reportlist?accid=" + this.accountId + "&id=" + this.Id + "&showteam=" + this.showTeam + "&admindriver=" + this.admindriver;
                 this.myDetailurl = "/app/driveradminmanagermydetail?accid=" + this.accountId + "&id=" + this.Id + "&showteam=" + this.showTeam + "&admindriver=" + this.admindriver;
+                this.myDetailInsuranceurl = "/app/uploadInsurance?accid="+ this.accountId + "&id=" + this.Id + "&showteam=" + this.showTeam + "&admindriver=" + this.admindriver;
             }
         }
     }
