@@ -25,6 +25,7 @@ export default class MBurseWelcomeInsurance extends LightningElement {
     // get backgroundStyle() {
     //     return `background-image:url(${background})`;
     // }
+    /*get custom settings for video url */
     @wire(getCustomSettings)
     myCustomSettings({ error, data }){
         if (data) {
