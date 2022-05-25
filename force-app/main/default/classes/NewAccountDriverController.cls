@@ -202,7 +202,7 @@ public with sharing class NewAccountDriverController {
                             Insurance_Declaration_Status__c  
                         FROM Contact
                         WHERE Id =: contactId];
-        if(contactObj.Accountid == System.label.ERMI_Account && contactObj.Driver_Type__c != null && (contactObj.Driver_Type__c == 'Driver - Part Time' || contactObj.Driver_Type__c == 'Driver - Full Time' )){
+        if(contactObj.Accountid == System.label.ERMI_Account){
             biWeekList = [SELECT id,name,Start_Date__c,
                                         End_Date__c,Confirm_Hours__c,
                                         Error_Hours__c,Count_Error_Check__c 
