@@ -1,7 +1,7 @@
 trigger EmployeeReimbursementTrigger on Employee_Reimbursement__c (after update, after insert,before insert) {
     SendEmail__c sendCustomSet = SendEmail__c.getValues('EmployeeReimbursementTrigger');
     if(Trigger.isUpdate && (checkRecursive.runOnce() || Test.isRunningTest())) {       
-        EmployeeReimbursementTriggerHandler.mileagefieldupdate(Trigger.New, Trigger.oldMap, Trigger.newMap);        
+        //EmployeeReimbursementTriggerHandler.mileagefieldupdate(Trigger.New, Trigger.oldMap, Trigger.newMap);        
         //AI-000436 start
         Map<Id,Employee_Reimbursement__c> sendMailReimbursMap = new Map<Id,Employee_Reimbursement__c>();
         Set<Id> reimIdsLst = new Set<Id>();
