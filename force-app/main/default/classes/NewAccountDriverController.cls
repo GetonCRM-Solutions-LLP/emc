@@ -202,7 +202,7 @@ public with sharing class NewAccountDriverController {
                             Insurance_Declaration_Status__c  
                         FROM Contact
                         WHERE Id =: contactId];
-        if(contactObj.Accountid == System.label.ERMI_Account && contactObj.Driver_Type__c != null && (contactObj.Driver_Type__c == 'Driver - Part Time' || contactObj.Driver_Type__c == 'Driver - Full Time' )){
+        if(contactObj.Accountid == System.label.ERMI_Account){
             biWeekList = [SELECT id,name,Start_Date__c,
                                         End_Date__c,Confirm_Hours__c,
                                         Error_Hours__c,Count_Error_Check__c 
@@ -218,19 +218,20 @@ public with sharing class NewAccountDriverController {
             if(contactObj.Role__c == StaticValues.ROLE_DRIVER) {
                 //AI-000414
                 if(biWeekList.size() > 0){
-                    if(biWeekList[0].Confirm_Hours__c == false &&  contactObj.Insurance_Attachment_Id__c != null && biWeekList[0].Count_Error_Check__c < 3){
+                    if(biWeekList[0].Confirm_Hours__c == false && biWeekList[0].Count_Error_Check__c < 3){
                         pageRef = '/app/driverDashboardWeekly?accid='+contactObj.Accountid+'&id='+contactId;
-                    } else if((biWeekList[0].Confirm_Hours__c == true || (biWeekList[0].Count_Error_Check__c != null && biWeekList[0].Count_Error_Check__c > 2)) && contactObj.Insurance_Attachment_Id__c != null ){
+                    } else if((biWeekList[0].Confirm_Hours__c == true || (biWeekList[0].Count_Error_Check__c != null && biWeekList[0].Count_Error_Check__c > 2)) ){
                         pageRef = '/app/driverDashboardClone?accid='+contactObj.Accountid+'&id='+contactId;
-                    } else if(contactObj.Insurance_Attachment_Id__c == null){
-                        pageRef = '/app/driverDashboardInsuranceClone?accid='+contactObj.Accountid+'&id='+contactId;
-                    } 
+                    } /* else if(contactObj.Insurance_Attachment_Id__c == null){
+                        pageRef = '/app/uploadInsurance?accid='+contactObj.Accountid+'&id='+contactid; 
+                    } */
                 } else {
-                    if(contactObj.Insurance_Attachment_Id__c != null ){
+                    /*if(contactObj.Insurance_Attachment_Id__c != null ){
                         pageRef = '/app/driverDashboardClone?accid='+contactObj.Accountid+'&id='+contactId;
                     } else {
-                        pageRef = '/app/driverDashboardInsuranceClone?accid='+contactObj.Accountid+'&id='+contactId;
-                    }
+                        pageRef = '/app/driverDashboardInsuranceClone?accid='+contactObj.Accountid+'&id='+contactId; }
+                        pageRef = '/app/uploadInsurance?accid='+contactObj.Accountid+'&id='+contactid;  */                           
+                        pageRef = '/app/driverDashboardClone?accid='+contactObj.Accountid+'&id='+contactId;
                 }
                 return pageRef;
             } else if(contactObj.Role__c == StaticValues.ROLE_DRIVERMANAGER ) {
