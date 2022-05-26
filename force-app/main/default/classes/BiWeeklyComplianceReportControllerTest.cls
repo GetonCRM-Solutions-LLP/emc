@@ -30,7 +30,8 @@ public class BiWeeklyComplianceReportControllerTest {
         Contact con = new Contact();
         System.runAs(admin) {
             acc.Name = 'PL Marketing';
-            acc.Pay_Period_Start_Date__c = Date.parse('07/25/2021');
+            acc.Pay_Period_Days__c = 13;
+            acc.Pay_Period_Start_Date__c = system.today().adddays(-130);
             insert acc;
             Contact contact_1 = new Contact(AccountId = acc.Id, LastName = 'xgeek',External_Email__c='abc@gmail.com');
             insert contact_1;
