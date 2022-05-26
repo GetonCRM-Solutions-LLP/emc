@@ -1,14 +1,7 @@
 trigger EmployeeReimbursementTrigger on Employee_Reimbursement__c (after update, after insert,before insert) {
-   /*if(Trigger.isAfter && Trigger.isInsert) {
-        EmployeeReimbursementTriggerHandler.populateFields(Trigger.New);
-    }else*/
     SendEmail__c sendCustomSet = SendEmail__c.getValues('EmployeeReimbursementTrigger');
-    
-        system.debug('sendCustomSet==' + sendCustomSet);
-    if(Trigger.isUpdate && (checkRecursive.runOnce() || Test.isRunningTest())) {
-       
-        EmployeeReimbursementTriggerHandler.mileagefieldupdate(Trigger.New, Trigger.oldMap, Trigger.newMap);
-        
+    if(Trigger.isUpdate && (checkRecursive.runOnce() || Test.isRunningTest())) {       
+        EmployeeReimbursementTriggerHandler.mileagefieldupdate(Trigger.New, Trigger.oldMap, Trigger.newMap);        
         //AI-000436 start
         Map<Id,Employee_Reimbursement__c> sendMailReimbursMap = new Map<Id,Employee_Reimbursement__c>();
         Set<Id> reimIdsLst = new Set<Id>();
@@ -23,10 +16,10 @@ trigger EmployeeReimbursementTrigger on Employee_Reimbursement__c (after update,
             EmployeeReimbursementTriggerHandler.updateStatusMail(sendMailReimbursMap);
         }
         if(!reimIdsLst.isEmpty()){
-    // EMC - 271
-    // Whenever Reimbursement is created or updated at that time this is check the value of Contct's Vehicle type 
-    // if vehicle type is 'IRS Mileage Rate' than the mpg and fuel price is set to 0 for the reimbursement and 
-    // Maintanace and tires are set as the IRS Mileage Rate of that year which is in IRS Mileage rate.
+            // EMC - 271
+            // Whenever Reimbursement is created or updated at that time this is check the value of Contct's Vehicle type 
+            // if vehicle type is 'IRS Mileage Rate' than the mpg and fuel price is set to 0 for the reimbursement and 
+            // Maintanace and tires are set as the IRS Mileage Rate of that year which is in IRS Mileage rate.
             EmployeeReimbursementTriggerHandler.IRSVehicleCHeck(reimIdsLst);
         }
     }
@@ -45,8 +38,6 @@ trigger EmployeeReimbursementTrigger on Employee_Reimbursement__c (after update,
             EmployeeReimbursementTriggerHandler.updateStatusMail(sendMailEmpReimbursMap);
         }
         if(!reimIds.isEmpty()) {
-           // EmployeeReimbursementTriggerHandler.updateFuelMpgPrice(reimIds);
-
            //EMC - 271
            EmployeeReimbursementTriggerHandler.IRSVehicleCHeck(reimIds);
         }
@@ -54,26 +45,7 @@ trigger EmployeeReimbursementTrigger on Employee_Reimbursement__c (after update,
     
     //AI-000459 Start
     //If contact is deactivated then no user can manually create a reimbursement record for that contact.
-    if(Trigger.isInsert && Trigger.isBefore) 
-    {
+    if(Trigger.isInsert && Trigger.isBefore) {
         EmployeeReimbursementTriggerHandler.checkDeactivatedContact(Trigger.New);
     }
-
-    // EMC - 271
-    // Whenever Reimbursement is created or updated at that time this is check the value of Contct's Vehicle type 
-    // if vehicle type is 'IRS Mileage Rate' than the mpg and fuel price is set to 0 for the reimbursement and 
-    // Maintanace and tires are set as the IRS Mileage Rate of that year which is in IRS Mileage rate.
-    /*if(Trigger.isAfter) {
-        if(Trigger.isInsert || Trigger.isUpdate) {
-            //EmployeeReimbursementTriggerHandler.IRSVehicleCHeck(Trigger.new);
-           Set<Id> reimIdslst = new Set<Id>();
-            for(Employee_Reimbursement__c reimb : Trigger.New){
-                reimIdslst.add(reimb.ID);
-            }
-            if(!reimIdslst.isEmpty()){
-                EmployeeReimbursementTriggerHandler.IRSVehicleCHeck(reimIdslst);
-            }
-            
-        }
-    }*/
 }

@@ -8,6 +8,33 @@
         <apex:include pageName="EMC_Common_Scripts" />
         <script src="{!URLFOR($Resource.dirPagination)}"></script>
         <style type="text/css">
+            /* Media Queries */
+            @media only screen and (max-width: 1024px){
+                .weekly-info {
+                     top: 55% !important;
+                }
+                .card-header {
+                    font-size: 18px !important;
+                }
+                .card-title{
+                    font-size: 1rem !important;
+                }
+                .align_items {
+                    width: 85% !important;
+                }
+                .sync-info{
+                    transform: translate(-50%, -43%) !important;
+                }
+                .align_items td {
+                    padding: 0.15rem !important;
+                }
+                iframe{
+                    height: 187px !important;
+                }
+            }
+            body{
+                background-color: rgb(203, 207, 212);
+            }
             .a-setcolor-pointer {
                 color: #78bc42 !important;
                 text-decoration: none !important;
@@ -34,6 +61,9 @@
             }
             .width-of-table{
                 width: 50%;
+            }
+            .sPadding{
+                padding-top: 8px;
             }
             .td-all td{
                 padding: 0.45rem !important
@@ -69,7 +99,7 @@
             height: 1em;
            }
             header{
-                margin-bottom: 0;
+                margin-bottom: 100px;
                 display: flex;
                 width: 100%;
                 position: relative;
@@ -250,26 +280,38 @@
                 width: 100%;
             }
             .fluid{
-                width: 100%;
+                position: relative;
+                margin: 0 auto;
+                /* width: 100%;
                 height: 100vh;
-                background-color: rgb(203, 207, 212);
+                background-color: rgb(203, 207, 212); */
+            }
+            .f-center{
+                position: absolute;
+                left: 50%;
+                top: 50%;
+                transform: translate(-50%, -50%);
             }
             .navbar{
                 padding : 0 !important;
             }
             .weekly-info{
-                position: fixed;
+                position: relative;
+                margin: 0 auto;
+                /* position: fixed;
                 top: 50%;
-                left: 50%;
+                left: 50%; */
                 /* bring your own prefixes */
-                transform: translate(-50%, -50%);
+                /* transform: translate(-50%, -50%); */
             }
             .sync-info{
-                position: fixed;
+                position: relative;
+                margin: 0 auto;
+                /* position: fixed;
                 top: 50%;
-                left: 50%;
+                left: 50%; */
                 /* bring your own prefixes */
-                transform: translate(-50%, -44%);
+                /* transform: translate(-50%, -44%); */
             }
             .cd-pad{
                 padding: 0.5rem !important;
@@ -297,6 +339,9 @@
                         $scope.syncParam = url.searchParams.get("sync");
                         $scope.role = url.searchParams.get("role");
                         $scope.mileageDetail = {!mileageDetailWrapper}
+                        $scope.typeOfDriver = ($scope.mileageDetail[0] != null || $scope.mileageDetail[0] != undefined) ? $scope.mileageDetail[0].driverType : "";
+                        $scope.errorMessage = ($scope.typeOfDriver != 'Driver - Salary') ? 'There are errors on my time/mileage' : 'There are errors with my mileage';
+                        $scope.confirmMessage = ($scope.typeOfDriver != 'Driver - Salary') ? 'I confirm the hours are correct for this week' : 'I confirm the mileage is correct for this week';
                         var url_locate = "/app/driverDashboardClone?accid="+$scope.accid+"&id="+$scope.id;
                         var driverManager_url = "/app/drivermanagerdashboard?accid="+$scope.accid+"&id="+$scope.id+"&showteam="+$scope.showteam;
                         var admindriver_url = "/app/admindriverdashboard?accid="+$scope.accid+"&id="+$scope.id+"&admindriver="+$scope.admindriver+"&showteam="+$scope.showteam;
@@ -306,13 +351,21 @@
                         $scope.isHours = true;
                         $scope.payPeriodName = ($scope.mileageDetail[0] != undefined && $scope.mileageDetail[0].biWeekPayperiod != undefined) ? $scope.mileageDetail[0].biWeekPayperiod :  "";
                         $('#spinner').hide();
-                        if ($scope.mileageDetail[0] != undefined && $scope.mileageDetail[0].countErrorCheck === 2) {
-                                document.getElementById('Error_td').innerHTML = "There are still hours on my Weekly Time Sheet Contact Support"
+                        if ($scope.typeOfDriver != 'Driver - Salary') {
+                                if ($scope.mileageDetail[0] != undefined && $scope.mileageDetail[0].countErrorCheck === 2) {
+                                    $scope.errorMessage =  "There are still errors on my Weekly Time Sheet Contact Support"
+                                }
                         }
+                        else {
+                                if ($scope.mileageDetail[0] != undefined && $scope.mileageDetail[0].countErrorCheck === 2) {
+                                    $scope.errorMessage = "There are still errors with my mileage Contact Support"
+                                }
+                        }
+                      
                        
                         if (window.performance.navigation.type != 1 && $scope.syncParam != undefined) {
                             Visualforce.remoting.Manager.invokeAction('{!$RemoteAction.ConfirmTripTimeERMIController.sendErrorEmail}', $scope.mileageDetail[0].driverEmail, $scope.mileageDetail[0].driverName, $scope.mileageDetail[0].biWeekPayperiod,
-                                $scope.mileageDetail[0].mileage, $scope.mileageDetail[0].driveTime, $scope.mileageDetail[0].stayTime, $scope.mileageDetail[0].totalTime, $scope.mileageDetail[0].countErrorCheck,
+                                $scope.mileageDetail[0].mileage, $scope.mileageDetail[0].driveTime, $scope.mileageDetail[0].stayTime, $scope.mileageDetail[0].totalTime, $scope.mileageDetail[0].countErrorCheck, $scope.mileageDetail[0].driverType,
                                 function (result, event) {
                                     if (event.status) {
                                     } else {
@@ -404,6 +457,7 @@
                                 m.driveTime = md.driveTime;
                                 m.stayTime = md.stayTime;
                                 m.totalTime = md.totalTime;
+                                m.driverType = md.driverType;
                                 $scope.requestInfo.push(m);
                             })
                           
@@ -510,12 +564,15 @@
             <div class="fluid">
                 <div class="weekly-info col-12 col-sm-6 col-md-8" id="weekly-time">
                     <div class="card text-center">
-                        <div class="card-header">
+                        <div class="card-header" ng-if="typeOfDriver != 'Driver - Salary'">
                             Weekly Time Sheet
+                        </div>
+                        <div class="card-header" ng-if="typeOfDriver === 'Driver - Salary'">
+                            Weekly Mileage Approval
                         </div>
                         <div class="card-body">
                             <h5 class="card-title">{{payPeriodName}}</h5>
-                            <div class="mt-1">
+                            <div class="mt-1" ng-if="typeOfDriver != 'Driver - Salary'">
                                 <table class="table">
                                     <thead>
                                         <th>Mileage</th>
@@ -533,14 +590,26 @@
                                       </tbody>
                                 </table>
                             </div>
-                            <div>
+                            <div class="mt-1" ng-if="typeOfDriver === 'Driver - Salary'">
+                                <table class="table" style="margin: 0 auto; width: 28%">
+                                    <thead>
+                                        <th>Mileage</th>
+                                      </thead>
+                                      <tbody>
+                                        <tr  ng-repeat="m in mileageDetail">
+                                          <td>{{m.mileage}}</td>
+                                        </tr>
+                                      </tbody>
+                                </table>
+                            </div>
+                            <div ng-class="{'sPadding': typeOfDriver === 'Driver - Salary'}">
                                 <table class="table table-borderless width-of-table">
                                     <tr>
-                                        <td class="font-style text-td">I confirm the hours are correct for this week</td>
+                                        <td class="font-style text-td">{{confirmMessage}}</td>
                                         <td><div class="check-input"><input type="checkbox" name="confirm-checkbox"  ng-model="confirmCheck" ng-change="confirmChange(confirmCheck)"/ ></div></td>
                                     </tr>
                                     <tr>
-                                        <td class="font-style text-td" id="Error_td">There are errors on my time/mileage</td>
+                                        <td class="font-style text-td" id="Error_td" >{{errorMessage}}</td>
                                         <td><div class="check-input"><input type="checkbox"  name="error-checkbox"  ng-model="errorCheck" ng-change="errorChange(errorCheck)"/ ></div></td>
                                     </tr>
                                 </table>
@@ -565,7 +634,8 @@
                             Instructions
                         </div>
                         <div class="card-body cd-pad">
-                            <h5 class="card-title font-weight-bold">Please follow these instructions to correct your weekly time and attendance</h5>
+                            <h5 class="card-title font-weight-bold" ng-if="typeOfDriver != 'Driver - Salary'">Please follow these instructions to correct your weekly time and attendance</h5>
+                            <h5 class="card-title font-weight-bold" ng-if="typeOfDriver === 'Driver - Salary'">Please follow these instructions to correct your weekly mileage</h5>
                             <div class="mt-05">
                                 <table class="table table-borderless align_items">
                                       <tbody>

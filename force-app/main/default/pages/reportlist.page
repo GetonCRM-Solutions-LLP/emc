@@ -824,6 +824,8 @@
                             scope.biweeklyDate = [];
                             scope.biweeklyDate[0] = scope.option;
                             scope.biweeklyPayRole = scope.biweeklyDate[0];
+                            scope.pLPayPeriod2021 = '{!($Label.PLPayPeriod2021)}';	
+                            scope.pLPayPeriod2022 = '{!($Label.PLPayPeriod2022)}';
                             scope.stCustomDate = '';
                             scope.enCustomDate = '';
                             scope.biweeklyPayYear = [];
@@ -857,7 +859,15 @@
 
                             scope.onbiweeklyPayYearChange = function (year){
                                 if(year != "Select Year"){
-                                    scope.biweeklyDate = payDate(scope.payPeriodStDate, year);
+                                    if(year === "2022"){
+                                       scope.biweeklyDate = [];
+                                       scope.biweeklyDate = scope.pLPayPeriod2022.split(",");
+                                    }
+                                    if(year === "2021"){
+                                         scope.biweeklyDate = [];
+                                         scope.biweeklyDate = scope.pLPayPeriod2021.split(",");
+                                    }
+                                   // scope.biweeklyDate = payDate(scope.payPeriodStDate, year);
                                    if(scope.biweeklyDate.length > 0) {
                                        scope.biweeklyDate.splice(0, 0, scope.option) 
                                    } else {
@@ -1854,6 +1864,10 @@
                                             <a class="nav-link text-white" ng-show="!admindriver" href="/app/ManageNotification?accid={{accid}}&id={{id}}&showteam={{showteam}}">Communications</a>
                                             <a class="nav-link text-white" ng-show="admindriver" href="/app/ManageNotification?accid={{accid}}&id={{id}}&showteam={{showteam}}&admindriver=true">Communications</a>
                                         </li>
+                                        <li class="nav-item" ng-show="manVisible && accid === plMAcc">
+                                            <a class="nav-link text-white" ng-show="!admindriver" href="/app/ManageNotification?managerid={{manId}}&accid={{accid}}&id={{id}}&showteam={{showteam}}">Communications</a>
+                                            <a class="nav-link text-white" ng-show="admindriver" href="/app/ManageNotification?managerid={{manId}}&accid={{accid}}&id={{id}}&showteam={{showteam}}&admindriver=true">Communications</a>
+                                        </li>
                                         <li class="nav-item active" ng-show="!manVisible">
                                             <a class="nav-link text-white" ng-show="!admindriver" href="/app/reportlist?accid={{accid}}&id={{id}}&showteam={{showteam}}">Reports</a>
                                             <a class="nav-link text-white" ng-show="admindriver" href="/app/reportlist?accid={{accid}}&id={{id}}&showteam={{showteam}}&admindriver=true">Reports</a>
@@ -1862,8 +1876,11 @@
                                             <a class="nav-link text-white" ng-show="!admindriver" href="/app/reportlist?managerid={{manId}}&accid={{accid}}&id={{id}}&showteam={{showteam}}">Reports</a>
                                             <a class="nav-link text-white" ng-show="admindriver" href="/app/reportlist?managerid={{manId}}&accid={{accid}}&id={{id}}&showteam={{showteam}}&admindriver=true">Reports</a>
                                         </li>
-                                        <li class="nav-item">
+                                        <li class="nav-item" ng-show="manVisible">
                                             <a class="nav-link text-white" ng-show="admindriver" href="/app/driveradminmanagermydetail?managerid={{manId}}&accid={{accid}}&id={{id}}&showteam={{showteam}}&admindriver=true">My Details</a>
+                                        </li>
+                                        <li class="nav-item" ng-show="!manVisible">
+                                            <a class="nav-link text-white" ng-show="admindriver" href="/app/driveradminmanagermydetail?accid={{accid}}&id={{id}}&showteam={{showteam}}&admindriver=true">My Details</a>
                                         </li>
                                         <li class="nav-item">
                                             <a class="nav-link text-white" href="/app/secur/logout.jsp">Logout</a>
@@ -1931,10 +1948,12 @@
 
                             <div ng-if="report.categoryName=='Tax Liability Reports'">
                                 <p>
-                                    <a ng-show="!admindriver" href="/app/ReportofDriverCompliance?accid={{accid}}&showteam={{showteam}}&id={{id}}&reportid ='compliancecalculationreport'">Tax Liability</a>
+                                    <a ng-show="!admindriver  && !manVisible" href="/app/ReportofDriverCompliance?accid={{accid}}&showteam={{showteam}}&id={{id}}&reportid ='compliancecalculationreport'">Tax Liability</a>
+                                    <a ng-show="!admindriver  && manVisible" href="/app/ReportofDriverCompliance?managerid={{manId}}&accid={{accid}}&showteam={{showteam}}&id={{id}}&reportid ='compliancecalculationreport'">Tax Liability</a>
                                 </p>
                                 <p>
-                                    <a ng-show="admindriver" href="/app/ReportofDriverCompliance?accid={{accid}}&showteam={{showteam}}&id={{id}}&reportid ='compliancecalculationreport'&admindriver=true">Tax Liability</a>
+                                    <a ng-show="admindriver  && !manVisible" href="/app/ReportofDriverCompliance?accid={{accid}}&showteam={{showteam}}&id={{id}}&reportid ='compliancecalculationreport'&admindriver=true">Tax Liability</a>
+                                    <a ng-show="admindriver  && manVisible" href="/app/ReportofDriverCompliance?managerid={{manId}}&accid={{accid}}&showteam={{showteam}}&id={{id}}&reportid ='compliancecalculationreport'&admindriver=true">Tax Liability</a>
                                 </p>
                                 <p ng-if="accid === spbsId || accid === deltaId || accid === antonpaarId">
                                     <a href="/app/AnnualComplianceReport?accid={{accid}}&showteam={{showteam}}&id={{id}}" title="This report includes details about drivers who's compliance status is yes">Annual Tax Liability Report </a>
@@ -2001,10 +2020,12 @@
                         <div ng-show="showtaxdifferently">
                             <h3 class="mb-10 d-block">Tax Liability Reports</h3>
                             <p>
-                                <a ng-show="!admindriver" href="/app/ReportofDriverCompliance?accid={{accid}}&showteam={{showteam}}&id={{id}}&reportid ='compliancecalculationreport'">Tax Liability</a>
+                                <a ng-show="!admindriver && !manVisible" href="/app/ReportofDriverCompliance?accid={{accid}}&showteam={{showteam}}&id={{id}}&reportid ='compliancecalculationreport'">Tax Liability</a>
+                                <a ng-show="!admindriver && manVisible" href="/app/ReportofDriverCompliance?managerid={{manId}}&accid={{accid}}&showteam={{showteam}}&id={{id}}&reportid ='compliancecalculationreport'">Tax Liability</a>
                             </p>
                             <p>
-                                <a ng-show="admindriver" href="/app/ReportofDriverCompliance?accid={{accid}}&showteam={{showteam}}&id={{id}}&reportid ='compliancecalculationreport'&admindriver=true">Tax Liability</a>
+                                <a ng-show="admindriver && !manVisible" href="/app/ReportofDriverCompliance?accid={{accid}}&showteam={{showteam}}&id={{id}}&reportid ='compliancecalculationreport'&admindriver=true">Tax Liability</a>
+                                <a ng-show="admindriver && manVisible" href="/app/ReportofDriverCompliance?managerid={{manId}}&accid={{accid}}&showteam={{showteam}}&id={{id}}&reportid ='compliancecalculationreport'&admindriver=true">Tax Liability</a>
                             </p>
                             <p ng-if="accid === spbsId || accid === deltaId || accid === antonpaarId">
                                 <a href="/app/AnnualComplianceReport?accid={{accid}}&showteam={{showteam}}&id={{id}}" title="This report includes details about drivers who's compliance status is yes">Annual Tax Liability Report </a>

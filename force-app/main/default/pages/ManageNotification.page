@@ -245,7 +245,7 @@
                 margin-left: auto;
                 left: 0;
                 right: 0;
-                bottom: -50px;
+                /* bottom: -50px; */
                 text-transform: none;
                 font-weight: 300;
                 font-style: italic;
@@ -1436,6 +1436,13 @@
                         $scope.PLMarketing = '{!($Label.PL_Marketing)}';
                         $scope.showteam = url.searchParams.get("showteam");
                         $scope.managerid = url.searchParams.get("managerid");
+                        $scope.manVisible = false;
+                        if ($scope.managerid == undefined || $scope.managerid == '') {
+                            $scope.manVisible = false;
+                        }else{
+                            $scope.manVisible = true;
+                        }
+                        $scope.login = url.searchParams.get("loginAS");
                         $scope.admindriver = false;
                         $scope.admindriver = url.searchParams.get("admindriver");
                         if ($scope.admindriver == undefined || $scope.admindriver == '') {
@@ -2971,15 +2978,25 @@
                                             <a class="nav-link text-white" ng-if="manRole != 'Manager' && manRole != 'Driver/Manager'" ng-show="admindriver" href="/app/admindriverdashboard?accid={{accid}}&id={{id}}&showteam={{showteam}}&admindriver=true">Dashboard</a>
                                             <a class="nav-link text-white" ng-if="role === 'Driver/Manager'" href="/app/drivermanagerdashboard?accid={{accid}}&id={{id}}&showteam={{showteam}}">Dashboard</a>
                                             <a class="nav-link text-white" ng-if="role === 'Manager'" href="/app/managerdashboard?accid={{accid}}&id={{id}}&showteam={{showteam}}">Dashboard</a>
-                                            <a class="nav-link text-white" ng-if="manRole === 'Driver/Manager' || manRole === 'Manager'" ng-show="!admindriver" href="/app/managerdashboardfromadmin?managerid={{managerid}}&accid={{accid}}&id={{id}}&showteam={{showteam}}">Dashboard</a>
-                                            <a class="nav-link text-white" ng-if="manRole === 'Manager' || manRole === 'Driver/Manager'" ng-show="admindriver" href="/app/managerdashboardfromadmindriver?managerid={{managerid}}&accid={{accid}}&id={{id}}&showteam={{showteam}}&admindriver=true">Dashboard</a>
+                                            <a class="nav-link text-white" ng-if="manRole === 'Driver/Manager' && (role === 'Driver/Admin' || role === 'Admin') && login" ng-show="!admindriver" href="/app/drivermanagerdriverdetails?accid={{accid}}&id={{managerid}}&manid={{id}}&showteam={{showteam}}&loginAS=true">Dashboard</a>
+                                            <a class="nav-link text-white" ng-if="manRole === 'Manager'"  ng-show="!admindriver" href="/app/managerdashboardfromadmin?managerid={{managerid}}&accid={{accid}}&id={{id}}&showteam={{showteam}}">Dashboard</a>
+                                            <a class="nav-link text-white" ng-if="manRole === 'Manager'" ng-show="admindriver" href="/app/managerdashboardfromadmindriver?managerid={{managerid}}&accid={{accid}}&id={{id}}&showteam={{showteam}}&admindriver=true">Dashboard</a>
+                                            <a class="nav-link text-white" ng-if="manRole ===  'Driver/Manager' && !login"  ng-show="!admindriver" href="/app/managerdashboardfromadmin?managerid={{managerid}}&accid={{accid}}&id={{id}}&showteam={{showteam}}">Dashboard</a>
+                                            <a class="nav-link text-white" ng-if="manRole ===  'Driver/Manager' && !login" ng-show="admindriver" href="/app/managerdashboardfromadmindriver?managerid={{managerid}}&accid={{accid}}&id={{id}}&showteam={{showteam}}&admindriver=true">Dashboard</a>
                                             <!-- <a class="nav-link text-white" ng-if="manRole === 'Manager'" ng-show="!admindriver" href="/app/managerdashboardfromadmindriver?managerid={{managerid}}&accid={{accid}}&id={{id}}&showteam={{showteam}}">Dashboard</a> -->
+                                        </li>
+                                        <li class="nav-item" ng-if="(role === 'Driver/Admin' || role === 'Admin') && manRole === 'Driver/Manager' && login">
+                                            <a class="nav-link text-white"  href="/app/MileageDashboard?accid={{accid}}&id={{id}}&managerid={{managerid}}&showteam={{showteam}}&loginAS=true">Mileage</a>
                                         </li>
                                         <li class="nav-item" ng-if="manRole != 'Manager' && manRole != 'Driver/Manager'">
                                             <a class="nav-link text-white" ng-show="admindriver" href="/app/MileageDashboard?accid={{accid}}&id={{id}}&showteam={{showteam}}&admindriver={{admindriver}}">Mileage</a>
                                             <a class="nav-link text-white" ng-show="!admindriver" href="/app/MileageDashboard?accid={{accid}}&id={{id}}&showteam={{showteam}}">Mileage</a>
                                         </li>
-                                        <li class="nav-item" ng-if="role != 'Driver/Manager' && role != 'Manager' ">
+                                        <li class="nav-item" ng-if="role != 'Driver/Manager' && role != 'Manager' && manVisible && !login">
+                                            <a class="nav-link text-white" ng-show="admindriver" href="/app/roster?managerid={{managerid}}&accid={{accid}}&id={{id}}&showteam={{showteam}}&admindriver={{admindriver}}">Drivers</a>
+                                            <a class="nav-link text-white" ng-show="!admindriver" href="/app/roster?managerid={{managerid}}&accid={{accid}}&id={{id}}&showteam={{showteam}}">Drivers</a>
+                                        </li>
+                                        <li class="nav-item" ng-if="role != 'Driver/Manager' && role != 'Manager' && !manVisible">
                                             <a class="nav-link text-white" ng-show="admindriver" href="/app/roster?accid={{accid}}&id={{id}}&showteam={{showteam}}&admindriver={{admindriver}}">Drivers</a>
                                             <a class="nav-link text-white" ng-show="!admindriver" href="/app/roster?accid={{accid}}&id={{id}}&showteam={{showteam}}">Drivers</a>
                                         </li>
@@ -2987,13 +3004,20 @@
                                             <a class="nav-link text-white active" ng-show="admindriver" href="/app/ManageNotification?accid={{accid}}&id={{id}}&showteam={{showteam}}&admindriver={{admindriver}}">Communications</a>
                                             <a class="nav-link text-white active" ng-show="!admindriver" href="/app/ManageNotification?accid={{accid}}&id={{id}}&showteam={{showteam}}">Communications</a>
                                         </li>
-                                        <li class="nav-item" ng-if=" role != 'Driver/Manager' && role != 'Manager' ">
-                                            <a class="nav-link text-white" ng-show="admindriver" href="/app/reportlist?accid={{accid}}&id={{id}}&showteam={{showteam}}&admindriver={{admindriver}}">Reports</a>
+                                        <li class="nav-item" ng-if="role != 'Driver/Manager' && role != 'Manager' && manVisible && !login">
+                                            <a class="nav-link text-white" ng-show="!admindriver" href="/app/reportlist?managerid={{managerid}}&accid={{accid}}&id={{id}}&showteam={{showteam}}">Reports</a>
+                                            <a class="nav-link text-white" ng-show="admindriver" href="/app/reportlist?managerid={{managerid}}&accid={{accid}}&id={{id}}&showteam={{showteam}}&admindriver=true">Reports</a>
+                                        </li>
+                                        <li class="nav-item" ng-if="role != 'Driver/Manager' && role != 'Manager' && !manVisible">
                                             <a class="nav-link text-white" ng-show="!admindriver" href="/app/reportlist?accid={{accid}}&id={{id}}&showteam={{showteam}}">Reports</a>
+                                            <a class="nav-link text-white" ng-show="admindriver" href="/app/reportlist?accid={{accid}}&id={{id}}&showteam={{showteam}}&admindriver=true">Reports</a>
                                         </li>
                                         <li class="nav-item">
-                                            <a class="nav-link text-white" ng-show="admindriver" href="/app/driveradminmanagermydetail?accid={{accid}}&id={{id}}&showteam={{showteam}}&admindriver={{admindriver}}">My Details</a>
-                                            <a class="nav-link text-white" ng-if="role === 'Driver/Manager'  " href="/app/driveradminmanagermydetail?accid={{accid}}&id={{id}}&showteam={{showteam}}">My Details</a>
+                                            <a class="nav-link text-white" ng-if="(manRole != 'Driver/Manager' && manRole != 'Manager') && role === 'Driver/Admin'" ng-show="admindriver" href="/app/driveradminmanagermydetail?accid={{accid}}&id={{id}}&showteam={{showteam}}&admindriver={{admindriver}}">My Details</a>
+                                            <a class="nav-link text-white" ng-if="role === 'Driver/Manager'" href="/app/driveradminmanagermydetail?accid={{accid}}&id={{id}}&showteam={{showteam}}">My Details</a>
+                                            <a class="nav-link text-white"  ng-if="manRole === 'Manager' && role === 'Driver/Admin'" href="/app/driveradminmanagermydetail?accid={{accid}}&id={{id}}&managerid={{managerid}}&showteam={{showteam}}&admindriver={{admindriver}}">My Details</a>
+                                            <a class="nav-link text-white" ng-if="manRole === 'Driver/Manager' && (role === 'Driver/Admin' || role === 'Admin')  && login" href="/app/driveradminmanagermydetail?accid={{accid}}&id={{id}}&manid={{managerid}}&showteam={{showteam}}&loginAS=true">My Details</a>
+                                            <a class="nav-link text-white" ng-if="manRole === 'Driver/Manager' && role === 'Driver/Admin'  && !login" href="/app/driveradminmanagermydetail?accid={{accid}}&id={{id}}&managerid={{managerid}}&showteam={{showteam}}&admindriver={{admindriver}}">My Details</a>
                                         </li>
                                         <li class="nav-item">
                                             <a class="nav-link text-white" href="/app/secur/logout.jsp">Logout</a>

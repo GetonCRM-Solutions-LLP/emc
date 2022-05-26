@@ -26,6 +26,7 @@ public class DriverDashboardController
     public String biWeekData {get;set;}
     public static Boolean checkErrorERMI {get;set;}
     public static Boolean ConfirmTimeERMI {get;set;}
+    public static String managerrole {get;set;} 
     /**
     @author Natavar Ghodasara
     @date 26th Feb 2019
@@ -55,8 +56,17 @@ public class DriverDashboardController
 
         obj_driver_driverMVR = [SELECT Id, Body, Name FROM Attachment WHERE ParentId=:ApexPages.currentPage().getParameters().get('id') and Name LIKE '%MVR%' limit 1];
         obj_driverpacket_attachMVRsize = obj_driver_driverMVR.size();
-
+        if(ApexPages.currentPage().getParameters().containsKey('manid') && String.isNotBlank(ApexPages.currentPage().getParameters().get('manid'))) {
+            List<Contact> conList = [SELECT id,name,Role__c 
+                                    FROM Contact 
+                                    WHERE id =: ApexPages.currentPage().getParameters().get('manid')];
+            if(conList.size() > 0 && conList[0].Role__c != null){
+                managerrole = conList[0].Role__c ;   
+            }
+        }
+        
         accInsuranceList = '[]';
+        biWeekData = '[]';
         //AI-000414
         if(getContactid()!=''&& getAccountid()!='')
         {
@@ -80,8 +90,8 @@ public class DriverDashboardController
                                         ConfirmTimeERMI =   biWeekList[0].Confirm_Hours__c; 
                                         biWeekData = Json.serialize(biWeekList) ; 
                                     }                                                             
-        }  
-        /*try{
+        }
+        try{
             List<ContentDocumentLink> contentDocLink = [SELECT ContentDocumentId,LinkedEntityId FROM ContentDocumentLink where LinkedEntityId  =: getContactid()];
             Set<Id> ids = new Set<Id>();
             for(ContentDocumentLink obj:  contentDocLink){
@@ -90,124 +100,51 @@ public class DriverDashboardController
             ContentDistribution contentDist = [SELECT id,ContentDownloadUrl from ContentDistribution where ContentDocumentId in : ids and Name=: Constants.signedDocument order by createddate desc limit 1];
             obj_content_version = contentDist.ContentDownloadUrl;
             System.debug('obj_content_version-->'+obj_content_version);
-        }catch(Exception e){System.debug('Exception:-->'+e.getmessage()+'--'+e.getLineNumber());}*/
+        }catch(Exception e){System.debug('Exception:-->'+e.getmessage()+'--'+e.getLineNumber());}
     }
     public static String getAccountid()
     {
-        if(ApexPages.currentPage().getParameters().containsKey('accid') && String.isNotBlank(ApexPages.currentPage().getParameters().get('accid')))
-        {
+        if(ApexPages.currentPage().getParameters().containsKey('accid') && String.isNotBlank(ApexPages.currentPage().getParameters().get('accid'))) {
            return ApexPages.currentPage().getParameters().get('accid');
-        }
-        else
-        {
+        } else {
             return '';
         } 
     }
-    public static String getContactid()
-    {
-        if(ApexPages.currentPage().getParameters().containsKey('id') && String.isNotBlank(ApexPages.currentPage().getParameters().get('id')))
-        {
+    public static String getContactid() {
+        if(ApexPages.currentPage().getParameters().containsKey('id') && String.isNotBlank(ApexPages.currentPage().getParameters().get('id'))) {
            return ApexPages.currentPage().getParameters().get('id');
-        }
-        else
-        {
+        } else {
             return '';
         } 
     }
-    public static PageReference getRedirected()
-    {
-        
-        if(getContactid()!=''&& getAccountid()!='')
-        {
+    public static PageReference getRedirected() {
+        if(getContactid()!=''&& getAccountid()!='') {
             return null;
-        }
-        else
-        {
-            // redirect to error page
+        } else {
             return null;
         }
         
     }
-    public static String getLast2Years()
-    {
-        //getpastYearReimbursement();
+    public static String getLast2Years() {
        return String.escapeSingleQuotes(WrapperUtils.getpastYearReimbursement(getContactid()));
     }
-    // public static void getpastYearReimbursement(){
-        
-    //     if(WrapperUtils.getpastYearReimbursement(getContactid()) > 0)
-    //     {
-    //         showlastyear = true;
-    //     }
-    //     else
-    //     {
-    //         showlastyear = false;
-    //     }   
-    // }
     @RemoteAction
-    public Static String getAllReimbursements(String year,String contactId,String accountId) 
-    {       
+    public Static String getAllReimbursements(String year,String contactId,String accountId) {       
         return String.escapeSingleQuotes(WrapperUtils.getAllReimbursements(year,contactId,accountId));
     }   
-    public static String getReimbursementsList()
-    {         
+    public static String getReimbursementsList() {         
          return String.escapeSingleQuotes(WrapperUtils.getReimbursementsList(getContactid(),'Approved'));
     }
-    public static String getDriverGasPrice(String MailingState,String MailingCity)
-    {         
+    public static String getDriverGasPrice(String MailingState,String MailingCity) {         
         return String.escapeSingleQuotes(WrapperUtils.getDriverGasPrice(MailingState,MailingCity));
     }
-    public static String getDriverDetails()
-    {
+    public static String getDriverDetails() {
         return getDriverDetailsClone(getContactid());
     }
     @RemoteAction
-    public static String getDriverDetailsClone(String contactid)
-    {            
-        /*List<contact> driverDataList = new List<contact>();
-
-        for(Contact currentContact : [SELECT id,Name,MailingPostalCode,MailingState,MailingCity,
-                                            Driver_Type__c,Fixed_Amount__c,compliancestatus__c,Car_Image__c,
-                                            Accountid,Account.Name,Account.Logo_Document_Id__c,
-                                            Vehicle_Type__c,Insurance_Attachment_Id__c,Maintenance__c,Tires__c,
-                                            Insurance_Rate__c, License_Ragistration__c, Taxes__c,
-                                            Depreciation__c, Total_Monthly_Costs__c, Business_Use__c 
-                                        FROM Contact 
-                                        WHERE id=:contactid])
-        {
-            contactDataAsString = String.escapeSingleQuotes(currentContact.Name);
-            
-            Account newAccount = new Account();
-            newAccount.id = currentContact.Accountid;
-            newAccount.Name = currentContact.Account.Name;
-            newAccount.Logo_Document_Id__c = currentContact.Account.Logo_Document_Id__c;
-            logoDocument_id = currentContact.Account.Logo_Document_Id__c;
-            Contact newContact = new Contact();
-            newContact.id = currentContact.id;
-            newContact.MailingPostalCode = currentContact.MailingPostalCode;
-            newContact.MailingState = currentContact.MailingState;
-            newContact.MailingCity = currentContact.MailingCity;
-            newContact.Fixed_Amount__c = currentContact.Fixed_Amount__c;
-            newContact.compliancestatus__c = currentContact.compliancestatus__c;
-            newContact.Car_Image__c = currentContact.Car_Image__c;
-            newContact.Accountid = newAccount.id;
-            newContact.Vehicle_Type__c = currentContact.Vehicle_Type__c;
-            newContact.Insurance_Attachment_Id__c = currentContact.Insurance_Attachment_Id__c;
-            newContact.Driver_Type__c = currentContact.Driver_Type__c;
-            newContact.Maintenance__c = currentContact.Maintenance__c;
-            newContact.Tires__c = currentContact.Tires__c;
-            newContact.Insurance_Rate__c = currentContact.Insurance_Rate__c;
-            newContact.License_Ragistration__c = currentContact.License_Ragistration__c;
-            newContact.Taxes__c = currentContact.Taxes__c;
-            newContact.Depreciation__c = currentContact.Depreciation__c;
-            newContact.Business_Use__c = currentContact.Business_Use__c ;
-            TotalMonthlyCosts = currentContact.Total_Monthly_Costs__c;
-            driverDataList.add(newContact);
-        }
-                
-        return JSON.serialize(driverDataList).unescapeHtml4();*/
+    public static String getDriverDetailsClone(String contactid) {            
         List<contact> driverDataList = new List<contact>();
-        driverDataList = [SELECT id, Name, MailingPostalCode, MailingState, MailingCity,Driver_Type__c, 
+        driverDataList = [SELECT id, Name, MailingPostalCode, MailingState, MailingCity,Driver_Type__c,Role__c, 
                                         Fixed_Amount__c, compliancestatus__c, Car_Image__c, Account.Name, Account.Logo_Document_Id__c, 
                                         Vehicle_Type__c,Insurance_Attachment_Id__c, Account.Triplog_API__c, Email,
                                         Maintenance__c,Tires__c, Insurance_Rate__c, License_Ragistration__c, Taxes__c,
@@ -219,30 +156,22 @@ public class DriverDashboardController
         return JSON.serialize(driverDataList ).unescapeHtml4();
     }
     @RemoteAction
-    public static List<String> getMileages(String clickedMonth,String year,String contactId)
-    {
+    public static List<String> getMileages(String clickedMonth,String year,String contactId) {
         return WrapperUtils.getMileages1(clickedMonth,year,contactId);
-       //return null;
     }    
    
     @RemoteAction
-    public static String readFromFileInchunk(String attachmentBody, String attachmentName, String attachmentId,String contactId,String accountId,String contactattachementid)
-    {
+    public static String readFromFileInchunk(String attachmentBody, String attachmentName, String attachmentId,String contactId,String accountId,String contactattachementid) {
         return  WrapperUtils.readFromFileInchunk(attachmentBody,attachmentName,attachmentId,contactId,accountId,contactattachementid);   
     }
     @RemoteAction
-    public static List<String> getCompliance(String contactId)
-    {
+    public static List<String> getCompliance(String contactId) {
         return WrapperUtils.getComplianceCalculation(contactId,String.valueOf(System.today().year()));
-        
     }
     @RemoteAction
-    public static List<String> getPacketandMeeting(String contactId)
-    {
+    public static List<String> getPacketandMeeting(String contactId) {
         return WrapperUtils.getPacketandMeetingDetails(contactId);
     }   
-
-
     @RemoteAction
     public static String getdriverInsurance(string attachmentid) {        
         query = 'select id,Body,Name from Attachment where id= \''+attachmentid+'\'';      
@@ -256,14 +185,12 @@ public class DriverDashboardController
     }
 
     @RemoteAction
-    public static String getMileagesBasedTandAtt(String startdate,String enddate,String contactId)
-    {
+    public static String getMileagesBasedTandAtt(String startdate,String enddate,String contactId) {
         return String.escapeSingleQuotes(WrapperUtils.getMileagesBasedTA(startdate,enddate,contactId));
     } 
     
     @RemoteAction
     public static List<BiweeklyPayPeriod.BiweeklyWrap> biweeklyMileage(String conId,Integer year){
-        //return BiweeklyPayPeriod.getBiweeklyMileage(conId,year);
         return BiweeklyPayPeriod.getBiweeklyReimbursement(conId,year);
     }
 
@@ -271,28 +198,15 @@ public class DriverDashboardController
     Author : Sanket Goswami
     Description : This method is used to get mileages with biweekly reimbursement data based on biweekly reimbursement selected by user*/
     @RemoteAction
-    public static List<String> getBiweekMileages(String biweekId)
-    {
-        //return BiweeklyPayPeriod.getMileages1(date.valueof(startdate),date.valueof(enddate),contactId);
+    public static List<String> getBiweekMileages(String biweekId) {
         return BiweeklyPayPeriod.getBiweekMileages1(biweekId);
-       //return null;
     } 
     @RemoteAction
-    public static List<String> getAllMileages(String startdate,String enddate,String contactId)
-    {
+    public static List<String> getAllMileages(String startdate,String enddate,String contactId) {
         return BiweeklyPayPeriod.getAllBiweekMileages1(date.valueof(startdate),date.valueof(enddate),contactId);
     } 
     @RemoteAction
-    public static void sendInsuranceEmail (String Id,String Name,String email){
-        BiWeeklyWrapperUtils.sendInsuranceEmail(Id, Name, email);
+    public static void sendInsuranceEmail (String id,String name,String email){
+        BiWeeklyWrapperUtils.sendInsuranceEmail(id, name, email);
     }
-   /* @RemoteAction
-    public static String syncTripsForErmi (String Id,String startdate,String enddate){
-        //BiWeeklyWrapperUtils.sendInsuranceEmail(Id, Name, email);
-        if( !Test.IsRunningTest()){
-            //GetTripCalloutforCommute.GetTripCalloutForCommuteMileage(reim.id, reim.Contact_Id__r.External_Email__c, reim.Contact_Id__c, startDate, endDate, String.valueOf(reim.Fuel_Price__c), String.valueOf(reim.MPG__c), String.valueOf(reim.Maintenance_and_Tires__c), reim.Contact_Id__r.Account.Triplog_API__c, tripStatus ,putcall, activity,reim.Contact_Id__r.Account.Bi_Weekly_Pay_Period__c);
-        }
-        return 'sucess';
-    }
-    */
 }

@@ -1255,37 +1255,37 @@
                             $scope.pacektstatus = JSON.parse(result);
                             $scope.pacekt = $scope.pacektstatus[0].Packet__c;
                             $scope.meeting = $scope.pacektstatus[0].Meeting__c;
-                            if ($scope.pacekt == 'Being Generated') {
+                            if ($scope.pacekt == 'Sent to Driver') {
                                 if (document.getElementById("downloadbtn")) {
                                     document.getElementById("downloadbtn").style.visibility = "hidden";
                                 }
                                 angular.element(document.querySelector("#beinggenratedsignature")).addClass(" active");
                                 angular.element(document.querySelector("#sentforsignature")).removeClass("active");
                                 angular.element(document.querySelector("#waitingforsignature")).removeClass("active");
-                                // angular.element(document.querySelector("#waitingforadminsignature")).removeClass("active");
+                                angular.element(document.querySelector("#waitingforadminsignature")).removeClass("active");
                                 angular.element(document.querySelector("#completesignature")).removeClass("active");
                                 angular.element(document.querySelector("#beinggenratedsignature")).addClass("btn.btn-secondary.pull-right");
                             }
-                            else if ($scope.pacekt == 'Sent for Signature') {
-                                if (document.getElementById("downloadbtn")) {
-                                    document.getElementById("downloadbtn").style.visibility = "hidden";
-                                }
-                                angular.element(document.querySelector("#beinggenratedsignature")).removeClass(" active");
-                                angular.element(document.querySelector("#sentforsignature")).addClass("active");
-                                angular.element(document.querySelector("#waitingforsignature")).removeClass("active");
-                                // angular.element(document.querySelector("#waitingforadminsignature")).removeClass("active");
-                                angular.element(document.querySelector("#completesignature")).removeClass("active");
-                                angular.element(document.querySelector("#sentforsignature")).addClass("btn.btn-secondary.pull-right");
+                            // else if ($scope.pacekt == 'Sent for Signature') {
+                            //     if (document.getElementById("downloadbtn")) {
+                            //         document.getElementById("downloadbtn").style.visibility = "hidden";
+                            //     }
+                            //     angular.element(document.querySelector("#beinggenratedsignature")).removeClass(" active");
+                            //     angular.element(document.querySelector("#sentforsignature")).addClass("active");
+                            //     angular.element(document.querySelector("#waitingforsignature")).removeClass("active");
+                            //     angular.element(document.querySelector("#waitingforadminsignature")).removeClass("active");
+                            //     angular.element(document.querySelector("#completesignature")).removeClass("active");
+                            //     angular.element(document.querySelector("#sentforsignature")).addClass("btn.btn-secondary.pull-right");
 
-                            }
-                            else if ($scope.pacekt == 'Waiting for Signature') {
-                                document.getElementById("downloadbtn").style.visibility = "hidden";
-                                angular.element(document.querySelector("#beinggenratedsignature")).removeClass(" active");
-                                angular.element(document.querySelector("#sentforsignature")).removeClass("active");
-                                angular.element(document.querySelector("#waitingforsignature")).addClass(" active");
-                                angular.element(document.querySelector("#completesignature")).removeClass("active");
-                            }
-                            /*else if ($scope.pacekt == 'Driver Signature') {
+                            // }
+                            // else if ($scope.pacekt == 'Waiting for Signature') {
+                            //     document.getElementById("downloadbtn").style.visibility = "hidden";
+                            //     angular.element(document.querySelector("#beinggenratedsignature")).removeClass(" active");
+                            //     angular.element(document.querySelector("#sentforsignature")).removeClass("active");
+                            //     angular.element(document.querySelector("#waitingforsignature")).addClass(" active");
+                            //     angular.element(document.querySelector("#completesignature")).removeClass("active");
+                            // }
+                            else if ($scope.pacekt == 'Driver Signed') {
                                 if (document.getElementById("downloadbtn")) {
                                     document.getElementById("downloadbtn").style.visibility = "hidden";
                                 }
@@ -1295,7 +1295,7 @@
                                 angular.element(document.querySelector("#waitingforadminsignature")).removeClass("active");
                                 angular.element(document.querySelector("#completesignature")).removeClass("active");
                             }
-                            else if ($scope.pacekt == 'Admin Signature') {
+                            else if ($scope.pacekt == 'Admin Signed') {
                                 if(document.getElementById("downloadbtn")){
                                     document.getElementById("downloadbtn").style.visibility = "hidden";
                                 }
@@ -1304,12 +1304,12 @@
                                 angular.element(document.querySelector("#waitingforadminsignature")).addClass(" active");
                                 angular.element(document.querySelector("#waitingforsignature")).removeClass("active");
                                 angular.element(document.querySelector("#completesignature")).removeClass("active");
-                            }*/
-                            else if ($scope.pacekt == 'Complete') {
+                            }
+                            else if ($scope.pacekt == 'Completed') {
                                 angular.element(document.querySelector("#beinggenratedsignature")).removeClass("active");
                                 angular.element(document.querySelector("#sentforsignature")).removeClass("active");
                                 angular.element(document.querySelector("#waitingforsignature")).removeClass("active");
-                               // angular.element(document.querySelector("#waitingforadminsignature")).removeClass("active");
+                               angular.element(document.querySelector("#waitingforadminsignature")).removeClass("active");
                                 angular.element(document.querySelector("#completesignature")).addClass("active");
                                 angular.element(document.querySelector("#completesignature")).removeClass("btn-secondary");
                             }
@@ -1317,7 +1317,7 @@
                                 angular.element(document.querySelector("#beinggenratedsignature")).addClass("blank-stepper");
                                 angular.element(document.querySelector("#sentforsignature")).addClass("blank-stepper");
                                 angular.element(document.querySelector("#waitingforsignature")).addClass("blank-stepper");
-                               // angular.element(document.querySelector("#waitingforadminsignature")).addClass("blank-stepper");
+                                angular.element(document.querySelector("#waitingforadminsignature")).addClass("blank-stepper");
                                 angular.element(document.querySelector("#completesignature")).addClass("blank-stepper");
                             }
 
@@ -2922,7 +2922,7 @@
                     </div>
                     <div class="tab-pane fade" id="pills-admin-dashbord-mileage">
                         <c:PlanInfoComponent driverPacketDocCount="{!obj_driverpacket_attachementsize}" insuranceDocCount="{!obj_attachementsize}" 
-                            mvrCheckDocCount="{!obj_driverpacket_attachMVRsize}" driverPacketId="{!If(obj_driverpacket_attachementsize > 0, obj_driver_driverpacket[0], null)}"
+                            contentVersionUrl="{!obj_content_version}"  mvrCheckDocCount="{!obj_driverpacket_attachMVRsize}" driverPacketId="{!If(obj_driverpacket_attachementsize > 0, obj_driver_driverpacket[0], null)}"
                             insuranceId="{!If(obj_attachementsize > 0, obj_driver_insurance[0], null)}" mvrCheckId="{!If(obj_driverpacket_attachMVRsize > 0, obj_driver_driverMVR[0], null)}"
                         />
                     </div>
