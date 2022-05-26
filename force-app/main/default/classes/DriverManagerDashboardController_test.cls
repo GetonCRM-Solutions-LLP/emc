@@ -12,7 +12,9 @@ public class DriverManagerDashboardController_test {
         veh.Year__c = '2019';
         
         insert veh;
-        
+        TriggerConfig__c trigconfig = TestDataFactory.triggerConfigCustomSetting(false);
+        trigconfig.mileageremoveapprovaldate__c = false;
+        insert trigconfig;
         UserRole userRole_1 = [SELECT Id FROM UserRole WHERE DeveloperName = 'EMD' LIMIT 1];
         Profile profile_1 = [SELECT Id FROM Profile WHERE Name = 'Customer Community Login User' LIMIT 1];
         User admin = [SELECT Id, Username, UserRoleId FROM User WHERE Profile.Name = 'System Administrator' AND UserRoleId = :userRole_1.Id LIMIT 1];
