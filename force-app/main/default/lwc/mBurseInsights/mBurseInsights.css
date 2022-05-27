@@ -1,0 +1,73 @@
+.modal-dialog {
+    max-width: 800px;
+    margin: 30px auto;
+}
+
+.modal-body {
+    position:relative;
+    padding:0px;
+}
+
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 9050;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    outline: 0;
+}
+
+.fade {
+    transition: opacity .15s linear;
+}
+
+button.close {
+    padding: 0 !important;
+    background-color: transparent !important;
+    border: 0 !important;
+    -webkit-appearance: none !important;
+    -moz-appearance: none !important;
+    appearance: none !important;
+}
+
+.close {
+    position:absolute;
+    right: -46px;
+    top: -38px;
+    z-index:999;
+    font-size:4rem;
+    font-weight: normal;
+    color:#fff;
+    opacity:1;
+    float: right;
+    text-shadow: 0 1px 0 #fff;
+}
+
+.embed-responsive {
+    position: relative;
+    display: block;
+    width: 100%;
+    padding: 0;
+    overflow: hidden;
+}
+
+.embed-responsive::before {
+    padding-top: 56.25%;
+}
+
+.embed-responsive::before {
+    display: block;
+    content: "";
+}
+
+.embed-responsive .embed-responsive-item {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border: 0;
+}

@@ -225,11 +225,13 @@
                     $scope.logoID = '{!logoDocument_id}';
                     $scope.modalType = "Monthly";
                     $scope.driverType = "";
-        
+
                     if ($scope.admindriver == undefined || $scope.admindriver == '') {
                         $scope.admindriver = false;
                     }
                     $scope.manId = url.searchParams.get("managerid");
+                    $scope.mId = url.searchParams.get("manid");
+                    $scope.login = url.searchParams.get("loginAS");
                     $scope.manVisible = false;
                     if ($scope.manId == undefined || $scope.manId == '') {
                         $scope.manVisible = false;
@@ -449,7 +451,7 @@
                 );
             };
 
-            // Biweekly modal 
+            // Biweekly modal
             $scope.openbiweeklymodal = function (stDate, enDate, biweekId) {
                 $('#spinner').show();
                 let stArr = stDate.split('-');
@@ -503,6 +505,9 @@
 
             var _driverDetail = {!DriverDetails}
             $scope.empContact = _driverDetail;
+            $scope.empRole = $scope.empContact[0].Role__c;
+            $scope.mRole = '{!managerrole}'
+            console.log($scope.empContact,$scope.mRole);
             $scope.driverType = $scope.empContact[0].Driver_Type__c;
             $scope.driverConDetails = $scope.empContact[0];
             $scope.biWeekContact = $scope.empContact[0].Account.Bi_Weekly_Pay_Period__c;
@@ -517,7 +522,7 @@
             $scope.mileageList = '';
             $scope.gasrate = {!gasVariableRatePreviosMonth}
             $scope.gaspricedata = {!gaspriceforpreviosmonth};
-            
+
             if ($scope.gasrate != null && $scope.gasrate != '') {
                 if ($scope.gasrate[0] != undefined) {
                     if ($scope.gasrate[0].Fuel_Price__c == null) {
@@ -596,11 +601,11 @@
             }
 
             /* Sorting For table */
-            $scope.sortKey1 = 'Month';   //set the sortKey to the param passed   
+            $scope.sortKey1 = 'Month';   //set the sortKey to the param passed
             $scope.reverse1 = false;
             $scope.sort1 = function (keyname) {
                 //set the sortKey to the param passed
-                $scope.reverse1 = ($scope.sortKey1 === keyname) ? !$scope.reverse1 : false;//if true make it false 
+                $scope.reverse1 = ($scope.sortKey1 === keyname) ? !$scope.reverse1 : false;//if true make it false
                 $scope.sortKey1 = keyname;
             }
             $scope.active = true;
@@ -616,7 +621,7 @@
                             if (result != '') {
                                 $scope.mileages = [];
                                 $scope.mileages = JSON.parse(result);
-                                //   console.log($scope.mileages);   
+                                //   console.log($scope.mileages);
                             } else {
                                 $scope.mileages = [];
                             }
@@ -722,7 +727,7 @@
                 totalReim = f1 + f2 + f3 + vr;
                 return totalReim.toFixed(2).toString();
             }
-            
+
             $scope.fetchErmiReimbMileage = function (clickedyear) {
                 $('#spinner').show();
                 $scope.reimbMileages = [];
@@ -792,7 +797,7 @@
                         }
                         return 0;
             }
-            
+
             $scope.exportToDetail = function (){
                     var lenOfReimb, stDate, enDate, detailFileName;
                     $scope.exportReimDetailList = [];
@@ -819,7 +824,7 @@
                                     }else{
                                         toastr.error("No Mileages Found");
                                     }
-                                 
+
                                 }
                                 else {
                                     toastr.error(result);
@@ -830,7 +835,7 @@
                         { escape: false }
                     );
             }
-            // Reimbursement Link 
+            // Reimbursement Link
             $scope.fetchReimbMileage = function (clickedyear) {
                 $('#spinner').show();
                 $scope.reimbMileages = [];
@@ -884,13 +889,13 @@
                                 $scope.exportPeriodList = [];
                                 toastr.error("No mileage found between " + startDt + " to " + endDt);
                             }
-                        } 
+                        }
                         $scope.$apply();
                     },
                     { escape: false }
                 );
             }
-            
+
             $scope.downloadReimbReportForERMI = function (reimYear , reimonth) {
                     $scope.exportReimbusList = [];
                     $scope.empObj = {!obj_current_contact_details};
@@ -960,14 +965,14 @@
 
             }
 
-            $scope.sortKey = 'intmonth';    //set the sortKey to the param passed   
+            $scope.sortKey = 'intmonth';    //set the sortKey to the param passed
             $scope.reverse = true;
             $scope.sort = function (keyname) {
                 $scope.reverse = ($scope.sortKey === keyname) ? !$scope.reverse : false;
                 $scope.sortKey = keyname;
             }
 
-            $scope.sortKey1 = 'intmonth';   //set the sortKey to the param passed   
+            $scope.sortKey1 = 'intmonth';   //set the sortKey to the param passed
             $scope.reverse1 = true;
             $scope.sort1 = function (keyname) {
                 $scope.reverse1 = ($scope.sortKey1 === keyname) ? !$scope.reverse1 : false;
@@ -1026,8 +1031,16 @@
             }
 
             $scope.displymodal = function () {
-                angular.element(document.querySelector("#driver-dashboard-upload-insurancebtn")).removeClass("displaynone");
-                angular.element(document.querySelector("#driver-dashboard-upload-insurancebtn")).addClass("displayblock");
+                let redirectUrl;
+                redirectUrl = "/app/uploadInsurance" + location.search;
+                // if (!$scope.admindriver) {
+                //     redirectUrl = "/app/uploadInsurance?accid=" + $scope.accid + "&id=" + $scope.id + "&showteam=" + $scope.showteam;
+                // }else {
+                //     redirectUrl = "/app/uploadInsurance?accid=" + $scope.accid + "&id=" + $scope.id + "&showteam=" + $scope.showteam + "&admindriver=" + $scope.admindriver;
+                // }
+                location.href = redirectUrl;
+                // angular.element(document.querySelector("#driver-dashboard-upload-insurancebtn")).removeClass("displaynone");
+                // angular.element(document.querySelector("#driver-dashboard-upload-insurancebtn")).addClass("displayblock");
             }
 
             /* For File Upload*/
@@ -1094,7 +1107,7 @@
 
             var maxStringSize = 6000000;    //Maximum String size is 6,000,000 characters
             var maxFileSize = 4350000;      //After Base64 Encoding, this is the max file size
-            var chunkSize = 950000;         //Maximum Javascript Remoting message size is 1,000,000 
+            var chunkSize = 950000;         //Maximum Javascript Remoting message size is 1,000,000
             var attachment;
             var attachmentName;
             var fileSize;
@@ -1186,7 +1199,7 @@
                                     Visualforce.remoting.Manager.invokeAction('{!$RemoteAction.drivermanagermydetailcontroller.getDriverDetailsClone}', $scope.id,
                                         function (result, event) {
                                             if (event.status) {
-                                                $scope.empContact = JSON.parse('{!DriverDetails}');
+                                              //  $scope.empContact = JSON.parse('{!DriverDetails}');
                                                 if ($scope.empContact[0].Insurance_Attachment_Id__c != '' && $scope.empContact[0].Insurance_Attachment_Id__c != null && $scope.empContact[0].Insurance_Attachment_Id__c != undefined) {
                                                     $scope.$apply(function () {
                                                         $scope.attachmentid = $scope.empContact[0].Insurance_Attachment_Id__c;
@@ -1318,7 +1331,7 @@
                                 }
                             });
 
-                            /* scope.sortKey = 'Trip_Date__c';   
+                            /* scope.sortKey = 'Trip_Date__c';
                              scope.reverse = false;
                              scope.sort = function(keyname) {
                                  scope.reverse = (scope.sortKey === keyname) ? !scope.reverse : false;
@@ -1622,19 +1635,57 @@
 
                                     <ul class="navbar-nav flex-row alignitemscenter">
                                         <li class="nav-item">
-                                            <a class="nav-link text-white" ng-show="!admindriver" href="/app/drivermanagerdashboard?accid={{accid}}&id={{id}}&showteam={{showteam}}">Dashboard</a>
-                                            <a class="nav-link text-white" ng-show="admindriver" href="/app/admindriverdashboard?accid={{accid}}&id={{id}}&showteam={{showteam}}&admindriver={{admindriver}}">Dashboard</a>
+                                            <a class="nav-link text-white"  ng-show="(empRole === 'Driver/Admin' || empRole === 'Admin') && mRole === 'Driver/Manager' && login" href="/app/drivermanagerdriverdetails?accid={{accid}}&id={{mId}}&manid={{id}}&showteam={{showteam}}&loginAS=true">Dashboard</a>
+                                            <a class="nav-link text-white"  ng-show="empRole === 'Driver/Manager'" href="/app/drivermanagerdashboard?accid={{accid}}&id={{id}}&showteam={{showteam}}">Dashboard</a>
+                                            <a class="nav-link text-white"  ng-show="empRole === 'Driver/Admin' && (mRole === '')" href="/app/admindriverdashboard?accid={{accid}}&id={{id}}&showteam={{showteam}}&admindriver={{admindriver}}">Dashboard</a>
+                                            <a class="nav-link text-white"  ng-show="empRole === 'Driver/Admin' && (mRole === 'Driver/Manager' || mRole === 'Manager')  && !login" href="/app/managerdashboardfromadmindriver?managerid={{manId}}&accid={{accid}}&id={{id}}&showteam={{showteam}}&admindriver={{admindriver}}">Dashboard</a>
                                         </li>
-                                        <li class="nav-item" ng-show="!manVisible">
+                                        <li class="nav-item" ng-show="!manVisible && !login">
                                             <a class="nav-link text-white" ng-show="!admindriver" href="/app/MileageDashboard?accid={{accid}}&id={{id}}&showteam={{showteam}}">Mileage</a>
                                             <a class="nav-link text-white" ng-show="admindriver" href="/app/MileageDashboard?accid={{accid}}&id={{id}}&showteam={{showteam}}&admindriver={{admindriver}}">Mileage</a>
+                                        </li>
+                                        <li class="nav-item" ng-show="!manVisible && login">
+                                            <a class="nav-link text-white" ng-show="!admindriver" href="/app/MileageDashboard?accid={{accid}}&id={{id}}&managerid={{mId}}&showteam={{showteam}}&loginAS=true">Mileage</a>
+                                            <a class="nav-link text-white" ng-show="admindriver" href="/app/MileageDashboard?accid={{accid}}&id={{id}}&managerid={{mId}}&showteam={{showteam}}&admindriver={{admindriver}}&loginAS=true">Mileage</a>
+                                        </li>
+                                        <li class="nav-item" ng-show="(empRole === 'Driver/Admin' || empRole === 'Admin') && manVisible && !login">
+                                            <a class="nav-link text-white" ng-show="!admindriver" href="/app/roster?managerid={{manId}}&accid={{accid}}&id={{id}}&showteam={{showteam}}">Drivers</a>
+                                            <a class="nav-link text-white" ng-show="admindriver" href="/app/roster?managerid={{manId}}&accid={{accid}}&id={{id}}&showteam={{showteam}}&admindriver={{admindriver}}">Drivers</a>
+                                        </li>
+                                        <li class="nav-item" ng-show="(empRole === 'Driver/Admin' || empRole === 'Admin') && !manVisible && !login">
+                                            <a class="nav-link text-white" ng-show="!admindriver" href="/app/roster?accid={{accid}}&id={{id}}&showteam={{showteam}}">Drivers</a>
+                                            <a class="nav-link text-white" ng-show="admindriver" href="/app/roster?accid={{accid}}&id={{id}}&showteam={{showteam}}&admindriver={{admindriver}}">Drivers</a>
+                                        </li>
+                                        <li class="nav-item" ng-show="!manVisible && !login && empRole != 'Driver/Manager' ">
+                                            <a class="nav-link text-white" ng-show="!admindriver"  href="/app/ManageNotification?accid={{accid}}&id={{id}}&showteam={{showteam}}">Communications</a>
+                                            <a class="nav-link text-white" ng-show="admindriver"  href="/app/ManageNotification?accid={{accid}}&id={{id}}&showteam={{showteam}}&admindriver={{admindriver}}">Communications</a>
+                                        </li>
+                                        <li class="nav-item" ng-if="accid == PLMarketing"  ng-show="empRole === 'Driver/Manager' ">
+                                            <a class="nav-link text-white" ng-show="!admindriver"  href="/app/ManageNotification?managerid={{manId}}&accid={{accid}}&id={{id}}&showteam={{showteam}}">Communications</a>
+                                            <a class="nav-link text-white" ng-show="admindriver"  href="/app/ManageNotification?managerid={{manId}}&accid={{accid}}&id={{id}}&showteam={{showteam}}&admindriver={{admindriver}}">Communications</a>
+                                        </li>
+                                        <li class="nav-item"  ng-if="accid == PLMarketing"   ng-show="(empRole === 'Driver/Admin' || empRole === 'Admin') && mRole === 'Manager'">
+                                            <a class="nav-link text-white" ng-show="!admindriver"  href="/app/ManageNotification?managerid={{manId}}&accid={{accid}}&id={{id}}&showteam={{showteam}}">Communications</a>
+                                            <a class="nav-link text-white" ng-show="admindriver"  href="/app/ManageNotification?managerid={{manId}}&accid={{accid}}&id={{id}}&showteam={{showteam}}&admindriver={{admindriver}}">Communications</a>
+                                        </li>
+                                        <li class="nav-item" ng-if="accid == PLMarketing"  ng-show="(empRole === 'Driver/Admin' || empRole === 'Admin') && mRole === 'Driver/Manager'">
+                                            <a class="nav-link text-white" ng-show="!admindriver"  href="/app/ManageNotification?managerid={{mId}}&accid={{accid}}&id={{id}}&showteam={{showteam}}&loginAS=true">Communications</a>
+                                            <a class="nav-link text-white" ng-show="admindriver"  href="/app/ManageNotification?managerid={{mId}}&accid={{accid}}&id={{id}}&showteam={{showteam}}&admindriver={{admindriver}}&loginAS=true">Communications</a>
+                                        </li>
+                                        <li class="nav-item" ng-show="(empRole === 'Driver/Admin' || empRole === 'Admin') && manVisible && !login">
+                                            <a class="nav-link text-white" ng-show="!admindriver" href="/app/reportlist?managerid={{manId}}&accid={{accid}}&id={{id}}&showteam={{showteam}}">Reports</a>
+                                            <a class="nav-link text-white" ng-show="admindriver" href="/app/reportlist?managerid={{manId}}&accid={{accid}}&id={{id}}&showteam={{showteam}}&admindriver={{admindriver}}">Reports</a>
+                                        </li>
+                                        <li class="nav-item" ng-show="(empRole === 'Driver/Admin' || empRole === 'Admin') && !manVisible && !login">
+                                            <a class="nav-link text-white" ng-show="!admindriver" href="/app/reportlist?accid={{accid}}&id={{id}}&showteam={{showteam}}">Reports</a>
+                                            <a class="nav-link text-white" ng-show="admindriver" href="/app/reportlist?accid={{accid}}&id={{id}}&showteam={{showteam}}&admindriver={{admindriver}}">Reports</a>
                                         </li>
                                         <li class="nav-item active">
                                             <a class="nav-link text-white" ng-show="!admindriver" href="/app/driveradminmanagermydetail?accid={{accid}}&id={{id}}&showteam={{showteam}}">My Details</a>
                                             <a class="nav-link text-white" ng-show="admindriver" href="/app/driveradminmanagermydetail?accid={{accid}}&id={{id}}&showteam={{showteam}}&admindriver={{admindriver}}">My Details</a>
                                         </li>
                                         <li class="nav-item">
-                                            <a data-toggle="modal" data-target="#driver-dashboard-upload-insurancebtn" class="btn btn-secondary float-right ml-em" ng-click="displymodal()">
+                                            <a  class="btn btn-secondary float-right ml-em" ng-click="displymodal()">
                                                 Upload Insurance
                                             </a>
                                         </li>
@@ -2118,8 +2169,10 @@
                         </div>
                     </div>
                     <div class="tab-pane fade" id="pills-admin-dashbord-mileage">
+
+
                         <c:PlanInfoComponent driverPacketDocCount="{!obj_driverpacket_attachementsize}"   insuranceDocCount="{!obj_attachementsize}"
-                            contentVersionUrl="{!obj_content_version}" mvrCheckDocCount="{!obj_driverpacket_attachMVRsize}" driverPacketId="{!If(obj_driverpacket_attachementsize > 0, obj_driver_driverpacket[0], null)}"
+                            contentVersionUrl="{!obj_content_version}"  mvrCheckDocCount="{!obj_driverpacket_attachMVRsize}" driverPacketId="{!If(obj_driverpacket_attachementsize > 0, obj_driver_driverpacket[0], null)}"
                             insuranceId="{!If(obj_attachementsize > 0, obj_driver_insurance[0], null)}" mvrCheckId="{!If(obj_driverpacket_attachMVRsize > 0, obj_driver_driverMVR[0], null)}"
                         />
                     </div>

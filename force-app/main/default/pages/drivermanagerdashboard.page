@@ -2228,8 +2228,7 @@
                                             <a class="nav-link text-white" href="/app/ManageNotification?accid={{accid}}&id={{did}}&showteam={{showteam}}">Communications</a>
                                         </li>
                                         <li class="nav-item">
-                                            <a class="nav-link text-white" ng-show="insurancePage" href="/app/driveradminmanagermydetail?accid={{accid}}&id={{did}}&showteam={{showteam}}">My Details</a>
-                                            <a class="nav-link text-white" ng-show="!insurancePage" href="/app/drivermanagermydetailInsurance?accid={{accid}}&id={{did}}&showteam={{showteam}}">My Details</a>
+                                            <a class="nav-link text-white"  href="/app/driveradminmanagermydetail?accid={{accid}}&id={{did}}&showteam={{showteam}}">My Details</a>
                                         </li>
                                         <!-- <li class="nav-item">
                                             <a class="nav-link text-white" href="/app/reportlistformanager?accid={{accid}}&id={{did}}&showteam={{showteam}}">Reports</a>

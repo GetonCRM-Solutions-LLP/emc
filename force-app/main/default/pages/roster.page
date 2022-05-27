@@ -1625,8 +1625,8 @@
                 $scope.accid = url.searchParams.get("accid");
                 $scope.showteam = url.searchParams.get("showteam");
                 $scope.admindriver = false;
-                $scope.FromDate = $filter('date')(new Date(), "MMddyyyyHHmmss");
                 $scope.admindriver = url.searchParams.get("admindriver");
+                $scope.FromDate = $filter('date')(new Date(), "MMddyyyyHHmmss");
                 if ($scope.admindriver == undefined || $scope.admindriver == '') {
                     $scope.admindriver = false;
                 }
@@ -1755,6 +1755,7 @@
                 $scope.IsVisible = true;
                 $scope.backButton = false;
                 $scope.IsVisibleLoginManager = false;
+                $scope.IsVisibleLoginDriverManager = false;
                 $scope.IsVisibleLoginDriver = false;
                 $scope.showMultipleAction = true;
             }
@@ -3086,6 +3087,7 @@
                 $scope.contactData = obj_contactnew();
                 $scope.employeesList = [];
                 $scope.IsVisibleLoginManager = false;
+                $scope.IsVisibleLoginDriverManager = false;
                 $scope.IsVisibleLoginDriver = false;
                 //$scope.showMassFreezebtn = false;
                 $scope.showMassFreezeEmployeebtn = false;
@@ -3329,6 +3331,7 @@
             if (empId.role === 'Driver') {
                 $scope.IsVisibleLoginDriver = true;
                 $scope.IsVisibleLoginManager = false;
+                $scope.IsVisibleLoginDriverManager = false;
                 $scope.isFieldRequired = true;
                 $scope.showmanagervalidation = true;
                 $scope.showvalidation = true;
@@ -3338,13 +3341,15 @@
             else if (empId.role === 'Manager') {
                 $scope.IsVisibleLoginDriver = false;
                 $scope.IsVisibleLoginManager = true;
+                $scope.IsVisibleLoginDriverManager = false;
                 $scope.userid = empId.userid;
                 $scope.Role = empId.role;
                 $scope.showmanagervalidation = true;
             }
             else if (empId.role === 'Driver/Manager') {
                 $scope.IsVisibleLoginDriver = false;
-                $scope.IsVisibleLoginManager = true;
+                $scope.IsVisibleLoginManager = false;
+                $scope.IsVisibleLoginDriverManager = true;
                 $scope.showvalidation = true;
                 $scope.userid = empId.userid;
                 $scope.Role = empId.role;
@@ -3360,6 +3365,7 @@
                 $scope.isFieldRequired = false;
                 $scope.IsVisibleLoginDriver = false;
                 $scope.IsVisibleLoginManager = false;
+                $scope.IsVisibleLoginDriverManager = false;
                 $scope.showvalidation = false;
                 $scope.showmanagervalidation = false;
             }
@@ -3503,6 +3509,7 @@
                 $scope.showvalidation = false;
                 $scope.IsVisibleLoginDriver = false;
                 $scope.IsVisibleLoginManager = false;
+                $scope.IsVisibleLoginDriverManager = false;
             }
 
             // AI-000179 Edited By Megha -->
@@ -4201,6 +4208,10 @@
                                             <a class="nav-link text-white" ng-show="!admindriver" href="/app/ManageNotification?accid={{accid}}&id={{id}}&showteam={{showteam}}">Communications</a>
                                             <a class="nav-link text-white" ng-show="admindriver" href="/app/ManageNotification?accid={{accid}}&id={{id}}&showteam={{showteam}}&admindriver=true">Communications</a>
                                         </li>
+                                        <li class="nav-item" ng-show="manVisible && accid === PLMarketing">
+                                            <a class="nav-link text-white" ng-show="!admindriver" href="/app/ManageNotification?managerid={{manId}}&accid={{accid}}&id={{id}}&showteam={{showteam}}">Communications</a>
+                                            <a class="nav-link text-white" ng-show="admindriver" href="/app/ManageNotification?managerid={{manId}}&accid={{accid}}&id={{id}}&showteam={{showteam}}&admindriver=true">Communications</a>
+                                        </li>
                                         <li class="nav-item" ng-show="!manVisible">
                                             <a class="nav-link text-white" ng-show="!admindriver" href="/app/reportlist?accid={{accid}}&id={{id}}&showteam={{showteam}}">Reports</a>
                                             <a class="nav-link text-white" ng-show="admindriver" href="/app/reportlist?accid={{accid}}&id={{id}}&showteam={{showteam}}&admindriver=true">Reports</a>
@@ -4209,8 +4220,11 @@
                                             <a class="nav-link text-white" ng-show="!admindriver" href="/app/reportlist?managerid={{manId}}&accid={{accid}}&id={{id}}&showteam={{showteam}}">Reports</a>
                                             <a class="nav-link text-white" ng-show="admindriver" href="/app/reportlist?managerid={{manId}}&accid={{accid}}&id={{id}}&showteam={{showteam}}&admindriver=true">Reports</a>
                                         </li>
-                                        <li class="nav-item">
-                                            <a class="nav-link text-white" ng-show="admindriver" href="/app/driveradminmanagermydetail?managerid={{manId}}&accid={{accid}}&showteam={{showteam}}&id={{id}}&admindriver=true">My Details</a>
+                                        <li class="nav-item" ng-show="manVisible">
+                                            <a class="nav-link text-white" ng-show="admindriver" href="/app/driveradminmanagermydetail?managerid={{manId}}&accid={{accid}}&id={{id}}&showteam={{showteam}}&admindriver=true">My Details</a>
+                                        </li>
+                                        <li class="nav-item" ng-show="!manVisible">
+                                            <a class="nav-link text-white" ng-show="admindriver" href="/app/driveradminmanagermydetail?accid={{accid}}&id={{id}}&showteam={{showteam}}&admindriver=true">My Details</a>
                                         </li>
                                         <li class="nav-item">
                                             <a class="nav-link text-white" href="/app/secur/logout.jsp">Logout</a>
@@ -4290,14 +4304,26 @@
                         </a>
                     </li>
                     <!-- AI-000179 Edited By Megha -->
-                    <li class="nav-item mb-2 mb-sm-0 mb-md-0" ng-show="IsVisibleLoginManager">
-                        <a class="nav-link" id="pills-loginadminroster-tab" href="/app/drivermanagerdriverdetails?accid={{accid}}&id={{userid}}&manid={{id}}&showteam={{showteam}}&loginAS=true"
+                    <li class="nav-item mb-2 mb-sm-0 mb-md-0" ng-show="IsVisibleLoginDriverManager">
+                        <a class="nav-link" id="pills-loginadminroster-tab" ng-show="admindriver" href="/app/drivermanagerdriverdetails?accid={{accid}}&id={{userid}}&manid={{id}}&showteam={{showteam}}&admindriver=true&loginAS=true"
                             role="tab" ng-attr-active="tabs[9].active">Login As</a>
-                        <!-- <a class="nav-link" id="pills-loginadminroster-tab" href="/app/managerdashboardfromadmin?managerid={{userid}}&accid={{accid}}&id={{id}}&showteam={{showteam}}&loginAS=true"
-                            role="tab" ng-attr-active="tabs[9].active">Login As</a> -->
+                            <a class="nav-link" id="pills-loginadminroster-tab" ng-show="!admindriver" href="/app/drivermanagerdriverdetails?accid={{accid}}&id={{userid}}&manid={{id}}&showteam={{showteam}}&loginAS=true"
+                            role="tab" ng-attr-active="tabs[9].active">Login As</a>
                     </li>
-                    <li class="nav-item mb-2 mb-sm-0 mb-md-0" ng-show="IsVisibleLoginDriver">
+                    <li class="nav-item mb-2 mb-sm-0 mb-md-0" ng-show="IsVisibleLoginManager && !admindriver">
+                        <a class="nav-link" id="pills-loginadminroster-tab" href="/app/managerdashboardfromadmin?managerid={{userid}}&accid={{accid}}&id={{id}}&showteam={{showteam}}&loginAS=true"
+                            role="tab" ng-attr-active="tabs[9].active">Login As</a>
+                    </li>
+                    <li class="nav-item mb-2 mb-sm-0 mb-md-0" ng-show="IsVisibleLoginManager && admindriver">
+                        <a class="nav-link" id="pills-loginadminroster-tab" href="/app/managerdashboardfromadmindriver?managerid={{userid}}&accid={{accid}}&id={{id}}&showteam={{showteam}}&admindriver=true&loginAS=true"
+                            role="tab" ng-attr-active="tabs[9].active">Login As</a>
+                    </li>
+                    <li class="nav-item mb-2 mb-sm-0 mb-md-0" ng-show="IsVisibleLoginDriver && !admindriver">
                         <a class="nav-link" id="pills-loginadminroster-tab" href="/app/driverdashboardfromadminmanager?accid={{accid}}&id={{userid}}&adminid={{id}}&showteam={{showteam}}&loginAS=true"
+                            role="tab" ng-attr-active="tabs[9].active">Login As</a>
+                    </li>
+                    <li class="nav-item mb-2 mb-sm-0 mb-md-0" ng-show="IsVisibleLoginDriver && admindriver">
+                        <a class="nav-link" id="pills-loginadminroster-tab" href="/app/admindriverdashboardfromadminmanager?accid={{accid}}&id={{userid}}&adminid={{id}}&showteam={{showteam}}&admindriver=true&loginAS=true"
                             role="tab" ng-attr-active="tabs[9].active">Login As</a>
                     </li>
                     <!-- AI-000179 Edited By Megha -->

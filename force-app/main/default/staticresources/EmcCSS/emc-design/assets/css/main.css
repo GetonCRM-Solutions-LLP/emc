@@ -82,12 +82,14 @@ header {
   color: #ffffff;
   line-height: 30px;
 }
-li.nav-item{
-    border-top: 2px solid transparent;
-}
 li.nav-item.active {
   font-family: 'Proxima Nova' !important;
+}
+.navbar-nav.flex-row .nav-item.active{
   border-top: 2px solid #fff;
+}
+.navbar-nav.flex-row .nav-item{
+  border-top: 2px solid transparent;
 }
 .sticky .navbar-brand img.img-fluid {
   height: 40px !important;
@@ -375,6 +377,7 @@ body, td {
 #adminroster-pills-tab .nav-item {
   margin-right: 5px !important;
   background: #efefef !important;
+  border-top: none !important;
 }
 
 #adminroster-pills-tab .nav-item a {
