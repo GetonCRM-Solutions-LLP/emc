@@ -13,4 +13,4 @@ package.xml
 
 #staging file
 .github/workflows/*.yml
-*.yml
+**.yml
