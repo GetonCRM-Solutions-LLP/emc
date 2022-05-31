@@ -31,4 +31,25 @@ public with sharing class BiWeekEmployeeReimbTriggerHandler {
             update mileageUpdatelist;    
         }     
     }
+
+    /* This is used to update fields value of count error check as total time based on the Count error check field's value */
+    Public Static Void updateCountErrorHoursField (List<Bi_Weekly_Reimbursement__c> biWeeklyReimList){
+      //  List<Bi_Weekly_Reimbursement__c> biWeeklyReimforUpdateList = new List<Bi_Weekly_Reimbursement__c>();
+        for (Bi_Weekly_Reimbursement__c reim : biWeeklyReimList){
+            
+                if(reim.Count_Error_Check__c == 0 || reim.Count_Error_Check__c == null) { 
+                    reim.Actual_Hours__c = reim.Total_Time__c;
+                    reim.Actual_Mileages__c = reim.Total_Mileage__c;
+                }   else if(reim.Count_Error_Check__c == 1) {
+                        reim.Sync_1_Hours__c = reim.Total_Time__c;
+                        reim.Sync_1_Mileages__c= reim.Total_Mileage__c;
+                }   else if(reim.Count_Error_Check__c == 2) { 
+                        reim.Sync_2_Hours__c = reim.Total_Time__c;
+                        reim.Sync_2_Mileages__c = reim.Total_Mileage__c;
+                }   else if(reim.Count_Error_Check__c >= 3){
+                       // reim.Sync_2_Hours__c = reim.Total_Time__c;
+                }
+              //  biWeeklyReimforUpdateList.add(reim);            
+        }    
+    }
 }

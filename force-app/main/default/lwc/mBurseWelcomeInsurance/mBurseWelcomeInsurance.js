@@ -1,16 +1,20 @@
-import { LightningElement, wire, api } from 'lwc';
+import {
+    LightningElement,
+    wire,
+    api
+} from 'lwc';
 import getCustomSettings from '@salesforce/apex/NewAccountDriverController.getCustomSettings';
 import updateContactDetail from '@salesforce/apex/NewAccountDriverController.updateContactDetail';
-import contactInfo from  '@salesforce/apex/NewAccountDriverController.getContactDetail';
-import { events, skipEvents } from 'c/utils';
+import contactInfo from '@salesforce/apex/NewAccountDriverController.getContactDetail';
+import {
+    events,
+    skipEvents
+} from 'c/utils';
 export default class MBurseWelcomeInsurance extends LightningElement {
-    host;
-    protocol;
-    pathname;
-    search;
-    video;
-    videoWidth = 380;
-    videoHeight = 214;
+    originUrl;
+    vfHost;
+    videoWidth = 396;
+    videoHeight = 223;
     welcomeVideoUrl;
     insuranceVideoUrl;
     nextShow = false;
@@ -25,92 +29,149 @@ export default class MBurseWelcomeInsurance extends LightningElement {
     // get backgroundStyle() {
     //     return `background-image:url(${background})`;
     // }
-    /*get custom settings for video url */
     @wire(getCustomSettings)
-    myCustomSettings({ error, data }){
+    myCustomSettings({
+        error,
+        data
+    }) {
         if (data) {
             this.welcomeVideoUrl = data.Welcome_Link__c;
             this.insuranceVideoUrl = data.Insurance_Link__c;
-          } else if (error) {
-              console.log(error);
-          }
+        } else if (error) {
+            console.log(error);
+        }
     }
-    nextDeclarationUpload(){
+    nextDeclarationUpload() {
         events(this, 'Next Declaration Upload')
     }
-    nextDeclaration(){
+    nextDeclaration() {
+        let delayInMilliseconds = 100;
         // eslint-disable-next-line @lwc/lwc/no-api-reassignments
         this.welcomeInsurance = false;
         // eslint-disable-next-line @lwc/lwc/no-api-reassignments
         this.insuranceDeclaration = true;
         this.isPlay = false;
+        // eslint-disable-next-line @lwc/lwc/no-async-operation
+        setTimeout(() => {
+            if (this.template.querySelector('.insurance-frame') != null) {
+                this.template.querySelector('.insurance-frame').addEventListener(
+                    'load',
+                    this._handler = () => this.handleFireToVf(this.insuranceVideoUrl)
+                );
+            }
+        }, delayInMilliseconds)
     }
     proxyToObject(e) {
         return JSON.parse(e)
     }
-    toggleHide(){
+    toggleHide() {
         var list, status, packetStatus;
-        contactInfo({contactId: this.contactId})
-        .then((data) => {
-          if (data) {
-            this.driverDetails = data;
-            list = this.proxyToObject(data);
-            status = list[0].insuranceStatus;
-            packetStatus =  list[0].driverPacketStatus;
-           if(this.dayLeft === true){
-                this.nextShow = (status === 'Uploaded' || packetStatus === 'Uploaded') ? true : false;
-           }else{
-               this.nextShow = true;
-           }
-          }
-        })
-        .catch((error)=>{
-            // If the promise rejects, we enter this code block
-            console.log(error); 
-        })
+        contactInfo({
+                contactId: this.contactId
+            })
+            .then((data) => {
+                if (data) {
+                    this.driverDetails = data;
+                    list = this.proxyToObject(data);
+                    status = list[0].insuranceStatus;
+                    packetStatus = list[0].driverPacketStatus;
+                    if (this.dayLeft === true) {
+                        this.nextShow = (status === 'Uploaded' || packetStatus === 'Uploaded') ? true : false;
+                    } else {
+                        this.nextShow = true;
+                    }
+                }
+            })
+            .catch((error) => {
+                // If the promise rejects, we enter this code block
+                console.log(error);
+            })
     }
-    playVideo(){
+    playVideo() {
         this.isPlay = true;
     }
     renderedCallback() {
         if (this.renderInitialized) {
             return;
-          }
+        }
         this.renderInitialized = true;
         this.toggleHide();
+        if(this.welcomeInsurance) {
+            if (this.template.querySelector('iframe') != null) {
+                this.template.querySelector('iframe').addEventListener(
+                    'load',
+                    this._handler = () => this.handleFireToVf(this.welcomeVideoUrl)
+                );
+            }
+        }else{
+            /* To load iframe */
+            if (this.template.querySelector('iframe') != null) {
+                this.template.querySelector('iframe').addEventListener(
+                    'load',
+                    this._handler = () => this.handleFireToVf(this.insuranceVideoUrl)
+                );
+            }
+        }
+      
     }
-    skipToPage(){
+    skipToPage() {
         var contactData, beforeUpdate, toUpdate, listFrom;
-        if(this.driverDetails){
+        if (this.driverDetails) {
             this.promiseError = false;
             listFrom = this.driverDetails
             contactData = this.proxyToObject(listFrom);
-            beforeUpdate =  contactData[0].insuranceStatus;
+            beforeUpdate = contactData[0].insuranceStatus;
             toUpdate = "Skip";
-            if(beforeUpdate !== toUpdate) {
+            if (beforeUpdate !== toUpdate) {
                 contactData[0].insuranceStatus = "Skip";
                 console.log(JSON.stringify(contactData));
                 updateContactDetail({
-                    contactData: JSON.stringify(contactData),
-                    driverPacket: false
-                }).then(()=>{
-                    this.toggleHide();
-                })
-                .catch((error)=>{
-                    // If the promise rejects, we enter this code block
-                    this.errorMessage = 'Disconnected! Please check your connection and log in';
-                    this.promiseError = true;
-                    console.log(error); 
-                })
+                        contactData: JSON.stringify(contactData),
+                        driverPacket: false
+                    }).then(() => {
+                        this.toggleHide();
+                    })
+                    .catch((error) => {
+                        // If the promise rejects, we enter this code block
+                        this.errorMessage = 'Disconnected! Please check your connection and log in';
+                        this.promiseError = true;
+                        console.log(error);
+                    })
             }
         }
         skipEvents(this, 'Next Declaration Upload');
     }
-    backToPage(){
-          // eslint-disable-next-line @lwc/lwc/no-api-reassignments
+    backToPage() {
+        let delayInMilliseconds = 100;
+        // eslint-disable-next-line @lwc/lwc/no-api-reassignments
         this.welcomeInsurance = true;
         this.isPlay = false;
         // eslint-disable-next-line @lwc/lwc/no-api-reassignments
         this.insuranceDeclaration = false;
+        // eslint-disable-next-line @lwc/lwc/no-async-operation
+        setTimeout(() => {
+            if (this.template.querySelector('.welcome-frame') != null) {
+                this.template.querySelector('.welcome-frame').addEventListener(
+                    'load',
+                    this._handler = () => this.handleFireToVf(this.welcomeVideoUrl)
+                );
+            }
+        }, delayInMilliseconds)
+    }
+    handleFireToVf(vurl) {
+        var vfData = {
+            vfHeight: this.videoHeight,
+            vfWidth: this.videoWidth,
+            vfSource: vurl,
+        }
+        var message = JSON.stringify(vfData);
+        // Fire an event to send data to visualforce page
+        this.template.querySelector('iframe').contentWindow.postMessage(message, this.originUrl)
+    }
+    connectedCallback() {
+        let url = window.location.origin;
+        let urlHost = url + '/app/mBurseVideoFrame';
+        this.originUrl = url;
+        this.vfHost = urlHost;
     }
 }

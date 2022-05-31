@@ -3,9 +3,10 @@ import getCustomSettings from '@salesforce/apex/NewAccountDriverController.getCu
 import { events } from 'c/utils';
 export default class DashboardInsuranceView extends LightningElement {
     video;
-    videoWidth = 380;
-    videoHeight = 214;
-    welcomeVideoUrl;
+    vfHost;
+    originUrl;
+    videoWidth = 396;
+    videoHeight = 223;
     insuranceVideoUrl;
     isPlay = false;
     renderInitialized = false;
@@ -13,7 +14,6 @@ export default class DashboardInsuranceView extends LightningElement {
     @wire(getCustomSettings)
     myCustomSettings({ error, data }){
         if (data) {
-            this.welcomeVideoUrl = data.Welcome_Link__c;
             this.insuranceVideoUrl = data.Insurance_Link__c;
           } else if (error) {
               console.log(error);
@@ -41,5 +41,46 @@ export default class DashboardInsuranceView extends LightningElement {
             return;
           }
         this.renderInitialized = true;
+        if (this.template.querySelector('iframe') != null) {
+            this.template.querySelector('iframe').addEventListener(
+                'load',
+                this._handler = () => this.handleFireToVf(this.insuranceVideoUrl)
+            );
+        }
+    }
+
+    onMyFrameLoad(){
+        if (this.template.querySelector('iframe') != null) {
+            this.template.querySelector('iframe').addEventListener(
+                'load',
+                this._handler = () => this.handleFireToVf(this.insuranceVideoUrl)
+            );
+        }
+    }
+    handleFireToVf(vurl) {
+        var vfData, message
+        if(vurl){
+            vfData = {
+                vfHeight: this.videoHeight,
+                vfWidth: this.videoWidth,
+                vfSource: vurl,
+            }
+            message = JSON.stringify(vfData);
+            // Fire an event to send data to visualforce page
+            this.template.querySelector('iframe').contentWindow.postMessage(message, this.originUrl)
+        }else{
+            this.template.querySelector('iframe').addEventListener(
+                'load',
+                this._handler = () => this.handleFireToVf(this.insuranceVideoUrl)
+            );
+        }
+       
+    }
+
+    connectedCallback() {
+        let url = window.location.origin;
+        let urlHost = url + '/app/mBurseVideoFrame';
+        this.originUrl = url;
+        this.vfHost = urlHost;
     }
 }
