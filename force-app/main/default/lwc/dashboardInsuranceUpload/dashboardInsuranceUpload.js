@@ -61,7 +61,7 @@ export default class DashboardInsuranceUpload extends LightningElement {
     driverObject;
     isError = false;
     isVisible = false;
-
+    
     /* Hide / Show Spinner */
     isSpinner = false;
 
@@ -80,9 +80,11 @@ export default class DashboardInsuranceUpload extends LightningElement {
         return this.driverObject;
     }
     set client(value){
-        let tempObject =  this.proxyToObject(value)
-        this.driverDetails = value;
-        this.driverObject = tempObject[0];
+        if(value){
+            let tempObject =  this.proxyToObject(value)
+            this.driverDetails = value;
+            this.driverObject = tempObject[0];
+        }
     }
 
     /* Styling for error messages */
@@ -200,18 +202,22 @@ export default class DashboardInsuranceUpload extends LightningElement {
                         })
                         .then(() => {
                             var contact;
-                            contact = this.proxyToObject(this.driverDetails);
-                            contact[0].insuranceStatus = "Uploaded";
-                            updateContactDetail({
-                                contactData: JSON.stringify(contact),
-                                driverPacket : false
-                            })
+                            if(this.driverDetails){
+                                contact = this.proxyToObject(this.driverDetails);
+                                contact[0].insuranceStatus = "Uploaded";
+                                updateContactDetail({
+                                    contactData: JSON.stringify(contact),
+                                    driverPacket : false
+                                })
+                            }
+                         
                             // eslint-disable-next-line @lwc/lwc/no-api-reassignments
                             this.isSpinner = false;
                             this.isUploaded = true;
                             this.isUploadShow = false;
                         })
                         .catch((error) => {
+                              // If the promise rejects, we enter this code block
                             console.log(error);
                         });
                 } else {
@@ -221,6 +227,7 @@ export default class DashboardInsuranceUpload extends LightningElement {
                 }
             })
             .catch((error) => {
+                // If the promise rejects, we enter this code block
                 console.log(error);
             });
     }
