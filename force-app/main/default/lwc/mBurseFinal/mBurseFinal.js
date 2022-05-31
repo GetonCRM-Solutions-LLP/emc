@@ -3,8 +3,10 @@ import redirectionURL  from '@salesforce/apex/NewAccountDriverController.loginRe
 import contactInfo from  '@salesforce/apex/NewAccountDriverController.getContactDetail';
 import getCustomSettings from '@salesforce/apex/NewAccountDriverController.getCustomSettings';
 export default class MBurseFinal extends LightningElement {
-    videoWidth = 380;
-    videoHeight = 214;
+    originUrl;
+    vfHost;
+    videoWidth = 329;
+    videoHeight = 248;
     mburseVideoUrl;
     allowRedirect = false;
     renderInitialized = false;
@@ -66,6 +68,31 @@ export default class MBurseFinal extends LightningElement {
             return;
           }
         this.renderInitialized = true;
+        if (this.template.querySelector('iframe') != null) {
+            this.template.querySelector('iframe').addEventListener(
+                'load',
+                this._handler = () => this.handleFireToVf(this.mburseVideoUrl)
+            );
+        }
         this.renderButton()
+    }
+
+    handleFireToVf(vurl) {
+        var vfData = {
+            vfHeight: this.videoHeight,
+            vfWidth: this.videoWidth,
+            vfSource: vurl,
+        }
+        var message = JSON.stringify(vfData);
+        console.log("Vf data", JSON.stringify(vfData));
+        // Fire an event to send data to visualforce page
+        this.template.querySelector('iframe').contentWindow.postMessage(message, this.originUrl)
+    }
+
+    connectedCallback() {
+        let url = window.location.origin;
+        let urlHost = url + '/app/mBurseVideoFrame';
+        this.originUrl = url;
+        this.vfHost = urlHost;
     }
 }

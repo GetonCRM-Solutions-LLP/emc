@@ -1,136 +1,52 @@
 @isTest
 public class BiWeekEmployeeReimbTriggerHandlerTest {
     public static testmethod void test1(){
-        TriggerConfig__c customEmailSetting =  new TriggerConfig__c();
-        customEmailSetting.Name = 'Defaulttrigger';
-        customEmailSetting.ContactTriggersendEmailForNewContact__c = true;
-        customEmailSetting.ContactTriCommunityReimCreate__c = true;
-        insert customEmailSetting;
-        
-        SendEmail__c customSetting1 =  new SendEmail__c();
-        customSetting1.Name = 'Send Email For Compliance';
-        customSetting1.Send_email_from_code__c= true;
-        insert customSetting1;
-        
-        TriggerConfig__c customSetting =  new TriggerConfig__c();
-        customSetting.Name = 'Defaulttrigger';
-        customSetting.MappingGasPriceTrigger__c = true;
-        customSetting.MappingGasStayTime__c = true;
-        customSetting.ContactTriggersendEmailForNewContact__c = true;
-        customSetting.ContactTriCommunityReimCreate__c = true;
-        insert customSetting;
-        
-        Vehicle_URL_Mapping__c veh = new Vehicle_URL_Mapping__c();
-        veh.URL__c = 'https://cdn2.hubspot.net/hubfs/2511299/iStock-494093356.jpg';
-        veh.vehicle__c = 'Full-Size Sedan';
-        veh.Year__c = '2019';
-        insert veh;
-        
-        UserRole userRole_1 = [SELECT Id FROM UserRole WHERE DeveloperName = 'EMD' LIMIT 1];
-        Profile profile_1 = [SELECT Id FROM Profile WHERE Name = 'Customer Community Login User' LIMIT 1];
-        User admin = [SELECT Id, Username, UserRoleId FROM User WHERE Profile.Name = 'System Administrator' AND UserRoleId = :userRole_1.Id LIMIT 1];
-        User user_1;
-    
-        Account acc = new Account();
-        Contact con = new Contact();
-        System.runAs(admin) {
-            acc.Name = 'Test Account';
-            acc.Pay_Period_Start_Date__c = system.today().adddays(-30);
-            acc.Bi_Weekly_Pay_Period__c = true;
-            acc.Pay_Period_Days__c = 13;
-            insert acc;
-            Contact contact_1 = new Contact(AccountId = acc.Id, LastName = 'xgeek',External_Email__c='abc@gmail.com');
-            insert contact_1;
-            con.LastName = 'TestContact';
-            con.Role__c = 'Driver';
-            con.Car_Image__c = veh.URL__c;
-            con.Vehicle_Type__c = veh.Year__c +' '+veh.vehicle__c;
-            con.AccountId = acc.Id;
-            con.Activation_Date__c = system.today();
-            con.Deactivated_Date__c = null;
-            con.External_Email__c = 'test@email.com';
-            con.Fixed_Amount__c = 371.28;
-            con.MailingCity = 'Abilene';
-            con.MailingState = 'TX';
-            con.Time_Zone__c = 'US/Mountain' ;
-            con.Driving_States__c = 'TX';
-            con.Fixed_Amount__c = 322.00;
-            con.Maintenance_and_Tires__c = 1.2;
-            con.MPG__c= 10.00;
-            con.Monthly_Mileage_Limit__c = 100.00;
-            insert con;
-            
-            user_1 = new User( 
-                Email = 'yourusername@gmail.com',
-                ProfileId = profile_1.Id, 
-                UserName = 'yourusername@gmail.com', 
-                Alias = 'Test',
-                TimeZoneSidKey = 'America/New_York',
-                EmailEncodingKey = 'ISO-8859-1',
-                LocaleSidKey = 'en_US', 
-                LanguageLocaleKey = 'en_US',
-                ContactId = contact_1.Id,
-                PortalRole = 'Manager',
-                FirstName = 'Firstname',
-                LastName = 'Lastname'
-            );
-            insert user_1;
-        }
-        
-        IRS_Mileage_Rate__c objIRSRate = new IRS_Mileage_Rate__c();
-        objIRSRate.year__c = '2021';
-        objIRSRate.IRS_Rate__c= 12.0;
-        insert objIRSRate;
-        
-        Bi_Weekly_Reimbursement__c biReim = new Bi_Weekly_Reimbursement__c();
-        bireim.Approved_Date__c = system.today().addDays(-1);
-        bireim.Status__c = 'Approved';
-        bireim.Name = '10/03/2021 to 10/16/2021';
-        bireim.Start_Date__c = Date.parse('10/03/2021');
-        bireim.End_Date__c = Date.parse('10/16/2021');
-        bireim.Contact__c = con.id;
-        insert bireim;
+        TriggerConfig__c triggerCustomSetting = TestDataFactory.triggerConfigCustomSetting(true);                
+        SendEmail__c sendEmailCustomSetting1 = TestDataFactory.sendEmailCustomSetting(true,'Send Email For Compliance');        
+        Vehicle_URL_Mapping__c vehicleObj = TestDataFactory.createVehicleData(true,0);
+        IRS_Mileage_Rate__c irsRateObj = TestDataFactory.createIRSRate(true,0);
+   
+        Account acc = new Account();     
+        List<Contact> conList = new List<Contact>();
 
-        Employee_Reimbursement__c er = new Employee_Reimbursement__c();
-        er.Contact_Id__c = con.Id;
-        er.Name = 'Reimbersment Test';
-        er.Month__c = '03-2021';
-        er.Status__c = 'Pending';
-        er.Fuel_Price__c = 10.00; 
-        er.Fixed_Amount__c = con.Fixed_Amount__c;
-        er.Status__c = 'Pending';
-        er.Maintenance_and_Tires__c = con.Maintenance_and_Tires__c;
-        er.MPG__c = con.MPG__c;
-        insert er;
-        
-        Employee_Mileage__c emp = new Employee_Mileage__c();
-        emp.Bi_Weekly_Reimbursement__c = bireim.Id;
-        
-        emp.EmployeeReimbursement__c = er.id;
-        emp.Contact_Email_Id__c = con.External_Email__c;
-        emp.Name = 'Test Mileage Record';
-        emp.Trip_Status__c = StaticValues.noApprovedYet;
-        emp.Mileage__c = 10.00;
-        emp.Fuel_price__c = 10.00;
-        emp.TimeZone__c = 'US/Mountain' ;
-        emp.StartTime__c = system.now();
-        emp.EndTime__c =  system.now();
-        emp.Trip_Date__c = date.today().adddays(-1);
-        emp.Approved_Date__c = null;
-        //emp.Rejected__c = true;
-        insert emp;
+        UserRole userRole = TestDataFactory.getUserRole();
+        Profile profileObj = TestDataFactory.getUserProfile();
+        User admin = TestDataFactory.getSystemAdminUser(userRole.Id);
+        User userObj;
+        System.runAs(admin) {
+            Account accountObj = TestDataFactory.createAccount(true,'Test Account',true);
+            Contact contactObj = TestDataFactory.createCICDContact(true,accountObj.Id);
+            acc = TestDataFactory.createAccount(true,'Test',true);
+            conList = TestDataFactory.createDriverContact(true, acc.Id, 'Driver', vehicleObj.Name, 'test.email', 1);
+            userObj = TestDataFactory.createUser(true, profileObj.Id, conList[0].Id);
+        }
+    
+        List<Employee_Reimbursement__c> reimList = TestDataFactory.createPendingReimbursement(true, conList, 10, irsRateObj.id);
+        system.assertEquals(11, reimList.size(),true);
+        List<Bi_Weekly_Reimbursement__c> biWeeklyReimList = TestDataFactory.createBiweeklyReim(false, conList, system.today().adddays(-14), system.today().addDays(-1), 10, irsRateObj.id);
+        biWeeklyReimList[0].Status__c = 'Approved';
+        insert biWeeklyReimList;
+        biWeeklyReimList[0].Count_Error_Check__c = 1 ;
+        update biWeeklyReimList;
+        biWeeklyReimList[0].Count_Error_Check__c = 2 ;
+        update biWeeklyReimList ;
+        biWeeklyReimList[0].Count_Error_Check__c = 3 ;
+        update biWeeklyReimList ;
+        List<Employee_Mileage__c> empMileage = TestDataFactory.getEmpMileage(true,5,reimList,biWeeklyReimList);
+        Map<Id,Bi_Weekly_Reimbursement__c> empReimburseOld = new Map<Id,Bi_Weekly_Reimbursement__c>();
+        empReimburseOld.put(biWeeklyReimList[0].Id,biWeeklyReimList[0]);
         Test.startTest();
-        System.runAs(user_1) {
-            if(emp.Approved_Date__c == null ){
-                emp.Approved_Date__c = bireim.Approved_Date__c ; 
+        System.runAs(userObj) {
+            if(empMileage[0].Approved_Date__c == null ){
+                empMileage[0].Approved_Date__c = biWeeklyReimList[0].Approved_Date__c ; 
             }
             
-            if(emp.Rejected__c == true){
-                emp.Trip_Status__c = 'Rejected';
+            if(empMileage[0].Rejected__c == true){
+                empMileage[0].Trip_Status__c = 'Rejected';
             }
-            //bireim.Approved_Date__c = system.today();
-            update emp;
+            update empMileage;
             BiWeekEmployeeReimbTriggerHandler biweeklyreim = new BiWeekEmployeeReimbTriggerHandler();
+            BiWeekEmployeeReimbTriggerHandler.mileagefieldupdate(biWeeklyReimList,empReimburseOld,empReimburseOld);
         }
         Test.stopTest();
     }
