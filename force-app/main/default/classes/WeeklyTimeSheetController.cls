@@ -36,6 +36,7 @@ Global with sharing  class WeeklyTimeSheetController Implements Schedulable  {
                                                             FROM Bi_Weekly_Reimbursement__c
                                                             //WHERE Contact__r.AccountId =: accID
                                                             WHERE Contact__r.Account.Name = 'Ermi' 
+                                                                    AND (Contact__r.Driver_Type__c = 'Driver - Full Time' or Contact__r.Driver_Type__c = 'Driver - Part Time' )
                                                                     AND Start_Date__c != Null
                                                                     AND End_Date__c  != Null
                                                                     AND End_Date__C =:  reimEndDate ]){
@@ -46,7 +47,7 @@ Global with sharing  class WeeklyTimeSheetController Implements Schedulable  {
                 mail.setOrgWideEmailAddressId(owea.get(0).Id);
             }
             sendingTo.add(biweeklyReim.Contact__r.External_Email__c);
-           //sendingTo.add('paras.dhanani@getoncrm.com');
+            //sendingTo.add('paras.dhanani@getoncrm.com');
             mail.setToAddresses(sendingTo);
             mail.setSubject(temp[0].Subject);
             htmlbody = temp[0].HTMLValue;
@@ -56,6 +57,7 @@ Global with sharing  class WeeklyTimeSheetController Implements Schedulable  {
             mail.setPlainTextBody(htmlbody);
             List<String> bccaddress = new list<String>();
             bccaddress.add('driverservices@mburse.com');
+            bccaddress.add('paras.dhanani@getoncrm.com');
             mail.setBccAddresses(bccaddress);
             mail.setHtmlBody(htmlbody);
             mail_list.add(mail);

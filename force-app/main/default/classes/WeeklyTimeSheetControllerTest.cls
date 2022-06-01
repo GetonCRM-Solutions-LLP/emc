@@ -47,6 +47,7 @@ public with sharing class WeeklyTimeSheetControllerTest {
             con1.External_Email__c = 'minkesjhh.patel1478@gmail.com';
             con1.Deactivated_Date__c = Null;
             con1.Role__c = 'Driver';
+            con1.Driver_Type__c = 'Driver - Part Time';
             con1.Insurance_Attachment_Id__c = Null;
             con1.Vehicle_Type__c = '2019 Full-Size Sedan';
             con1.Biweek_Reimbursement__c = True;
@@ -76,7 +77,7 @@ public with sharing class WeeklyTimeSheetControllerTest {
            // br.End_Date__c = date.parse('03/21/2022') ;
            br.Start_Date__c = system.today().addDays(-7);
             br.End_Date__c = system.today().addDays(-1);
-         	br.Confirm_Hours__c = False;
+            br.Confirm_Hours__c = False;
             br.MPG__c = con1.MPG__c;
             br.Maintenance_and_Tires__c = con1.Maintenance_and_Tires__c;
             br.Fixed_Amount__c = con1.Fixed_Amount__c;
