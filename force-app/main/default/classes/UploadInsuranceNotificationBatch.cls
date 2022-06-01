@@ -1,3 +1,12 @@
+/*  Author : GetonCRM Solutions LLP                                                                     
+ * Created Date : 01/06/2022                                                                            
+ * Description : This Batch is used to send Notification mail to driver who has skip Insurance while activation.
+ *                 This mail is stop fire after 30  day of activation day.                                                            
+ * -------------------------------------------------------------------------------------------------
+ * Created by   : Paras Dhanani                                                                          
+ * Created Date : 01-06-2022                   
+ */
+
 Public class UploadInsuranceNotificationBatch implements Database.Batchable<sObject>,Database.Stateful {
     
     Public  List<EmailTemplate> temp;
@@ -58,9 +67,15 @@ Public class UploadInsuranceNotificationBatch implements Database.Batchable<sObj
                 mailList.add(mail);
             }
         }
-        if(mailList.size() > 0 && !Test.isRunningTest()){
-            Messaging.sendEmail(mailList);  
+        
+         SendEmail__c  sendEmailObj = SendEmail__c.getValues('UploadInsuranceNotificationBatch');
+        if((sendEmailObj!=null) && sendEmailObj.Send_email_from_code__c==true && mailList.size()>0 && !Test.isRunningTest())
+        {
+             Messaging.sendEmail(mailList);  
         }
+       /* if(mailList.size() > 0 && !Test.isRunningTest()){
+            Messaging.sendEmail(mailList);  
+        } */
     }    
     Public void finish(Database.BatchableContext bc){ }   
 }
