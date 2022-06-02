@@ -76,8 +76,7 @@ public class BiWeeklyComplianceReportControllerTest {
         objIRSRate.IRS_Rate__c= 12.0;
         insert objIRSRate;
         
-   
-    Employee_Reimbursement__c er = new Employee_Reimbursement__c();
+        Employee_Reimbursement__c er = new Employee_Reimbursement__c();
         er.Contact_Id__c = con.Id;
         er.Name = 'Reimbersment Test';
         er.Month__c = '09-2021';
