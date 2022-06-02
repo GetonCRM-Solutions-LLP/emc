@@ -30,7 +30,9 @@ public class BiWeeklyComplianceReportControllerTest {
         Contact con = new Contact();
         System.runAs(admin) {
             acc.Name = 'PL Marketing';
-            acc.Pay_Period_Start_Date__c = Date.parse('07/25/2021');
+            acc.Pay_Period_Start_Date__c = Date.parse('01/25/2022');
+            acc.Bi_Weekly_Pay_Period__c = true;
+            acc.Pay_Period_Days__c = 13;
             insert acc;
             Contact contact_1 = new Contact(AccountId = acc.Id, LastName = 'xgeek',External_Email__c='abc@gmail.com');
             insert contact_1;
@@ -74,8 +76,7 @@ public class BiWeeklyComplianceReportControllerTest {
         objIRSRate.IRS_Rate__c= 12.0;
         insert objIRSRate;
         
-   
-    Employee_Reimbursement__c er = new Employee_Reimbursement__c();
+        Employee_Reimbursement__c er = new Employee_Reimbursement__c();
         er.Contact_Id__c = con.Id;
         er.Name = 'Reimbersment Test';
         er.Month__c = '09-2021';
@@ -119,7 +120,6 @@ public class BiWeeklyComplianceReportControllerTest {
             wrapReim.IRSRate = 2.345;
             wrapReim.MaxAllowable = 2.345;
             wrapReim.ImputedIncome = 2.345;
-            
             PageReference pgRef = Page.BiWeeklyComplianceReport; //Create Page Reference - 'Appt_New' is the name of Page
             Test.setCurrentPage(pgRef); //Set the page for Test Method
             ApexPages.currentPage().getParameters().put('id', Con.id);

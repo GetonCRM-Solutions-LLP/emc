@@ -1,7 +1,20 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <Package xmlns="http://soap.sforce.com/2006/04/metadata">
 	<types>
-		<members>mBurseWelcomeInsurance</members>
+		<members>BiWeeklyComplianceReportController</members>
+		<members>BiWeeklyComplianceReportControllerTest</members>
+		<members>UploadInsuranceNotificationBatch</members>
+		<members>UploadInsuranceNotificationBatchTest</members>
+		<name>ApexClass</name>
+	</types>
+	<types>
+		<members>mBurseVideoFrame</members>
+		<members>uploadInsurance</members>
+		<name>ApexPage</name>
+	</types>
+	<types>
+		<members>dashboardInsuranceView</members>
+		<members>dashboardUploadInsurance</members>
 		<name>LightningComponentBundle</name>
 	</types>
 	<version>53.0</version>
