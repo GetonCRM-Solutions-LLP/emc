@@ -8,6 +8,7 @@ public class WrapperUtils_Test {
         customSetting.ContactTriggersendEmailForNewContact__c = true;
         customSetting.ContactTriCommunityReimCreate__c = true;
         customSetting.Mileage_Lockdate__c = false;
+        customSetting.mileageremoveapprovaldate__c = false;
         insert customSetting;
         
         WrapperUtils obj_WrapperUtils = new WrapperUtils();
@@ -260,6 +261,7 @@ public class WrapperUtils_Test {
         customSetting.ContactTriggersendEmailForNewContact__c = true;
         customSetting.ContactTriCommunityReimCreate__c = true;
         customSetting.Mileage_Lockdate__c = false;
+        customSetting.mileageremoveapprovaldate__c = false;
         insert customSetting;
         
         WrapperUtils obj_WrapperUtils = new WrapperUtils();
@@ -514,6 +516,7 @@ public class WrapperUtils_Test {
         customSetting.ContactTriggersendEmailForNewContact__c = true;
         customSetting.ContactTriCommunityReimCreate__c = true;
         customSetting.Mileage_Lockdate__c = false;
+        customSetting.mileageremoveapprovaldate__c = false;
         insert customSetting;
         
         WrapperUtils obj_WrapperUtils = new WrapperUtils();
