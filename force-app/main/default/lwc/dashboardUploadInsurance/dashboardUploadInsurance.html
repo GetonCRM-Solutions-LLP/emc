@@ -82,7 +82,7 @@
             </a>
         </li>
     </c-m-burse-navbar>
-    <c-dashboard-insurance-view if:false={nextDeclationUpload} onnavigate={navigateToDeclaration}></c-dashboard-insurance-view>
+    <c-dashboard-insurance-view if:false={nextDeclationUpload} onnavigate={navigateToDeclaration} video-link={insuranceVideo}></c-dashboard-insurance-view>
     <c-dashboard-insurance-upload if:true={nextDeclationUpload} is-upload-show={uploadVal} account-id={accountId} contact-id={contactId} attachmentid={attachmentid} contact-name={contactName}
     contact-email={contactEmail} client={information} onnavigate={navigateToDashboard}  onback={backToInsurance}></c-dashboard-insurance-upload>
 </template>

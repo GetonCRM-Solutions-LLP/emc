@@ -33,7 +33,6 @@
                     videoTemplate.getElementsByTagName('source')[0].setAttribute("src", receivedfromLWC.vfSource);
                 }
                 videoTemplate.style = (receivedfromLWC.cellType === 'Company Provide') ? ('object-fit: cover !important') : '';
-                // videoTemplate.style = (receivedfromLWC.cellType === 'Company Provide') ? ('height: 224px!important') : '';
                 videoTemplate.pause();
                 videoTemplate.load();
             }

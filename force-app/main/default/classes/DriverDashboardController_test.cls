@@ -1,24 +1,11 @@
 @isTest
 public class DriverDashboardController_test {
     public static testmethod void DriverDashboardControllerTestMethod() {
-        TriggerConfig__c customEmailSetting =  new TriggerConfig__c();
-        customEmailSetting.Name = 'Defaulttrigger';
-        customEmailSetting.ContactTriggersendEmailForNewContact__c = true;
-        customEmailSetting.ContactTriCommunityReimCreate__c = true;
-        customEmailSetting.ContactTriBiReimCreate__c  = true;
-        insert customEmailSetting;
-        
-        SendEmail__c customSetting =  new SendEmail__c();
-        customSetting.Name = 'Send Email For Compliance';
-        customSetting.Send_email_from_code__c= true;
-        insert customSetting;
+        TriggerConfig__c triggerConfigCustomSetting = TestDataFactory.triggerConfigCustomSetting(True);
+        SendEmail__c triggerCon = TestDataFactory.sendEmailCustomSetting(True,'Send Email For Compliance');
+        Vehicle_URL_Mapping__c vehType = TestDataFactory.createVehicleData(True, 3);  
         
         List<IRS_Mileage_Rate__c> obj_IRS_Mileage_Rate =  RecordUtilityClass.insertIrsRate();
-        Vehicle_URL_Mapping__c veh = new Vehicle_URL_Mapping__c();
-        veh.URL__c = 'https://cdn2.hubspot.net/hubfs/2511299/iStock-494093356.jpg';
-        veh.vehicle__c =  'Mileage Rate';
-        veh.Year__c = '2019';
-        insert veh;
         
         UserRole userRole_1 = [SELECT Id FROM UserRole WHERE DeveloperName = 'EMD' LIMIT 1];
         Profile profile_1 = [SELECT Id FROM Profile WHERE Name = 'Customer Community Login User' LIMIT 1];
@@ -130,6 +117,7 @@ public class DriverDashboardController_test {
             DriverDashboardController.getDriverGasPrice('TN' , 'Atlanta');
             DriverDashboardController.sendInsuranceEmail(String.valueOf(obj_driver_contact[0].Id), 'Test', 'test@gmail.com');
             DriverDashboardController.getMileagesBasedTandAtt('2021-11-12','2021-12-30',obj_driver_contact[0].id);
+            NewDashboardVideoLink__c newcustom = DriverDashboardController.getCustomSettings();
         }
         Test.stopTest();
     }

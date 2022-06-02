@@ -1,24 +1,15 @@
-import { LightningElement, wire} from 'lwc';
-import getCustomSettings from '@salesforce/apex/NewAccountDriverController.getCustomSettings';
+import { LightningElement, api} from 'lwc';
 import { events } from 'c/utils';
 export default class DashboardInsuranceView extends LightningElement {
+    @api videoLink
     video;
     vfHost;
     originUrl;
     videoWidth = 396;
     videoHeight = 223;
-    insuranceVideoUrl;
+    insuranceVideoUrl = '';
     isPlay = false;
     renderInitialized = false;
-    /* Get video url from custom settings */
-    @wire(getCustomSettings)
-    myCustomSettings({ error, data }){
-        if (data) {
-            this.insuranceVideoUrl = data.Insurance_Link__c;
-          } else if (error) {
-              console.log(error);
-          }
-    }
 
     /* Move to next page */
     nextDeclarationUpload(){
@@ -39,42 +30,27 @@ export default class DashboardInsuranceView extends LightningElement {
     renderedCallback() {
         if (this.renderInitialized) {
             return;
-          }
+        }
         this.renderInitialized = true;
-        if (this.template.querySelector('iframe') != null) {
-            this.template.querySelector('iframe').addEventListener(
-                'load',
-                this._handler = () => this.handleFireToVf(this.insuranceVideoUrl)
+        const video = this.template.querySelector('.video-frame')
+        if (video != null) {
+            video.addEventListener('load',
+                this._handler = () => this.handleFireToVf(this.videoLink)
             );
         }
     }
 
-    onMyFrameLoad(){
-        if (this.template.querySelector('iframe') != null) {
-            this.template.querySelector('iframe').addEventListener(
-                'load',
-                this._handler = () => this.handleFireToVf(this.insuranceVideoUrl)
-            );
-        }
-    }
     handleFireToVf(vurl) {
         var vfData, message
-        if(vurl){
-            vfData = {
+        vfData = {
                 vfHeight: this.videoHeight,
                 vfWidth: this.videoWidth,
-                vfSource: vurl,
+                vfSource: vurl
+                // vfSource: (vurl) ? vurl : this.sessionStorageOptionUrl 
             }
             message = JSON.stringify(vfData);
             // Fire an event to send data to visualforce page
             this.template.querySelector('iframe').contentWindow.postMessage(message, this.originUrl)
-        }else{
-            this.template.querySelector('iframe').addEventListener(
-                'load',
-                this._handler = () => this.handleFireToVf(this.insuranceVideoUrl)
-            );
-        }
-       
     }
 
     connectedCallback() {
