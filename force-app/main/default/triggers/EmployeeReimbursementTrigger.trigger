@@ -16,11 +16,19 @@ trigger EmployeeReimbursementTrigger on Employee_Reimbursement__c (after update,
             EmployeeReimbursementTriggerHandler.updateStatusMail(sendMailReimbursMap);
         }
         if(!reimIdsLst.isEmpty()){
+<<<<<<< HEAD
             // EMC - 271
             // Whenever Reimbursement is created or updated at that time this is check the value of Contct's Vehicle type 
             // if vehicle type is 'IRS Mileage Rate' than the mpg and fuel price is set to 0 for the reimbursement and 
             // Maintanace and tires are set as the IRS Mileage Rate of that year which is in IRS Mileage rate.
             //EmployeeReimbursementTriggerHandler.IRSVehicleCHeck(reimIdsLst);
+=======
+            /* EMC - 271
+             Whenever Reimbursement is created or updated at that time this is check the value of Contct's Vehicle type 
+             if vehicle type is 'IRS Mileage Rate' than the mpg and fuel price is set to 0 for the reimbursement and 
+             Maintanace and tires are set as the IRS Mileage Rate of that year which is in IRS Mileage rate.*/
+             EmployeeReimbursementTriggerHandler.IRSVehicleCHeck(reimIdsLst);
+>>>>>>> 148a7d09412b226c551b629487f901f0862688d1
         }
     }
 
