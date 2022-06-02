@@ -121,7 +121,6 @@ public class BiWeeklyComplianceReportControllerTest {
             wrapReim.IRSRate = 2.345;
             wrapReim.MaxAllowable = 2.345;
             wrapReim.ImputedIncome = 2.345;
-            
             PageReference pgRef = Page.BiWeeklyComplianceReport; //Create Page Reference - 'Appt_New' is the name of Page
             Test.setCurrentPage(pgRef); //Set the page for Test Method
             ApexPages.currentPage().getParameters().put('id', Con.id);
