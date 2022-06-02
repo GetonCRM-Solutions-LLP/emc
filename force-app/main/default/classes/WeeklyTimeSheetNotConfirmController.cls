@@ -33,7 +33,8 @@ Global with sharing  class WeeklyTimeSheetNotConfirmController implements Schedu
         for (Bi_Weekly_Reimbursement__c biweeklyReim : [SELECT id,name, Confirm_Hours__c,Contact__r.FirstName,Contact__r.External_Email__c         
                                                             FROM Bi_Weekly_Reimbursement__c
                                                             WHERE Contact__r.Account.Name = 'Ermi'
-                                                                    AND  Confirm_Hours__c = false
+                                                                    AND (Contact__r.Driver_Type__c = 'Driver - Full Time' or Contact__r.Driver_Type__c = 'Driver - Part Time' )
+                                                                    AND Confirm_Hours__c = false
                                                                     AND Start_Date__c != Null
                                                                     AND End_Date__c  != Null
                                                                     AND End_Date__C =:  reimEndDate ]){
@@ -43,6 +44,7 @@ Global with sharing  class WeeklyTimeSheetNotConfirmController implements Schedu
             if (owea.size() > 0) {
                 mail.setOrgWideEmailAddressId(owea.get(0).Id);
             }
+            //sendingTo.add('paras.dhanani@getoncrm.com');            
             sendingTo.add(biweeklyReim.Contact__r.External_Email__c);            
             mail.setToAddresses(sendingTo);
             mail.setSubject(temp[0].Subject);
@@ -54,6 +56,7 @@ Global with sharing  class WeeklyTimeSheetNotConfirmController implements Schedu
             List<String> bccaddress = new list<String>();
             bccaddress.add('driverservices@askemc.com');
             bccaddress.add('a.wright@ermi-motion.com');
+            bccaddress.add('paras.dhanani@getoncrm.com');
             mail.setBccAddresses(bccaddress);
             mail.setHtmlBody(htmlbody);
             mail_list.add(mail);

@@ -209,4 +209,8 @@ public class DriverDashboardController
     public static void sendInsuranceEmail (String id,String name,String email){
         BiWeeklyWrapperUtils.sendInsuranceEmail(id, name, email);
     }
+	 @RemoteAction    
+    public static NewDashboardVideoLink__c getCustomSettings(){
+        return NewDashboardVideoLink__c.getOrgDefaults();
+    }
 }
