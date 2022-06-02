@@ -1,10 +1,12 @@
 import { LightningElement,api } from 'lwc';
 import redirectionURL  from '@salesforce/apex/NewAccountDriverController.loginRedirection';
 import driverDetails from '@salesforce/apex/NewAccountDriverController.getContactDetail';
+
 export default class DashboardUploadInsurance extends LightningElement {
    @api role;
    @api manRole;
    @api pLMarketing;
+   @api insuranceVideo;
     contactId;
     accountId;
     managerId;
@@ -30,7 +32,7 @@ export default class DashboardUploadInsurance extends LightningElement {
     isManagerDriver = false;
     plAccount = false;
     renderUrl = false;
-
+  
     /* Get url parameters */
     getUrlParamValue(url, key) {
         return new URL(url).searchParams.get(key);

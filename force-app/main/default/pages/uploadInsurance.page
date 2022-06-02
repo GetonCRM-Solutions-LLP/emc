@@ -137,18 +137,27 @@
             .catch(function (error) {
                 ///if status code 401...
             });
-        var _driverDetail, empContact, empRole, manRole, plMarketing;
+        var _driverDetail, empContact, empRole, manRole, plMarketing, videoUrl;
         _driverDetail = {!DriverDetails}
         empContact = _driverDetail;
         empRole = empContact[0].Role__c;
         manRole = '{!managerrole}'
         plMarketing = '{!($Label.PL_Marketing)}'
+        function getUrl(){
+            Visualforce.remoting.Manager.invokeAction('{!$RemoteAction.DriverDashboardController.getCustomSettings}',
+                    function (result, event) {
+                        videoUrl = result.Insurance_Link__c
+                    }
+            )
+        }
+        getUrl();
         $Lightning.use("c:LWCLightningApp", function () {
             $Lightning.createComponent("c:dashboardUploadInsurance", {
                 //pass parameter values to lwc js controller
                 "role": empRole,
                 "manRole": manRole,
-                "pLMarketing": plMarketing
+                "pLMarketing": plMarketing,
+                "insuranceVideo": videoUrl
             }, "lightning", function (cmp) {
                 $("#spinner").hide();
                 console.log("component created successfully");

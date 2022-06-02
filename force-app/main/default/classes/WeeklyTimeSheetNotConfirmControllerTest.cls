@@ -47,6 +47,7 @@ public with sharing class WeeklyTimeSheetNotConfirmControllerTest {
             con1.External_Email__c = 'minkesjhh.patel1478@gmail.com';
             con1.Deactivated_Date__c = Null;
             con1.Role__c = 'Driver';
+            con1.Driver_Type__c = 'Driver - Part Time';
             con1.Insurance_Attachment_Id__c = Null;
             con1.Vehicle_Type__c = '2019 Full-Size Sedan';
             con1.ReimbursementStatement__c = true;
