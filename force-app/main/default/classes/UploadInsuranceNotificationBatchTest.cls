@@ -4,6 +4,7 @@ public with sharing class UploadInsuranceNotificationBatchTest {
     public static void testMethod1(){
         TriggerConfig__c triggerConfigCustomSetting = TestDataFactory.triggerConfigCustomSetting(True);
         SendEmail__c triggerCon = TestDataFactory.sendEmailCustomSetting(True,'UploadInsuranceNotificationBatch');
+        SendEmail__c triggerCon1 = TestDataFactory.sendEmailCustomSetting(True,'Send Email For Compliance');
         Vehicle_URL_Mapping__c vehType = TestDataFactory.createVehicleData(True, 3);
         
         UserRole userRole = TestDataFactory.getUserRole();
