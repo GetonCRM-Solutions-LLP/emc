@@ -395,7 +395,7 @@ global without sharing class RosterController
                                             Activation_Date__c,Vehicle_Type__c,Last_Pay_Date__c,
                                             Monthly_Mileage_Limit__c,Added_Date__c,Fixed_Amount__c,
                                             compliancestatus__c,Total_Reimbursement__c,IsDeactivated__c,
-                                            Monthly__c,Sage_100_ID__c,GL_Code__c,App__c,
+                                            Monthly__c,Sage_100_ID__c,GL_Code__c,App__c,Company__c,
                                             MobilePhone,Phone,Branch_Number__c,Branch_Name__c,
                                             Freeze__c,Driver_Type__c,Territory__c,Code__c,District__c,
                                             Department__c,Job_Title__c,Employee_Netchex_Id__c,Dept__c,
@@ -469,6 +469,17 @@ global without sharing class RosterController
         }
         return JSON.serialize(departmentList);     
     }
+
+    public static String getCompany() {
+        List<String> companyList = new List<String>();
+        Schema.DescribeFieldResult fieldResult = Contact.Company__c.getDescribe();
+        List<Schema.PicklistEntry> pickListEntries = fieldResult.getPicklistValues();
+        for(Schema.PicklistEntry currentEntries : pickListEntries) {
+            companyList.add(currentEntries.getValue());
+        }
+        return JSON.serialize(companyList);     
+    }
+
     @RemoteAction
     public static String readFromFile(String file,String accountId) {
         String headerCSV = 'Employee_ID__c,Firstname,LastName,External_Email__c,' + 
@@ -877,7 +888,7 @@ global without sharing class RosterController
     @RemoteAction
     public static String editEmployeeDetails(String editUserID) {
         Contact loggedinContact = new Contact();
-        query = 'Select id,Name,FirstName,Lastname,Email,External_Email__c, Division__c,Final_Payroll_Amount__c,First_Payroll__c,Department,Deactivated_Date__c,Role__c,Manager__c,Manager__r.Name,MailingPostalCode,Driving_States__c,MailingState,MailingCity,Employee_ID__c,Activation_Date__c,Vehicle_Type__c,Last_Pay_Date__c,Monthly_Mileage_Limit__c,Added_Date__c,Fixed_Amount__c,compliancestatus__c,Total_Reimbursement__c,IsDeactivated__c,Monthly__c,Sage_100_ID__c,GL_Code__c,App__c,MobilePhone,Phone,Branch_Name__c,Branch_Number__c,Freeze__c,Driver_Type__c,Territory__c,Code__c,District__c,Department__c,Dept__c,Job_Title__c,Employee_Netchex_Id__c,Deactivated_By__c,LOA_Start_Date__c,LOA_End_Date__c,LOA_Fixed_Amount__c,Payroll_Period__c,Monthly_Reimbursement__c, Biweek_Reimbursement__c, Time_Attandance__c from Contact where id=\''+editUserID+'\''; 
+        query = 'Select id,Name,Company__c,FirstName,Lastname,Email,External_Email__c, Division__c,Final_Payroll_Amount__c,First_Payroll__c,Department,Deactivated_Date__c,Role__c,Manager__c,Manager__r.Name,MailingPostalCode,Driving_States__c,MailingState,MailingCity,Employee_ID__c,Activation_Date__c,Vehicle_Type__c,Last_Pay_Date__c,Monthly_Mileage_Limit__c,Added_Date__c,Fixed_Amount__c,compliancestatus__c,Total_Reimbursement__c,IsDeactivated__c,Monthly__c,Sage_100_ID__c,GL_Code__c,App__c,MobilePhone,Phone,Branch_Name__c,Branch_Number__c,Freeze__c,Driver_Type__c,Territory__c,Code__c,District__c,Department__c,Dept__c,Job_Title__c,Employee_Netchex_Id__c,Deactivated_By__c,LOA_Start_Date__c,LOA_End_Date__c,LOA_Fixed_Amount__c,Payroll_Period__c,Monthly_Reimbursement__c, Biweek_Reimbursement__c, Time_Attandance__c from Contact where id=\''+editUserID+'\''; 
         List<EmployeeDetails> employeeList = new List<EmployeeDetails>();
         List<Contact> managerlist = (List<Contact>)ExecuteQueryUtil.getRecordListFromsObject(query);
         
@@ -1097,15 +1108,17 @@ global without sharing class RosterController
         List<String> contactIds = new List<String>();
         List<Contact> contactList = new List<Contact>();
         contactIds = (List<String>) System.JSON.deserialize(contactListID, List<String>.class);
+        system.debug('contactIds==' + contactIds);
         for(Contact conObj : [SELECT Id,IsCreatedFromCommunity__c,Role__c,FirstName,LastName,External_Email__c FROM Contact WHERE Id In : contactIds AND IsCreatedFromCommunity__c = false AND Deactivated_Date__c = null]){
         System.debug('conObj '+conObj );
             conObj.IsCreatedFromCommunity__c = true ;
             contactList.add(conObj);
         }
-
+            system.debug('contactList==' +contactList);
         if(!contactList.isEmpty()){
         System.debug('contactList'+contactList);
-            update contactList;            
+            update contactList; 
+            System.debug('UpdatedcontactList'+contactList); 
             ContactTriggerHelper.CommunityUserCreate(contactList);
         }
     }

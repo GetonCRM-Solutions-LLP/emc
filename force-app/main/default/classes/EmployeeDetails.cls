@@ -129,4 +129,6 @@ public with sharing class EmployeeDetails
     // timeAttandance is only use for ERMI account
     public Boolean timeAttandance{ get; set; }
     /* END */
+    /*EMC - 331 */
+    public string company {get;set;}
 }

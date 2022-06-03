@@ -75,6 +75,8 @@ public with sharing class TestDataFactory {
         customSetting.mileageremoveapprovaldate__c   = true;
         customSetting.TrackHistory__c = true;
         customSetting.UserTrigger__c = true;
+        customSetting.insertDriverAggrementFile__c = false;
+        customSetting.IRSVehicleCHeck__c = false;
         if(doInsert){
             insert customSetting;
         }
@@ -93,6 +95,32 @@ public with sharing class TestDataFactory {
             insert newMsg;
         }
         return newMsg;
+    }
+
+
+     /** 
+    * ********************************************************
+    * This method is test data for NewDashboard Message custom setting.
+    * ********************************************************
+    */
+    public static NewDashboardVideoLink__c NewDashboardVideoLink(Boolean doInsert){
+        NewDashboardVideoLink__c videoLink = new NewDashboardVideoLink__c();
+        videoLink.Name = 'Video Link';
+        videoLink.Donwload_instruction_for_Android__c = 'https://hubs.ly/Q017h3yM0';
+        videoLink.Donwload_instruction_for_IOS__c = 'https://hubs.ly/Q017h3LM0';
+        videoLink.Download_mLog_Link_For_Android__c = 'https://www.youtube.com/embed/htP2Xfub3aQ?autoplay=1';
+        videoLink.Download_mLog_Link_For_IOS__c = 'https://www.youtube.com/embed/Zs7lqXOSkzo?autoplay=1';
+        videoLink.Insurance_Link__c = 'https://2511299.fs1.hubspotusercontent-na1.net/hubfs/2511299/2022%20mBurse%20Insurance%20Upload.mp4?t=1651067128970&utm_campaign=2022%20Insurance%20Video&utm_source=email';
+        videoLink.mLog_Preview_Company_Provided_Link__c = ' https://hubs.ly/Q0191tsl0';
+        videoLink.mLog_Preview_Employee_Provided_Link__c = 'https://hubs.ly/Q018ZZcw0';
+        videoLink.mLog_Support_Link__c = '';
+        videoLink.Plan_Preview_Link__c = 'https://hubs.ly/Q018-6YH0';
+        videoLink.Privacy_Pledge_Link__c = 'https://hubs.ly/Q0192ss-0';
+        videoLink.Welcome_Link__c = 'https://hubs.ly/Q0191trW0';
+        if(doInsert){
+            insert videoLink;
+        }
+        return videoLink;
     }
     
     /** 
