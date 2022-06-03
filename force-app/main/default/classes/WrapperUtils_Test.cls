@@ -2,7 +2,9 @@
 public class WrapperUtils_Test {
     public static testmethod void wrapperUtilstestMethod() {
         TriggerConfig__c triggerCustomSetting = TestDataFactory.triggerConfigCustomSetting(true);
-
+        SendEmail__c triggerCustomSetting1 = TestDataFactory.sendEmailCustomSetting(false,'EmployeeReimbursementTrigger');
+        triggerCustomSetting1.Send_email_from_code__c = false;
+        insert triggerCustomSetting1;
         WrapperUtils obj_WrapperUtils = new WrapperUtils();
         IRS_Mileage_Rate__c obj_IRS_Mileage_Rate = TestDataFactory.createIRSRate(true,0);
         RecordUtilityClass.sendEmailforCompliance();
@@ -193,7 +195,9 @@ public class WrapperUtils_Test {
     }
     public static testmethod void wrapperUtilstestMethod1() {
         TriggerConfig__c triggerCustomSetting = TestDataFactory.triggerConfigCustomSetting(true);
-        
+        SendEmail__c triggerCustomSetting1 = TestDataFactory.sendEmailCustomSetting(false,'EmployeeReimbursementTrigger');
+        triggerCustomSetting1.Send_email_from_code__c = false;
+        insert triggerCustomSetting1;
         WrapperUtils obj_WrapperUtils = new WrapperUtils();
         //IRS_Mileage_Rate__c obj_IRS_Mileage_Rate = TestDataFactory.createIRSRate(true,0);
         List<IRS_Mileage_Rate__c> obj_IRS_Mileage_Rate =  RecordUtilityClass.insertIrsRate();
@@ -386,7 +390,9 @@ public class WrapperUtils_Test {
     }
     public static testmethod void wrapperUtilstestMethod2() {
         TriggerConfig__c triggerCustomSetting = TestDataFactory.triggerConfigCustomSetting(true);
-        
+        SendEmail__c triggerCustomSetting1 = TestDataFactory.sendEmailCustomSetting(false,'EmployeeReimbursementTrigger');
+        triggerCustomSetting1.Send_email_from_code__c = false;
+        insert triggerCustomSetting1;
         WrapperUtils obj_WrapperUtils = new WrapperUtils();
         IRS_Mileage_Rate__c obj_IRS_Mileage_Rate = TestDataFactory.createIRSRate(true,0);
         RecordUtilityClass.sendEmailforCompliance();
