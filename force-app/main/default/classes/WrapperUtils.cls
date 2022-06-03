@@ -89,6 +89,9 @@ public with sharing class WrapperUtils
         if(currentContact.Role__c  !=  null && currentContact.Role__c  !=  '') {
             currentEmployeeDetail.role = currentContact.Role__c;    
         }
+        if(currentContact.Company__c  !=  null && currentContact.Company__c  !=  '') {
+            currentEmployeeDetail.company = currentContact.Company__c; 
+        }
         if(currentContact.Department__c  !=  null && currentContact.Department__c  !=  '') {
             currentEmployeeDetail.department = currentContact.Department__c;    
         }
@@ -205,6 +208,7 @@ public with sharing class WrapperUtils
         }
         currentContact.IsDeactivated__c = currentEmployeeDetail.IsDeactivated;
         currentContact.Role__c = currentEmployeeDetail.role;
+        currentContact.Company__c = currentEmployeeDetail.company;
         currentContact.Department__c = currentEmployeeDetail.department;
         currentContact.Department = currentEmployeeDetail.deptPL ;
         if(String.isNotBlank(String.valueOf(currentEmployeeDetail.divison)))
@@ -598,16 +602,12 @@ public with sharing class WrapperUtils
         currentContact.Special_Action__c = 'W';
         currentContact.IsCreatedFromCommunity__c = true;
        
-        if(String.IsNotBlank(currentEmployeeDetail.branchName))
-        {
+        if(String.IsNotBlank(currentEmployeeDetail.branchName)) {
             currentContact.Branch_Name__c =currentEmployeeDetail.branchName;
-        }
-        else 
-        {
+        } else {
             currentContact.Branch_Name__c ='';
         }
-        if(String.IsNotBlank(currentEmployeeDetail.branchNumber))
-        {
+        if(String.IsNotBlank(currentEmployeeDetail.branchNumber)) {
             currentContact.Branch_Number__c = String.valueOf(currentEmployeeDetail.branchNumber);
         } else {
             currentContact.Branch_Number__c ='';
@@ -616,55 +616,41 @@ public with sharing class WrapperUtils
             currentContact.Phone = currentEmployeeDetail.cellphone;
             currentContact.MobilePhone = currentEmployeeDetail.cellphone;
         }
-        if(currentEmployeeDetail.activationDate != null && currentEmployeeDetail.activationDate != '')
-        {
+        if(currentEmployeeDetail.activationDate != null && currentEmployeeDetail.activationDate != '') {
             List<String> activationDateSplitted = new List<String>();
-            if(String.valueOf(currentEmployeeDetail.activationDate).contains('-'))
-            {
+            if(String.valueOf(currentEmployeeDetail.activationDate).contains('-')) {
                 activationDateSplitted = String.valueOf(currentEmployeeDetail.activationDate).split('-');
-            }
-            else if((String.valueOf(currentEmployeeDetail.activationDate).contains('/')))
-            {
+            } else if((String.valueOf(currentEmployeeDetail.activationDate).contains('/'))) {
                 activationDateSplitted = String.valueOf(currentEmployeeDetail.activationDate).split('/');                
             }
             currentContact.Activation_Date__c =  Date.newInstance(Integer.valueOf(activationDateSplitted[2]), Integer.valueOf(activationDateSplitted[0]), Integer.valueOf(activationDateSplitted[1]));
         }
 
-        if(currentEmployeeDetail.freeze != null && currentEmployeeDetail.freeze != '')
-        {
+        if(currentEmployeeDetail.freeze != null && currentEmployeeDetail.freeze != '') {
             List<String> freezeSplitted = new List<String>();
-            if(String.valueOf(currentEmployeeDetail.freeze).contains('-'))
-            {
+            if(String.valueOf(currentEmployeeDetail.freeze).contains('-')) {
                 freezeSplitted = String.valueOf(currentEmployeeDetail.freeze).split('-');
-            }
-            else if((String.valueOf(currentEmployeeDetail.freeze).contains('/')))
-            {
+            } else if((String.valueOf(currentEmployeeDetail.freeze).contains('/'))) {
                 freezeSplitted = String.valueOf(currentEmployeeDetail.freeze).split('/');                
             }
             currentContact.Freeze__c =  Date.newInstance(Integer.valueOf(freezeSplitted[2]), Integer.valueOf(freezeSplitted[0]), Integer.valueOf(freezeSplitted[1]));
         }
 
-        if(currentEmployeeDetail.addedDate != null && currentEmployeeDetail.addedDate != '')
-        {
+        if(currentEmployeeDetail.addedDate != null && currentEmployeeDetail.addedDate != '') {
             List<String> addedDateSplitted = new List<String>();
-            if(String.valueOf(currentEmployeeDetail.addedDate).contains('-'))
-            {
+            if(String.valueOf(currentEmployeeDetail.addedDate).contains('-')) {
                 addedDateSplitted = String.valueOf(currentEmployeeDetail.addedDate).split('-');
-            }
-            else if((String.valueOf(currentEmployeeDetail.addedDate).contains('/')))
-            {
+            } else if((String.valueOf(currentEmployeeDetail.addedDate).contains('/'))) {
                 addedDateSplitted = String.valueOf(currentEmployeeDetail.addedDate).split('/');                
             }
             currentContact.Added_Date__c =  Date.newInstance(Integer.valueOf(addedDateSplitted[2]), Integer.valueOf(addedDateSplitted[0]), Integer.valueOf(addedDateSplitted[1]));              
             
         }
-        system.debug('currentEmployeeDetail.approvalThreshold'+currentEmployeeDetail.approvalThreshold);
-        if((String.isNotBlank(currentEmployeeDetail.approvalThreshold) && currentEmployeeDetail.approvalThreshold.isNumeric()) || (String.isNotBlank(currentEmployeeDetail.approvalThreshold) && currentEmployeeDetail.approvalThreshold.contains('.') && (currentEmployeeDetail.approvalThreshold.countMatches('.') == 1 ) ))
-        {
-            system.debug('currentEmployeeDetail.approvalThreshold'+currentEmployeeDetail.approvalThreshold);
+        if((String.isNotBlank(currentEmployeeDetail.approvalThreshold) && currentEmployeeDetail.approvalThreshold.isNumeric()) || (String.isNotBlank(currentEmployeeDetail.approvalThreshold) && currentEmployeeDetail.approvalThreshold.contains('.') && (currentEmployeeDetail.approvalThreshold.countMatches('.') == 1 ) )) {
             currentContact.Monthly_Mileage_Limit__c = Decimal.valueOf(currentEmployeeDetail.approvalThreshold);    
         }
         currentContact.Role__c = currentEmployeeDetail.role;
+        currentContact.Company__c = currentEmployeeDetail.company;
         currentContact.Job_Title__c = currentEmployeeDetail.jobtitle;
         currentContact.Department__c = currentEmployeeDetail.department;
         currentContact.Dept__c = currentEmployeeDetail.deptDesign;
@@ -681,60 +667,43 @@ public with sharing class WrapperUtils
         }
         currentContact.Driver_Type__c = currentEmployeeDetail.driverType;
         currentContact.Employee_Netchex_Id__c = currentEmployeeDetail.netchexEmployeeID;
-        if(String.isNotBlank(currentEmployeeDetail.managerId))
-        {
+        if(String.isNotBlank(currentEmployeeDetail.managerId)) {
             currentContact.Manager__c = currentEmployeeDetail.managerId;   
         }
         
-        if(currentEmployeeDetail.vehicalType!=null)
-        {
-            
+        if(currentEmployeeDetail.vehicalType!=null) {            
             currentContact.Vehicle_Type__c = currentEmployeeDetail.vehicalType;
         }
         
         if(currentEmployeeDetail.accountId  !=  null && currentEmployeeDetail.accountId  !=  '') {
             currentContact.AccountID = currentEmployeeDetail.accountId;    
         }
-        system.debug('currentEmployeeDetail.monthlymileagebefore'+currentEmployeeDetail.monthlymileage);
-        if((String.isNotBlank(currentEmployeeDetail.monthlymileage) && currentEmployeeDetail.monthlymileage.isNumeric()) || (String.isNotBlank(currentEmployeeDetail.monthlymileage) && currentEmployeeDetail.monthlymileage.contains('.') && (currentEmployeeDetail.monthlymileage.countMatches('.') == 1 ) ))
-        {
-            system.debug('currentEmployeeDetail.monthlymileage'+currentEmployeeDetail.monthlymileage);
-            //currentEmployeeDetail.monthlymileage = String.valueOf(currentContact.Monthly__c);
+        if((String.isNotBlank(currentEmployeeDetail.monthlymileage) && currentEmployeeDetail.monthlymileage.isNumeric()) || (String.isNotBlank(currentEmployeeDetail.monthlymileage) && currentEmployeeDetail.monthlymileage.contains('.') && (currentEmployeeDetail.monthlymileage.countMatches('.') == 1 ) )) {
             currentContact.Monthly__c = Decimal.valueOf(currentEmployeeDetail.monthlymileage);
         }
     
-        if(currentEmployeeDetail.sage100ID != null && currentEmployeeDetail.sage100ID != '')
-        {
+        if(currentEmployeeDetail.sage100ID != null && currentEmployeeDetail.sage100ID != '') {
             currentContact.Sage_100_ID__c = currentEmployeeDetail.sage100ID;
         }
         
-        if(currentEmployeeDetail.glcode != null && currentEmployeeDetail.glcode != '')
-        {
+        if(currentEmployeeDetail.glcode != null && currentEmployeeDetail.glcode != '') {
             currentContact.GL_Code__c = currentEmployeeDetail.glcode;
         }
-        if(currentEmployeeDetail.territory != null && currentEmployeeDetail.territory != '')
-        {
+        if(currentEmployeeDetail.territory != null && currentEmployeeDetail.territory != '') {
             currentContact.Territory__c = currentEmployeeDetail.territory;
         }
-        if(currentEmployeeDetail.code != null && currentEmployeeDetail.code != '')
-        {
+        if(currentEmployeeDetail.code != null && currentEmployeeDetail.code != '') {
             currentContact.Code__c = currentEmployeeDetail.code;
         }
-        if(currentEmployeeDetail.district != null && currentEmployeeDetail.district != '')
-        {
+        if(currentEmployeeDetail.district != null && currentEmployeeDetail.district != '') {
             currentContact.District__c = currentEmployeeDetail.district;
         }
-        if(currentEmployeeDetail.drivingStates != null && currentEmployeeDetail.drivingStates.size()>0)
-        {
+        if(currentEmployeeDetail.drivingStates != null && currentEmployeeDetail.drivingStates.size()>0) {
             String state='';
-            for(String currentState : currentEmployeeDetail.drivingStates)
-            {
-                if(state != '')
-                {
+            for(String currentState : currentEmployeeDetail.drivingStates) {
+                if(state != '') {
                    state=state+ ';'+currentState;
-                }
-                else
-                {
+                } else {
                    state = currentState;
                 }
             }
@@ -2303,6 +2272,7 @@ public with sharing class WrapperUtils
                     currentDriver.id= did;
                     currentDriver.Insurance_Attachment_Id__c = insuranceAttachment.id;
                     currentDriver.Insurance_Upload_Date__c = System.today();
+                    currentDriver.Insurance_Declaration_Status__c = 'Uploaded';
                     update currentDriver;
                 }
             }
@@ -2315,6 +2285,7 @@ public with sharing class WrapperUtils
                     currentDriver.id= did;
                     currentDriver.Insurance_Attachment_Id__c = insuranceAttachment.id;
                     currentDriver.Insurance_Upload_Date__c = System.today();
+                    currentDriver.Insurance_Declaration_Status__c = 'Uploaded';
                     update currentDriver;
                     
                 }

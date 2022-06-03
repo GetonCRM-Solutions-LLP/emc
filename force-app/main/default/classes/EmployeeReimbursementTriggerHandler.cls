@@ -242,7 +242,7 @@ public with sharing class EmployeeReimbursementTriggerHandler {
              reimList = [SELECT id,name,MPG__c, Maintenance_and_Tires__c, Fuel_Price__c, Year__C 
                                                 FROM Employee_Reimbursement__c   
                                                 WHERE Contact_id__r.Deactivated_Date__c = null
-                                                        AND Contact_id__r.Vehicle_Type__c =: vehicleTypeList LIMIT 1];
+                                                LIMIT 1];
          }
         for(Employee_Reimbursement__c  reim : reimList){
             reim.Fuel_Price__c = 0;
