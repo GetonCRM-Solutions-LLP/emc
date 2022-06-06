@@ -1,7 +1,11 @@
 trigger EmployeeReimbursementTrigger on Employee_Reimbursement__c (after update, after insert,before insert) {
     SendEmail__c sendCustomSet = SendEmail__c.getValues('EmployeeReimbursementTrigger');
+    TriggerConfig__c triggerCustomSetting = TriggerConfig__c.getValues('Defaulttrigger');
     if(Trigger.isUpdate && (checkRecursive.runOnce() || Test.isRunningTest())) {       
-        EmployeeReimbursementTriggerHandler.mileagefieldupdate(Trigger.New, Trigger.oldMap, Trigger.newMap);        
+        if(sendCustomSet != null && sendCustomSet.Send_email_from_code__c == true){
+            EmployeeReimbursementTriggerHandler.mileagefieldupdate(Trigger.New, Trigger.oldMap, Trigger.newMap);        
+        }
+        
         //AI-000436 start
         Map<Id,Employee_Reimbursement__c> sendMailReimbursMap = new Map<Id,Employee_Reimbursement__c>();
         Set<Id> reimIdsLst = new Set<Id>();
@@ -15,12 +19,12 @@ trigger EmployeeReimbursementTrigger on Employee_Reimbursement__c (after update,
         if(sendMailReimbursMap.size() > 0 && sendCustomSet != null && sendCustomSet.Send_email_from_code__c == true){
             EmployeeReimbursementTriggerHandler.updateStatusMail(sendMailReimbursMap);
         }
-        if(!reimIdsLst.isEmpty()){
+        if(!reimIdsLst.isEmpty() && triggerCustomSetting.IRSVehicleCHeck__c != null && triggerCustomSetting.IRSVehicleCHeck__c == true){
             // EMC - 271
             // Whenever Reimbursement is created or updated at that time this is check the value of Contct's Vehicle type 
             // if vehicle type is 'IRS Mileage Rate' than the mpg and fuel price is set to 0 for the reimbursement and 
             // Maintanace and tires are set as the IRS Mileage Rate of that year which is in IRS Mileage rate.
-            EmployeeReimbursementTriggerHandler.IRSVehicleCHeck(reimIdsLst);
+            //EmployeeReimbursementTriggerHandler.IRSVehicleCHeck(reimIdsLst);
         }
     }
 
@@ -37,9 +41,9 @@ trigger EmployeeReimbursementTrigger on Employee_Reimbursement__c (after update,
         if(sendMailEmpReimbursMap.size() > 0){
             EmployeeReimbursementTriggerHandler.updateStatusMail(sendMailEmpReimbursMap);
         }
-        if(!reimIds.isEmpty()) {
+        if(!reimIds.isEmpty() && triggerCustomSetting.IRSVehicleCHeck__c != null && triggerCustomSetting.IRSVehicleCHeck__c == true) {
            //EMC - 271
-           EmployeeReimbursementTriggerHandler.IRSVehicleCHeck(reimIds);
+           //EmployeeReimbursementTriggerHandler.IRSVehicleCHeck(reimIds);
         }
     } //AI-000436 end
     
