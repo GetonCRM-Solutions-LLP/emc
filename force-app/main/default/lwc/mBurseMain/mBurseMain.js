@@ -1,5 +1,5 @@
 import {
-  LightningElement
+  LightningElement, api
 } from 'lwc';
 import driverDetails from '@salesforce/apex/NewAccountDriverController.getContactDetail';
 export default class MBurseMain extends LightningElement {
@@ -25,6 +25,7 @@ export default class MBurseMain extends LightningElement {
   accountType;
   cellphoneType;
   _handler;
+  @api settings;
   getUrlParamValue(url, key) {
     return new URL(url).searchParams.get(key);
   }

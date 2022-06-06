@@ -1,414 +1,152 @@
 @isTest
 public class ContactTriggerHelperTest {
-    static testMethod void sendEmailOnDriverCreateTest() {
-        //Insert Custom setting data
-        TriggerConfig__c customEmailSetting =  new TriggerConfig__c();
-        customEmailSetting.Name = 'Defaulttrigger';
-        customEmailSetting.ContactTriggersendEmailForNewContact__c = true;
-        customEmailSetting.ContactTriCommunityReimCreate__c = true;
-        customEmailSetting.ContactTriBiReimCreate__c = true;
-        insert customEmailSetting;
+    @isTest
+    static void sendEmailOnDriverCreateTest() {
         
-        List<IRS_Mileage_Rate__c> obj_IRS_Mileage_Rate =  RecordUtilityClass.insertIrsRate();
-         
-        Address__c obj_Address = new Address__c();
-        obj_Address.State__c ='Alabama';
-        obj_Address.City__c ='Abbeville';
-        obj_Address.Abbreviation__c ='AL';
-        obj_Address.ZIP_Code__c ='36310'; 
-        obj_Address.Time_Zone__c = 'America/Anchorage';
-        List<Address__c> obj_list_Address = new List<Address__c>();
-        obj_list_Address.add(obj_Address);
-        insert obj_list_Address;
+        TriggerConfig__c triggerCustomSetting = TestDataFactory.triggerConfigCustomSetting(true);
+        SendEmail__c sendEmailCustomSetting = TestDataFactory.sendEmailCustomSetting(true, 'Send Email For Compliance');
+        IRS_Mileage_Rate__c irsRateObj = TestDataFactory.createIRSRate(true,0);
+        List<Address__c> objAddress = TestDataFactory.createAddress(true, 10);
+        Vehicle_URL_Mapping__c vehicleType = TestDataFactory.createVehicleData(false, 3);
+        vehicleType.Name = '2019 Full-Size Sedan';
+        vehicleType.vehicle__c = 'Full-Size Sedan';
+        Insert vehicleType;
 
-        Vehicle_URL_Mapping__c veh = new Vehicle_URL_Mapping__c();
-        veh.URL__c = 'https://cdn2.hubspot.net/hubfs/2511299/iStock-494093356.jpg';
-        veh.vehicle__c = 'Full-Size Sedan';
-        veh.Year__c = '2019';
-        insert veh;
-
-        Vehicle_URL_Mapping__c veh2 = new Vehicle_URL_Mapping__c();
-        veh2.URL__c = 'https://cdn3.hubspot.net/hubfs/2511299/iStock-494093356.jpg';
-        veh2.vehicle__c = 'Dodge Charger';
-        veh2.Year__c = '2020';
-        insert veh2;
+        UserRole uRole = TestDataFactory.getUserRole();
+        Profile profileObj = TestDataFactory.getUserProfile();
+        User admin = TestDataFactory.getSystemAdminUser(uRole.Id);
+        User userObj;
         
-        SendEmail__c customSetting =  new SendEmail__c();
-        customSetting.Name = 'Send Email For Compliance';
-        customSetting.Send_email_from_code__c= true;
-        insert customSetting;
-         
-        //Insert Account data Using Utility class
-        UserRole userRole_1 = [SELECT Id FROM UserRole WHERE DeveloperName = 'EMD' LIMIT 1];
-        Profile profile_1 = [SELECT Id FROM Profile WHERE Name = 'Customer Community Login User' LIMIT 1];
-        User admin = [SELECT Id, Username, UserRoleId FROM User WHERE Profile.Name = 'System Administrator' AND UserRoleId = :userRole_1.Id LIMIT 1];
-        User user_1;
         Account acc;
-        Contact con2;
-        Contact con;
-        Contact con1;
+        List<Contact> con2List;
+        List<Contact> conList;
+        List<Contact> con1List;
         System.runAs(admin) {
-            acc = TestUtilityClass.getTestSingleAccount();
+            Account accountObj = TestDataFactory.createAccount(true,'Test',true);
+            Contact contactObj = TestDataFactory.createCICDContact(true,accountObj.Id);
+            acc = TestDataFactory.createAccount(true,'Test',true);
             acc.Triplog_API__c = 'fde76cdde14449bea46b321225ac8fd1';
             acc.Pay_Period_Start_Date__c = System.today().addDays(-100);
             acc.Pay_Period_Days__c = 13;
             update acc;
-            Contact contact_1 = new Contact(AccountId = acc.Id, LastName = 'xgeek',External_Email__c= 'abc@gmail.com');
-            insert contact_1;
+            
+        con2List = TestDataFactory.createDriverContact(True, acc.Id, 'Manager',  null, 'minkesh.patel', 1);
+        con1List = TestDataFactory.createDriverContact(false, acc.Id, 'Driver', vehicleType.Name, 'paras.patel',  1);
+        con1List[0].compliancestatus__c = 'No – Vehicle Age';
+        con1List[0].Deactivated_Date__c = system.today();
+        Insert con1List[0];
+        
+        con1List[0].compliancestatus__c = 'Yes';
+        con1List[0].Deactivated_Date__c =null;            
+        update con1List[0];
 
-            con2 = new Contact();
-            con2.FirstName = 'Test2';
-            con2.LastName = 'Contact';
-            con2.AccountId = acc.Id;
-            con2.MailingStreet = 'Test Street';
-            con2.MailingCity = 'Abbeville';
-            con2.MailingState = 'AL';
-            con2.MailingPostalCode = '123';
-            con2.MailingCountry = 'CA';
-            con2.Phone = '1232434445';
-            con2.External_Email__c = 'minkesh.patel14@gmail.com';
-            con2.Deactivated_Date__c = Null;
-            con2.isCommunityUser__c = True;
-            con2.Triplog_UserID__c = '23rcdsf';
-            con2.Role__c = 'Manager';
-            con2.Monthly_Mileage_Limit__c = 0;
-            con2.IsCreatedFromCommunity__c = true; 
-            insert con2;
+        conList = TestDataFactory.createDriverContact(false, acc.Id, 'Driver', vehicleType.Name, 'paras.dhanani',  1);
+        conList[0].Deactivated_Date__c = system.today();
+        Insert conList[0];
 
-            con = new Contact();
-            con.FirstName = 'Test';
-            con.LastName = 'Contact';
-            con.AccountId = acc.Id;
-            con.Fixed_Amount__c = 10;
-            con.MailingStreet = 'Test Street';
-            con.MailingCity = 'Test City';
-            con.MailingState = 'AL';
-            con.Triplog_UserID__c = '23rcdssf';
-            con.MailingPostalCode = '36310';
-            con.Manager__c = con2.Id;
-            con.MailingCountry = 'CA';
-            con.Phone = '1232434445';
-            con.External_Email__c = 'minkesh.patel14232378@gmail.com';
-            con.Deactivated_Date__c = system.today();
-            con.isCommunityUser__c = True;
-            con.Role__c = 'Driver';
-            con.Monthly_Mileage_Limit__c = 0;
-            con.IsCreatedFromCommunity__c = true; 
-            con.Vehicle_Type__c  = '2019 Full-Size Sedan';
-            con.compliancestatus__c = 'Yes';
-            insert con;            
-            con.compliancestatus__c = 'No – Vehicle Age';
-            update con;
+        conList[0].compliancestatus__c = 'No – Vehicle Age';
+        update conList[0];
 
-            con1 = new Contact();
-            con1.FirstName = 'Test2';
-            con1.LastName = 'Contact2';
-            con1.AccountId = acc.Id;
-            con1.Fixed_Amount__c = 10;
-            con1.MailingStreet = 'Test Street';
-            con1.MailingCity = 'Test City';
-            con1.MailingState = 'AL';
-            con1.MailingPostalCode = '36310';
-            con1.Manager__c = con2.Id;
-            con1.MailingCountry = 'CA';
-            con1.Phone = '1232434445';
-            con1.Triplog_UserID__c = '23rcdsf';
-            con1.External_Email__c = 'minkesh33.patel14232378@gmail.com';
-            con1.Deactivated_Date__c = system.today();
-            con1.isCommunityUser__c = True;
-            con1.Role__c = 'Driver';
-            con1.Monthly_Mileage_Limit__c = 0;
-            con1.IsCreatedFromCommunity__c = true; 
-            con1.Vehicle_Type__c  = '2019 Full-Size Sedan';
-            con1.compliancestatus__c = 'No – Vehicle Age';
-            insert con1;
-            con1.compliancestatus__c = 'Yes';
-            con1.Deactivated_Date__c =null;            
-            update con1;
+        system.assertEquals(1, conList.size(), true);
+        userObj = TestDataFactory.createUser(True, profileObj.Id, contactObj.Id);
+      
+            ContentVersion contentVersion = new ContentVersion(
+                    Title          = 'Driver Agreement',
+                    PathOnClient   = 'Driver Agreement.docx',
+                    VersionData    = Blob.valueOf('Test Content'),
+                    FirstPublishLocationId = acc.Id,
 
-            user_1 = new User( 
-                Email = 'yourusername@gmail.com',
-                ProfileId = profile_1.Id, 
-                UserName = 'yourusername@gmail.com', 
-                Alias = 'Test',
-                TimeZoneSidKey = 'America/New_York',
-                EmailEncodingKey = 'ISO-8859-1',
-                LocaleSidKey = 'en_US', 
-                LanguageLocaleKey = 'en_US',
-                ContactId = contact_1.Id,
-                PortalRole = 'Manager',
-                FirstName = 'Firstname',
-                LastName = 'Lastname'
-            );
-            insert user_1;
+                    IsMajorVersion = true);
+            insert contentVersion;
+
+        List<ContentDocument> documents = [SELECT Id, Title, LatestPublishedVersionId FROM ContentDocument WHERE Id =: acc.Id];
+        if(!documents.isEmpty()){
+            ContentDocumentLink cdl = new ContentDocumentLink();
+            cdl.LinkedEntityId = con1List[0].ID;
+            cdl.ContentDocumentId = documents[0].Id;
+            cdl.ShareType = 'I';
+            cdl.Visibility = 'AllUsers';
+            insert cdl;
+            }
         }     
         Test.startTest();
-        System.runAs(user_1) {
+
+        System.runAs(userObj) {
             Map<String,String> contactInfo = new Map<String,String>();
             Map<String,String> accountInfo = new Map<String,String>();
-            contactInfo.put(con1.Triplog_UserID__c, con1.Phone);
-            accountInfo.put(con1.Triplog_UserID__c, acc.Triplog_API__c);
-            ContactTriggerHelper.putHTTPEnableUserTriplog(con1.Id);
+            contactInfo.put(con1List[0].Triplog_UserID__c, con1List[0].Phone);
+            accountInfo.put(con1List[0].Triplog_UserID__c, acc.Triplog_API__c);
+            ContactTriggerHelper.putHTTPEnableUserTriplog(con1List[0].Id);
             ContactTriggerHelper.putHTTPUpdateUserPhoneTriplog(contactInfo,accountInfo);
             List<Contact> newCon = new List<Contact>();
-            newCon.add(con1);
+            newCon.add(con1List[0]);
             Map<ID, Contact> conOldMap = new Map<ID, Contact>();
-            conOldMap.put(con1.Id,con1);
+             Map<ID, Contact> connewMap = new Map<ID, Contact>();
+            conOldMap.put(con1List[0].Id,con1List[0]);
+            connewMap.put(con1List[0].Id,con1List[0]);
             ContactTriggerHelper.createReimRecord(newCon ,conOldMap );
             ContactTriggerHelper.updateComplianceStatus(newCon,conOldMap);
             ContactTriggerHelper.TrackHistory(conOldMap,newCon ,accountInfo );
+            ContactTriggerHelper.CreateUserFromCommunity (newCon[0], profileObj.ID);
+            ContactTriggerHelper.insertDriverAggrementFile (connewMap);
+            //ContactTriggerHelper.setAdminAsManager(con2List);
         }
         Test.stopTest();
     }
-    static testMethod void testmethod3() {
-        //Insert Custom setting data
-        TriggerConfig__c customEmailSetting =  new TriggerConfig__c();
-        customEmailSetting.Name = 'Defaulttrigger';
-        customEmailSetting.ContactTriggersendEmailForNewContact__c = true;
-        customEmailSetting.ContactTriCommunityReimCreate__c = true;
-        customEmailSetting.ContactTriBiReimCreate__c = true;
-        insert customEmailSetting;
+    @isTest
+    static void testmethod4() {
         
-        List<IRS_Mileage_Rate__c> obj_IRS_Mileage_Rate =  RecordUtilityClass.insertIrsRate();
-         
-        Address__c obj_Address1 = new Address__c();
-        obj_Address1.State__c ='Alabama';
-        obj_Address1.City__c ='Abbeville';
-        obj_Address1.Abbreviation__c ='AL';
-        obj_Address1.ZIP_Code__c ='36310'; 
-        obj_Address1.Time_Zone__c = 'America/Anchorage';
-        
-        Address__c obj_Address = new Address__c(); 
-        obj_Address.State__c ='kabila';
-        obj_Address.City__c ='Abbeville';
-        obj_Address.Abbreviation__c ='AK';
-        obj_Address.ZIP_Code__c ='36311'; 
-        obj_Address.Time_Zone__c = 'America/Anchorage';
-        List<Address__c> obj_list_Address = new List<Address__c>();
-        obj_list_Address.add(obj_Address);
-        obj_list_Address.add(obj_Address1);
-        insert obj_list_Address;
+        TriggerConfig__c triggerCustomSetting = TestDataFactory.triggerConfigCustomSetting(true);
+        SendEmail__c sendEmailCustomSetting = TestDataFactory.sendEmailCustomSetting(true, 'Send Email For Compliance');
+        IRS_Mileage_Rate__c irsRateObj = TestDataFactory.createIRSRate(true,0);
+        List<Address__c> objAddress = TestDataFactory.createAddress(true, 10);
+        Vehicle_URL_Mapping__c vehicleType = TestDataFactory.createVehicleData(true, 3);
+        vehicleType.Name = '2019 Full-Size Sedan';
+        vehicleType.vehicle__c = 'Full-Size Sedan';
+        update vehicleType;
 
-        Vehicle_URL_Mapping__c veh = new Vehicle_URL_Mapping__c();
-        veh.URL__c = 'https://cdn2.hubspot.net/hubfs/2511299/iStock-494093356.jpg';
-        veh.vehicle__c = 'Full-Size Sedan';
-        veh.Year__c = '2019';
-        insert veh;
-
-        Vehicle_URL_Mapping__c veh2 = new Vehicle_URL_Mapping__c();
-        veh2.URL__c = 'https://cdn3.hubspot.net/hubfs/2511299/iStock-494093356.jpg';
-        veh2.vehicle__c = 'Dodge Charger';
-        veh2.Year__c = '2020';
-        insert veh2;
+        UserRole uRole = TestDataFactory.getUserRole();
+        Profile profileObj = TestDataFactory.getUserProfile();
+        User admin = TestDataFactory.getSystemAdminUser(uRole.Id);
+        User userObj;
         
-        SendEmail__c customSetting =  new SendEmail__c();
-        customSetting.Name = 'Send Email For Compliance';
-        customSetting.Send_email_from_code__c= true;
-        insert customSetting;
-         
-        UserRole userRole_1 = [SELECT Id FROM UserRole WHERE DeveloperName = 'EMD' LIMIT 1];
-        Profile profile_1 = [SELECT Id FROM Profile WHERE Name = 'Customer Community Login User' LIMIT 1];
-        User admin = [SELECT Id, Username, UserRoleId FROM User WHERE Profile.Name = 'System Administrator' AND UserRoleId = :userRole_1.Id LIMIT 1];
-        User user_1;
         Account acc;
-        Contact con2;
-        Contact con;
+        List<Contact> conList;
+        
         System.runAs(admin) {
-            acc = TestUtilityClass.getTestSingleAccount();
+            Account accountObj = TestDataFactory.createAccount(true,'Test',true);
+            Contact contactObj = TestDataFactory.createCICDContact(true,accountObj.Id);
+            acc = TestDataFactory.createAccount(False,'Test',true);
+            acc.Triplog_API__c = 'fde76cdde14449bea46b321225ac8fd1';
             acc.Pay_Period_Start_Date__c = System.today().addDays(-100);
             acc.Pay_Period_Days__c = 13;
-            update acc;
-            Contact contact_1 = new Contact(AccountId = acc.Id, LastName = 'xgeek',External_Email__c= 'abc@gmail.com');
-            insert contact_1;
-            con2 = new Contact();
-            con2.FirstName = 'Test2';
-            con2.LastName = 'Contact';
-            con2.AccountId = acc.Id;
-            con2.MailingStreet = 'Test Street';
-            con2.MailingCity = 'Abbeville';
-            con2.MailingState = 'AL';
-            con2.MailingPostalCode = '123';
-            con2.MailingCountry = 'CA';
-            con2.Phone = '1232434445';
-            con2.External_Email__c = 'minkesh.patel14@gmail.com';
-            con2.Deactivated_Date__c = Null;
-            con2.isCommunityUser__c = True;
-            con2.Role__c = 'Manager';
-            con2.Monthly_Mileage_Limit__c = 0;
-            con2.IsCreatedFromCommunity__c = true; 
-            insert con2;
+            Insert acc;
 
-            con = new Contact();
-            con.FirstName = 'Test';
-            con.LastName = 'Contact';
-            con.AccountId = acc.Id;
-            con.Fixed_Amount__c = 10;
-            con.MailingStreet = 'Test Street';
-            con.MailingCity = 'Test City';
-            con.MailingState = null;
-            con.MailingPostalCode = '36310';
-            con.Manager__c = con2.Id;
-            con.MailingCountry = 'CA';
-            con.Phone = '1232434445';
-            con.External_Email__c = 'minkesh.patel14232378@gmail.com';
-            con.Deactivated_Date__c = Null;
-            con.isCommunityUser__c = True;
-            con.Role__c = 'Driver';
-            con.Triplog_UserID__c = '370415';
-            con.Monthly_Mileage_Limit__c = 0;
-            con.IsCreatedFromCommunity__c = true; 
-            con.Vehicle_Type__c  = '2019 Full-Size Sedan';
-            con.compliancestatus__c = 'No – Vehicle Value';
-            con.Driving_States__c = 'AL';
-            insert con;
-            
-            con.compliancestatus__c = 'No – Insurance not meeting minimum';      
-            con.Phone = '24777';
-            update con;
+            conList = TestDataFactory.createDriverContact(false, acc.Id, 'Driver', '2019 Full-Size Sedan', 'paras.patel', 2);
+            conList[0].compliancestatus__c = 'No – Vehicle Value';
+            Insert conList[0];
 
-            user_1 = new User( 
+            conList[0].compliancestatus__c = 'Yes';        
+            update conList[0];
+            system.assertEquals(2, conList.size(), true);
+
+            userObj = new User( 
                 Email = 'yourusername@gmail.com',
-                ProfileId = profile_1.Id, 
+                ProfileId = profileObj.Id, 
                 UserName = 'yourusername@gmail.com', 
                 Alias = 'Test',
                 TimeZoneSidKey = 'America/New_York',
                 EmailEncodingKey = 'ISO-8859-1',
                 LocaleSidKey = 'en_US', 
                 LanguageLocaleKey = 'en_US',
-                ContactId = contact_1.Id,
+                ContactId = contactObj.Id,
                 PortalRole = 'Manager',
                 FirstName = 'Firstname',
                 LastName = 'Lastname'
             );
-            insert user_1;
-        } 
-        Test.startTest();
-        System.runAs(user_1) {
-        }
-        Test.stopTest();
-    }
-    static testMethod void testmethod4() {
-        //Insert Custom setting data
-        TriggerConfig__c customEmailSetting =  new TriggerConfig__c();
-        customEmailSetting.Name = 'Defaulttrigger';
-        customEmailSetting.ContactTriggersendEmailForNewContact__c = true;
-        customEmailSetting.ContactTriCommunityReimCreate__c = true;
-        customEmailSetting.ContactTriBiReimCreate__c = true;
-        insert customEmailSetting;
-        
-        List<IRS_Mileage_Rate__c> obj_IRS_Mileage_Rate =  RecordUtilityClass.insertIrsRate();
-         
-        Address__c obj_Address1 = new Address__c();
-        obj_Address1.State__c ='Alabama';
-        obj_Address1.City__c ='Abbeville';
-        obj_Address1.Abbreviation__c ='AL';
-        obj_Address1.ZIP_Code__c ='36310'; 
-        obj_Address1.Time_Zone__c = 'America/Anchorage';
-        
-        Address__c obj_Address = new Address__c(); 
-        obj_Address.State__c ='kabila';
-        obj_Address.City__c ='Abbeville';
-        obj_Address.Abbreviation__c ='AK';
-        obj_Address.ZIP_Code__c ='36311'; 
-        obj_Address.Time_Zone__c = 'America/Anchorage';
-        List<Address__c> obj_list_Address = new List<Address__c>();
-        obj_list_Address.add(obj_Address);
-        obj_list_Address.add(obj_Address1);
-        insert obj_list_Address;
-
-        Vehicle_URL_Mapping__c veh = new Vehicle_URL_Mapping__c();
-        veh.URL__c = 'https://cdn2.hubspot.net/hubfs/2511299/iStock-494093356.jpg';
-        veh.vehicle__c = 'Full-Size Sedan';
-        veh.Year__c = '2019';
-        insert veh;
-
-        Vehicle_URL_Mapping__c veh2 = new Vehicle_URL_Mapping__c();
-        veh2.URL__c = 'https://cdn3.hubspot.net/hubfs/2511299/iStock-494093356.jpg';
-        veh2.vehicle__c = 'Dodge Charger';
-        veh2.Year__c = '2020';
-        insert veh2;
-        
-        SendEmail__c customSetting =  new SendEmail__c();
-        customSetting.Name = 'Send Email For Compliance';
-        customSetting.Send_email_from_code__c= true;
-        insert customSetting;
-         
-        UserRole userRole_1 = [SELECT Id FROM UserRole WHERE DeveloperName = 'EMD' LIMIT 1];
-        Profile profile_1 = [SELECT Id FROM Profile WHERE Name = 'Customer Community Login User' LIMIT 1];
-        User admin = [SELECT Id, Username, UserRoleId FROM User WHERE Profile.Name = 'System Administrator' AND UserRoleId = :userRole_1.Id LIMIT 1];
-        User user_1;
-        Account acc;
-        Contact con2;
-        Contact con;
-        System.runAs(admin) {
-            acc = TestUtilityClass.getTestSingleAccount();
-            acc.Pay_Period_Start_Date__c = System.today().addDays(-100);
-            acc.Pay_Period_Days__c = 13;
-            update acc;
-            Contact contact_1 = new Contact(AccountId = Acc.Id, LastName = 'xgeek',External_Email__c= 'abc@gmail.com');
-            insert contact_1;
-            con2 = new Contact();
-            con2.FirstName = 'Test2';
-            con2.LastName = 'Contact';
-            con2.AccountId = acc.Id;
-            con2.MailingStreet = 'Test Street';
-            con2.MailingCity = 'Abbeville';
-            con2.MailingState = 'AL';
-            con2.MailingPostalCode = '123';
-            con2.MailingCountry = 'CA';
-            con2.Phone = '1232434445';
-            con2.External_Email__c = 'minkesh.patel14@gmail.com';
-            con2.Deactivated_Date__c = Null;
-            con2.isCommunityUser__c = True;
-            con2.Role__c = 'Manager';
-            con2.Monthly_Mileage_Limit__c = 0;
-            con2.IsCreatedFromCommunity__c = true;         
-            insert con2;
-
-            con = new Contact();
-            con.FirstName = 'Test';
-            con.LastName = 'Contact';
-            con.AccountId = acc.Id;
-            con.Fixed_Amount__c = 10;
-            con.MailingStreet = 'Test Street';
-            con.MailingCity = 'Test City';
-            con.MailingState = null;
-            con.MailingPostalCode = '36310';
-            con.Manager__c = con2.Id;
-            con.MailingCountry = 'CA';
-            con.Phone = '1232434445';
-            con.External_Email__c = 'minkesh.patel14232378@gmail.com';
-            con.Deactivated_Date__c = Null;
-            con.isCommunityUser__c = True;
-            con.Role__c = 'Driver';
-            con.Monthly_Mileage_Limit__c = 0;
-            con.IsCreatedFromCommunity__c = true; 
-            con.Vehicle_Type__c  = '2019 Full-Size Sedan';
-            con.compliancestatus__c = 'No – Vehicle Value';
-            con.Driving_States__c = 'AL';
-            insert con;
-            con.compliancestatus__c = 'Yes';        
-            update con;
-
-            user_1 = new User( 
-                Email = 'yourusername@gmail.com',
-                ProfileId = profile_1.Id, 
-                UserName = 'yourusername@gmail.com', 
-                Alias = 'Test',
-                TimeZoneSidKey = 'America/New_York',
-                EmailEncodingKey = 'ISO-8859-1',
-                LocaleSidKey = 'en_US', 
-                LanguageLocaleKey = 'en_US',
-                ContactId = contact_1.Id,
-                PortalRole = 'Manager',
-                FirstName = 'Firstname',
-                LastName = 'Lastname'
-            );
-            insert user_1;
+            insert userObj;
         }
         Test.startTest();
-        System.runAs(user_1) {
-        }
         Test.stopTest();
     }
 }

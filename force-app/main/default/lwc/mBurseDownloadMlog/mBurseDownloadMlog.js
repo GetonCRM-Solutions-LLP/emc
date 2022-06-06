@@ -26,6 +26,9 @@ export default class MBurseDownloadMlog extends LightningElement {
     // Ios video link from custom settings
     iosVideoUrl;
 
+    //mLog Tracking
+    mLogTracking;
+
     // Width of iframe
     videoWidth = 100 + '%';
 
@@ -89,6 +92,7 @@ export default class MBurseDownloadMlog extends LightningElement {
              this.privacyPledgeUrl = data.Privacy_Pledge_Link__c;
              this.instructionUrlAndroid = data.Donwload_instruction_for_Android__c;
              this.instructionUrlIOS = data.Donwload_instruction_for_IOS__c;
+             this.mLogTracking = data.mLog_Mileage_Tracking__c;
           } else if (error) {
               console.log(error);
           }

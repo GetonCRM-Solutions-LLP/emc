@@ -8,6 +8,11 @@
  */
 public with sharing class NewAccountDriverController {
     /*This method is used to get the data of current contact and his account details*/
+    public static string videoCustom {get;set;}
+    public NewAccountDriverController() {
+       NewDashboardVideoLink__c videoCustomSetting = NewDashboardVideoLink__c.getOrgDefaults();
+       videoCustom = json.serialize(videoCustomSetting );
+    }
     @AuraEnabled
     public static string getContactDetail(String contactId){
         List<ContactWrapper> contactWrapList = new List<ContactWrapper >();
@@ -185,6 +190,10 @@ public with sharing class NewAccountDriverController {
         Set<String> newUserEmailSet = new Set<String>();
         newUserEmailSet.add(userEmail);
         HelloSignIntegrationHandler.sendSignatureRequestForDriver(newUserEmailSet);
+        return 'success';
+    }
+    @AuraEnabled(cacheable = true) 
+    public static string sendWelcomeEmail(String userEmail){
         return 'success';
     }
     /*This method is use to redirect contact on particular dashboard page. */

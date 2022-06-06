@@ -111,7 +111,9 @@
     </div>
     <apex:includeLightning />
     <apex:slds />
-    <div id="lightning"></div>
+    <body oncontextmenu="return false;">
+        <div id="lightning"></div>
+    </body>
     <script>
         $("#spinner").show();
         /* Toaster Option */
