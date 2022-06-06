@@ -29,7 +29,6 @@ public with sharing class EmployeeReimbursementTriggerHandlerTest {
             acc = TestDataFactory.createAccount(True, 'Test Account', False);
             acc2 = TestDataFactory.createAccount(True, 'Rayner', False);
             acc3 = TestDataFactory.createAccount(True, 'CATCO', False);
-
             con = TestDataFactory.createDriverContact(False, acc.Id, 'Driver', vehicleType.Name, 'Paras.Patel', 2);
             con[0].IsCreatedFromCommunity__c = false;
             Insert con;
@@ -56,7 +55,6 @@ public with sharing class EmployeeReimbursementTriggerHandlerTest {
         er[0].Month__c = '09-2017';
         er[0].Status__c = 'Approved';
         Insert er[0];
-
         oldmap.put(er[0].id, er[0]);
 
         List<Employee_Reimbursement__c> er2 = TestDataFactory.createPendingReimbursement(False, con3, 1, createIRSRate.Id);
@@ -115,8 +113,7 @@ public with sharing class EmployeeReimbursementTriggerHandlerTest {
 
         List<Bi_Weekly_Reimbursement__c> br = TestDataFactory.createBiweeklyReim (false, con, System.today().addDays(-26),System.today().addDays(-13), 1, createIRSRate.Id);
         br = TestDataFactory.createBiweeklyReim (false, con, System.today().addDays(-13),System.today().addDays(0), 1, createIRSRate.Id);
-        insert br;
-       
+        insert br;       
         List<Employee_Mileage__c> emp1 = TestDataFactory.getEmpMileage (False, 1, er, br);
         emp1[0].Trip_Status__c = 'Approved';
         emp1[0].Approved_Date__c = system.today();
