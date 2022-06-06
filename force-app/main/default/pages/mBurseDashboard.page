@@ -1,4 +1,4 @@
-<apex:page showHeader="false" title="Welcome to mBurse" sidebar="false" lightningStylesheets="true" standardStylesheets="false" showChat="false">
+<apex:page showHeader="false" title="Welcome to mBurse" sidebar="false" lightningStylesheets="true" standardStylesheets="false" showChat="false" controller="NewAccountDriverController">
     <!-- Meta Tag Description -->
     <head>
         <meta charset="UTF-8"/>
@@ -94,12 +94,16 @@
         </div>
     </div>
     <apex:includeLightning />
-    <div id="mBursePlan" />
+    <body oncontextmenu="return false;">
+        <div id="mBursePlan" />
+    </body>
     <script>
         $("#mSpinner").show();
+        var videoWrapper = {!videoCustom}
         $Lightning.use("c:LWCLightningApp",function(){
             $Lightning.createComponent("c:mBursePlanInfo",{
                 //pass parameter values to lwc js controller
+                "linkList" : videoWrapper
             },"mBursePlan", function(c){ 
                 document.querySelector('c-m-burse-plan-info').addEventListener('spinner', (e) => {
                     $("#mSpinner").hide();

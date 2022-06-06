@@ -24,7 +24,7 @@ trigger ContactTrigger on Contact (after Update, after insert, before insert, be
             }
 
             if(contactOldIdList.size() > 0 ) {
-                for(Contact currentContact : [Select id,name from Contact where ID IN:contactOldIdList]) {
+                for(Contact currentContact : [SELECT id,name FROM Contact WHERE ID IN:contactOldIdList]) {
                     managerNames.put(currentContact.id,currentContact.name);
                 }
             }        
@@ -34,7 +34,20 @@ trigger ContactTrigger on Contact (after Update, after insert, before insert, be
             }
             ContactTriggerHelper.updateComplianceStatus(Trigger.New, Trigger.oldMap);
             ContactTriggerHelper.createReimRecord(Trigger.New, Trigger.oldMap);
-        // ContactTriggerHelper.sendEmailToAdmin(Trigger.New, Trigger.oldMap, Trigger.Old);
+
+            
+          /* EMC - 333
+             This is used when driver is insert automatically driver packet is added in file section of that driver
+     		 from his Account's file section.
+		   */ 
+            if(Trigger.isAfter){
+                if(Trigger.isInsert || Trigger.isUpdate){
+                    TriggerConfig__c customSettingForFile = TriggerConfig__c.getInstance('Defaulttrigger');
+                    if(customSettingForFile.insertDriverAggrementFile__c == true){
+                    ContactTriggerHelper.insertDriverAggrementFile(Trigger.newmap);
+                    }
+                }
+            }
         }
         
         if(Trigger.isInsert && trigger.isAfter) {
@@ -43,11 +56,22 @@ trigger ContactTrigger on Contact (after Update, after insert, before insert, be
             if(customSetting.ContactTriggersendEmailForNewContact__c){
                 ContactTriggerHelper.sendEmailForNewContact(Trigger.new);
             }
-            System.debug('*******CommunityUserCreate************');
             ContactTriggerHelper.CommunityUserCreate(Trigger.new);
             if(customSetting.ContactTriCommunityReimCreate__c == true){
                 ContactTriggerHelper.CommunityReimCreate(Trigger.new);
             }
+          /* EMC - 333
+             This is used when driver is insert automatically driver packet is added in file section of that driver
+     		 from his Account's file section.
+		   */
+            if(Trigger.isAfter){
+                if(Trigger.isInsert || Trigger.isUpdate){
+                    TriggerConfig__c customSettingForFile = TriggerConfig__c.getInstance('Defaulttrigger');
+                    if(customSettingForFile.insertDriverAggrementFile__c == true){
+                    ContactTriggerHelper.insertDriverAggrementFile(Trigger.newmap);
+                    }
+                }
+            } 
         }
         
         if(Trigger.isBefore && checkRecursive.runSecondFlag()) {
