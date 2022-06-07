@@ -1,9 +1,7 @@
 import {
     LightningElement,
-    wire,
     api
 } from 'lwc';
-import getCustomSettings from '@salesforce/apex/NewAccountDriverController.getCustomSettings';
 import updateContactDetail from '@salesforce/apex/NewAccountDriverController.updateContactDetail';
 import contactInfo from '@salesforce/apex/NewAccountDriverController.getContactDetail';
 import {
@@ -11,8 +9,6 @@ import {
     skipEvents
 } from 'c/utils';
 export default class MBurseWelcomeInsurance extends LightningElement {
-    originUrl;
-    vfHost;
     videoWidth = 396;
     videoHeight = 223;
     welcomeVideoUrl;
@@ -26,40 +22,19 @@ export default class MBurseWelcomeInsurance extends LightningElement {
     @api contactId;
     @api welcomeInsurance;
     @api insuranceDeclaration;
+    @api customSetting;
     // get backgroundStyle() {
     //     return `background-image:url(${background})`;
     // }
-    @wire(getCustomSettings)
-    myCustomSettings({
-        error,
-        data
-    }) {
-        if (data) {
-            this.welcomeVideoUrl = data.Welcome_Link__c;
-            this.insuranceVideoUrl = data.Insurance_Link__c;
-        } else if (error) {
-            console.log(error);
-        }
-    }
     nextDeclarationUpload() {
         events(this, 'Next Declaration Upload')
     }
     nextDeclaration() {
-        let delayInMilliseconds = 100;
         // eslint-disable-next-line @lwc/lwc/no-api-reassignments
         this.welcomeInsurance = false;
         // eslint-disable-next-line @lwc/lwc/no-api-reassignments
         this.insuranceDeclaration = true;
         this.isPlay = false;
-        // eslint-disable-next-line @lwc/lwc/no-async-operation
-        setTimeout(() => {
-            if (this.template.querySelector('.insurance-frame') != null) {
-                this.template.querySelector('.insurance-frame').addEventListener(
-                    'load',
-                    this._handler = () => this.handleFireToVf(this.insuranceVideoUrl)
-                );
-            }
-        }, delayInMilliseconds)
     }
     proxyToObject(e) {
         return JSON.parse(e)
@@ -96,23 +71,6 @@ export default class MBurseWelcomeInsurance extends LightningElement {
         }
         this.renderInitialized = true;
         this.toggleHide();
-        if(this.welcomeInsurance) {
-            if (this.template.querySelector('iframe') != null) {
-                this.template.querySelector('iframe').addEventListener(
-                    'load',
-                    this._handler = () => this.handleFireToVf(this.welcomeVideoUrl)
-                );
-            }
-        }else{
-            /* To load iframe */
-            if (this.template.querySelector('iframe') != null) {
-                this.template.querySelector('iframe').addEventListener(
-                    'load',
-                    this._handler = () => this.handleFireToVf(this.insuranceVideoUrl)
-                );
-            }
-        }
-      
     }
     skipToPage() {
         var contactData, beforeUpdate, toUpdate, listFrom;
@@ -142,36 +100,17 @@ export default class MBurseWelcomeInsurance extends LightningElement {
         skipEvents(this, 'Next Declaration Upload');
     }
     backToPage() {
-        let delayInMilliseconds = 100;
+        // let delayInMilliseconds = 100;
         // eslint-disable-next-line @lwc/lwc/no-api-reassignments
         this.welcomeInsurance = true;
         this.isPlay = false;
         // eslint-disable-next-line @lwc/lwc/no-api-reassignments
         this.insuranceDeclaration = false;
-        // eslint-disable-next-line @lwc/lwc/no-async-operation
-        setTimeout(() => {
-            if (this.template.querySelector('.welcome-frame') != null) {
-                this.template.querySelector('.welcome-frame').addEventListener(
-                    'load',
-                    this._handler = () => this.handleFireToVf(this.welcomeVideoUrl)
-                );
-            }
-        }, delayInMilliseconds)
-    }
-    handleFireToVf(vurl) {
-        var vfData = {
-            vfHeight: this.videoHeight,
-            vfWidth: this.videoWidth,
-            vfSource: vurl,
-        }
-        var message = JSON.stringify(vfData);
-        // Fire an event to send data to visualforce page
-        this.template.querySelector('iframe').contentWindow.postMessage(message, this.originUrl)
     }
     connectedCallback() {
-        let url = window.location.origin;
-        let urlHost = url + '/app/mBurseVideoFrame';
-        this.originUrl = url;
-        this.vfHost = urlHost;
+        console.log("callback called", this.customSetting)
+        let data = this.customSetting;
+        this.welcomeVideoUrl = data.Welcome_Link__c;
+        this.insuranceVideoUrl = data.Insurance_Link__c;
     }
 }

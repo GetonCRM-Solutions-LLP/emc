@@ -1606,6 +1606,7 @@
                 var errorMsg = '{!($Label.ExceptionLabel)}';
                 $scope.accountERMI = '{!($Label.ERMI_Account)}';
                 $scope.designAIR = '{!($Label.DesignAir)}';
+                $scope.NWPipe = '{!($Label.NWPipeAccount)}';
                 $scope.SPBSAcc = '{!($Label.SPBS_Account)}';
                 $scope.EngGypAcc = '{!($Label.NewEnglandGypsum)}';
                 $scope.PLMarketing = '{!($Label.PL_Marketing)}';
@@ -1715,6 +1716,8 @@
             $scope.IsShow = false; // Use for Add tab Field show hide
             $scope.IsShowLinkBtn = false;
             $scope.IsVisible = true; // Visible for tab 
+            $scope.companyList = {!Company}
+           
             /* Remove State start*/
             $scope.removeState = function (emp, index) {
                 emp.drivingStates.splice(index, 1);
@@ -1758,6 +1761,7 @@
                 $scope.IsVisibleLoginDriverManager = false;
                 $scope.IsVisibleLoginDriver = false;
                 $scope.showMultipleAction = true;
+                $scope.refreshEmployees();
             }
             $scope.editBulkDateModel = function (emp) {
                 $('.modal-backdrop').show();
@@ -1896,17 +1900,12 @@
                 $scope.emplistfordownload = [];
                 if ($scope.accid === $scope.accountERMI) {
                     $scope.emplistfordownload.push(["Status", "First Name", "Last name", "EmployeeID", "Email", "City", "State", "Zip Code", "Cell Phone", "District", "Territory", "Code", "Driving States", "Activation Date", "Frozen Date", "Deactivation Date", "Role", "Manager", "Standard Vehicle", "Fixed Amount", "Compliance", "Average Monthly Reimbursement", "Average Monthly Mileage", "App Version"]);
-                    $scope.employeeslist
-
                     angular.forEach(empToUpdate, function (item, key) {
                         $scope.emplistfordownload.push([item.driverType, item.firstName, item.lastName, item.employeeId, item.email, item.city, item.state, item.zipCode, item.cellphone, item.district, item.territory, item.code, item.drivingStates != null ? item.drivingStates.join(';') : '', item.activationDate, item.freeze, item.deactivaedDate, item.role, item.managerName, item.vehicalType, item.fixedamount, item.compliancestatus, item.totalreimbursement, item.monthlymileageLimit, item.appVersion]);
-
                     });
                 }
                 else if ($scope.accid === $scope.accountId) {
                     $scope.emplistfordownload.push(["First Name", "Last name", "EmployeeID", "Email", "City", "State", "Zip Code", "Cell Phone", "Driving States", "Activation Date", "Frozen Date", "Deactivation Date", "Role", "Manager", "Standard Vehicle", "Fixed Amount", "Compliance", "Average Monthly Reimbursement", "Average Monthly Mileage", "App Version", "GL Code", "Sage 100 ID"]);
-                    $scope.employeeslist
-
                     angular.forEach(empToUpdate, function (item, key) {
                         $scope.emplistfordownload.push([item.firstName, item.lastName, item.employeeId, item.email, item.city, item.state, item.zipCode, item.cellphone, item.drivingStates != null ? item.drivingStates.join(';') : '', item.activationDate, item.freeze, item.deactivaedDate, item.role, item.managerName, item.vehicalType, item.fixedamount, item.compliancestatus, item.totalreimbursement, item.monthlymileageLimit, item.appVersion, item.glcode, item.sage100ID]);
 
@@ -1914,29 +1913,26 @@
                 }
                 else if ($scope.accid === $scope.PLMarketing) {
                     $scope.emplistfordownload.push(["First Name", "Last name", "EmployeeID", "Email", "City", "State", "Zip Code", "Cell Phone", "Driving States", "Activation Date", "Frozen Date", "Deactivation Date", "Role", "Manager", "Standard Vehicle", "Fixed Amount", "Compliance", "Average Monthly Reimbursement", "Average Monthly Mileage", "App Version", "Division", "Job Title", "Department"]);
-                    $scope.employeeslist
-
                     angular.forEach(empToUpdate, function (item, key) {
                         $scope.emplistfordownload.push([item.firstName, item.lastName, item.employeeId, item.email, item.city, item.state, item.zipCode, item.cellphone, item.drivingStates != null ? item.drivingStates.join(';') : '', item.activationDate, item.freeze, item.deactivaedDate, item.role, item.managerName, item.vehicalType, item.fixedamount, item.compliancestatus, item.totalreimbursement, item.monthlymileageLimit, item.appVersion, item.divison, item.jobtitle, item.deptPL]);
-
                     });
+                }
+                else if($scope.accid === $scope.NWPipe){
+                    $scope.emplistfordownload.push(["EmployeeID","First Name", "Last name", "Company", "Email", "City", "State", "Zip Code", "Cell Phone", "Driving States", "Activation Date", "Frozen Date", "Deactivation Date", "Role", "Manager", "Standard Vehicle", "Fixed Amount", "Compliance", "Average Monthly Reimbursement", "Average Monthly Mileage", "App Version"]);
+                        angular.forEach(empToUpdate, function (item, key) {
+                            $scope.emplistfordownload.push([item.employeeId, item.firstName, item.lastName, item.company, item.email, item.city, item.state, item.zipCode, item.cellphone, item.drivingStates != null ? item.drivingStates.join(';') : '', item.activationDate, item.freeze, item.deactivaedDate, item.role, item.managerName, item.vehicalType, item.fixedamount, item.compliancestatus, item.totalreimbursement, item.monthlymileageLimit, item.appVersion]);
+                        });
                 }
                 else {
                     if ($scope.accid === $scope.designAIR) {
                         $scope.emplistfordownload.push(["First Name", "Last name", "EmployeeID", "Email", "City", "State", "Zip Code", "Cell Phone", "Driving States", "Activation Date", "Frozen Date", "Deactivation Date", "Role", "Manager", "Standard Vehicle", "Fixed Amount", "Compliance", "Average Monthly Reimbursement", "Average Monthly Mileage", "App Version", "Job Title", "Department"]);
-                        $scope.employeeslist
-
                         angular.forEach(empToUpdate, function (item, key) {
                             $scope.emplistfordownload.push([item.firstName, item.lastName, item.employeeId, item.email, item.city, item.state, item.zipCode, item.cellphone, item.drivingStates != null ? item.drivingStates.join(';') : '', item.activationDate, item.freeze, item.deactivaedDate, item.role, item.managerName, item.vehicalType, item.fixedamount, item.compliancestatus, item.totalreimbursement, item.monthlymileageLimit, item.appVersion, item.jobtitle, item.department]);
-
                         });
                     } else {
                         $scope.emplistfordownload.push(["First Name", "Last name", "EmployeeID", "Email", "City", "State", "Zip Code", "Cell Phone", "Driving States", "Activation Date", "Frozen Date", "Deactivation Date", "Role", "Manager", "Standard Vehicle", "Fixed Amount", "Compliance", "Average Monthly Reimbursement", "Average Monthly Mileage", "App Version"]);
-                        $scope.employeeslist
-
                         angular.forEach(empToUpdate, function (item, key) {
                             $scope.emplistfordownload.push([item.firstName, item.lastName, item.employeeId, item.email, item.city, item.state, item.zipCode, item.cellphone, item.drivingStates != null ? item.drivingStates.join(';') : '', item.activationDate, item.freeze, item.deactivaedDate, item.role, item.managerName, item.vehicalType, item.fixedamount, item.compliancestatus, item.totalreimbursement, item.monthlymileageLimit, item.appVersion]);
-
                         });
                     }
 
@@ -2710,7 +2706,7 @@
                         }
                         else {
                             $('#spinner').hide();
-                        }
+                        }refreshEmployees
                         $scope.$apply();
                     },
                     { escape: false }
@@ -3641,6 +3637,9 @@
                             if (con.role == 'Driver' || con.role == 'Driver/Manager' || con.role == valueofreport) {
                                 inputtovalidate = ["firstname", "lastname", "email", "city", "state", "zip", "role", "jobtitle", "department", "deptDesign", "manager", "vehicalType", "activedate"];
                             }
+                        }
+                        else if($scope.accid === $scope.NWPipe){
+                                inputtovalidate = ["firstname", "lastname", "email", "city", "state", "zip", "role", "company", "manager", "vehicalType", "activedate"];
                         }
                         else if ($scope.accid === $scope.PLMarketing) {
                             if (con.role == 'Driver' || con.role == 'Driver/Manager' || con.role == valueofreport) {
@@ -5222,6 +5221,21 @@
                                                     />
                                                     <input type="text" id="territory" ng-model="contactData.territory" ng-show="!IsShow" class="form-control rounded-0 territoryInput"
                                                         name="territory_1" ng-if="!showrequiredfield" placeholder="" />
+                                                </div>
+                                            </div>
+
+                                            <div class="form-group-theme row" ng-if="accid === NWPipe">
+                                                <label for="inputCompany:" class="col-xl-4 col-lg-3 col-md-3 col-sm-3 col-form-label form-lable">Company:</label>
+                                                <div class="col-xl-8 col-lg-8 col-md-8 col-sm-8 validate-div">
+                                                    <span class="span-validation" data-toggle="tooltip" data-placement="top" title="Required field">*</span>
+                                                    <select id="role" ng-model="contactData[0].company" ng-show="IsShow" class="form-control rounded-0" required="true" name="company_0">
+                                                        <option value=""></option>
+                                                        <option ng-selected="{{contactData[0].company}}" ng-repeat="company in companyList" value="{{company}}">{{company}}</option>
+                                                    </select>
+                                                    <select id="company" ng-model="contactData.company" ng-show="!IsShow" class="form-control rounded-0" required="true" name="company_1">
+                                                        <option value=""></option>
+                                                        <option ng-repeat="company in companyList" value="{{company}}">{{company}}</option>
+                                                    </select>
                                                 </div>
                                             </div>
                                         </div>

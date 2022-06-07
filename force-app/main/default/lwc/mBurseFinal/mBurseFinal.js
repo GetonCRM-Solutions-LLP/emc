@@ -1,10 +1,7 @@
-import { LightningElement, wire, api } from 'lwc';
+import { LightningElement, api } from 'lwc';
 import redirectionURL  from '@salesforce/apex/NewAccountDriverController.loginRedirection';
 import contactInfo from  '@salesforce/apex/NewAccountDriverController.getContactDetail';
-import getCustomSettings from '@salesforce/apex/NewAccountDriverController.getCustomSettings';
 export default class MBurseFinal extends LightningElement {
-    originUrl;
-    vfHost;
     videoWidth = 329;
     videoHeight = 248;
     mburseVideoUrl;
@@ -13,15 +10,7 @@ export default class MBurseFinal extends LightningElement {
     driverInfo;
     @api dayLeft;
     @api contactId;
-    @wire(getCustomSettings)
-    myCustomSettings({ error, data }){
-        if (data) {
-             this.mburseVideoUrl = data.Plan_Preview_Link__c;
-          } else if (error) {
-              console.log(error);
-          }
-    }
-
+    @api customSetting;
     proxyToObject(e) {
         return JSON.parse(e)
     }
@@ -68,31 +57,11 @@ export default class MBurseFinal extends LightningElement {
             return;
           }
         this.renderInitialized = true;
-        if (this.template.querySelector('iframe') != null) {
-            this.template.querySelector('iframe').addEventListener(
-                'load',
-                this._handler = () => this.handleFireToVf(this.mburseVideoUrl)
-            );
-        }
         this.renderButton()
     }
 
-    handleFireToVf(vurl) {
-        var vfData = {
-            vfHeight: this.videoHeight,
-            vfWidth: this.videoWidth,
-            vfSource: vurl,
-        }
-        var message = JSON.stringify(vfData);
-        console.log("Vf data", JSON.stringify(vfData));
-        // Fire an event to send data to visualforce page
-        this.template.querySelector('iframe').contentWindow.postMessage(message, this.originUrl)
-    }
-
     connectedCallback() {
-        let url = window.location.origin;
-        let urlHost = url + '/app/mBurseVideoFrame';
-        this.originUrl = url;
-        this.vfHost = urlHost;
+        let data = this.customSetting;
+        this.mburseVideoUrl =  data.Plan_Preview_Link__c;
     }
 }
