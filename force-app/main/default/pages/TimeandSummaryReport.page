@@ -1,4 +1,4 @@
-<apex:page controller="TimeandSummaryReportController" contentType="txt/xml#Time and Attendence Summary Report.xls" cache="true">
+<apex:page controller="TimeandSummaryReportController" contentType="txt/xml#Time and Attendance Summary Report.xls" cache="true">
     <apex:outputText value="{!xlsHeader}"/>
     
     <Workbook xmlns="urn:schemas-microsoft-com:office:spreadsheet" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns:ss="urn:schemas-microsoft-com:office:spreadsheet" xmlns:html="https://www.w3.org/TR/html401/">
