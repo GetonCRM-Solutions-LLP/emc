@@ -33,7 +33,6 @@ public with sharing class TimeandSummaryReportController {
         String Id = ApexPages.currentPage().getParameters().get('id');
         String startDate = ApexPages.currentPage().getParameters().get('startDate');
         String endDate = ApexPages.currentPage().getParameters().get('endDate');
-        system.debug('id'+id+'startDate'+startDate+'endDate'+endDate);
         mileageWrapperList = new List<mileageWrapper>();
         Map<Date,String> tripdateDayMap = new Map<Date,String>(); 
         Map<Date,Double> tripdateMileageMap = new Map<Date,Double>();
@@ -55,82 +54,67 @@ public with sharing class TimeandSummaryReportController {
             tripdateDayMap.put(objMileages.Trip_Date__c, objMileages.Day_Of_Week__c);
             }
         }
-        for(AggregateResult ar : [SELECT Trip_Date__c tdate, SUM(Mileage__c) rtotal
+        for(AggregateResult ar : [SELECT Trip_Date__c tdate, SUM(Mileage__c) rtotal,
+                                    SUM(Driving_Time__c) drivingtotal,
+                                    SUM(Stay_Time__c) staytotal,
+                                    SUM(Total_Time__c) totaltime
                                     FROM Employee_Mileage__c 
                                     WHERE EmployeeReimbursement__r.Contact_Id__c =: id 
                                     AND Trip_Date__c >= : Date.valueOf(startDate)
                                     AND Trip_Date__c <= : Date.valueOf(endDate) group by Trip_Date__c ]){
-
                                         tripdateMileageMap.put((Date)ar.get('tdate'),(Decimal)ar.get('rtotal'));
+                                        tripdateDrivingTimeMap.put((Date)ar.get('tdate'),(Decimal)ar.get('drivingtotal'));
+                                        tripStayTimeMap.put((Date)ar.get('tdate'),(Decimal)ar.get('staytotal'));
+                                        tripTotalTimeMap.put((Date)ar.get('tdate'),(Decimal)ar.get('totaltime'));
         }
-        for(AggregateResult ar : [SELECT Trip_Date__c tdate, SUM(Driving_Time__c) rtotal
-                                    FROM Employee_Mileage__c 
-                                    WHERE EmployeeReimbursement__r.Contact_Id__c =: id 
-                                    AND Trip_Date__c >= : Date.valueOf(startDate)
-                                    AND Trip_Date__c <= : Date.valueOf(endDate) group by Trip_Date__c ]){
-
-                                        tripdateDrivingTimeMap.put((Date)ar.get('tdate'),(Decimal)ar.get('rtotal'));
-        }
-        for(AggregateResult ar : [SELECT Trip_Date__c tdate, SUM(Stay_Time__c) rtotal
-                                    FROM Employee_Mileage__c 
-                                    WHERE EmployeeReimbursement__r.Contact_Id__c =: id 
-                                    AND Trip_Date__c >= : Date.valueOf(startDate)
-                                    AND Trip_Date__c <= : Date.valueOf(endDate) group by Trip_Date__c ]){
-
-                                        tripStayTimeMap.put((Date)ar.get('tdate'),(Decimal)ar.get('rtotal'));
-        }
-        for(AggregateResult ar : [SELECT Trip_Date__c tdate, SUM(Total_Time__c) rtotal
-                                    FROM Employee_Mileage__c 
-                                    WHERE EmployeeReimbursement__r.Contact_Id__c =: id 
-                                    AND Trip_Date__c >= : Date.valueOf(startDate)
-                                    AND Trip_Date__c <= : Date.valueOf(endDate) group by Trip_Date__c ]){
-
-                                        tripTotalTimeMap.put((Date)ar.get('tdate'),(Decimal)ar.get('rtotal'));
-        }
-        
-        for(Date currentDate : tripdateDayMap.keySet())
-        {
+            system.debug('tripdateDayMap== ' +  tripdateDayMap.keySet());
+        for(Date currentDate : tripdateDayMap.keySet())        {
             List<String> dateSplitted = new List<String>();
             if(String.valueOf(currentDate) != null && String.valueOf(currentDate).contains('-')){
                 dateSplitted = String.valueOf(currentDate).split('-');
             }
          
-            if(totalMinute > 0 ){
+            if(totalMinute > 0 && tripdateDrivingTimeMap.containsKey(currentDate) && tripdateDrivingTimeMap.get(currentDate) != null){
                 totalMinute = totalMinute + tripdateDrivingTimeMap.get(currentDate);
             } else {
                 totalMinute = tripdateDrivingTimeMap.get(currentDate);
             }
             
-            if(totalStay > 0 && tripStayTimeMap.containsKey(currentDate)){
+            if(totalStay > 0 && tripStayTimeMap.containsKey(currentDate) && tripStayTimeMap.get(currentDate) != null){
                 totalStay = totalStay + tripStayTimeMap.get(currentDate);
             } else {
                 totalStay = tripStayTimeMap.get(currentDate);
             }
 
-            if(totalTimes > 0 && tripTotalTimeMap.containsKey(currentDate)){
+            if(totalTimes > 0 && tripTotalTimeMap.containsKey(currentDate) && tripTotalTimeMap.get(currentDate) != null){
                 totalTimes = totalTimes + tripTotalTimeMap.get(currentDate);
             } else {
                 totalTimes = tripTotalTimeMap.get(currentDate);
             }
-
             mileageWrapper objMileageWrap = new mileageWrapper();
             if(!dateSplitted.isEmpty()){
                 objMileageWrap.tripDate = dateSplitted[1]+'/'+dateSplitted[2]+'/'+dateSplitted[0].substring(2,4);
-            }
-            objMileageWrap.tripDay = tripdateDayMap.get(currentDate);
-            objMileageWrap.mileage = tripdateMileageMap.get(currentDate);
-            objMileageWrap.totaldrivingTime = (tripdateDrivingTimeMap.get(currentDate)).divide(60, 2);
-            objMileageWrap.totalStayTime = (tripStayTimeMap.get(currentDate)).divide(60, 2);
-            objMileageWrap.totalTime = (tripTotalTimeMap.get(currentDate)).divide(60, 2);
+            }            
+            objMileageWrap.tripDay = tripdateDayMap.containskey(currentDate) ? tripdateDayMap.get(currentDate) : null;            
+            objMileageWrap.mileage = tripdateMileageMap.containskey(currentDate) ? tripdateMileageMap.get(currentDate) : 0;
+            if(tripdateDrivingTimeMap.containskey(currentDate) && tripdateDrivingTimeMap.get(currentDate) != null){            
+                objMileageWrap.totaldrivingTime = (tripdateDrivingTimeMap.get(currentDate)).divide(60, 2);
+            } else {
+                 objMileageWrap.totaldrivingTime = 0;
+            }           
+            if(tripStayTimeMap.containskey(currentDate) && tripStayTimeMap.get(currentDate) != null){                      
+                objMileageWrap.totalStayTime = (tripStayTimeMap.get(currentDate)).divide(60, 2);
+            } else {
+                objMileageWrap.totalStayTime = 0;
+            }            
+            objMileageWrap.totalTime = tripTotalTimeMap.containskey(currentDate) ? ((tripTotalTimeMap.get(currentDate)).divide(60, 2)): 0;
             if(totalMileges > 0 ){
                 totalMileges = totalMileges + objMileageWrap.mileage;
             } else {
                 totalMileges = objMileageWrap.mileage;
-            }
-            
+            }            
             mileageWrapperList.add(objMileageWrap);
-        }
-        System.debug('mileageWrapperList'+mileageWrapperList);
+        }  
         
         totalTimeForMonth = totalTimes > 0 ? (totalTimes).divide(60, 2) : 0 ;
         totalDriveTime = totalMinute > 0 ? (totalMinute).divide(60, 2) : 0;
