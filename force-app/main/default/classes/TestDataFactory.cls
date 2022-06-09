@@ -93,6 +93,7 @@ public with sharing class TestDataFactory {
         customSetting.UserTrigger__c = true;
         customSetting.insertDriverAggrementFile__c = false;
         customSetting.IRSVehicleCHeck__c = false;
+        customSetting.BiWeeklyReimbursementTrigger__c = true;
         if(doInsert){
             insert customSetting;
         }
