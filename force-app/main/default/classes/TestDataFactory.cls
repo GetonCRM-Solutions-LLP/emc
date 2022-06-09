@@ -55,6 +55,22 @@ public with sharing class TestDataFactory {
         }
         return customSetting;
     }
+
+     /** 
+    * ********************************************************
+    * This method is test data for daylight custom setting.
+    * ********************************************************
+    */
+    public static daylight_saving_time_config__c dayLightCustomSetting(Boolean doInsert,String name, date startdate, date endDate){
+        daylight_saving_time_config__c customSetting =  new daylight_saving_time_config__c();
+            customSetting.Name = '2022';
+            customSetting.Start_Date__c = System.today();
+            customSetting.End_Date__c = System.today() + 60;
+        if(doInsert){
+            insert customSetting;
+        }
+        return customSetting;
+    }
     /** 
     * ********************************************************
     * This method is test data for trigger config custom setting.
@@ -264,16 +280,11 @@ public with sharing class TestDataFactory {
             con.isCommunityUser__c = false;
             con.IsCreatedFromCommunity__c = false;
             con.Triplog_UserID__c = '23rcdsf';
-            con.ReimbursementStatementBatch__c = true;
-            
-            
-            //con.compliancestatus__c = 'No – Vehicle Age';
+            con.ReimbursementStatementBatch__c = true;            
             con.Manager__c = null;                
             conList.add(con);                
-        }
-        system.debug('conList==' + conList);
+        }       
         if(doInsert){
-
             insert conList;
         }
         return conList;
@@ -287,7 +298,7 @@ public with sharing class TestDataFactory {
     {        
         list<Employee_Reimbursement__c> reimbursementList = new list<Employee_Reimbursement__c>();
         for(Contact currentContact : contactList) {
-            for(Integer i = 0; i <= nmbrRecord; i++) {
+            for(Integer i = 0; i <= nmbrRecord; i++) {            
                 Employee_Reimbursement__c objReimbursement = new Employee_Reimbursement__c();
                 objReimbursement.Name = currentContact.name+':'+getLastMonthValue(-i);               
                 objReimbursement.Month__c = getLastMonthValue(-i);               
@@ -301,7 +312,6 @@ public with sharing class TestDataFactory {
                 reimbursementList.add(objReimbursement);
             }
         }
-        system.debug('reimbursementList204== ' + reimbursementList);
         if(doInsert){
             insert reimbursementList;
         }
@@ -358,20 +368,24 @@ public with sharing class TestDataFactory {
      */
     public static List<Employee_Mileage__c> getEmpMileage(Boolean doInsert, Integer nmbrRecord,List<Employee_Reimbursement__c> reimList, List<Bi_Weekly_Reimbursement__c> biweeklyReimList){
         List<Employee_Mileage__c> empMilageList = new List<Employee_Mileage__c>();
-        for(Integer i = 0; i <= nmbrRecord; i++) {
+        for(Integer i = 0; i <= nmbrRecord; i++) {        
             Employee_Mileage__c empMileage = new Employee_Mileage__c();
             empMileage.Name = 'Test Mileage ' + i;
             empMileage.Contact_Email_Id__c = 'paras.dhanani@gmail.com';  
             empMileage.EmployeeReimbursement__c = reimList[i].id;
+            empMileage.Trip_Date__c = date.valueOf('2021-07-08');
             empMileage.Bi_Weekly_Reimbursement__c = biweeklyReimList[i].id;
             empMileage.Activity__c =  'Business';
             empMileage.Mileage__c =  51.20;
             empMileage.Fuel_price__c =  3.21;
+            empMileage.Day_Of_Week__c = 'Tuesday';
             empMileage.MPG__c =  24.30;
+            empMileage.TimeZone__c = 'US/Mountain' ;
             empMileage.Origin_Name__c = 'Test Origin ' + i ;                           
             empMileage.Trip_Destination__c = 'Test Destination ' + i;
             empMileage.Trip_Status__c = StaticValues.noApprovedYet; 
-            empMileage.Approved_Date__c = null;     
+            empMileage.Approved_Date__c = null;
+            empMileage.Tag__c = 'Admin';   
             empMilageList.add(empMileage);
         }
         if(doInsert){
