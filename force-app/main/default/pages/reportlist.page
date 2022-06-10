@@ -807,6 +807,115 @@
                     };
             }]);
 
+
+            // Jira Ticket EMC - 342
+
+            var EditTimeReportSummaryModel = function () {
+                this.visible = false;
+            }
+
+            EditTimeReportSummaryModel.prototype.open = function () {
+                this.visible = true;
+            }
+
+            EditTimeReportSummaryModel.prototype.close = function () {
+                this.visible = false;
+            }
+
+            app.directive('editTimeSummaryReport', ['$filter',
+                function ($filter) {
+                    return {
+                        restrict: 'E',
+                        scope: {
+                            model: '='
+                        },
+                        link: function (scope, element, attributes) {
+                            scope.$watch('model.visible', function (newValue) {
+                                var modalElement = element.find('.modal');
+                                modalElement.modal(newValue ? 'show' : 'hide');
+                            });
+                            var url_string = $(location).attr("href");
+                            var url = new URL(url_string);
+                            var host = url.host;
+                            scope.eid = url.searchParams.get("id");
+                            scope.accid = url.searchParams.get("accid");
+                            function refreshModal() {
+                                location.reload();
+                            }
+                            scope.netchexpayPeriod = '{!($Label.ERMIPayPeriodDate)}';
+                            scope.dateObjArr = [];
+                            scope.originalObjArr = [];
+                            scope.defaultOption = "Select Pay Period";
+                            scope.originalObjArr = scope.netchexpayPeriod.split(',');
+                            var payArr = [];
+                            var myDate = new Date();
+                            var previousMonth = new Date(myDate);
+                            previousMonth.setMonth(myDate.getMonth() - 1);
+                            var nextMonth = new Date(myDate);
+                            nextMonth.setMonth(myDate.getMonth() + 1);
+                            var currentMonth = $filter('date')(new Date(), 'MMMM');
+                            var preMonth = $filter('date')(previousMonth, 'MMMM');
+                            var neMonth = $filter('date')(nextMonth, 'MMMM');
+                            angular.forEach(scope.originalObjArr, function (date) {
+                                var split = date.split(' to ');
+                                var startMonth = $filter('date')(new Date(split[0]), 'MMMM');
+                                if (startMonth === currentMonth || startMonth === preMonth || startMonth === neMonth) {
+                                    payArr.push(date);
+                                }
+                            });
+                            scope.dateObjArr = payArr;
+                            scope.dateObjArr.splice(0, 0, scope.defaultOption);
+                            scope.netchexPayRole = scope.dateObjArr[0];
+                            scope.startDate = '';
+                            scope.endDate = '';
+                            scope.reimbursementDownload = true;
+
+                            scope.closeModal = function(){
+                                refreshModal();
+                            }
+
+                            scope.onnetchexPayPeriodChange = function (period) {
+                                if (period != "Select Pay Period") {
+                                    scope.splitObj = period.split(' to ');
+                                    scope.startDate = scope.splitObj[0];
+                                    scope.endDate = scope.splitObj[1];
+                                    scope.reimbursementDownload = false;
+                                } else {
+                                    scope.reimbursementDownload = true;
+                                }
+                            }
+                        
+                            scope.downloadReimbursementReport = function () {
+                                var selectedPayPeriod = scope.netchexPayRole;
+                                var window_url;
+                                window_url = 'https://' + host + '/app/TimeandSummaryDetailReport?id='+scope.accid+ '&endDate=' + scope.endDate + '&startDate=' + scope.startDate ;
+                                window.open(window_url, '_blank');
+                                refreshModal();
+                            }
+
+          
+                            element.on('shown.bs.modal', function () {
+                                scope.$apply(function () {
+                                    scope.model.visible = true;
+                                });
+                            });
+
+                            element.on('hidden.bs.modal', function () {
+                                scope.$apply(function () {
+                                    scope.model.visible = false;
+
+                                });
+                            });
+
+                        },
+                        template: '<div class="modal fade driver-dashboard-monthrecord show in netchexModal" tabindex="-1" role="dialog" aria-labelledby="driver-dashboard-monthrecord" id="driver-dashboard-monthrecord"><div class="fade modal-backdrop"></div><div class="modal-dialog modal-lg modal-dialog-centered"><div class="modal-content rounded-0"> <button type="button" class="close popup-close-btn" data-dismiss="modal" aria-label="Close" ng-click="closeModal()"> <span aria-hidden="true">×</span> </button><div class="modal-body"><h4>Time and Attendance Summary Report</h4><div class="modal-divider"></div><form name="signup" class="form" id="myform"><div class="form-row"><div class="form-group-theme row-inline"><label for="payRole:" class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-form-label form-lable payRole">Pay Period: <span class="tagquestion1" data-toggle="tooltip" data-placement="top" data-html="true" title="" data-original-title="<b>Please select pay period</b>"> <i class="fa fa-question"></i> </span> </label><div class="col-xl-6 col-lg-6 col-md-6 col-sm-6"><select ng-model="netchexPayRole" ng-change="onnetchexPayPeriodChange(netchexPayRole)" class="browser-default custom-select custom-select-xl custom-payPeriod"><option ng-repeat="dateobj in dateObjArr" ng-selected="{{netchexPayRole == dateobj}}" value="{{dateobj}}">{{dateobj}}</option> </select></div></div></div></form></div><div class="modal-footer mb-3"><div class="col-md-12 mt-3 text-center"><button id="downloadReimReportBtn" class="btn btn-primary float-right mt-3 mb-3" ng-click="downloadReimbursementReport()" ng-disabled="reimbursementDownload">Download <i class="fa fa-download"></i> </button></div></div></div></div></div>'
+                    };
+
+                }
+            ]);
+            
+            // Jira Ticket EMC - 342 -- ends
+
             var EditTimeCustomReportModel = function () {
                 this.visible = false;
             }
@@ -1873,6 +1982,7 @@
             $scope.editDateModel = new EditLockDateModel();
             // $scope.stayTimeReportModel = new StayTimeReportModel();
             $scope.editTimeReportModel = new EditTimeReportModel();
+            $scope.editTimeReportSummaryModel = new EditTimeReportSummaryModel();
             $scope.editMonthlyTaxReportModel = new EditMonthlyTaxReportModel();
             $scope.editTimeCustomReportModel = new EditTimeCustomReportModel();
             $scope.editNetchexReportModel = new EditNetchexReportModel();
@@ -2056,7 +2166,10 @@
                         <div ng-repeat="admin in adminIDs ">
                             <div ng-if="id === admin">
                                 <p>
-                                    <a ng-click="editTimeReportModel.open()">Time and Attendance Summary Report</a>
+                                    <a ng-click="editTimeReportModel.open()">Time and Attendance Detail Report</a>
+                                </p>
+                                <p>
+                                    <a ng-click="editTimeReportSummaryModel.open()">Time and Attendance Summary Report</a>
                                 </p>
                                 <p>
                                     <a ng-click="editMonthlyTaxReportModel.open()">Monthly Tax Report</a>
@@ -2112,6 +2225,7 @@
             </div>
             <edit-lock-Date model="editDateModel"></edit-lock-Date>
             <edit-time-attendance-Report model="editTimeReportModel"></edit-time-attendance-Report>
+            <edit-time-summary-Report model="editTimeReportSummaryModel"></edit-time-summary-Report>
             <edit-monthly-tax-Report model="editMonthlyTaxReportModel"></edit-monthly-tax-Report>
             <edit-time-custom-Report model="editTimeCustomReportModel"></edit-time-custom-Report>
             <edit-netchex-Report model="editNetchexReportModel"></edit-netchex-Report>
