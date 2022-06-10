@@ -28,9 +28,13 @@
                     <Cell ss:StyleID="s1"><Data ss:Type="String" >Initial Stay Time</Data></Cell>
                     <Cell ss:StyleID="s1"><Data ss:Type="String" >Initial Total Time</Data></Cell>
                     <Cell ss:StyleID="s1"><Data ss:Type="String" >Initial Mileage  (mi)</Data></Cell>
-                    <Cell ss:StyleID="s1"><Data ss:Type="String" >Sync 1 Time</Data></Cell>
-                    <Cell ss:StyleID="s1"><Data ss:Type="String" >Sync 1 Mileage (mi)</Data></Cell>
-                    <Cell ss:StyleID="s1"><Data ss:Type="String" >Sync 2 Time</Data></Cell>
+                    <Cell ss:StyleID="s1"><Data ss:Type="String" >Sync 1 Drive Time</Data></Cell>
+                    <Cell ss:StyleID="s1"><Data ss:Type="String" >Sync 1 Stay Time</Data></Cell>
+                    <Cell ss:StyleID="s1"><Data ss:Type="String" >Sync 1 Total Hours</Data></Cell>
+                    <Cell ss:StyleID="s1"><Data ss:Type="String" >Sync 1 Mileage (mi)</Data></Cell>                    
+                    <Cell ss:StyleID="s1"><Data ss:Type="String" >Sync 2 Drive Time</Data></Cell>
+                    <Cell ss:StyleID="s1"><Data ss:Type="String" >Sync 2 Stay Time</Data></Cell>
+                    <Cell ss:StyleID="s1"><Data ss:Type="String" >Sync 2 Total Hours</Data></Cell>
                     <Cell ss:StyleID="s1"><Data ss:Type="String" >Sync 2 Mileage (mi)</Data></Cell>
                 </Row>
                 <apex:repeat value="{!mileageWrapperList}" var="wrap">
@@ -41,10 +45,14 @@
                         <Cell><Data ss:Type="String">{!wrap.initialDriveTime}</Data></Cell>
                         <Cell><Data ss:Type="String">{!wrap.initialStayTime}</Data></Cell>
                         <Cell><Data ss:Type="String">{!wrap.initiaTotalTime}</Data></Cell>
-                        <Cell><Data ss:Type="Number">{!wrap.mileage}</Data></Cell>
-                        <Cell><Data ss:Type="String">{!wrap.sync1Time}</Data></Cell>
+                        <Cell><Data ss:Type="Number">{!wrap.intialmileage}</Data></Cell>
+                        <Cell><Data ss:Type="String">{!wrap.sync1driveTime}</Data></Cell>
+                        <Cell><Data ss:Type="String">{!wrap.sync1stayTime}</Data></Cell>
+                        <Cell><Data ss:Type="String">{!wrap.sync1Hours}</Data></Cell>
                         <Cell><Data ss:Type="Number">{!wrap.sync1Mileage}</Data></Cell>
-                        <Cell><Data ss:Type="String">{!wrap.sync2Time}</Data></Cell>
+                        <Cell><Data ss:Type="String">{!wrap.sync2driveTime}</Data></Cell>
+                        <Cell><Data ss:Type="String">{!wrap.sync2stayTime}</Data></Cell>
+                        <Cell><Data ss:Type="String">{!wrap.sync2Hours}</Data></Cell>
                         <Cell><Data ss:Type="Number">{!wrap.sync2Mileage}</Data></Cell>
                     </Row>
                 </apex:repeat>
