@@ -634,7 +634,7 @@ export default class DataTableComponent extends LightningElement {
       tagName = (rTagList.value === undefined) ? '' : rTagList.value;
       note = (textList.value === undefined) ? '' : textList.value;
       activity = (this.activity === undefined || this.activity === '') ? null : this.activity;
-      stayInput = (stayTimeList.value === undefined) ? '' : stayTimeList.value;
+      stayInput = (stayTimeList.value === undefined || stayTimeList.value === '') ? 0 : stayTimeList.value;
       conEmail = event.currentTarget.dataset.email;
       tripDate = event.currentTarget.dataset.trip;
       conName = event.currentTarget.dataset.name;
