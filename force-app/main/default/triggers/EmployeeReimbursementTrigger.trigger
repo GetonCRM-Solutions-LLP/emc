@@ -42,8 +42,7 @@ trigger EmployeeReimbursementTrigger on Employee_Reimbursement__c (after update,
            //EMC - 271
            //EmployeeReimbursementTriggerHandler.IRSVehicleCHeck(reimIds);
         }
-    } //AI-000436 end
-    
+    } //AI-000436 end    
     //AI-000459 Start
     //If contact is deactivated then no user can manually create a reimbursement record for that contact.
     if(Trigger.isInsert && Trigger.isBefore) {
