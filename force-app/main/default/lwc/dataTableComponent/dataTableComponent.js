@@ -31,6 +31,7 @@ export default class DataTableComponent extends LightningElement {
   isPerPageActionExecuted = false;
   isClicked = false;
   isNoteClicked = false;
+  isStayTimeClicked = false;
   isTagClicked = false;
   selectBool = false;
   tableSpinner = false;
@@ -603,12 +604,20 @@ export default class DataTableComponent extends LightningElement {
     rList.value = event.target.value;
   }
 
- 
+  handleStayTimeInput(event){
+    event.target.value = event.target.value.replace(/[^\d]/g, '')
+    this.isStayTimeClicked = true;
+    let sTime = event.currentTarget.dataset.id;
+    let sTimeList = this.template.querySelector(
+      `.stayTime_Input[data-id="${sTime}"]`
+    );
+    sTimeList.value = event.target.value;
+  }
 
   // Accordion Save  Button click event
   handleSave(event) {
-    var tripID, tagName, activity, note, textList, rTagList,conEmail, tripDate, conName, oldActivity, actualMileage, mileage, chMileage, tripLogApi, tripLogId;
-    if(this.isClicked === true || this.isNoteClicked === true || this.isTagClicked === true) {
+    var tripID, tagName, activity, note, stayInput, textList, rTagList, stayTimeList, conEmail, tripDate, conName, oldActivity, actualMileage, mileage, chMileage, tripLogApi, tripLogId;
+    if(this.isClicked === true || this.isNoteClicked === true || this.isTagClicked === true || this.isStayTimeClicked === true) {
       this.tableSpinner = true;
       this.updatingText = "Updating....";
       let tId = event.currentTarget.dataset.id;
@@ -618,10 +627,14 @@ export default class DataTableComponent extends LightningElement {
       textList = this.template.querySelector(
         `textarea[data-id="${tId}"]`
       );
+      stayTimeList = this.template.querySelector(
+        `.stayTime_Input[data-id="${tId}"]`
+      );
       tripID = tId;
       tagName = (rTagList.value === undefined) ? '' : rTagList.value;
       note = (textList.value === undefined) ? '' : textList.value;
       activity = (this.activity === undefined || this.activity === '') ? null : this.activity;
+      stayInput = (stayTimeList.value === undefined) ? '' : stayTimeList.value;
       conEmail = event.currentTarget.dataset.email;
       tripDate = event.currentTarget.dataset.trip;
       conName = event.currentTarget.dataset.name;
@@ -635,12 +648,14 @@ export default class DataTableComponent extends LightningElement {
       listOfData.Tags = (this.isTagClicked === true) ? tagName : listOfData.Tags;
       listOfData.Notes = (this.isNoteClicked === true) ? note : listOfData.Notes;
       listOfData.Activity =  (this.isClicked === true) ? activity : listOfData.Activity;
-    
+      listOfData.StayTime = (this.isStayTimeClicked === true) ? stayInput : listOfData.StayTime;
+
       updateMileages({
           tripId: tripID,
           tripTag: tagName,
           activity: activity,
-          notes: note
+          notes: note,
+          staytime: stayInput
         })
         .then((data) => {
           // console.log("updateMileages List", data);
@@ -678,6 +693,7 @@ export default class DataTableComponent extends LightningElement {
             }
             this.isNoteClicked = false;
             this.isTagClicked = false;
+            this.isStayTimeClicked = false;
           }
         })
         .catch((error) => {
