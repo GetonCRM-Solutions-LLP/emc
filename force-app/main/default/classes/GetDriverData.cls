@@ -499,13 +499,14 @@ public with sharing class GetDriverData {
     }
 
     @AuraEnabled
-    public static string updateMileages(String tripId,String tripTag,String activity,String notes)
+    public static string updateMileages(String tripId,String tripTag,String activity,String notes,Integer staytime)
     { 
         Employee_Mileage__c mil = new Employee_Mileage__c();
         mil.Id = tripId;
         mil.Tag__c = tripTag;
         mil.Activity__c = activity;
         mil.Notes__c = notes ;
+        mil.Stay_Time__c = staytime;
         //update mil;
         
         try{

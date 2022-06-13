@@ -51,6 +51,10 @@
             </div>
             <div style="clear:both"></div>
         </div>
+        <!-- <lightning-formatted-date-time value="1632028680000"  year="numeric"
+                    month="numeric"
+                    day="2-digit"></lightning-formatted-date-time>
+        <lightning-formatted-date-time value="1632028680000"  weekday="short"></lightning-formatted-date-time> -->
         <!--2021-08-02T23:13:00.000Z--> <!--2021-08-19T23:33:00.000Z-->
          <!-- <lightning-formatted-date-time
                     value="1627945980000" 
@@ -407,9 +411,13 @@
                                                         Stay Time :
                                                     </td>
                                                     <td>
-                                                        <c-input-field-component data-id={tableData.id}
+                                                        <input data-id={tableData.id}
+                                                            type="text"  maxlength="4"
+                                                            class="slds-input stayTime_Input" value={tableData.StayTime}
+                                                            oninput={handleStayTimeInput} />
+                                                        <!-- <c-input-field-component data-id={tableData.id}
                                                             input-value={tableData.StayTime} class="stayTime_Input">
-                                                        </c-input-field-component>
+                                                        </c-input-field-component> -->
                                                     </td>
                                                 </tr>
                                                 <tr>
@@ -642,9 +650,13 @@
                                                         Stay Time :
                                                     </td>
                                                     <td>
-                                                        <c-input-field-component data-id={tableData.id}
+                                                        <input data-id={tableData.id}
+                                                            type="text" maxlength="4"
+                                                            class="slds-input stayTime_Input" value={tableData.StayTime}
+                                                            oninput={handleStayTimeInput} />
+                                                        <!-- <c-input-field-component data-id={tableData.id}
                                                             input-value={tableData.StayTime} class="stayTime_Input">
-                                                        </c-input-field-component>
+                                                        </c-input-field-component> -->
                                                     </td>
                                                 </tr>
                                                 <tr>
