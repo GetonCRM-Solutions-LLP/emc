@@ -14,6 +14,66 @@
             /*Media Queries*/
 
             /* Large screens ----------- */
+            @-webkit-keyframes slide-menu {
+                from {
+                    -webkit-transform: scaleX(0);
+                            transform: scaleX(0);
+                }
+                to {
+                    -webkit-transform: scaleX(1);
+                            transform: scaleX(1);
+                }
+            }
+            @keyframes slide-menu {
+                from {
+                    -webkit-transform: scaleX(0);
+                            transform: scaleX(0);
+                }
+                to {
+                    -webkit-transform: scaleX(1);
+                            transform: scaleX(1);
+                }
+            }
+            @-webkit-keyframes show-x {
+                from {
+                    opacity: 0;
+                }
+                to {
+                    opacity: 1;
+                }
+            }
+            @keyframes show-x {
+                from {
+                    opacity: 0;
+                }
+                to {
+                    opacity: 1;
+                }
+            }
+            @-webkit-keyframes menu-item-anim {
+                from {
+                    -webkit-transform: translateY(70%);
+                            transform: translateY(70%);
+                    opacity: 0;
+                }
+                to {
+                    -webkit-transform: translateY(0);
+                            transform: translateY(0);
+                    opacity: 1;
+                }
+            }
+            @keyframes menu-item-anim {
+                from {
+                    -webkit-transform: translateY(70%);
+                            transform: translateY(70%);
+                    opacity: 0;
+                }
+                to {
+                    -webkit-transform: translateY(0);
+                            transform: translateY(0);
+                    opacity: 1;
+                }
+            }
 
             @media (min-width: 2560px) {
                 .fuel_td {
@@ -485,14 +545,6 @@
                 font-size: 16px !important;
             }
 
-            .preview-wrapper {
-                margin: 8px;
-                display: inline-block;
-                position: absolute;
-                top: 75px;
-                right: 32px;
-            }
-
             .overflow-icon-btn.mburse {
                 background-color: #78bc42;
             }
@@ -551,6 +603,36 @@
             .pad-0 {
                 padding: 0 !important;
             }
+
+            .vf-video-iframe{
+                position: fixed;
+                z-index: 99;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                padding: 2em;
+                /* -webkit-transform: scaleX(0);
+                transform: scaleX(0); */
+                -webkit-transform-origin: center;
+                transform-origin: center;
+            }
+
+            .video-title{
+                text-transform:  uppercase;
+                margin-bottom: 6px;
+            }
+
+            .video-icon-fluid{
+                width: 80px;
+            }
+
+            .overlay-heading{
+                color: #fff;
+                text-align: center;
+                font-size: 18px;
+            }
+
             #overlay {
                 position: fixed;
                 z-index: 99;
@@ -558,13 +640,16 @@
                 left: 0;
                 width: 100%;
                 height: 100%;
-                background: black;
+                background: #929497;
                 padding: 2em;
                 -webkit-transform: scaleX(0);
                 transform: scaleX(0);
                 -webkit-transform-origin: right;
                 transform-origin: right;
+                overflow: hidden;
+                overflow-y: auto;
             }
+
             #overlay .close-button {
                 float: right;
                 cursor: pointer;
@@ -572,120 +657,89 @@
                 z-index: 100;
                 color: #fff;
             }
+
             #overlay ul {
                 list-style-type: none;
-                margin: 10% auto 0 auto;
+                margin: 2% auto 0 auto;
                 padding: 0;
                 display: -ms-grid;
                 display: grid;
-                -ms-grid-columns: (auto)[4];
-                    grid-template-columns: repeat(4, auto);
-                width: 80%;
+                -ms-grid-columns: (auto)[5];
+                    grid-template-columns: repeat(5, auto);
+                width: 100%;
             }
-            #overlay ul a {
+
+            #overlay ul div {
             color: white;
             font-weight: bold;
-            font-size: 1.4em;
+            font-size: 16px;
             }
+
             #overlay ul span {
-            color: gray;
+            color: white;
             display: block;
-            font-size: .75em;
-            margin-top: 20px;
+            font-size: 16px;
             }
+
             #overlay ul li {
-            opacity: 0;
+                opacity: 0;
+                text-align: center;
             }
+
             .d-none{
                 display: none;
             }
+
             .d-block{
                 display: block;
             }
+
             .show-menu {
                 display: block;
                 -webkit-animation: slide-menu 1s ease-in forwards;
                         animation: slide-menu 1s ease-in forwards;
             }
+
             .show-menu .close-button {
                 -webkit-animation: show-x 1s 1s forwards;
                         animation: show-x 1s 1s forwards;
             }
+
             .show-menu li:nth-of-type(1) {
             -webkit-animation: menu-item-anim .6s forwards 1s ease-in-out;
                     animation: menu-item-anim .6s forwards 1s ease-in-out;
             }
+
             .show-menu li:nth-of-type(2) {
             -webkit-animation: menu-item-anim .6s forwards 1.2s ease-in-out;
                     animation: menu-item-anim .6s forwards 1.2s ease-in-out;
             }
+
             .show-menu li:nth-of-type(3) {
             -webkit-animation: menu-item-anim .6s forwards 1.6s ease-in-out;
                     animation: menu-item-anim .6s forwards 1.6s ease-in-out;
             }
+
             .show-menu li:nth-of-type(4) {
             -webkit-animation: menu-item-anim .6s forwards 1.8s ease-in-out;
                     animation: menu-item-anim .6s forwards 1.8s ease-in-out;
             }
-            @-webkit-keyframes slide-menu {
-            from {
-                -webkit-transform: scaleX(0);
-                        transform: scaleX(0);
+
+            .show-menu li:nth-of-type(5) {
+            -webkit-animation: menu-item-anim .6s forwards 2s ease-in-out;
+                    animation: menu-item-anim .6s forwards 2s ease-in-out;
             }
-            to {
-                -webkit-transform: scaleX(1);
-                        transform: scaleX(1);
+
+            .menu-play{
+                cursor: pointer;
             }
+
+            .icon-wrapper{
+                cursor: pointer;
             }
-            @keyframes slide-menu {
-            from {
-                -webkit-transform: scaleX(0);
-                        transform: scaleX(0);
-            }
-            to {
-                -webkit-transform: scaleX(1);
-                        transform: scaleX(1);
-            }
-            }
-            @-webkit-keyframes show-x {
-            from {
-                opacity: 0;
-            }
-            to {
-                opacity: 1;
-            }
-            }
-            @keyframes show-x {
-            from {
-                opacity: 0;
-            }
-            to {
-                opacity: 1;
-            }
-            }
-            @-webkit-keyframes menu-item-anim {
-            from {
-                -webkit-transform: translateY(70%);
-                        transform: translateY(70%);
-                opacity: 0;
-            }
-            to {
-                -webkit-transform: translateY(0);
-                        transform: translateY(0);
-                opacity: 1;
-            }
-            }
-            @keyframes menu-item-anim {
-            from {
-                -webkit-transform: translateY(70%);
-                        transform: translateY(70%);
-                opacity: 0;
-            }
-            to {
-                -webkit-transform: translateY(0);
-                        transform: translateY(0);
-                opacity: 1;
-            }
+
+            .pd-6{
+                padding-top: 6px;
             }
         </style>
         <script type="text/javascript">
@@ -1510,11 +1564,13 @@
                 angular.element(document.querySelector("#driver-dashboard-insurance-upload")).addClass("displayblock");
             }
 
-            $scope.playVideo = function () {
-                $scope.isVideoVisible = true;
-                // let f = document.getElementById("video-frame");
-                // f.src="https://hubs.ly/Q018-6YH0";
+            $scope.playVideo = function (Id) {
+                $('#spinner').show();
+                let vurl = 'https://' + window.location.host + `/app/insightResource?accid=${$scope.accid}&id=${$scope.id}#${Id}`;
+                angular.element(document.querySelector("#videoFrame")).removeClass("d-none");
+                document.getElementById("videoFrame").setAttribute("src", vurl);
             }
+            
             $scope.uploadedInsurance = function () {
                 angular.element(document.querySelector("#uploadedInsurance")).addClass("displayblock");
                 angular.element(document.querySelector("#notuploadedInsurance")).addClass("displaynone");
@@ -1559,7 +1615,7 @@
             $scope.active1 = true;
             $scope.selectedYear = '';
             $scope.fetchMileage = function (clickedYear) {
-
+                console.log("scroll", document.body.scrollHeight)
                 $('#spinner').show();
                 $scope.selectedYear = clickedYear;
                 Visualforce.remoting.Manager.invokeAction('{!$RemoteAction.DriverDashboardController.getAllReimbursements}', $scope.selectedYear, $scope.id, $scope.accid,
@@ -1992,12 +2048,12 @@
                                         <li class="nav-item active">
                                             <a class="nav-link text-white" href="/app/driverDashboardClone?accid={{accid}}&id={{id}}">Dashboard</a>
                                         </li>
-                                        <!-- <li class="nav-item">
-                                            <a id="open-menu" class="img-brand col-6 col-sm-6 col-md-3 col-lg-3 col-xl-3 px-0 ml-em" href="#" >  ng-click="modal()" data-toggle="modal" data-target="#driver-dashboard-insurance-upload"
+                                        <li class="nav-item menu-play">
+                                            <a id="open-menu" class="img-brand col-6 col-sm-6 col-md-3 col-lg-3 col-xl-3 px-0 ml-em">
                                                 <img src="{!URLFOR($Resource.EmcCSS,'emc-design/assets/images/shreds2001-2x.png')}" class="img-icon-fluid" href="javascript:void(0)"
                                                     alt="logo" />
                                             </a>
-                                        </li> -->
+                                        </li>
                                         <li class="nav-item">
                                             <!-- <button class="btn btn-secondary float-right">Upload Insurance</button> -->
                                             <a class="btn btn-secondary float-right ml-em" ng-click="displymodal()">
@@ -2025,109 +2081,82 @@
                 </div>
             </div>
         </div>
-        <!-- Upload Insurance button Model -->
-        <div class="modal fade driver-dashboard-insurance-upload" tabindex="-1" role="dialog" aria-labelledby="driver-dashboard-insurance-upload"
-            id="driver-dashboard-insurance-upload" data-backdrop="static" data-keyboard="false">
-            <div class="modal-dialog modal-xl modal-dialog-centered">
-                <div class="modal-content rounded-0 insurance-rounded">
-                    <button type="button" class="close popup-close-btn" data-dismiss="modal" ng-click="dismismodal()" aria-label="Close">
-                        <!-- ng-click ="dismismodal()" -->
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                    <div class="modal-body">
-                        <!-- <div class="container">
-                            <div class="row">
-                                <div class="offset-md-3 offset-lg-3 offset-xl-3 col-12 col-sm-12 col-md-6 col-lg-6 col-xl-6 px-0">
-                                    <div class="text-center my-3 my-sm-3 my-md-3 my-lg-3">
-                                        <a class="btn btn-secondary" ng-click="playVideo()">
-                                            Welcome
-                                        </a>
-                                         <img src="{!URLFOR($Resource.EmcCSS,'emc-design/assets/images/adminroster-importfile.png')}" class="img-fluid" alt="Admin roster import file"
-                                            />
-                                            <div class="image-Insurancetext">
-                                                <span class="greenText">Insurance</span>
-                                                <span class="greenText2">Dec Page</span>
-                                            </div>
-                                            <div class="image-cardtext">
-                                                <span class="redText">Insurance Card</span>
-                                            </div>
-                                            <div class=" my-3 my-sm-3 my-md-3 my-lg-3 insDiv">
-                                                <p class="fileupload-title">
-                                                    <span class="font-weight-bold">
-                                                        Upload your insurance declaration page
-                                                        <span class="underline">NOT</span> your insurance card
-                                                        <a class="tagquestion" href="https://www.thebalance.com/what-is-an-insurance-declaration-page-2645728" title="What is an insurance dec page?<br/>(https://hubs.ly/H0mmxzz0)"
-                                                            data-toggle="tooltip" data-html="true" data-placement="top" target="_blank">
-                                                            <i class="fa fa-question"></i>
-                                                        </a>
-                                                    </span>
-                                                </p>
-                                            </div> 
-                                    </div>
-                                    <div class="video-wrapper" ng-show="isVideoVisible">
-                                        <div class="video-container" id="video-container">
-                                            <iframe id="video-frame" width="450" height="253" src="https://hubs.ly/Q0191trW0" frameborder="0" allow="accelerometer; autoplay; gyroscope; picture-in-picture"
-                                                allowfullscreen="" sandbox="" />
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div> -->
-                        <nav class="navbar navbar-light" style="background-color: #e3f2fd;">
-                            <!-- Navbar content -->
-                            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
-                                    <span class="navbar-toggler-icon"></span>
-                            </button>
-                              <div class="collapse navbar-collapse" id="navbarText">
-                                <ul class="navbar-nav mr-auto">
-                                  <li class="nav-item active">
-                                    <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
-                                  </li>
-                                  <li class="nav-item">
-                                    <a class="nav-link" href="#">Features</a>
-                                  </li>
-                                  <li class="nav-item">
-                                    <a class="nav-link" href="#">Pricing</a>
-                                  </li>
-                                </ul>
-                              </div>
-                        </nav>
-                    </div>
-                </div>
-            </div>
-        </div>
 
         <nav id="overlay" class="d-none">
             <i class="fa fa-close fa-3x close-button" alt="menu"   id="close-menu"></i>
+            <div class="overlay-heading">Gain valuable insights and answers with these mBurse resources</div>
             <ul>
                 <li>
-                    <a href="#">Welcome</a>
-                    <span>Watch out, This is short welcome video </span>
+                    <div class="video-title">Welcome</div>
+                    <div class="icon-wrapper"> <img src="{!URLFOR($Resource.EmcCSS,'emc-design/assets/images/shreds2001-1-(3).png')}" class="video-icon-fluid" href="javascript:void(0)"
+                        alt="logo" ng-click="playVideo('G1')"/></div>
+                    <p><span>Your Plan</span><span>Preview</span></p>
                 </li>
                 <li>
-                    <a href="#">mLog Preview</a>
-                    <span>Watch out, This is short video to mLog</span>
+                    <div class="video-title">Parameters</div>
+                    <div class="icon-wrapper"> <img src="{!URLFOR($Resource.EmcCSS,'emc-design/assets/images/Icon-50@2x.png')}" class="video-icon-fluid" href="javascript:void(0)"
+                        alt="logo" ng-click="playVideo('G2')"/></div>
+                    <p><span>Your Plan</span><span>Parameters</span></p>
                 </li>
                 <li>
-                    <a href="#">mBurse Plan</a>
-                    <span>Watch out, This is short video to mBurse Plan</span>
+                    <div class="video-title">mLog Preview</div>
+                    <div class="icon-wrapper"> <img src="{!URLFOR($Resource.EmcCSS,'emc-design/assets/images/shreds2001-1-(3).png')}" class="video-icon-fluid" href="javascript:void(0)"
+                        alt="logo" ng-click="playVideo('G3')"/></div>
+                    <p><span>mLog App</span><span>Overview</span></p>
                 </li>
                 <li>
-                    <a href="#">Support</a>
-                    <span>Watch out, Contact Support</span>
+                    <div class="video-title">download</div>
+                    <div class="icon-wrapper"> <img src="{!URLFOR($Resource.EmcCSS,'emc-design/assets/images/download-icon-white-24.jpg')}" class="video-icon-fluid" href="javascript:void(0)"
+                        alt="logo" ng-click="playVideo('G4')"/></div>
+                    <p><span>Get the</span><span>mLog app</span></p>
+                </li>
+                <li>
+                    <div class="video-title">driver meeting</div>
+                    <div class="icon-wrapper"> <img src="{!URLFOR($Resource.EmcCSS,'emc-design/assets/images/shreds2001-1-(3).png')}" class="video-icon-fluid" href="javascript:void(0)"
+                        alt="logo" ng-click="playVideo('G5')"/></div>
+                    <p><span>Your Company</span><span>Plan</span></p>
                 </li>
             </ul>
+            <!-- <div class="form-white-divider"></div>
+            <div class="overlay-heading pd-6">Program FAQ'S and Resources</div>
+            <ul>
+                <li>
+                    <div class="video-title">Plan parameters</div>
+                    <div class="icon-wrapper"> <img src="{!URLFOR($Resource.EmcCSS,'emc-design/assets/images/shreds2001-1-(3).png')}" class="video-icon-fluid" href="javascript:void(0)"
+                        alt="logo" ng-click="playVideo()"/></div>
+                    <p><span>Reimbursement</span><span>Guidelines</span></p>
+                </li>
+                <li>
+                    <div class="video-title">Insurance</div>
+                    <div class="icon-wrapper"> <img src="{!URLFOR($Resource.EmcCSS,'emc-design/assets/images/shreds2001-1-(3).png')}" class="video-icon-fluid" href="javascript:void(0)"
+                        alt="logo" /></div>
+                    <p><span>Your Insurance</span><span>Guidelines</span></p>
+                </li>
+                <li>
+                    <div class="video-title">Compliance</div>
+                    <div class="icon-wrapper"> <img src="{!URLFOR($Resource.EmcCSS,'emc-design/assets/images/shreds2001-1-(3).png')}" class="video-icon-fluid" href="javascript:void(0)"
+                        alt="logo" /></div>
+                    <p><span>How Compliance</span><span>Works</span></p>
+                </li>
+                <li>
+                    <div class="video-title">Dashboard</div>
+                    <div class="icon-wrapper"> <img src="{!URLFOR($Resource.EmcCSS,'emc-design/assets/images/shreds2001-1-(3).png')}" class="video-icon-fluid" href="javascript:void(0)"
+                        alt="logo" /></div>
+                    <p><span>How Compliance</span><span>Works</span></p>
+                </li>
+                <li>
+                    <div class="video-title">Dashboard</div>
+                    <div class="icon-wrapper"> <img src="{!URLFOR($Resource.EmcCSS,'emc-design/assets/images/shreds2001-1-(3).png')}" class="video-icon-fluid" href="javascript:void(0)"
+                        alt="logo" /></div>
+                    <p><span>How Compliance</span><span>Works</span></p>
+                </li>
+            </ul> -->
         </nav>
+        <iframe id="videoFrame" frameborder="0" class="vf-video-iframe d-none" name="videoVf"></iframe>
         <section class="container-fluid">
             <div id="pills-admin-dashbord-myteamprofile" class="myteamprofile">
                 <iframe id="vfFrame" height="345" width="100%" style="border: 0" class="vf-iframe"></iframe>
             </div>
-            <!-- <div class="preview-wrapper">
-                <a class="overflow-icon-btn mburse" href="#" ng-click="modal()" data-toggle="modal" data-target="#driver-dashboard-upload-insurancebtn">
-                    <i class="fab fa-youtube fa-4x"></i>
-                    mBurse Plan
-                </a>
-            </div> -->
             <div class="my-5 admin-roster-tab-section">
                 <ul class="nav nav-pills">
                     <li class="nav-item mb-3">
@@ -2137,7 +2166,7 @@
                         <a class="nav-link" data-toggle="pill" href="#pills-admin-dashbord-mileage">Plan Info</a>
                     </li>
                 </ul>
-                <div class="tab-content timeline">
+                <div class="tab-content timeline" style="padding-bottom: 3rem">
                     <div class="tab-pane active" id="pills-admin-dashbord-myteam">
                         <div id="accordion" role="tablist">
                             <div class="card insurance-declatarion-card" ng-repeat="yr in years">
@@ -2442,6 +2471,8 @@
                         />
                     </div>
                 </div>
+                <!-- EMC - 324 Introduce mBurse Support Chat On Existing System -->
+               <c:mBurseChatBot />
             </div>
         </section>
 
@@ -2455,21 +2486,28 @@
                 $(".demo-default").selectize();
             });
 
-            // const overlay = document.getElementById('overlay');
-            // const closeMenu = document.getElementById('close-menu');
+            const overlay = document.getElementById('overlay');
+            const closeMenu = document.getElementById('close-menu');
 
-            // document.getElementById('open-menu').addEventListener('click', function() {
-            //     overlay.classList.remove('d-none');
-            //     overlay.classList.add('show-menu');
-            // });
-            // document.getElementById('close-menu').addEventListener('click', function(){
-            //     overlay.classList.remove('show-menu')
-            // })
+            document.getElementById('open-menu').addEventListener('click', function() {
+                overlay.classList.remove('d-none');
+                overlay.classList.add('show-menu');
+            });
+            document.getElementById('close-menu').addEventListener('click', function(){
+                overlay.classList.remove('show-menu')
+            })
 
             var iFrame = document.getElementById('vfFrame');
-            console.log("Screen Width: " + window.screen.width);
+            // console.log("Screen Width: " + window.screen.width);
             let iFrameheight;
             window.onmessage = function (event) {
+                if(event.data === 'close-video'){
+                  document.getElementById("videoFrame").removeAttribute("src");
+                  document.getElementById('videoFrame').classList.add('d-none');
+                }
+                if(event.data === 'component'){
+                    $('#spinner').hide();
+                }
                 if (window.screen.width > 1366) {
                     if (event.data == 'slds-is-open') {
                         iFrameheight = document.getElementById('vfFrame').contentWindow.document.body.offsetHeight;

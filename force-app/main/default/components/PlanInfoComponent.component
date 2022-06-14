@@ -538,9 +538,11 @@
     
                                 </div>
                             </div>
-                            <div class="plan-info-timeline_downloadbtn">
-                                <a class="btn btn-secondary pull-right emc-btn-download emc_insurance_tab_pills" target="_blank" href="{!URLFOR($Action.Attachment.Download, insuranceId)}">Download</a>
-                            </div>
+                            <apex:outputPanel rendered="{!insuranceId != null}">
+                                <div class="plan-info-timeline_downloadbtn">
+                                    <a class="btn btn-secondary pull-right emc-btn-download emc_insurance_tab_pills" target="_blank" href="{!URLFOR($Action.Attachment.Download, insuranceId)}">Download</a>
+                                </div>
+                            </apex:outputPanel>
                         </apex:outputPanel>
     
                         <apex:outputPanel rendered="{!insuranceDocCount == 0}">
@@ -604,9 +606,11 @@
     
                                 </div>
                             </div>
-                            <div class="plan-info-timeline_downloadbtn">
-                                <a class="btn btn-secondary pull-right emc-btn-download emc_insurance_tab_pills" target="_blank" href="{!URLFOR($Action.Attachment.Download, mvrCheckId)}">Download</a>
-                            </div>
+                            <apex:outputPanel rendered="{!mvrCheckId != null}">
+                                <div class="plan-info-timeline_downloadbtn">
+                                    <a class="btn btn-secondary pull-right emc-btn-download emc_insurance_tab_pills" target="_blank" href="{!URLFOR($Action.Attachment.Download, mvrCheckId)}">Download</a>
+                                </div>
+                            </apex:outputPanel>
                         </apex:outputPanel>
     
                         <apex:outputPanel rendered="{!mvrCheckDocCount == 0}">
