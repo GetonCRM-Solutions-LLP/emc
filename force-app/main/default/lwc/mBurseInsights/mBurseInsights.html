@@ -16,23 +16,23 @@
                             <div class="font-color"><strong>Insurance Minimums:</strong>
                                 <table class="slds-m-top_small insurance-table">
                                     <tbody>
-                                    <tr>
+                                    <tr  if:true={client.bodilyInjury}>
                                         <td>Bodily Injury</td>
                                         <td>${client.bodilyInjury}</td>
                                     </tr>
-                                    <tr>
+                                    <tr  if:true={client.unInsuranceMotorist}>
                                         <td>Uninsured Motorist</td>
                                         <td>${client.unInsuranceMotorist}</td>
                                     </tr>
-                                    <tr>
+                                    <tr  if:true={client.propertyDamage}>
                                         <td>Property Damage</td>
                                         <td>$<lightning-formatted-number value={client.propertyDamage}></lightning-formatted-number></td>
                                     </tr>
-                                    <tr>
+                                    <tr if:true={client.comprehensive}>
                                         <td>Comprehensive Deductible</td>
                                         <td>$<lightning-formatted-number value={client.comprehensive}></lightning-formatted-number></td>
                                     </tr>
-                                    <tr>
+                                    <tr if:true={client.collision}>
                                         <td>Collision Deductible</td>
                                         <td>$<lightning-formatted-number value={client.collision}></lightning-formatted-number></td>
                                     </tr>
@@ -46,15 +46,15 @@
                             <div class="font-color">
                                 <table class="slds-m-top_medium content-table">
                                     <tbody>
-                                    <tr>
+                                    <tr if:true={client.vehicleValue}>
                                         <td class="vVTd"><strong>Vehicle Value:</strong></td><!--style="padding-right: 2px !important" -->
                                         <td>$<lightning-formatted-number value={client.vehicleValue}></lightning-formatted-number></td>
                                     </tr>
-                                    <tr>
+                                    <tr if:true={client.planYear}>
                                         <td  class="veTd"> <strong>Vehicle Age:</strong></td> <!--style="padding-right: 10px !important"-->
                                         <td>{client.planYear} Years</td>
                                     </tr>
-                                    <tr>
+                                    <tr if:true={client.complianceMileage}>
                                         <td><strong>Annual Compliance Mileage:</strong></td>
                                         <td class="mTd">{client.complianceMileage} Miles</td> <!--style="padding-right: 66px !important" -->
                                     </tr>
@@ -81,7 +81,7 @@
                                     </tbody>
                                 </table>
                             </div> -->
-                            <div class="overlay">
+                            <div class="overlay"  if:true={docUrl}>
                                 <div class="video-title"><strong>Download</strong></div>
                                 <div>
                                     <a  href={docUrl}>
