@@ -157,6 +157,9 @@ global with sharing class ReimbursementStatementBatch implements Database.Batcha
                                 + currentReimbursement.Total_Monthly_Reimbursement__c +'</td>' 
                                 +'</tr>';
                      }*/
+                     system.debug('driverEmailMap.size()==' + driverEmailMap.size());
+                    Decimal fixedAmountValue = (currentReimbursement.Fixed_Amount__c!=null)?currentReimbursement.Fixed_Amount__c:0;
+                    
                      if(driverEmailMap.size()>0 && driverEmailMap.containsKey(currentReimbursement.Contact_Id__c))
                         {
                             htmlTemplate = driverEmailMap.get(currentReimbursement.Contact_Id__c);
@@ -174,6 +177,8 @@ global with sharing class ReimbursementStatementBatch implements Database.Batcha
                             Decimal fixedAmount = (currentReimbursement.Fixed_Amount__c!=null)?currentReimbursement.Fixed_Amount__c:0;
                             fixedAmount = fixedAmount + driverFixedAmountMap.get(currentReimbursement.Contact_Id__c);
                             driverFixedAmountMap.put(currentReimbursement.Contact_Id__c,fixedAmount);
+                            system.debug('fixedAmount ==' + fixedAmount );
+                            system.debug('driverFixedAmountMap==' + driverFixedAmountMap);
                             
                             Decimal monthlyReimbursement = (currentReimbursement.Total_Monthly_Reimbursement__c!=null)?currentReimbursement.Total_Monthly_Reimbursement__c:0;
                             monthlyReimbursement = monthlyReimbursement + driverMonthlyReimbursementMap.get(currentReimbursement.Contact_Id__c);
@@ -184,7 +189,9 @@ global with sharing class ReimbursementStatementBatch implements Database.Batcha
                                 + currentReimbursement.Total_Approved__c+'</td><td style="border:2px solid black;">'+'$' 
                                 + currentReimbursement.Variable_Rate__c+'</td><td style="border:2px solid black;">'+'$' 
                                 + currentReimbursement.Monthly_Variable_Amount__c +'</td><td style="border:2px solid black;">' +'$' 
-                                + currentReimbursement.Fixed_Amount__c+'</td><td style="border:2px solid black;">'+'$' 
+                               // + currentReimbursement.Fixed_Amount__c+'</td><td style="border:2px solid black;">'+'$' 
+                               + fixedAmountValue +'</td><td style="border:2px solid black;">' +'$' 
+                                //+ '(currentReimbursement.Total_Monthly_Reimbursement__c!=null)?currentReimbursement.Total_Monthly_Reimbursement__c:0' + '</td><td style="border:2px solid black;">'+'$' 
                                 + currentReimbursement.Total_Monthly_Reimbursement__c +'</td>' 
                                 +'</tr>';
                         }
@@ -194,13 +201,14 @@ global with sharing class ReimbursementStatementBatch implements Database.Batcha
                             driverVariableAmountMap.put(currentReimbursement.Contact_Id__c,((currentReimbursement.Monthly_Variable_Amount__c!=null && String.IsNotEmpty(String.valueOf(currentReimbursement.Monthly_Variable_Amount__c)))?currentReimbursement.Monthly_Variable_Amount__c:0));
                             driverFixedAmountMap.put(currentReimbursement.Contact_Id__c,((currentReimbursement.Fixed_Amount__c!=null && String.IsNotEmpty(String.valueOf(currentReimbursement.Fixed_Amount__c)))?currentReimbursement.Fixed_Amount__c:0));
                             driverMonthlyReimbursementMap.put(currentReimbursement.Contact_Id__c,((currentReimbursement.Total_Monthly_Reimbursement__c!=null && String.IsNotEmpty(String.valueOf(currentReimbursement.Total_Monthly_Reimbursement__c)))?currentReimbursement.Total_Monthly_Reimbursement__c:0));
-                            
+                            system.debug('currentReimbursement.Fixed_Amount__c===' + currentReimbursement.Fixed_Amount__c);
                             htmlTemplate='<tr align="center" style="border:2px solid black;"> <td style="border:1px solid black;">'  
                                 + monthName +'</td><td style="border:2px solid black;">' 
                                 + currentReimbursement.Total_Approved__c +'</td><td style="border:2px solid black;">'+'$' 
                                 + currentReimbursement.Variable_Rate__c +'</td><td style="border:2px solid black;">'+'$' 
                                 + currentReimbursement.Monthly_Variable_Amount__c +'</td><td style="border:2px solid black;">' +'$' 
-                                + currentReimbursement.Fixed_Amount__c +'</td><td style="border:2px solid black;">'+'$' 
+                                //+ currentReimbursement.Fixed_Amount__c +'</td><td style="border:2px solid black;">'+'$'
+                                +	fixedAmountValue +'</td><td style="border:2px solid black;">'+'$' 
                                 + currentReimbursement.Total_Monthly_Reimbursement__c +'</td>' 
                                 +'</tr>';
                            }
@@ -227,7 +235,8 @@ global with sharing class ReimbursementStatementBatch implements Database.Batcha
                List<String> toAddress = new List<String>();
                if(customSettings.Send_to_Driver__c == true) 
                {
-                   toAddress.add('paras.dhanani@getoncrm.com');
+               //toAddress.add('paras.dhanani@getoncrm.com');
+                   toAddress.add('snehal.gat@kiwiqa.com');
                    //toAddress.add(currentContact.External_Email__c);
                    mail.setToAddresses(toAddress);
                    if(emailsToSend.size()>0)
