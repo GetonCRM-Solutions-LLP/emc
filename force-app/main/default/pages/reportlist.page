@@ -18,6 +18,17 @@
                 border-top: none !important;
             }
 
+            .font-back-div{
+                font-family: 'Proxima Nova Bold';
+                color: #78bc42;
+                font-size: 16px;
+                cursor: pointer;
+            }
+
+            .font-back-div .fa-chevron-left{
+                color: #78bc42 !important;
+            }
+
             .custom-payPeriod {
                 width: 300px !important;
             }
@@ -562,7 +573,7 @@
                             });
 
                         },
-                        template: '<div class="modal fade driver-dashboard-monthrecord show in monthlyTaxModal" tabindex="-1" role="dialog" aria-labelledby="driver-dashboard-monthrecord" id="driver-dashboard-monthrecord"><div class="fade modal-backdrop"></div><div class="modal-dialog modal-lg modal-dialog-centered"><div class="modal-content rounded-0"> <button type="button" class="close popup-close-btn" data-dismiss="modal" aria-label="Close"> <span aria-hidden="true">×</span> </button><div class="modal-body"><h4>Monthly Tax Report</h4><div class="modal-divider"></div><form name="signup" class="form" id="myform"><div class="form-row"><div class="form-group-theme row-inline"> <label for="Month:" class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-form-label form-lable">Month:<span class="tagquestion1" data-toggle="tooltip" data-placement="top" data-html="true" title="" data-original-title="<b>Please select month</b>"> <i class="fa fa-question"></i> </span> </label><div class="col-xl-6 col-lg-6 col-md-6 col-sm-6"> <select ng-model="monthList" ng-change="onmonthChange(monthList)" class="browser-default custom-select custom-select-xl width-dp"><option ng-repeat="date in monthArr" ng-selected="{{monthList == date}}" value="{{date}}">{{date}}</option> </select></div></div><div class="form-group-theme row-inline"> <label for="Employee:" class="col-xl-5 col-lg-5 col-md-5 col-sm-5 col-form-label form-lable">Employee Type: <span class="tagquestion1" data-toggle="tooltip" data-placement="top" data-html="true" title="" data-original-title="<b>Please select employee type</b>"> <i class="fa fa-question"></i> </span> </label><div class="col-xl-6 col-lg-6 col-md-6 col-sm-6"> <select ng-model="empTypeList" ng-change="onemployeeChange(empTypeList)" class="browser-default custom-select custom-select-xl width-dp"><option ng-repeat="empltype in empType" ng-selected="{{empTypeList == empltype}}" value="{{empltype}}">{{empltype}}</option> </select></div></div></div></form></div><div class="modal-footer mb-3"><div class="col-md-12 mt-3 text-center"> <button id="downloadTaxReportBtn" class="btn btn-primary mt-3 mb-3" ng-click="downloadTaxReport()">Download <i class="fa fa-download"></i> </button></div></div></div></div></div>'
+                        template: '<div class="modal fade driver-dashboard-monthrecord show in monthlyTaxModal" tabindex="-1" role="dialog" aria-labelledby="driver-dashboard-monthrecord" id="driver-dashboard-monthrecord"><div class="fade modal-backdrop"></div><div class="modal-dialog modal-lg modal-dialog-centered"><div class="modal-content rounded-0"> <button type="button" class="close popup-close-btn" data-dismiss="modal" aria-label="Close"> <span aria-hidden="true">×</span> </button><div class="modal-body"><h4>Monthly Tax Report</h4><div class="modal-divider"></div><form name="signup" class="form" id="myform"><div class="form-row"><div class="form-group-theme row-inline"> <label for="Month:" class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-form-label form-lable">Month:<span class="tagquestion1" data-toggle="tooltip" data-placement="top" data-html="true" title="" data-original-title="<b>Please select month</b>"> <i class="fa fa-question"></i> </span> </label><div class="col-xl-6 col-lg-6 col-md-6 col-sm-6"> <select ng-model="monthList" ng-change="onmonthChange(monthList)" class="browser-default custom-select custom-select-xl width-dp"><option ng-repeat="date in monthArr" ng-selected="{{monthList == date}}" value="{{date}}">{{date}}</option> </select></div></div><div class="form-group-theme row-inline"> <label for="Employee:" class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-form-label form-lable">Employee Type: <span class="tagquestion1" data-toggle="tooltip" data-placement="top" data-html="true" title="" data-original-title="<b>Please select employee type</b>"> <i class="fa fa-question"></i> </span> </label><div class="col-xl-6 col-lg-6 col-md-6 col-sm-6"> <select ng-model="empTypeList" ng-change="onemployeeChange(empTypeList)" class="browser-default custom-select custom-select-xl width-dp"><option ng-repeat="empltype in empType" ng-selected="{{empTypeList == empltype}}" value="{{empltype}}">{{empltype}}</option> </select></div></div></div></form></div><div class="modal-footer mb-3"><div class="col-md-12 mt-3 text-center"> <button id="downloadTaxReportBtn" class="btn btn-primary mt-3 mb-3" ng-click="downloadTaxReport()">Download <i class="fa fa-download"></i> </button></div></div></div></div></div>'
                     };
 
                 }
@@ -597,142 +608,314 @@
                                 // }
                             });
 
-
                             var count = 0;
                             var url_string = $(location).attr("href");
                             var url = new URL(url_string);
                             var host = url.host;
-
                             scope.accid = url.searchParams.get("accid");
                             scope.FrampAcc = '{!($Label.FramptonConstruction)}';
                             scope.currentPage = 1;
                             scope.maxRecord = 25;
                             scope.maxPage = 0;
-
-
                             scope.showData = [];
                             scope.itemPerPage = 10;
+                            scope.showList = false;
+                            scope.reimburesmentDataList = []; 
+                            scope.checkboxobj = {}
+                            scope.totalRecords;
+                            scope.maxPage;
 
-                            scope.reimburesmentDataList = {!reimburName
-                        };
-                        scope.totalRecords = scope.reimburesmentDataList.length;
-                        scope.maxPage = Math.ceil(scope.totalRecords / scope.itemPerPage)
-                        function refreshModal() {
-                        location.reload();
-                    }
-                    angular.forEach(scope.reimburesmentDataList, function (obj) {
-                        obj["isReimbChecked"] = false;
-                    });
+                            function refreshModal() {
+                                location.reload();
+                            }
 
-                    scope.showRecord = function (list) {
-                        if (list) {
-                            scope.showData.push(list)
-                        }
-                        if (scope.currentPage === scope.maxPage) {
-                            count++;
-                        }
-                    }
+                            $('body').on('keydown', '#report-startdatepicker', function(e){
+                                return false;
+                            })
 
-                    scope.onPageChange = function (pageNum) {
+                            $('body').on('keydown', '#report-enddatepicker', function(e){
+                                return false;
+                            })
 
-                        if (scope.currentPage != scope.maxPage) {
-                            scope.showData = scope.showData.slice(-10)
-                        }
-                        else {
-                            scope.showData = scope.showData.slice(-count);
-                        }
-
-
-                        if (scope.checkboxobj != undefined) {
-                            scope.checkboxobj.isCheckedAll = false;
-                        }
-
-                        angular.forEach(scope.reimburesmentDataList, function (list) {
-                            list.isReimbChecked = false
-                        });
-
-
-                    }
-                    scope.CheckUncheckForAllListReimbursement = function (CheckUncheckForAllListReimbursement) {
-                        console.log(scope.showData, count);
-                        scope.checkboxobj.isCheckedAll = CheckUncheckForAllListReimbursement;
-                        scope.reimburesmentDataList.forEach(arr1 => {
-                            scope.showData.forEach(arr2 => {
-                                if (arr1.reimbId == arr2.reimbId) {
-                                    arr1.isReimbChecked = scope.checkboxobj.isCheckedAll;
-                                } else {
-                                    return;
+                            $('#report-enddatepicker, #report-startdatepicker').on('change', function () {
+                                var reportstdateVal = $('#report-startdatepicker').val().trim();
+                                var reportendateVal = $('#report-enddatepicker').val().trim();
+                                var reportBtn = reportstdateVal.length == 0 || reportendateVal.length == 0;
+                                if (reportBtn) {
+                                    $('#requestReimBtn').prop('disabled', true);
+                                }
+                                else {
+                                    $('#requestReimBtn').prop('disabled', false);
                                 }
                             });
-                        });
 
-                    }
-                    scope.CheckUncheckForAllReimbursement = function (CheckUncheckForAllReimbursement, reimblist) {
-                        var chkcount = 0;
-                        var total = scope.reimburesmentDataList.length;
-                        angular.forEach(scope.reimburesmentDataList, function (list) {
-                            if (list.isReimbChecked) {
-                                chkcount++;
+                            scope.backToFilter = function (){
+                                scope.showList = false;
+                                scope.checkboxobj.isCheckedAll = false;
+                                $('#reportDownloadReimBtn').prop('disabled', true);
                             }
-                        })
-                        console.log(scope.reimburesmentDataList);
-                        // scope.checkboxobj.isChecked = CheckUncheckForAllReimbursement;
-                        // reimblist.isReimbChecked = scope.checkboxobj.isChecked;
 
-                        let startDate = $('#report-startdatepicker').val();
-                        let endDate = $('#report-enddatepicker').val();
-                        if (total == chkcount) {
-                            scope.checkboxobj.isCheckedAll = true;
-                        } else {
-                            scope.checkboxobj.isCheckedAll = false;
-                        }
-                        if (chkcount != 0) {
-                            if (startDate != '' && endDate != '') {
-                                $('#downloadReimBtn').prop('disabled', false);
+                            scope.requestList = function(){
+                                    $('#spinner').show();
+                                    let firstDate = $('#report-startdatepicker').val();
+                                    let lastDate = $('#report-enddatepicker').val();
+                                    var $dates = $('#report-startdatepicker, #report-enddatepicker').datepicker();
+                                    Visualforce.remoting.Manager.invokeAction(
+                                    '{!$RemoteAction.ReportListController.ErmiDriverList}', firstDate, lastDate, scope.accid,
+                                    function (result, event) {
+                                        if(result){
+                                            scope.reimburesmentDataList = JSON.parse(result);
+                                            if(scope.reimburesmentDataList.length != 0){
+                                                scope.totalRecords = scope.reimburesmentDataList.length;
+                                                scope.maxPage = Math.ceil(scope.totalRecords / scope.itemPerPage)
+                                                angular.forEach(scope.reimburesmentDataList, function (obj) {
+                                                    obj["isReimbChecked"] = false;
+                                                });
+                                                scope.showList = true;
+                                                $('#spinner').hide();
+                                            }else{
+                                                $dates.datepicker('setDate', null);
+                                                toastr.error("None of the driver has trips for your selected dates. Please change the dates");
+                                                $('#spinner').hide();
+                                            }
+                                        }else{
+                                            toastr.error("Please try again");
+                                            $('#spinner').hide();
+                                        }
+                                        scope.$apply();
+                                }, { escape: false }
+                                );
                             }
-                            else {
-                                $('#downloadReimBtn').prop('disabled', true);
+                   
+                            scope.showRecord = function (list) {
+                                if (list) {
+                                    scope.showData.push(list)
+                                }
+                                if (scope.currentPage === scope.maxPage) {
+                                    count++;
+                                }
                             }
-                        } else {
-                            $('#downloadReimBtn').prop('disabled', true);
-                        }
-                    }
-                    scope.downloadReimbursement = function () {
-                        var window_url;
-                        scope.stDate = $('#report-startdatepicker').val();
-                        scope.enDate = $('#report-enddatepicker').val();
-                        angular.forEach(scope.reimburesmentDataList, function (reimObj) {
-                            if (reimObj.isReimbChecked === true) {
-                                // Job Costing Summary Report For Frampton Construction Account
-                                if (scope.accid === scope.FrampAcc) {
-                                    window_url = 'https://' + host + '/app/JobCostingSummary?id=' + reimObj.reimbId + '&startDate=' + scope.stDate + '&endDate=' + scope.enDate;
-                                } else {
-                                    window_url = 'https://' + host + '/app/TimeandSummaryReport?id=' + reimObj.reimbId + '&startDate=' + scope.stDate + '&endDate=' + scope.enDate;
+
+                            scope.onPageChange = function (pageNum) {
+                                if (scope.currentPage != scope.maxPage) {
+                                    scope.showData = scope.showData.slice(-10)
+                                }
+                                else {
+                                    scope.showData = scope.showData.slice(-count);
                                 }
 
-                                window.open(window_url, '_blank');
+
+                                if (scope.checkboxobj != undefined) {
+                                    scope.checkboxobj.isCheckedAll = false;
+                                }
+
+                                angular.forEach(scope.reimburesmentDataList, function (list) {
+                                    list.isReimbChecked = false
+                                });
                             }
-                        });
-                        refreshModal();
-                    }
 
-                    element.on('shown.bs.modal', function () {
-                        scope.$apply(function () {
-                            scope.model.visible = true;
-                        });
-                    });
+                            scope.CheckUncheckForAllListReimbursement = function (CheckUncheckForAllListReimbursement) {
+                                var allcount = 0;
+                                scope.checkboxobj.isCheckedAll = CheckUncheckForAllListReimbursement;
+                                scope.reimburesmentDataList.forEach(arr1 => {
+                                    scope.showData.forEach(arr2 => {
+                                        if (arr1.reimbId == arr2.reimbId) {
+                                            arr1.isReimbChecked = scope.checkboxobj.isCheckedAll;
+                                            if (arr1.isReimbChecked) {
+                                                allcount++
+                                            }
+                                        } else {
+                                            return;
+                                        }
+                                    });
+                                });
+                            
+                                if (allcount != 0) {
+                                    $('#reportDownloadReimBtn').prop('disabled', false);
+                                }
+                                else {
+                                    $('#reportDownloadReimBtn').prop('disabled', true);
+                                }
+                            }
 
-                    element.on('hidden.bs.modal', function () {
-                        scope.$apply(function () {
-                            scope.model.visible = false;
-                        });
-                    });
+                            scope.CheckUncheckForAllReimbursement = function (CheckUncheckForAllReimbursement, reimblist) {
+                                var chkcount = 0;
+                                var total = scope.reimburesmentDataList.length;
+                                angular.forEach(scope.reimburesmentDataList, function (list) {
+                                    if (list.isReimbChecked) {
+                                        chkcount++;
+                                    }
+                                })
 
-                },
-                template: '<div class="modal fade driver-dashboard-monthrecord show in " tabindex="-1" role="dialog" aria-labelledby="driver-dashboard-monthrecord" id="driver-dashboard-monthrecord"><div class="fade modal-backdrop"></div><div class="modal-dialog modal-lg modal-dialog-centered"><div class="modal-content rounded-0"> <button type="button" class="close popup-close-btn" data-dismiss="modal" aria-label="Close"> <span aria-hidden="true">×</span> </button><div class="modal-body"><h4>Contact List</h4><div class="modal-divider"></div><form name="signup" class="form"><div class="form-row"><div class="form-group-theme row-inline"> <label for="startDate:" class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-form-label form-lable startDate">Start Date: <span class="tagquestion1" data-toggle="tooltip" data-placement="top" data-html="true" title="" data-original-title="<b>Please select start date</b>"> <i class="fa fa-question"></i> </span> </label><div class="col-xl-8 col-lg-8 col-md-8 col-sm-8 datepickerinput"><div class="input-group"> <input id="report-startdatepicker" class="form-control rounded-0 reimbdatepicker" placeholder="Select Start Date" required="true" ng-model="selectedstartDate" /><div class="input-group-prepend"> <span class="input-group-text"> <i class="fas fa-calendar-alt"></i> </span></div></div></div></div><div class="form-group-theme row-inline"> <label for="endDate:" class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-form-label form-lable endDate">End Date: <span class="tagquestion1" data-toggle="tooltip" data-placement="top" data-html="true" title="" data-original-title="<b>Please select end date</b>"> <i class="fa fa-question"></i> </span> </label><div class="col-xl-8 col-lg-8 col-md-8 col-sm-8 datepickerinput"><div class="input-group"> <input id="report-enddatepicker" class="form-control rounded-0 reimbdatepicker" placeholder="Select End Date" required="true" ng-model="selectedendDate" /><div class="input-group-prepend"> <span class="input-group-text"> <i class="fas fa-calendar-alt"></i> </span></div></div></div></div></div></form><div class="table-responsive"><table id="driver-dashbord-month-model"  class="table dt-responsive nowrap no-footer dataTable" cellspacing="0" width="100%"><tbody class="table-a-link"><tr><td ng-model="allList"><div class="input-group main-input"><div class="input-group-prepend"><div class="input-group-text"><input id="allreimbchecked" type="checkbox" ng-model="checkboxobj.isCheckedAll" class="attendanceCheck" ng-click="CheckUncheckForAllListReimbursement(checkboxobj.isCheckedAll)" /></div></div> <span class="form-control" ng-model="alllist">Select All</span></div></td></tr><tr dir-paginate="list in reimburesmentDataList|itemsPerPage:itemPerPage" current-page="currentPage"  ng-model="list" ng-init="showRecord(list)"><td ng-model="list.name"><div class="input-group main-input"><div class="input-group-prepend"><div class="input-group-text"><input id="reimbchecked" type="checkbox" ng-model="list.isReimbChecked" class="attendanceCheck" ng-click="CheckUncheckForAllReimbursement(list.isReimbChecked,list)" /></div></div> <span class="form-control" ng-model="list.name">{{list.name}}</span></div></td></tr></tbody><tfoot><tr></tr></tfoot></table></div></div><div class="modal-footer"><div class="col-md-6" ><dir-pagination-controls max-size="1" direction-links="true" boundary-links="true" responsive="true" auto-hide="false" class="pull-left"  on-page-change="onPageChange(newPageNumber)"></dir-pagination-controls></div><div class="col-md-6"><button id="downloadReimBtn" class="btn btn-primary float-right mr-12" ng-click="downloadReimbursement()" disabled>Download <i class="fa fa-download"></i> </button></div></div></div></div></div>'
+                                let startDateReport = $('#report-startdatepicker').val().trim();
+                                let endDateReport = $('#report-enddatepicker').val().trim();
+                                var btnVal = startDateReport.length == 0 || endDateReport.length == 0;
+                                if (total == chkcount) {
+                                    scope.checkboxobj.isCheckedAll = true;
+                                } else {
+                                    scope.checkboxobj.isCheckedAll = false;
+                                }
+                                if (chkcount != 0) {
+                                    if (!btnVal) {
+                                        $('#reportDownloadReimBtn').prop('disabled', false);
+                                    }
+                                    else {
+                                        $('#reportDownloadReimBtn').prop('disabled', true);
+                                    }
+                                } else {
+                                    $('#reportDownloadReimBtn').prop('disabled', true);
+                                }
+                            }
+
+                            scope.downloadReimbursement = function () {
+                                var window_url;
+                                scope.stDate = $('#report-startdatepicker').val();
+                                scope.enDate = $('#report-enddatepicker').val();
+                                angular.forEach(scope.reimburesmentDataList, function (reimObj) {
+                                    if (reimObj.isReimbChecked === true) {
+                                        // Job Costing Summary Report For Frampton Construction Account
+                                        if (scope.accid === scope.FrampAcc) {
+                                            window_url = 'https://' + host + '/app/JobCostingSummary?id=' + reimObj.reimbId + '&startDate=' + scope.stDate + '&endDate=' + scope.enDate;
+                                        } else {
+                                            window_url = 'https://' + host + '/app/TimeandSummaryReport?id=' + reimObj.reimbId + '&startDate=' + scope.stDate + '&endDate=' + scope.enDate;
+                                        }
+
+                                        window.open(window_url, '_blank');
+                                    }
+                                });
+                                refreshModal();
+                            }
+
+                            scope.closeModal = function(){
+                                refreshModal();
+                            }
+
+                            element.on('shown.bs.modal', function () {
+                                scope.$apply(function () {
+                                    scope.model.visible = true;
+                                });
+                            });
+
+                            element.on('hidden.bs.modal', function () {
+                                scope.$apply(function () {
+                                    scope.model.visible = false;
+                                });
+                            });
+
+                        },
+                        template: '<div class="modal fade driver-dashboard-monthrecord show in" tabindex="-1" role="dialog" aria-labelledby="driver-dashboard-monthrecord" id="driver-dashboard-monthrecord"><div class="fade modal-backdrop"></div><div class="modal-dialog modal-lg modal-dialog-centered"><div class="modal-content rounded-0"><button type="button" class="close popup-close-btn" data-dismiss="modal" aria-label="Close" ng-click="closeModal()"><span aria-hidden="true">×</span></button><div class="modal-body"><h4>Contact List</h4><div class="modal-divider"></div><form name="signup" class="form"  ng-show="!showList"><div class="form-row"><div class="form-group-theme row-inline"><label for="startDate:" class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-form-label form-lable startDate">Start Date: <span class="tagquestion1" data-toggle="tooltip" data-placement="top" data-html="true" data-original-title="<b>Please select start date</b>"><i class="fa fa-question"></i></span></label><div class="col-xl-8 col-lg-8 col-md-8 col-sm-8 datepickerinput"><div class="input-group"><input id="report-startdatepicker" class="form-control rounded-0 reimbdatepicker" placeholder="Select Start Date" required  ng-model="selectedstartDate" autocomplete="off"><div class="input-group-prepend"><span class="input-group-text"><i class="fas fa-calendar-alt"></i></span></div></div></div></div><div class="form-group-theme row-inline"><label for="endDate:" class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-form-label form-lable endDate">End Date: <span class="tagquestion1" data-toggle="tooltip" data-placement="top" data-html="true" data-original-title="<b>Please select end date</b>"><i class="fa fa-question"></i></span></label><div class="col-xl-8 col-lg-8 col-md-8 col-sm-8 datepickerinput"><div class="input-group"><input id="report-enddatepicker" class="form-control rounded-0 reimbdatepicker" placeholder="Select End Date" required ng-model="selectedendDate" autocomplete="off"><div class="input-group-prepend"><span class="input-group-text"><i class="fas fa-calendar-alt"></i></span></div></div></div></div><div class="form-group-theme row-inline"><div class="col-md-7"><button id="requestReimBtn" class="btn btn-primary float-right mr-12" ng-click="requestList()" disabled>Submit</button></div></div></div></form><div class="table-responsive" ng-show="showList"><div class="font-back-div" ng-click="backToFilter()"><i class="fas fa-chevron-left"></i> Back</div><table id="driver-dashbord-month-model" class="table dt-responsive nowrap no-footer dataTable" cellspacing="0" width="100%"><tbody class="table-a-link"><tr><td ng-model="allList"><div class="input-group main-input"><div class="input-group-prepend"><div class="input-group-text"><input id="allreimbchecked" type="checkbox" ng-model="checkboxobj.isCheckedAll" class="attendanceCheck" ng-click="CheckUncheckForAllListReimbursement(checkboxobj.isCheckedAll)"></div></div><span class="form-control" ng-model="alllist">Select All</span></div></td></tr><tr dir-paginate="list in reimburesmentDataList|itemsPerPage:itemPerPage" current-page="currentPage" ng-model="list" ng-init="showRecord(list)"><td ng-model="list.name"><div class="input-group main-input"><div class="input-group-prepend"><div class="input-group-text"><input id="reimbchecked" type="checkbox" ng-model="list.isReimbChecked" class="attendanceCheck" ng-click="CheckUncheckForAllReimbursement(list.isReimbChecked,list)"></div></div><span class="form-control" ng-model="list.name">{{list.name}}</span></div></td></tr></tbody><tfoot><tr></tr></tfoot></table></div></div><div class="modal-footer" ng-show="showList"><div class="col-md-6"><dir-pagination-controls max-size="1" direction-links="true" boundary-links="true" responsive="true" auto-hide="false" class="pull-left" on-page-change="onPageChange(newPageNumber)"></dir-pagination-controls></div><div class="col-md-6"><button id="reportDownloadReimBtn" class="btn btn-primary float-right mr-12" ng-click="downloadReimbursement()" disabled>Download <i class="fa fa-download"></i></button></div></div></div></div></div>'
+                    };
+            }]);
+
+
+            // Jira Ticket EMC - 342
+
+            var EditTimeReportSummaryModel = function () {
+                this.visible = false;
+            }
+
+            EditTimeReportSummaryModel.prototype.open = function () {
+                this.visible = true;
+            }
+
+            EditTimeReportSummaryModel.prototype.close = function () {
+                this.visible = false;
+            }
+
+            app.directive('editTimeSummaryReport', ['$filter',
+                function ($filter) {
+                    return {
+                        restrict: 'E',
+                        scope: {
+                            model: '='
+                        },
+                        link: function (scope, element, attributes) {
+                            scope.$watch('model.visible', function (newValue) {
+                                var modalElement = element.find('.modal');
+                                modalElement.modal(newValue ? 'show' : 'hide');
+                            });
+                            var url_string = $(location).attr("href");
+                            var url = new URL(url_string);
+                            var host = url.host;
+                            scope.eid = url.searchParams.get("id");
+                            scope.accid = url.searchParams.get("accid");
+                            function refreshModal() {
+                                location.reload();
+                            }
+                        
+                            scope.netchexpayPeriod = '{!($Label.ERMIPayPeriodDate)}';
+                            scope.dateObjArr = [];
+                            scope.originalObjArr = [];
+                            scope.defaultOption = "Select Pay Period";
+                            scope.originalObjArr = scope.netchexpayPeriod.split(',');
+                            var payArr = [];
+                            var myDate = new Date();
+                            var previousMonth = new Date(myDate);
+                            previousMonth.setMonth(myDate.getMonth() - 1);
+                            var nextMonth = new Date(myDate);
+                            nextMonth.setMonth(myDate.getMonth() + 1);
+                            var currentMonth = $filter('date')(new Date(), 'MMMM');
+                            var preMonth = $filter('date')(previousMonth, 'MMMM');
+                            var neMonth = $filter('date')(nextMonth, 'MMMM');
+                            angular.forEach(scope.originalObjArr, function (date) {
+                                var split = date.split(' to ');
+                                var startMonth = $filter('date')(new Date(split[0]), 'MMMM');
+                                if (startMonth === currentMonth || startMonth === preMonth || startMonth === neMonth) {
+                                    payArr.push(date);
+                                }
+                            });
+                            scope.dateObjArr = payArr;
+                            scope.dateObjArr.splice(0, 0, scope.defaultOption);
+                            scope.netchexPayRole = scope.dateObjArr[0];
+                            scope.startDate = '';
+                            scope.endDate = '';
+                            scope.reimbursementDownload = true;
+
+                            scope.closeModal = function(){
+                                refreshModal();
+                            }
+
+                            scope.onnetchexPayPeriodChange = function (period) {
+                                if (period != "Select Pay Period") {
+                                    scope.splitObj = period.split(' to ');
+                                    scope.startDate = scope.splitObj[0];
+                                    scope.endDate = scope.splitObj[1];
+                                    scope.reimbursementDownload = false;
+                                } else {
+                                    scope.reimbursementDownload = true;
+                                }
+                            }
+                        
+                            scope.downloadReimbursementReport = function () {
+                                var selectedPayPeriod = scope.netchexPayRole;
+                                var window_url;
+                                window_url = 'https://' + host + '/app/TimeandSummaryDetailReport?id='+scope.accid+ '&endDate=' + scope.endDate + '&startDate=' + scope.startDate ;
+                                window.open(window_url, '_blank');
+                                refreshModal();
+                            }
+
+          
+                            element.on('shown.bs.modal', function () {
+                                scope.$apply(function () {
+                                    scope.model.visible = true;
+                                });
+                            });
+
+                            element.on('hidden.bs.modal', function () {
+                                scope.$apply(function () {
+                                    scope.model.visible = false;
+
+                                });
+                            });
+
+                        },
+                        template: '<div class="modal fade driver-dashboard-monthrecord show in netchexModal" tabindex="-1" role="dialog" aria-labelledby="driver-dashboard-monthrecord" id="driver-dashboard-monthrecord"><div class="fade modal-backdrop"></div><div class="modal-dialog modal-lg modal-dialog-centered"><div class="modal-content rounded-0"> <button type="button" class="close popup-close-btn" data-dismiss="modal" aria-label="Close" ng-click="closeModal()"> <span aria-hidden="true">×</span> </button><div class="modal-body"><h4>Time and Attendance Summary Report</h4><div class="modal-divider"></div><form name="signup" class="form" id="myform"><div class="form-row"><div class="form-group-theme row-inline"><label for="payRole:" class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-form-label form-lable payRole">Pay Period: <span class="tagquestion1" data-toggle="tooltip" data-placement="top" data-html="true" title="" data-original-title="<b>Please select pay period</b>"> <i class="fa fa-question"></i> </span> </label><div class="col-xl-6 col-lg-6 col-md-6 col-sm-6"><select ng-model="netchexPayRole" ng-change="onnetchexPayPeriodChange(netchexPayRole)" class="browser-default custom-select custom-select-xl custom-payPeriod"><option ng-repeat="dateobj in dateObjArr" ng-selected="{{netchexPayRole == dateobj}}" value="{{dateobj}}">{{dateobj}}</option> </select></div></div></div></form></div><div class="modal-footer mb-3"><div class="col-md-12 mt-3 text-center"><button id="downloadReimReportBtn" class="btn btn-primary float-right mt-3 mb-3" ng-click="downloadReimbursementReport()" ng-disabled="reimbursementDownload">Download <i class="fa fa-download"></i> </button></div></div></div></div></div>'
                     };
 
-            }]);
+                }
+            ]);
+            
+            // Jira Ticket EMC - 342 -- ends
 
             var EditTimeCustomReportModel = function () {
                 this.visible = false;
@@ -1800,6 +1983,7 @@
             $scope.editDateModel = new EditLockDateModel();
             // $scope.stayTimeReportModel = new StayTimeReportModel();
             $scope.editTimeReportModel = new EditTimeReportModel();
+            $scope.editTimeReportSummaryModel = new EditTimeReportSummaryModel();
             $scope.editMonthlyTaxReportModel = new EditMonthlyTaxReportModel();
             $scope.editTimeCustomReportModel = new EditTimeCustomReportModel();
             $scope.editNetchexReportModel = new EditNetchexReportModel();
@@ -1983,7 +2167,10 @@
                         <div ng-repeat="admin in adminIDs ">
                             <div ng-if="id === admin">
                                 <p>
-                                    <a ng-click="editTimeReportModel.open()">Time and Attendance Summary Report</a>
+                                    <a ng-click="editTimeReportModel.open()">Time and Attendance Detail Report</a>
+                                </p>
+                                <p>
+                                    <a ng-click="editTimeReportSummaryModel.open()">Time and Attendance Summary Report</a>
                                 </p>
                                 <p>
                                     <a ng-click="editMonthlyTaxReportModel.open()">Monthly Tax Report</a>
@@ -2039,6 +2226,7 @@
             </div>
             <edit-lock-Date model="editDateModel"></edit-lock-Date>
             <edit-time-attendance-Report model="editTimeReportModel"></edit-time-attendance-Report>
+            <edit-time-summary-Report model="editTimeReportSummaryModel"></edit-time-summary-Report>
             <edit-monthly-tax-Report model="editMonthlyTaxReportModel"></edit-monthly-tax-Report>
             <edit-time-custom-Report model="editTimeCustomReportModel"></edit-time-custom-Report>
             <edit-netchex-Report model="editNetchexReportModel"></edit-netchex-Report>
@@ -2126,6 +2314,7 @@
                 var disabled = minDate;
                 $('#report-lockdatepicker').datepicker('setEndDate', disabled);
                 $('#report-lockdatepicker').datepicker('setStartDate', disabled);
+        
                 $('.reimbdatepicker2, .reimbenddatepicker2').on('change', function () {
                     var bistdateVal = $('.reimbdatepicker2').val().trim();
                     var biendateVal = $('.reimbenddatepicker2').val().trim();

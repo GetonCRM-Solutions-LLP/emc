@@ -1,0 +1,92 @@
+<apex:page showHeader="false" title="Driver" sidebar="false" lightningStylesheets="true" standardStylesheets="false" showChat="false">
+    <link rel="stylesheet" href="{!URLFOR($Resource.LwcDesignCss,'lwcDesign/assets/css/customstyle.css')}" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" />
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css" rel="stylesheet" />
+    <apex:slds />
+    <apex:includeLightning />
+    <div id="lwcDemo" />
+    <style type="text/css">
+        body{
+            font-family: 'Proxima Nova' !important;
+        }
+        .toast-progress {
+            background-color: #000000 !important;
+        }
+
+        .toast-success {
+            background-color: #78bc42 !important;
+        }
+
+        .toast-error {
+            background-color: #FF0000 !important;
+        }
+
+        #toast-container>div {
+            opacity: 5.8 !important;
+            width: 240px !important;
+            font-family: 'Proxima Nova' !important;
+        }
+    </style>
+    <script>
+        $Lightning.use("c:profileLWC", function () {
+                $Lightning.createComponent("c:reportPage", {
+                    //pass parameter values to lwc js controller
+                }, "lwcDemo", function (cmp) {
+                    console.log("Component Created Successfully");
+                    this.setOptions = function () {
+                        toastr.options.positionClass = "toast-bottom-right";
+                        toastr.options.closeButton = true;
+                        toastr.options.progressBar = true;
+                        //  toastr.options.hideMethod = 'noop';
+                    };
+                    this.setOptions();
+                    this.clear = function () {
+                        toastr.clear();
+                    };
+
+                  /*  document.querySelector('c-emc-dashboard').addEventListener('toastformodal', (e) => {
+                        console.log('vf event data window listener => ', e.detail);
+                        if (e.detail.lengthOfFlag.length > 0 && e.detail.lengthOfApprove.length === 0) {
+                            toastr.success('This Mileage has already flagged');
+                        } else if (e.detail.lengthOfApprove.length > 0 && e.detail.lengthOfFlag.length === 0) {
+                            toastr.success('This Mileage has already approved');
+                        } else if (e.detail.lengthOfApprove.length > 0 && e.detail.lengthOfFlag.length > 0) {
+                            toastr.success('This Mileage has already approved/flagged');
+                        }
+                    });
+
+                    document.querySelector('c-emc-dashboard').addEventListener('toastforapproval', (e) => {
+                        if (e.detail) {
+                            toastr.success('Employee mileage has been approved.');
+                        }
+                    });
+
+                     function searchResult(searchText, data, keys) {       
+                         var result = JSON.parse(data).filter(row => 
+                                  keys.some(key =>
+                                      String(row[key]).toLowerCase().includes(searchText.toLowerCase())
+                                  )
+                              );
+                      //     var result = JSON.parse(data).filter(row => {
+                      //        return row.name.toLowerCase().indexOf(searchText.toLowerCase()) !== -1 ||
+                      //            row.totalMileages.toLowerCase().indexOf(searchText.toLowerCase()) !== -1;
+                      //    })
+                          return result
+                      }
+                     
+                      document.querySelector('c-emc-dashboard').addEventListener('searchmessage', (e) => {
+                          if (e.detail) {
+                              var keyFields = ["name", "totalMileages", "rejectedMileages", "approvedMileages"]
+                              var searchDataResult = searchResult(e.detail.sKey, e.detail.list, keyFields)
+                              console.log("search-->", searchDataResult)
+                          }
+                      });*/
+                }
+                );
+        });
+    </script>
+</apex:page>

@@ -67,6 +67,18 @@ header {
   }
 }
 
+.form-white-divider{
+  border-top: 2px solid #fff;
+}
+
+.m-pd{
+  padding-bottom: 20px;
+}
+
+.m-pt-3{
+  padding-top: 3px;
+}
+
 .sticky + .content {
   padding-top: 102px;
 }

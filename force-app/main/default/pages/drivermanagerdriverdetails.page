@@ -2773,7 +2773,7 @@
                         <a class="nav-link" data-toggle="pill" href="#pills-admin-dashbord-mileage">Plan Info</a>
                     </li>
                 </ul>
-                <div class="tab-content timeline">
+                <div class="tab-content timeline" style="padding-bottom: 3rem">
                     <div class="tab-pane active" id="pills-admin-dashbord-myteam">
                         <div id="accordion" role="tablist">
                             <div class="card insurance-declatarion-card" ng-repeat="yr in years">
@@ -3112,6 +3112,8 @@
                         />
                     </div>
                 </div>
+                <!-- EMC - 324 Introduce mBurse Support Chat On Existing System -->
+               <c:mBurseChatBot />
             </div>
         </section>
         <reimbursements-dialog-directive model="reimbursementDialog" modal-Open="modalshowforapproved(status)" callback-Fn="refreshpage(updatedmileagelist)"
