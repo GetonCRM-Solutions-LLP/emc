@@ -44,15 +44,11 @@ global with sharing class ReimbursementStatementBatch implements Database.Batcha
     }
 
     public ReimbursementStatementBatch(String listofMonth)  {
-       // String accountName = Label.ReimbursementStatementBatch;
+       
         MonthList = listofMonth.split(',');
         accountNamesList = new List<String>();
         emailsToSend = new List<String>();
-        /*if(accountName != null) 
-        {
-            accountNamesList = accountName.split(',');
-        }
-        */
+        
         emailTemplateList = new List<EmailTemplate>([SELECT Id, Subject,HtmlValue, body FROM EmailTemplate WHERE developerName = 'year_to_date_reimbursement_statement_template']);        
         customSettings = SendEmailonDeactivation__c.getValues('YearToDateReimbursementStatement');       
         if(customSettings!=null && String.isNotBlank(customSettings.BCCEmailaddresses__c) && customSettings.BCCEmailaddresses__c.contains(','))
@@ -69,9 +65,6 @@ global with sharing class ReimbursementStatementBatch implements Database.Batcha
     }
     global Database.QueryLocator start(Database.BatchableContext bc) 
     {
-        //String  query = 'Select Id,External_Email__c,FirstName FROM Contact WHERE Account.Name IN: accountNamesList AND (Role__c = \'Driver\' OR Role__c = \'Driver/Manager\' OR Role__c = \''+StaticValues.roleAdminDriver+'\') AND (Deactivated_Date__c = NULL OR Deactivated_Date__c >= TODAY)';
-       // String  query = 'Select Id,External_Email__c,FirstName FROM Contact WHERE id = \'0030Z00003H8h7GQAR\' OR id = \'0033100003BvW5gAAF\'';
-       
         return Database.getQueryLocator(query);    
     }
     global void execute(Database.BatchableContext bc, List<SObject> scope) 
@@ -107,56 +100,7 @@ global with sharing class ReimbursementStatementBatch implements Database.Batcha
                     String htmlTemplate='';
                     system.debug('driverEmailMap.size()==' +driverEmailMap.size());
                     system.debug('currentReimbursement.Contact_Id__c' + currentReimbursement.Contact_Id__c);
-                     /*if(driverEmailMap.size()>0 && driverEmailMap.containsKey(currentReimbursement.Contact_Id__c))
-                     {
-                         system.debug('Inserted in to if condition');
-                        htmlTemplate = driverEmailMap.get(currentReimbursement.Contact_Id__c);
-                        
-                        Decimal mileage =(currentReimbursement.Total_Mileage__c!=null)?currentReimbursement.Total_Mileage__c:0;
-                        mileage = mileage + driverMileageMap.get(currentReimbursement.Contact_Id__c);
-                        driverMileageMap.put(currentReimbursement.Contact_Id__c,mileage);
-                        system.debug('mileage==' + mileage);
-                       
-                        Decimal variableAmout = (currentReimbursement.Monthly_Variable_Amount__c!=null)?currentReimbursement.Monthly_Variable_Amount__c:0;
-                        variableAmout = variableAmout+ driverVariableAmountMap.get(currentReimbursement.Contact_Id__c);
-                        driverVariableAmountMap.put(currentReimbursement.Contact_Id__c,variableAmout);
-                        system.debug('variableAmout==' + variableAmout);
-                                                
-                        Decimal fixedAmount = (currentReimbursement.Fixed_Amount__c!=null)?currentReimbursement.Fixed_Amount__c:0;
-                        fixedAmount = fixedAmount + driverFixedAmountMap.get(currentReimbursement.Contact_Id__c);
-                        driverFixedAmountMap.put(currentReimbursement.Contact_Id__c,fixedAmount);
-                        
-                        Decimal monthlyReimbursement = (currentReimbursement.Total_Monthly_Reimbursement__c!=null)?currentReimbursement.Total_Monthly_Reimbursement__c:0;
-                        monthlyReimbursement = monthlyReimbursement + driverMonthlyReimbursementMap.get(currentReimbursement.Contact_Id__c);
-                        driverMonthlyReimbursementMap.put(currentReimbursement.Contact_Id__c,monthlyReimbursement);
-                        system.debug('monthlyReimbursement==' + monthlyReimbursement);
-                        
-                         htmlTemplate = htmlTemplate + '<tr align="center" style="border:2px solid black;"> <td style="border:1px solid black;">'  
-                                + monthName +'</td><td style="border:2px solid black;">'
-                                + mileage+'</td><td style="border:2px solid black;">'+'$' 
-                                + currentReimbursement.Variable_Rate__c+'</td><td style="border:2px solid black;">'+'$' 
-                                + variableAmout +'</td><td style="border:2px solid black;">' +'$' 
-                                + fixedAmount+'</td><td style="border:2px solid black;">'+'$' 
-                                + monthlyReimbursement +'</td>' 
-                                +'</tr>';
-                     }
-                     else
-                     {
-                        system.debug('Inserted in to else condition');
-                         driverMileageMap.put(currentReimbursement.Contact_Id__c,((currentReimbursement.Total_Mileage__c!=null && String.IsNotEmpty(String.valueOf(currentReimbursement.Total_Mileage__c)))?currentReimbursement.Total_Mileage__c:0));
-                         driverVariableAmountMap.put(currentReimbursement.Contact_Id__c,((currentReimbursement.Monthly_Variable_Amount__c!=null && String.IsNotEmpty(String.valueOf(currentReimbursement.Monthly_Variable_Amount__c)))?currentReimbursement.Monthly_Variable_Amount__c:0));
-                         driverFixedAmountMap.put(currentReimbursement.Contact_Id__c,((currentReimbursement.Fixed_Amount__c!=null && String.IsNotEmpty(String.valueOf(currentReimbursement.Fixed_Amount__c)))?currentReimbursement.Fixed_Amount__c:0));
-                         driverMonthlyReimbursementMap.put(currentReimbursement.Contact_Id__c,((currentReimbursement.Total_Monthly_Reimbursement__c!=null && String.IsNotEmpty(String.valueOf(currentReimbursement.Total_Monthly_Reimbursement__c)))?currentReimbursement.Total_Monthly_Reimbursement__c:0));
-                         
-                         htmlTemplate='<tr align="center" style="border:2px solid black;"> <td style="border:1px solid black;">'  
-                                + monthName +'</td><td style="border:2px solid black;">'
-                                + currentReimbursement.Total_Mileage__c+'</td><td style="border:2px solid black;">'+'$' 
-                                + currentReimbursement.Variable_Rate__c+'</td><td style="border:2px solid black;">'+'$' 
-                                + currentReimbursement.Monthly_Variable_Amount__c +'</td><td style="border:2px solid black;">' +'$' 
-                                + currentReimbursement.Fixed_Amount__c+'</td><td style="border:2px solid black;">'+'$' 
-                                + currentReimbursement.Total_Monthly_Reimbursement__c +'</td>' 
-                                +'</tr>';
-                     }*/
+                     
                      system.debug('driverEmailMap.size()==' + driverEmailMap.size());
                     Decimal fixedAmountValue = (currentReimbursement.Fixed_Amount__c!=null)?currentReimbursement.Fixed_Amount__c:0;
                     
@@ -208,7 +152,7 @@ global with sharing class ReimbursementStatementBatch implements Database.Batcha
                                 + currentReimbursement.Variable_Rate__c +'</td><td style="border:2px solid black;">'+'$' 
                                 + currentReimbursement.Monthly_Variable_Amount__c +'</td><td style="border:2px solid black;">' +'$' 
                                 //+ currentReimbursement.Fixed_Amount__c +'</td><td style="border:2px solid black;">'+'$'
-                                +	fixedAmountValue +'</td><td style="border:2px solid black;">'+'$' 
+                                +   fixedAmountValue +'</td><td style="border:2px solid black;">'+'$' 
                                 + currentReimbursement.Total_Monthly_Reimbursement__c +'</td>' 
                                 +'</tr>';
                            }
