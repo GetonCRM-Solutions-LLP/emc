@@ -179,9 +179,7 @@ global with sharing class ReimbursementStatementBatch implements Database.Batcha
                List<String> toAddress = new List<String>();
                if(customSettings.Send_to_Driver__c == true) 
                {
-               //toAddress.add('paras.dhanani@getoncrm.com');
-                   toAddress.add('snehal.gat@kiwiqa.com');
-                   //toAddress.add(currentContact.External_Email__c);
+                   toAddress.add(currentContact.External_Email__c);
                    mail.setToAddresses(toAddress);
                    if(emailsToSend.size()>0)
                    {
