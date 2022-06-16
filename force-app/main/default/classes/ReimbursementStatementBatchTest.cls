@@ -1,7 +1,6 @@
 @isTest
 public with sharing class ReimbursementStatementBatchTest {
      public static testmethod void method1(){
-
         SendEmail__c customSetting2 = TestDataFactory.sendEmailCustomSetting(true, 'Send Email For Compliance');
         SendEmailonDeactivation__c objSendEmail = TestDataFactory.sendEmailCustomSetting(true, 'YearToDateReimbursementStatement', 'test.email@gmail.com');
         TriggerConfig__c customEmailSetting = TestDataFactory.triggerConfigCustomSetting(false);
@@ -28,7 +27,6 @@ public with sharing class ReimbursementStatementBatchTest {
         List<Employee_Reimbursement__c> reimList = TestDataFactory.createPendingReimbursement(true, conList, 10, irsRateObj.id);
         system.assertEquals(11, reimList.size(),true);
         List<Bi_Weekly_Reimbursement__c> biWeeklyReimList = TestDataFactory.createBiweeklyReim(true, conList, system.today().adddays(-14), system.today().addDays(-1), 10, irsRateObj.id);
-   
         System.runAs(userObj) {
             //ReimbursementStatementBatch objbatch1 = new ReimbursementStatementBatch('02-2022');
             //Database.executeBatch(objbatch1,1); 
