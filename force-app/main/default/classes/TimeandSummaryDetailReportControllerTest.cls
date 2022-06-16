@@ -44,8 +44,8 @@ public with sharing class TimeandSummaryDetailReportControllerTest {
             Test.startTest();
             Test.setCurrentPage(Page.TimeandSummaryDetailReport);
             String conId = ApexPages.currentPage().getParameters().put('id',acc.Id);
-            String startDate = ApexPages.currentPage().getParameters().put('startDate','2022-05-27');
-            String endDate = ApexPages.currentPage().getParameters().put('endDate','2022-06-09');
+            String startDate = ApexPages.currentPage().getParameters().put('startDate','2022-06-02');
+            String endDate = ApexPages.currentPage().getParameters().put('endDate','2022-06-15');
             TimeandSummaryDetailReportController objClass = new TimeandSummaryDetailReportController();
             Test.stopTest();
     }
