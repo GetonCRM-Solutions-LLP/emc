@@ -22,7 +22,7 @@ trigger EmployeeReimbursementTrigger on Employee_Reimbursement__c (after update,
             // Whenever Reimbursement is created or updated at that time this is check the value of Contct's Vehicle type 
             // if vehicle type is 'IRS Mileage Rate' than the mpg and fuel price is set to 0 for the reimbursement and 
             // Maintanace and tires are set as the IRS Mileage Rate of that year which is in IRS Mileage rate.
-            EmployeeReimbursementTriggerHandler.IRSVehicleCHeck(reimIdsLst);
+            //EmployeeReimbursementTriggerHandler.IRSVehicleCHeck(reimIdsLst);
         }
     }
 
@@ -40,7 +40,7 @@ trigger EmployeeReimbursementTrigger on Employee_Reimbursement__c (after update,
         }
         if(!reimIds.isEmpty() && triggerCustomSetting.IRSVehicleCHeck__c != null && triggerCustomSetting.IRSVehicleCHeck__c == true) {
            //EMC - 271
-           EmployeeReimbursementTriggerHandler.IRSVehicleCHeck(reimIds);
+           //EmployeeReimbursementTriggerHandler.IRSVehicleCHeck(reimIds);
         }
     } //AI-000436 end    
     //AI-000459 Start
