@@ -1,13 +1,31 @@
 @isTest
 public class DriverManagerDashboardController_test {
     public static testmethod void DriverManagerDashboardControllerTestMethod() {
-        RecordUtilityClass.sendEmailforCompliance();
-        RecordUtilityClass.enableMappingGasPriceTrigger();
+        SendEmail__c sendEmailCustomSetting1 = TestDataFactory.sendEmailCustomSetting(true,'Send Email For Compliance');
         RecordUtilityClass.vehicleUrlMapping();
-        Account currentAccount = RecordUtilityClass.buildAccount();
-        insert currentAccount;
-        Contact currentAdmin = RecordUtilityClass.buildAdminContact(currentAccount);
-        insert currentAdmin;
+        TriggerConfig__c triggerCustomSetting = TestDataFactory.triggerConfigCustomSetting(false);
+        triggerCustomSetting.mileageremoveapprovaldate__c = false;
+        triggerCustomSetting.MappingGasPriceTriggerUpdateConvertedDat__c = false;
+        triggerCustomSetting.updateWorkingDays__c = false;
+        insert triggerCustomSetting;
+        Vehicle_URL_Mapping__c vehicleObj = TestDataFactory.createVehicleData(true,0);
+        Account currentAccount = new Account();     
+        List<Contact> conList = new List<Contact>();
+        UserRole userRole = TestDataFactory.getUserRole();
+        Profile profileObj = TestDataFactory.getUserProfile();
+        User admin = TestDataFactory.getSystemAdminUser(userRole.Id);        
+        User user_1;
+        Contact currentAdmin;
+        System.runAs(admin) {
+            Account accountObj = TestDataFactory.createAccount(true,'Test',true);
+            Contact contactObj = TestDataFactory.createCICDContact(true,accountObj.Id);
+            currentAccount = TestDataFactory.createAccount(true,'Test',false);
+            currentAdmin = RecordUtilityClass.buildAdminContact(currentAccount);
+            insert currentAdmin;
+            conList = TestDataFactory.createDriverContact(true, currentAccount.Id, 'Driver', vehicleObj.Name, 'test.email', 1);
+            user_1 = TestDataFactory.createUser(true, profileObj.Id, conList[0].Id);
+        }        
+        
         List<Contact> obj_Manager_list = RecordUtilityClass.buildManagerContact(currentAccount,currentAdmin);
         insert obj_Manager_list;
         List<Contact> obj_driverManager_list = RecordUtilityClass.buildDriverManagerContact(currentAccount,obj_Manager_list[0]);
@@ -20,20 +38,20 @@ public class DriverManagerDashboardController_test {
 
         list<Employee_Reimbursement__c> empReimbursementList = RecordUtilityClass.buildPendingEmployee_Reimbursement(obj_Driver_list);
         insert empReimbursementList;
-        
-        list<Bi_Weekly_Reimbursement__c> empBIweekReimbursementList1 = RecordUtilityClass.buildPendingBiReimbursement(obj_Driver_list);
-        insert empBIweekReimbursementList1;
-        
-        List<Employee_Mileage__c> obj_Employee_Mileage_list = RecordUtilityClass.buildNoApprovedYetEmployeeMileages(empReimbursementList,empBIweekReimbursementList1[0].Id);
+
+        list<Bi_Weekly_Reimbursement__c> empBIweeReimbursementList1 = RecordUtilityClass.buildPendingBiReimbursement(obj_Driver_list);
+        insert empBIweeReimbursementList1;
+
+        List<Employee_Mileage__c> obj_Employee_Mileage_list = RecordUtilityClass.buildNoApprovedYetEmployeeMileages(empReimbursementList, empBIweeReimbursementList1[0].id);
         insert obj_Employee_Mileage_list;
 
         list<Employee_Reimbursement__c> empReimbursementList1 = RecordUtilityClass.buildPendingEmployee_Reimbursement(obj_driverManager_list);
         insert empReimbursementList1;
-        
+
         list<Bi_Weekly_Reimbursement__c> empBIReimbursementList1 = RecordUtilityClass.buildPendingBiReimbursement(obj_driverManager_list);
         insert empBIReimbursementList1;
-        
-        List<Employee_Mileage__c> obj_Employee_Mileage_list1 = RecordUtilityClass.buildNoApprovedYetEmployeeMileages(empReimbursementList1,empBIReimbursementList1[0].Id);
+
+        List<Employee_Mileage__c> obj_Employee_Mileage_list1 = RecordUtilityClass.buildNoApprovedYetEmployeeMileages(empReimbursementList1,empBIReimbursementList1[0].id );
         insert obj_Employee_Mileage_list1;
 
         //file
@@ -107,28 +125,24 @@ public class DriverManagerDashboardController_test {
         String reimbursement = RecordUtilityClass.getUnapprovedReimbursements(currentAdmin.id,currentAccount.id,false,'Admin');    
         List<EmployeeMileagesForCalculation> employeereimbursementList = new List<EmployeeMileagesForCalculation>();
         employeereimbursementList = (List<EmployeeMileagesForCalculation>)JSON.deserialize(reimbursement,List<EmployeeMileagesForCalculation>.Class);
-        //List<Employee_Reimbursement__c> obj_Employee_Reimbursement_List = RecordUtilityClass.getEmployee_Reimbursement(obj_acc.id);
-        //DriverManagerDashboardController.approveMileages(JSON.serialize(obj_EmployeeMileages_list1));
-         DriverManagerDashboardController.getUnapprovedMileages(JSON.serialize(employeereimbursementList[0]), currentAccount.id);
-       // List<String> result =DriverManagerDashboardController.approveMileagesClone(JSON.serialize(obj_EmployeeMileages_list),obj_driverManager_list[0].Id,currentAccount.Id,'true');
-         //DriverManagerDashboardController.getUnapprovedMileages('',obj_driverManager_list[0].Id);
-        /*DriverManagerDashboardController.getAllDriversLastMonthUpdatedReimbursements(conId,accId);
-        DriverManagerDashboardController.getAllDriversLastMonthUpdatedUnapprovedReimburse(conId,accId);
-        DriverManagerDashboardController.approveReimbursements(JSON.serialize(empList),conId,accId);
-        DriverManagerDashboardController.readFromFile(String.valueof(documentObj.Body),conId,accId);*/
+         DriverManagerDashboardController.getUnapprovedMileages(JSON.serialize(employeereimbursementList[0]),currentAccount.id);
+      
        DriverManagerDashboardController.totalmileages='';
        DriverManagerDashboardController.totalvariableamount='';
        DriverManagerDashboardController.setEmployeeName();
-       
-        Test.stopTest();
-    }
-   public static testmethod void DriverManagerDashboardControllerTestMethod1() 
-    {
+        DriverManagerDashboardController.showTeamRecord=true;
+        DriverManagerDashboardController.insurancePage=true;
+        PageReference pageRef = Page.DriverManagerDashboard; // Add your VF page Name here
+        pageRef.getParameters().put('showteam', 'showteam' );
         DriverManagerDashboardController.getAccountid();
         DriverManagerDashboardController.getContactid();
-        DriverManagerDashboardController.getRedirected();
-       // DriverManagerDashboardController.setEmployeeName();
-        
+        DriverManagerDashboardController.getRedirected();           
+        Test.stopTest();
+    }
+   public static testmethod void DriverManagerDashboardControllerTestMethod1() {
+        DriverManagerDashboardController.getAccountid();
+        DriverManagerDashboardController.getContactid();
+        DriverManagerDashboardController.getRedirected();       
     }
     
 }
