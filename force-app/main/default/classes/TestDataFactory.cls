@@ -94,6 +94,7 @@ public with sharing class TestDataFactory {
         customSetting.insertDriverAggrementFile__c = false;
         customSetting.IRSVehicleCHeck__c = false;
         customSetting.BiWeeklyReimbursementTrigger__c = true;
+        customSetting.updateWorkingDays__c = true;
         if(doInsert){
             insert customSetting;
         }
@@ -236,7 +237,7 @@ public with sharing class TestDataFactory {
         Account accountObj = new Account( Name = accountName);
         accountObj.Bi_Weekly_Pay_Period__c = checkByWeek;
         accountObj.Pay_Period_Days__c = 13;
-        accountObj.Pay_Period_Start_Date__c = system.today().adddays(-130);
+        accountObj.Pay_Period_Start_Date__c = system.today().adddays(-14);
         accountObj.Triplog_API__c = '123456789';
         accountObj.Triplog_Status__c = 'U';
         accountObj.isUsingTriplog__c = True;
