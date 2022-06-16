@@ -11,15 +11,12 @@ public with sharing class ResourceController {
        driverPacketAttachmentList = [select id,Body,Name from Attachment where ParentId =: getAccountid() and Name LIKE '%Parameters%' order by createddate desc limit 1];
        try{
             List<ContentDocumentLink> contentDocLink = [SELECT ContentDocumentId,LinkedEntityId FROM ContentDocumentLink where LinkedEntityId  =: getAccountid()];
-            //System.debug('contactid-->'+getContactid());
-            System.debug('accountid-->'+getAccountid());
             Set<Id> ids = new Set<Id>();
             for(ContentDocumentLink obj:  contentDocLink){
                 ids.add(obj.ContentDocumentId);
             }
             ContentDistribution contentDist = [SELECT id,ContentDownloadUrl from ContentDistribution where ContentDocumentId in : ids and Name Like '%Parameters%' order by createddate desc limit 1];
             obj_content_version = contentDist.ContentDownloadUrl;
-            System.debug('obj_content_version-->'+obj_content_version);
         }catch(Exception e){System.debug('Exception:-->'+e.getmessage()+'--'+e.getLineNumber());}
     }
     

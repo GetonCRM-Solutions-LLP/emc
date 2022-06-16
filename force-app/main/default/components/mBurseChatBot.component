@@ -10,6 +10,7 @@
             height: 100vh;
         }
     </style>
+    <!-- chat bot container -->
     <div class="support-container">
         <iframe class="vfFrame_Support" src="/app/mBurseChat"  width="378" style="border: 0"></iframe>
     </div>

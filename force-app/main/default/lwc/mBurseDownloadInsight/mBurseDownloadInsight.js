@@ -54,6 +54,7 @@ export default class MBurseDownloadInsight extends LightningElement {
     @wire(getCustomSettings)
     myCustomSettings({ error, data }){
         if (data) {
+            
              this.androidVideoUrl = data.Download_mLog_Link_For_Android__c;
              this.iosVideoUrl = data.Download_mLog_Link_For_IOS__c;
              this.privacyPledgeUrl = data.Privacy_Pledge_Link__c;
