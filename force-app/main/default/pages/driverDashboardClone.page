@@ -2473,6 +2473,7 @@
                 </div>
                 <!-- EMC - 324 Introduce mBurse Support Chat On Existing System -->
                <c:mBurseChatBot />
+               <!-- EMC - 324 Ends -->
             </div>
         </section>
 

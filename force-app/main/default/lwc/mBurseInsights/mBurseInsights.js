@@ -94,6 +94,7 @@ export default class MBurseInsights extends LightningElement {
        
     }
 
+    
     // Function to call when component is created
     connectedCallback() {
         let hashVal = window.location.hash;   /* ---- Get hash value from url --- */
