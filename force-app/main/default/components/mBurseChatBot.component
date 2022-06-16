@@ -1,0 +1,16 @@
+<apex:component >
+    <style type="text/css">
+        .support-container{
+            position: fixed;
+            bottom: 0;
+            right: 0;
+            padding-right:  20px;
+        }
+        .vfFrame_Support{
+            height: 100vh;
+        }
+    </style>
+    <div class="support-container">
+        <iframe class="vfFrame_Support" src="/app/mBurseChat"  width="378" style="border: 0"></iframe>
+    </div>
+</apex:component>
