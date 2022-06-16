@@ -4,7 +4,9 @@ public with sharing class ReimbursementStatementBatchTest {
 
         SendEmail__c customSetting2 = TestDataFactory.sendEmailCustomSetting(true, 'Send Email For Compliance');
         SendEmailonDeactivation__c objSendEmail = TestDataFactory.sendEmailCustomSetting(true, 'YearToDateReimbursementStatement', 'test.email@gmail.com');
-        TriggerConfig__c customEmailSetting = TestDataFactory.triggerConfigCustomSetting(true);
+        TriggerConfig__c customEmailSetting = TestDataFactory.triggerConfigCustomSetting(false);
+        customEmailSetting.ContactTriCommunityReimCreate__c = false;
+        insert customEmailSetting;
         IRS_Mileage_Rate__c irsRateObj = TestDataFactory.createIRSRate(true,0);
         Vehicle_URL_Mapping__c vehicleType = TestDataFactory.createVehicleData(false, 3);
         vehicleType.Name = '2019 Full-Size Sedan';
@@ -28,8 +30,8 @@ public with sharing class ReimbursementStatementBatchTest {
         List<Bi_Weekly_Reimbursement__c> biWeeklyReimList = TestDataFactory.createBiweeklyReim(true, conList, system.today().adddays(-14), system.today().addDays(-1), 10, irsRateObj.id);
    
         System.runAs(userObj) {
-            ReimbursementStatementBatch objbatch1 = new ReimbursementStatementBatch('02-2022');
-            Database.executeBatch(objbatch1,1); 
+            //ReimbursementStatementBatch objbatch1 = new ReimbursementStatementBatch('02-2022');
+            //Database.executeBatch(objbatch1,1); 
             ReimbursementStatementBatch objbatch = new ReimbursementStatementBatch();
             Database.executeBatch(objbatch,1); 
     
