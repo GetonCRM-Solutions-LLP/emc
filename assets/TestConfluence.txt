@@ -1,2 +1,2 @@
-EmployeeReimbursementTriggerHandlerTest,ResourceControllerTest
+EmployeeReimbursementTriggerHandlerTest,ResourceControllerTest,ReimbursementStatementBatchTest
 
