@@ -12,8 +12,7 @@ global with sharing class ReimbursementStatementBatch implements Database.Batcha
         accountNamesList = new List<String>();
         emailsToSend = new List<String>();
         monthList = new List<String>();
-        if(accountName != null) 
-        {
+        if(accountName != null) {
             accountNamesList = accountName.split(',');
         }
         emailTemplateList = new List<EmailTemplate>([SELECT Id, Subject,HtmlValue, body FROM EmailTemplate WHERE developerName = 'year_to_date_reimbursement_statement_template']);        
@@ -26,18 +25,15 @@ global with sharing class ReimbursementStatementBatch implements Database.Batcha
         {
             emailsToSend.add(customSettings.BCCEmailaddresses__c);
         }
-        for(Integer i=1;i<=System.Today().Month();i++)
-        {
-            if(i<10)
-            {
+        for(Integer i=1;i<=System.Today().Month();i++) {
+            if(i<10) {
                monthList.add('0'+String.valueOf(i)+'-'+String.valueOf(System.Today().Year())); 
             }
-            else
-            {
+            else {
                monthList.add(String.valueOf(i)+'-'+String.valueOf(System.Today().Year()));  
             }
         }        
-        //add remove method for not consider current month.
+      
         monthlist.remove(monthList.size()-1);
 
        query = 'Select Id,External_Email__c,FirstName FROM Contact WHERE Account.Name IN: accountNamesList AND (Role__c = \'Driver\' OR Role__c = \'Driver/Manager\' OR Role__c = \''+StaticValues.roleAdminDriver+'\') AND (Deactivated_Date__c = NULL OR Deactivated_Date__c >= TODAY)';
@@ -177,17 +173,14 @@ global with sharing class ReimbursementStatementBatch implements Database.Batcha
                mail.setSubject(emailTemplateList[0].Subject);
                mail.setHtmlBody(newBody);
                List<String> toAddress = new List<String>();
-               if(customSettings.Send_to_Driver__c == true) 
-               {
+               if(customSettings.Send_to_Driver__c == true) {
                    toAddress.add(currentContact.External_Email__c);
                    mail.setToAddresses(toAddress);
-                   if(emailsToSend.size()>0)
-                   {
+                   if(emailsToSend.size()>0){
                        mail.setBccAddresses(emailsToSend);
                    }                   
                }
-               else if(emailsToSend.size()>0)
-               {
+               else if(emailsToSend.size()>0) {
                    mail.setToAddresses(emailsToSend);
                }
                mail.setOrgWideEmailAddressId(owea.get(0).Id);    
@@ -195,14 +188,10 @@ global with sharing class ReimbursementStatementBatch implements Database.Batcha
            }
         }
         
-        if(singleEmailMessageList.size()>0 && !Test.IsRunningTest()) 
-        {
+        if(singleEmailMessageList.size()>0 && !Test.IsRunningTest()){
             Messaging.sendEmail(singleEmailMessageList);  
         }
         
     }
-    global void finish(Database.BatchableContext bc) 
-    {
-        
-    }
+    global void finish(Database.BatchableContext bc){}
 }
