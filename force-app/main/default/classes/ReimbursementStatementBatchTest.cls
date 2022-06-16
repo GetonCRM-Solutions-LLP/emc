@@ -30,8 +30,8 @@ public with sharing class ReimbursementStatementBatchTest {
         List<Bi_Weekly_Reimbursement__c> biWeeklyReimList = TestDataFactory.createBiweeklyReim(true, conList, system.today().adddays(-14), system.today().addDays(-1), 10, irsRateObj.id);
    
         System.runAs(userObj) {
-            ReimbursementStatementBatch objbatch1 = new ReimbursementStatementBatch('02-2022');
-            Database.executeBatch(objbatch1,1); 
+            //ReimbursementStatementBatch objbatch1 = new ReimbursementStatementBatch('02-2022');
+            //Database.executeBatch(objbatch1,1); 
             ReimbursementStatementBatch objbatch = new ReimbursementStatementBatch();
             Database.executeBatch(objbatch,1); 
     
