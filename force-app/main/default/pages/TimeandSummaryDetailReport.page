@@ -36,6 +36,7 @@
                     <Cell ss:StyleID="s1"><Data ss:Type="String" >Sync 2 Stay Time</Data></Cell>
                     <Cell ss:StyleID="s1"><Data ss:Type="String" >Sync 2 Total Hours</Data></Cell>
                     <Cell ss:StyleID="s1"><Data ss:Type="String" >Sync 2 Mileage (mi)</Data></Cell>
+                    <Cell ss:StyleID="s1"><Data ss:Type="String" >Last Login</Data></Cell>
                 </Row>
                 <apex:repeat value="{!mileageWrapperList}" var="wrap">
                     <Row>
@@ -54,6 +55,7 @@
                         <Cell><Data ss:Type="String">{!wrap.sync2stayTime}</Data></Cell>
                         <Cell><Data ss:Type="String">{!wrap.sync2Hours}</Data></Cell>
                         <Cell><Data ss:Type="Number">{!wrap.sync2Mileage}</Data></Cell>
+                        <Cell><Data ss:Type="String">{!wrap.loginHours}</Data></Cell>
                     </Row>
                 </apex:repeat>
             </Table>
