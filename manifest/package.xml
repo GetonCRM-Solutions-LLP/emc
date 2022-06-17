@@ -1,20 +1,33 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <Package xmlns="http://soap.sforce.com/2006/04/metadata">
 	<types>
-		<members>BiWeeklyComplianceReportController</members>
-		<members>BiWeeklyComplianceReportControllerTest</members>
-		<members>UploadInsuranceNotificationBatch</members>
-		<members>UploadInsuranceNotificationBatchTest</members>
+		<members>ResourceController</members>
+		<members>ResourceControllerTest</members>
+		<members>TimeandSummaryDetailReportController</members>
+		<members>TimeandSummaryDetailReportControllerTest</members>
 		<name>ApexClass</name>
 	</types>
 	<types>
-		<members>mBurseVideoFrame</members>
-		<members>uploadInsurance</members>
+		<members>PlanInfoComponent</members>
+		<members>mBurseChatBot</members>
+		<name>ApexComponent</name>
+	</types>
+	<types>
+		<members>admindriverdashboardfromadminmanager</members>
+		<members>admindrivermanagerdriver</members>
+		<members>adminmanagerdriverdashboard</members>
+		<members>driverDashboardClone</members>
+		<members>driveradminmanagermydetail</members>
+		<members>driverdashboardfromadminmanager</members>
+		<members>drivermanagerdriverdetails</members>
+		<members>insightResource</members>
+		<members>managerdriverdashboard</members>
 		<name>ApexPage</name>
 	</types>
 	<types>
-		<members>dashboardInsuranceView</members>
-		<members>dashboardUploadInsurance</members>
+		<members>mBurseDownloadInsight</members>
+		<members>mBurseDownloadMlog</members>
+		<members>mBurseInsights</members>
 		<name>LightningComponentBundle</name>
 	</types>
 	<version>53.0</version>
