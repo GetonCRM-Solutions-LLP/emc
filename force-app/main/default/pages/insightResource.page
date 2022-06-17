@@ -62,7 +62,7 @@
 
                 document.querySelector('c-m-burse-insights').addEventListener('sent', (e) => {
                     if(emailAddress != undefined && contactPhone != undefined){
-                        toastr.success("The email was sent to "+ emailAddress +". Please check your email to get started.") //  + " as well as a text message to " + contactPhone  Please check your email and text message to get started
+                        toastr.success("The email was sent to "+ emailAddress + "as well as a text message to " + contactPhone +". Please check your email and text message to get started.") //  + " as well as a text message to " + contactPhone  Please check your email and text message to get started
                     }else{
                         if(emailAddress != undefined){
                             toastr.success("The email was sent to "+ emailAddress +". Please check your email to get started.")
