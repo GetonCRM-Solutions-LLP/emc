@@ -3,10 +3,11 @@ public class HelloSignIntegrationHandler{
     public static void sendSignatureRequestForDriver(Set<String> newUserEmail){
         try{
             List<Contact> contactList = [Select id,Role__c,AccountId,Name,email,Hello_Sign_Request_Id__c,Hello_Sign_Status__c,
-                                            Admin__c,Admin__r.Name,Admin__r.Email
-                                            from contact 
-                                            where email in : newUserEmail 
-                                            and Role__c  in ('Driver','Driver/Manager','Driver/Admin')];
+                                            Admin__c,Admin__r.Name,Admin__r.Email,Account.Admin_Contact__r.Name, 
+                                            Account.Admin_Contact__r.External_Email__c,Account.Admin_Contact__c
+                                            FROM contact 
+                                            WHERE email in : newUserEmail 
+                                            AND Role__c  in ('Driver','Driver/Manager','Driver/Admin')];
             Hello_Sign__c helloSignCustomSetting = Hello_Sign__c.getValues(Constants.apiOwnerName);
             Map<String, Contact> contactMap = new Map<String, Contact>();
             Set<Id> contactIds = new Set<Id>();
@@ -32,12 +33,16 @@ public class HelloSignIntegrationHandler{
             HelloSign.SignatureRequestService sigReq;
             for(Contact conObj : contactList){
                 sigReq = new HelloSign.SignatureRequestService();
+              
                 String adminName = conObj.Admin__r?.Name;
                 String adminEmail = conObj.Admin__r?.Email;
-                if(adminEmail == null || adminEmail == ''){
+                if((adminEmail == null || adminEmail == '') &&  (conObj.Account.Admin_Contact__r.Name != null && (conObj.Account.Admin_Contact__r.External_Email__c != null))){
+                    adminName = conObj.Account.Admin_Contact__r.Name;
+                    adminName = conObj.Account.Admin_Contact__r.External_Email__c;
+                } else {
                     adminName = helloSignCustomSetting.Admin_Name__c;//'Manan Patel';
                     adminEmail = helloSignCustomSetting.Admin_Email__c;//'manan.patel@getoncrm.com';
-                }
+                } 
                 //String adminEmail = 'willh@mburse.com';
                 
                 sigReq.fileIds = new List<Id>{ docAndAccountId.containsKey(conObj.Id) ? docAndAccountId.get(conObj.Id) : null };
