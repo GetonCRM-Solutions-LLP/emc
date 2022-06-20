@@ -17,10 +17,8 @@ public class HelloSignIntegrationHandler{
                 }
                 contactIds.add(conObj.Id);
             }
-             System.debug('contactIds-->'+contactIds);
             Map<Id,Id> docAndAccountId = new Map<Id,Id>();
             if(!contactIds.isEmpty()){
-            System.debug('contactIds-->'+contactIds);
                 for( ContentDocumentLink contentDocLink : [SELECT ContentDocumentId,LinkedEntityId ,ContentDocument.LatestPublishedVersion.Title
                                                             FROM ContentDocumentLink 
                                                             where LinkedEntityId in : contactIds 
@@ -29,7 +27,6 @@ public class HelloSignIntegrationHandler{
                                 docAndAccountId.put(contentDocLink.LinkedEntityId, contentDocLink.ContentDocumentId);
                 }
             }
-            System.debug('docAndAccountId-->'+docAndAccountId);
             HelloSign.SignatureRequestService sigReq;
             for(Contact conObj : contactList){
                 sigReq = new HelloSign.SignatureRequestService();
@@ -43,8 +40,6 @@ public class HelloSignIntegrationHandler{
                     adminName = helloSignCustomSetting.Admin_Name__c;//'Manan Patel';
                     adminEmail = helloSignCustomSetting.Admin_Email__c;//'manan.patel@getoncrm.com';
                 } 
-                //String adminEmail = 'willh@mburse.com';
-                
                 sigReq.fileIds = new List<Id>{ docAndAccountId.containsKey(conObj.Id) ? docAndAccountId.get(conObj.Id) : null };
 
                 Map<String, HelloSign.ServiceObjects.Signer> signerMap = new Map<String, HelloSign.ServiceObjects.Signer>();
