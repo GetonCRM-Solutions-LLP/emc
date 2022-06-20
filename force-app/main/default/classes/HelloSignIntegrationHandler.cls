@@ -35,7 +35,7 @@ public class HelloSignIntegrationHandler{
                 String adminEmail = conObj.Admin__r?.Email;
                 if((adminEmail == null || adminEmail == '') &&  (conObj.Account.Admin_Contact__r.Name != null && (conObj.Account.Admin_Contact__r.External_Email__c != null))){
                     adminName = conObj.Account.Admin_Contact__r.Name;
-                    adminName = conObj.Account.Admin_Contact__r.External_Email__c;
+                    adminEmail = conObj.Account.Admin_Contact__r.External_Email__c;
                 } else {
                     adminName = helloSignCustomSetting.Admin_Name__c;//'Manan Patel';
                     adminEmail = helloSignCustomSetting.Admin_Email__c;//'manan.patel@getoncrm.com';
