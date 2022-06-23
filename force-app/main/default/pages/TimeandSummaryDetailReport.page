@@ -24,6 +24,8 @@
                     <Cell ss:StyleID="s1"><Data ss:Type="String" >Dates</Data></Cell>
                     <Cell ss:StyleID="s1"><Data ss:Type="String" >Contact Name</Data></Cell>
                     <Cell ss:StyleID="s1"><Data ss:Type="String" >Email</Data></Cell>
+                    <Cell ss:StyleID="s1"><Data ss:Type="String" >Confirmed</Data></Cell>
+                    <Cell ss:StyleID="s1"><Data ss:Type="String" >Confirmed Date/Time</Data></Cell>
                     <Cell ss:StyleID="s1"><Data ss:Type="String" >Initial Drive Time</Data></Cell>
                     <Cell ss:StyleID="s1"><Data ss:Type="String" >Initial Stay Time</Data></Cell>
                     <Cell ss:StyleID="s1"><Data ss:Type="String" >Initial Total Time</Data></Cell>
@@ -43,6 +45,8 @@
                          <Cell><Data ss:Type="String">{!wrap.dates}</Data></Cell>
                         <Cell><Data ss:Type="String">{!wrap.contactName}</Data></Cell>
                         <Cell><Data ss:Type="String">{!wrap.email}</Data></Cell>
+                        <Cell><Data ss:Type="String">{!wrap.confirmTrips}</Data></Cell>
+                        <Cell><Data ss:Type="String">{!wrap.confirmHours}</Data></Cell>
                         <Cell><Data ss:Type="String">{!wrap.initialDriveTime}</Data></Cell>
                         <Cell><Data ss:Type="String">{!wrap.initialStayTime}</Data></Cell>
                         <Cell><Data ss:Type="String">{!wrap.initiaTotalTime}</Data></Cell>
