@@ -375,7 +375,7 @@ public with sharing class TestDataFactory {
             empMileage.Name = 'Test Mileage ' + i;
             empMileage.Contact_Email_Id__c = 'paras.dhanani@gmail.com';  
             empMileage.EmployeeReimbursement__c = reimList[i].id;
-            empMileage.Trip_Date__c = date.valueOf('2021-07-08');
+            empMileage.Trip_Date__c = system.today();
             empMileage.Bi_Weekly_Reimbursement__c = biweeklyReimList[i].id;
             empMileage.Activity__c =  'Business';
             empMileage.Mileage__c =  51.20;
