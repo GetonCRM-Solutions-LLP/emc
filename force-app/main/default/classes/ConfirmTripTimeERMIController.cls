@@ -79,6 +79,7 @@ public with sharing class ConfirmTripTimeERMIController {
                 biweek.Error_Hours__c = conwrap.errorCheck ;
                 biweek.Count_Error_Check__c = conwrap.countErrorCheck ;
                 if(biweek.Confirm_Hours__c == true){
+                    biweek.Confirm_Hours_Time__c = System.Now();
                     Integer countError = 0;
                     sendConfirmEmail(conwrap.driverEmail,conwrap.driverName,conwrap.biWeekPayperiod,conwrap.mileage,conwrap.DriveTime,conwrap.StayTime,conwrap.TotalTime,countError,conwrap.driverType);
                 }
