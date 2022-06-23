@@ -38,7 +38,7 @@ public with sharing class TimeandSummaryDetailReportController {
                                     conEmailVsLogin.put(userObj.ContactId,userObj.LastLoginDate);
                             }
         
-        for(Bi_Weekly_Reimbursement__c biweeklyreim : [SELECT Name,Contact__r.Name, Contact__r.External_Email__c, 
+        for(Bi_Weekly_Reimbursement__c biweeklyreim : [SELECT Name,Contact__r.Name, Contact__r.External_Email__c,Confirm_Hours__c,Confirm_Hours_Time__c, 
                                                        Actual_Drive_Time__c, Actual_Stay_Time__c, Actual_Hours__c,
                                                        Actual_Mileages__c, Sync_1_Hours__c, Sync_1_Mileages__c,Sync_1_Drive_Time__c,Sync_1_Stay_Time__c,
                                                        Sync_2_Hours__c, Sync_2_Mileages__c,Sync_2_Drive_Time__c,Sync_2_Stay_Time__c 
@@ -65,13 +65,19 @@ public with sharing class TimeandSummaryDetailReportController {
                                                            objMileageWrap.sync2stayTime = Utils.ConvertMinuteToHours(Integer.valueOf(biweeklyreim.Sync_2_Stay_Time__c ));
                                                            objMileageWrap.sync2Hours = Utils.ConvertMinuteToHours(Integer.valueOf(biweeklyreim.Sync_2_Hours__c));
                                                            objMileageWrap.sync2Mileage =  biweeklyreim.Sync_2_Mileages__c != null ?(biweeklyreim.Sync_2_Mileages__c).setScale(2) : 0;
+                                                           objMileageWrap.confirmTrips =  biweeklyreim.Confirm_Hours__c != null ? biweeklyreim.Confirm_Hours__c : false;                                                           
                                                            if(conEmailVsLogin.containsKey(biweeklyreim.Contact__c)) {
                                                                if(conEmailVsLogin.get(biweeklyreim.Contact__c) != null){
                                                                    DateTime dt = conEmailVsLogin.get(biweeklyreim.Contact__c);
                                                                    String dateTimeStr = dt.format('MM/dd/yyyy hh:mm:ss a');
                                                                    objMileageWrap.loginHours = dateTimeStr;
                                                                }
-                                                           }                                                             
+                                                           }    
+                                                           if(biweeklyreim.Confirm_Hours_Time__c != null){
+                                                               DateTime dt = biweeklyreim.Confirm_Hours_Time__c;
+                                                               String dateTimeStr = dt.format('MM/dd/yyyy hh:mm:ss a');
+                                                               objMileageWrap.confirmHours = dateTimeStr;
+                                                           }                                                         
                                                            mileageWrapperList.add(objMileageWrap);
                                                        }
     }
@@ -93,6 +99,8 @@ public with sharing class TimeandSummaryDetailReportController {
         public string sync2Hours { get; set; }
         public decimal sync2Mileage { get; set; }
         public string loginHours { get; set; }
+        public Boolean confirmTrips{ get; set; }
+        public string confirmHours { get; set; }
         public mileageWrapper(){
         }
     }
