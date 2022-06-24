@@ -31,15 +31,19 @@ public class HelloSignIntegrationHandler{
             for(Contact conObj : contactList){
                 sigReq = new HelloSign.SignatureRequestService();
               
-                String adminName = conObj.Admin__r?.Name;
-                String adminEmail = conObj.Admin__r?.Email;
-                if((adminEmail == null || adminEmail == '') &&  (conObj.Account.Admin_Contact__r.Name != null && (conObj.Account.Admin_Contact__r.External_Email__c != null))){
-                    adminName = conObj.Account.Admin_Contact__r.Name;
-                    adminEmail = conObj.Account.Admin_Contact__r.External_Email__c;
-                } else {
-                    adminName = helloSignCustomSetting.Admin_Name__c;//'Manan Patel';
-                    adminEmail = helloSignCustomSetting.Admin_Email__c;//'manan.patel@getoncrm.com';
-                } 
+                String adminName;
+                String adminEmail;
+               
+                if(conObj.Admin__c != null){
+                    adminName = conObj.Admin__r?.Name;
+                    adminEmail = conObj.Admin__r?.Email;
+                } else if( conObj.Account.Admin_Contact__c != null){                                      
+                    adminName = conObj.Account.Admin_Contact__r.Name != null ? conObj.Account.Admin_Contact__r.Name : null;
+                    adminEmail = conObj.Account.Admin_Contact__r.External_Email__c != null ? conObj.Account.Admin_Contact__r.External_Email__c : null;                    
+                } else {                    
+                    adminName = helloSignCustomSetting.Admin_Name__c;
+                    adminEmail = helloSignCustomSetting.Admin_Email__c;
+                }  
                 sigReq.fileIds = new List<Id>{ docAndAccountId.containsKey(conObj.Id) ? docAndAccountId.get(conObj.Id) : null };
 
                 Map<String, HelloSign.ServiceObjects.Signer> signerMap = new Map<String, HelloSign.ServiceObjects.Signer>();
