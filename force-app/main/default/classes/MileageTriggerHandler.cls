@@ -1,4 +1,8 @@
+// new Update code without error
+
 public class MileageTriggerHandler {
+    Public Static string accId;
+    Public static List<String> accIdList;
     
     public static void MileageRemoveApprovalDateHandler(List<Employee_Mileage__c> empMileageList) {
         List<Employee_Reimbursement__c> Reimbursementlist = new List<Employee_Reimbursement__c>();
@@ -6,7 +10,6 @@ public class MileageTriggerHandler {
         for(Employee_Mileage__c empmilege : empMileageList) {
             if(empmilege.Trip_Status__c == 'Not Approved Yet'){
                 reimbursementApprovalStatusSet.add(empmilege.EmployeeReimbursement__c);
-                
             }
         }
         for(Employee_Reimbursement__c emp : [SELECT Id,
@@ -32,33 +35,74 @@ public class MileageTriggerHandler {
 * as only one date and onther trips are count individual so the total working days are 15 + 1 = 16.   
 */   
     Public static void updateWorkingDays(List<Employee_Mileage__c> empMileageList) {
+        accId = System.Label.MileageDeductionAccount;
+        system.debug('accId==' + accId);
+        accIdList = new List<String>();
+        accIdList = accId.split(',');
+        system.debug('accIdList==' + accIdList);
+        
         Set<Id> reimIdList = new Set<Id>();
+        Set<string> monthYearList = new Set<string>();
         List<Employee_Reimbursement__c> reimList = new List<Employee_Reimbursement__c>();
+        
+        Map<id, String> mapOfmilagevsDate = new Map<Id, String>();
+        Map<ID, String> mapofIdvsMonth = new Map<ID, String>();
         Map<ID, Integer> mapEmpvsMil = new Map<ID, Integer>();
+        
         for(Employee_Mileage__c objem: empMileageList){
-            reimIdList.add(objem.EmployeeReimbursement__c);
+            reimIdList.add(objem.EmployeeReimbursement__c);	
+            monthYearList.add(objem.Monthyear__c);
         }
-        for(AggregateResult Arobj: [SELECT EmployeeReimbursement__c,COUNT_DISTINCT(Trip_Date__c) myCount 
+        for(Employee_Reimbursement__c objReim: [SELECT id,Working_Days__c,Month__c 
+                                                FROM Employee_Reimbursement__c 
+                                                WHERE id in: reimIdList
+                                               ]){
+                                                   
+                                                   string splitd = string.valueOf(objReim.Month__c);
+                                                   string[] dateSplit = splitd.split('-');
+                                                   mapofIdvsMonth.put(objReim.id, objReim.Month__c);  
+                                                   //mapofIdvsMonth.put(objReim.id, Integer.valueof(dateSplit[0]));  
+                                               }              
+        if(mapofIdvsMonth != null && mapofIdvsMonth.size() > 0){										
+            for(Employee_Mileage__c objem: empMileageList){
+                
+                if(objem.Monthyear__c == mapofIdvsMonth.get(objem.EmployeeReimbursement__c) && !mapOfmilagevsDate.containsKey(objem.EmployeeReimbursement__c)){
+                    mapOfmilagevsDate.put(objem.EmployeeReimbursement__c, objem.Monthyear__c);
+                }
+            }
+        }									
+        for(AggregateResult arobj: [SELECT EmployeeReimbursement__c, COUNT_DISTINCT(Trip_Date__c) myCount 
                                     FROM Employee_Mileage__c 
-                                    WHERE EmployeeReimbursement__c in: reimIdList 
-                                    AND Trip_Date__c = THIS_MONTH GROUP by EmployeeReimbursement__c]) {
-                                        mapEmpvsMil.put((ID)Arobj.get('EmployeeReimbursement__c'), (Integer)Arobj.get('myCount'));
-                                    }
+                                    WHERE EmployeeReimbursement__c in: reimIdList
+                                    AND  Monthyear__c IN: monthYearList GROUP by EmployeeReimbursement__c]) { 
+                                        if(mapofIdvsMonth.ContainsKey((ID)arobj.get('EmployeeReimbursement__c')) && mapOfmilagevsDate.ContainsKey((ID)arobj.get('EmployeeReimbursement__c'))){
+                                            if(mapOfmilagevsDate.get((ID)arobj.get('EmployeeReimbursement__c')) == mapofIdvsMonth.get((ID)arobj.get('EmployeeReimbursement__c'))){
+                                                mapEmpvsMil.put((ID)arobj.get('EmployeeReimbursement__c'), (Integer)arobj.get('myCount'));
+                                            }
+                                        }
+                                    }  
+        
         if(mapEmpvsMil != null && mapEmpvsMil.size() > 0) {
-            for( Employee_Reimbursement__c objreim: [SELECT id,Working_Days__c 
-                                                     FROM Employee_Reimbursement__c 
-                                                     WHERE id in: reimIdList ]){
-                                                         objreim.Working_Days__c = mapEmpvsMil.get(objreim.id);
-                                                         reimList.add(objreim);
-                                                     }
+            
+            for( Employee_Reimbursement__c objReim : [SELECT id,Working_Days__c 
+                                                      FROM Employee_Reimbursement__c 
+                                                      WHERE id in: reimIdList 
+                                                      AND  Month__c IN: monthYearList
+                                                      AND Contact_Id__r.AccountId IN: accIdList]){
+                                                          objReim.Working_Days__c = mapEmpvsMil.get(objReim.id);
+                                                          reimList.add(objReim);
+                                                      }
         } else {
-            for( Employee_Reimbursement__c objreim: [SELECT id,Working_Days__c 
+            for( Employee_Reimbursement__c objReim: [SELECT id,Working_Days__c 
                                                      FROM Employee_Reimbursement__c 
-                                                     WHERE id in: reimIdList ]){
+                                                     WHERE id in: reimIdList 
+                                                     AND Contact_Id__r.AccountId IN: accIdList
+                                                     AND  Month__c IN: monthYearList]){
                                                          objreim.Working_Days__c = 0;
                                                          reimList.add(objreim);
                                                      }
-        }
+        }   
+        
         if(reimList != null && reimList.size() > 0) {
             Update reimList;
         }        
