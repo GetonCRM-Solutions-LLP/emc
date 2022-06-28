@@ -310,7 +310,7 @@ table tr td {
 
 .flag-text {
     position: absolute;
-    right: 8px;
+    right: -8px;
     top: 42px;
 }
 
@@ -395,7 +395,7 @@ table tr td {
 }
 .text-font-align {
     text-align: left;
-    font-size: 16px;
+    font-size: 15px;
     color: #000;
 }
 figcaption {
@@ -460,14 +460,23 @@ figcaption {
     font-weight: bold !important;
 }
 
+.slds-notify__close {
+    text-align: left !important;
+    top: 68% !important;
+    left: 1rem !important;
+    right: 0 !important;
+    margin-right: 0.25rem !important;
+    transform: translateY(-68%) !important;
+}
+
 .flag-fluid {
     width: 64px;
 }
 
 .received {
-    justify-content: left !important;
-    align-items: start !important;
-    text-align: left !important;
+    justify-content: right !important;
+    align-items: end !important;
+    text-align: right !important;
 }
 
 .notify-head {

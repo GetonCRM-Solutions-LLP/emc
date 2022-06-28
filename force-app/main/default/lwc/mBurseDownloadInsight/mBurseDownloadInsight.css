@@ -7,7 +7,6 @@
         height: 190px !important;
     }
 
-    
     .img-container {
         width: 44% !important;
     }
@@ -156,7 +155,7 @@
     }
 
     .p_top {
-        padding-top: 4vw !important;
+        padding-top: 2vw !important;
     }
 
     .slds-btn {
@@ -178,6 +177,11 @@
     
     .footer-text {
         font-size: 1.12vw !important;
+    }
+
+    .slds-btn-sm{
+        padding: 1rem 3rem !important;
+        font-size: 4rem !important;
     }
 }
 
