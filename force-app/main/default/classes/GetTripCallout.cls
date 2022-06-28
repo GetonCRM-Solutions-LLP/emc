@@ -127,18 +127,21 @@ global class GetTripCallout {
                 emp.Notes__c = !CheckNull(lt.notes) ? lt.notes : null;
                 emp.Tracing_Style__c = !CheckNull(lt.trackingMethod) ? lt.trackingMethod : null;
                 emp.Tag__c = !CheckNull(lt.tags) ? lt.tags : null;
-                emp.Stay_Time__c = !CheckNull(String.valueOf(lt.stayTimeMins)) ? lt.stayTimeMins : null;
-                /*if( MaxTime != null && emp.StartTime__c.day() > MaxTime.day() && !empList.isEmpty()){
+                //EMC - 340 
+				// update stay  time 0 if last trip destination of the day is home and next day's first trips origin is home.
+                 emp.Stay_Time__c = !CheckNull(String.valueOf(lt.stayTimeMins)) ? lt.stayTimeMins : null;
+                if( MaxTime != null && emp.StartTime__c.day() > MaxTime.day() && !empList.isEmpty()){
                     empList.get(empList.size()-1).Stay_Time__c = 0;
                 }
-                MaxTime = emp.EndTime__c;*/
+               
+                MaxTime = emp.EndTime__c;
                 if(emp.Destination_Name__c != null && (emp.Destination_Name__c).toUppercase() == 'HOME'){
                    CheckHomeTrip = true;
                 }
                 if(emp.Origin_Name__c != null && (emp.Origin_Name__c).toUppercase() == 'HOME' && CheckHomeTrip == true){
                    emp.Stay_Time__c = 0;
                    CheckHomeTrip = false;
-                }
+                }  // till here EMC - 340
                 if(!CheckNull(lt.map_Z)){
                     emp.Triplog_Map__c = baseURL + '/kml/embed/' +  ( lt.map_Z.contains('/') ? lt.map_Z.split('/')[4] : ''); // MLOG Change | Sanjay Halpati | 12 May 2020
                 } else {

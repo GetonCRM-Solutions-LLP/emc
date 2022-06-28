@@ -78,10 +78,8 @@ global class NewdriverdashboardController {
         mileageMap = new Map<string,string>();
         ContactDetails contactObj = new ContactDetails();
         
-        system.debug('contactid=='+contactid);
-        system.debug('current year = '+ System.today().year());
-        
-        for(Employee_Reimbursement__c reim : [SELECT id,Total_Approved__c,Total_Monthly_Reimbursement__c,
+        String lastMonth = Utils.fetchMonths(1, 0)[0];
+        for(Employee_Reimbursement__c reim : [SELECT id,Total_Approved__c,Total_Monthly_Reimbursement__c,Variable_Rate__c,
                                                     Year__c,Contact_Id__r.MailingCity,Contact_Id__r.MailingState, 
                                                     Contact_Id__r.MailingPostalCode, Contact_Id__r.Fixed_Amount__c, 
                                                     Contact_Id__r.Driving_States__c, Contact_Id__r.Vehicle_Type__c,
@@ -90,7 +88,7 @@ global class NewdriverdashboardController {
                                                     Contact_Id__r.compliancestatus__c,Contact_Id__r.Account.Logo_Document_Id__c,
                                                     Contact_Id__r.Name,Contact_Id__r.Insurance_Attachment_Id__c,Month__c,
                                                     Contact_Id__r.Driver_Type__c,Contact_Id__r.Plan_Years__c,Contact_Id__r.Insurance_Plan__c,
-                                                    Contact_Id__r.Compliance_Mileage__c,Contact_Id__r.Vehicle_Value__c,
+                                                    Contact_Id__r.Compliance_Mileages__c,Contact_Id__r.Vehicle_Value__c,
                                                     Contact_Id__r.Insurance_Upload_Date__c,Contact_Id__r.Notification_Message__c,Contact_Id__r.Insurance__c,
                                                     Contact_Id__r.Vehicle_Age__c,Contact_Id__r.Vehicle_Value_Check__c,Contact_Id__r.Mileage_Meet__c
                                                 FROM Employee_Reimbursement__c 
@@ -116,7 +114,7 @@ global class NewdriverdashboardController {
              contactObj.annualReim = String.valueof(reim.Contact_Id__r.Total_reimbursment__c);
              contactObj.annualMileages = String.valueof(reim.Contact_Id__r.Annual_Total_Approved_Mileage__c);
              contactObj.planInsurance = String.valueof(reim.Contact_Id__r.Insurance_Plan__c);
-             contactObj.complianceMileage = String.valueof(reim.Contact_Id__r.Compliance_Mileage__c);
+             contactObj.complianceMileage = String.valueof(reim.Contact_Id__r.Compliance_Mileages__c);
              contactObj.planYears = String.valueof(reim.Contact_Id__r.Plan_Years__c);
              contactObj.vehicleValue = String.valueof(reim.Contact_Id__r.Vehicle_Value__c);
              contactObj.insuranceDate = reim.Contact_Id__r.Insurance_Upload_Date__c;
@@ -126,6 +124,10 @@ global class NewdriverdashboardController {
              contactObj.vehiclevaluecheck = reim.Contact_Id__r.Vehicle_Value_Check__c;
              contactObj.mileagemeet = reim.Contact_Id__r.Mileage_Meet__c;
              contactObj.insurance = reim.Contact_Id__r.Insurance__c;
+             if(reim.Month__c != null && reim.Month__c == lastMonth){
+                 contactObj.variableRate = String.valueof(reim.Variable_Rate__c);
+             }
+             
         }
 
         gasPrice = WrapperUtils.getDriverGasPrice(contactObj.state,contactObj.city);
@@ -153,7 +155,8 @@ global class NewdriverdashboardController {
                                                                     11=>'Nov', 12=>'Dec'};
         List<ReibursementWrapper> wrapList = new List<ReibursementWrapper>();
         system.debug('contactid=='+contactid);
-        List<Contact> conList = [SELECT id,Account.Start_Graph_Month__c FROM contact WHERE id =:contactid ];
+        List<Contact> conList = [SELECT id,Account.Start_Graph_Month__c,Activation_Date__c FROM contact WHERE id =:contactid ];
+        Integer startMonth = conList[0].Activation_Date__c != null ? conList[0].Activation_Date__c.month() : 1;
         String graphMonth;
         system.debug('conList= '+conList);  
         if(conList[0].Account.Start_Graph_Month__c != null){
@@ -187,7 +190,7 @@ global class NewdriverdashboardController {
         Decimal sumMileage = 0;
         Decimal sumReim = 0;
         Map<Integer, Decimal> averageReimMap = new Map<Integer, Decimal>();
-        for(Integer i = 1; i <= 12; i++ ){
+        for(Integer i = startMonth ; i <= 12; i++ ){
             sumMileage += milMap.containskey(i) ? milMap.get(i) : 0;
             sumReim += reimMap.containskey(i) ? reimMap.get(i) : 0;
             ReibursementWrapper reimWrap = new ReibursementWrapper();
