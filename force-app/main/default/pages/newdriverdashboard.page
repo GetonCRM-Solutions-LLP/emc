@@ -103,6 +103,7 @@
             });
         }
         var details = {!contactObj};
+        console.log("details----->", details)
         var chartDetail = {!chartData};
         var unapproved = {!unreimbursement};
         var gasPrice = {!gasPrice};
