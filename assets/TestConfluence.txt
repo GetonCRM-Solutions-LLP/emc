@@ -1,1 +1,1 @@
-NewdriverdashboardController_Test,ContactDetailsTest,GetTripCalloutTest
+NewdriverdashboardController_Test,ContactDetailsTest,GetTripCalloutTest,ContactTriggerHelperTest
