@@ -34,9 +34,8 @@ trigger ContactTrigger on Contact (after Update, after insert, before insert, be
             }
             ContactTriggerHelper.updateComplianceStatus(Trigger.New, Trigger.oldMap);
             ContactTriggerHelper.createReimRecord(Trigger.New, Trigger.oldMap);
-
-            
-         
+        }
+    
             if(Trigger.isAfter){
                 if(Trigger.isInsert || Trigger.isUpdate){
                      /* EMC - 333
@@ -64,8 +63,6 @@ trigger ContactTrigger on Contact (after Update, after insert, before insert, be
                     }
                 }
             }
-        }
-        
         if(Trigger.isInsert && trigger.isAfter) {
             //helper class for single email but bulk messages
             TriggerConfig__c customSetting = TriggerConfig__c.getInstance('Defaulttrigger');
