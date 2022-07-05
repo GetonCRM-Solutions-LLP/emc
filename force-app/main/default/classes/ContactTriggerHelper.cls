@@ -608,6 +608,8 @@ New Contact is created at that time we have to update plan parameter section's f
                                    }
                                    if(mapVehicleValue.containsKey(con.AccountId + '-' + con.Vehicle_Type__c.toUpperCase())){
                                        con.Vehicle_Value__c = mapVehicleValue.get(con.AccountId + '-' + con.Vehicle_Type__c.toUpperCase());
+                                   }	else {
+                                        con.Vehicle_Value__c = null;
                                    }
                                    updateConList.add(con);
                                }   
