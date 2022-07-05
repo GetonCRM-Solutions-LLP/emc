@@ -246,6 +246,26 @@ public with sharing class TestDataFactory {
         }
         return accountObj;
     }
+
+
+    /**
+     * **********************************************************
+     * This Method is used for creating vehicle value List
+     * ********************************************************** 
+     */
+    public static List<Vehicle_Value__c> createVehicleValue(Boolean doInsert, String AccId, String vehicleName){
+        List<Vehicle_Value__c> vehicleValueList = new List<Vehicle_Value__c>();
+        Vehicle_Value__c vehValue = new Vehicle_Value__c();
+        vehValue.Account__c = AccId;
+        vehValue.Vehicle_URL_Mapping__c = vehicleName;
+        vehValue.Value__c = 15000;
+        vehicleValueList.add(vehValue);
+        if(doInsert){
+            insert vehicleValueList;
+        }
+        return vehicleValueList;
+    }
+
     /** 
     * ********************************************************
     * This method is test data for create Contact.It is use for CICD deployment.
@@ -432,4 +452,6 @@ public with sharing class TestDataFactory {
         }
         return addressList;
     }
+
+     
 }

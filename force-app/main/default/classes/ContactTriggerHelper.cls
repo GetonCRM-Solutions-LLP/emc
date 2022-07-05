@@ -564,12 +564,56 @@ public without sharing class ContactTriggerHelper {
                                                            objCDL.Visibility = 'AllUsers'; 
                                                            lstContentDocumentLink.add(objCDL);
                                                        }
-                                                   }   		
+                                                   }        
                                                }
                                            }
         }
         if(lstContentDocumentLink != null && lstContentDocumentLink.size() > 0){
             Insert lstContentDocumentLink;
+        }
+    }
+    
+    /* EMC - 357 
+New Contact is created at that time we have to update plan parameter section's field 
+(Insurance Plan,Plan Years,Vehicle Value and Business Use) value update automatically based on account's same fields .
+*/
+    public static void updatePlanParameter(Set<String> conIdList, Set<String> setaccountid) {
+        Map<Id,String> mapIdvsInsplan = new Map<Id, String>();
+        Map<Id,Decimal> mapIdvsPlanyear = new Map<Id, Decimal>();
+        Map<Id,Decimal> mapIdvsBusinessUse = new Map<Id, Decimal>();
+        Map<String,Decimal> mapVehicleValue = new Map<String, Decimal>();
+        
+        for (Vehicle_Value__c vehValue : [SELECT id,Account__c, Vehicle_URL_Mapping__r.Name,Value__c  
+                                          FROM Vehicle_Value__c 
+                                          WHERE Account__c IN :setaccountid]){
+                                              mapVehicleValue.put(vehValue.Account__c + '-' + vehValue.Vehicle_URL_Mapping__r.Name.toUpperCase() , vehValue.Value__c);
+                                              
+                                          }
+        for(Account acc : [SELECT id,name,Insurance_Plan__c, Plan_Years__c, Vehicle_Types__c, Business_Use__c 
+                           FROM Account 
+                           WHERE ID IN :setaccountid]){
+                               mapIdvsInsplan.put(acc.ID, acc.Insurance_Plan__c);
+                               mapIdvsPlanyear.put(acc.ID, acc.Plan_Years__c);
+                               mapIdvsBusinessUse.put(acc.ID, acc.Business_Use__c);
+                           }
+        List<contact> updateConList = new List<Contact>();
+        if(conIdList.size() > 0) {
+            for(Contact con : [SELECT id,name,AccountId,Vehicle_Type__c,Insurance_Plan__c, Plan_Years__c,Business_Use__c,Role__c 
+                               FROM contact 
+                               WHERE Id IN :conIdList]) {
+                                   if(mapIdvsInsplan.containsKey(con.AccountId)){
+                                       con.Insurance_Plan__c = mapIdvsInsplan.get(con.AccountID);
+                                       con.Plan_Years__c = mapIdvsPlanyear.get(con.AccountID);
+                                       con.Business_Use__c = mapIdvsBusinessUse.get(con.AccountID);
+                                   }
+                                   if(mapVehicleValue.containsKey(con.AccountId + '-' + con.Vehicle_Type__c.toUpperCase())){
+                                       con.Vehicle_Value__c = mapVehicleValue.get(con.AccountId + '-' + con.Vehicle_Type__c.toUpperCase());
+                                   }
+                                   updateConList.add(con);
+                               }   
+        }
+        if(updateConList.size() > 0){
+            Update updateConList;
         }
     }
 }

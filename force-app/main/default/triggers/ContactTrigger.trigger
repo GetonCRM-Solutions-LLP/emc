@@ -36,15 +36,31 @@ trigger ContactTrigger on Contact (after Update, after insert, before insert, be
             ContactTriggerHelper.createReimRecord(Trigger.New, Trigger.oldMap);
 
             
-          /* EMC - 333
+         
+            if(Trigger.isAfter){
+                if(Trigger.isInsert || Trigger.isUpdate){
+                     /* EMC - 333
              This is used when driver is insert automatically driver packet is added in file section of that driver
      		 from his Account's file section.
 		   */ 
-            if(Trigger.isAfter){
-                if(Trigger.isInsert || Trigger.isUpdate){
                     TriggerConfig__c customSettingForFile = TriggerConfig__c.getInstance('Defaulttrigger');
                     if(customSettingForFile.insertDriverAggrementFile__c == true){
                     ContactTriggerHelper.insertDriverAggrementFile(Trigger.newmap);
+                    }
+                    // EMC - 357
+                   
+                    Set<String> conList = new Set<String>();
+                    Set<String> accList = new Set<String>();
+                    for(contact con : Trigger.New){
+                        if(con.Role__c != null && con.Role__c != 'Manager' && con.Role__c != 'Admin') {
+                            conList.add(con.Id);
+                            accList.add(con.AccountId);
+                        }
+                    }
+                    system.debug('conList==' + conList);
+                    system.debug('accList==' + accList);
+                    If(conList.Size() > 0){
+                         ContactTriggerHelper.updatePlanParameter(conList, accList);
                     }
                 }
             }
@@ -63,7 +79,7 @@ trigger ContactTrigger on Contact (after Update, after insert, before insert, be
           /* EMC - 333
              This is used when driver is insert automatically driver packet is added in file section of that driver
      		 from his Account's file section.
-		   */
+		   
             if(Trigger.isAfter){
                 if(Trigger.isInsert || Trigger.isUpdate){
                     TriggerConfig__c customSettingForFile = TriggerConfig__c.getInstance('Defaulttrigger');
@@ -71,7 +87,7 @@ trigger ContactTrigger on Contact (after Update, after insert, before insert, be
                     ContactTriggerHelper.insertDriverAggrementFile(Trigger.newmap);
                     }
                 }
-            } 
+            }*/ 
         }
         
         if(Trigger.isBefore && checkRecursive.runSecondFlag()) {
