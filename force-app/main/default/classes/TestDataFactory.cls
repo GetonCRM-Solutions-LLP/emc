@@ -452,6 +452,22 @@ public with sharing class TestDataFactory {
         }
         return addressList;
     }
+    
+     public static List<Gas_Prices__c> createGasPrice(Boolean doInsert, string city, date monthYear, Integer nmbrRecord){
+        List<Gas_Prices__c> gasPriceList = new List<Gas_Prices__c>();
+        for(Integer i = 0; i <= nmbrRecord; i++) {
+            Gas_Prices__c gasPrice = new Gas_Prices__c();
+          	gasprice.City__c = 'Denver';
+            gasprice.Fuel_Price__c = 3;
+            gasprice.Month_Year__c = Date.today().adddays(-1);
+            gasprice.State__c = 'CA';
+            gasPriceList.add(gasprice);
+        }
+        if(doInsert){
+            insert gasPriceList;
+        }
+        return gasPriceList;
+    }
 
      
 }
