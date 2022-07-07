@@ -6,6 +6,42 @@ public without sharing class ContactTriggerHelper {
     Public static map<string, Decimal> monthStateCityVsFuelPriceMap = new map<string, Decimal>(); 
     Public static map<string, Decimal> monthStateCityVsFuelPricereimMap = new map<string, Decimal>(); 
     
+
+    //Developer Name-Dhanraj Khatri 
+    //Prevent Blank & Duplicate Mobile Number Value.
+    //Prevent Duplicate Email Value
+    public static void preventDuplicateMobileEmail(List<Contact> contactList){
+       
+        Set<String> setOfEMail =new Set<String> ();            //Initializing Set for Email
+        Set<String> setMobilePhone= new set<String>();            //Initializing Set For Phone
+        
+        List<Contact> fetchList=[SELECT Email,MobilePhone FROM Contact];        //Query to retrive all contacts
+        for(Contact con:fetchList){
+            setOfEMail.add(con.Email);
+            setMobilePhone.add(con.MobilePhone);
+        }
+        
+        for(Contact contact : contactList)        //Traversing through trigger List 
+        { 
+            if(contact.MobilePhone == null){
+                contact.MobilePhone.AddError(' Mobile Number can not be blank ');
+            }else{
+                if(setMobilePhone.contains(contact.MobilePhone)){
+                    contact.MobilePhone.AddError(' Duplicate MobilePhone is not Allowed ');  
+                }
+            }
+            if(contact.Email != null &&  setOfEMail.contains(contact.Email) )    //condition to check duplicate
+            {
+                contact.Email.AddError(' Duplicate Email is not Allowed ');        //Error Message on Email
+                    //Error Messahe on Phone
+            }   
+    
+        }
+    }
+
+
+
+
     public static void checkVehicalYearAndModel(List<Contact> contactList){
         Map<String,String> urlMap = new Map<String,String>();
         set<String> vehicleNamesset = new set<String>();
@@ -350,41 +386,44 @@ public without sharing class ContactTriggerHelper {
     }
     
     Public static void putHTTPCallout(String accountID,String empEmail) {
-        String MLOGACCOUNT = System.Label.Triplog_New_URL;
-        
-        String body, apiToken;
-        List<Account> accountList = [SELECT id,Triplog_API__c  
+        List<Account> accountList = [SELECT id,Triplog_API__c,MburseDashboardRedirect__c  
                                      FROM Account 
                                      WHERE Id =: accountID];
-        if(accountList.size() > 0 ){
-            apiToken = accountList[0].Triplog_API__c;
-        }
-        String jsonSubset;
-        String baseURL;
-        if(apiToken != null){
-            baseURL = !mLOGACCOUNT.Contains(apiToken) ? StaticValues.TRIPLOG_BASEURL : StaticValues.MLOG_BASEURL;
-        }
-        String rosterURL = baseURL + StaticValues.WELCOME_SUFFIX;
-        body = '{"emails":[';
-        body = body + String.valueof(empEmail) +']}';
-        TriplogPutCall__c objTriplog = TriplogPutCall__c.getValues('RosterControllerPutCall');
-        HttpRequest putReq = new HttpRequest();
-        Http putHTTP = new Http();
-        HttpResponse putRes = new HttpResponse();
-        
-        putReq.setEndpoint(rosterURL);
-        putReq.setMethod('PUT');                 
-        putReq.setBody(body);
-        putReq.setTimeout(120000);
-        putReq.setHeader('Authorization', 'apikey ' + apiToken);
-        putReq.setHeader('Content-Type', 'application/json');
-        if(!Test.isRunningTest() && objTriplog.TriplogPut__c == true){
-            if(objTriplog.TriplogPut__c == true){
-                putRes = putHTTP.send(putReq);
-                Map<String,Object> jsonMap = (Map<String, Object>)JSON.deserializeUntyped(putRes.getBody());
-                jsonSubset = JSON.serialize(jsonMap.get('message'));
+         if(accountList.size() > 0 && accountList[0].MburseDashboardRedirect__c == false){
+            String MLOGACCOUNT = System.Label.Triplog_New_URL;        
+            String body, apiToken;
+            
+            if(accountList.size() > 0 ){
+                apiToken = accountList[0].Triplog_API__c;
             }
-        }   
+            String jsonSubset;
+            String baseURL;
+            if(apiToken != null){
+                baseURL = !mLOGACCOUNT.Contains(apiToken) ? StaticValues.TRIPLOG_BASEURL : StaticValues.MLOG_BASEURL;
+            }
+            String rosterURL = baseURL + StaticValues.WELCOME_SUFFIX;
+            body = '{"emails":[';
+            body = body + String.valueof(empEmail) +']}';
+            TriplogPutCall__c objTriplog = TriplogPutCall__c.getValues('RosterControllerPutCall');
+            HttpRequest putReq = new HttpRequest();
+            Http putHTTP = new Http();
+            HttpResponse putRes = new HttpResponse();
+            
+            putReq.setEndpoint(rosterURL);
+            putReq.setMethod('PUT');                 
+            putReq.setBody(body);
+            putReq.setTimeout(120000);
+            putReq.setHeader('Authorization', 'apikey ' + apiToken);
+            putReq.setHeader('Content-Type', 'application/json');
+            if(!Test.isRunningTest() && objTriplog.TriplogPut__c == true){
+                if(objTriplog.TriplogPut__c == true){
+                    putRes = putHTTP.send(putReq);
+                    Map<String,Object> jsonMap = (Map<String, Object>)JSON.deserializeUntyped(putRes.getBody());
+                    jsonSubset = JSON.serialize(jsonMap.get('message'));
+                }
+            } 
+         }
+          
     }
     @Future(callout = true)
     public static void putHTTPEnableUserTriplog(String conId) {
@@ -608,7 +647,7 @@ New Contact is created at that time we have to update plan parameter section's f
                                    }
                                    if(mapVehicleValue.containsKey(con.AccountId + '-' + con.Vehicle_Type__c.toUpperCase())){
                                        con.Vehicle_Value__c = mapVehicleValue.get(con.AccountId + '-' + con.Vehicle_Type__c.toUpperCase());
-                                   }	else {
+                                   }    else {
                                         con.Vehicle_Value__c = null;
                                    }
                                    updateConList.add(con);
