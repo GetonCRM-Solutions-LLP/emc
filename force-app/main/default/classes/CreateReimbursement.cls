@@ -11,8 +11,8 @@ global class CreateReimbursement implements  Database.Batchable<Contact>, Databa
         lastMonth = Utils.fetchMonths(1, -1)[0];
     }
     global List<Contact> start(Database.BatchableContext BC) {
-		Date myDate = system.today();
-        system.debug('myDate'+myDate);
+        Date firstDayOfMonth = System.today().toStartOfMonth();
+        Date lastDayOfMonth = firstDayOfMonth.addDays(Date.daysInMonth(firstDayOfMonth.year(), firstDayOfMonth.month()) - 1);
         List<Contact> conList = new List<Contact>();
         if(!Test.isRunningTest()){
             conList = [SELECT Id,name,Role__c,Fixed_Amount__c, Maintenance_and_Tires__c, MPG__c 
@@ -21,14 +21,13 @@ global class CreateReimbursement implements  Database.Batchable<Contact>, Databa
                                     AND Role__c != 'Manager' 
                                     AND Deactivated_Date__c = NULL 
                                     AND Account.isUsingTriplog__c = true 
-                                    AND Activation_Date__c <= : myDate];
+                                    AND Activation_Date__c <= : lastDayOfMonth];
         } else {
             conList = [SELECT Id,name,Role__c,Fixed_Amount__c, Maintenance_and_Tires__c, MPG__c 
                                 FROM contact 
                                 WHERE Role__c != 'Admin' 
                                     AND Role__c != 'Manager'];
         }
-                system.debug('conList'+conList);
         return conList;
     }
     global Void execute(Database.BatchableContext BC, List<SObject> Scope) { 
