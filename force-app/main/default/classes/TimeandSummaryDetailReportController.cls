@@ -64,8 +64,12 @@ public with sharing class TimeandSummaryDetailReportController {
                                                            objMileageWrap.sync2driveTime = Utils.ConvertMinuteToHours(Integer.valueOf(biweeklyreim.Sync_2_Drive_Time__c));
                                                            objMileageWrap.sync2stayTime = Utils.ConvertMinuteToHours(Integer.valueOf(biweeklyreim.Sync_2_Stay_Time__c ));
                                                            objMileageWrap.sync2Hours = Utils.ConvertMinuteToHours(Integer.valueOf(biweeklyreim.Sync_2_Hours__c));
-                                                           objMileageWrap.sync2Mileage =  biweeklyreim.Sync_2_Mileages__c != null ?(biweeklyreim.Sync_2_Mileages__c).setScale(2) : 0;
-                                                           objMileageWrap.confirmTrips =  biweeklyreim.Confirm_Hours__c != null ? biweeklyreim.Confirm_Hours__c : false;                                                           
+                                                           objMileageWrap.sync2Mileage =  biweeklyreim.Sync_2_Mileages__c != null ?(biweeklyreim.Sync_2_Mileages__c).setScale(2) : 0;                                                             
+                                                           if(biweeklyreim.Confirm_Hours__c != null && biweeklyreim.Confirm_Hours__c == true ){
+                                                               objMileageWrap.confirmTrips = 'Yes';
+                                                           } else {
+                                                                objMileageWrap.confirmTrips = 'No';
+                                                           }                                                       
                                                            if(conEmailVsLogin.containsKey(biweeklyreim.Contact__c)) {
                                                                if(conEmailVsLogin.get(biweeklyreim.Contact__c) != null){
                                                                    DateTime dt = conEmailVsLogin.get(biweeklyreim.Contact__c);
@@ -99,7 +103,7 @@ public with sharing class TimeandSummaryDetailReportController {
         public string sync2Hours { get; set; }
         public decimal sync2Mileage { get; set; }
         public string loginHours { get; set; }
-        public Boolean confirmTrips{ get; set; }
+        public string confirmTrips{ get; set; }
         public string confirmHours { get; set; }
         public mileageWrapper(){
         }

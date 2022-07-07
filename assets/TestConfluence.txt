@@ -1,1 +1,1 @@
-CreateReimbursementTest,HelloSignIntegrationHandlerTest
+HelloSignIntegrationHandlerTest,ContactTriggerHelperTest,TimeandSummaryDetailReportControllerTest
