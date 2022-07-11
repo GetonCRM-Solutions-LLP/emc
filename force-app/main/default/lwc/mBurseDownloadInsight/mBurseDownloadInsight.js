@@ -48,13 +48,12 @@ export default class MBurseDownloadInsight extends LightningElement {
      appleUrl = mBurseCss + '/mburse/assets/Apple_Android/Apple.svg';
 
      // Store image from static resource for video element
-     videoLogoUrl = mBurseCss + '/mburse/assets/clipart3096799.png'
+     videoLogoUrl = mBurseCss + '/mburse/assets/youtube_play_video_icon.png'
 
       // Get a list of custom setting named NewDashboardVideoLink
     @wire(getCustomSettings)
     myCustomSettings({ error, data }){
         if (data) {
-            
              this.androidVideoUrl = data.Download_mLog_Link_For_Android__c;
              this.iosVideoUrl = data.Download_mLog_Link_For_IOS__c;
              this.privacyPledgeUrl = data.Privacy_Pledge_Link__c;
