@@ -4,12 +4,18 @@
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title slds-text-heading_medium slds-p-bottom_x-small slds-text-align_center">{header}</h5>
+                    <h5 class="modal-title slds-text-heading_medium slds-p-bottom_large slds-text-align_center">{header}</h5>
                 </div>
                 <div class="modal-body">
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick={closePopup}>
                         <span aria-hidden="true">&times;</span>
                     </button>
+                    <div class="instruction"  if:true={showInsight}>
+                        <button class="tips-button" onclick={popOut}><i class="fa-solid fa-info"></i></button>
+                        <template if:true={carousel}>
+                            <c-carousel-popover onpop={handlePopover}></c-carousel-popover>
+                        </template>
+                    </div>
                     <!-- 16:9 aspect ratio -->
                     <div class="embed-responsive" if:true={isInsurance}>
                         <div class="footer-text slds-text-heading_medium slds-p-top_large">
@@ -115,7 +121,6 @@
                             <c-m-burse-download-insight onsend={emailSent}></c-m-burse-download-insight>
                         </div>
                     </template>
-                 
                 </div>
             </div>
         </div>

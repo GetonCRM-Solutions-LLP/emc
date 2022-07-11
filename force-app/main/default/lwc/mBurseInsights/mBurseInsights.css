@@ -5,7 +5,28 @@
     }
 }
 
+@keyframes roundB {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}
 
+@keyframes xA {
+    0% {
+        box-shadow:  #78bc427a 0px 0px 0px 10px;
+    }
+
+     70% {
+        box-shadow: rgb(106 120 209 / 0%) 0px 0px 0px 6px;
+    } 
+
+    100% {
+        box-shadow: rgb(106 120 209 / 0%) 0px 0px 0px 10px;
+    }
+}
 .content-table{
     width: 50%;
 }
@@ -67,7 +88,7 @@ table tr td {
     z-index: 9050;
     width: 100%;
     height: 100%;
-    overflow: hidden;
+    overflow: auto;
     outline: 0;
 }
 
@@ -201,4 +222,43 @@ button.close {
     border-radius: 50%;
     -webkit-animation: spinner-border .75s linear infinite;
     animation: spinner-border .75s linear infinite;
+}
+
+.tips-button{
+    position: absolute;
+    right: -215px;
+    top: -46px;
+    border-radius: 50%;
+    padding: 0px;
+    background-color: #78bc42;
+    border: 0px;
+    color: rgb(255, 255, 255);
+    font-weight: 500;
+    opacity: 0;
+    width: 32px;
+    height: 32px;
+    font-size: 14px;
+    line-height: 32px;
+    box-shadow: rgb(106 120 209 / 0%) 0px 0px 0px 0px;
+    animation: 2s ease 2.1s infinite normal none running xA-c-mBurseInsights_mBurseInsights, 0.5s ease 1.4s 1 normal forwards running roundB;
+}
+.ripple{
+    animation: loader--ripple 1s  forwards running cubic-bezier(0, 0.2, 0.8, 1);
+    border: 4px solid;
+    border-radius: 50%;
+    opacity: 1;
+}
+.tips-button::selection {
+    background: none !important;
+    text-shadow: none !important;
+     color: none !important;
+}
+
+.tips-button:focus-visible{
+    outline: none !important;
+}
+
+.instruction{
+    position: relative;
+    float: left;
 }
