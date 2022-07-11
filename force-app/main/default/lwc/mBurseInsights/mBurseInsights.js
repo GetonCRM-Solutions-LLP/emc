@@ -45,6 +45,9 @@ export default class MBurseInsights extends LightningElement {
     loadingIcon = EMC_CSS + '/emc-design/assets/images/Email-Gif-1.gif';
 
     sending = false;
+
+    carousel = false;
+
     // Function to close modal
     closePopup(){
         this.template.querySelector('.modal').style.display = 'none';
@@ -93,8 +96,15 @@ export default class MBurseInsights extends LightningElement {
         }
        
     }
-
     
+    popOut(){
+        this.carousel = true;
+    }
+
+    handlePopover(){
+        this.carousel = false;
+    }
+
     // Function to call when component is created
     connectedCallback() {
         let hashVal = window.location.hash;   /* ---- Get hash value from url --- */
@@ -104,4 +114,6 @@ export default class MBurseInsights extends LightningElement {
         this.header =  (hashVal === '#G1') ? 'Your Plan Preview' : (hashVal === '#G2') ? 'Your Plan Parameters' : (hashVal === '#G3') ? 'mLog App Overview' : (hashVal === '#G4') ? 'Get the mLog app' : 'Your Company Plan'
         this.frameUrl = (hashVal === '#G1') ? this.linkList.Welcome_Link__c : (hashVal === '#G2') ? this.linkList.Insurance_Link__c : (hashVal === '#G3') ? this.linkList.mLog_Preview_Company_Provided_Link__c : (hashVal === '#G5') ? this.client.meetingVideoLink : ""
     }
+
+
 }
