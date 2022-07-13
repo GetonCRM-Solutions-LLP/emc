@@ -7,11 +7,11 @@ global class RG_BatchForApprovingReimburse implements Database.Batchable<sObject
         List<String> obj_accountnames = new List<String>();
         List<String> obj_accountnames1 = new List<String>();
         String querybuilding ='';
-        if(System.Label.TripstobeLogged!=null)
+        if(System.Label.BatchAccountName!=null)
         {
-            if(System.Label.TripstobeLogged.contains(','))
+            if(System.Label.BatchAccountName.contains(','))
             {
-                obj_accountnames= System.Label.TripstobeLogged.split(',');
+                obj_accountnames= System.Label.BatchAccountName.split(',');
             }
             Integer i=0;    
             for(String s:obj_accountnames)
@@ -44,24 +44,20 @@ global class RG_BatchForApprovingReimburse implements Database.Batchable<sObject
         Map<String, List<String>> contactIdOfReimbursement = new Map<String, List<String>>();
         for(Employee_Reimbursement__c singleReimbursement : empReimList) 
         {
-            //if((singleReimbursement.Contact_Id__r.Monthly_Mileage_Limit__c >= singleReimbursement.Total_Mileage_WithOut_Previous__c) || (singleReimbursement.Total_Mileage__c == 0)) 
             if((singleReimbursement.Contact_Id__r.Monthly_Mileage_Limit__c >= singleReimbursement.Total_Mileage__c) /*|| (singleReimbursement.Total_Mileage__c == 0)*/) 
             {
                 singleReimbursement.Status__c = 'Approved';
                 singleReimbursement.Approved_Date__c = System.today();
                 updateReimbursement.add(singleReimbursement);
             } 
-           // else if(singleReimbursement.Contact_Id__r.Monthly_Mileage_Limit__c < singleReimbursement.Total_Mileage_WithOut_Previous__c) 
             else if(singleReimbursement.Contact_Id__r.Monthly_Mileage_Limit__c < singleReimbursement.Total_Mileage__c) 
             {
                 if(!contactIdOfReimbursement.containsKey(singleReimbursement.Contact_Id__r.Manager__r.External_Email__c+'#'+singleReimbursement.Contact_Id__r.Manager__r.FirstName))
                 {
-                   // contactIdOfReimbursement.put(singleReimbursement.Contact_Id__r.Manager__r.External_Email__c+'#'+singleReimbursement.Contact_Id__r.Manager__r.FirstName, new List<String>{String.valueOf(singleReimbursement.Total_Mileage_WithOut_Previous__c)+'#'+String.valueOf(singleReimbursement.Contact_Id__r.Monthly_Mileage_Limit__c)+'#'+singleReimbursement.Contact_Id__r.Name});
                    contactIdOfReimbursement.put(singleReimbursement.Contact_Id__r.Manager__r.External_Email__c+'#'+singleReimbursement.Contact_Id__r.Manager__r.FirstName, new List<String>{String.valueOf(singleReimbursement.Total_Mileage__c)+'#'+String.valueOf(singleReimbursement.Contact_Id__r.Monthly_Mileage_Limit__c)+'#'+singleReimbursement.Contact_Id__r.Name});
                 }
                 else 
                 {
-                  //  contactIdOfReimbursement.get(singleReimbursement.Contact_Id__r.Manager__r.External_Email__c+'#'+singleReimbursement.Contact_Id__r.Manager__r.FirstName).add(String.valueOf(singleReimbursement.Total_Mileage_WithOut_Previous__c)+'#'+String.valueOf(singleReimbursement.Contact_Id__r.Monthly_Mileage_Limit__c)+'#'+singleReimbursement.Contact_Id__r.Name);
                    contactIdOfReimbursement.get(singleReimbursement.Contact_Id__r.Manager__r.External_Email__c+'#'+singleReimbursement.Contact_Id__r.Manager__r.FirstName).add(String.valueOf(singleReimbursement.Total_Mileage__c)+'#'+String.valueOf(singleReimbursement.Contact_Id__r.Monthly_Mileage_Limit__c)+'#'+singleReimbursement.Contact_Id__r.Name);
                 }
             }
@@ -114,30 +110,5 @@ global class RG_BatchForApprovingReimburse implements Database.Batchable<sObject
     }
     global void finish(Database.BatchableContext BC) 
     {
-         RG_AutoApprovedEmailClass att = new  RG_AutoApprovedEmailClass();
-            if(!Test.isRunningTest()) 
-            {
-            // Database.executeBatch(att, 2);
-            }
-        
-        /*Batch_Setup__c batchsetupConfig = new Batch_Setup__c();
-        batchsetupConfig = [Select AutoApprovedEmail__c, BatchForApprovingReimburse__c From Batch_Setup__c ];
-        if(batchsetupConfig.BatchForApprovingReimburse__c == false)
-        {
-            batchsetupConfig.BatchForApprovingReimburse__c = true;
-            update batchsetupConfig;
-            
-        }
-        if(batchsetupConfig.AutoApprovedEmail__c == True)
-        {
-            batchsetupConfig.AutoApprovedEmail__c = false;
-            update batchsetupConfig;
-            RG_AutoApprovedEmailClass att = new  RG_AutoApprovedEmailClass();
-            if(!Test.isRunningTest()) 
-            {
-               // Database.executeBatch(att, 2);
-            }
-        }*/
-        
     }
 }

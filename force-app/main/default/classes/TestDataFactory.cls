@@ -1,5 +1,32 @@
 @isTest
 public with sharing class TestDataFactory {
+
+    /** 
+    * ********************************************************
+    * Developer Name - Dhanraj Khatri
+    * This method is test data for create TrueDialog_Keys__c custom setting record.
+    * ********************************************************
+    */
+    public static TrueDialog_Keys__c createTrueDialog(Boolean doInsert){
+        TrueDialog_Keys__c tdKeys = new TrueDialog_Keys__c();
+            
+        tdKeys.Client_Id__c='1ab59fe33353401b8fd8da05716caaf5';
+        tdKeys.Client_Secret__c='Jx8$z9*T/rY5';
+        tdKeys.Base_URL__c  = 'https://api.truedialog.com/api/v2.1/account/';
+        tdKeys.Account_Id__c = '18409';
+        tdKeys.Callback_Token__c='bd054ccb-372b-40d3-a304-26cd540b4768';
+        tdkeys.Channel_Id__c='22'; 
+        tdkeys.Name='TrueDialogKeys';
+        tdKeys.Subscription_Id__c='22639';
+
+        if(doInsert){
+            insert tdKeys;
+        }
+        return tdKeys;
+     
+    }
+
+
     /** 
     * ********************************************************
     * This method is test data for create IRS_Mileage_Rate__c.
@@ -272,7 +299,7 @@ public with sharing class TestDataFactory {
     * ********************************************************
     */
     public static Contact createCICDContact(Boolean doInsert,Id accountId) {
-        Contact contactObj = new Contact(AccountId = accountId, LastName = 'xgeek',External_Email__c='abc@gmail.com');
+        Contact contactObj = new Contact(AccountId = accountId, LastName = 'xgeek',External_Email__c='abc@gmail.com', MobilePhone = '1234567890');
         if(doInsert){
             insert contactObj;
         }
@@ -293,6 +320,7 @@ public with sharing class TestDataFactory {
             con.AccountId = accountId;
             con.External_Email__c = emailName + i + '@gmail.com';
             con.Phone = '1234566787';
+            con.MobilePhone = '1234566787';
             con.Driver_Type__c = 'Driver - Full Time';
             con.Deactivated_Date__c = null;
             con.Insurance_Attachment_Id__c = Null;
@@ -303,7 +331,8 @@ public with sharing class TestDataFactory {
             con.IsCreatedFromCommunity__c = false;
             con.Triplog_UserID__c = '23rcdsf';
             con.ReimbursementStatementBatch__c = true;            
-            con.Manager__c = null;                
+            con.Manager__c = null;   
+            con.Monthly_Mileage_Limit__c = -1;             
             conList.add(con);                
         }       
         if(doInsert){
@@ -408,6 +437,7 @@ public with sharing class TestDataFactory {
             empMileage.Trip_Status__c = StaticValues.noApprovedYet; 
             empMileage.Approved_Date__c = null;
             empMileage.Tag__c = 'Admin';   
+            empMileage.Rejected__c = false;
             empMilageList.add(empMileage);
         }
         if(doInsert){
@@ -452,22 +482,19 @@ public with sharing class TestDataFactory {
         }
         return addressList;
     }
-    
-     public static List<Gas_Prices__c> createGasPrice(Boolean doInsert, string city, date monthYear, Integer nmbrRecord){
-        List<Gas_Prices__c> gasPriceList = new List<Gas_Prices__c>();
-        for(Integer i = 0; i <= nmbrRecord; i++) {
-            Gas_Prices__c gasPrice = new Gas_Prices__c();
-          	gasprice.City__c = 'Denver';
-            gasprice.Fuel_Price__c = 3;
-            gasprice.Month_Year__c = Date.today().adddays(-1);
-            gasprice.State__c = 'CA';
-            gasPriceList.add(gasprice);
+	
+     public static Batch_Setup__c getTestBatchSetup(Boolean doInsert){
+        Batch_Setup__c bsSet = new Batch_Setup__c();
+        
+        bsSet.Name = 'Test Batch';
+        bsSet.AutoApprovedEmail__c = True;
+        bsSet.BatchForApprovingReimburse__c = True;
+        bsSet.GetTripBatch__c = True;
+        bsSet.InsertLastMonthReimbursement__c = True;
+        bsSet.UpdateLastToLastMonthMileagesBatch__c = True;
+         if(doInsert){
+            insert bsSet;
         }
-        if(doInsert){
-            insert gasPriceList;
-        }
-        return gasPriceList;
-    }
-
-     
+        return bsSet;
+    } 
 }
