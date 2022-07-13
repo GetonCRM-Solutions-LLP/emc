@@ -6,7 +6,7 @@
  *                last completed pay period.                                                              *
  * -------------------------------------------------------------------------------------------------------*
  * Modified by :- PARAS DHANANI                                                                           *
- * Modified Date :- 16/03/2022                                                                            *
+ * Modified Date :- 22/06/2022                                                                            *
  **********************************************************************************************************/ 
 
 
@@ -15,8 +15,7 @@ Global with sharing  class WeeklyTimeSheetController Implements Schedulable  {
     Global  List<EmailTemplate> temp;
     Global  OrgWideEmailAddress[] owea;
     date reimEndDate = system.today().adddays(-1);
-    //String  accID = System.Label.ERMI_Account; 
-     
+ 
     Global WeeklyTimeSheetController() {
          temp = new List<EmailTemplate>([SELECT id, Subject, body, HTMLValue 
                                          FROM EmailTemplate 
@@ -28,18 +27,16 @@ Global with sharing  class WeeklyTimeSheetController Implements Schedulable  {
         getWeeklyDriversData();
     }
     Global void getWeeklyDriversData (){
-        system.debug('reimEndDate==' + reimEndDate);
         Messaging.SingleEmailMessage mail;
         List<Messaging.SingleEmailMessage> mail_list = new List<Messaging.SingleEmailMessage>();
         for (Bi_Weekly_Reimbursement__c biweeklyReim : [SELECT id,name, Confirm_Hours__c,Total_Drive_Time__c,Contact__r.FirstName,
-                                                                    Total_Stay_Time__c,Total_Time__c,Contact__r.External_Email__c 
+                                                                    Total_Stay_Time__c,Total_Time__c,Contact__r.External_Email__c,
+                                                                    Contact__r.Driver_Type__c
                                                             FROM Bi_Weekly_Reimbursement__c
-                                                            //WHERE Contact__r.AccountId =: accID
                                                             WHERE Contact__r.Account.Name = 'Ermi' 
-                                                                    AND (Contact__r.Driver_Type__c = 'Driver - Full Time' or Contact__r.Driver_Type__c = 'Driver - Part Time' )
                                                                     AND Start_Date__c != Null
                                                                     AND End_Date__c  != Null
-                                                                    AND End_Date__C =:  reimEndDate ]){
+                                                                    AND End_Date__C =: reimEndDate]){
                 List<String> sendingTo = new List<String>();
             string htmlbody = '';
             mail = new Messaging.SingleEmailMessage();
@@ -54,10 +51,13 @@ Global with sharing  class WeeklyTimeSheetController Implements Schedulable  {
             htmlbody = htmlbody.replace('{!Contact.FirstName}', biweeklyReim.Contact__r.FirstName);
             htmlbody = htmlbody.replace('{!Bi_Weekly_Reimbursement__c.Name}', biweeklyReim.name ); 
             htmlbody = htmlbody.replace('{!$Label.Driver_Forword_Logo}', System.Label.Driver_Forword_Logo);
+            if(biweeklyReim.Contact__r.Driver_Type__c != 'Driver - Salary'){
+                htmlbody = htmlbody.replace('{!mileage}', 'weekly time and mileage');
+            } else {
+                htmlbody = htmlbody.replace('{!mileage}', 'mileage');
+            }
             mail.setPlainTextBody(htmlbody);
             List<String> bccaddress = new list<String>();
-            bccaddress.add('driverservices@mburse.com');
-            bccaddress.add('paras.dhanani@getoncrm.com');
             mail.setBccAddresses(bccaddress);
             mail.setHtmlBody(htmlbody);
             mail_list.add(mail);
