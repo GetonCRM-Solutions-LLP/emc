@@ -441,8 +441,8 @@ public with sharing class WrapperUtils
             currentEmployeeMileage.fuelRate = string.valueof(employeeMileage.Fuel_price__c);
         }
 
-        if(employeeMileage.EmployeeReimbursement__r.Total_Variable_Rate__c != null){
-            currentEmployeeMileage.variablerate = string.valueof(employeeMileage.EmployeeReimbursement__r.Total_Variable_Rate__c);
+        if(employeeMileage.Variable__c != null){
+            currentEmployeeMileage.variablerate = string.valueof(employeeMileage.Variable__c);
         }
 
         currentEmployeeMileage.dayofweek='';
@@ -2792,7 +2792,7 @@ public with sharing class WrapperUtils
                                                             EmployeeReimbursement__r.Total_Rejected__c,Notes__c,EmployeeReimbursement__r.Mileage_Lock_Date__c,Activity__c
                                                     FROM Employee_Mileage__c 
                                                     WHERE 
-                                                    //Trip_Status__c =: StaticValues.noApprovedYet AND Approved_Date__c = null AND 
+                                                    Trip_Status__c =: StaticValues.noApprovedYet AND Approved_Date__c = null AND 
                                                     EmployeeReimbursement__c IN : reimbursement.reimbursementIdList])
             {
                 employeeMileagesList.add(getMileagesOfReimbursement(currentMileage));
