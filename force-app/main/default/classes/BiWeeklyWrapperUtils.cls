@@ -401,7 +401,7 @@ public with sharing class BiWeeklyWrapperUtils {
                                                             Bi_Weekly_Reimbursement__r.Total_Rejected__c,Notes__c,Bi_Weekly_Reimbursement__r.Mileage_Lock_Date__c,Activity__c
                                                     FROM Employee_Mileage__c 
                                                     WHERE 
-                                                    //Trip_Status__c =: StaticValues.noApprovedYet AND Approved_Date__c = null AND 
+                                                    Trip_Status__c =: StaticValues.noApprovedYet AND Approved_Date__c = null AND 
                                                     Bi_Weekly_Reimbursement__c IN : reimbursement.reimbursementIdList])
             {
                 employeeMileagesList.add(getMileagesOfReimbursement(currentMileage));

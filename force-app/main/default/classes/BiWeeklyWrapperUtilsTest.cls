@@ -272,7 +272,8 @@ public class BiWeeklyWrapperUtilsTest {
         BiWeeklyWrapperUtils.getLastMonthReimbursements(string.valueOf(con[0].Id), string.valueOf(acc[0].Id),true,'Driver/Admin');
         BiWeeklyWrapperUtils.getEmployeeReimbursementDetails(bireim[0]);
         BiWeeklyWrapperUtils.getMileagesOfReimbursement(emp[0]);
-        BiWeeklyWrapperUtils.getBiweekReimId(con[0].Id, system.today(),false);   
+        BiWeeklyWrapperUtils.getBiweekReimId(con[0].Id, system.today(),True);
+       
     }
         
 }
