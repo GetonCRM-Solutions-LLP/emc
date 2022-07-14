@@ -5,7 +5,7 @@ global class UpdateLastToLastMonthMileagesBatch implements Database.Batchable<sO
     public List<Employee_Mileage__c> obj_Mileage_to_update= new List<Employee_Mileage__c>();
     public string header = 'Mileage ID,Reimbersment Name,Maintenance and Tires,MPG,Month,Contact name\n';
     public string finalstr = header ; 
-
+    
     global list<Employee_Mileage__c> start(Database.BatchableContext BC) 
     {
         obj_map_contactid_reimbersement = new Map<String, Employee_Reimbursement__c>();
@@ -41,7 +41,6 @@ global class UpdateLastToLastMonthMileagesBatch implements Database.Batchable<sO
         {
             obj_unapprovedMileage_List = [SELECT Id,Trip_Date__c,Contact_Email_Id__c,EmployeeReimbursement__r.contact_Id__r.account.Lock_date__c,EmployeeReimbursement__r.contact_Id__r.account.Name,EmployeeReimbursement__r.Month__c,EmployeeReimbursement__r.contact_Id__r.Name,EmployeeReimbursement__r.contact_Id__r.accountId,approved_date__c FROM Employee_Mileage__c WHERE EmployeeReimbursement__r.contact_Id__r.accountId != null AND EmployeeReimbursement__r.Month__c IN : last2Months AND EmployeeReimbursement__c !=: emp AND Approved_Date__c = null AND Trip_Status__c =:Label.Not_Approved_Yet_Mileage_Status AND Rejected__c = false];
         }
-        
         for(Employee_Mileage__c obj_currentMileage: obj_unapprovedMileage_List) 
         {
             if(String.isNotBlank(obj_currentMileage.Contact_Email_Id__c)) 
@@ -50,7 +49,6 @@ global class UpdateLastToLastMonthMileagesBatch implements Database.Batchable<sO
                 obj_currentMileage.From_Previous_Months__c = true;
                 obj_Mileage_List.add(obj_currentMileage);
                 uniqueemail.add(obj_currentMileage.Contact_Email_Id__c);
-               
             }
         }
         if(Test.isRunningTest()) 
@@ -67,12 +65,6 @@ global class UpdateLastToLastMonthMileagesBatch implements Database.Batchable<sO
         {
             obj_map_contactid_reimbersement.put(er.Contact_Email__c, er);
         }
-        System.debug('uniqueemail :-'+uniqueemail);
-        System.debug('obj_Mileage_List :-'+obj_Mileage_List);
-        System.debug('obj_map_contactid_reimbersement :-'+obj_map_contactid_reimbersement);
-        System.debug('uniqueemail size :-'+uniqueemail.size());
-        System.debug('obj_Mileage_List size :-'+obj_Mileage_List.size());
-        System.debug('obj_map_contactid_reimbersement size :-'+obj_map_contactid_reimbersement.size());
         return obj_Mileage_List;
     }    
     global void execute(Database.BatchableContext BC, List<Employee_Mileage__c> Scope) 
@@ -114,40 +106,16 @@ global class UpdateLastToLastMonthMileagesBatch implements Database.Batchable<sO
         csvAttc.setBody(csvBlob);
         Messaging.SingleEmailMessage email = new Messaging.SingleEmailMessage();
         String[] toAddresses = new list<string> {'natavar.goc@gmail.com'};
-        email.setSubject('Mileage Status');
+            email.setSubject('Mileage Status');
         email.setToAddresses(toAddresses);
         if(obj_Mileage_to_update.isEmpty()) {
-            system.debug('empty----');
             email.setPlainTextBody('Hi, All mileages Carryforworded from previous months. Thank you.');
         } else {
-            system.debug('not empty----');
             email.setPlainTextBody('Hi, Please Find the CSV for Carryforworded mileage last to last month. Thank you.');
             email.setFileAttachments(new Messaging.EmailFileAttachment[]{csvAttc});    
         }
         if(!Test.isRunningTest()) {
             Messaging.SendEmailResult [] sendSinglemail = Messaging.sendEmail(new Messaging.SingleEmailMessage[] {email});
         }
-        SendEmailForSubmittedMileage status = new SendEmailForSubmittedMileage();
-            if(!Test.isRunningTest()) 
-            {
-                //Database.executeBatch(status, 1);
-            }
-        /*Batch_Setup__c batchsetupConfig = new Batch_Setup__c();
-        batchsetupConfig = [Select BatchForApprovingReimburse__c, UpdateLastToLastMonthMileagesBatch__c From Batch_Setup__c ];
-        if(batchsetupConfig.UpdateLastToLastMonthMileagesBatch__c == false)
-        {
-            batchsetupConfig.UpdateLastToLastMonthMileagesBatch__c = true;
-            update batchsetupConfig;
-        }
-        if(batchsetupConfig.BatchForApprovingReimburse__c == True)
-        {
-            batchsetupConfig.BatchForApprovingReimburse__c = false;
-            update batchsetupConfig;
-            SendEmailForSubmittedMileage status = new SendEmailForSubmittedMileage();
-            if(!Test.isRunningTest()) 
-            {
-                //Database.executeBatch(status, 1);
-            }
-        } */  
     }
 }
