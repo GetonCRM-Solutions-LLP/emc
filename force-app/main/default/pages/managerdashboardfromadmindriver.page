@@ -1599,7 +1599,8 @@
                 Visualforce.remoting.Manager.invokeAction('{!$RemoteAction.ManagerDashboardFromAdminController.getAllDriversLastMonthUpdatedUnapprovedReimburseClone1}', $scope.managerid, $scope.accid, $scope.showteam,
                     function (result, event) {
                         if (event.status && result != null) {
-                            $scope.AllDriversLastMonthUnapprovedReimbursementsclone = JSON.parse(result);
+                            var data = result.replace(/\\'/g, "\'")
+                            $scope.AllDriversLastMonthUnapprovedReimbursementsclone = JSON.parse(data);
                             $('#spinner').hide();
                             $scope.$apply();
                             $scope.loadpage();
@@ -1621,8 +1622,8 @@
                 Visualforce.remoting.Manager.invokeAction('{!$RemoteAction.ManagerDashboardFromAdminController.getAllDriversLastMonthUpdatedReimbursements}', $scope.managerid, $scope.accid, $scope.showteam,
                     function (result, event) {
                         if (event.status && result != null) {
-                            $scope.AllDriversLastMonthReimbursements = JSON.parse(result);
-
+                            var data = result.replace(/\\'/g, "\'")
+                            $scope.AllDriversLastMonthReimbursements = JSON.parse(data);
                             $scope.$apply();
                             $scope.loadpage();
                         }

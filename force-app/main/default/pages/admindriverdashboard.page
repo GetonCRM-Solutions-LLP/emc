@@ -1450,7 +1450,8 @@ function ($filter) {
                     Visualforce.remoting.Manager.invokeAction('{!$RemoteAction.AdminDashboardController.getAllDriversLastMonthUpdatedReimbursements}',$scope.aid,$scope.accid,$scope.showteam,
                         function(result, event) {
                             if(event.status && result != null) {
-                                $scope.AllDriversLastMonthReimbursements = JSON.parse(result);
+                                var data = result.replace(/\\'/g, "\'")
+                                $scope.AllDriversLastMonthReimbursements = JSON.parse(data);
                                 $scope.$apply();
                                 $scope.loadpage();
                             }
@@ -1501,12 +1502,12 @@ function ($filter) {
             }
             $scope.okforapprove = function () {
                 $('#spinner').show();
-
                 $scope.$modalInstance.close();
                 Visualforce.remoting.Manager.invokeAction('{!$RemoteAction.AdminDashboardController.getAllDriversLastMonthUpdatedUnapprovedReimburseClone1}', $scope.aid, $scope.accid, $scope.showteam,
                     function (result, event) {
                         if (event.status && result != null) {
-                            $scope.AllDriversLastMonthUnapprovedReimbursementsClone = JSON.parse(result);
+                            var data = result.replace(/\\'/g, "\'")
+                            $scope.AllDriversLastMonthUnapprovedReimbursementsClone = JSON.parse(data);
                             $('#spinner').hide();
                             $scope.$apply();
                             $scope.loadpage();

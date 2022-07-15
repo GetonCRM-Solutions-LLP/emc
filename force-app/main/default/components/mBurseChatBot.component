@@ -1,17 +1,12 @@
 <apex:component >
-    <style type="text/css">
-        .support-container{
-            position: fixed;
-            bottom: 0;
-            right: 0;
-            padding-right:  20px;
-        }
-        .vfFrame_Support{
-            height: 100vh;
-        }
-    </style>
-    <!-- chat bot container -->
-    <div class="support-container">
-        <iframe class="vfFrame_Support" src="/app/mBurseChat"  width="378" style="border: 0"></iframe>
-    </div>
+      <script id="ze-snippet" src="https://static.zdassets.com/ekr/snippet.js?key=f696683e-2f24-4e6c-97b0-b3da9d4e0a8e"> </script>
+      <script type="text/javascript">
+        window.zESettings = {
+          webWidget: {
+            offset: {
+              horizontal: '20px'
+            }
+          }
+        };
+      </script>
 </apex:component>
