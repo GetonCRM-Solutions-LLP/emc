@@ -186,7 +186,7 @@ public with sharing class NewAccountDriverController {
     /*This method is use for Hello sign integration.It will send driver packet to Driver */
     @AuraEnabled(cacheable = true) 
     public static string sendSignatureRequestForDriver(String userEmail,String contactName){
-        sendEmailToDriver(userEmail,contactName,null);
+        //sendEmailToDriver(userEmail,contactName,null);
         Set<String> newUserEmailSet = new Set<String>();
         newUserEmailSet.add(userEmail);
         HelloSignIntegrationHandler.sendSignatureRequestForDriver(newUserEmailSet);
