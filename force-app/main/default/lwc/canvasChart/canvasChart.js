@@ -11,15 +11,17 @@ export default class CanvasChart extends LightningElement {
     error;
     chart;
     chartJsInitialized = false;
+    @api chartComponent;
     @api chartData;
     @api defaultMonth;
     config;
     /* fires after every render of the component. */
     renderedCallback() {
+        var _self = this;
         if (this.chartJsInitialized) {
             return;
         }
-       
+
         this.chartJsInitialized = true;
         /* Load Static Resource For Script*/
         Promise.all([
@@ -102,7 +104,7 @@ export default class CanvasChart extends LightningElement {
                                 },
                                 position: 'right',
                                 align: 'end',
-                               
+
                             },
                             tooltips: {
                                 backgroundColor: 'rgba(0, 77, 0, 1)',
@@ -114,27 +116,32 @@ export default class CanvasChart extends LightningElement {
                                 usePointStyle: true,
                                 callbacks: {
                                     title: function (tooltipItem, data) {
-                                      var tooltipTitle;
-                                      var titleInitial = data.labels[tooltipItem[0].index];
-                                      var titleIndex = tooltipItem[0].index;
-                                      monthData.forEach((element) => {
-                                          monthList.forEach((ymonth, index)=>{
-                                            var m = ymonth;
-                                            var charString = m.charAt(0);
-                                            if(charString === titleInitial){
-                                                if(titleIndex === index){
-                                                    if(m === element.substring(0,3)){
-                                                        tooltipTitle = element;
+                                        var tooltipTitle;
+                                        var titleInitial = data.labels[tooltipItem[0].index];
+                                        var titleIndex = tooltipItem[0].index;
+                                        monthData.forEach((element) => {
+                                            monthList.forEach((ymonth, index) => {
+                                                var m = ymonth;
+                                                var charString = m.charAt(0);
+                                                if (charString === titleInitial) {
+                                                    if (titleIndex === index) {
+                                                        if (m === element.substring(0, 3)) {
+                                                            tooltipTitle = element;
+                                                        }
                                                     }
                                                 }
-                                            }
-                                          })
-                                      })
-                                     return tooltipTitle;
+                                            })
+                                        })
+                                        return tooltipTitle;
                                     },
-                                    label: function(tooltipItem, data){
+                                    label: function (tooltipItem, data) {
                                         //tooltipItem.yLabel = tooltipItem.yLabel.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-                                        return data.datasets[tooltipItem.datasetIndex].label +': ' + tooltipItem.yLabel.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                                        if (_self.chartComponent === 'Reimbursement') {
+                                            return data.datasets[tooltipItem.datasetIndex].label + ': ' + "$" + tooltipItem.yLabel.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                                        } else {
+                                            return data.datasets[tooltipItem.datasetIndex].label + ': ' + tooltipItem.yLabel.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                                        }
+
                                     }
                                 }
                             },
