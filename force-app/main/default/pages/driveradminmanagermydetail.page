@@ -1865,25 +1865,25 @@
                             <div class="card insurance-declatarion-card" ng-repeat="yr in years">
                                 <div class="card-header" role="tab" id="Cardheading">
                                     <h5 class="mb-0">
-                                        <a  ng-show="driverConDetails.Monthly_Reimbursement__c" class="collapsed" data-toggle="collapse" href="#collapseCard{{$index}}" aria-expanded="false" aria-controls="collapseCard"
-                                            ng-click="fetchMileage(yr)">
+                                        <a  ng-show="driverConDetails.Monthly_Reimbursement__c" class="collapsed" data-toggle="collapse" href="#collapseCard{{$index}}" aria-expanded="false" aria-controls="collapseCard{{$index}}"
+                                            ng-click="fetchMileage(yr)"  role="button">
                                             {{yr}}
                                         </a>
                                         <!-- Year Link For Pl Marketing Account -->
-                                        <a ng-show="driverConDetails.Biweek_Reimbursement__c && biWeekContact" class="collapsed" data-toggle="collapse" href="#collapseReimbPLCard{{$index}}" aria-expanded="false" aria-controls="collapseReimbPLCard"
-                                        ng-click="fetchReimbMileage(yr)">
+                                        <a ng-show="driverConDetails.Biweek_Reimbursement__c && biWeekContact" class="collapsed" data-toggle="collapse" href="#collapseReimbPLCard{{$index}}" aria-expanded="false" aria-controls="collapseReimbPLCard{{$index}}"
+                                        ng-click="fetchReimbMileage(yr)"  role="button">
                                         {{yr}}
                                         </a>
                                         <!-- Year Link For ERMI Account-->
-                                        <a ng-show="driverConDetails.Biweek_Reimbursement__c && !biWeekContact" class="collapsed" data-toggle="collapse" href="#collapseReimbCard{{$index}}" aria-expanded="false" aria-controls="collapseReimbCard"
-                                        ng-click="fetchErmiReimbMileage(yr)">
+                                        <a ng-show="driverConDetails.Biweek_Reimbursement__c && !biWeekContact" class="collapsed" data-toggle="collapse" href="#collapseReimbCard{{$index}}" aria-expanded="false" aria-controls="collapseReimbCard{{$index}}"
+                                        ng-click="fetchErmiReimbMileage(yr)"  role="button">
                                         {{yr}}
                                         </a>
                                     </h5>
                                     <!-- Time And Attendance For Account-->
                                       <h5 class="mb-0 ml-5" ng-show="driverConDetails.Time_Attandance__c"> <!--  ng-if="accid === ERMIAcc && driverType != 'Driver - Salary' " -->
-                                        <a class="collapsed" data-toggle="collapse" href="#collapseTimeCard{{$index}}" aria-expanded="false" aria-controls="collapseTimeCard"
-                                            ng-click="fetchTimeAttendence(yr)">
+                                        <a class="collapsed" data-toggle="collapse" href="#collapseTimeCard{{$index}}" aria-expanded="false" aria-controls="collapseTimeCard{{$index}}"
+                                            ng-click="fetchTimeAttendence(yr)"  role="button">
                                             T &amp; A
                                         </a>
                                     </h5>
