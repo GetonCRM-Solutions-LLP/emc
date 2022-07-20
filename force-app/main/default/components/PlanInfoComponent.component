@@ -545,6 +545,7 @@
                             </apex:outputPanel>
                         </apex:outputPanel>
     
+                        
                         <apex:outputPanel rendered="{!insuranceDocCount == 0}">
                             <div class="tab-pills-width ng-pristine ng-valid emc_insurance_tab_pills">
                                 <div class="plan-info-timeline">

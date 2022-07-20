@@ -1,0 +1,147 @@
+<template>
+    <div role="dialog" class="doc-container" if:true={nameOfDriver}>
+        <div class="embedded-chat">
+            <header class="sidebarHeader">
+                <div class="header_main">
+                    <div class="avatar_main">
+                        <img src={avatar} class="avatar-img" />
+                    </div>
+                    <h2 class="chat-contact-name">{nameOfDriver}</h2>
+                </div>
+                <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" title="Close"
+                    onclick={handleClose}>
+                    <lightning-icon icon-name="utility:close" size="x-small" class="closeButton">
+                        <svg focusable="false" data-key="check" class="slds-button__icon slds-button__icon_large"
+                            aria-hidden="true">
+                            <use xlink:href="#check" class="slds-icon-text-default"></use>
+                        </svg>
+                    </lightning-icon>
+                    <span class="slds-assistive-text">Close</span>
+                </button>
+            </header>
+            <div class="sidebarBody">
+                <div></div>
+                <div class="chatActive">
+                    <div class="stateBody">
+                        <div class="messageArea">
+                            <div tabindex="0" class="messageContent">
+                                <div class="bot-title">Text Messages</div>
+                                <template if:true={filterMessage}>
+                                    <template for:each={filterMessage} for:item="list">
+                                        <div class="conversation-start" key={list.aId}>
+                                            <span if:true={list.isString}>{list.Title}</span>
+                                            <span if:false={list.isString}>
+                                                <lightning-formatted-date-time value={list.Title} year="numeric"
+                                                    day="2-digit" month="long"></lightning-formatted-date-time>
+                                            </span>
+                                        </div>
+                                        <ul class="messageWrapper" key={list.aId}>
+                                            <template if:true={list.Messages}>
+                                                <template for:each={list.Messages} for:item="record">
+                                                    <li class="chatMessage" key={record.Id}>
+                                                        <div if:false={record.Incoming_Message__c}
+                                                            class="chat_container">
+                                                            <div class="chat__message-truedialog chat__message-sender">
+                                                                <div>
+                                                                    <p>{record.Message__c}</p>
+                                                                </div>
+                                                            </div>
+                                                            <div
+                                                                class="slds-grid slds-grid_vertical-align-center slds-grid_align-end chat_message-time slds-p-vertical_medium">
+                                                                <lightning-formatted-date-time value={record.parseValue}
+                                                                    hour="2-digit" minute="2-digit"
+                                                                    time-zone="America/Panama">
+                                                                </lightning-formatted-date-time>
+                                                            </div>
+                                                        </div>
+
+                                                        <div if:true={record.Incoming_Message__c}
+                                                            class="chat_container">
+                                                            <div
+                                                                class="chat__message-truedialog chat__message-receiver">
+                                                                <div class="date"></div>
+                                                                <div>
+                                                                    <p>{record.Message__c}</p>
+                                                                </div>
+                                                            </div>
+                                                            <div
+                                                                class="slds-grid slds-grid_vertical-align-center slds-grid_align-end chat_message-time slds-p-vertical_medium">
+                                                                <lightning-formatted-date-time value={record.parseValue}
+                                                                    hour="2-digit" minute="2-digit"
+                                                                    time-zone="America/Panama">
+                                                                </lightning-formatted-date-time>
+                                                            </div>
+                                                        </div>
+                                                        <!--{record.Contacts__r.Time_Zone__c}-->
+                                                        <!-- <section aria-describedby="dialog-body-id-109" aria-label="Dialog Title"
+                                                                class="slds-popover slds-nubbin_right-top slds-popover_small slds-popover_admin" role="dialog" if:false={record.Incoming_Message__c}>
+                                                                <div class="slds-popover__body">
+                                                                    <div class="slds-media">
+                                                                        <div class="slds-media__body">
+                                                                            <p>{record.Message__c}</p>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <footer class="slds-popover__footer">
+                                                                    <div class="slds-grid slds-grid_vertical-align-center slds-grid_align-end">
+                                                                        <lightning-formatted-date-time value={record.parseValue} year="numeric" day="2-digit" month="long"></lightning-formatted-date-time>
+                                                                        <span>&nbsp;</span>
+                                                                        <lightning-formatted-date-time value={record.parseValue} hour="2-digit"
+                                                                        minute="2-digit" time-zone={record.Contacts__r.Time_Zone__c}></lightning-formatted-date-time>
+                                                                    </div>
+                                                                </footer>
+                                                            </section> -->
+                                                        <!-- <section aria-describedby="dialog-body-id-109" aria-label="Dialog Title"
+                                                                class="slds-popover slds-nubbin_left-top  slds-popover_small slds-popover_driver" role="dialog" if:true={record.Incoming_Message__c}>
+                                                                <div class="slds-popover__body">
+                                                                    <div class="slds-media">
+                                                                        <div class="slds-media__body">
+                                                                            <p>{record.Message__c}</p>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <footer class="slds-popover__footer">
+                                                                    <div class="slds-grid slds-grid_vertical-align-center slds-grid_align-end">
+                                                                        <lightning-formatted-date-time value={record.parseValue} year="numeric" day="2-digit" month="long"></lightning-formatted-date-time>
+                                                                        <span>&nbsp;</span>
+                                                                        <lightning-formatted-date-time value={record.parseValue} hour="2-digit"
+                                                                        minute="2-digit" time-zone={record.Contacts__r.Time_Zone__c}></lightning-formatted-date-time>
+                                                                    </div>
+                                                                </footer>
+                                                            </section> -->
+                                                    </li>
+                                                </template>
+                                            </template>
+                                            <template if:false={messageRecords}>
+                                                <li class="chatMessage">
+                                                </li>
+                                            </template>
+                                        </ul>
+                                    </template>
+                                </template>
+                            </div>
+                        </div>
+                        <div class="inputWrapper" tabindex="-1">
+                            <div class="message-controls">
+                                <textarea class="slds-textarea message-input" role="textbox" rows="2"
+                                    placeholder="Type your message..." onkeypress={onSendMessage}></textarea>
+                            </div>
+                            <!-- <div class="file-upload-button">
+                                <img id="file-image" src=""  class="chat__file-image">
+                                <label>
+                                    <input type="file" class="file-input" accept="image/png, image/jpeg" onchange={inputChange}>
+                                    <span class="chat__input-fileupload"><i class="fa-solid fa-circle-plus fa-xl"></i></span>
+                                </label>
+                            </div>
+                            <div class="close-image">
+                                <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse">
+                                    <i class="fa-solid fa-circle-xmark fa-xl"></i>
+                                </button>
+                            </div> -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</template>

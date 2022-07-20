@@ -1,0 +1,28 @@
+*{
+    font-family: 'Proxima Nova' !important;
+}
+.page-span{
+    font-size: 16px;
+}
+.slds-text-color_weak{
+    font-weight: bold;
+    color: #78bc42  !important;
+    font-size: 16px !important;
+}
+.customSelect select {
+    padding-right: 1.25rem;
+    min-height: inherit;
+    line-height: normal;
+    height: 1.7rem;    
+    font-size: .875rem;
+}
+
+.customInput {
+    width: 3rem;
+    height: 1.4rem;
+    text-align: center;
+    border: 1px solid #44a359;
+    border-radius: 3px;
+    background-color:#fff;
+    font-size: 16px;
+}

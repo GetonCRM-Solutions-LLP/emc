@@ -340,6 +340,10 @@ body, td {
   border-radius: 0px !important;
 }
 
+.upload-button{
+  font-size: 18px !important;
+}
+
 .btn-secondary:hover {
   color: #fff !important;
   background: #657080 !important;

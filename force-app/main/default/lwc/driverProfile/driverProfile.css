@@ -84,6 +84,10 @@
         width: 200px !important;
         font-size: 18px !important;
     }
+	.complete-td{
+		width: auto !important;
+       font-size: 18px !important;
+	}
 
     .td-width {
         width: 189px !important;
@@ -335,7 +339,14 @@ table tr td {
     width: 113px;
     color: #fff;
 }
-
+.complete-td{
+		background: #78bc42;
+    width: 200px;
+    color: #fff;
+    font-weight: 600;
+    padding-left: 12px !important;
+    font-size: 15px;
+}
 .border-css {
     border: solid 1px #ccc;
 }

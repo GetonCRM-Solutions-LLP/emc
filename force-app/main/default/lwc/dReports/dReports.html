@@ -1,0 +1,95 @@
+<template>
+    <!-- <select class="js-example-theme-multiple" data-name="select"  style="width: 50%">
+    </select> -->
+    <div class="slds-table--header-fixed_container scrollTable"  style="height:450px;">
+        <div class="slds-scrollable_y" style="height:100%;">
+        <table class="slds-table slds-table_bordered  slds-table_header-fixed  slds-table_fixed-layout slds-table_striped" id="tableSel">
+            <thead class="slds-border_bottom">
+                <tr>
+                    <template if:true={headers}>
+                        <template for:each={headers} for:item="head">
+                            <th scope="col" key={head.label} class={head.thClass}>
+                                <div title={head.label} class={head.cssClass}>
+                                    <a onclick={sort} name={head.name} class="header-link">
+                                        {head.label}
+                                    </a>
+                                    <span>
+                                        <lightning-icon icon-name="utility:chevronup" size="x-small"
+                                            if:true={head.arrowUp} class="sort-icon slds-p-left_xx-small">
+                                        </lightning-icon>
+                                        <lightning-icon icon-name="utility:chevrondown" size="x-small"
+                                            if:true={head.arrowDown} class="sort-icon slds-p-left_xx-small">
+                                        </lightning-icon>
+                                    </span>
+                                </div>
+                            </th>
+                        </template>
+                    </template>
+                </tr>
+            </thead>
+            <tbody>               
+                <template if:true={isRecord}>
+                    <template for:each={body} for:item="rowData" for:index="index">
+                        <tr key={rowData}>
+                            <template for:each={rowData.keyFields} for:item="mapKey">
+                                <template if:true={mapKey.dateTimeField}>
+                                    <td key={mapKey.key}>
+                                        <div class="slds-truncate dv-dynamic-width">
+                                            <lightning-formatted-date-time value={mapKey.value} hour="2-digit"
+                                                minute="2-digit" time-zone="America/Cancun">
+                                            </lightning-formatted-date-time>
+                                        </div>
+                                    </td>
+                                </template>
+                                <template if:false={mapKey.dateTimeField}>
+                                    <td key={mapKey.key} class="slds-truncate dv-dynamic-width">
+                                        {mapKey.value}
+                                    </td>
+                                    <!-- <template if:true={mapKey.truncate}>
+                                        <td  data-id={index} key={mapKey.key} class="slds-truncate dv-dynamic-width" onmouseover={mouseOver} onmouseout={mouseOut}>
+                                            <div  data-id={index} class="naoTooltip-wrap">
+                                                <div class="naoTooltip naoStyle_active nt-right nt-medium">{mapKey.value}</div>
+                                            </div>
+                                            {mapKey.value}
+                                        </td>
+                                    </template>
+                                    <template if:false={mapKey.truncate}>
+                                        <td key={mapKey.key} class="slds-truncate dv-dynamic-width">
+                                            {mapKey.value}
+                                        </td>
+                                    </template> -->
+                                </template>
+                            </template>
+                        </tr>
+                    </template>
+                </template>
+                <template if:false={isRecord}>
+                    <tr>
+                        <td colspan="100%">
+                            <div class="slds-align_absolute-center">{noData}</div>
+                        </td>
+                    </tr>
+                </template>
+            </tbody>
+            <tfoot>
+            </tfoot>
+        </table>
+        </div>
+    </div>
+    <div class="naoTooltip-wrap">
+
+        <!-- Put your content in any kind of tag -->
+        <span>Hover me! (right Tooltip)</span>
+
+        <!--
+            Use the class `naoTooltip` along with the classes `nt-right/nt-left/nt-top/nt-bottom`
+            depending where do you want to display your tooltip and the classes
+            `nt-small/nt-medium/nt-large` to set the desire size
+        -->
+        <div class="naoTooltip nt-right nt-small">
+            I'm an amazing tooltip! With a small size!
+        </div>
+
+    </div>
+      <!-- <div data-name="dropdown" lwc:dom="manual"></div> -->
+</template>

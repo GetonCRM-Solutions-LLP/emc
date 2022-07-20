@@ -1,0 +1,115 @@
+<template>
+    <!-- Spinner Start -->
+    <template if:true={isSpinner}>
+        <c-espinner></c-espinner>
+    </template>
+    <!-- Spinner End -->
+
+    <!-- Download Start -->
+    <template if:true={isDownloading}>
+        <div class="loading-container">
+            <div class="loading-background"></div>
+            <div class="loading"></div>
+            <div class="loading-text">Downloading...</div>
+        </div>
+    </template>
+
+    <!-- Download End -->
+
+
+    <!-- My Team , Company and Unapproved Tab Start-->
+    <ul class="nav-pills">
+        <li class="nav-pills-item mb-2 mb-md-0">
+            <a class={showTeamClass} data-target="#pills-admin-dashbord-myteam" data-toggle="pill"
+                data-id="myteam-pills" onclick={myTeamTabClick}>My Team</a>
+        </li>
+        <li class="nav-pills-item mb-2 mb-md-0">
+            <a class="nav-pill-link" data-target="#pills-admin-dashbord-mileage" data-toggle="pill"
+                data-id="unapprove-pills" onclick={unApproveTabClick}>Unapproved Mileage</a>
+        </li>
+        <li class="nav-pills-item mb-2 mb-md-0">
+            <a class={companyTabClass} data-target="#pills-admin-dashbord-showteam" data-toggle="pill"
+                data-id="showteam-pills" onclick={showTeamTabClick}>Company</a>
+        </li>
+    </ul>
+    <!-- My Team , Company and Unapproved Tab End-->
+
+    <!--Dashboard Table Start-->
+    <div class="team-dashboard">
+        <!--My Team Table -->
+        <template if:true={showTable}>
+            <c-xlsx-mockup header-list={xlsHeader} filename={fileNameformyteam} worksheet-name-list={workSheetNameList}
+                sheet-data={xlsData}></c-xlsx-mockup>
+            <template if:true={lengthofMyTeam}>
+                <c-dashboard-table headers={tableHeaders} body={recordsToDisplay} is-record={showData} no-data="No Mileage Available"
+                    key-name={keyFields} is-checkbox={checkboxType} display-checkbox-for-approve={displayApproveBtn}
+                    onallrowselection={handleAllRowSelection} onrowselection={handleRowSelection}
+                    onopenmodalforalert={alertForProcessing}>
+                </c-dashboard-table>
+                <div class="slds-p-top_large">
+                    <!-- Pagination Starts -->
+                    <c-c-paginator records={tableBody} total-records={tableBody.length} options={keyFields}
+                        show-search-box="true" search-style="slds-float_right slds-is-absolute absolute-input"
+                        onpaginatorchange={handlePaginatorChange} onsearching={searchStart}>
+                    </c-c-paginator>
+                    <!-- Pagination Ends -->
+                </div>
+            </template>
+            <template if:false={lengthofMyTeam}>
+                <c-dashboard-table headers={tableHeaders} body={tableBody} is-record={showRecordForMyTeam} no-data="No Mileage Available"
+                    key-name={keyFields} is-checkbox={checkboxType} display-checkbox-for-approve={displayApproveBtn}
+                    onallrowselection={handleAllRowSelection} onrowselection={handleRowSelection}
+                    onopenmodalforalert={alertForProcessing}>
+                </c-dashboard-table>
+            </template>
+
+            <div class="slds-float_right slds-m-right_small slds-m-top_large">
+                <!-- Submit and Download For Team Dashboard Starts -->
+                <template if:true={displayTeamBtn}>
+                    <button class="btn button_secondary" onclick={approveReimbursementOfDriver}>Submit</button>
+                </template>
+                <template if:true={showRecordForMyTeam}>
+                    <button class="btn slds-button_success footer_button" onclick={download}>Download
+                        <i class="fa fa-download slds-p-left_xx-small"></i>
+                    </button>
+                </template>
+            </div>
+        </template>
+        <template if:true={showUnapproveTable}>
+            <c-xlsx-mockup header-list={xlsHeader} filename={fileNameforunapprove}
+                worksheet-name-list={workSheetNameList} sheet-data={xlsData}></c-xlsx-mockup>
+            <template if:true={lengthofUnapproveReimb}>
+                <c-dashboard-table headers={tableUnapproveHeaders} body={recordsToDisplay} is-record={showData} no-data="No Unapproved Mileage"
+                    key-name={keyFields} is-checkbox={checkboxType} display-checkbox-for-approve={displayApproveBtn}
+                    onallrowselection={handleAllUnapproveRowSelection} onrowselection={handleUnapproveRowSelection}
+                    onopenmodalforunapprove={handleOpenModalForUnapprove} onopenmodalforalert={alertForProcessing}>
+                </c-dashboard-table>
+                <div class="slds-p-top_large">
+                    <c-c-paginator records={unapproveTList} total-records={unapproveTList.length} options={unapproveKey}
+                        show-search-box="true" search-style="slds-float_right slds-is-absolute absolute-input"
+                        onpaginatorchange={handlePaginatorChange}>
+                    </c-c-paginator>
+                </div>
+            </template>
+            <template if:false={lengthofUnapproveReimb}>
+                <c-dashboard-table headers={tableUnapproveHeaders} body={unapproveTList} no-data="No Unapproved Mileage"
+                    is-record={showRecordForUnapprove} key-name={keyFields} is-checkbox={checkboxType}
+                    display-checkbox-for-approve={displayApproveBtn} onallrowselection={handleAllUnapproveRowSelection}
+                    onrowselection={handleUnapproveRowSelection} onopenmodalforunapprove={handleOpenModalForUnapprove}
+                    onopenmodalforalert={alertForProcessing}>
+                </c-dashboard-table>
+            </template>
+            <div class="slds-float_right slds-m-right_small slds-m-top_large">
+                <template if:true={displayUnapproveBtn}>
+                    <button class="btn button_secondary" onclick={unapproveReimbursementsofDriver}>Submit</button>
+                </template>
+                <template if:true={showRecordForUnapprove}>
+                    <button class="btn slds-button_success footer_button" onclick={unapproveDownload}>Download
+                        <i class="fa fa-download slds-p-left_xx-small"></i>
+                    </button>
+                </template>
+              
+            </div>
+        </template>
+    </div>
+</template>

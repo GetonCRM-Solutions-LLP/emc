@@ -21,6 +21,8 @@ export default class DriverProfile extends LightningElement {
     notifyList = [];
     fuelPrice;
     fixedAmount;
+    variableRate;
+    isComplete = false;
     isfuelPrice = true;
     isIncompliance = false;
     formattedReim;
@@ -44,6 +46,7 @@ export default class DriverProfile extends LightningElement {
     // companyIconUrl = EMC_CSS + '/emc-design/assets/images/company-name-img.png';
     flagIconUrl = EMC_CSS + '/emc-design/assets/images/Driver-dashboard-icons/YTD_mileage_flag.svg';
     noNotification = EMC_CSS + '/emc-design/assets/images/no-new-notification.png';
+    variableRateUrl = EMC_CSS + '/emc-design/assets/images/Driver-dashboard-icons/Variable_rate.png';
     connectedCallback() {
         if (this.contactDetails.accountLogo === null && this.contactDetails.accountName === null && this.contactDetails.annualMileages === null && this.contactDetails.annualReim === null && this.contactDetails.carImage === null && this.contactDetails.city === null && this.contactDetails.complianceMileage === null && this.contactDetails.compliancestatus === null && this.contactDetails.contactName === null && this.contactDetails.driverType === null && this.contactDetails.drivingState === null && this.contactDetails.drivingStates === null && this.contactDetails.fixedAmount === null && this.contactDetails.insurance === null && this.contactDetails.insuranceAttchId === null && this.contactDetails.insuranceDate === null && this.contactDetails.mileagemeet === null && this.contactDetails.notimessage === null && this.contactDetails.planInsurance === null && this.contactDetails.planYears === null && this.contactDetails.state === null && this.contactDetails.vehicalType === null && this.contactDetails.vehicleValue === null && this.contactDetails.vehicleage === null && this.contactDetails.vehiclevaluecheck === null && this.contactDetails.zipCode === null) {
             this.isInformation = false;
@@ -68,6 +71,12 @@ export default class DriverProfile extends LightningElement {
                 this.fixedAmount = this.contactDetails.fixedAmount;
             }
 
+            if (this.contactDetails.variableRate === null || this.contactDetails.variableRate === undefined) {
+                this.variableRate = 0;
+            } else {
+                this.variableRate = this.contactDetails.variableRate;
+            }
+
             if (this.GasPrice[0] != undefined) {
                 this.fuelPrice = this.GasPrice[0].Fuel_Price__c;
             } else {
@@ -79,6 +88,7 @@ export default class DriverProfile extends LightningElement {
             } else {
                 this.mileageUnapproved = formatter.format(this.unapproveMileage[0].Total_Pending__c);
             }
+            this.isComplete = (parseFloat(this.contactDetails.annualMileages) >= parseFloat(this.contactDetails.complianceMileage)) ? true : false;
             this.formattedMileage = formatter.format(this.contactDetails.annualMileages);
             this.formattedReim = this.formatNumber(this.contactDetails.annualReim);
             if (this.contactDetails.complianceMileage) {
@@ -89,9 +99,9 @@ export default class DriverProfile extends LightningElement {
             if (this.contactDetails.vehicleValue) {
                 this.vehicleValue = this.formatNumber(this.contactDetails.vehicleValue);
             }
-            if(this.accountId === this.plMarketing){
+            if (this.accountId === this.plMarketing) {
                 this.isShowMessage = false;
-            }else{
+            } else {
                 this.isShowMessage = true;
             }
             this.driverNotification();

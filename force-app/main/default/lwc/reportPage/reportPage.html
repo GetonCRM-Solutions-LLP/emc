@@ -1,0 +1,45 @@
+<template>
+    <c-emc-navbar>
+        <li class="nav-item">
+            <a class="nav-link text-white" title="Home">
+                Dashboard
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link text-white" title="Menu Item">
+                Mileage
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link text-white" title="Menu Item">
+                Communications
+            </a>
+        </li>
+        <li class="nav-item active">
+            <a class="nav-link text-white" title="Menu Item">
+                Reports
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link text-white" title="Menu Item">
+                My Details
+            </a>
+        </li>
+
+        <li class="nav-item">
+            <a href="/app/secur/logout.jsp" class="nav-link text-white" title="Menu Item">
+                Logout
+            </a>
+        </li>
+    </c-emc-navbar>
+    <section class="container-fluid">
+    <c-c-filter-report></c-c-filter-report>
+    <c-d-reports headers={reportHeader} body={recordsToDisplay} is-record={showData} no-data="No Data Available">
+    </c-d-reports>
+    <div class="slds-p-top_large" if:true={reportList.length}>
+        <c-c-paginator records={reportList} total-records={reportList.length} options={keyFields}
+            onpaginatorchange={handlePaginatorChange}>
+        </c-c-paginator>
+    </div>
+    </section>
+</template>
