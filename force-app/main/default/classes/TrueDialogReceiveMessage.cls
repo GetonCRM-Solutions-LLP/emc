@@ -25,10 +25,7 @@ global class TrueDialogReceiveMessage {
 
         FetchRequestBody = (Map<String, Object>)JSON.deserializeUntyped(req.requestbody.tostring());
 
-        Case case1 = new Case();
-        case1.Id = '5008H000001xmYHQAY';
-        case1.Description = req.requestbody.tostring();
-        update case1;
+        
 
         Integer trueDialogContactId = (Integer)FetchRequestBody.get('ContactId');
 
