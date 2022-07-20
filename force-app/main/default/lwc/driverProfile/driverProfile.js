@@ -88,7 +88,7 @@ export default class DriverProfile extends LightningElement {
             } else {
                 this.mileageUnapproved = formatter.format(this.unapproveMileage[0].Total_Pending__c);
             }
-            this.isComplete = (parseFloat(this.contactDetails.annualMileages) > parseFloat(this.contactDetails.complianceMileage)) ? true : false;
+            this.isComplete = (parseFloat(this.contactDetails.annualMileages) >= parseFloat(this.contactDetails.complianceMileage)) ? true : false;
             this.formattedMileage = formatter.format(this.contactDetails.annualMileages);
             this.formattedReim = this.formatNumber(this.contactDetails.annualReim);
             if (this.contactDetails.complianceMileage) {
