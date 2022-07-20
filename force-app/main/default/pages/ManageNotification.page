@@ -1652,7 +1652,8 @@
                         $scope.manRole = '{!managerrole}'
                         $scope.mburseUrl = ($scope.role === 'Admin') ? 'admindashboard' : ($scope.role === 'Driver/Manager') ? 'drivermanagerdashboard' : ($scope.role === 'Manager') ? 'managerdashboard' : 'admindriverdashboard';
             $scope.nameOfPage = 'Communications';
-            console.log("role->", $scope.role, $scope.manRole);
+            $scope.isTextMessaging = {!checkTrueDialog};
+            console.log("role->", $scope.role, $scope.manRole,  $scope.isTextMessaging);
             if ($scope.driverInfo.length > 10) {
                 var elmHeight = document.getElementById("tableWrap").offsetHeight;
                 var screenHeight = window.screen.height;
@@ -3695,7 +3696,8 @@
                         <a ng-click="insuranceProcess()" data-content="Send email to driver/admin to submit your insurance declaration page">Insurance Reminder</a>
                     </li>
                     <li class="action-nav-list" ng-class="{'flex_basis' : accid === PLMarketing}">
-                        <a ng-click="massText()" data-content="Send mass text & notification messages">Messaging</a>
+                        <a ng-click="massText()" data-content="Send mass text & notification messages" ng-show="isTextMessaging">Messaging</a>
+                        <a ng-click="massText()" data-content="Send mass notification messages" ng-show="!isTextMessaging">Messaging</a>
                     </li>
                     <li class="action-nav-list" ng-if="accid === PLMarketing" ng-class="{'flex_basis' : accid === PLMarketing}">
                         <a ng-click="mileageProcess()" data-content="Upload your trips with mileages in biweekly pay period">Mileage Upload</a>
@@ -3747,7 +3749,7 @@
                         <button class="slds-btn slds-btn-primary slds-btn-sm waves-effect bc-blue waves-light mleft-0" ng-show="showResendBtn" ng-click="displayCheckboxForEmail()">
                             Resend Insurance Reminder
                         </button>
-                        <button class="slds-btn slds-btn-primary slds-btn-sm waves-effect bc-blue waves-light mleft-0" ng-show="showTextMsgBtn" ng-click="displayCheckboxForText()">
+                        <button class="slds-btn slds-btn-primary slds-btn-sm waves-effect bc-blue waves-light mleft-0" ng-show="showTextMsgBtn && isTextMessaging" ng-click="displayCheckboxForText()">
                             Mass Text Message
                         </button>
                         <button class="slds-btn slds-btn-primary slds-btn-sm waves-effect bc-blue waves-light mleft-0" ng-show="showNotiBtn" ng-click="displayCheckboxForNotiText()">
@@ -3945,11 +3947,10 @@
                                                 ng-click="openNotification(info, $index);">
                                                 <i class="fa-solid fa-at"></i>
                                             </a>
-
                                             <a class="slds-button float btn-neutral-padding slds-button_neutral slds-button_dual-stateful slds-is-pressed slds-p-right_small"
-                                                ng-click="openMessageBot(info, $index);" ng-if="info.trueDialogId">
-                                                <i class="fa-solid fa-comment-dots"></i>
-                                                <span class="icon-button__badge" ng-show="isGreater(info.unReadMessageCount)">{{info.unReadMessageCount}}</span>
+                                                ng-click="openMessageBot(info, $index);" ng-if="info.trueDialogId && isTextMessaging">
+                                                    <i class="fa-solid fa-comment-dots"></i>
+                                                    <span class="icon-button__badge" ng-show="isGreater(info.unReadMessageCount)">{{info.unReadMessageCount}}</span>
                                             </a>
                                         </div>
                                     </td>

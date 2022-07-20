@@ -9,10 +9,9 @@ public with sharing class ManageNotificationController {
     public static String logoDocument_id {get;set;}
     public string conWrapper {get; set;} 
     public string milWrapper {get; set;}
-    public  static Boolean isTestClass = false;
-
-
-        /** 
+    public static Boolean isTestClass = false;
+    public static Boolean checkTrueDialog {get; set;} 
+    /** 
     * ********************************************************
     Developer Name : Dhanraj Khatri
     * sendMessageToMultipleContacts - Method for Sending Message to multiple contacts
@@ -20,41 +19,21 @@ public with sharing class ManageNotificationController {
         trueDialogContactIdList : JSON of List Of TrueCaller Contact Id
         message : message
     Note : 1.ActionId will be same for all the message that will send in bulk.
-
     * ********************************************************
     */
     
-     @RemoteAction
-    public static String sendMessageToMultipleContacts(String trueDialogContactIdList,String message){
-
-        System.debug('****message***'+message);
-        System.debug('***List OF TDContactID JSON*****'+trueDialogContactIdList);
-        
+    @RemoteAction
+    public static String sendMessageToMultipleContacts(String trueDialogContactIdList,String message){        
         List<String> trueDialogContactIdListArray = (List<String>)System.JSON.deserialize(trueDialogContactIdList, List<String>.class);
-        
-        System.debug('****TrueDialog Contact Id Array*****'+trueDialogContactIdListArray);
-
         String result;
         try {
-
             HttpResponse response = new HttpResponse();
-
             String requestBody = TrueDiaolgSendMessageWrapper.generateBulkSendMessageReqBody(trueDialogContactIdListArray,message);
-        
-            System.debug('*****Request Body*****'+requestBody);
-
-            response = TrueDialogAPICallout.executeCallout('POST','action-pushCampaign',requestBody,null);
-            
-            System.debug('*****Response Body*****'+response.getBody());
-            
+            response = TrueDialogAPICallout.executeCallout('POST','action-pushCampaign',requestBody,null);   
             List<Message__c> lstMessage = new List<Message__c>();
-
             Database.SaveResult[] saveResultList ;
-            
-            if (response.getStatusCode() < 300) {
-               
-                TrueDiaolgSendMessageWrapper trueDialogWrapper = TrueDiaolgSendMessageWrapper.parse(response.getBody());
-                
+            if (response.getStatusCode() < 300) {               
+                TrueDiaolgSendMessageWrapper trueDialogWrapper = TrueDiaolgSendMessageWrapper.parse(response.getBody());                
                 for(Contact con : [Select Id,TrueDialog_Contact_Id__c FROM Contact 
                                     WHERE TrueDialog_Contact_Id__c IN: trueDialogContactIdListArray]){
 
@@ -62,21 +41,15 @@ public with sharing class ManageNotificationController {
                     messageRecord.Contacts__c = con.Id;
                     messageRecord.Action_Id__c = trueDialogWrapper.id;
                     messageRecord.Message__c = message;
-
                     lstMessage.add(messageRecord);
                 }
                 saveResultList = Database.insert(lstMessage, false);
             
-            }else{
-  
+            } else {  
                 String trueDialogError =response.getBody() + ',' + response.getStatusCode() + ': ' + response.getStatus() + '\n';
                 System.debug(trueDialogError);
                 throw new TrueDialogApiException(trueDialogError);
-            } 
-
-
-            System.debug('*****messageRecord*****'+lstMessage);
-
+            }
             if (saveResultList[0].isSuccess()) {
                 System.debug('Successfully inserted message. Message ID: ' + saveResultList[0].getId());
                 result = 'success';
@@ -84,15 +57,11 @@ public with sharing class ManageNotificationController {
             else {                 
                 result = 'failed';
             }
-        }catch (Exception e) {
+        } catch (Exception e) {
             System.debug('The following exception has occurred: ' + e.getMessage());
-        }
-       
-        return 'success';
-            
-    }
-    
-    
+        }       
+        return 'success';            
+    }    
         /** 
     * ********************************************************
     *  Developer Name-Dhanraj Khatri
@@ -174,7 +143,10 @@ public with sharing class ManageNotificationController {
                                     WHERE id =: manager ];
                         managerrole = conList[0].Role__c ;                 
         }
+        
         if(accId != null){
+           Account objAccount = [SELECT id,True_Dialog__c from Account where id =: accId];
+           checkTrueDialog = objAccount.True_Dialog__c != null ? objAccount.True_Dialog__c : false;
            conWrapper = NewEmployeeData(accId,adminId );
         }
     }
@@ -224,11 +196,11 @@ public with sharing class ManageNotificationController {
                                     conWrapList.add(conWrap);
                 }
             } 
-        	else 
+            else 
             {
                 for(Contact con : [SELECT id,FirstName, LastName, Insurance__c, Expiration_Date__c,
-                                    Notification_Message__c ,External_Email__c,Triplog_UserID__c,
-                                    Insurance_Attachment_Id__c, Notification_Date__c,
+                                    Notification_Message__c ,External_Email__c,Triplog_UserID__c,TrueDialog_Contact_Id__c,
+                                    Insurance_Attachment_Id__c, Notification_Date__c,Unread_Message_Count__c,
                                     Role__c
                                 FROM Contact 
                                 WHERE AccountId =: accountId

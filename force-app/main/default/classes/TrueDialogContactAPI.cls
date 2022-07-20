@@ -69,7 +69,7 @@ global  class  TrueDialogContactAPI implements Database.Batchable<sObject>,Datab
                 }else{
   
                     String trueDialogError =response.getBody() + ',' + response.getStatusCode() + ': ' + response.getStatus() + '\n';
-                    System.debug(trueDialogError);
+                    
                     throw new TrueDialogApiException(trueDialogError);
                 } 
                 
@@ -77,13 +77,13 @@ global  class  TrueDialogContactAPI implements Database.Batchable<sObject>,Datab
             update conList; 
 
         } catch (Exception e) {
-            System.debug('The following exception has occurred: ' + e.getMessage());
+            
                 
         }  
     }
 
     global void finish(Database.BatchableContext BC){
-        System.debug('All requested contact data synced with truedialog');
+        
     }
 
 
