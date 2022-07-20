@@ -53,7 +53,7 @@ public class ManageNotificationControllerTest {
             account_1.Pay_Period_Start_Date__c = system.today().adddays(-130);
           insert account_1;
           
-          Contact contact_1 = new Contact(AccountId = account_1.Id, LastName = 'xgeek',External_Email__c='abc@gmail.com');
+          Contact contact_1 = new Contact(AccountId = account_1.Id, LastName = 'xgeek',External_Email__c='abc@gmail.com',MobilePhone='9212229222');
           insert contact_1;
            acc.Name = 'Test Account';
             acc.Triplog_API__c = '123456789';
@@ -75,11 +75,12 @@ public class ManageNotificationControllerTest {
         con.Insurance_Attachment_Id__c = Null;
         con.Vehicle_Type__c = '2019 Ford Escape';  
         con.Role__c = 'Driver';
+        con.MobilePhone='7339238393';
            
             conList.add(con);
         }
         insert conList;
-        
+ 
             
         con2.FirstName = 'Priyanka';
         con2.LastName = 'Gajera';
@@ -89,6 +90,7 @@ public class ManageNotificationControllerTest {
         con2.Role__c = 'Admin';
         con2.Insurance_Attachment_Id__c = Null;
         con2.Employee_ID__c = '123456';
+        con2.MobilePhone='2232312333';
         insert con2;
         
         con3.FirstName = 'Priyanka';
@@ -99,6 +101,7 @@ public class ManageNotificationControllerTest {
         con3.Deactivated_Date__c = Null;
         con3.Role__c = 'Manager';
         con3.Insurance_Attachment_Id__c = Null;
+        con3.MobilePhone='7374939233';
         insert con3;
         
         
@@ -111,7 +114,10 @@ public class ManageNotificationControllerTest {
         con1.Role__c = 'Driver';
         con1.Insurance_Attachment_Id__c = Null;
         con1.Vehicle_Type__c = '2019 Ford Escape';
+        con1.MobilePhone='9374922933';
         insert con1;
+               
+            
         
       user_1 = new User( 
         Email = 'yourusername@gmail.com',
@@ -167,8 +173,15 @@ public class ManageNotificationControllerTest {
         System.runAs(user_1) {
 
         ManageNotificationController mc = new ManageNotificationController();
+
         ManageNotificationController.NewEmployeeData(Acc.Id,con2.id);
         ManageNotificationController.NewEmployeeData(Acc.Id,con3.id);
+                   // ManageNotificationController mm= new ManageNotificationController();
+            		ManageNotificationController.isTestClass = true;
+                    ManageNotificationController.NewEmployeeData(Acc.Id,con1.id);
+            
+        
+            
         ManageNotificationController.UploadLocation(json,Acc.Id);
         ManageNotificationController.UploadMileage(json2,Acc.Id,con2.Id,'2021-06-30','2021-08-31');
         
@@ -180,4 +193,87 @@ public class ManageNotificationControllerTest {
             ManageNotificationController.DeleteTrips(con2.id);
        }
     }
+    
+    
+        /** 
+    * ********************************************************
+    * test method for Sending Message API callout
+    * ********************************************************
+    */
+    
+    
+    @isTest
+    public static void sendMessageToMultipleContacts(){
+      
+        TriggerConfig__c triggerCustomSetting = TestDataFactory.triggerConfigCustomSetting(true);
+        SendEmail__c sendEmailCustomSetting = TestDataFactory.sendEmailCustomSetting(true, 'Send Email For Compliance');
+        IRS_Mileage_Rate__c irsRateObj = TestDataFactory.createIRSRate(true,0);
+        List<Address__c> objAddress = TestDataFactory.createAddress(true, 10);
+        
+        Vehicle_URL_Mapping__c vehicleType = TestDataFactory.createVehicleData(false, 3);
+        vehicleType.Name = '2019 Full-Size Sedan';
+        vehicleType.vehicle__c = 'Full-Size Sedan';
+        Insert vehicleType;
+        
+        TrueDialog_Keys__c tdKeys = TestDataFactory.createTrueDialog(true);
+        
+        System.debug('tdKeys in test class'+tdKeys);
+      
+        Account a = TestDataFactory.createAccount(true, 'demo', false);
+        
+        Contact c  = TestDataFactory.createCICDContact(false, a.id);
+        
+        c.email='test@gmail.com';
+        c.MobilePhone='+13239638840';
+        c.lastName='Veer';
+        c.firstName='Sharma';
+        c.External_Email__c='test@gmail.com';
+        c.TrueDialog_Contact_Id__c='81071892';
+        c.MobilePhone='9843223443';
+        insert c;
+        
+        Contact con2 = new Contact();
+        con2.FirstName = 'Priyanka';
+        con2.LastName = 'Gajera';
+        con2.AccountId = a.Id;
+        con2.External_Email__c = 'minkegsh.patel1478@gmail.com';
+        con2.Deactivated_Date__c = Null;
+        con2.Role__c = 'Admin';
+        con2.Insurance_Attachment_Id__c = Null;
+        con2.Employee_ID__c = '123456';
+        con2.MobilePhone='2232316533';
+        insert con2;
+        
+        List<String> lstTDContactId = new List<String>();
+		lstTDContactId.add(c.TrueDialog_Contact_Id__c);
+        
+        String lstTDContactIdJson = JSON.serialize(lstTDContactId);
+        
+	        
+        Message__c message = new Message__c();
+        message.Message__c='test contact id';
+        message.Contacts__c=c.id;
+        insert message;
+
+        List<Id> idList =new List<Id>();
+        idList.add(c.id);
+            
+        Test.setMock(HttpCalloutMock.class, new TrueDialogMockCallout());   
+        Test.startTest();
+
+        TrueDialogSendMessageAPI.getAllMessageByContact(c.id);
+        ManageNotificationController.sendMessageToMultipleContacts(lstTDContactIdJson,'Hello');
+        ManageNotificationController.getUnreadMessageCount();
+        ManageNotificationController.UpdateUnreadMessageStatus(c.Id);
+      	ManageNotificationController.TrueDialogContact(a.Id,con2.id);
+        
+        //TrueDialogSendMessageAPI.updateAllMessageAsSeen(c.id);
+
+        
+        Test.stopTest();
+    
+    }
+    
+    
+    
 }

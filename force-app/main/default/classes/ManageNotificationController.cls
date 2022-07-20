@@ -9,8 +9,156 @@ public with sharing class ManageNotificationController {
     public static String logoDocument_id {get;set;}
     public string conWrapper {get; set;} 
     public string milWrapper {get; set;}
+    public  static Boolean isTestClass = false;
+
+
+        /** 
+    * ********************************************************
+    Developer Name : Dhanraj Khatri
+    * sendMessageToMultipleContacts - Method for Sending Message to multiple contacts
+    *Parameters:
+        trueDialogContactIdList : JSON of List Of TrueCaller Contact Id
+        message : message
+    Note : 1.ActionId will be same for all the message that will send in bulk.
+
+    * ********************************************************
+    */
+    
+     @RemoteAction
+    public static String sendMessageToMultipleContacts(String trueDialogContactIdList,String message){
+
+        System.debug('****message***'+message);
+        System.debug('***List OF TDContactID JSON*****'+trueDialogContactIdList);
+        
+        List<String> trueDialogContactIdListArray = (List<String>)System.JSON.deserialize(trueDialogContactIdList, List<String>.class);
+        
+        System.debug('****TrueDialog Contact Id Array*****'+trueDialogContactIdListArray);
+
+        String result;
+        try {
+
+            HttpResponse response = new HttpResponse();
+
+            String requestBody = TrueDiaolgSendMessageWrapper.generateBulkSendMessageReqBody(trueDialogContactIdListArray,message);
+        
+            System.debug('*****Request Body*****'+requestBody);
+
+            response = TrueDialogAPICallout.executeCallout('POST','action-pushCampaign',requestBody,null);
+            
+            System.debug('*****Response Body*****'+response.getBody());
+            
+            List<Message__c> lstMessage = new List<Message__c>();
+
+            Database.SaveResult[] saveResultList ;
+            
+            if (response.getStatusCode() < 300) {
+               
+                TrueDiaolgSendMessageWrapper trueDialogWrapper = TrueDiaolgSendMessageWrapper.parse(response.getBody());
+                
+                for(Contact con : [Select Id,TrueDialog_Contact_Id__c FROM Contact 
+                                    WHERE TrueDialog_Contact_Id__c IN: trueDialogContactIdListArray]){
+
+                    Message__c messageRecord = new Message__c();
+                    messageRecord.Contacts__c = con.Id;
+                    messageRecord.Action_Id__c = trueDialogWrapper.id;
+                    messageRecord.Message__c = message;
+
+                    lstMessage.add(messageRecord);
+                }
+                saveResultList = Database.insert(lstMessage, false);
+            
+            }else{
+  
+                String trueDialogError =response.getBody() + ',' + response.getStatusCode() + ': ' + response.getStatus() + '\n';
+                System.debug(trueDialogError);
+                throw new TrueDialogApiException(trueDialogError);
+            } 
+
+
+            System.debug('*****messageRecord*****'+lstMessage);
+
+            if (saveResultList[0].isSuccess()) {
+                System.debug('Successfully inserted message. Message ID: ' + saveResultList[0].getId());
+                result = 'success';
+            }
+            else {                 
+                result = 'failed';
+            }
+        }catch (Exception e) {
+            System.debug('The following exception has occurred: ' + e.getMessage());
+        }
+       
+        return 'success';
+            
+    }
+    
+    
+        /** 
+    * ********************************************************
+    *  Developer Name-Dhanraj Khatri
+        getUnreadMessageCount - Return all the contact with its unread Message count
+    * ********************************************************
+    */
+
+    @RemoteAction 
+    public static String getUnreadMessageCount(){      
+        List<Contact> lstContact = new List<Contact>();       
+        try{
+            lstContact = [Select id,Name,Unread_Message_Count__c 
+                            FROM Contact ];
+           
+        }catch(Exception e){
+            System.debug('The following exception has occurred: ' + e.getMessage());
+        }
+        return JSON.serialize(lstContact);
+    }  
+
+
+      /** 
+    * ********************************************************
+    *  Developer Name-Dhanraj Khatri
+        UpdateUnreadMessageStatus - update all message of contact with false
+    * ********************************************************
+    */
+
+    @RemoteAction 
+    public static String UpdateUnreadMessageStatus(String contactId){
+       
+        String result;
+      
+        try{
+            List<Message__c> lstMessage = [Select id, Contacts__c, 
+                                            Unread__c,Contacts__r.Time_Zone__c
+                                            FROM Message__c 
+                                            WHERE Contacts__c =: contactId ];
+
+            for(Message__c message : lstMessage){
+                message.Unread__c = false ;
+            }
+
+            Database.SaveResult[] saveResultList = Database.update(lstMessage);
+
+            for(Integer i=0; i < saveResultList.size(); i++) {
+                if (saveResultList[i].isSuccess()) {
+                    System.debug('Successfully update message record.');
+                    result = 'success';
+                }
+                else {                 
+                    result = 'failed';
+                    break;
+                }
+            }
+        }catch(Exception e){
+            System.debug('The following exception has occurred: ' + e.getMessage());
+        }
+
+        return result;
+    }  
+
     
     public ManageNotificationController() {
+        
+         
         accId = ApexPages.currentPage().getParameters().get('accId');
         adminId = ApexPages.currentPage().getParameters().get('id');
         String manager;
@@ -36,12 +184,15 @@ public with sharing class ManageNotificationController {
         List<Contact> conList = [SELECT id,name,Role__c 
                                     FROM Contact 
                                     WHERE id =: adminId];
-                  role = conList[0].Role__c ;                  
+                  role = conList[0].Role__c ;  
+        
+       
         List<ContactWrapper> conWrapList = new List<ContactWrapper>();
-        if(conList.size() > 0 && (conList[0].Role__c == StaticValues.ROLE_ADMIN || conList[0].Role__c == StaticValues.roleAdminDriver)){
+        
+        if(conList.size() > 0 && (conList[0].Role__c == StaticValues.ROLE_ADMIN || conList[0].Role__c == StaticValues.roleAdminDriver) && isTestClass==false){
             for(Contact con : [SELECT id,FirstName, LastName, Insurance__c, Expiration_Date__c,
-                                    Notification_Message__c ,External_Email__c,Triplog_UserID__c,
-                                    Insurance_Attachment_Id__c, Notification_Date__c,
+                                    Notification_Message__c ,External_Email__c,Triplog_UserID__c,TrueDialog_Contact_Id__c,
+                                    Insurance_Attachment_Id__c, Notification_Date__c,Unread_Message_Count__c,Contact_Picture__c,
                                     Role__c
                                 FROM Contact 
                                 WHERE AccountId =: accountId
@@ -58,6 +209,7 @@ public with sharing class ManageNotificationController {
                                     conWrap.role  = con.Role__c;
                                     conWrap.isEditable = false;
                                     conWrap.massEmail = false;
+                                    conWrap.massText = false; /*Added by Megha*/
                                     conWrap.contactEmail = con.External_Email__c;
                                     if(con.Expiration_Date__c != null){
                                         conWrap.expirationDate = con.Expiration_Date__c;
@@ -65,9 +217,15 @@ public with sharing class ManageNotificationController {
                                     conWrap.notiMessage = con.Notification_Message__c;
                                     conWrap.insuranceId = con.Insurance_Attachment_Id__c;
                                     conWrap.notificationDate = con.Notification_Date__c;
+                                    conWrap.unReadMessageCount = String.valueOf(con.Unread_Message_Count__c) ;
+                                    conWrap.contactPicture= con.Contact_Picture__c;
+                                    conWrap.trueDialogId = con.TrueDialog_Contact_Id__c;
+                                    conWrap.massNotiText = false;
                                     conWrapList.add(conWrap);
                 }
-            } else {
+            } 
+        	else 
+            {
                 for(Contact con : [SELECT id,FirstName, LastName, Insurance__c, Expiration_Date__c,
                                     Notification_Message__c ,External_Email__c,Triplog_UserID__c,
                                     Insurance_Attachment_Id__c, Notification_Date__c,
@@ -92,6 +250,7 @@ public with sharing class ManageNotificationController {
                                     conWrap.role  = con.Role__c;
                                     conWrap.isEditable = false;
                                     conWrap.massEmail = false;
+                                    conWrap.massText = false; /*Added by Megha*/
                                     conWrap.contactEmail = con.External_Email__c;
                                     if(con.Expiration_Date__c != null){
                                         conWrap.expirationDate = con.Expiration_Date__c;
@@ -99,6 +258,9 @@ public with sharing class ManageNotificationController {
                                     conWrap.notiMessage = con.Notification_Message__c;
                                     conWrap.insuranceId = con.Insurance_Attachment_Id__c;
                                     conWrap.notificationDate = con.Notification_Date__c;
+                                    conWrap.unReadMessageCount = String.valueOf(con.Unread_Message_Count__c) ;
+                                    conWrap.trueDialogId = con.TrueDialog_Contact_Id__c;
+                                    conWrap.massNotiText = false;
                                     conWrapList.add(conWrap);
                 }
             }
@@ -540,6 +702,26 @@ public with sharing class ManageNotificationController {
         }          
         return 'sucess';
     }
+    
+    @RemoteAction
+    public static String TrueDialogContact (String accountId,String adminId) {
+    system.debug('accountId=='+accountId);
+    system.debug('adminId=='+adminId);
+        string conWrapper = NewEmployeeData(accountId,adminId );
+         system.debug('conWrapper =='+conWrapper );
+        List<ContactWrapper> conWrapUpdateList = new List<ContactWrapper>();
+        List<ContactWrapper> conWrapList = new List<ContactWrapper>();
+        conWrapList = (List<ContactWrapper>)Json.deserialize(conWrapper,List<ContactWrapper>.class);
+        system.debug('cconWrapList =='+conWrapList );
+        for(ContactWrapper conwrap : conWrapList ){
+            if(conwrap.trueDialogId != null){
+                system.debug('conwrap.trueDialogId=='+conwrap.trueDialogId);
+                conWrapUpdateList.add(conwrap);
+            }
+        }
+        String wrapjson = JSON.serialize(conWrapUpdateList);
+        return wrapjson;
+    }
     @RemoteAction
     public static void sendInsuranceEmail (String Id,String Name,String email){
         BiWeeklyWrapperUtils.sendInsuranceEmail(Id, Name, email);
@@ -556,10 +738,15 @@ public with sharing class ManageNotificationController {
         public string contactEmail { get; set; }
         public string notiMessage { get; set; }
         public string insuranceId { get; set; }
+        public string unReadMessageCount { get; set; }
         public Boolean isEditable { get; set; }
         public Boolean massEmail { get; set; }
+        public Boolean massText { get; set; } /*Added by Megha*/
         public date expirationDate { get; set; }
         public date notificationDate { get; set; }
+        public string contactPicture { get; set; }
+        public string trueDialogId{ get; set; }
+        public Boolean massNotiText { get; set; }
     }
     public class LOAWrapper {
         public string employeeId { get; set; }
@@ -569,4 +756,6 @@ public with sharing class ManageNotificationController {
         public string loaEnd { get; set; }
         public string conDeactivation { get; set; }
     }
+
+    public class TrueDialogApiException extends Exception {}
 }
