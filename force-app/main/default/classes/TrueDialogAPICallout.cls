@@ -43,7 +43,7 @@ public with sharing class TrueDialogAPICallout {
             endpoint = baseURL+accountId+'/'+resourceName;
         }
 
-        System.debug('****End Point*****'+endpoint);
+        
 
         httpRequest.setEndpoint(endpoint);
         httpRequest.setMethod(method);

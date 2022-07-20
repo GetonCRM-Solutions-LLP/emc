@@ -21,27 +21,24 @@ global class TrueDialogReceiveMessage {
 
         TrueDialog_Keys__c tdKeys =TrueDialog_Keys__c.getValues('TrueDialogKeys');
 
-        System.debug('****Callback  Token*****'+tdKeys.Callback_Token__c);
+        
 
         FetchRequestBody = (Map<String, Object>)JSON.deserializeUntyped(req.requestbody.tostring());
 
-        Case case1 = new Case();
-        case1.Id = '5008H000001xmYHQAY';
-        case1.Description = req.requestbody.tostring();
-        update case1;
+        
 
         Integer trueDialogContactId = (Integer)FetchRequestBody.get('ContactId');
 
         String trueDialogContactIdString = String.valueOf(trueDialogContactId);
 
-        System.debug('true Dialog contact id ****'+trueDialogContactIdString);
+        
       
         Contact contact=[Select id,TrueDialog_Contact_Id__c 
                           FROM Contact
                           WHERE TrueDialog_Contact_Id__c=:trueDialogContactIdString 
                           Limit 1];
         
-        System.debug('tdKeys.Callback_Token__c'+tdKeys.Callback_Token__c);
+        
       
         if(tdKeys.Callback_Token__c == String.valueOf(FetchRequestBody.get('CallbackToken'))){
          
@@ -57,7 +54,7 @@ global class TrueDialogReceiveMessage {
           insert message; 
           
         }else{
-          System.debug('Callback token URL is not Matched.');
+          
         }  
     } 
 }

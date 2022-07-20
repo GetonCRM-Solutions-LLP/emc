@@ -45,7 +45,7 @@ public with sharing class TrueDialogContact {
 
 
     public static string generateTrueDialogContactReqBody(Contact cont){
-        System.debug('****Contact***'+cont);
+        
 
         String contactName='';
         if(cont.firstName!=null){
@@ -57,7 +57,7 @@ public with sharing class TrueDialogContact {
 
         TrueDialog_Keys__c tdKeys =TrueDialog_Keys__c.getValues('TrueDialogKeys');
 
-        System.debug('TruedialogKeys in generateTrueDialogContactReqBody:'+tdKeys);
+        
         
         TrueDialogContact trueDialogContact = new TrueDialogContact();
 
@@ -83,7 +83,7 @@ public with sharing class TrueDialogContact {
         List<TrueDialogContact.Attributes> attributeList = new   List<TrueDialogContact.Attributes>();
         TrueDialogContact.Attributes attribute = new TrueDialogContact.Attributes();
         attribute.id = 1;
-        System.debug(contactName);
+        
         attribute.name = contactName;
         attribute.value = contactName;
         attributeList.add(attribute);
@@ -94,7 +94,7 @@ public with sharing class TrueDialogContact {
         trueDialogContact.subscriptions=subscriptionList;
         trueDialogContact.attributes=attributeList;
 
-        System.debug('****Request Body Before Serializing****'+trueDialogContact);
+        
 
         return JSON.serialize(trueDialogContact);
        

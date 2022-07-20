@@ -35,7 +35,7 @@ public class TrueDialogCalloutTest {
         
         TrueDialog_Keys__c tdKeys = TestDataFactory.createTrueDialog(true);
         
-        System.debug('tdKeys in test class'+tdKeys);
+        
       
         Account a = TestDataFactory.createAccount(true, 'demo', false);
         
