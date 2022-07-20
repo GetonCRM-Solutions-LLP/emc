@@ -1,6 +1,7 @@
 @isTest
 public with sharing class TestDataFactory {
 
+    static Integer j=0;
     /** 
     * ********************************************************
     * Developer Name - Dhanraj Khatri
@@ -320,7 +321,7 @@ public with sharing class TestDataFactory {
             con.AccountId = accountId;
             con.External_Email__c = emailName + i + '@gmail.com';
             con.Phone = '1234566787';
-            con.MobilePhone = '1234566787';
+            con.MobilePhone = '123456678'+j;
             con.Driver_Type__c = 'Driver - Full Time';
             con.Deactivated_Date__c = null;
             con.Insurance_Attachment_Id__c = Null;
@@ -333,7 +334,8 @@ public with sharing class TestDataFactory {
             con.ReimbursementStatementBatch__c = true;            
             con.Manager__c = null;   
             con.Monthly_Mileage_Limit__c = -1;             
-            conList.add(con);                
+            conList.add(con);          
+            j=j+1;
         }       
         if(doInsert){
             insert conList;

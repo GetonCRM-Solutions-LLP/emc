@@ -24,7 +24,7 @@ public class ContactTriggerHelperTest {
         List<Contact> conList;
         List<Contact> con1List;
         List<Vehicle_Value__c> vehValue;
-        
+         
         System.runAs(admin) {
             Account accountObj = TestDataFactory.createAccount(true,'Test',true);
             Contact contactObj = TestDataFactory.createCICDContact(true,accountObj.Id);

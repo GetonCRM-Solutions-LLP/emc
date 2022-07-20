@@ -7,37 +7,88 @@ public without sharing class ContactTriggerHelper {
     Public static map<string, Decimal> monthStateCityVsFuelPricereimMap = new map<string, Decimal>(); 
     
 
-    //Developer Name-Dhanraj Khatri 
-    //Prevent Blank & Duplicate Mobile Number Value.
-    //Prevent Duplicate Email Value
-    public static void preventDuplicateMobileEmail(List<Contact> contactList){
-       
-        Set<String> setOfEMail =new Set<String> ();            //Initializing Set for Email
-        Set<String> setMobilePhone= new set<String>();            //Initializing Set For Phone
+     /** 
+    * ********************************************************
+    *  
+
+    Developer Name : Dhanraj Khatri
+
+    Method for preventing:
+    1)Empty Mobile Number in Contact
+    2)Duplicate Mobile Number
+    3)Duplicate Email
+        note: EMail can be blank but should not be duplicate.
+    Parameter:
+        Method execute on Before Insert or Update of Contact Trigger.
+        contactList :: Trigger.New
+        oldContactMap :: Trigger.oldMap
+    * ********************************************************
+    */
+
+    //oldmap
+    public static void preventDuplicateMobileEmail(List<Contact> contactList,Map<Id,Contact> oldContactMap){
+
+        System.debug('ContactList>>'+contactList);
+        System.debug('oldContactMap>>'+oldContactMap);
         
-        List<Contact> fetchList=[SELECT Email,MobilePhone FROM Contact];        //Query to retrive all contacts
-        for(Contact con:fetchList){
-            setOfEMail.add(con.Email);
-            setMobilePhone.add(con.MobilePhone);
+        Set<string> newEmailIdSet=new Set<string>();
+        Set<string> existingEMailIdSet=new Set<string>();
+    
+        
+        Set<string> newMobileSet=new Set<string>();
+        Set<string> existingMobileSet=new Set<string>();
+    
+        for(contact con:contactList){
+            newEmailIdSet.add(con.email);   
+            newMobileSet.add(con.MobilePhone);
         }
-        
-        for(Contact contact : contactList)        //Traversing through trigger List 
-        { 
-            if(contact.MobilePhone == null){
-                contact.MobilePhone.AddError(' Mobile Number can not be blank ');
-            }else{
-                if(setMobilePhone.contains(contact.MobilePhone)){
-                    contact.MobilePhone.AddError(' Duplicate MobilePhone is not Allowed ');  
-                }
-            }
-            if(contact.Email != null &&  setOfEMail.contains(contact.Email) )    //condition to check duplicate
-            {
-                contact.Email.AddError(' Duplicate Email is not Allowed ');        //Error Message on Email
-                    //Error Messahe on Phone
-            }   
+    
+        for(contact conList:[SELECT email,MobilePhone FROM contact where email IN :newEmailIdSet]){
+            existingEMailIdSet.add(conList.email);
     
         }
+        for(contact conList:[SELECT email,MobilePhone FROM contact where MobilePhone IN :newMobileSet]){
+            existingMobileSet.add(conList.MobilePhone);    
+        }
+        
+        System.debug('existingEMailIdSet>>'+existingEMailIdSet);
+        System.debug('existingMobileSet>>'+existingMobileSet);
+        
+        for(contact c:contactList){
+
+            if(oldContactMap!=null){
+                if(oldContactMap.get(c.id).email<>c.email){
+                    if(c.Email != null && existingEMailIdSet.contains(c.email)){
+                        c.addError('Duplicate Email is not Allowed ');
+                    }
+                }   
+    
+                if(c.MobilePhone == null){
+                    c.MobilePhone.AddError(' Mobile Number can not be blank ');
+                }else{
+                    if(oldContactMap.get(c.id).MobilePhone<>c.MobilePhone){
+                        if(existingMobileSet.contains(c.MobilePhone)){
+                            c.MobilePhone.AddError(' Duplicate MobilePhone is not Allowed ');  
+                        }
+                    }
+                }
+            }else{
+                if(c.Email != null && existingEMailIdSet.contains(c.email)){
+                    c.addError('Email id already exists');
+                }
+    
+                if(c.MobilePhone == null){
+                    c.MobilePhone.AddError(' Mobile Number can not be blank ');
+                }else{
+                    if(existingMobileSet.contains(c.MobilePhone)){
+                        c.MobilePhone.AddError(' Duplicate MobilePhone is not Allowed ');  
+                    }
+                }
+            }
+        }
     }
+
+    /*********************************************************** */
 
 
 
