@@ -49,9 +49,10 @@ global class TrueDialogReceiveMessage {
           message.Incoming_Message__c =true;
           message.Contacts__c = contact.Id;
           message.Message_Id__c =(String) FetchRequestBody.get('MessageId');
-          message.Message__c = (String) JSON.serialize(FetchRequestBody.get('Message'));
+          message.Message__c = String.valueOf(FetchRequestBody.get('Message'));
           
-          insert message; 
+          insert message;
+          System.debug('Message'+message);
           
         }else{
           
