@@ -54,14 +54,40 @@ trigger ContactTrigger on Contact (after Update, after insert, before insert, be
     
      if(Trigger.isAfter){
             if(Trigger.isInsert || Trigger.isUpdate){
+
+
+                /** Dhanraj Khatri- Temprory Code */
+                Set<String> tmpConIdSet = new Set<String>();
+                if(Trigger.isInsert){
+                    for(contact con : Trigger.New){
+                        tmpConIdSet.add(con.Id);
+                    }
+                }else{
+                    for(contact con : Trigger.New){
+                        if((con.Email != Trigger.oldMap.get(con.ID).Email) || 
+                                (con.MobilePhone != Trigger.oldMap.get(con.ID).MobilePhone) ){
+                            tmpConIdSet.add(con.Id);
+                        }
+                    }
+                }
+                if(tmpConIdSet.size()>0){
+                    TrueDialogContactAPI tdContactApi = new TrueDialogContactAPI(tmpConIdSet);
+                    Database.executeBatch(tdContactApi,5);
+                }
+                
+                 /*********************************** */
+
                 /* EMC - 333
-This is used when driver is insert automatically driver packet is added in file section of that driver
-from his Account's file section.
-*/ 
+                    This is used when driver is insert automatically driver packet is added in file section of that driver
+                    from his Account's file section.
+                    */ 
                 TriggerConfig__c customSettingForFile = TriggerConfig__c.getInstance('Defaulttrigger');
                 if(customSettingForFile.insertDriverAggrementFile__c == true){
                     ContactTriggerHelper.insertDriverAggrementFile(Trigger.newmap);
                 }
+
+
+                
                 /*  Set<String> conList = new Set<String>();
                 Set<String> accList = new Set<String>();
                 for(contact con : Trigger.New){
@@ -76,6 +102,9 @@ from his Account's file section.
                 ContactTriggerHelper.updatePlanParameter(conList, accList);
                 }*/
             }
+
+         
+          
         }
     
     if(Trigger.isInsert && trigger.isAfter) {
@@ -102,6 +131,11 @@ from his Account's file section.
         If(conList.Size() > 0){
             ContactTriggerHelper.updatePlanParameter(conList, accList);
         }
+
+      
+
+
+
     }
     
     if(Trigger.isBefore && checkRecursive.runSecondFlag()) {
@@ -122,7 +156,14 @@ from his Account's file section.
                 currentContact.Email = currentContact.External_Email__c.toLowerCase();
             }
         }
+
+        /**Dhanraj Khatri */
+        ContactTriggerHelper.preventDuplicateMobileEmail(Trigger.new,Trigger.oldMap);
+        /***************** */
+
+
         ContactTriggerHelper.CheckVehicalYearAndModel(Trigger.new);
+ 
     } else if(Trigger.isBefore && Trigger.isUpdate) {
         List<Contact> updateContactList = new List<Contact>();
         for(Contact currentContact : Trigger.New) {
@@ -158,5 +199,10 @@ from his Account's file section.
             updateContactList.add(currentContact);
             }*/
         }
+        
+        /******************** */
+        /**Dhanraj Khatri */
+        ContactTriggerHelper.preventDuplicateMobileEmail(Trigger.new,Trigger.oldMap);
+        /******************* */
     }
 }
