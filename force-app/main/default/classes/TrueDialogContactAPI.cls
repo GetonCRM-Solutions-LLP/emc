@@ -14,10 +14,10 @@
 
 global  class  TrueDialogContactAPI implements Database.Batchable<sObject>,Database.AllowsCallouts,Database.Stateful{
     
-    Set<String> idSetBatch=new Set<String>();
+    Set<Id> idSetBatch=new Set<Id>();
 
     //Constructor for Batch class that initiliaze contact Id Set
-    global TrueDialogContactAPI(Set<String> contactIdSet){
+    global TrueDialogContactAPI(Set<Id> contactIdSet){
         idSetBatch=contactIdSet;
     }
 
@@ -26,9 +26,10 @@ global  class  TrueDialogContactAPI implements Database.Batchable<sObject>,Datab
         return Database.getQueryLocator([Select Id,email,MobilePhone, 
                                         phone,name,lastname,firstname,
                                         TrueDialog_Contact_Id__c ,TrueDialog_SMS_Enabled__c,
-                                        TrueDialog_MMS_Enabled__c
+                                        TrueDialog_MMS_Enabled__c,Account.True_Dialog__c
                                         FROM Contact 
-                                        where Id IN: idSetBatch and MobilePhone != null]);
+                                        where Id IN: idSetBatch and MobilePhone != null
+                                        and Account.True_Dialog__c=true]);
     }
 
      //Batchable execute - 
