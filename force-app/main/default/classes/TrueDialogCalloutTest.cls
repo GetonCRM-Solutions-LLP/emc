@@ -96,7 +96,10 @@ public class TrueDialogCalloutTest {
         }
         conList[0].MobilePhone='8382383833';
         update conList;
-
+          Set<Id> lstId = new Set<Id>();
+        lstId.add(conList[0].id);
+      TrueDialogContactAPI tdContactApi = new TrueDialogContactAPI(lstId);
+      Database.executeBatch(tdContactApi,1);
     
         Test.stopTest();
     }
@@ -136,6 +139,9 @@ public class TrueDialogCalloutTest {
         }
         Set<Id> lstId = new Set<Id>();
         lstId.add(conList[0].id);
+    
+      TrueDialogContactAPI tdContactApi = new TrueDialogContactAPI(lstId);
+      Database.executeBatch(tdContactApi,1);
         Test.stopTest();
     }
 }
