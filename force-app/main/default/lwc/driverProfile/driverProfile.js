@@ -46,7 +46,7 @@ export default class DriverProfile extends LightningElement {
     // companyIconUrl = EMC_CSS + '/emc-design/assets/images/company-name-img.png';
     flagIconUrl = EMC_CSS + '/emc-design/assets/images/Driver-dashboard-icons/YTD_mileage_flag.svg';
     noNotification = EMC_CSS + '/emc-design/assets/images/no-new-notification.png';
-    variableRateUrl = EMC_CSS + '/emc-design/assets/images/Driver-dashboard-icons/Variable_rate.png';
+    variableRateUrl = EMC_CSS + '/emc-design/assets/images/Driver-dashboard-icons/graph.png';
     connectedCallback() {
         if (this.contactDetails.accountLogo === null && this.contactDetails.accountName === null && this.contactDetails.annualMileages === null && this.contactDetails.annualReim === null && this.contactDetails.carImage === null && this.contactDetails.city === null && this.contactDetails.complianceMileage === null && this.contactDetails.compliancestatus === null && this.contactDetails.contactName === null && this.contactDetails.driverType === null && this.contactDetails.drivingState === null && this.contactDetails.drivingStates === null && this.contactDetails.fixedAmount === null && this.contactDetails.insurance === null && this.contactDetails.insuranceAttchId === null && this.contactDetails.insuranceDate === null && this.contactDetails.mileagemeet === null && this.contactDetails.notimessage === null && this.contactDetails.planInsurance === null && this.contactDetails.planYears === null && this.contactDetails.state === null && this.contactDetails.vehicalType === null && this.contactDetails.vehicleValue === null && this.contactDetails.vehicleage === null && this.contactDetails.vehiclevaluecheck === null && this.contactDetails.zipCode === null) {
             this.isInformation = false;

@@ -46,15 +46,6 @@
             //         }
             //     });
             $(document).ready(function () {
-                // debugger
-                // $('tr').each(function(index) {
-                //     var x = $($(this).find('td')[6]).text();
-                //     if (isEllipsisActive($(this).find('.notify-para'))) {
-                //         debugger
-                //         $($(this).find('.notify-para')).prop('title', x);
-                //     }
-                // });
-
                 $(function () {
                     $("#notifyTable").tooltip({
                         classes: {
@@ -687,7 +678,7 @@
                 width: 100%;
                 display: flex !important;
                 flex-flow: column !important;
-                height: calc(100vh - 230px) !important;
+                height: calc(100vh - 230px);
             }
 
             .slds-table td {
@@ -1640,6 +1631,9 @@
             .slds-button:focus {
                 box-shadow: none !important;
             }
+            .aHeight{
+                height: fit-content !important;
+            }
         </style>
         <!-- Common script -->
         <script type="text/javascript">
@@ -1654,18 +1648,27 @@
             $scope.nameOfPage = 'Communications';
             $scope.isTextMessaging = {!checkTrueDialog};
             console.log("role->", $scope.role, $scope.manRole,  $scope.isTextMessaging);
-            if ($scope.driverInfo.length > 10) {
-                var elmHeight = document.getElementById("tableWrap").offsetHeight;
-                var screenHeight = window.screen.height;
-                var scrollHeight = screenHeight - elmHeight;
-                // console.log("scroll", scrollHeight, document.getElementById('style-2'));
-                document.getElementById('style-2').style.height = scrollHeight + "px";
-                // console.log("window.screen.height", window.screen.height);
-                // console.log("document.body.clientHeight", document.body.clientHeight);
-                // console.log("table", table);
-                // console.log("tableWrap", document.getElementById("tableWrap").offsetHeight , document.getElementById("tableWrap").clientHeight);
-                var nTable = document.getElementById('style-2').offsetHeight;
+            var nTable = document.getElementById('style-2').offsetHeight;
+            const styleFilter = () => {
+                if ($scope.driverInfo.length > 10) {
+                    var elmHeight = document.getElementById("tableWrap").offsetHeight;
+                    var screenHeight = window.screen.height;
+                    var scrollHeight = screenHeight - elmHeight;
+                    // console.log("scroll", scrollHeight, document.getElementById('style-2'));
+                    document.getElementById('style-2').style.height = scrollHeight + "px";
+                    // console.log("window.screen.height", window.screen.height);
+                    // console.log("document.body.clientHeight", document.body.clientHeight);
+                    // console.log("table", table);
+                    // console.log("tableWrap", document.getElementById("tableWrap").offsetHeight , document.getElementById("tableWrap").clientHeight);
+                    $('#style-2').removeClass("aHeight");
+                    $('#notifyTable').removeClass("aHeight");
+                }else{
+                    $('#style-2').addClass("aHeight");
+                    $('#notifyTable').addClass("aHeight");
+                }
             }
+            styleFilter();
+            
             var url_string = $(location).attr("href");
             var url = new URL(url_string);
             $scope.id = url.searchParams.get("id");
@@ -2177,6 +2180,8 @@
                 $('#loading').text("Sending...");
                 var textInput = document.getElementById(`message-area${index}`).value;
                 if (notifyObj.notiMessage === null || notifyObj.notiMessage === "" || textInput === "") {
+                    $('#loading').text("");
+                    $('#spinner').hide();
                     $(`#span-error${index}`).removeClass("d-none");
                     $(`#message-area${index}`).addClass("border-error");
                 } else {
@@ -2199,9 +2204,11 @@
                                     $scope.refreshEmployees();
                                     $scope.$apply();
                                 }else{
+                                    $('#loading').text("");
                                     $('#spinner').hide();
                                 }
                             }else{
+                                $('#loading').text("");
                                 $('#spinner').hide();
                             }
                         }
@@ -2212,12 +2219,21 @@
             $scope.pageChangeHandler = function (num) {
                 if ($scope.driverInfo.length > 10) {
                     if (num === $scope.maxPage) {
-                        //  document.getElementById('style-2').style.height = nTable + "px";
-                        document.getElementById('style-2').style.height = "";
-                        document.getElementById('style-2').style.overflow = "hidden";
+                         if($scope.maxPage > 5){
+                            document.getElementById('style-2').style.height = nTable + "px";
+                            $('#style-2').removeClass("aHeight");
+                            $('#notifyTable').removeClass("aHeight");
+                            document.getElementById('style-2').style.overflowY = "scroll";
+                         }else{
+                            $('#style-2').addClass("aHeight");
+                            $('#notifyTable').addClass("aHeight");
+                            document.getElementById('style-2').style.overflow = "hidden";
+                         }
+                       // document.getElementById('style-2').style.height = "";
+                      //  document.getElementById('style-2').style.overflow = "hidden";
                     } else {
-                        document.getElementById('style-2').style.height = nTable + "px";
-                        document.getElementById('style-2').style.overflow = '';
+                        document.getElementById('style-2').style.overflowY = "scroll";
+                       styleFilter()
                     }
                 }
             }
@@ -2229,6 +2245,7 @@
                         if (event.status) {
                             $scope.$apply(function () {
                                 $scope.driverInfo = JSON.parse(result);
+                                styleFilter()
                                 //console.log('added->', JSON.parse(result));
                             });
                         } else {
@@ -2248,6 +2265,7 @@
                         if (event.status) {
                             $scope.$apply(function () {
                                 $scope.driverInfo = JSON.parse(result);
+                                styleFilter();
                                 //console.log('TrueDialogContact->', result, JSON.parse(result));
                             });
                         } else {
@@ -2567,7 +2585,7 @@
                     $scope.showTextNotiBtn = false;
                 }
                 angular.forEach($scope.driverInfo, function (detail) {
-                    detail.massText = $scope.checkboxobj.isCheckedAllForNotiText;
+                    detail.massNotiText = $scope.checkboxobj.isCheckedAllForNotiText;
                     $scope.driverNotificationList.push(detail);
                 });
                 // console.log($scope.driverEmailList);
@@ -2626,7 +2644,9 @@
                 console.log($scope.driverNotificationList);
             }
 
-            $scope.closeNotificationPopup = function(){
+            $scope.closeNotificationPopup = function(index){
+                $(`#span-error${index}`).addClass("d-none");
+                $(`#message-area${index}`).removeClass("border-error");
                 $scope.singleMessage = {};
                 $scope.msgIndex = 0;
                 $scope.enableNotification = false;
@@ -3821,15 +3841,15 @@
                         <table class="slds-table slds-table_cell-buffer slds-table_striped" id="notifyTable">
                             <thead class="table-thead">
                                 <tr class="slds-line-height_reset">
-                                    <th ng-show="checkboxShow" class="align-text resendCheck">
+                                    <th ng-show="checkboxShow" class="align-text resendCheck" ng-if="driverInfo.length > 0">
                                         <input class="custom-check" type="checkbox" ng-model="checkboxobj.isCheckedAllForEmail" ng-click="CheckUncheckAllForEmail(checkboxobj.isCheckedAllForEmail,info);"
                                         />
                                     </th>
-                                    <th ng-show="checkboxShowText" class="align-text resendCheck">
+                                    <th ng-show="checkboxShowText" class="align-text resendCheck" ng-if="driverInfo.length > 0">
                                         <input class="custom-check" type="checkbox" ng-model="checkboxobj.isCheckedAllForText" ng-click="CheckUncheckAllForText(checkboxobj.isCheckedAllForText,info);"
                                         />
                                     </th>
-                                    <th ng-show="checkboxShowNotiText" class="align-text resendCheck">
+                                    <th ng-show="checkboxShowNotiText" class="align-text resendCheck" ng-if="driverInfo.length > 0">
                                         <input class="custom-check" type="checkbox" ng-model="checkboxobj.isCheckedAllForNotiText" ng-click="CheckUncheckAllForNotiText(checkboxobj.isCheckedAllForNotiText,info);"
                                         />
                                     </th>
@@ -3849,7 +3869,7 @@
                                     <th>Message</th>
                                 </tr>
                             </thead>
-                            <tbody ng-class="{'table-scroll' : driverInfo.length > 10}" id="style-2">
+                            <tbody ng-class="{'table-scroll' : driverInfo.length > 5}" id="style-2">
                                 <tr dir-paginate="info in driverInfo | filter:search | itemsPerPage: pageSize" current-page="currentPage">
                                     <td ng-model="info.check" ng-show="checkboxShow" class="align-text em-2">
                                         <input class="custom-check" type="checkbox" ng-model="info.massEmail" ng-change="CheckUncheckForEmail(info);" />
@@ -4166,7 +4186,7 @@
                                         <h2 class="noti_Title">{{singleMessage.fullname}}</h2>
                                     </div>
                                 
-                                    <button type="button" class="slds-button close-noti-message" data-dismiss="modal" ng-click="closeNotificationPopup()"><i class="fa-solid fa-xmark"></i></button>
+                                    <button type="button" class="slds-button close-noti-message" data-dismiss="modal" ng-click="closeNotificationPopup(msgIndex)"><i class="fa-solid fa-xmark"></i></button>
                                 </div>
                             </header>
                             <form class="noti_FormContainer">

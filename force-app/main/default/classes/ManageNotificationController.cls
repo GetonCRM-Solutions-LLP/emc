@@ -176,7 +176,7 @@ public with sharing class ManageNotificationController {
                                     conWrap.triploguserid = String.valueof(con.Triplog_UserID__c);
                                     conWrap.name = con.FirstName;
                                     conWrap.lastname = con.LastName;
-                                    conWrap.fullname = conWrap.name+' '+conWrap.lastname;
+                                    conWrap.fullname = conWrap.name +' '+conWrap.lastname;
                                     conWrap.insurance = con.Insurance__c ;
                                     conWrap.role  = con.Role__c;
                                     conWrap.isEditable = false;
@@ -274,8 +274,12 @@ public with sharing class ManageNotificationController {
                 mail.setToAddresses(sendingTo);
                 mail.setSubject(temp[0].Subject);
                 htmlbody = temp[0].HTMLValue;
-                htmlbody = htmlbody.replace('{!Contact.Name}',conwrap.name);
-                htmlbody = htmlbody.replace('{!AdminName}',conList[0].name);
+                if(conwrap.name != null){
+                    htmlbody = htmlbody.replace('{!Contact.Name}',conwrap.name);
+                }
+                if(conList[0].name != null){
+                    htmlbody = htmlbody.replace('{!AdminName}',conList[0].name);
+                }                                
                 htmlbody = htmlbody.replace('{!$Label.Driver_Forword_Logo}', System.Label.Driver_Forword_Logo);
                 mail.setPlainTextBody(htmlbody);
                 List<String> bccaddress = new list<String>();
@@ -324,8 +328,12 @@ public with sharing class ManageNotificationController {
                     mail.setToAddresses(sendingTo);
                     mail.setSubject(templateId.Subject);
                     htmlbody = templateId.HTMLValue;
-                    htmlbody = htmlbody.replace('{!Contact.Name}',conwrap.name);
-                    htmlbody = htmlbody.replace('{!AdminName}',conList[0].name);
+                    if(conwrap.name != null){
+                        htmlbody = htmlbody.replace('{!Contact.Name}',conwrap.name);
+                    }
+                    if(conList[0].name != null){
+                        htmlbody = htmlbody.replace('{!AdminName}',conList[0].name);
+                    }                    
                     mail.setPlainTextBody(htmlbody);
                     List<String> bccaddress = new list<String>();
                     bccaddress.add('driverservices@mburse.com');
