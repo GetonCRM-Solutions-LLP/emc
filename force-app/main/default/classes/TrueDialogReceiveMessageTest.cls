@@ -20,26 +20,26 @@ public class TrueDialogReceiveMessageTest {
         SendEmail__c sendEmailCustomSetting = TestDataFactory.sendEmailCustomSetting(true, 'Send Email For Compliance');
         IRS_Mileage_Rate__c irsRateObj = TestDataFactory.createIRSRate(true,0);
         List<Address__c> objAddress = TestDataFactory.createAddress(true, 10);
+        Vehicle_URL_Mapping__c vehicleObj = TestDataFactory.createVehicleData(true,0);
         
-        Vehicle_URL_Mapping__c vehicleType = TestDataFactory.createVehicleData(false, 3);
-        vehicleType.Name = '2019 Full-Size Sedan';
-        vehicleType.vehicle__c = 'Full-Size Sedan';
-        Insert vehicleType;
-
         TrueDialog_Keys__c tdKeys = TestDataFactory.createTrueDialog(true);
 
-        Account a = TestDataFactory.createAccount(true, 'demo', false);
-        
-        Contact c  = TestDataFactory.createCICDContact(false, a.id);
-        
-        c.email='test@gmail.com';
-        c.MobilePhone='3239638840';
-        c.lastName='Veer';
-        c.firstName='Sharma';
-        c.External_Email__c='test@gmail.com';
-        c.TrueDialog_Contact_Id__c='81071892';
-        
-        insert c;
+        Account acc = new Account();     
+        List<Contact> conList = new List<Contact>();
+
+        UserRole userRole = TestDataFactory.getUserRole();
+        Profile profileObj = TestDataFactory.getUserProfile();
+        User admin = TestDataFactory.getSystemAdminUser(userRole.Id);
+        User userObj;
+        System.runAs(admin) {
+            Account accountObj = TestDataFactory.createAccount(true,'Test',true);
+            Contact contactObj = TestDataFactory.createCICDContact(true,accountObj.Id);
+            acc = TestDataFactory.createAccount(true,'Test',true);
+            conList = TestDataFactory.createDriverContact(true, acc.Id, 'Driver', vehicleObj.Name, 'test.email', 1);
+            conList[0].TrueDialog_Contact_Id__c ='81071892';
+            update conList;
+            userObj = TestDataFactory.createUser(true, profileObj.Id, conList[0].Id);
+        }
 
         String requestBody = '{ "MessageId": "d78b790f-798e-4215-86d1-1d00a5e6815a", "AccountName": "mBurse", "Message": "incoming test 6", "ChannelId": 22, "ContactId": 81071892, "PhoneNumber": "+13239638840", "ChannelCode": "+19705100114", "ActionId": 117756672, "Media": [], "AccountId": 18409, "CallbackTimestamp": "2022-06-29T02:52:01", "CallbackToken": "bd054ccb-372b-40d3-a304-26cd540b4768", "CallbackType": 11, "CallbackURL": "https://eo3padl7dt1obtv.m.pipedream.net", "TransactionId": "107cdfe3-a0f7-44f7-b940-e2cc00ff8330", "CustomHeaders": {}, "Id": null, "DequeueCount": 0, "Priority": 0 }';
         
