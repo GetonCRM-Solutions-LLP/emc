@@ -314,7 +314,7 @@ table tr td {
 
 .flag-text {
     position: absolute;
-    right: 8px;
+    right: -8px;
     top: 42px;
 }
 

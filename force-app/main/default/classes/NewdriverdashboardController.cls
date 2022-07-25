@@ -13,64 +13,44 @@ global class NewdriverdashboardController {
     @date 26th Feb 2019
     @description RosterController is Default Constructor.    
     */
-    global NewdriverdashboardController () 
-    {
+    global NewdriverdashboardController () {
         contactObj = getContactDetailsClone(getContactid());
         chartData = getChartData(getContactid());
         unreimbursement = String.escapeSingleQuotes(WrapperUtils.getReimbursementsList(getContactid(),'Approved'));
         List<Contact> conList = [SELECT id,Role__c,Driving_States__c FROM Contact WHERE id =: getContactid() ];
         if(conList.size() > 0){
             contactRole = Json.serialize(String.valueOf(conList[0].Role__c));
-        }
-        
+        }        
     }
-    public static String getAccountid()
-    {
-        if(ApexPages.currentPage().getParameters().containsKey('accid') && String.isNotBlank(ApexPages.currentPage().getParameters().get('accid')))
-        {
+    public static String getAccountid() {
+        if(ApexPages.currentPage().getParameters().containsKey('accid') && String.isNotBlank(ApexPages.currentPage().getParameters().get('accid'))) {
            return ApexPages.currentPage().getParameters().get('accid');
-        }
-        else
-        {
+        } else {
             return '';
         } 
     }
-    public static String getContactid()
-    {
-        if(ApexPages.currentPage().getParameters().containsKey('id') && String.isNotBlank(ApexPages.currentPage().getParameters().get('id')))
-        {
+    public static String getContactid() {
+        if(ApexPages.currentPage().getParameters().containsKey('id') && String.isNotBlank(ApexPages.currentPage().getParameters().get('id'))) {
            return ApexPages.currentPage().getParameters().get('id');
-        }
-        else
-        {
+        } else {
             return '';
         } 
     }
-    public static PageReference getRedirected()
-    {
-        
-        if(getContactid()!=''&& getAccountid()!='')
-        {
+    public static PageReference getRedirected() {        
+        if(getContactid()!=''&& getAccountid()!='') {
             return null;
-        }
-        else
-        {
+        } else {
             // redirect to error page
             return null;
-        }
-        
+        }        
     }
 
-    global static String getReimbursementsList()
-    {   
+    global static String getReimbursementsList() {   
          return String.escapeSingleQuotes(WrapperUtils.getReimbursementsList(getContactid(),'Approved'));
     }
     
     @RemoteAction
-    global static string getContactDetailsClone(String contactid)
-    { 
-        
-        //contactid = 'a003r00000k8rzbAAA';
+    global static string getContactDetailsClone(String contactid) { 
         Map<Integer,String> monthNameMap=new Map<Integer, String>{01 =>'Jan', 02=>'Feb', 03=>'Mar', 04=>'Apr', 05=>'May',
                                                                     06=>'Jun', 07=>'Jul', 08=>'Aug', 09=>'Sep',10=>'Oct',
                                                                     11=>'Nov', 12=>'Dec'};
@@ -129,36 +109,29 @@ global class NewdriverdashboardController {
              }
              
         }
-
         gasPrice = WrapperUtils.getDriverGasPrice(contactObj.state,contactObj.city);
-        System.debug('contactObj'+contactObj);
-                System.debug('reimMap '+reimMap );
-                        System.debug('mileageMap '+mileageMap );
-                        return JSON.serialize(contactObj).unescapeHtml4();
-      
+        return JSON.serialize(contactObj).unescapeHtml4();      
     }
 
     @RemoteAction
-    global Static String getAllReimbursements(String year,String did,String accid) 
-    {       
-         System.debug('year'+year);
+    global Static String getAllReimbursements(String year,String did,String accid) {       
         return String.escapeSingleQuotes(WrapperUtils.getAllReimbursements(year,did,accid));
     }
     
     @RemoteAction
-    global static String getChartData(String contactid)
-    { 
-        system.debug('contactid=='+contactid);
-        //contactid = '0033r00003k8f8g';
+    global static String getChartData(String contactid) { 
         Map<Integer,String> monthNameMap = new Map<Integer, String>{01 =>'Jan', 02=>'Feb', 03=>'Mar', 04=>'Apr', 05=>'May',
                                                                     06=>'Jun', 07=>'Jul', 08=>'Aug', 09=>'Sep',10=>'Oct',
                                                                     11=>'Nov', 12=>'Dec'};
         List<ReibursementWrapper> wrapList = new List<ReibursementWrapper>();
-        system.debug('contactid=='+contactid);
         List<Contact> conList = [SELECT id,Account.Start_Graph_Month__c,Activation_Date__c FROM contact WHERE id =:contactid ];
-        Integer startMonth = conList[0].Activation_Date__c != null ? conList[0].Activation_Date__c.month() : 1;
+        Integer startMonth;
+        if(conList[0].Activation_Date__c != null && conList[0].Activation_Date__c.Year() == system.today().year()){
+            startMonth = conList[0].Activation_Date__c != null ? conList[0].Activation_Date__c.month() : 1;
+        } else {
+            startMonth = 1;
+        }
         String graphMonth;
-        system.debug('conList= '+conList);  
         if(conList[0].Account.Start_Graph_Month__c != null){
                         graphMonth = conList[0].Account.Start_Graph_Month__c;
         }
@@ -172,8 +145,7 @@ global class NewdriverdashboardController {
             monthList.add('12-'+year);
             for(integer i = 1;i <=11;i++){
                         monthList.add( ( i < 10 ? '0' : '' ) + i + '-' + system.today().year());
-            }
-                        
+            }                        
         }
         Map<Integer,Decimal> milMap = new Map<Integer,Decimal>();
         Map<Integer,Decimal> reimMap = new Map<Integer,Decimal>();
@@ -201,7 +173,6 @@ global class NewdriverdashboardController {
             reimWrap.averagereimbursement = ( sumReim / i).setScale(2);
             wrapList.add(reimWrap);
         }
-        System.debug('wrapList=='+wrapList);
         return JSON.serialize(wrapList);
     }
     public class ReibursementWrapper{
