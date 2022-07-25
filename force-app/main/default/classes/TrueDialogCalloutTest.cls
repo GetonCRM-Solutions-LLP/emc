@@ -94,12 +94,10 @@ public class TrueDialogCalloutTest {
             conList = TestDataFactory.createDriverContact(true, acc.Id, 'Driver', vehicleObj.Name, 'test.email', 1);
             userObj = TestDataFactory.createUser(true, profileObj.Id, conList[0].Id);
         }
+        conList[0].MobilePhone='8382383833';
+        update conList;
 
-        Set<Id> lstId = new Set<Id>();
-        lstId.add(conList[0].id);
-        
-		TrueDialogContactAPI trueDialogContactAPI = new TrueDialogContactAPI(lstId);
-        Database.executeBatch(trueDialogContactAPI, 1);
+    
         Test.stopTest();
     }
 
