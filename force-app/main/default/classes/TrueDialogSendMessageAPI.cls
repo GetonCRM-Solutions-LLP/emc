@@ -21,65 +21,47 @@ public class TrueDialogSendMessageAPI {
         String result;
         try {
         
-            
-            
-
             Message__c messageRecord = new Message__c();
-
             HttpResponse response = new HttpResponse();
-
             String requestBody = TrueDiaolgSendMessageWrapper.generateSendMessageReqBody(contactId,message);
-        
-            
-
+    
             response = TrueDialogAPICallout.executeCallout('POST','action-pushCampaign',requestBody,null);
             
-            
-
-            if (response.getStatusCode() < 300) {
+            if(response.getStatusCode() < 300) {
             
                 TrueDiaolgSendMessageWrapper trueDialogWrapper = TrueDiaolgSendMessageWrapper.parse(response.getBody());
                 messageRecord.Contacts__c = contactId;
                 messageRecord.Action_Id__c = trueDialogWrapper.id;
                 messageRecord.Message__c = message;
+
             }else{
   
-                String trueDialogError =response.getBody() + ',' + response.getStatusCode() + ': ' + response.getStatus() + '\n';
-                
+                String trueDialogError = response.getBody() + ',' + response.getStatusCode() + ': ' + response.getStatus() + '\n';               
                 throw new TrueDialogApiException(trueDialogError);
             } 
                   
-            
-
             Database.SaveResult saveResultList = Database.insert(messageRecord, false);
 
-            if (saveResultList.isSuccess()) {
-                
+            if (saveResultList.isSuccess()) {   
                 result = 'success';
-            }
-            else {                 
+            }else {                 
                 result = 'failed';
             }
+
         }catch (Exception e) {
-            
+            System.debug('Exception caught: ' + e.getMessage()); 
         }
         return result;
             
     }
     
-
     @AuraEnabled 
     public static String getAllMessageByContact(String contactId){
        
-
         List<Message__c> lstMessage = [Select id, Message__c,Unread__c, Incoming_Message__c, Contacts__r.Time_Zone__c,CreatedDate
                                         FROM Message__c
                                         WHERE Contacts__c =:contactId order by CreatedDate asc];
 
-
-        
-        
-                              
         return JSON.serialize(lstMessage);
     }
     

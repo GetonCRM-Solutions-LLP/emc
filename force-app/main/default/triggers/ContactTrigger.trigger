@@ -164,7 +164,7 @@ trigger ContactTrigger on Contact (after Update, after insert, before insert, be
             ContactTriggerHelper.updatePlanParameter(conList, accList);
         }
 
-        
+        ContactTriggerHelper.updateCompliMileage(Trigger.new);
     }
     
     if(Trigger.isBefore && checkRecursive.runSecondFlag()) {

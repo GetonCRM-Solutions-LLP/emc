@@ -20,8 +20,6 @@ public with sharing class TrueDiaolgSendMessageWrapper {
 	public String message;	//
 	public boolean execute;
 
-
-
     /** 
     * ********************************************************
     * Return Send Message Body

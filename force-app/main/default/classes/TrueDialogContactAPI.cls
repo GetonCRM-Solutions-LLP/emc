@@ -18,7 +18,7 @@ global  class  TrueDialogContactAPI implements Database.Batchable<sObject>,Datab
 
     //Constructor for Batch class that initiliaze contact Id Set
     global TrueDialogContactAPI(Set<Id> contactIdSet){
-        idSetBatch=contactIdSet;
+        idSetBatch = contactIdSet;
     }
 
     //Batchable Start Method
@@ -28,32 +28,28 @@ global  class  TrueDialogContactAPI implements Database.Batchable<sObject>,Datab
                                         TrueDialog_Contact_Id__c ,TrueDialog_SMS_Enabled__c,
                                         TrueDialog_MMS_Enabled__c,Account.True_Dialog__c
                                         FROM Contact 
-                                        where Id IN: idSetBatch and MobilePhone != null
-                                        and Account.True_Dialog__c=true]);
+                                        WHERE Id IN: idSetBatch and MobilePhone != null
+                                        and Account.True_Dialog__c = true]);
     }
 
      //Batchable execute - 
     global static void execute(Database.BatchableContext BC, List<Contact> scope) {    
        
-        HttpResponse response = new HttpResponse();
-        
+        HttpResponse response = new HttpResponse();      
         String requestBody;
         
         List<Contact> conList = new List<Contact>();
         try {
-            
+
             for(Contact con:scope){
-
                 requestBody = TrueDialogContact.generateTrueDialogContactReqBody(con);
-
 
                 if(con.TrueDialog_Contact_Id__c!=null){
                     response = TrueDialogAPICallout.executeCallout('PUT','contact',requestBody,con.TrueDialog_Contact_Id__c);
                 }else{
                     response = TrueDialogAPICallout.executeCallout('POST','contact',requestBody,'');
                 }
-
-                
+      
                 if (response.getStatusCode() < 300) {
                     if(con.TrueDialog_Contact_Id__c==null){    
                         
@@ -68,25 +64,21 @@ global  class  TrueDialogContactAPI implements Database.Batchable<sObject>,Datab
                     }
 
                 }else{
-  
-                    String trueDialogError =response.getBody() + ',' + response.getStatusCode() + ': ' + response.getStatus() + '\n';
-                    
+                    String trueDialogError =response.getBody() + ',' + response.getStatusCode() + ': ' + response.getStatus() + '\n'; 
                     throw new TrueDialogApiException(trueDialogError);
                 } 
                 
             }
             update conList; 
 
-        } catch (Exception e) {
-            
-                
+        }catch(Exception e) {
+            System.debug('Exception caught: ' + e.getMessage());       
         }  
     }
 
     global void finish(Database.BatchableContext BC){
-        
+        System.debug('TrueDialogContactAPI executed successfully.');
     }
-
 
     public class TrueDialogApiException extends Exception {}
 }

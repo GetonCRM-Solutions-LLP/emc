@@ -622,4 +622,8 @@ New Contact is created at that time we have to update plan parameter section's f
             Update updateConList;
         }
     }
+
+    Public Static Void updateCompliMileage(List<Contact> conList){
+
+    }
 }
