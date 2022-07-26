@@ -2439,7 +2439,7 @@
                     }
 
                     if ($scope.recordfoundindex != -1) {
-                        $scope.driverEmailList.remove($scope.recordfoundindex);
+                        $scope.driverEmailList.splice($scope.recordfoundindex, 1);
                     }
 
                     else {
@@ -2448,7 +2448,7 @@
                 } else {
                     $scope.driverEmailList.push(detail);
                 }
-                // console.log($scope.driverEmailList);
+                console.log($scope.driverEmailList);
             }
 
 
@@ -2524,14 +2524,14 @@
 
                 if ($scope.driverTextList.length > 0) {
                     for (var i = 0; i < $scope.driverTextList.length; i++) {
-                        if ($scope.driverTextList[i].contactId === detail.contactId) {
+                        if ($scope.driverTextList[i] === detail.trueDialogId) {
                             $scope.recordfoundindex = i;
                             break;
                         }
                     }
 
                     if ($scope.recordfoundindex != -1) {
-                        $scope.driverTextList.remove($scope.recordfoundindex);
+                        $scope.driverTextList.splice($scope.recordfoundindex, 1)
                     }
 
                     else {
@@ -2632,7 +2632,7 @@
                     }
 
                     if ($scope.recordfoundindex != -1) {
-                        $scope.driverNotificationList.remove($scope.recordfoundindex);
+                        $scope.driverNotificationList.splice($scope.recordfoundindex, 1);
                     }
 
                     else {
