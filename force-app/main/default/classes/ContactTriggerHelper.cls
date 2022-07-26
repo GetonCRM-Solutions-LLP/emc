@@ -7,92 +7,6 @@ public without sharing class ContactTriggerHelper {
     Public static map<string, Decimal> monthStateCityVsFuelPricereimMap = new map<string, Decimal>(); 
     
 
-     /** 
-    * ********************************************************
-    *  
-
-    Developer Name : Dhanraj Khatri
-
-    Method for preventing:
-    1)Empty Mobile Number in Contact
-    2)Duplicate Mobile Number
-    3)Duplicate Email
-        note: EMail can be blank but should not be duplicate.
-    Parameter:
-        Method execute on Before Insert or Update of Contact Trigger.
-        contactList :: Trigger.New
-        oldContactMap :: Trigger.oldMap
-    * ********************************************************
-    */
-
-    //oldmap
-    public static void preventDuplicateMobileEmail(List<Contact> contactList,Map<Id,Contact> oldContactMap){
-
-        System.debug('ContactList>>'+contactList);
-        System.debug('oldContactMap>>'+oldContactMap);
-        
-        Set<string> newEmailIdSet=new Set<string>();
-        Set<string> existingEMailIdSet=new Set<string>();
-    
-        
-        Set<string> newMobileSet=new Set<string>();
-        Set<string> existingMobileSet=new Set<string>();
-    
-        for(contact con:contactList){
-            newEmailIdSet.add(con.email);   
-            newMobileSet.add(con.MobilePhone);
-        }
-    
-        for(contact conList:[SELECT email,MobilePhone FROM contact where email IN :newEmailIdSet]){
-            existingEMailIdSet.add(conList.email);
-    
-        }
-        for(contact conList:[SELECT email,MobilePhone FROM contact where MobilePhone IN :newMobileSet]){
-            existingMobileSet.add(conList.MobilePhone);    
-        }
-        
-        System.debug('existingEMailIdSet>>'+existingEMailIdSet);
-        System.debug('existingMobileSet>>'+existingMobileSet);
-        
-        for(contact c:contactList){
-
-            if(oldContactMap!=null){
-                if(oldContactMap.get(c.id).email<>c.email){
-                    if(c.Email != null && existingEMailIdSet.contains(c.email)){
-                        c.addError('Duplicate Email is not Allowed ');
-                    }
-                }   
-    
-                if(c.MobilePhone == null){
-                    c.MobilePhone.AddError(' Mobile Number can not be blank ');
-                }else{
-                    if(oldContactMap.get(c.id).MobilePhone<>c.MobilePhone){
-                        if(existingMobileSet.contains(c.MobilePhone)){
-                            c.MobilePhone.AddError(' Duplicate MobilePhone is not Allowed ');  
-                        }
-                    }
-                }
-            }else{
-                if(c.Email != null && existingEMailIdSet.contains(c.email)){
-                    c.addError('Email id already exists');
-                }
-    
-                if(c.MobilePhone == null){
-                    c.MobilePhone.AddError(' Mobile Number can not be blank ');
-                }else{
-                    if(existingMobileSet.contains(c.MobilePhone)){
-                        c.MobilePhone.AddError(' Duplicate MobilePhone is not Allowed ');  
-                    }
-                }
-            }
-        }
-    }
-
-    /*********************************************************** */
-
-
-
-
     public static void checkVehicalYearAndModel(List<Contact> contactList){
         Map<String,String> urlMap = new Map<String,String>();
         set<String> vehicleNamesset = new set<String>();
@@ -179,8 +93,8 @@ public without sharing class ContactTriggerHelper {
             }
         }
         for(Contact conObj : contactList) {
-            if(conObj.IsCreatedFromCommunity__c == true && profilemap.containskey(conObj.Role__c))  {
-                createUserList.add(CreateUserFromCommunity(conObj,profilemap.get(conObj.Role__c)));
+            if(conObj.IsCreatedFROMCommunity__c == true && profilemap.containskey(conObj.Role__c))  {
+                createUserList.add(CreateUserFROMCommunity(conObj,profilemap.get(conObj.Role__c)));
             }
         }
         if(createUserList.size()>0) {
@@ -188,7 +102,7 @@ public without sharing class ContactTriggerHelper {
         }            
     }
     
-    public static User CreateUserFromCommunity(Contact contObj, Id profileId){
+    public static User CreateUserFROMCommunity(Contact contObj, Id profileId){
         User userObj = new User();
         userObj.FirstName = contObj.FirstName;
         userObj.LastName = contObj.LastName; 
@@ -250,7 +164,7 @@ public without sharing class ContactTriggerHelper {
         }
         //Sending the Email
         SendEmail__c  objSendEmail = SendEmail__c.getValues('Send Email For Compliance');
-        if(objSendEmail.Send_email_from_code__c==true) {
+        if(objSendEmail.Send_email_FROM_code__c==true) {
             Messaging.sendEmail(mails);
         }
         
@@ -290,7 +204,7 @@ public without sharing class ContactTriggerHelper {
     }
     
     public static Employee_Reimbursement__c CreateReimbursement(Contact con){
-        //EMC-283 Update Fuel Price based on the contact city and state as past month's fuel price from Gas price object. 
+        //EMC-283 Update Fuel Price based on the contact city and state as past month's fuel price FROM Gas price object. 
         String currentDate = String.valueOf(system.today());
         String[] splitDate = currentDate.split('-');
         
@@ -313,7 +227,7 @@ public without sharing class ContactTriggerHelper {
                                              monthStateCityVsFuelPricereimMap.put(objGasPrice.Month_State_City__c, objGasPrice.Fuel_Price__c); 
                                          }
         
-        List<IRS_Mileage_Rate__c> objIRSRate = [SELECT id,year__c,IRS_Rate__c FROM IRS_Mileage_Rate__c Where year__c =: String.valueOf(System.today().year()) Limit 1];
+        List<IRS_Mileage_Rate__c> objIRSRate = [SELECT id,year__c,IRS_Rate__c FROM IRS_Mileage_Rate__c WHERE year__c =: String.valueOf(System.today().year()) Limit 1];
         String lastMonth = Utils.fetchMonths(1, -1)[0];
         Employee_Reimbursement__c er = new Employee_Reimbursement__c();
         er.Fixed_Amount__c = con.Fixed_Amount__c;
@@ -365,7 +279,7 @@ public without sharing class ContactTriggerHelper {
     }
     //This method is used to create a Bi-Weekly reimbursment
     public static Bi_Weekly_Reimbursement__c CreateBiweekReimbursement(Contact con){        
-        contact contest = [select id,account.Pay_Period_Days__c,account.Pay_Period_Start_Date__c from contact where id =: con.id];
+        contact contest = [select id,account.Pay_Period_Days__c,account.Pay_Period_Start_Date__c FROM contact WHERE id =: con.id];
         List<String> dtList = new list<String>();
         Date payStartDate = contest.Account.Pay_Period_Start_Date__c;
         Date endDate;
@@ -384,7 +298,7 @@ public without sharing class ContactTriggerHelper {
             splitStartDate = splitsdate[1]+'/'+splitsdate[2]+'/'+splitsdate[0];
             splitdate = dtList[1].split('-');
             splitEndDate = splitdate[1]+'/'+splitdate[2]+'/'+splitdate[0];
-            //EMC -283 use to update fuel price of biweekly reim based on the contact city and state of past month's fuel price from gas price object
+            //EMC -283 use to update fuel price of biweekly reim based on the contact city and state of past month's fuel price FROM gas price object
             if(integer.valueOf(splitdate[1]) == 01){
                 fuelPriceDate = date.valueOf(string.valueOf(integer.valueOf(splitdate[0])-1) + '-12' + '-01' );   
             } else {
@@ -430,7 +344,7 @@ public without sharing class ContactTriggerHelper {
         er.End_Date__c = Date.valueOf(dtList[1]);
         return er;
     }
-    //This method is used send a welcome email from triplog or mlog to install a application.
+    //This method is used send a welcome email FROM triplog or mlog to install a application.
     @future (callout=true)
     Public static void putHTTP(String accountID,String empEmail) {
         putHTTPCallout(AccountId, empEmail);
@@ -514,7 +428,7 @@ public without sharing class ContactTriggerHelper {
         
         EmailTemplate templateId = [SELECT Id, Subject,HtmlValue, body FROM EmailTemplate WHERE developerName = 'New_Contact_Inform_Driver_Services' Limit 1];
         List<Messaging.SingleEmailMessage> mails = new List<Messaging.SingleEmailMessage>();
-        OrgWideEmailAddress[] owea = [SELECT Id,Address from OrgWideEmailAddress where Address = 'driverservices@mburse.com'];
+        OrgWideEmailAddress[] owea = [SELECT Id,Address FROM OrgWideEmailAddress WHERE Address = 'driverservices@mburse.com'];
         for(Contact contObj : contactList){
             String newemailBody = templateId.HtmlValue;
             Messaging.SingleEmailMessage mail =  new Messaging.SingleEmailMessage();
@@ -583,7 +497,7 @@ public without sharing class ContactTriggerHelper {
     
     //Populate Contact Fields
     public static void populatestaticValue(List<Contact> conList){
-        Boolean isEMCUser = [select UserRole.name from User where Id=:userinfo.getUserId()].UserRole.Name == 'EMC' ? true : false;
+        Boolean isEMCUser = [select UserRole.name FROM User WHERE Id=:userinfo.getUserId()].UserRole.Name == 'EMC' ? true : false;
         
         for(Contact c : conList) {
             if(!isEMCUser){
@@ -606,7 +520,7 @@ public without sharing class ContactTriggerHelper {
     
     /* EMC - 333
 * This Method is used to when driver is insert automatically driver packet is added in file section 
-* from his Account's file section.
+* FROM his Account's file section.
 */
     Public Static void insertDriverAggrementFile(Map<Id, Contact> conNewMap) {
         
@@ -707,5 +621,9 @@ New Contact is created at that time we have to update plan parameter section's f
         if(updateConList.size() > 0){
             Update updateConList;
         }
+    }
+
+    Public Static Void updateCompliMileage(List<Contact> conList){
+
     }
 }

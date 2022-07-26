@@ -33,17 +33,17 @@ public with sharing class TrueDialogAPICallout {
         String baseURL = tdKeys.Base_URL__c;   // https://api.truedialog.com/api/v2.1/account/
         String accountId = tdKeys.Account_Id__c;  // 18409
 
-
         String endpoint;
         if(method=='PUT' && resourceName=='contact'){
                
             endpoint = baseURL+accountId+'/'+resourceName+'/'+resourceId+'?overrideSubscription=overrideSubscription';
            
+        }else if(method == 'GET' && resourceName=='media'){
+            endpoint = 'https://api.truedialog.com/api/v2.1/media/'+requestBody;
+
         }else{
             endpoint = baseURL+accountId+'/'+resourceName;
         }
-
-        
 
         httpRequest.setEndpoint(endpoint);
         httpRequest.setMethod(method);

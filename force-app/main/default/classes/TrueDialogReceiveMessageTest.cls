@@ -12,7 +12,6 @@
 @isTest
 public class TrueDialogReceiveMessageTest {
 
-
     @isTest 
     public static void testReceiveMessageTest() {
         // Call the method to test
@@ -32,12 +31,12 @@ public class TrueDialogReceiveMessageTest {
         
         Contact c  = TestDataFactory.createCICDContact(false, a.id);
         
-        c.email='test@gmail.com';
-        c.MobilePhone='+13239638840';
-        c.lastName='Veer';
-        c.firstName='Sharma';
+        c.email ='test@gmail.com';
+        c.MobilePhone = '1239638840';
+        c.lastName = 'Veer';
+        c.firstName ='Sharma';
         c.External_Email__c='test@gmail.com';
-        c.TrueDialog_Contact_Id__c='81071892';
+        c.TrueDialog_Contact_Id__c = '81071892';
         
         insert c;
 

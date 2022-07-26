@@ -12,11 +12,10 @@
 
 @isTest
 global class TrueDialogMockCallout implements HttpCalloutMock {
-    // Implement this interface method
-   
+    // Implement this interface method 
     global HTTPResponse respond(HTTPRequest req) {
 
-        String endpoint =req.getEndpoint(); 
+        String endpoint = req.getEndpoint(); 
         
         HttpResponse res = new HttpResponse();
         res.setHeader('Content-Type', 'application/json');
@@ -26,6 +25,7 @@ global class TrueDialogMockCallout implements HttpCalloutMock {
         }else{
            res.setBody('{ "channels": [], "targets": [ "81071892" ], "targetsUrl": null, "targetsColumn": null, "contactListIds": [], "excludeListIds": [], "campaignId": 119410, "mediaId": null, "message": "Test 01-07 2", "from": null, "subject": null, "ignoreSingleUse": false, "forceOptIn": false, "statusId": 0, "roundRobinById": false, "globalRoundRobin": false, "status": "Active", "id": 117958665, "accountId": 18409, "created": "2022-07-04T08:57:15.9178524Z", "modified": "2022-07-04T08:57:15.9178524Z", "createdBy": "1ab59fe33353401b8fd8da05716caaf5", "modifiedBy": null, "schedules": [] }'); 
         }  
+
         res.setStatusCode(201);
         return res;
     }
