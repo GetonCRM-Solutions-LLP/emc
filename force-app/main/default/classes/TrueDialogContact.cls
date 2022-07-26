@@ -12,7 +12,6 @@
  *  *   -                                -                         -
 *****************************************************************************************************/
 
-
 public with sharing class TrueDialogContact {
     
 
@@ -35,18 +34,14 @@ public with sharing class TrueDialogContact {
 		public String name;
 		public String value;
 	}
-
-    
+  
     /** 
     * ********************************************************
     * This method is test data for create IRS_Mileage_Rate__c.
     * ********************************************************
     */
-
-
     public static string generateTrueDialogContactReqBody(Contact cont){
         
-
         String contactName='';
         if(cont.firstName!=null){
             contactName = contactName+cont.firstName;    
@@ -55,19 +50,22 @@ public with sharing class TrueDialogContact {
             contactName = contactName+' '+cont.lastName; 
         }
 
-        TrueDialog_Keys__c tdKeys =TrueDialog_Keys__c.getValues('TrueDialogKeys');
+        TrueDialog_Keys__c tdKeys = TrueDialog_Keys__c.getValues('TrueDialogKeys');
 
-        
-        
         TrueDialogContact trueDialogContact = new TrueDialogContact();
 
         List<TrueDialogContact.Subscriptions> subscriptionList = new   List<TrueDialogContact.Subscriptions>();  
-        TrueDialogContact.Subscriptions subscription =new TrueDialogContact.Subscriptions();
+        TrueDialogContact.Subscriptions subscription = new TrueDialogContact.Subscriptions();
         subscription.subscriptionId = Integer.valueOf(tdKeys.Subscription_Id__c); //22639 
         if(cont.TrueDialog_Contact_Id__c!=null){
-
-            subscription.smsEnabled = cont.TrueDialog_SMS_Enabled__c;
-            subscription.mmsEnabled = cont.TrueDialog_MMS_Enabled__c;
+           
+            if(cont.Deactivated_Date__c == null){
+                subscription.smsEnabled = cont.TrueDialog_SMS_Enabled__c;
+                subscription.mmsEnabled = cont.TrueDialog_MMS_Enabled__c;
+            }else{
+                subscription.smsEnabled = false;
+                subscription.mmsEnabled = false;
+            }
           
         }else{
 
@@ -79,34 +77,27 @@ public with sharing class TrueDialogContact {
         }
         subscriptionList.add(subscription);
 
-
         List<TrueDialogContact.Attributes> attributeList = new   List<TrueDialogContact.Attributes>();
         TrueDialogContact.Attributes attribute = new TrueDialogContact.Attributes();
-        attribute.id = 1;
-        
+        attribute.id = 1;      
         attribute.name = contactName;
         attribute.value = contactName;
         attributeList.add(attribute);
          
-      
-        trueDialogContact.phoneNumber='+1'+cont.MobilePhone;
+        trueDialogContact.phoneNumber = '+1'+cont.MobilePhone;
         trueDialogContact.email = cont.Email;
-        trueDialogContact.subscriptions=subscriptionList;
-        trueDialogContact.attributes=attributeList;
-
-        
+        trueDialogContact.subscriptions = subscriptionList;
+        trueDialogContact.attributes = attributeList;
 
         return JSON.serialize(trueDialogContact);
        
     }
-
 
        /** 
     * ********************************************************
     * Parse JSON Response  to TrueDialogCOntact 
     * ********************************************************
     */
-
     public static TrueDialogContact parse(String json){
 		return (TrueDialogContact) System.JSON.deserialize(json, TrueDialogContact.class);
 	}
