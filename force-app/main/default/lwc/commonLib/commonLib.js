@@ -315,6 +315,38 @@ const dateString = (dt) =>{
       return tripSate;
     }
 
+    const formatDateOfMessage = (date) => {
+      var d = new Date(date),
+          month = '' + (d.getMonth() + 1),
+          day = '' + d.getDate(),
+          year = d.getFullYear();
+  
+      if (month.length < 2) 
+          month = '0' + month;
+      if (day.length < 2) 
+          day = '0' + day;
+  
+      return [year, month, day].join('-');
+  }
+
+    const formatList = (reList) => {
+      if (reList.length > 0) {
+        const newData = [...new Set(reList.map(d => d.Date))].map(Dt => {
+          return {
+            Dt,
+            Title: (Dt === formatDateOfMessage(new Date())) ? 'Today' : (Dt === formatDateOfMessage((new Date(Date.now() - 1000 * 60 * 60 * 24)))) ? 'Yesterday' : Date.parse(Dt),
+            Messages: reList.filter(d => d.Date === Dt).map(d => d)
+          }
+        })
+  
+        for (let i = 0; i < newData.length; i++) {
+          newData[i].aId = newData[i].messageId;
+          newData[i].isString = (newData[i].Title === 'Today' || newData[i].Title === 'Yesterday') ? true : false;
+        }
+        return newData
+      }
+    }
+
 export 
 {
     showMessage,
@@ -326,5 +358,6 @@ export
     changeKeyObjects,
     dateTypeFormat,
     yearMonthDate,
-    typeOfTrip
+    typeOfTrip,
+    formatList
 }

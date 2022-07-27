@@ -33,11 +33,11 @@
                                     </lightning-layout-item>
                                     <lightning-layout-item padding="around-small" size="4">
                                         <div class=" dProfile-section pdl-3 slds-grid slds-wrap">
-                                            <div class="slds-col slds-size_5-of-12">
+                                            <div class="slds-col slds-size_5-of-12 slds-m-left_x-small">
                                                 <img class="even-icon-size" src={moneyIconUrl} alt="icon" />
                                             </div>
                                             <div
-                                                class="slds-col slds-size_5-of-12 slds-m-left_medium slds-p-vertical_small">
+                                                class="slds-col slds-size_5-of-12 slds-m-left_small slds-p-vertical_small">
                                                 <p class="text-font-align pt-6">${fixedAmount}</p>
                                             </div>
                                         </div>
@@ -48,7 +48,7 @@
                                                 <img class="even-icon-size" src={variableRateUrl} alt="icon" />
                                             </div>
                                             <div
-                                                class="slds-col slds-size_5-of-12 slds-m-left_medium slds-p-vertical_small">
+                                                class="slds-col slds-size_5-of-12 slds-m-left_xx-small slds-p-vertical_small">
                                                 <p class="text-font-align pt-6">${variableRate}</p>
                                             </div>
                                         </div>
@@ -87,12 +87,13 @@
                                         <div class="carProfile slds-grid slds-wrap">
                                             <figure>
                                                 <template if:false={isShowMessage}>
-                                                    <img class="car-image-pl" src={contactDetails.carImage} alt="icon" />
+                                                    <img class="car-image-pl" src={contactDetails.carImage}
+                                                        alt="icon" />
                                                 </template>
                                                 <template if:true={isShowMessage}>
                                                     <img class="car-image" src={contactDetails.carImage} alt="icon" />
                                                 </template>
-                                            
+
                                                 <figcaption>{contactDetails.vehicalType}</figcaption>
                                             </figure>
                                         </div>
@@ -171,7 +172,7 @@
                         </template>
                     </div>
                 </template>
-              
+
             </div>
         </div>
         <div class="slds-grid slds-wrap dInfoGrid slds-p-bottom_large slds-is-close" data-id="profileSection">
@@ -187,8 +188,13 @@
                         <table>
                             <tr>
                                 <td class="t-width black"><strong>YTD Mileage:</strong></td>
-                                <td class="ytd-green">{formattedMileage} miles</td>
-                                <td class="ytd-grey"></td>
+                                <template if:true={isComplete}>
+                                    <td class="complete-td">{formattedMileage} miles</td>
+                                </template>
+                                <template if:false={isComplete}>
+                                    <td class="ytd-green">{formattedMileage} miles</td>
+                                    <td class="ytd-grey"></td>
+                                </template>
                             </tr>
                         </table>
 
@@ -205,7 +211,8 @@
                 </div>
                 <div
                     class="slds-col slds-size_1-of-1 slds-medium-size_6-of-12 slds-large-size_12-of-12  slds-p-horizontal_medium">
-                    <c-canvas-chart chart-data={contactChart.Mileagechart} default-month={contactChart.monthName}>
+                    <c-canvas-chart chart-data={contactChart.Mileagechart} default-month={contactChart.monthName}
+                        chart-component="Mileage">
                     </c-canvas-chart>
                 </div>
             </div>
@@ -227,7 +234,8 @@
                 </div>
                 <div
                     class="slds-col slds-size_1-of-1 slds-medium-size_6-of-12 slds-large-size_12-of-12  slds-p-horizontal_medium">
-                    <c-canvas-chart chart-data={contactChart.Reimbursementchart} default-month={contactChart.monthName}>
+                    <c-canvas-chart chart-data={contactChart.Reimbursementchart} default-month={contactChart.monthName}
+                        chart-component="Reimbursement">
                     </c-canvas-chart>
                 </div>
             </div>

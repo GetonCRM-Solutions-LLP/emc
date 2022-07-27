@@ -84,6 +84,10 @@
         width: 200px !important;
         font-size: 18px !important;
     }
+	.complete-td{
+		width: auto !important;
+       font-size: 18px !important;
+	}
 
     .td-width {
         width: 189px !important;
@@ -335,7 +339,14 @@ table tr td {
     width: 113px;
     color: #fff;
 }
-
+.complete-td{
+		background: #78bc42;
+    width: 200px;
+    color: #fff;
+    font-weight: 600;
+    padding-left: 12px !important;
+    font-size: 15px;
+}
 .border-css {
     border: solid 1px #ccc;
 }
@@ -395,7 +406,7 @@ table tr td {
 }
 .text-font-align {
     text-align: left;
-    font-size: 15px;
+    font-size: 16px;
     color: #000;
 }
 figcaption {
@@ -460,23 +471,14 @@ figcaption {
     font-weight: bold !important;
 }
 
-.slds-notify__close {
-    text-align: left !important;
-    top: 68% !important;
-    left: 1rem !important;
-    right: 0 !important;
-    margin-right: 0.25rem !important;
-    transform: translateY(-68%) !important;
-}
-
 .flag-fluid {
     width: 64px;
 }
 
 .received {
-    justify-content: right !important;
-    align-items: end !important;
-    text-align: right !important;
+    justify-content: left !important;
+    align-items: start !important;
+    text-align: left !important;
 }
 
 .notify-head {

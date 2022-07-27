@@ -2056,7 +2056,7 @@
                                         </li>
                                         <li class="nav-item">
                                             <!-- <button class="btn btn-secondary float-right">Upload Insurance</button> -->
-                                            <a class="btn btn-secondary float-right ml-em" ng-click="displymodal()">
+                                            <a class="btn btn-secondary float-right ml-em upload-button" ng-click="displymodal()">
                                                 <!--  ng-click="displymodal()" -->
                                                 Upload Insurance
                                             </a>

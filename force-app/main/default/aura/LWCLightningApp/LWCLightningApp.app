@@ -3,4 +3,5 @@
     <aura:dependency resource="driverProfile"/>
     <aura:dependency resource="mBursePlanInfo"/>
     <aura:dependency resource="dashboardUploadInsurance"/>
+    <aura:dependency resource="mBurseSMS"/>
 </aura:application>
