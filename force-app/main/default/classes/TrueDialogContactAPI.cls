@@ -18,6 +18,7 @@ global  class  TrueDialogContactAPI implements Database.Batchable<sObject>,Datab
 
     //Constructor for Batch class that initiliaze contact Id Set
     global TrueDialogContactAPI(Set<Id> contactIdSet){
+        System.debug('Contact Id Set'+contactIdSet);
         idSetBatch = contactIdSet;
     }
 
@@ -26,7 +27,7 @@ global  class  TrueDialogContactAPI implements Database.Batchable<sObject>,Datab
         return Database.getQueryLocator([Select Id,email,MobilePhone, 
                                         phone,name,lastname,firstname,
                                         TrueDialog_Contact_Id__c ,TrueDialog_SMS_Enabled__c,
-                                        TrueDialog_MMS_Enabled__c,Account.True_Dialog__c
+                                        TrueDialog_MMS_Enabled__c,Account.True_Dialog__c,Deactivated_Date__c
                                         FROM Contact 
                                         WHERE Id IN: idSetBatch and MobilePhone != null
                                         and Account.True_Dialog__c = true]);
@@ -34,7 +35,7 @@ global  class  TrueDialogContactAPI implements Database.Batchable<sObject>,Datab
 
      //Batchable execute - 
     global static void execute(Database.BatchableContext BC, List<Contact> scope) {    
-       
+       System.debug('Contact:'+scope);
         HttpResponse response = new HttpResponse();      
         String requestBody;
         
