@@ -57,8 +57,11 @@ public with sharing class TrueDialogContact {
         List<TrueDialogContact.Subscriptions> subscriptionList = new   List<TrueDialogContact.Subscriptions>();  
         TrueDialogContact.Subscriptions subscription = new TrueDialogContact.Subscriptions();
         subscription.subscriptionId = Integer.valueOf(tdKeys.Subscription_Id__c); //22639 
-        if(cont.TrueDialog_Contact_Id__c!=null){
-           
+        
+        subscription.emailEnabled = false;
+        subscription.voiceEnabled = false;
+       
+        if(cont.TrueDialog_Contact_Id__c!=null){  
             if(cont.Deactivated_Date__c == null){
                 subscription.smsEnabled = cont.TrueDialog_SMS_Enabled__c;
                 subscription.mmsEnabled = cont.TrueDialog_MMS_Enabled__c;
@@ -68,12 +71,8 @@ public with sharing class TrueDialogContact {
             }
           
         }else{
-
             subscription.smsEnabled = true;
-            subscription.mmsEnabled = true;
-            subscription.emailEnabled = false;
-            subscription.voiceEnabled = false;
-
+            subscription.mmsEnabled = true;         
         }
         subscriptionList.add(subscription);
 
