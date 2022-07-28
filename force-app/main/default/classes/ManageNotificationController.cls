@@ -23,15 +23,20 @@ public with sharing class ManageNotificationController {
     */
     
     @RemoteAction
-    public static String sendMessageToMultipleContacts(String trueDialogContactIdList,String message){        
+    public static String sendMessageToMultipleContacts(String trueDialogContactIdList,String message){   
+        
         List<String> trueDialogContactIdListArray = (List<String>)System.JSON.deserialize(trueDialogContactIdList, List<String>.class);
         String result;
         try {
             HttpResponse response = new HttpResponse();
+           
             String requestBody = TrueDiaolgSendMessageWrapper.generateBulkSendMessageReqBody(trueDialogContactIdListArray,message);
             response = TrueDialogAPICallout.executeCallout('POST','action-pushCampaign',requestBody,null);   
+            
             List<Message__c> lstMessage = new List<Message__c>();
+           
             Database.SaveResult[] saveResultList ;
+           
             if (response.getStatusCode() < 300) {               
                 TrueDiaolgSendMessageWrapper trueDialogWrapper = TrueDiaolgSendMessageWrapper.parse(response.getBody());                
                 for(Contact con : [Select Id,TrueDialog_Contact_Id__c FROM Contact 
@@ -44,23 +49,25 @@ public with sharing class ManageNotificationController {
                     lstMessage.add(messageRecord);
                 }
                 saveResultList = Database.insert(lstMessage, false);
-            
             } else {  
-                String trueDialogError =response.getBody() + ',' + response.getStatusCode() + ': ' + response.getStatus() + '\n';
-                System.debug(trueDialogError);
-                throw new TrueDialogApiException(trueDialogError);
-            }
-            if (saveResultList[0].isSuccess()) {
-                System.debug('Successfully inserted message. Message ID: ' + saveResultList[0].getId());
-                result = 'success';
-            }
-            else {                 
+                String trueDialogError = response.getBody() + ',' + response.getStatusCode() + ': ' + response.getStatus() + '\n';
                 result = 'failed';
+                System.debug(trueDialogError);     
             }
+            
+            for(Integer i=0;i<saveResultList.size();i++){
+            	if (saveResultList[i].isSuccess()) {
+                    System.debug('Successfully inserted message. Message ID: ' + saveResultList[0].getId());
+                    result = 'success';
+                }else {                 
+                    result = 'failed';
+                    break;
+                }
+            }     
         } catch (Exception e) {
             System.debug('The following exception has occurred: ' + e.getMessage());
         }       
-        return 'success';            
+        return result;            
     }    
         /** 
     * ********************************************************
