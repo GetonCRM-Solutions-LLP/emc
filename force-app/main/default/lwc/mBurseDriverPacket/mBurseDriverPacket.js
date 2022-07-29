@@ -106,40 +106,40 @@ export default class MBurseDriverPacket extends LightningElement {
                         contactData: JSON.stringify(contactData),
                         driverPacket: true
                     })
-                    .then(() => {}).catch(error => {
+                    .then(() => {
+                        if (downloadApp === true) {
+                            let list, d;
+                            contactInfo({
+                                    contactId: this.contactId
+                                })
+                                .then((data) => {
+                                    if (data) {
+                                        list = this.proxyToObject(data);
+                                        this.arrayList = list;
+                                        d = this.arrayList;
+                                        d[0].checkDriverMeeting = true;
+                                        updateContactDetail({
+                                            contactData: JSON.stringify(d),
+                                            driverPacket: true
+                                        })
+                                        if (d[0].accountStatus === 'New Account') {
+                                            window.open(this.schedule)
+                                        } else {
+                                            window.open(this.meeting)
+                                        }
+                                    }
+                                })
+                                .catch((error) => {
+                                    // If the promise rejects, we enter this code block
+                                    console.log(error);
+                                })
+                            this.redirectToDashboard()
+                        } else {
+                            skipEvents(this, 'Next mLog Preview');
+                        }
+                    }).catch(error => {
                         console.log("error", error)
                     })
-            }
-
-            if (downloadApp === true) {
-                let list, d;
-                contactInfo({
-                        contactId: this.contactId
-                    })
-                    .then((data) => {
-                        if (data) {
-                            list = this.proxyToObject(data);
-                            this.arrayList = list;
-                            d = this.arrayList;
-                            d[0].checkDriverMeeting = true;
-                            updateContactDetail({
-                                contactData: JSON.stringify(d),
-                                driverPacket: true
-                            })
-                            if (d[0].accountStatus === 'New Account') {
-                                window.open(this.schedule)
-                            } else {
-                                window.open(this.meeting)
-                            }
-                        }
-                    })
-                    .catch((error) => {
-                        // If the promise rejects, we enter this code block
-                        console.log(error);
-                    })
-                this.redirectToDashboard()
-            } else {
-                skipEvents(this, 'Next mLog Preview');
             }
         }
     }
@@ -169,7 +169,6 @@ export default class MBurseDriverPacket extends LightningElement {
                     this.arrayList = list;
                     d = this.arrayList;
                     d[0].checkDriverMeeting = true;
-
                     updateContactDetail({
                         contactData: JSON.stringify(d),
                         driverPacket: true
