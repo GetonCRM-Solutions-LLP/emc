@@ -31,7 +31,7 @@
                     <div class="back_to_previous back-position slds-float_left" if:true={isShowUpload}>
                         <a class="font-s" onclick={backToPage}><i class="fa-solid fa-angle-left"></i> Back</a>
                     </div>
-                    <div class="back_to_previous  back-position slds-float_right" if:false={isPacket}>
+                    <div class="back_to_previous  back-position slds-float_right" if:false={isShow}>
                         <a class="font-s" onclick={skipToPage}>Skip<i class="fa-solid fa-angle-right"></i></a>
                     </div>
                 </div>
@@ -53,9 +53,16 @@
         </div>
         <div class="m-top m-right">
             <div class="footer-button slds-float_right mright-10 mleft-0">
-                <button class="slds-btn slds-btn-primary slds-btn-sm waves-effect bc-blue waves-light packet_btn" onclick={nextmLogPreview}>
-                    {renderText}
-                </button>
+                <template if:true={isAppDone}>
+                    <button class="slds-btn slds-btn-primary slds-btn-sm waves-effect bc-blue waves-light packet_btn" onclick={goToDashboard}>
+                        {renderBtnText}
+                    </button>
+                </template>
+                <template if:false={isAppDone}>
+                    <button class="slds-btn slds-btn-primary slds-btn-sm waves-effect bc-blue waves-light packet_btn" onclick={nextmLogPreview}>
+                        {renderText}
+                    </button>
+                </template>
                 <div class="back_to_previous slds-float_left back-btn" if:true={isShowUpload}>
                     <a class="font-s" onclick={backToPacket}><i class="fa-solid fa-angle-left"></i> Back</a>
                 </div>

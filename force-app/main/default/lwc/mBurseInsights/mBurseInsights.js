@@ -48,6 +48,16 @@ export default class MBurseInsights extends LightningElement {
 
     carousel = false;
 
+    carouselLists = [{
+        "id": "1",
+        "name": "Select the mLog icon on your phone to open the app to track mileage each day automatically"
+      }, {
+        "id": "2",
+        "name": "Review your trips daily if possible, weekly at a minimum"
+      }, {
+        "id": "3",
+        "name": "Reclassify trips as business, personal, or delete trips you don't want to share"
+    }];
     // Function to close modal
     closePopup(){
         this.template.querySelector('.modal').style.display = 'none';

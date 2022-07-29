@@ -69,6 +69,7 @@ export default class MBurseMlog extends LightningElement {
     backToPage(){
         backEvents(this, 'Next Driver Packet');
     }
+
     renderedCallback(){
         if (this.renderInitialized) {
             return;

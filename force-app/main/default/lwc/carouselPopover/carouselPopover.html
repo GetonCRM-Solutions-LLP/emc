@@ -1,23 +1,23 @@
 <template>
-    <section aria-describedby="dialog-body-id-110" aria-label="Dialog Title" class="slds-popover slds-nubbin_top  slds-popover_large" role="dialog">
+    <section aria-describedby="dialog-body-id-110" aria-label="Dialog Title" class={styleCarousel} role="dialog">
       <button type="button" class="close-popover slds-float_right" data-dismiss="modal" aria-label="Close" onclick={closePopover}>
         <span aria-hidden="true">&times;</span>
       </button>
-        <header class="slds-popover__header">
+        <header class={styleHeader}>
           <div class="slds-media slds-media_center slds-has-flexi-truncate">
             <div class="slds-media__body">
               <h4>Instructions</h4>
             </div>
           </div>
         </header>
-        <div class="slds-popover__body" id="dialog-body-id-110">
+        <div class={styleBody} id="dialog-body-id-110">
           <div class="slds-media">
             <div class="slds-media__body">
                <c-carousel records={totalContacts}  onupdate={updateContactHandler}></c-carousel>
             </div>
           </div>
         </div>
-        <footer class="slds-popover__footer">
+        <footer class={styleFooter}>
           <div class="slds-grid slds-grid_vertical-align-center slds-grid_align-end">
             <div direction="row" wrap="nowrap" class="ui-flex">
               <strong>Follow these tips and download instructions <a href={instructionUrlAndroid} target="_blank"
