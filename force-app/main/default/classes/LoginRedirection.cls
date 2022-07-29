@@ -10,7 +10,7 @@ public with sharing class LoginRedirection
                     Contact.Driver_Type__c,
                     Contact.Driver_Packet_Status__c,
                     Contact.Insurance_Declaration_Status__c,
-                    Contact.mlog_App__c,
+                    Contact.App__c,
                     Contact.Schedule_Driver_Meeting__c,
                     Contact.Account.MburseDashboardRedirect__c    
                 FROM user 
@@ -36,7 +36,7 @@ public with sharing class LoginRedirection
                     pageRef = new PageReference('/app/admindashboard?accid='+u.contact.Accountid+'&id='+u.contactid+'&showteam='+String.valueOf(u.contact.showTeamRecord__c));
                     return pageRef;
                 } else if(u.Profile.Name == 'Customer Community Login User - Driver') {                
-                    if(u.Contact.Driver_Packet_Status__c != null && u.Contact.Insurance_Declaration_Status__c != null && u.Contact.Driver_Packet_Status__c == 'Uploaded' && u.Contact.Insurance_Declaration_Status__c == 'Uploaded' && u.Contact.mlog_App__c == true && u.Contact.Schedule_Driver_Meeting__c == true){
+                    if(u.Contact.Driver_Packet_Status__c != null && u.Contact.Insurance_Declaration_Status__c != null && u.Contact.Driver_Packet_Status__c == 'Uploaded' && u.Contact.Insurance_Declaration_Status__c == 'Uploaded' && u.Contact.App__c != null && u.Contact.Schedule_Driver_Meeting__c == true){
                         //AI-000414
                         if(biWeekList.size() > 0){
                             if(biWeekList[0].Confirm_Hours__c == false &&  u.Contact.Insurance_Attachment_Id__c != null && biWeekList[0].Count_Error_Check__c < 3){
@@ -61,7 +61,7 @@ public with sharing class LoginRedirection
                     }                    
                     return pageRef;
                 } else if(u.Profile.Name == 'Customer Community Login User - Manager/Driver') {
-                    if(u.Contact.Driver_Packet_Status__c != null && u.Contact.Insurance_Declaration_Status__c != null && u.Contact.Driver_Packet_Status__c == 'Uploaded' && u.Contact.Insurance_Declaration_Status__c == 'Uploaded' && u.Contact.mlog_App__c == true && u.Contact.Schedule_Driver_Meeting__c == true){
+                    if(u.Contact.Driver_Packet_Status__c != null && u.Contact.Insurance_Declaration_Status__c != null && u.Contact.Driver_Packet_Status__c == 'Uploaded' && u.Contact.Insurance_Declaration_Status__c == 'Uploaded' && u.Contact.App__c != null && u.Contact.Schedule_Driver_Meeting__c == true){
                         if(biWeekList.size() > 0 ){
                             if(biWeekList[0].Confirm_Hours__c == false && biWeekList[0].Count_Error_Check__c < 3 ){
                                 pageRef = new PageReference('/app/driverDashboardWeekly?accid='+u.contact.Accountid+'&id='+u.contactid+'&showteam='+String.valueOf(u.contact.showTeamRecord__c)+'&role=managerdriver');
@@ -86,7 +86,7 @@ public with sharing class LoginRedirection
                     //     pageRef = new PageReference('/app/admindriverdashboard?accid='+u.contact.Accountid+'&id='+u.contactid+'&showteam='+String.valueOf(u.contact.showTeamRecord__c)+'&admindriver=true');
                     // } 
     
-                    if(u.Contact.Driver_Packet_Status__c != null && u.Contact.Insurance_Declaration_Status__c != null && u.Contact.Driver_Packet_Status__c == 'Uploaded' && u.Contact.Insurance_Declaration_Status__c == 'Uploaded' && u.Contact.mlog_App__c == true && u.Contact.Schedule_Driver_Meeting__c == true){
+                    if(u.Contact.Driver_Packet_Status__c != null && u.Contact.Insurance_Declaration_Status__c != null && u.Contact.Driver_Packet_Status__c == 'Uploaded' && u.Contact.Insurance_Declaration_Status__c == 'Uploaded' && u.Contact.App__c != null && u.Contact.Schedule_Driver_Meeting__c == true){
                         if(biWeekList.size() > 0){
                             if(biWeekList[0].Confirm_Hours__c == false && biWeekList[0].Count_Error_Check__c < 3 ){
                                 pageRef = new PageReference('/app/driverDashboardWeekly?accid='+u.contact.Accountid+'&id='+u.contactid+'&showteam='+String.valueOf(u.contact.showTeamRecord__c)+'&admindriver=true');

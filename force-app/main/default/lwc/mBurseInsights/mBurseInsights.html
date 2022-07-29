@@ -13,7 +13,7 @@
                     <div class="instruction"  if:true={showInsight}>
                         <button class="tips-button" onclick={popOut}><i class="fa-solid fa-info"></i></button>
                         <template if:true={carousel}>
-                            <c-carousel-popover onpop={handlePopover}></c-carousel-popover>
+                            <c-carousel-popover onpop={handlePopover} total-contacts={carouselLists} style-carousel="slds-popover slds-nubbin_top  slds-popover_large" style-header="slds-popover__header bg-green"  style-body="slds-popover__body" style-footer="slds-popover__footer"></c-carousel-popover>
                         </template>
                     </div>
                     <!-- 16:9 aspect ratio -->

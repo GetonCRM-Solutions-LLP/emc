@@ -1,19 +1,13 @@
 import {
-  LightningElement, wire
+  LightningElement, wire, api
 } from 'lwc';
 import getCustomSettings from '@salesforce/apex/NewAccountDriverController.getCustomSettings';
 export default class CarouselPopover extends LightningElement {
-  totalContacts = [{
-    "id": "1",
-    "name": "Select the mLog icon on your phone to open the app to track mileage each day automatically"
-  }, {
-    "id": "2",
-    "name": "Review your trips daily if possible, weekly at a minimum"
-  }, {
-    "id": "3",
-    "name": "Reclassify trips as business, personal, or delete trips you don't want to share"
-  }];
-
+  @api totalContacts;
+  @api styleCarousel;
+  @api styleHeader;
+  @api styleFooter;
+  @api styleBody;
    // Link for instruction for android
    instructionUrlAndroid;
 

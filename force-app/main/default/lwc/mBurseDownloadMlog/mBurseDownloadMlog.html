@@ -1,65 +1,102 @@
 <template>
     <div class="transition" if:true={isDownload}>
-        <div if:false={render}>
+        <div if:false={render} class="flex-container">
             <c-m-burse-header-text head-text="Step 4 - Download mLog"></c-m-burse-header-text>
+            <div class="carousel-holder">
+                <button class="tips-button" onclick={popOut}><i class="fa-solid fa-info"></i></button>
+                <template if:true={carousel}>
+                    <c-carousel-popover onpop={handlePopover} total-contacts={carouselLists}
+                        style-carousel="slds-popover slds-nubbin_left-top  slds-popover_large c_popover"
+                        style-header="slds-popover__header bg-dark-blue" style-body="slds-popover__body border"
+                        style-footer="slds-popover__footer border-footer"></c-carousel-popover>
+                </template>
+            </div>
         </div>
-        <div if:true={render}>
+        <div if:true={render} class="flex-container">
             <c-m-burse-header-text head-text="Step 4 - Sign in to mLog"></c-m-burse-header-text>
+            <div class="carousel-holder">
+                <button class="tips-button" onclick={popOut}><i class="fa-solid fa-info"></i></button>
+                <template if:true={carousel}>
+                    <c-carousel-popover onpop={handlePopover} total-contacts={carouselLists}
+                        style-carousel="slds-popover slds-nubbin_left-top  slds-popover_large c_popover"
+                        style-header="slds-popover__header bg-dark-blue" style-body="slds-popover__body border"
+                        style-footer="slds-popover__footer border-footer"></c-carousel-popover>
+                </template>
+            </div>
         </div>
         <template if:true={render}>
-            <div class="slds-text-heading_small slds-text-align_center slds-p-bottom_x-large emcFont font-style p_bottom">
-                Watch this short video to learn how to set up mLog.
+            <div
+                class="slds-text-heading_small slds-text-align_center slds-p-bottom_x-small emcFont font-style p_bottom">
+                Check your email and text messages and open the link and select Step 2  <br/>
+                Are you still having challenges? Contact <a onclick={contactSupport}>Support</a>
+            </div>
+            <div
+                class="slds-text-heading_small slds-text-align_center slds-p-top_medium slds-p-bottom_large emcFont font-style">
+                Still want a little help? Watch the video below.
             </div>
             <div class="slds-align_absolute-center video-flow">
                 <div class="mright">
                     <div class="video-container">
                         <template if:false={isPlay}>
-                            <div class="apple_icon_box"> 
-                                <img class="apple_icon slds-m-left_xx-small" src={appleUrl}/>
+                            <div class="apple_icon_box">
+                                <img class="apple_icon slds-m-left_xx-small" src={appleUrl} />
                             </div>
-                            <div class="slds-align_absolute-center img-header">IOS Getting Started</div>
-                            <div class="slds-size_5-of-12 slds-align_absolute-center slds-m-top_small slds-p-bottom_xx-large slds-p-right_xx-large slds-p-left_xx-large img-container">
-                                <img src={videoLogoUrl}  class="img-logo" onclick={playVideo} />
+                            <div class="slds-align_absolute-center img-header">IOS Getting Started Video</div>
+                            <div
+                                class="slds-size_5-of-12 slds-align_absolute-center slds-m-top_small slds-p-bottom_xx-large slds-p-right_xx-large slds-p-left_xx-large img-container">
+                                <img src={videoLogoUrl} class="img-logo" onclick={playVideo} />
                             </div>
                         </template>
                         <template if:true={isPlay}>
-                            <iframe width={videoWidth} height={videoHeight} src={iosVideoUrl} title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                            <iframe width={videoWidth} height={videoHeight} src={iosVideoUrl}
+                                title="YouTube video player" frameborder="0"
+                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                allowfullscreen></iframe>
                         </template>
                     </div>
                 </div>
                 <div class="mleft">
                     <div class="video-container">
                         <template if:false={isPlayAndroid}>
-                            <div  class="android_icon_box">
-                                <img class="android_icon slds-m-left_xx-small" src={androidUrl}/>
+                            <div class="android_icon_box">
+                                <img class="android_icon slds-m-left_xx-small" src={androidUrl} />
                             </div>
-                            <div class="slds-align_absolute-center img-header">Android Getting Started</div>
-                            <div class="slds-size_5-of-12 slds-align_absolute-center slds-m-top_small slds-p-bottom_xx-large slds-p-right_xx-large slds-p-left_xx-large img-container">
-                                <img src={videoLogoUrl} class="img-logo" onclick={playVideoAndroid}/>
+                            <div class="slds-align_absolute-center img-header">Android Getting Started Video</div>
+                            <div
+                                class="slds-size_5-of-12 slds-align_absolute-center slds-m-top_small slds-p-bottom_xx-large slds-p-right_xx-large slds-p-left_xx-large img-container">
+                                <img src={videoLogoUrl} class="img-logo" onclick={playVideoAndroid} />
                             </div>
                         </template>
                         <template if:true={isPlayAndroid}>
-                            <iframe width={videoWidth} height={videoHeight} src={androidVideoUrl} title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                            <iframe width={videoWidth} height={videoHeight} src={androidVideoUrl}
+                                title="YouTube video player" frameborder="0"
+                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                allowfullscreen></iframe>
                         </template>
                     </div>
                 </div>
             </div>
             <div class="slds-clearfix slds-p-top_x-large">
-                <div class="footer-text  slds-align_absolute-center p_top font-style">
-                    <div class="font-style"><strong>Follow these tips and download instructions <a href={instructionUrlAndroid} target="_blank" onclick={handleRedirect}>here</a> and <a href={mLogTracking} target="_blank">here</a>:</strong>
+                <!-- <div class="footer-text  slds-align_absolute-center p_top font-style">
+                    <div class="font-style"><strong>Follow these tips and download instructions <a
+                                href={instructionUrlAndroid} target="_blank" onclick={handleRedirect}>here</a> and <a
+                                href={mLogTracking} target="_blank">here</a>:</strong>
                         <ul class="slds-list_dotted slds-p-top_x-small">
-                            <li>Make sure you turn on the app every day that you are using it by selecting the mLog icon</li>
+                            <li>Make sure you turn on the app every day that you are using it by selecting the mLog icon
+                            </li>
                             <li>Review your trips daily if possible, weekly at a minimum</li>
-                            <li>You can categorize any trips as Personal or delete any trips you do not want to share</li>
+                            <li>You can categorize any trips as Personal or delete any trips you do not want to share
+                            </li>
                         </ul>
                     </div>
-                </div>
+                </div> -->
                 <div class="footer-button slds-p-top_large  slds-p-bottom_large p_top">
                     <div>
                         <div class="watch-meet">
-                            <button class="slds-btn slds-btn-primary slds-btn-sm waves-effect bc-blue waves-light" onclick={nextDriverMeeting}>
-                                Next watch the meeting
-                             </button>
+                            <button class="slds-btn slds-btn-primary slds-btn-sm waves-effect bc-blue waves-light"
+                                onclick={nextDriverMeeting}>
+                                {buttonRender}
+                            </button>
                         </div>
                         <div class="back_to_previous slds-m-top_small back-btn_div">
                             <a class="font-s" onclick={backToPage}><i class="fa-solid fa-angle-left"></i> Back</a>
@@ -69,45 +106,54 @@
             </div>
         </template>
         <template if:false={render}>
-            <div class="slds-text-heading_small slds-text-align_center slds-p-bottom_medium emcFont font-style p_bottom">
+            <div
+                class="slds-text-heading_small slds-text-align_center slds-p-bottom_x-large emcFont font-style p_bottom">
                 Watch this short video to learn how to set up mLog.
             </div>
             <div class="slds-align_absolute-center video-flow">
                 <div class="mright">
                     <div class="video-container">
                         <template if:false={isPlay}>
-                            <div class="apple_icon_box"> 
-                                <img class="apple_icon slds-m-left_xx-small" src={appleUrl}/>
+                            <div class="apple_icon_box">
+                                <img class="apple_icon slds-m-left_xx-small" src={appleUrl} />
                             </div>
-                            <div class="slds-align_absolute-center img-header">IOS Getting Started</div>
-                            <div class="slds-size_5-of-12 slds-align_absolute-center slds-m-top_small slds-p-bottom_xx-large slds-p-right_xx-large slds-p-left_xx-large img-container">
-                                <img src={videoLogoUrl}  class="img-logo" onclick={playVideo} />
+                            <div class="slds-align_absolute-center img-header">IOS Getting Started Video</div>
+                            <div
+                                class="slds-size_5-of-12 slds-align_absolute-center slds-m-top_small slds-p-bottom_xx-large slds-p-right_xx-large slds-p-left_xx-large img-container">
+                                <img src={videoLogoUrl} class="img-logo" onclick={playVideo} />
                             </div>
                         </template>
                         <template if:true={isPlay}>
-                            <iframe width={videoWidth} height={videoHeight} src={iosVideoUrl} title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                            <iframe width={videoWidth} height={videoHeight} src={iosVideoUrl}
+                                title="YouTube video player" frameborder="0"
+                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                allowfullscreen></iframe>
                         </template>
                     </div>
                 </div>
                 <div class="mleft">
                     <div class="video-container">
                         <template if:false={isPlayAndroid}>
-                            <div  class="android_icon_box">
-                                <img class="android_icon slds-m-left_xx-small" src={androidUrl}/>
+                            <div class="android_icon_box">
+                                <img class="android_icon slds-m-left_xx-small" src={androidUrl} />
                             </div>
-                            <div class="slds-align_absolute-center img-header">Android Getting Started</div>
-                            <div class="slds-size_5-of-12 slds-align_absolute-center slds-m-top_small slds-p-bottom_xx-large slds-p-right_xx-large slds-p-left_xx-large img-container">
-                                <img src={videoLogoUrl} class="img-logo" onclick={playVideoAndroid}/>
+                            <div class="slds-align_absolute-center img-header">Android Getting Started Video</div>
+                            <div
+                                class="slds-size_5-of-12 slds-align_absolute-center slds-m-top_small slds-p-bottom_xx-large slds-p-right_xx-large slds-p-left_xx-large img-container">
+                                <img src={videoLogoUrl} class="img-logo" onclick={playVideoAndroid} />
                             </div>
                         </template>
                         <template if:true={isPlayAndroid}>
-                            <iframe width={videoWidth} height={videoHeight} src={androidVideoUrl} title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                            <iframe width={videoWidth} height={videoHeight} src={androidVideoUrl}
+                                title="YouTube video player" frameborder="0"
+                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                allowfullscreen></iframe>
                         </template>
                     </div>
                 </div>
             </div>
             <div class="slds-clearfix slds-p-top_x-large">
-                <div class="footer-text  slds-align_absolute-center p_top font-style">
+                <!-- <div class="footer-text  slds-align_absolute-center p_top font-style">
                     <div><strong>Follow these tips and download instructions <a href={instructionUrlAndroid} target="_blank" onclick={handleRedirect}>here</a> and <a href={mLogTracking} target="_blank">here</a>:</strong>
                         <ul class="slds-list_dotted slds-p-top_x-small">
                             <li>Select the mLog icon to open the app to automatically track mileage every day</li>
@@ -115,17 +161,20 @@
                             <li>Reclassify any trip as personal, business or delete any trips you don't want to show</li>
                         </ul>
                     </div>
-                </div>
+                </div> -->
                 <template if:false={render}>
                     <div class="footer-button slds-p-top_large slds-p-bottom_large slds-align_absolute-center p_top">
-                        <button class="slds-btn slds-btn-primary slds-btn-sm waves-effect bc-blue waves-light" onclick={downloadNow}>
+                        <button class="slds-btn slds-btn-primary slds-btn-sm waves-effect bc-blue waves-light"
+                            onclick={downloadNow}>
                             Download now
                         </button>
-                        <button class="slds-btn slds-btn-primary slds-btn-sm waves-effect bc-blue waves-light" onclick={downloadLater}>
+                        <button class="slds-btn slds-btn-primary slds-btn-sm waves-effect bc-blue waves-light"
+                            onclick={downloadLater}>
                             Download later
                         </button>
-                        <button class="slds-btn slds-btn-primary slds-btn-sm waves-effect bc-blue waves-light" onclick={downloadAlready}>
-                           I already have mLog
+                        <button class="slds-btn slds-btn-primary slds-btn-sm waves-effect bc-blue waves-light"
+                            onclick={downloadAlready}>
+                            I already have mLog
                         </button>
                         <div class="back_btn">
                             <div class="back_to_previous">
@@ -134,84 +183,106 @@
                         </div>
                     </div>
                 </template>
-              <template if:true={render}>
-                <div class="footer-button slds-p-bottom_large">
-                    <div>
-                        <div class="watch-meet">
-                            <button class="slds-btn slds-btn-primary slds-btn-sm waves-effect bc-blue waves-light" onclick={nextDriverMeeting}>
-                                Next watch the meeting
-                             </button>
-                        </div>
-                        <div class="back_to_previous slds-m-top_small back-btn_div">
-                            <a class="font-s" onclick={backToPage}><i class="fa-solid fa-angle-left"></i> Back</a>
+                <template if:true={render}>
+                    <div class="footer-button slds-p-bottom_large">
+                        <div>
+                            <div class="watch-meet">
+                                <button class="slds-btn slds-btn-primary slds-btn-sm waves-effect bc-blue waves-light"
+                                    onclick={nextDriverMeeting}>
+                                    {buttonRender}
+                                </button>
+                            </div>
+                            <div class="back_to_previous slds-m-top_small back-btn_div">
+                                <a class="font-s" onclick={backToPage}><i class="fa-solid fa-angle-left"></i> Back</a>
+                            </div>
                         </div>
                     </div>
-                </div>
-              </template>
+                </template>
             </div>
         </template>
     </div>
 
     <div class="transition" if:true={isDownloadNow}>
-        <div>
+        <div class="flex-container">
             <c-m-burse-header-text head-text="Step 4 - Get mLog"></c-m-burse-header-text>
+            <div class="carousel-holder">
+                <button class="tips-button" onclick={popOut}><i class="fa-solid fa-info"></i></button>
+                <template if:true={carousel}>
+                    <c-carousel-popover onpop={handlePopover} total-contacts={carouselLists}
+                        style-carousel="slds-popover slds-nubbin_left-top  slds-popover_large c_popover"
+                        style-header="slds-popover__header bg-dark-blue" style-body="slds-popover__body border"
+                        style-footer="slds-popover__footer border-footer"></c-carousel-popover>
+                </template>
+            </div>
         </div>
         <div class="slds-text-heading_small slds-text-align_center slds-p-bottom_medium emcFont p_bottom font-style">
-          You should have received an email and possibly a text message.<br/>
-          Watch this short video to learn how to set up mLog
+            Check your email and text messages and open the link and follow the steps. <br />
+            (Remember there is no password, select the links in the email.) <br />
+            Are you still having challenges? Contact <a onclick={contactSupport}>Support</a>
+            <!-- You should have received an email and possibly a text message.<br/>
+          Watch this short video to learn how to set up mLog -->
+        </div>
+        <div
+            class="slds-text-heading_small slds-text-align_center slds-p-top_medium slds-p-bottom_large emcFont font-style">
+            Still want a little help? Watch the video below.
         </div>
         <div class="slds-align_absolute-center video-flow">
             <div class="mright">
                 <div class="video-container">
                     <template if:false={isPlay}>
-                        <div class="apple_icon_box"> 
-                            <img class="apple_icon slds-m-left_xx-small" src={appleUrl}/>
+                        <div class="apple_icon_box">
+                            <img class="apple_icon slds-m-left_xx-small" src={appleUrl} />
                         </div>
-                        <div class="slds-align_absolute-center img-header">IOS Getting Started</div>
-                        <div class="slds-size_5-of-12 slds-align_absolute-center slds-m-top_small slds-p-bottom_xx-large slds-p-right_xx-large slds-p-left_xx-large img-container">
-                            <img src={videoLogoUrl}  class="img-logo" onclick={playVideo} />
+                        <div class="slds-align_absolute-center img-header">IOS Getting Started Video</div>
+                        <div
+                            class="slds-size_5-of-12 slds-align_absolute-center slds-m-top_small slds-p-bottom_xx-large slds-p-right_xx-large slds-p-left_xx-large img-container">
+                            <img src={videoLogoUrl} class="img-logo" onclick={playVideo} />
                         </div>
                     </template>
                     <template if:true={isPlay}>
-                        <iframe width={videoWidth} height={videoHeight} src={iosVideoUrl} title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                        <iframe width={videoWidth} height={videoHeight} src={iosVideoUrl} title="YouTube video player"
+                            frameborder="0"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                            allowfullscreen></iframe>
                     </template>
                 </div>
             </div>
             <div class="mleft">
                 <div class="video-container">
                     <template if:false={isPlayAndroid}>
-                        <div  class="android_icon_box">
-                            <img class="android_icon slds-m-left_xx-small" src={androidUrl}/>
+                        <div class="android_icon_box">
+                            <img class="android_icon slds-m-left_xx-small" src={androidUrl} />
                         </div>
-                        <div class="slds-align_absolute-center img-header">Android Getting Started</div>
-                        <div class="slds-size_5-of-12 slds-align_absolute-center slds-m-top_small slds-p-bottom_xx-large slds-p-right_xx-large slds-p-left_xx-large img-container">
+                        <div class="slds-align_absolute-center img-header">Android Getting Started Video</div>
+                        <div
+                            class="slds-size_5-of-12 slds-align_absolute-center slds-m-top_small slds-p-bottom_xx-large slds-p-right_xx-large slds-p-left_xx-large img-container">
                             <img src={videoLogoUrl} class="img-logo" onclick={playVideoAndroid} />
                         </div>
                     </template>
                     <template if:true={isPlayAndroid}>
-                        <iframe width={videoWidth} height={videoHeight} src={androidVideoUrl} title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                        <iframe width={videoWidth} height={videoHeight} src={androidVideoUrl}
+                            title="YouTube video player" frameborder="0"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                            allowfullscreen></iframe>
                     </template>
                 </div>
             </div>
         </div>
         <div class="slds-clearfix slds-p-top_x-large">
-            <div class="footer-text  slds-align_absolute-center p_top font-style">
+            <!-- <div class="footer-text  slds-align_absolute-center p_top font-style">
                 <div><strong>Follow these tips and download instructions <a href={instructionUrlAndroid} target="_blank" onclick={handleRedirect}>here</a> and <a href={mLogTracking} target="_blank">here</a>:</strong>
                     <ul class="slds-list_dotted slds-p-top_x-small">
                         <li>Select the mLog icon on your phone to open the app to track mileage each day automatically</li>
                         <li>Review your trips daily if possible, weekly at a minimum</li>
                         <li>Reclassify trips as business, personal, or delete trips you don't want to share</li>
-                        <!-- <li>Review our Privacy Pledge <a href={privacyPledgeUrl} target="_blank">here</a></li> -->
-                       <!-- <li>Make sure you turn on the app every day that you are using it by selecting the mLog icon</li>
-                        <li>Review your trips daily if possible, weekly at a minimum</li>
-                        <li>You can categorize any trips as Personal or delete any trips you do not want to share</li>-->
                     </ul>
                 </div>
-            </div>
+            </div> -->
             <div class="footer-button slds-p-bottom_large p_top">
                 <div class="watch-meet">
-                    <button class="slds-btn slds-btn-primary slds-btn-sm waves-effect bc-blue waves-light" onclick={nextDriverMeeting}>
-                        Next watch the meeting
+                    <button class="slds-btn slds-btn-primary slds-btn-sm waves-effect bc-blue waves-light"
+                        onclick={nextDriverMeeting}>
+                        {buttonRender}
                     </button>
                 </div>
                 <div class="back_to_previous slds-m-top_small back-btn_div">
@@ -227,49 +298,71 @@
     </div>
 
     <div class="transition" if:true={isDownloadLater}>
-        <div>
+        <div class="flex-container">
             <c-m-burse-header-text head-text="Step 4 - Get mLog Later"></c-m-burse-header-text>
+            <div class="carousel-holder">
+                <button class="tips-button" onclick={popOut}><i class="fa-solid fa-info"></i></button>
+                <template if:true={carousel}>
+                    <c-carousel-popover onpop={handlePopover} total-contacts={carouselLists}
+                        style-carousel="slds-popover slds-nubbin_left-top  slds-popover_large c_popover"
+                        style-header="slds-popover__header bg-dark-blue" style-body="slds-popover__body border"
+                        style-footer="slds-popover__footer border-footer"></c-carousel-popover>
+                </template>
+            </div>
         </div>
         <div class="slds-text-heading_small slds-text-align_center slds-p-bottom_medium emcFont p_bottom font-style">
-         I understand that you want to download mLog later. Contact <a onclick={contactSupport}>support</a>.<br/>
-         Don't forget to log in soon so you can start capturing your business mileage.
+            We sent the link to your email and text messages, follow the steps when you <br /> are ready to download and
+            install mLog.
+            <br /> (Remember there is no password, select the links in the email.)
+        </div>
+        <div
+            class="slds-text-heading_small slds-text-align_center slds-p-top_medium slds-p-bottom_medium emcFont font-style">
+            Still want a little help? Watch the video below.
         </div>
         <div class="slds-align_absolute-center video-flow">
             <div class="mright">
                 <div class="video-container">
                     <template if:false={isPlay}>
-                        <div class="apple_icon_box"> 
-                            <img class="apple_icon slds-m-left_xx-small" src={appleUrl}/>
+                        <div class="apple_icon_box">
+                            <img class="apple_icon slds-m-left_xx-small" src={appleUrl} />
                         </div>
-                        <div class="slds-align_absolute-center img-header">IOS Getting Started</div>
-                        <div class="slds-size_5-of-12 slds-align_absolute-center slds-m-top_small slds-p-bottom_xx-large slds-p-right_xx-large slds-p-left_xx-large img-container">
-                            <img src={videoLogoUrl}  class="img-logo" onclick={playVideo} />
+                        <div class="slds-align_absolute-center img-header">IOS Getting Started Video</div>
+                        <div
+                            class="slds-size_5-of-12 slds-align_absolute-center slds-m-top_small slds-p-bottom_xx-large slds-p-right_xx-large slds-p-left_xx-large img-container">
+                            <img src={videoLogoUrl} class="img-logo" onclick={playVideo} />
                         </div>
                     </template>
                     <template if:true={isPlay}>
-                        <iframe width={videoWidth} height={videoHeight} src={iosVideoUrl} title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                        <iframe width={videoWidth} height={videoHeight} src={iosVideoUrl} title="YouTube video player"
+                            frameborder="0"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                            allowfullscreen></iframe>
                     </template>
                 </div>
             </div>
             <div class="mleft">
                 <div class="video-container">
                     <template if:false={isPlayAndroid}>
-                        <div  class="android_icon_box">
-                            <img class="android_icon slds-m-left_xx-small" src={androidUrl}/>
+                        <div class="android_icon_box">
+                            <img class="android_icon slds-m-left_xx-small" src={androidUrl} />
                         </div>
-                        <div class="slds-align_absolute-center img-header">Android Getting Started</div>
-                        <div class="slds-size_5-of-12 slds-align_absolute-center slds-m-top_small slds-p-bottom_xx-large slds-p-right_xx-large slds-p-left_xx-large img-container">
-                            <img src={videoLogoUrl} class="img-logo" onclick={playVideoAndroid}/>
+                        <div class="slds-align_absolute-center img-header">Android Getting Started Video</div>
+                        <div
+                            class="slds-size_5-of-12 slds-align_absolute-center slds-m-top_small slds-p-bottom_xx-large slds-p-right_xx-large slds-p-left_xx-large img-container">
+                            <img src={videoLogoUrl} class="img-logo" onclick={playVideoAndroid} />
                         </div>
                     </template>
                     <template if:true={isPlayAndroid}>
-                        <iframe width={videoWidth} height={videoHeight} src={androidVideoUrl} title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                        <iframe width={videoWidth} height={videoHeight} src={androidVideoUrl}
+                            title="YouTube video player" frameborder="0"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                            allowfullscreen></iframe>
                     </template>
                 </div>
             </div>
         </div>
         <div class="slds-clearfix slds-p-top_x-large">
-            <div class="footer-text  slds-align_absolute-center p_top font-style">
+            <!-- <div class="footer-text  slds-align_absolute-center p_top font-style">
                 <div><strong>Follow these tips and download instructions <a href={instructionUrlAndroid} target="_blank" onclick={handleRedirect}>here</a> and <a href={mLogTracking} target="_blank">here</a>:</strong>
                     <ul class="slds-list_dotted slds-p-top_x-small">
                         <li>Select the mLog icon on your phone to open the app to track mileage each day automatically</li>
@@ -277,13 +370,14 @@
                         <li>Reclassify trips as business, personal, or delete trips you don't want to share</li>
                     </ul>
                 </div>
-            </div>
+            </div> -->
             <div class="footer-button slds-p-bottom_large p_top">
                 <div>
                     <div class="watch-meet">
-                        <button class="slds-btn slds-btn-primary slds-btn-sm waves-effect bc-blue waves-light" onclick={nextDriverMeeting}>
-                            Next watch the meeting
-                         </button>
+                        <button class="slds-btn slds-btn-primary slds-btn-sm waves-effect bc-blue waves-light"
+                            onclick={nextDriverMeeting}>
+                            {buttonRender}
+                        </button>
                     </div>
                     <div class="back_to_previous slds-m-top_small back-btn_div">
                         <a class="font-s" onclick={backToDownloadPage}><i class="fa-solid fa-angle-left"></i> Back</a>
@@ -294,64 +388,97 @@
     </div>
 
     <div class="transition" if:true={isDownloadAlready}>
-        <div>
+        <div class="flex-container">
             <c-m-burse-header-text head-text="mLog"></c-m-burse-header-text>
+            <div class="carousel-holder">
+                <button class="tips-button" onclick={popOut}><i class="fa-solid fa-info"></i></button>
+                <template if:true={carousel}>
+                    <c-carousel-popover onpop={handlePopover} total-contacts={carouselLists}
+                        style-carousel="slds-popover slds-nubbin_left-top  slds-popover_large c_popover"
+                        style-header="slds-popover__header bg-dark-blue" style-body="slds-popover__body border"
+                        style-footer="slds-popover__footer border-footer"></c-carousel-popover>
+                </template>
+            </div>
         </div>
         <div class="slds-text-heading_small slds-text-align_center slds-p-bottom_medium emcFont p_bottom font-style">
-        Make sure that you signed into your app using the corporate account.<br/>
-        If you are not sure, Contact <a onclick={contactSupport}>support</a>.
+            <strong>Did you downloaded mLog without receiving a link?</strong><br/> If so there is a good chance you are not signed into your
+            company account <br/>
+            and you risk losing your mileage and delaying your reimbursement.
+        </div>
+        <div class="slds-text-heading_small slds-text-align_center slds-p-bottom_medium emcFont p_bottom font-style">
+            Click the button below and when you receive the link select Step 2.
+            <div class="slds-p-top_small">
+                <button class="slds-btn slds-btn-link slds-btn-sm waves-effect bc-blue waves-light" onclick={sendCorporateLink}>
+                    Select this button to resend corporate link
+                </button>
+            </div>
+        </div>
+        <div
+            class="slds-text-heading_small slds-text-align_center slds-p-bottom_large emcFont font-style">
+            Still want a little help? Watch the video below.
         </div>
         <div class="slds-align_absolute-center video-flow">
             <div class="mright">
                 <div class="video-container">
                     <template if:false={isPlay}>
-                        <div class="apple_icon_box"> 
-                            <img class="apple_icon slds-m-left_xx-small" src={appleUrl}/>
+                        <div class="apple_icon_box">
+                            <img class="apple_icon slds-m-left_xx-small" src={appleUrl} />
                         </div>
-                        <div class="slds-align_absolute-center img-header">IOS Getting Started</div>
-                        <div class="slds-size_5-of-12 slds-align_absolute-center slds-m-top_small slds-p-bottom_xx-large slds-p-right_xx-large slds-p-left_xx-large img-container">
-                            <img src={videoLogoUrl}  class="img-logo" onclick={playVideo} />
+                        <div class="slds-align_absolute-center img-header">IOS Getting Started Video</div>
+                        <div
+                            class="slds-size_5-of-12 slds-align_absolute-center slds-m-top_small slds-p-bottom_xx-large slds-p-right_xx-large slds-p-left_xx-large img-container">
+                            <img src={videoLogoUrl} class="img-logo" onclick={playVideo} />
                         </div>
                     </template>
                     <template if:true={isPlay}>
-                        <iframe width={videoWidth} height={videoHeight} src={iosVideoUrl} title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                        <iframe width={videoWidth} height={videoHeight} src={iosVideoUrl} title="YouTube video player"
+                            frameborder="0"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                            allowfullscreen></iframe>
                     </template>
                 </div>
             </div>
             <div class="mleft">
                 <div class="video-container">
                     <template if:false={isPlayAndroid}>
-                        <div  class="android_icon_box">
-                            <img class="android_icon slds-m-left_xx-small" src={androidUrl}/>
+                        <div class="android_icon_box">
+                            <img class="android_icon slds-m-left_xx-small" src={androidUrl} />
                         </div>
-                        <div class="slds-align_absolute-center img-header">Android Getting Started</div>
-                        <div class="slds-size_5-of-12 slds-align_absolute-center slds-m-top_small slds-p-bottom_xx-large slds-p-right_xx-large slds-p-left_xx-large img-container">
-                            <img src={videoLogoUrl} class="img-logo" onclick={playVideoAndroid}/>
+                        <div class="slds-align_absolute-center img-header">Android Getting Started Video</div>
+                        <div
+                            class="slds-size_5-of-12 slds-align_absolute-center slds-m-top_small slds-p-bottom_xx-large slds-p-right_xx-large slds-p-left_xx-large img-container">
+                            <img src={videoLogoUrl} class="img-logo" onclick={playVideoAndroid} />
                         </div>
                     </template>
                     <template if:true={isPlayAndroid}>
-                        <iframe width={videoWidth} height={videoHeight} src={androidVideoUrl} title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                        <iframe width={videoWidth} height={videoHeight} src={androidVideoUrl}
+                            title="YouTube video player" frameborder="0"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                            allowfullscreen></iframe>
                     </template>
                 </div>
             </div>
         </div>
-        
         <div class="slds-p-top_x-large">
-            <div class="footer-text  slds-align_absolute-center p_top font-style">
-                <div><strong>Follow these tips and download instructions <a href={instructionUrlAndroid} target="_blank" onclick={handleRedirect}>here</a>  and <a href={mLogTracking} target="_blank">here</a> :</strong>
+            <!-- <div class="footer-text  slds-align_absolute-center p_top font-style">
+                <div><strong>Follow these tips and download instructions <a href={instructionUrlAndroid} target="_blank"
+                            onclick={handleRedirect}>here</a> and <a href={mLogTracking} target="_blank">here</a>
+                        :</strong>
                     <ul class="slds-list_dotted slds-p-top_x-small">
-                        <li>Select the mLog icon on your phone to open the app to track mileage each day automatically</li>
+                        <li>Select the mLog icon on your phone to open the app to track mileage each day automatically
+                        </li>
                         <li>Review your trips daily if possible, weekly at a minimum</li>
                         <li>Reclassify trips as business, personal, or delete trips you don't want to share</li>
                     </ul>
                 </div>
-            </div>
+            </div> -->
             <div class="footer-button slds-p-bottom_large p_top">
                 <div>
                     <div class="watch-meet">
-                        <button class="slds-btn slds-btn-primary slds-btn-sm waves-effect bc-blue waves-light" onclick={nextDriverMeeting}>
-                            Next watch the meeting
-                         </button>
+                        <button class="slds-btn slds-btn-primary slds-btn-sm waves-effect bc-blue waves-light"
+                            onclick={nextDriverMeeting}>
+                            {buttonRender}
+                        </button>
                     </div>
                     <div class="back_to_previous slds-m-top_small back-btn_div">
                         <a class="font-s" onclick={backToDownloadPage}><i class="fa-solid fa-angle-left"></i> Back</a>
