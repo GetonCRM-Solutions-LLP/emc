@@ -8,7 +8,7 @@ export default class MBurseMain extends LightningElement {
   nextDriverPacket = false;
   nextmLogPreview = false;
   nextmLogDownload = false;
-  nextBurseFinal = false;
+  // nextBurseFinal = false;
   welcomePage = true;
   isInsurance = true;
   isDeclaration = false;
@@ -36,7 +36,7 @@ export default class MBurseMain extends LightningElement {
     //this.welcomePage = ((m.driverPacketStatus === null && m.insuranceStatus === null) || (m.driverPacketStatus === 'Skip' && m.insuranceStatus === 'Skip') || (m.driverPacketStatus === null  && m.insuranceStatus === 'Skip') || (m.driverPacketStatus === 'Uploaded' && m.insuranceStatus === 'Skip' )) ? true : false;
     this.nextInsurance = ((m.driverPacketStatus === null && m.insuranceStatus === null) || (m.driverPacketStatus === 'Skip' && m.insuranceStatus === 'Skip') || (m.driverPacketStatus === null && m.insuranceStatus === 'Skip') || (m.driverPacketStatus === 'Uploaded' && m.insuranceStatus === 'Skip')) ? true : false;
     this.nextDriverPacket = (m.insuranceStatus === 'Uploaded' && (m.driverPacketStatus === 'Skip' || m.driverPacketStatus === null)) ? true : false;
-    this.nextmLogPreview = (m.insuranceStatus === 'Uploaded' && m.driverPacketStatus === 'Uploaded' && (m.mlogApp === false || m.checkDriverMeeting === false)) ? true : false;
+    this.nextmLogPreview = (m.insuranceStatus === 'Uploaded' && m.driverPacketStatus === 'Uploaded' && m.mlogApp === false) ? true : false;
   }
   callApex() {
     driverDetails({
@@ -110,7 +110,7 @@ export default class MBurseMain extends LightningElement {
   }
   navigateToFinal() {
     this.nextmLogDownload = false;
-    this.nextBurseFinal = true;
+    // this.nextBurseFinal = true;
   }
 
   skipToDriverPacket() {
@@ -120,7 +120,7 @@ export default class MBurseMain extends LightningElement {
     this.nextDriverPacket = false;
     this.nextmLogPreview = false;
     this.nextmLogDownload = false;
-    this.nextBurseFinal = false;
+    // this.nextBurseFinal = false;
     this.nextInsurance = false;
     this.nextDeclationUpload = true;
   }
@@ -130,7 +130,7 @@ export default class MBurseMain extends LightningElement {
     this.nextDriverPacket = false;
     this.nextmLogPreview = true;
     this.nextmLogDownload = false;
-    this.nextBurseFinal = false;
+    // this.nextBurseFinal = false;
     this.nextInsurance = false;
     this.nextDeclationUpload = false;
     this.skipUpload = false;
@@ -142,7 +142,7 @@ export default class MBurseMain extends LightningElement {
     this.nextDriverPacket = true;
     this.nextmLogPreview = false;
     this.nextmLogDownload = false;
-    this.nextBurseFinal = false;
+    // this.nextBurseFinal = false;
     this.nextInsurance = false;
     this.nextDeclationUpload = false;
   }
@@ -152,10 +152,23 @@ export default class MBurseMain extends LightningElement {
     this.nextDriverPacket = false;
     this.nextmLogPreview = false;
     this.nextmLogDownload = false;
-    this.nextBurseFinal = false;
+    // this.nextBurseFinal = false;
     this.nextInsurance = true;
     this.isInsurance = false;
     this.isDeclaration = true;
+    this.nextDeclationUpload = false;
+    this.skipUpload = false;
+    this.uploadVal = false;
+  }
+
+  backToWelcome(){
+    this.welcomePage = true;
+    this.nextDriverPacket = false;
+    this.nextmLogPreview = false;
+    this.nextmLogDownload = false;
+    // this.nextBurseFinal = false;
+    this.nextInsurance = false;
+    this.isDeclaration = false;
     this.nextDeclationUpload = false;
     this.skipUpload = false;
     this.uploadVal = false;
@@ -166,7 +179,7 @@ export default class MBurseMain extends LightningElement {
     this.nextDriverPacket = false;
     this.nextmLogPreview = true;
     this.nextmLogDownload = false;
-    this.nextBurseFinal = false;
+    // this.nextBurseFinal = false;
     this.isInsurance = false;
     this.nextInsurance = false;
     this.nextDeclationUpload = false;
@@ -177,7 +190,7 @@ export default class MBurseMain extends LightningElement {
     this.nextDriverPacket = false;
     this.nextmLogPreview = false;
     this.nextmLogDownload = false;
-    this.nextBurseFinal = false;
+    // this.nextBurseFinal = false;
     this.isInsurance = false;
     this.nextInsurance = false;
     this.skipUpload = true;
@@ -190,5 +203,14 @@ export default class MBurseMain extends LightningElement {
       return;
     }
     this.renderInitialized = true;
+  }
+
+  handleLink(event) {
+    console.log("inside handle click")
+    this.dispatchEvent(
+      new CustomEvent("sentemail", {
+        detail: event.detail
+      })
+    );
   }
 }

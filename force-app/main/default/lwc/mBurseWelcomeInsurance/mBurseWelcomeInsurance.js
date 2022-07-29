@@ -6,7 +6,8 @@ import updateContactDetail from '@salesforce/apex/NewAccountDriverController.upd
 import contactInfo from '@salesforce/apex/NewAccountDriverController.getContactDetail';
 import {
     events,
-    skipEvents
+    skipEvents,
+    backEvents
 } from 'c/utils';
 export default class MBurseWelcomeInsurance extends LightningElement {
     videoWidth = 396;
@@ -55,6 +56,35 @@ export default class MBurseWelcomeInsurance extends LightningElement {
                     } else {
                         this.nextShow = true;
                     }
+                    // this.template.querySelector("video").onended = function() {
+                    //     console.log(this.played, this.played.end(0))
+                    //     if(this.played.end(0) - this.played.start(0) === this.duration) {
+                    //         list[0].planPreview = true;
+                    //         updateContactDetail({
+                    //             contactData: JSON.stringify(list),
+                    //             driverPacket: false
+                    //         }).then(() => {})
+                    //       console.log("Played all");
+                    //     }else {
+                    //       console.log("Some parts were skipped");
+                    //     }
+                    //   }
+                    //   this.template.querySelector("video").onpause = function(evt) {
+                    //     if(this.ended){
+                    //         list[0].planPreview = true;
+                    //         updateContactDetail({
+                    //             contactData: JSON.stringify(list),
+                    //             driverPacket: false
+                    //         }).then(() => {})
+                    //     }else{
+                    //         list[0].planPreview = false;
+                    //         updateContactDetail({
+                    //             contactData: JSON.stringify(list),
+                    //             driverPacket: false
+                    //         }).then(() => {})
+                    //     }
+                    //     console.log(this.paused,evt,this.ended)
+                    //   }
                 }
             })
             .catch((error) => {
@@ -106,6 +136,9 @@ export default class MBurseWelcomeInsurance extends LightningElement {
         this.isPlay = false;
         // eslint-disable-next-line @lwc/lwc/no-api-reassignments
         this.insuranceDeclaration = false;
+    }
+    backToPrevious(){
+            backEvents(this, 'Next Welcome Page');
     }
     connectedCallback() {
         console.log("callback called", this.customSetting)
