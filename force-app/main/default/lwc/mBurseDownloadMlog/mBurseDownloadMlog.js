@@ -21,6 +21,9 @@ export default class MBurseDownloadMlog extends LightningElement {
     // Email of contact
     @api contactEmail;
 
+    // mobile phone of contact
+    @api mobilePhone;
+
     // Type of account (New or Existing)
     @api accountType;
 
@@ -99,6 +102,8 @@ export default class MBurseDownloadMlog extends LightningElement {
     // Store image from static resource for video element
     videoLogoUrl = mBurseCss + '/mburse/assets/youtube_play_video_icon.png'
 
+    typePopover = "slds-popover slds-nubbin_left-top  slds-popover_large c_popover"
+
     carousel = false;
 
     carouselLists;
@@ -124,6 +129,8 @@ export default class MBurseDownloadMlog extends LightningElement {
         "id": "3",
         "name": "You can categorize any trips as Personal or delete any trips you do not want to share"
     }];
+
+    allowRedirect = false;
     // Get a list of custom setting named NewDashboardVideoLink
     @wire(getCustomSettings)
     myCustomSettings({
@@ -152,6 +159,7 @@ export default class MBurseDownloadMlog extends LightningElement {
         this.isDownloadAlready = false;
         this.carousel = false;
         this.isChatBot = true;
+        this.sendCorporateLink();
     }
 
     // Event handler for Download later button click
@@ -164,6 +172,7 @@ export default class MBurseDownloadMlog extends LightningElement {
         this.isDownloadAlready = false;
         this.isChatBot = false;
         this.carousel = false;
+        this.sendCorporateLink();
     }
 
     // Event handler for I already have mLog button click
@@ -265,6 +274,10 @@ export default class MBurseDownloadMlog extends LightningElement {
 
     popOut() {
         this.carousel = true;
+        if(window.screen.width <= 1024){
+            this.typePopover = "slds-popover slds-nubbin_left-top  slds-popover_medium c_popover"
+        }
+        console.log(window.screen.width, this.template.querySelector('.c_popover'))
     }
 
     handlePopover() {
@@ -272,11 +285,11 @@ export default class MBurseDownloadMlog extends LightningElement {
     }
 
     sendCorporateLink() {
-        console.log("sendCorporateLink")
         this.dispatchEvent(
             new CustomEvent("send", {
                 detail: {
                     contactEmail: this.contactEmail,
+                    mobilePhone: this.mobilePhone,
                     accountId: this.accountId
                 }
             })
@@ -294,4 +307,5 @@ export default class MBurseDownloadMlog extends LightningElement {
         this.carouselLists = (this.cellType === 'Company Provide') ? this.carouselB : this.carouselA;
         this.buttonRender = (this.accountType === 'New Account') ? 'Register your meeting ' : 'Next watch the meeting';
     }
+
 }
