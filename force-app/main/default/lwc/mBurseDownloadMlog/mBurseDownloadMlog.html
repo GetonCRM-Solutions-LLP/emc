@@ -6,7 +6,7 @@
                 <button class="tips-button" onclick={popOut}><i class="fa-solid fa-info"></i></button>
                 <template if:true={carousel}>
                     <c-carousel-popover onpop={handlePopover} total-contacts={carouselLists}
-                        style-carousel="slds-popover slds-nubbin_left-top  slds-popover_large c_popover"
+                        style-carousel={typePopover}
                         style-header="slds-popover__header bg-dark-blue" style-body="slds-popover__body border"
                         style-footer="slds-popover__footer border-footer"></c-carousel-popover>
                 </template>
@@ -92,7 +92,7 @@
                 </div> -->
                 <div class="footer-button slds-p-top_large  slds-p-bottom_large p_top">
                     <div>
-                        <div class="watch-meet">
+                        <div class="watch-meet" if:true={allowRedirect}>
                             <button class="slds-btn slds-btn-primary slds-btn-sm waves-effect bc-blue waves-light"
                                 onclick={nextDriverMeeting}>
                                 {buttonRender}
@@ -186,7 +186,7 @@
                 <template if:true={render}>
                     <div class="footer-button slds-p-bottom_large">
                         <div>
-                            <div class="watch-meet">
+                            <div class="watch-meet" if:true={allowRedirect}>
                                 <button class="slds-btn slds-btn-primary slds-btn-sm waves-effect bc-blue waves-light"
                                     onclick={nextDriverMeeting}>
                                     {buttonRender}
@@ -407,7 +407,7 @@
         </div>
         <div class="slds-text-heading_small slds-text-align_center slds-p-bottom_medium emcFont p_bottom font-style">
             Click the button below and when you receive the link select Step 2.
-            <div class="slds-p-top_small">
+            <div class="slds-p-top_small p_top-btn">
                 <button class="slds-btn slds-btn-link slds-btn-sm waves-effect bc-blue waves-light" onclick={sendCorporateLink}>
                     Select this button to resend corporate link
                 </button>

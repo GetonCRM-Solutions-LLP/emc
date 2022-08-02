@@ -37,26 +37,29 @@ export default class MBurseDriverPacket extends LightningElement {
     sendDriverPacket() {
         this.packetSent = true;
         let contactList, mLogList;
-        mLogList = this.driverDetails;
-        contactList = this.proxyToObject(mLogList);
-        this.isAppDone = (contactList[0].mlogApp) ? true : false;
-        signatureRequestForDriver({
-                userEmail: this.emailOfDriver,
-                contactName: this.contactOfDriver
-            })
-            .then((result) => {
-                console.log("Packet received --", result);
-                contactList[0].driverPacketStatus = "Uploaded";
-                updateContactDetail({
-                    contactData: JSON.stringify(contactList),
-                    driverPacket: true
-                }).then(() => {
-                    this.toggleHide();
+        if(this.driverDetails){
+            mLogList = this.driverDetails;
+            contactList = this.proxyToObject(mLogList);
+            this.isAppDone = (contactList[0].mlogApp) ? true : false;
+            signatureRequestForDriver({
+                    userEmail: this.emailOfDriver,
+                    contactName: this.contactOfDriver
                 })
-            })
-            .catch((error) => {
-                console.log(error);
-            });
+                .then((result) => {
+                    console.log("Packet received --", result);
+                    contactList[0].driverPacketStatus = "Uploaded";
+                    updateContactDetail({
+                        contactData: JSON.stringify(contactList),
+                        driverPacket: true
+                    }).then(() => {
+                        this.toggleHide();
+                    })
+                })
+                .catch((error) => {
+                    console.log(error);
+                });
+        }
+     
     }
     nextmLogPreview() {
         events(this, 'Next mLog Preview');
@@ -74,7 +77,7 @@ export default class MBurseDriverPacket extends LightningElement {
                     this.promiseError = false;
                     this.driverDetails = data;
                     list = this.proxyToObject(data);
-                    packetStatus = list[0].driverPacketStatus;
+                    packetStatus =  list[0].driverPacketStatus;// list[0].driverPacketStatus;
                     status = list[0].insuranceStatus;
                     this.isShowUpload = (status === 'Uploaded') ? false : true;
                     if (this.days === true) {
@@ -82,7 +85,7 @@ export default class MBurseDriverPacket extends LightningElement {
                     } else {
                         this.isShow = true;
                     }
-                    this.isPacket = (packetStatus === 'Uploaded') ? true : false;
+                    //this.isPacket = (packetStatus === 'Uploaded') ? true : false;
                 }
             })
             .catch((error) => {
@@ -140,6 +143,37 @@ export default class MBurseDriverPacket extends LightningElement {
                     }).catch(error => {
                         console.log("error", error)
                     })
+            }else{
+                if (downloadApp === true) {
+                    let list, d;
+                    contactInfo({
+                            contactId: this.contactId
+                        })
+                        .then((data) => {
+                            if (data) {
+                                list = this.proxyToObject(data);
+                                this.arrayList = list;
+                                d = this.arrayList;
+                                d[0].checkDriverMeeting = true;
+                                updateContactDetail({
+                                    contactData: JSON.stringify(d),
+                                    driverPacket: true
+                                })
+                                if (d[0].accountStatus === 'New Account') {
+                                    window.open(this.schedule)
+                                } else {
+                                    window.open(this.meeting)
+                                }
+                            }
+                        })
+                        .catch((error) => {
+                            // If the promise rejects, we enter this code block
+                            console.log(error);
+                        })
+                    this.redirectToDashboard()
+                }else {
+                    skipEvents(this, 'Next mLog Preview');
+                }
             }
         }
     }

@@ -7,11 +7,14 @@ public with sharing class LoginRedirection_Test {
         SendEmail__c customSetting2 = TestDataFactory.sendEmailCustomSetting(true, 'Send Email For Compliance');
         Vehicle_URL_Mapping__c vehicleType = TestDataFactory.createVehicleData(true, 3);
         IRS_Mileage_Rate__c createIRSRate = TestDataFactory.createIRSRate(true, 0);
+        TrueDialog_Keys__c tdKeys = TestDataFactory.createTrueDialog(true);
         
         Account acc = new Account();     
         List<Contact> conList = new List<Contact>(); 
         UserRole userRole = TestDataFactory.getUserRole();
         Profile profileObj = TestDataFactory.getUserProfile();
+       
+        
         User admin = TestDataFactory.getSystemAdminUser(userRole.Id);
         User userObj;
 
@@ -46,6 +49,7 @@ public with sharing class LoginRedirection_Test {
         SendEmail__c customSetting2 = TestDataFactory.sendEmailCustomSetting(true, 'Send Email For Compliance');
         Vehicle_URL_Mapping__c vehicleType = TestDataFactory.createVehicleData(true, 3);
         IRS_Mileage_Rate__c createIRSRate = TestDataFactory.createIRSRate(true, 0);
+        TrueDialog_Keys__c tdKeys = TestDataFactory.createTrueDialog(true);
         
         Account acc = new Account();     
         List<Contact> conList = new List<Contact>(); 
@@ -82,6 +86,7 @@ public with sharing class LoginRedirection_Test {
         SendEmail__c customSetting2 = TestDataFactory.sendEmailCustomSetting(true, 'Send Email For Compliance');
         Vehicle_URL_Mapping__c vehicleType = TestDataFactory.createVehicleData(true, 3);
         IRS_Mileage_Rate__c createIRSRate = TestDataFactory.createIRSRate(true, 0);
+        TrueDialog_Keys__c tdKeys = TestDataFactory.createTrueDialog(true);
         
         Test.startTest();
         Account acc = new Account();     
@@ -116,6 +121,7 @@ public with sharing class LoginRedirection_Test {
         SendEmail__c customSetting2 = TestDataFactory.sendEmailCustomSetting(true, 'Send Email For Compliance');
         Vehicle_URL_Mapping__c vehicleType = TestDataFactory.createVehicleData(true, 3);
         IRS_Mileage_Rate__c createIRSRate = TestDataFactory.createIRSRate(true, 0);
+        TrueDialog_Keys__c tdKeys = TestDataFactory.createTrueDialog(true);
 
         Test.startTest();
 
@@ -153,6 +159,7 @@ public with sharing class LoginRedirection_Test {
         SendEmail__c customSetting2 = TestDataFactory.sendEmailCustomSetting(true, 'Send Email For Compliance');
         Vehicle_URL_Mapping__c vehicleType = TestDataFactory.createVehicleData(true, 3);
         IRS_Mileage_Rate__c createIRSRate = TestDataFactory.createIRSRate(true, 0);
+        TrueDialog_Keys__c tdKeys = TestDataFactory.createTrueDialog(true);
 
         Account acc = new Account();     
         List<Contact> conList = new List<Contact>(); 
@@ -185,7 +192,6 @@ public with sharing class LoginRedirection_Test {
     
     @isTest
     static void fakeTest(){
-     LoginRedirection.fakeMethod();
-     
+     LoginRedirection.fakeMethod();     
   }  
 }
