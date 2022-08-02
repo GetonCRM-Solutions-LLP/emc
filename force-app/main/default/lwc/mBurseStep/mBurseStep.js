@@ -27,9 +27,6 @@ export default class MBurseStep extends LightningElement {
     proxyToObject(e) {
         return JSON.parse(e)
     }
-    renderedCallback(){
-        console.log("Rendered from Step mburse")
-    }
     connectedCallback(){
         const idParamValue = this.getUrlParamValue(window.location.href, 'id');
         const aidParamValue = this.getUrlParamValue(window.location.href, 'accid');

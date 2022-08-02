@@ -326,6 +326,10 @@
         padding-top: 4vw !important;
     }
 
+    .p_top-btn {
+        padding-top: 2vw !important;
+    }
+
     .slds-btn {
         margin: 0.375rem 8.9rem !important;
     }
@@ -427,11 +431,11 @@
     } */
 
     .p_bottom {
-        padding-bottom: 4vw !important;
+        padding-bottom: 2vw !important;
     }
 
     .p_top {
-        padding-top: 4vw !important;
+        padding-top: 2vw !important;
     }
 
     .slds-btn {
@@ -455,11 +459,11 @@
     } */
 
     .p_bottom {
-        padding-bottom: 4vw !important;
+        padding-bottom: 3vw !important;
     }
 
     .p_top {
-        padding-top: 4vw !important;
+        padding-top: 3vw !important;
     }
 
     .slds-btn {

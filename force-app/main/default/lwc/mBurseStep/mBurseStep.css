@@ -163,3 +163,6 @@
     left: 50%;
     transform: translate(-32%,-70%);
 }
+.opacity{
+    opacity: 0.2;
+}
