@@ -1,1 +1,1 @@
-LoginRedirection_Test,NewAccountDriverControllerTest
+LoginRedirection_Test,NewAccountDriverControllerTest,HelloSignIntegrationHandlerTest
