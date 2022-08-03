@@ -523,7 +523,6 @@ public without sharing class ContactTriggerHelper {
 * FROM his Account's file section.
 */
     Public Static void insertDriverAggrementFile(Map<Id, Contact> conNewMap) {
-        
         Map<id, List<ID>> mapOfAccountIDvsCon  = new Map<ID, List<Id>>();
         List<ID> accIdList = new List<ID>();
         Map<ID, contact> mapConIdvsCon = new Map<ID, Contact>();
@@ -534,6 +533,7 @@ public without sharing class ContactTriggerHelper {
                               FROM Contact
                               WHERE (Role__c = 'Driver/Admin' or Role__c = 'Driver/Manager' or Role__c = 'Driver')
                               AND id in: conNewMap.keyset()]){
+                                system.debug('objcon=='+objcon);
                                   accIdList.add(objcon.AccountID);
                                   mapConIdvsCon.put(objcon.Id, objcon);
                                   lstConId.add(objcon.Id);
@@ -586,12 +586,14 @@ New Contact is created at that time we have to update plan parameter section's f
         Map<Id,Decimal> mapIdvsPlanyear = new Map<Id, Decimal>();
         Map<Id,Decimal> mapIdvsBusinessUse = new Map<Id, Decimal>();
         Map<String,Decimal> mapVehicleValue = new Map<String, Decimal>();
+        Map<String,Decimal> monthvsCompMilieageMap = new Map<String,Decimal> {'01' => 4583.3334, '02' => 4166.6668, '03' => 3750, '04' => 3333.3336, '05' => 2916.667,
+                                                                                    '06' => 2500, '07' => 2083.3334, '08' => 1666.6668, '09' => 1250, '10' => 833.3334,
+                                                                                    '11' => 416.6668, '12' => 0};
         
         for (Vehicle_Value__c vehValue : [SELECT id,Account__c, Vehicle_URL_Mapping__r.Name,Value__c  
                                           FROM Vehicle_Value__c 
                                           WHERE Account__c IN :setaccountid]){
                                               mapVehicleValue.put(vehValue.Account__c + '-' + vehValue.Vehicle_URL_Mapping__r.Name.toUpperCase() , vehValue.Value__c);
-                                              
                                           }
         for(Account acc : [SELECT id,name,Insurance_Plan__c, Plan_Years__c, Vehicle_Types__c, Business_Use__c 
                            FROM Account 
@@ -602,28 +604,63 @@ New Contact is created at that time we have to update plan parameter section's f
                            }
         List<contact> updateConList = new List<Contact>();
         if(conIdList.size() > 0) {
-            for(Contact con : [SELECT id,name,AccountId,Vehicle_Type__c,Insurance_Plan__c, Plan_Years__c,Business_Use__c,Role__c 
-                               FROM contact 
-                               WHERE Id IN :conIdList]) {
-                                   if(mapIdvsInsplan.containsKey(con.AccountId)){
-                                       con.Insurance_Plan__c = mapIdvsInsplan.get(con.AccountID);
-                                       con.Plan_Years__c = mapIdvsPlanyear.get(con.AccountID);
-                                       con.Business_Use__c = mapIdvsBusinessUse.get(con.AccountID);
-                                   }
-                                   if(mapVehicleValue.containsKey(con.AccountId + '-' + con.Vehicle_Type__c.toUpperCase())){
-                                       con.Vehicle_Value__c = mapVehicleValue.get(con.AccountId + '-' + con.Vehicle_Type__c.toUpperCase());
-                                   }    else {
-                                        con.Vehicle_Value__c = null;
-                                   }
-                                   updateConList.add(con);
-                               }   
+        for(Contact con : [SELECT id,name,AccountId,Activation_Date__c,Vehicle_Type__c,Insurance_Plan__c, Plan_Years__c,Business_Use__c,Role__c 
+                            FROM contact 
+                            WHERE Id IN :conIdList]) {
+                                if(mapIdvsInsplan.containsKey(con.AccountId)){
+                                    con.Insurance_Plan__c = mapIdvsInsplan.get(con.AccountID);
+                                    con.Plan_Years__c = mapIdvsPlanyear.get(con.AccountID);
+                                    con.Business_Use__c = mapIdvsBusinessUse.get(con.AccountID);
+                                }
+                                if(mapVehicleValue.containsKey(con.AccountId + '-' + con.Vehicle_Type__c.toUpperCase())){
+                                    con.Vehicle_Value__c = mapVehicleValue.get(con.AccountId + '-' + con.Vehicle_Type__c.toUpperCase());
+                                }    else {
+                                    con.Vehicle_Value__c = null;
+                                }
+/*
+        EMC-372        
+based On the activation date of drivers compliance mileages auto calculate.
+Maximum Compliance Mileages per year is 5000 mileage.
+
+for single month compliance mileages are  5000/12 =  416.66666
+now if the contact is activated from 1st date of the moth to 7th date of the month than compliance mileages for that month is  416.66666
+if Driver is activate from 8th to 15th date of the month than compliance mileages for that month is (416.6666/4) * 3 = 312.495(three week of proration)
+if Driver is activate from 16th to 23th date of the month than compliance mileages for that month is (416.6666/4) * 2 = 208.33(Two week of proration)
+And if Driver is activate after 23th date of the month than compliance mileages for that month is 416.6666/4 = 104.165(One week of proration)
+
+Example :- 
+if any driver is activate on the 5th of march than Compliance Mileages are 10(From March to December )*416.6666 = 416.666
+if driver is activate on the 8th of march than Compliance Mileages are (9 (From April to December )* 416.6666) + 312.495(March month 3 Weeks of Prorations) = 4062.4944
+if driver is activate on the 20th of march than Compliance Mileages are (9(From April to December )* 416.6666) + 208.33 (March month's 2 Weeks of Prorations) = 3958.33
+if driver is activate on the 28th of march than Compliance Mileages are (9 (From April to December )* 416.6666) + 104.165 (March month's 1 Weeks of Prorations) = 3854.1644
+*/
+                                if(con.Activation_Date__c != null){
+                                    String[] splitactivationdate = String.valueOf(con.Activation_Date__c).split('-');
+                                    system.debug('splitactivationdate==' + splitactivationdate[1]);
+                                    system.debug('date==' + splitactivationdate[2]);
+                                    if(Integer.valueOf(splitactivationdate[0]) == System.today().year()){
+                                        if(monthvsCompMilieageMap.containsKey(splitactivationdate[1])){
+                                            if(Integer.valueOf(splitactivationdate[2]) < 8){
+                                                con.Compliance_Mileage__c = (monthvsCompMilieageMap.get(splitactivationdate[1])) + 416.6666;
+                                            }   else if (Integer.valueOf(splitactivationdate[2]) >= 8 && Integer.valueOf(splitactivationdate[2]) <= 15) {
+                                                    con.Compliance_Mileage__c = (monthvsCompMilieageMap.get(splitactivationdate[1])) + 312.495;
+                                            }   else if (Integer.valueOf(splitactivationdate[2]) >= 16 && Integer.valueOf(splitactivationdate[2]) <= 23) {
+                                                    con.Compliance_Mileage__c = (monthvsCompMilieageMap.get(splitactivationdate[1])) + 208.33;
+                                            }   else {
+                                                    con.Compliance_Mileage__c = (monthvsCompMilieageMap.get(splitactivationdate[1])) + 104.165;
+                                            }
+                                        }
+                                    } else if(Integer.valueOf(splitactivationdate[0]) > System.today().year() || Integer.valueOf(splitactivationdate[0]) < System.today().year()){
+                                        con.Compliance_Mileage__c = 5000;
+                                    }
+                                } else {
+                                    con.Compliance_Mileage__c = 0;
+                                }
+                                    updateConList.add(con);
+                            }   
         }
         if(updateConList.size() > 0){
             Update updateConList;
         }
-    }
-
-    Public Static Void updateCompliMileage(List<Contact> conList){
-
     }
 }

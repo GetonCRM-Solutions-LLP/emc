@@ -69,7 +69,7 @@ trigger ContactTrigger on Contact (after Update, after insert, before insert, be
         System.debug('Contact Id KEY SET'+contactIdSet);
 
 
-        if(tmpConIdSet.size()>0){
+        if(contactIdSet.size()>0){
 
         TrueDialogContactAPI tdContactApi = new TrueDialogContactAPI(contactIdSet);
         Database.executeBatch(tdContactApi,5);
@@ -99,13 +99,14 @@ trigger ContactTrigger on Contact (after Update, after insert, before insert, be
                                             WHERE id IN: tmpConIdSet AND Account.True_Dialog__c=true ]);
 
             Set<Id> contactIdSet=contactIdMap.keyset();
-            System.debug('Contact Id KEY SET'+contactIdSet);
-      
-    
-            if(tmpConIdSet.size()>0){
+            
+            TrueDialog_Keys__c tdKeys =TrueDialog_Keys__c.getValues('TrueDialogKeys');
+        
 
-                TrueDialogContactAPI tdContactApi = new TrueDialogContactAPI(contactIdSet);
-                Database.executeBatch(tdContactApi,5);
+            if(contactIdSet.size()>0 && !tdKeys.Contact_Insert_From_File__c ){
+
+               TrueDialogContactAPI tdContactApi = new TrueDialogContactAPI(contactIdSet);
+               Database.executeBatch(tdContactApi,5);
             }
             
             /*********************************** */
@@ -163,8 +164,6 @@ trigger ContactTrigger on Contact (after Update, after insert, before insert, be
         If(conList.Size() > 0){
             ContactTriggerHelper.updatePlanParameter(conList, accList);
         }
-
-        ContactTriggerHelper.updateCompliMileage(Trigger.new);
     }
     
     if(Trigger.isBefore && checkRecursive.runSecondFlag()) {
