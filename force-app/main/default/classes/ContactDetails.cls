@@ -26,4 +26,5 @@ public with sharing class ContactDetails {
     public string mileagemeet {get;set;}
     public string insurance{get;set;}
     public string variableRate{get;set;}
+    public boolean biWeekContact {get;set;}
 }

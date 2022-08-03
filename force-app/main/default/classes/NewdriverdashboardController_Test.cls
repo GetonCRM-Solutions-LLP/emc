@@ -2,6 +2,7 @@
 public class NewdriverdashboardController_Test {
     public static testMethod void Method1() {
         TriggerConfig__c cusmsetting = TestDataFactory.triggerConfigCustomSetting(True);
+         TrueDialog_Keys__c tdKeys = TestDataFactory.createTrueDialog(true);
         SendEmail__c  SendEmailcusmsetting = TestDataFactory.sendEmailCustomSetting(true, 'Send Email For Compliance');
         Vehicle_URL_Mapping__c vehicleType = TestDataFactory.createVehicleData(true, 3);
         IRS_Mileage_Rate__c createIRSRate = TestDataFactory.createIRSRate(true, 0);

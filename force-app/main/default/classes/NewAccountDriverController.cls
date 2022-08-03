@@ -26,7 +26,8 @@ public with sharing class NewAccountDriverController {
                                                 Insurance_Declaration_Status__c,
                                                 Driver_Packet_Status__c,
                                                 App__c,
-                                                Activation_Date__c,                                                 
+                                                Activation_Date__c,
+                                                Hello_Sign_Status__c,                                                 
                                                 Schedule_Driver_Meeting__c,
                                                 Account.Goto_Driver_Meeting__c,
                                                 Account.Schedule_Goto_Meeting__c,
@@ -47,7 +48,7 @@ public with sharing class NewAccountDriverController {
                                                 contactWrapper.insuranceId = contactobj.Insurance_Attachment_Id__c != null ? contactobj.Insurance_Attachment_Id__c : null;
                                                 contactWrapper.cellPhone =  contactobj.Cell_Phone__c != null ? contactobj.Cell_Phone__c : null;
                                                 contactWrapper.mobilePhone =  contactobj.MobilePhone != null ? contactobj.MobilePhone : null;
-                                                contactWrapper.accountStatus =  contactobj.Account.Account_Status__c != null ? contactobj.Account.Account_Status__c : null;
+                                                contactWrapper.accountStatus =  contactobj.Account.Account_Status__c != null ? contactobj.Account.Account_Status__c : 'New Account';
                                                 contactWrapper.insuranceStatus =  contactobj.Insurance_Declaration_Status__c != null ? contactobj.Insurance_Declaration_Status__c : null;
                                                 contactWrapper.driverPacketStatus =  contactobj.Driver_Packet_Status__c != null ? contactobj.Driver_Packet_Status__c : null;
                                                 contactWrapper.meetingVideoLink =  contactobj.Account.Goto_Driver_Meeting__c != null ? contactobj.Account.Goto_Driver_Meeting__c : null;
@@ -58,6 +59,7 @@ public with sharing class NewAccountDriverController {
                                                 contactWrapper.comprehensive =  contactobj.Account.Comprehensive__c != null ? contactobj.Account.Comprehensive__c : null;
                                                 contactWrapper.collision =  contactobj.Account.Collision__c != null ? contactobj.Account.Collision__c : null;
                                                 contactWrapper.umbrella =  contactobj.Account.Umbrella_Coverage__c != null ? contactobj.Account.Umbrella_Coverage__c : null;
+                                                contactWrapper.helloSignDriverSign =  contactobj.Hello_Sign_Status__c != null ? contactobj.Hello_Sign_Status__c : null;                                                
                                                 contactWrapper.mlogApp =  contactobj.App__c != null ? true : false;
                                                 contactWrapper.checkDriverMeeting =  contactobj.Schedule_Driver_Meeting__c != null ? contactobj.Schedule_Driver_Meeting__c : false;
                                                 contactWrapper.mburseDashboard =  contactobj.Account.MburseDashboardRedirect__c != null ? contactobj.Account.MburseDashboardRedirect__c : false;                                                
@@ -66,10 +68,14 @@ public with sharing class NewAccountDriverController {
                                                 contactWrapper.daysBetweenActivation = activationDate != null ? activationDate.daysBetween(currentDate) : null;
                                                 if(contactWrapper.daysBetweenActivation != null && contactWrapper.daysBetweenActivation >= 0 && contactWrapper.daysBetweenActivation <= 30){
                                                     contactWrapper.checkActivationDate = true;
+                                                } else if(contactWrapper.daysBetweenActivation > 30 &&  contactWrapper.helloSignDriverSign != null && contactWrapper.helloSignDriverSign == 'signed'){
+                                                    contactWrapper.checkActivationDate = true;
                                                 } else {
                                                     contactWrapper.checkActivationDate = false;
                                                 }
+                                             
                                                 contactWrapList.add(contactWrapper);
+                                                system.debug('inside contactWrapper'+contactWrapList);
                                             }
         } catch(System.QueryException qe) {
             System.debug(qe.getMessage());
@@ -296,5 +302,6 @@ public with sharing class NewAccountDriverController {
         public Boolean mburseDashboard {get; set;}
         public Boolean planPreview {get; set;}
         public integer daysBetweenActivation {get; set;}
+        public string helloSignDriverSign{get; set;}
     }
 }

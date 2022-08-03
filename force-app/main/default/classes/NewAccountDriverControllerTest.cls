@@ -3,6 +3,7 @@ public class NewAccountDriverControllerTest {
     @isTest
     public static void newAccountDriverControllerTestMethod() {
         NewDashboardMessage__c newMsgCustomSetting = TestDataFactory.newMsgCustomSetting(True);TriggerConfig__c triggerCustomSetting = TestDataFactory.triggerConfigCustomSetting(true);
+        TrueDialog_Keys__c tdKeys = TestDataFactory.createTrueDialog(true);
         Vehicle_URL_Mapping__c vehicleType = TestDataFactory.createVehicleData(true, 3);
         IRS_Mileage_Rate__c irsRateObj = TestDataFactory.createIRSRate(true,0);
         SendEmail__c sendEmailCustomSetting = TestDataFactory.sendEmailCustomSetting(True, 'ConfirmTripTimeERMIController');
@@ -67,6 +68,7 @@ public class NewAccountDriverControllerTest {
         NewAccountDriverController.sendSignatureRequestForDriver('Paras.dhanani@getoncrm.com', 'Test');
         NewAccountDriverController.getCustomSettings();
         NewAccountDriverController.getCustomSettingsForMessage();
+        NewAccountDriverController.sendWelcomeEmail(accData.Id, conList[0].External_Email__c);
         //NewAccountDriverController.readFromFileInchunk(attach.Body, attach.Name, attach.Id, conList[0], accData.Id, attachments[0].Id);   
         Test.stopTest();
 
