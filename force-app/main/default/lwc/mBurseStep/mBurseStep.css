@@ -50,7 +50,7 @@
     .p-step{
         padding: 5rem 4rem 5rem 4rem !important;
     }
-    .step-num{
+    .step-num, .step-check{
         height: 100px !important;
     }
 }
@@ -62,7 +62,7 @@
     .p-step{
         padding: 4rem 2rem 3rem 2rem !important;
     }
-    .step-num{
+    .step-num, .step-check{
         height: 70px !important;
     }
 }
@@ -74,7 +74,7 @@
     .p-step{
         padding: 4rem 2rem 3rem 2rem !important;
     }
-    .step-num{
+    .step-num, .step-check{
         height: 70px !important;
     }
 }
@@ -86,7 +86,7 @@
     .p-step{
         padding: 4rem 2rem 3rem 2rem !important;
     }
-    .step-num{
+    .step-num, .step-check{
         height: 70px !important;
     }
 }
@@ -156,4 +156,13 @@
     /* top: 128px;
     left: 183px;
     right: 183px; */
+}
+.step-check{
+    height: 50px;
+    position: absolute;
+    left: 50%;
+    transform: translate(-32%,-70%);
+}
+.opacity{
+    opacity: 0.2;
 }

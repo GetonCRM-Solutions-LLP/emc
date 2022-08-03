@@ -10,24 +10,70 @@
             </lightning-layout-item>
             <lightning-layout-item padding="around-small">
                 <div class="step">
-                    <img class="step-num" src={number2} />
-                    <img class="p-step" src={step2Url} />
-                    <div class="step-info">Upload Your  <br/> <strong>Insurance</strong></div>
+                    <div>
+                        <img class="step-num" src={number2} />
+                        <template if:true={isInsuranceDone}>
+                            <img class="step-check" src={checkmark}/>
+                        </template>
+                    </div>
+                    <template if:true={isInsuranceDone}>
+                        <div class="opacity">
+                            <img class="p-step" src={step2Url} />
+                            <div class="step-info">Upload Your  <br/> <strong>Insurance</strong></div>
+                        </div>
+                    </template>
+                    <template if:false={isInsuranceDone}>
+                        <div>
+                            <img class="p-step" src={step2Url} />
+                            <div class="step-info">Upload Your  <br/> <strong>Insurance</strong></div>
+                        </div>
+                    </template>
                 </div>
             </lightning-layout-item>
             <lightning-layout-item padding="around-small">
                 <div class="step">
-                    <img class="step-num" src={number3} />
-                    <img class="p-step" src={step3Url} />
-                    <div class="step-info">Review &amp; Sign your  <br/><strong>Driver Packet</strong></div>
+                    <div>
+                        <img class="step-num" src={number3} />
+                        <template if:true={isdriverPacketDone}>
+                            <img class="step-check" src={checkmark}/>
+                        </template>
+                    </div>
+                    <template if:true={isdriverPacketDone}>
+                        <div class="opacity">
+                            <img class="p-step" src={step3Url} />
+                            <div class="step-info">Review &amp; Sign your  <br/><strong>Driver Packet</strong></div>
+                        </div>
+                    </template>
+                    <template if:false={isdriverPacketDone}>
+                        <div>
+                            <img class="p-step" src={step3Url} />
+                            <div class="step-info">Review &amp; Sign your  <br/><strong>Driver Packet</strong></div>
+                        </div>
+                    </template>
                 </div>
             </lightning-layout-item>
             <lightning-layout-item padding="around-small">
                 <div class="step">
-                    <img class="step-num" src={number4} />
-                    <img class="p-step" src={step4Url}/>
-                    <div class="step-info" if:true={phone}>Sign into the <br/><strong>mLog app</strong></div>
-                    <div class="step-info" if:false={phone}>Download &amp; Install  <br/><strong>the mLog app</strong></div>
+                    <div>
+                        <img class="step-num" src={number4} />
+                        <template if:true={isAppDone}>
+                            <img class="step-check" src={checkmark}/>
+                        </template>
+                    </div>
+                    <template if:true={isAppDone}>
+                        <div class="opacity">
+                            <img class="p-step" src={step4Url}/>
+                            <div class="step-info" if:true={phone}>Sign into the <br/><strong>mLog app</strong></div>
+                            <div class="step-info" if:false={phone}>Download &amp; Install  <br/><strong>the mLog app</strong></div>
+                        </div>
+                    </template>
+                    <template if:false={isAppDone}>
+                        <div>
+                            <img class="p-step" src={step4Url}/>
+                            <div class="step-info" if:true={phone}>Sign into the <br/><strong>mLog app</strong></div>
+                            <div class="step-info" if:false={phone}>Download &amp; Install  <br/><strong>the mLog app</strong></div>
+                        </div>
+                    </template>
                 </div>
             </lightning-layout-item>
             <lightning-layout-item padding="around-small">

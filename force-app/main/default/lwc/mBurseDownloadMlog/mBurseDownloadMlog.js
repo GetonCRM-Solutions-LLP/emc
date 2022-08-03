@@ -1,12 +1,28 @@
-import { LightningElement, wire, api } from 'lwc';
-import  mBurseCss from '@salesforce/resourceUrl/mBurseCss';
+import {
+    LightningElement,
+    wire,
+    api
+} from 'lwc';
+import mBurseCss from '@salesforce/resourceUrl/mBurseCss';
 import getCustomSettings from '@salesforce/apex/NewAccountDriverController.getCustomSettings';
-import contactInfo from  '@salesforce/apex/NewAccountDriverController.getContactDetail';
+import contactInfo from '@salesforce/apex/NewAccountDriverController.getContactDetail';
 import updateContactDetail from '@salesforce/apex/NewAccountDriverController.updateContactDetail';
-import { events, backEvents } from 'c/utils';
+import redirectionURL from '@salesforce/apex/NewAccountDriverController.loginRedirection';
+import {
+    backEvents
+} from 'c/utils';
 export default class MBurseDownloadMlog extends LightningElement {
     // Id of driver or contact
     @api contactId;
+
+    // Id of account
+    @api accountId;
+
+    // Email of contact
+    @api contactEmail;
+
+    // mobile phone of contact
+    @api mobilePhone;
 
     // Type of account (New or Existing)
     @api accountType;
@@ -74,61 +90,101 @@ export default class MBurseDownloadMlog extends LightningElement {
     // Flag to show/hide element based on cellphone type
     render;
 
+    // change Text
+    buttonRender;
+
     // Store image from static resource android
-    androidUrl = mBurseCss +  '/mburse/assets/Apple_Android/Android.svg';
+    androidUrl = mBurseCss + '/mburse/assets/Apple_Android/Android.svg';
 
     // Store image from static resource iOS
-    appleUrl = mBurseCss +  '/mburse/assets/Apple_Android/Apple.svg';
+    appleUrl = mBurseCss + '/mburse/assets/Apple_Android/Apple.svg';
 
     // Store image from static resource for video element
-    videoLogoUrl = mBurseCss + '/mburse/assets/clipart3096799.png'
+    videoLogoUrl = mBurseCss + '/mburse/assets/youtube_play_video_icon.png'
 
+    typePopover = "slds-popover slds-nubbin_left-top  slds-popover_large c_popover"
+
+    carousel = false;
+
+    carouselLists;
+
+    carouselA = [{
+        "id": "1",
+        "name": "Select the mLog icon on your phone to open the app to track mileage each day automatically"
+    }, {
+        "id": "2",
+        "name": "Review your trips daily if possible, weekly at a minimum"
+    }, {
+        "id": "3",
+        "name": "Reclassify trips as business, personal, or delete trips you don't want to share"
+    }];
+
+    carouselB = [{
+        "id": "1",
+        "name": "Make sure you turn on the app every day that you are using it by selecting the mLog icon"
+    }, {
+        "id": "2",
+        "name": "Review your trips daily if possible, weekly at a minimum"
+    }, {
+        "id": "3",
+        "name": "You can categorize any trips as Personal or delete any trips you do not want to share"
+    }];
+
+    allowRedirect = false;
     // Get a list of custom setting named NewDashboardVideoLink
     @wire(getCustomSettings)
-    myCustomSettings({ error, data }){
+    myCustomSettings({
+        error,
+        data
+    }) {
         if (data) {
-             this.androidVideoUrl = data.Download_mLog_Link_For_Android__c;
-             this.iosVideoUrl = data.Download_mLog_Link_For_IOS__c;
-             this.privacyPledgeUrl = data.Privacy_Pledge_Link__c;
-             this.instructionUrlAndroid = data.Donwload_instruction_for_Android__c;
-             this.instructionUrlIOS = data.Donwload_instruction_for_IOS__c;
-             this.mLogTracking = data.mLog_Mileage_Tracking__c;
-          } else if (error) {
-              console.log(error);
-          }
+            this.androidVideoUrl = data.Download_mLog_Link_For_Android__c;
+            this.iosVideoUrl = data.Download_mLog_Link_For_IOS__c;
+            this.privacyPledgeUrl = data.Privacy_Pledge_Link__c;
+            this.instructionUrlAndroid = data.Donwload_instruction_for_Android__c;
+            this.instructionUrlIOS = data.Donwload_instruction_for_IOS__c;
+            this.mLogTracking = data.mLog_Mileage_Tracking__c;
+        } else if (error) {
+            console.log(error);
+        }
     }
 
     // Event handler for Download now button click
-    downloadNow(){
+    downloadNow() {
         this.isPlay = false;
         this.isPlayAndroid = false;
         this.isDownload = false;
         this.isDownloadNow = true;
         this.isDownloadLater = false;
         this.isDownloadAlready = false;
-        this.isChatBot = false;
+        this.carousel = false;
+        this.isChatBot = true;
+        this.sendCorporateLink();
     }
 
     // Event handler for Download later button click
-    downloadLater(){
+    downloadLater() {
         this.isPlay = false;
         this.isPlayAndroid = false;
         this.isDownload = false;
         this.isDownloadNow = false;
         this.isDownloadLater = true;
         this.isDownloadAlready = false;
-        this.isChatBot = true; 
+        this.isChatBot = false;
+        this.carousel = false;
+        this.sendCorporateLink();
     }
 
     // Event handler for I already have mLog button click
-    downloadAlready(){
+    downloadAlready() {
         this.isPlay = false;
         this.isPlayAndroid = false;
         this.isDownload = false;
         this.isDownloadNow = false;
         this.isDownloadLater = false;
         this.isDownloadAlready = true;
-        this.isChatBot = true;
+        this.isChatBot = false;
+        this.carousel = false;
     }
 
     // Convert JSON to Object
@@ -137,9 +193,9 @@ export default class MBurseDownloadMlog extends LightningElement {
     }
 
     // Event handler for watch driver meeting button click
-    nextDriverMeeting(){
+    nextDriverMeeting() {
         var list, d;
-            contactInfo({
+        contactInfo({
                 contactId: this.contactId
             })
             .then((data) => {
@@ -152,35 +208,33 @@ export default class MBurseDownloadMlog extends LightningElement {
                         contactData: JSON.stringify(d),
                         driverPacket: true
                     })
-                    events(this, 'Next mBursement Plan Preview');
                     if (d[0].accountStatus === 'New Account') {
-                        console.log('New Account');
                         window.open(this.schedule)
                     } else {
                         window.open(this.meeting)
                     }
                 }
             })
-            .catch((error)=>{
+            .catch((error) => {
                 // If the promise rejects, we enter this code block
                 console.log(error);
             })
-        // let d = this.arrayList;
-        // console.log("mlogApp before", d[0].mlogApp)
-        // d[0].checkDriverMeeting = true;
-        // console.log("list update ", JSON.stringify(d))
-        // updateContactDetail({contactData: JSON.stringify(d)})
-        // events(this, 'Next mBursement Plan Preview');
-        // if(d[0].accountStatus === 'New Account'){
-        //     console.log('New Account');
-        //     window.open(this.schedule)
-        // }else{
-        //     window.open(this.meeting)
-        // }
+
+        redirectionURL({
+                contactId: this.contactId
+            })
+            .then((result) => {
+                let url = window.location.origin + result;
+                window.open(url, '_self');
+            })
+            .catch((error) => {
+                // If the promise rejects, we enter this code block
+                console.log(error);
+            })
     }
 
     // Event handler for back button click
-    backToDownloadPage(){
+    backToDownloadPage() {
         this.isDownload = true;
         this.isPlay = false;
         this.isPlayAndroid = false;
@@ -188,41 +242,70 @@ export default class MBurseDownloadMlog extends LightningElement {
         this.isDownloadLater = false;
         this.isDownloadAlready = false;
         this.isChatBot = false;
+        this.carousel = false;
     }
 
     // Event handler for back button click
-    backToPage(){
+    backToPage() {
         backEvents(this, 'Next mLog Preview');
     }
 
     // Event handler for link click
-    handleRedirect(){
+    handleRedirect() {
         window.open(this.instructionUrlIOS)
     }
 
     // Event handler to render chat bot
-    contactSupport(event){
+    contactSupport(event) {
         event.preventDefault();
         event.stopPropagation();
         this.template.querySelector('c-m-burse-support').renderChat();
     }
-    
+
     // Event handler for video element iOS click
-    playVideo(){
+    playVideo() {
         this.isPlay = true;
     }
 
     // Event handler for video element android click
-    playVideoAndroid(){
+    playVideoAndroid() {
         this.isPlayAndroid = true;
     }
 
+    popOut() {
+        this.carousel = true;
+        if(window.screen.width <= 1024){
+            this.typePopover = "slds-popover slds-nubbin_left-top  slds-popover_medium c_popover"
+        }
+        console.log(window.screen.width, this.template.querySelector('.c_popover'))
+    }
+
+    handlePopover() {
+        this.carousel = false;
+    }
+
+    sendCorporateLink() {
+        this.dispatchEvent(
+            new CustomEvent("send", {
+                detail: {
+                    contactEmail: this.contactEmail,
+                    mobilePhone: this.mobilePhone,
+                    accountId: this.accountId
+                }
+            })
+        );
+    }
+
     // Life cycle hook to render UI
-    renderedCallback(){
+    renderedCallback() {
         if (this.renderInitialized) {
             return;
-          }
+        }
         this.renderInitialized = true;
         this.render = (this.cellType === 'Company Provide') ? true : false;
+        this.isChatBot = (this.render) ? true : false;
+        this.carouselLists = (this.cellType === 'Company Provide') ? this.carouselB : this.carouselA;
+        this.buttonRender = (this.accountType === 'New Account') ? 'Register your meeting ' : 'Next watch the meeting';
     }
+
 }

@@ -22,10 +22,11 @@ public with sharing class NewAccountDriverController {
                                                 External_Email__c,
                                                 Account.Account_Status__c,
                                                 Cell_Phone__c,
+                                                MobilePhone,
                                                 Insurance_Declaration_Status__c,
                                                 Driver_Packet_Status__c,
-                                                mlog_App__c,
-                                                Activation_Date__c, 
+                                                App__c,
+                                                Activation_Date__c,                                                 
                                                 Schedule_Driver_Meeting__c,
                                                 Account.Goto_Driver_Meeting__c,
                                                 Account.Schedule_Goto_Meeting__c,
@@ -45,6 +46,7 @@ public with sharing class NewAccountDriverController {
                                                 contactWrapper.contactName = contactobj.Name;
                                                 contactWrapper.insuranceId = contactobj.Insurance_Attachment_Id__c != null ? contactobj.Insurance_Attachment_Id__c : null;
                                                 contactWrapper.cellPhone =  contactobj.Cell_Phone__c != null ? contactobj.Cell_Phone__c : null;
+                                                contactWrapper.mobilePhone =  contactobj.MobilePhone != null ? contactobj.MobilePhone : null;
                                                 contactWrapper.accountStatus =  contactobj.Account.Account_Status__c != null ? contactobj.Account.Account_Status__c : null;
                                                 contactWrapper.insuranceStatus =  contactobj.Insurance_Declaration_Status__c != null ? contactobj.Insurance_Declaration_Status__c : null;
                                                 contactWrapper.driverPacketStatus =  contactobj.Driver_Packet_Status__c != null ? contactobj.Driver_Packet_Status__c : null;
@@ -56,9 +58,9 @@ public with sharing class NewAccountDriverController {
                                                 contactWrapper.comprehensive =  contactobj.Account.Comprehensive__c != null ? contactobj.Account.Comprehensive__c : null;
                                                 contactWrapper.collision =  contactobj.Account.Collision__c != null ? contactobj.Account.Collision__c : null;
                                                 contactWrapper.umbrella =  contactobj.Account.Umbrella_Coverage__c != null ? contactobj.Account.Umbrella_Coverage__c : null;
-                                                contactWrapper.mlogApp =  contactobj.mlog_App__c != null ? contactobj.mlog_App__c : false;
+                                                contactWrapper.mlogApp =  contactobj.App__c != null ? true : false;
                                                 contactWrapper.checkDriverMeeting =  contactobj.Schedule_Driver_Meeting__c != null ? contactobj.Schedule_Driver_Meeting__c : false;
-                                                contactWrapper.mburseDashboard =  contactobj.Account.MburseDashboardRedirect__c != null ? contactobj.Account.MburseDashboardRedirect__c : false;
+                                                contactWrapper.mburseDashboard =  contactobj.Account.MburseDashboardRedirect__c != null ? contactobj.Account.MburseDashboardRedirect__c : false;                                                
                                                 date activationDate = contactobj.Activation_Date__c != null ? contactobj.Activation_Date__c : null;
                                                 //contactWrapper.daysBetweenActivation = activationDate != null ? currentDate.daysBetween(activationDate) : null;
                                                 contactWrapper.daysBetweenActivation = activationDate != null ? activationDate.daysBetween(currentDate) : null;
@@ -91,7 +93,7 @@ public with sharing class NewAccountDriverController {
                         sendEmailToDriver(contactData,conWrap.contactName,conWrap.contactId);
                     }
                     conObj.Driver_Packet_Status__c = conWrap.driverPacketStatus != null ? conWrap.driverPacketStatus : null ;
-                    conObj.mlog_App__c = conWrap.mlogApp != null ? conWrap.mlogApp : false ;
+                    //conObj.mlog_App__c = conWrap.mlogApp != null ? conWrap.mlogApp : false ;                    
                     conObj.Schedule_Driver_Meeting__c = conWrap.checkDriverMeeting != null ? conWrap.checkDriverMeeting : false ;
                     contactList.add(conObj);
                 }
@@ -193,8 +195,9 @@ public with sharing class NewAccountDriverController {
         return 'success';
     }
     @AuraEnabled(cacheable = true) 
-    public static string sendWelcomeEmail(String userEmail){
-        return 'success';
+    public static string sendWelcomeEmail(String accountID,String empEmail){
+        String response = RosterController.putHTTP(accountID,empEmail) ;
+        return response;
     }
     /*This method is use to redirect contact on particular dashboard page. */
     @AuraEnabled
@@ -275,6 +278,7 @@ public with sharing class NewAccountDriverController {
         public string insuranceId {get; set;}
         public string contactEmail {get; set;}
         public string cellPhone { get; set; }
+        public string mobilePhone { get; set; }
         public string accountStatus { get; set; }        
         public string insuranceStatus { get; set; }
         public string driverPacketStatus {get; set;}
@@ -290,6 +294,7 @@ public with sharing class NewAccountDriverController {
         public Boolean checkDriverMeeting {get; set;}
         public Boolean checkActivationDate {get; set;}
         public Boolean mburseDashboard {get; set;}
+        public Boolean planPreview {get; set;}
         public integer daysBetweenActivation {get; set;}
     }
 }

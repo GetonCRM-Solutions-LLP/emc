@@ -5,6 +5,7 @@ public class HelloSignIntegrationHandlerTest {
         Hello_Sign__c helloCustom  = TestDataFactory.helloSignCustomSetting(true);
         SendEmail__c sendEmailCustomSetting = TestDataFactory.sendEmailCustomSetting(true, 'Send Email For Compliance');
         Vehicle_URL_Mapping__c vehicleType = TestDataFactory.createVehicleData(false, 3);
+        TrueDialog_Keys__c tdKeys = TestDataFactory.createTrueDialog(true);
         vehicleType.Name = '2019 Full-Size Sedan';
         vehicleType.vehicle__c = 'Full-Size Sedan';
         Insert vehicleType;
