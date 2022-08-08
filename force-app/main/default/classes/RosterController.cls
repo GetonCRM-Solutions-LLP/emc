@@ -487,8 +487,8 @@ global without sharing class RosterController
         system.debug('file==' + file);
         system.debug('accountId==' + accountId);
         
-        ImportContactdatafromCSVController batch = new ImportContactdatafromCSVController(file, accountId, adminId);
-        Database.executeBatch(batch,100);
+        //ImportContactdatafromCSVController batch = new ImportContactdatafromCSVController(file, accountId, adminId);
+        //Database.executeBatch(batch,100);
         
         return 'sucess';
     }
