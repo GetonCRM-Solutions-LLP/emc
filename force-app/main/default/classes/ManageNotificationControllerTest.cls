@@ -9,7 +9,8 @@ public class ManageNotificationControllerTest {
         Vehicle_URL_Mapping__c vehicleObj = TestDataFactory.createVehicleData(true,0);
         IRS_Mileage_Rate__c irsRateObj = TestDataFactory.createIRSRate(true,0);        
         daylight_saving_time_config__c customSetting2 =  TestDataFactory.dayLightCustomSetting(true,'2022', System.today(), System.today() + 60);
-        
+        TrueDialog_Keys__c tdKeys1 = TestDataFactory.createTrueDialog(true);
+
         List<IRS_Mileage_Rate__c> obj_IRS_Mileage_Rate =  RecordUtilityClass.insertIrsRate();
         Account acc = new Account();     
         List<Contact> conList = new List<Contact>();
@@ -74,13 +75,12 @@ public class ManageNotificationControllerTest {
         SendEmail__c sendEmailCustomSetting = TestDataFactory.sendEmailCustomSetting(true, 'Send Email For Compliance');
         IRS_Mileage_Rate__c irsRateObj = TestDataFactory.createIRSRate(true,0);
         List<Address__c> objAddress = TestDataFactory.createAddress(true, 10);
-        
+        TrueDialog_Keys__c tdKeys = TestDataFactory.createTrueDialog(true);
+
         Vehicle_URL_Mapping__c vehicleType = TestDataFactory.createVehicleData(false, 3);
         vehicleType.Name = '2019 Full-Size Sedan';
         vehicleType.vehicle__c = 'Full-Size Sedan';
         Insert vehicleType;
-        
-        TrueDialog_Keys__c tdKeys = TestDataFactory.createTrueDialog(true);
         
         System.debug('tdKeys in test class'+tdKeys);
       
@@ -131,14 +131,7 @@ public class ManageNotificationControllerTest {
         ManageNotificationController.getUnreadMessageCount();
         ManageNotificationController.UpdateUnreadMessageStatus(c.Id);
         ManageNotificationController.TrueDialogContact(a.Id,con2.id);
-        
-        //TrueDialogSendMessageAPI.updateAllMessageAsSeen(c.id);
-
-        
         Test.stopTest();
     
-    }
-    
-    
-    
+    }    
 }

@@ -1649,6 +1649,39 @@
             $scope.isTextMessaging = {!checkTrueDialog};
             console.log("role->", $scope.role, $scope.manRole,  $scope.isTextMessaging);
             var nTable = document.getElementById('style-2').offsetHeight;
+            var scopeTarget = $scope;
+            window.onmessage = function (event) {
+                if (event.data === 'endchat') {
+                    debugger
+                    document.getElementById("chatFrame").removeAttribute("src");
+                    document.getElementById('chatFrame').classList.add('d-none');
+                    document.getElementById("chatBack").classList.add('d-none');
+                    $scope.$apply(function () {
+                        $scope.nameOfPage = 'Messaging';
+                        $scope.massNotiTextEnable = false;
+                        $scope.checkboxShowNotiText = false;
+                        $scope.showNotiBtn = true;
+                        $scope.showCancelProBtn = false;
+                        $scope.showTextNotiBtn = false;
+                        $scope.massTextEnable = false;
+                        $scope.checkboxShowText = false;
+                        $scope.showTextMsgBtn = true;
+                        $scope.showTextBtn = false;
+                        document.getElementById('notification-message-area').value = '';
+                        angular.forEach($scope.driverInfo, function (item) {
+                            if (item.massNotiText) {
+                                item.massNotiText = false;
+                            }
+                        });
+                        document.getElementById('chat-message-area').value = '';
+                        angular.forEach($scope.driverInfo, function (item) {
+                            if (item.massText) {
+                                item.massText = false;
+                            }
+                        });
+                    })
+                }
+            }
             const styleFilter = () => {
                 if ($scope.driverInfo.length > 10) {
                     var elmHeight = document.getElementById("tableWrap").offsetHeight;
@@ -4230,13 +4263,6 @@
         <div class="chatFrame-backdrop d-none" id="chatBack"></div>
         <iframe id="chatFrame" frameborder="0" class="vf-chat-iframe d-none"></iframe>
         <script>
-            window.onmessage = function (event) {
-                if (event.data === 'endchat') {
-                    document.getElementById("chatFrame").removeAttribute("src");
-                    document.getElementById('chatFrame').classList.add('d-none');
-                    document.getElementById("chatBack").classList.add('d-none');
-                }
-            }
             $('.menuToggler').click(function () {
                 var overlay_navigation = $('.overlay-navigation'),
                     nav_item_1 = $('#action-nav .action-nav-list:nth-of-type(1)'),
