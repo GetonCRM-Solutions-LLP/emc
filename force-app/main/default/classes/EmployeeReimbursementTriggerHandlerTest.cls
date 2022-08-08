@@ -9,7 +9,8 @@ public with sharing class EmployeeReimbursementTriggerHandlerTest {
         SendEmailToMe__c customSetMail = TestDataFactory.sendEmailToMeCustomSetting(true, 'Defaulttrigger');
         Vehicle_URL_Mapping__c vehicleType = TestDataFactory.createVehicleData(true, 3);
         IRS_Mileage_Rate__c createIRSRate = TestDataFactory.createIRSRate(true, 0);
-       
+        TrueDialog_Keys__c tdKeys = TestDataFactory.createTrueDialog(true);
+
         Account acc ;
         Account acc2 ;
         Account acc3 ;

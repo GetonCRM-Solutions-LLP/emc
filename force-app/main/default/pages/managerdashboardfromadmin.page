@@ -1263,7 +1263,9 @@
                 $scope.isUnapprovedTab = false;
                 $scope.isDashboardTab = true;
                 $scope.checkboxObj = { IsAllCheckedForApprove: false, IsAllCheckedForUnapprove: false }
-                $scope.AllDriversLastMonthReimbursements = JSON.parse('{!AllDriversLastMonthReimbursements}');
+                let apexResult = '{!AllDriversLastMonthReimbursements}'
+                let apexData = (apexResult) ? apexResult.replace(/\\'/g, "\'") : apexResult;
+                $scope.AllDriversLastMonthReimbursements = JSON.parse(apexData);
                 $scope.myTeamReimbusement = [];
                 $scope.unApprovedReimbusement = [];
 
@@ -1444,6 +1446,7 @@
                 //fill the unapproved datalist
                 $scope.AllDriversLastMonthUnapprovedReimbursementsclone = {!AllDriversLastMonthUnapprovedReimbursementsclone            
 };
+            console.log("AllDriversLastMonthUnapprovedReimbursementsclone", $scope.AllDriversLastMonthUnapprovedReimbursementsclone)
             //Sorting For table of all Un Approved Reimburesment
             $scope.sortKey1 = 'Name';   //set the sortKey to the param passed   
             $scope.reverse1 = false;
@@ -1525,9 +1528,9 @@
                     var countforbtn = 0;
                     $scope.exportData = [];
                     var countapprove = 0;/* "Status",item.status,*/
-                    $scope.exportData.push(["Name", "Month", "Approved Mileages", "Approval Threshold", "Submited Mileage"]);
+                    $scope.exportData.push(["Month", "Name",  "Approved Mileages", "Submited Mileage","Rejected Mileage", "Mileage Approved By", "Managers Name", "Managers Email"]);
                     angular.forEach($scope.AllDriversLastMonthReimbursements, function (item, key) {
-                        $scope.exportData.push([item.name, item.month, item.approvedMileages, item.threshold, item.totalMileages]);
+                        $scope.exportData.push([item.month, item.name.replace(/\\'/g, "\'"), item.approvedMileages, item.totalMileages, item.rejectedMileages, item.mileageApproval, item.managerName, item.managerEmail]);
                         if (item.totalMileages > '0.00' && item.status === 'Pending') { /* EMC - 168 : Approve checkbox still present on dashboard */
                             count++;
                             $scope.displayApprovebtn = true;
@@ -1557,9 +1560,9 @@
 
                     var countforbtnUnapprove = 0;
                     $scope.exportUpapprovedate = [];/* "Status", item.status,*/
-                    $scope.exportUpapprovedate.push(["Name", "Month", "Approval Threshold", "Approved Mileages", "Submited Mileage"]);
+                    $scope.exportUpapprovedate.push(["Month", "Name","Unapproved Mileage","Approved Mileage", "Mileage Approved By", "Managers Name", "Managers Email"]);
                     angular.forEach($scope.AllDriversLastMonthUnapprovedReimbursementsclone, function (item) {
-                        $scope.exportUpapprovedate.push([item.name, item.month, item.threshold, item.approvedMileages, item.totalMileages]);
+                        $scope.exportUpapprovedate.push([item.month, item.name.replace(/\\'/g, "\'"), item.totalMileages, item.approvedMileages, item.mileageApproval, item.managerName, item.managerEmail]);
                         if (item.totalMileages > '0.00') {
                             countforunapprove++;
                         }
@@ -2225,11 +2228,11 @@
                                         <th ng-click="sort('name')">Name
                                             <span class="sort-icon pull-right" ng-show="sortKey=='name'" ng-class="{'fa fa-chevron-up':reverse,'fa fa-chevron-down':!reverse}"></span>
                                         </th>
-                                        <th ng-click="sort('threshold')">Approval
+                                        <!-- <th ng-click="sort('threshold')">Approval
                                             <br/>Threshold
                                             <span class="sort-icon pull-right" ng-show="sortKey=='threshold'" ng-class="{'fa fa-chevron-up':reverse,'fa fa-chevron-down':!reverse}">
                                             </span>
-                                        </th>
+                                        </th> -->
                                         <th ng-click="sort('totalMileages')">Submitted
                                             <br/>Mileage
                                             <span class="sort-icon pull-right" ng-show="sortKey=='totalMileages'" ng-class="{'fa fa-chevron-up':reverse,'fa fa-chevron-down':!reverse}"></span>
@@ -2259,9 +2262,9 @@
                                             <a ng-if="!endProcess" href="/app/adminmanagerdriverdashboard?accid={{accid}}&manid={{managerid}}&adminid={{adminid}}&id={{LastMonthReimbursement.contactid}}&showteam={{showteam}}">{{LastMonthReimbursement.name.replace('\\','')}}</a>
                                             <a ng-if="endProcess || LastMonthReimbursement.reimbursementApproval" ng-click="infoMessage()">{{LastMonthReimbursement.name.replace('\\','') }} </a>
                                         </td>
-                                        <td ng-model="LastMonthReimbursement.threshold">
+                                        <!-- <td ng-model="LastMonthReimbursement.threshold">
                                             {{LastMonthReimbursement.threshold}}
-                                        </td>
+                                        </td> -->
                                         <td ng-model="LastMonthReimbursement.totalMileages">
                                             {{LastMonthReimbursement.totalMileages | number:2}}
                                         </td>
@@ -2314,11 +2317,11 @@
                                         <th ng-click="sort1('name')">Name
                                             <span class="sort-icon pull-right" ng-show="sortKey1=='name'" ng-class="{'fa fa-chevron-up':reverse1,'fa fa-chevron-down':!reverse1}"></span>
                                         </th>
-                                        <th ng-click="sort1('threshold')">Approval
+                                        <!-- <th ng-click="sort1('threshold')">Approval
                                             <br/>Threshold
                                             <span class="sort-icon pull-right" ng-show="sortKey1=='threshold'" ng-class="{'fa fa-chevron-up':reverse1,'fa fa-chevron-down':!reverse1}">
                                             </span>
-                                        </th>
+                                        </th> -->
                                         <th ng-click="sort1('totalMileages')">Unapproved
                                             <br/> Mileage
                                             <span class="sort-icon pull-right" ng-show="sortKey1=='totalMileages'" ng-class="{'fa fa-chevron-up':reverse1,'fa fa-chevron-down':!reverse1}"></span>
@@ -2343,9 +2346,9 @@
                                             <a ng-if="!endProcess" ng-click="openmodalForunapprovedata(UnapprovedReimburesement.name,UnapprovedReimburesement.contactid,UnapprovedReimburesement)">{{UnapprovedReimburesement.name}} </a>
                                             <a ng-if="endProcess || UnapprovedReimburesement.reimbursementApproval" ng-click="infoMessage()">{{UnapprovedReimburesement.name}} </a>
                                         </td>
-                                        <td ng-model="UnapprovedReimburesement.threshold">
+                                        <!-- <td ng-model="UnapprovedReimburesement.threshold">
                                             {{UnapprovedReimburesement.threshold}}
-                                        </td>
+                                        </td> -->
                                         <td ng-model="UnapprovedReimburesement.totalMileages">
                                             {{UnapprovedReimburesement.totalMileages | number:2}}
                                         </td>
