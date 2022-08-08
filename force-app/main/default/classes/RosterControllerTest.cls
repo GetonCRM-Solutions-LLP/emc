@@ -6,7 +6,7 @@ public class RosterControllerTest {
         customEmailSetting.ContactTriggersendEmailForNewContact__c = true;
         customEmailSetting.ContactTriCommunityReimCreate__c = true;
         insert customEmailSetting;
-        
+         TrueDialog_Keys__c tdKeys = TestDataFactory.createTrueDialog(true);
          List<IRS_Mileage_Rate__c> obj_IRS_Mileage_Rate =  RecordUtilityClass.insertIrsRate();
          
         RecordUtilityClass.sendEmailforCompliance();
@@ -114,7 +114,7 @@ public class RosterControllerTest {
             RosterController.getUser(obj_admincontact.Id);
             RosterController.sendExceptionMails('Insert Failed','1');
             RosterController.getCustomExceptionMessage('1');
-            RosterController.readFromFile(csvAsString,accId);
+            //RosterController.readFromFile(csvAsString,accId);
             RosterController.editEmployeeDetails    (obj_Manager_list[0].Id);
             RosterController.getContactByEmailAddress(obj_Manager_list[0].External_Email__c);
             RosterController.manageEmployee(JSON.serialize(obj_list_EmployeeDetails),String.valueOf(obj_Account.id),String.valueOf(obj_admincontact.Id));
@@ -184,7 +184,8 @@ public class RosterControllerTest {
         customEmailSetting.ContactTriggersendEmailForNewContact__c = true;
         customEmailSetting.ContactTriCommunityReimCreate__c = true;
         insert customEmailSetting;
-        
+        TrueDialog_Keys__c tdKeys = TestDataFactory.createTrueDialog(true);
+
         SendEmail__c customSetting =  new SendEmail__c();
         customSetting.Name = 'Send Email For Compliance';
         customSetting.Send_email_from_code__c= true;
