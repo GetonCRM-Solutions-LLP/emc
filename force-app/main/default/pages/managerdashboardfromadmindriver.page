@@ -1072,9 +1072,9 @@
                 var countforbtn = 0;
                 $scope.exportData = [];
                 var countapprove = 0;/* "Status",item.status,*/
-                $scope.exportData.push(["Name", "Month", "Approved Mileages", "Approval Threshold", "Submited Mileage"]);
+                $scope.exportData.push(["Month", "Name",  "Approved Mileages", "Submited Mileage","Rejected Mileage", "Mileage Approved By", "Managers Name", "Managers Email"]);
                 angular.forEach($scope.AllDriversLastMonthReimbursements, function (item, key) {
-                    $scope.exportData.push([item.name, item.month, item.approvedMileages, item.threshold, item.totalMileages]);
+                    $scope.exportData.push([item.month, item.name.replace(/\\'/g, "\'"), item.approvedMileages, item.totalMileages,item.rejectedMileages,item.mileageApproval, item.managerName, item.managerEmail]);
                     if (item.totalMileages > '0.00' && item.status === 'Pending') { /* EMC - 168 : Approve checkbox still present on dashboard */
                         count++;
                         $scope.displayApprovebtn = true;
@@ -1104,9 +1104,9 @@
 
                 var countforbtnUnapprove = 0;
                 $scope.exportUpapprovedate = [];/* "Status", item.status,*/
-                $scope.exportUpapprovedate.push(["Name", "Month", "Approval Threshold", "Approved Mileages", "Submited Mileage"]);
+                $scope.exportUpapprovedate.push(["Month", "Name","Unapproved Mileage","Approved Mileage", "Mileage Approved By", "Managers Name", "Managers Email"]);
                 angular.forEach($scope.AllDriversLastMonthUnapprovedReimbursementsclone, function (item) {
-                    $scope.exportUpapprovedate.push([item.name, item.month, item.threshold, item.approvedMileages, item.totalMileages]);
+                    $scope.exportUpapprovedate.push([item.month, item.name.replace(/\\'/g, "\'"), item.totalMileages, item.approvedMileages, item.mileageApproval, item.managerName, item.managerEmail]);
                     if (item.totalMileages > '0.00') {
                         countforunapprove++;
                     }

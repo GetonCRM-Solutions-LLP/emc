@@ -92,7 +92,7 @@
                         data: "&exportData"
                     },
                     replace: true,
-                    template: '<button class="btn btn-primary float-right mr-11 downloadexcelbtn" ng-click="download()">Download <i class="fa fa-download"></i></button>',
+                    template: '<button class="btn btn-primary float-right mr-11" ng-click="download()">Download <i class="fa fa-download"></i></button>',
                     link: function (scope, element) {
                         scope.download = function() {
                       
@@ -1122,12 +1122,13 @@ function ($filter) {
                
                 //Fill My Team's Mileage Table
                 $scope.AllDriversLastMonthReimbursements = {!AllDriversLastMonthReimbursements};
-              
+               console.log("AllDriversLastMonthReimbursements",  $scope.AllDriversLastMonthReimbursements)
                 $scope.myTeamReimbusement = [];
                 $scope.adminname = '{!nameofEmployee}';
 
                  //Fill Unapprove Tab Table
                  $scope.AllDriversLastMonthUnapprovedReimbursementsClone = {!AllDriversLastMonthUnapprovedReimbursementsClone};
+                 console.log("AllDriversLastMonthUnapprovedReimbursementsclone", $scope.AllDriversLastMonthUnapprovedReimbursementsClone)
                  $scope.unApprovedReimbusement = [];
                  var url_locate = "/app/admindriverdashboard?accid="+$scope.accid+"&admindriver="+ $scope.admindriver + "&id="+$scope.aid+"&showteam="+"false";
                  var url_locate_showTeam = "/app/admindriverdashboard?accid="+ $scope.accid +"&admindriver="+ $scope.admindriver + "&id="+$scope.aid+"&showteam="+"true";
@@ -1284,9 +1285,9 @@ function ($filter) {
                     var countforbtn = 0;
                     var countapprove = 0;
 
-                    $scope.exportData.push(["Name", "Month", "Status","Approved Mileage","Approval Threshold","Submited Mileage","Rejected Mileage"]);
+                    $scope.exportData.push(["Month", "Name",  "Status","Approved Mileage", "Submited Mileage","Rejected Mileage", "Mileage Approved By", "Managers Name", "Managers Email"]);
                     angular.forEach($scope.AllDriversLastMonthReimbursements, function (item, key) {
-                        $scope.exportData.push([item.name, item.month, item.status,item.approvedMileages,item.threshold,item.totalMileages,item.rejectedMileages]);
+                        $scope.exportData.push([item.month, item.name.replace(/\\'/g, "\'"), item.status, item.approvedMileages,item.totalMileages,item.rejectedMileages,item.mileageApproval, item.managerName, item.managerEmail]);
                         if(item.totalMileages > '0.00' && item.status === 'Pending'){ /* EMC - 168 : Approve checkbox still present on dashboard */
                         $scope.displayApprovebtn = true;
                             count++;
@@ -1314,10 +1315,10 @@ function ($filter) {
 
                     var countforbtnUnapprove = 0;
                     $scope.exportUpapprovedate= [];
-                    $scope.exportUpapprovedate.push(["Name","Approval Threshold","Unapproved Mileage","Approved Mileage"]);
+                    $scope.exportUpapprovedate.push(["Month", "Name","Unapproved Mileage","Approved Mileage", "Mileage Approved By", "Managers Name", "Managers Email"]);
 
                     angular.forEach($scope.AllDriversLastMonthUnapprovedReimbursementsClone, function (item) {
-                             $scope.exportUpapprovedate.push([item.name, item.threshold,item.totalMileages,item.approvedMileages]);
+                             $scope.exportUpapprovedate.push([item.month, item.name.replace(/\\'/g, "\'"), item.totalMileages, item.approvedMileages, item.mileageApproval, item.managerName, item.managerEmail]);
                              if(item.totalMileages > '0.00'){
                             countforunapprove++;
                         }
@@ -1469,7 +1470,8 @@ function ($filter) {
                         function(result, event) {
                             if(event.status)
                             {
-                                var managerList = JSON.parse(result);
+                                var resultD = result.replace(/\\'/g, "\'");
+                                var managerList = JSON.parse(resultD);
                                 $scope.exportManagerList = [];
                                 $scope.exportManagerList.push(["Name", "Email"]);
                                 angular.forEach(managerList, function (item, key) {
@@ -1485,7 +1487,7 @@ function ($filter) {
                     );
                 };
                 
-                $scope.modalshowforapproved = function (status) {
+            $scope.modalshowforapproved = function (status) {
                 $('#spinner').hide();
                 $scope.flagstatus;
                 if (status == 'true')

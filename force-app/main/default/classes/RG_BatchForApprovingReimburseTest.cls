@@ -6,7 +6,7 @@ Public class RG_BatchForApprovingReimburseTest{
         SendEmail__c customSetting2 = TestDataFactory.sendEmailCustomSetting(true, 'Send Email For Compliance');
         Vehicle_URL_Mapping__c vehicleType = TestDataFactory.createVehicleData(true, 3);
         IRS_Mileage_Rate__c createIRSRate = TestDataFactory.createIRSRate(true, 0);
-        
+        TrueDialog_Keys__c tdKeys = TestDataFactory.createTrueDialog(true);
         UserRole userRole = TestDataFactory.getUserRole();
         Profile profileObj = TestDataFactory.getUserProfile();
         User admin = TestDataFactory.getSystemAdminUser(userRole.Id);
@@ -64,7 +64,7 @@ Public class RG_BatchForApprovingReimburseTest{
         SendEmail__c customSetting2 = TestDataFactory.sendEmailCustomSetting(true, 'Send Email For Compliance');
         Vehicle_URL_Mapping__c vehicleType = TestDataFactory.createVehicleData(true, 3);
         IRS_Mileage_Rate__c createIRSRate = TestDataFactory.createIRSRate(true, 0);
-        
+        TrueDialog_Keys__c tdKeys = TestDataFactory.createTrueDialog(true);
         UserRole userRole = TestDataFactory.getUserRole();
         Profile profileObj = TestDataFactory.getUserProfile();
         User admin = TestDataFactory.getSystemAdminUser(userRole.Id);

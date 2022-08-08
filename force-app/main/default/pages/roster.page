@@ -568,6 +568,13 @@
                 padding: 1rem !important;
             }
 
+            span.requiredquestion {
+                float: right;
+                position: absolute;
+                right: 25px;
+                top: -15px;
+            }
+
             span.tagquestion {
                 float: right;
                 position: absolute;
@@ -1613,6 +1620,8 @@
                 $scope.firstPayroll = ["50%", "100%"];
                 $scope.manId = url.searchParams.get("managerid");
                 $scope.manVisible = false;
+                $scope.accTrueDialog = {!accTrueDialog}
+                console.log("accTrueDialog", $scope.accTrueDialog);
                 if ($scope.manId == undefined || $scope.manId == '') {
                     $scope.manVisible = false;
                 } else {
@@ -1962,7 +1971,6 @@
             }
 
             $scope.file_changed = function (element) {
-
                 $scope.IsVisiblebtn = true;
                 var file = element.files[0];
                 choosenfileType = file.type;
@@ -1971,8 +1979,8 @@
                     // handle onload
                     $scope.filedata = reader.result;
                 };
-                //reader.readAsDataURL(file);
                 reader.readAsText(file);
+              //  reader.readAsText(file);
                 $scope.$apply();
             };
 
@@ -2038,7 +2046,7 @@
                     return
                 }
 
-                Visualforce.remoting.Manager.invokeAction('{!$RemoteAction.RosterController.readFromFile}', $scope.filedata, $scope.accid,
+                Visualforce.remoting.Manager.invokeAction('{!$RemoteAction.RosterController.readFromFile}', $scope.filedata, $scope.accid, $scope.id,
                     function (result, event) {
                         if (event.status) {
                             let resultArray = result.split('::');
@@ -2159,7 +2167,7 @@
 
 
             $scope.displayCheckboxForEnableUser = function () {
-                $scope.checkboxobj = {}	
+                $scope.checkboxobj = {} 
                 $scope.checkboxobj.isCheckedAllForEnableUser = false;
                 $scope.isPlAccountAbsence = false;
                 $scope.checkboxobjEnableUserShow = true;
@@ -2338,7 +2346,7 @@
                 );
             }
             $scope.displayCheckboxForConcur = function () {
-                $scope.checkboxobj = {}	
+                $scope.checkboxobj = {} 
                 $scope.checkboxobj.isCheckedAllForConcur = false;
                 $scope.isPlAccountAbsence = false;
                 $scope.checkboxobjConcurShow = true;
@@ -2460,7 +2468,7 @@
 
 
             $scope.displayCheckboxForDeactivation = function () {
-                $scope.checkboxobj = {}	
+                $scope.checkboxobj = {} 
                 $scope.checkboxobj.isCheckedAllForDeactivate = false;
                 $scope.isPlAccountAbsence = false;
                 $scope.checkboxobjDeactivateShow = true;
@@ -2561,7 +2569,7 @@
             }
 
             $scope.displayCheckboxForFreeze = function () {
-                $scope.checkboxobj = {}	
+                $scope.checkboxobj = {} 
                 $scope.checkboxobj.isCheckedAllForFreeze = false;
                 $scope.isPlAccountAbsence = false;
                 $scope.checkboxobjDeactivateShow = false;
@@ -2739,7 +2747,7 @@
                     empList.isleaveofabsence = false;
                     empList.iseditable = false;
                 })
-                $scope.checkboxobj = {}	
+                $scope.checkboxobj = {} 
                 $scope.checkboxobj.isCheckedAllForLOA = false;
                 $scope.IsVisibleUpdatebtn = false;
                 $scope.checkboxobjLoaShow = true;
@@ -3635,46 +3643,46 @@
                         let inputtovalidate;
                         if ($scope.accid === $scope.designAIR) {
                             if (con.role == 'Driver' || con.role == 'Driver/Manager' || con.role == valueofreport) {
-                                inputtovalidate = ["firstname", "lastname", "email", "city", "state", "zip", "role", "jobtitle", "department", "deptDesign", "manager", "vehicalType", "activedate"];
+                                inputtovalidate = ["firstname", "lastname", "email", "city", "state", "zip", "role", "jobtitle", "cellphone","department", "deptDesign", "manager", "vehicalType", "activedate"];
                             }
                         }
                         else if($scope.accid === $scope.NWPipe){
-                                inputtovalidate = ["firstname", "lastname", "email", "city", "state", "zip", "role", "company", "manager", "vehicalType", "activedate"];
+                                inputtovalidate = ["firstname", "lastname", "email", "city", "state", "zip", "role", "company", "cellphone","manager", "vehicalType", "activedate"];
                         }
                         else if ($scope.accid === $scope.PLMarketing) {
                             if (con.role == 'Driver' || con.role == 'Driver/Manager' || con.role == valueofreport) {
-                                inputtovalidate = ["firstname", "lastname", "email", "city", "state", "zip", "role", "jobtitle", "divison", "deptPL", "manager", "vehicalType", "firstPayrollPer", "activedate"];
+                                inputtovalidate = ["firstname", "lastname", "email", "city", "state", "zip", "role", "jobtitle", "divison", "deptPL", "cellphone", "manager", "vehicalType", "firstPayrollPer", "activedate"];
                             }
                         }
                         else if ($scope.accid === $scope.accountERMI) {
                             if (con.role == 'Driver' || con.role == 'Driver/Manager' || con.role == valueofreport) {
-                                inputtovalidate = ["firstname", "lastname", "email", "city", "state", "zip", "role", "netchexEmployeeID", "code", "district", "territory", "manager", "vehicalType", "activedate"];
+                                inputtovalidate = ["firstname", "lastname", "email", "city", "state", "zip", "role", "netchexEmployeeID", "code", "district", "territory","cellphone", "manager", "vehicalType", "activedate"];
                             }
                         }
                         else {
                             if (con.role == 'Driver' || con.role == 'Driver/Manager' || con.role == valueofreport) {
-                                inputtovalidate = ["firstname", "lastname", "email", "city", "state", "zip", "role", "manager", "vehicalType", "activedate"];
+                                inputtovalidate = ["firstname", "lastname", "email", "city", "state", "zip", "role", "manager", "vehicalType","cellphone", "activedate"];
                             }
                         }
 
                         if ($scope.accid === $scope.designAIR) {
                             if (con.role == 'Admin' || con.role == 'Manager') {
-                                inputtovalidate = ["firstname", "lastname", "email", "role", "jobtitle", "department", "deptDesign", "activedate"];
+                                inputtovalidate = ["firstname", "lastname", "email", "role", "jobtitle", "department","cellphone", "deptDesign", "activedate"];
                             }
                         }
                         else if ($scope.accid === $scope.PLMarketing) {
                             if (con.role == 'Admin' || con.role == 'Manager') {
-                                inputtovalidate = ["firstname", "lastname", "email", "role", "jobtitle", "deptPL", "divison", "activedate"];
+                                inputtovalidate = ["firstname", "lastname", "email", "role", "jobtitle","cellphone", "deptPL", "divison", "activedate"];
                             }
                         }
                         else if ($scope.accid === $scope.accountERMI) {
                             if (con.role == 'Admin' || con.role == 'Manager') {
-                                inputtovalidate = ["firstname", "lastname", "email", "role", "activedate"];
+                                inputtovalidate = ["firstname", "lastname", "email","cellphone", "role", "activedate"];
                             }
                         }
                         else {
                             if (con.role == 'Admin' || con.role == 'Manager') {
-                                inputtovalidate = ["firstname", "lastname", "email", "role", "activedate"];
+                                inputtovalidate = ["firstname", "lastname", "email","cellphone", "role", "activedate"];
                             }
                         }
 
@@ -4833,7 +4841,7 @@
                                                 </div>
                                             </div>
 
-                                            <div class="form-group-theme row">
+                                            <!-- <div class="form-group-theme row">
                                                 <label for="inputCity" class="col-xl-4 col-lg-3 col-md-3 col-sm-3 col-form-label form-lable">Approval Threshold</label>
                                                 <div class="col-xl-8 col-lg-8 col-md-8 col-sm-8">
                                                     <input type="text" id="threshold" ng-model="contactData[0].approvalThreshold" ng-show="IsShow" class="numinput form-control rounded-0"
@@ -4841,7 +4849,7 @@
                                                     <input type="text" id="threshold" ng-model="contactData.approvalThreshold" ng-show="!IsShow" class="numinput form-control rounded-0"
                                                         placeholder="" name="threshold_1" />
                                                 </div>
-                                            </div>
+                                            </div> -->
                                             <div class="form-group-theme row">
                                                 <label for="inputEmployeeid" class="col-xl-4 col-lg-3 col-md-3 col-sm-3 col-form-label form-lable">Employee ID:</label>
                                                 <div class="col-xl-8 col-lg-8 col-md-8 col-sm-8">
@@ -4880,14 +4888,15 @@
 
                                             <div class="form-group-theme row">
                                                 <label for="inputCellphone" class="col-xl-4 col-lg-3 col-md-3 col-sm-3 col-form-label form-lable">Cell Phone:</label>
-                                                <div class="col-xl-8 col-lg-8 col-md-8 col-sm-8">
+                                                <div class="col-xl-8 col-lg-8 col-md-8 col-sm-8 validate-div">
+                                                    <span class="span-validation requiredquestion" data-toggle="tooltip" data-placement="top" title="Required field" ng-if="accTrueDialog">*</span>
                                                     <span class="tagquestion" data-toggle="tooltip" title="Cell Phone Number" data-html="true" data-placement="top">
                                                         <i class="fa fa-question"></i>
                                                     </span>
                                                     <input type="text" id="cellphone" ng-model="contactData[0].cellphone" ng-show="IsShow" class="cellphoneinput form-control rounded-0"
-                                                        data-mask="000-000-0000" placeholder="Enter Cell Phone Number" />
+                                                        data-mask="000-000-0000" placeholder="Enter Cell Phone Number"  ng-required="accTrueDialog" />
                                                     <input type="text" id="cellphone" ng-model="contactData.cellphone" class="cellphoneinput form-control rounded-0" ng-show="!IsShow"
-                                                        data-mask="000-000-0000" placeholder="Enter Cell Phone Number" />
+                                                        data-mask="000-000-0000" placeholder="Enter Cell Phone Number" ng-required="accTrueDialog" />
                                                 </div>
                                             </div>
                                             <div class="form-group-theme row" ng-if="accid === designAIR">

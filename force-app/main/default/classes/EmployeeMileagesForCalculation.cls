@@ -16,6 +16,8 @@ public with sharing class EmployeeMileagesForCalculation {
     public List<String> reimbursementIdList {get;set;}
     public String managerName{get;set;}
     public Boolean isSelectedEmailReminder {get;set;}
+    public String mileageApproval {get;set;}
+    public String managerEmail {get;set;}
     public EmployeeMileagesForCalculation() {
         
     }

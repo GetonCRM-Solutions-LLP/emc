@@ -10,7 +10,8 @@ public with sharing class RecordUtilityClass_Test {
         RecordUtilityClass.sendEmailforCompliance();
         RecordUtilityClass.enableMappingGasPriceTrigger();
         RecordUtilityClass.vehicleUrlMapping();
-        
+        TrueDialog_Keys__c tdKeys = TestDataFactory.createTrueDialog(true);
+
         
         UserRole userRole_1 = [SELECT Id FROM UserRole WHERE DeveloperName = 'EMD' LIMIT 1];
         Profile profile_1 = [SELECT Id FROM Profile WHERE Name = 'Customer Community Login User' LIMIT 1];
@@ -21,7 +22,7 @@ public with sharing class RecordUtilityClass_Test {
         List<Contact> obj_Manager_list;
         List<Contact> obj_Driver_list;
         System.runAs(admin) {
-            Account account_1 = new Account( Name = 'Community',Pay_Period_Days__c = 13,  Pay_Period_Start_Date__c = system.today().adddays(-30));
+            Account account_1 = new Account( Name = 'Community',Pay_Period_Days__c = 13, True_Dialog__c = false, Pay_Period_Start_Date__c = system.today().adddays(-30));
             insert account_1;
             
             Contact contact_1 = new Contact(AccountId = account_1.Id, LastName = 'xgeek',External_Email__c= 'abc@gmail.com');
@@ -60,11 +61,13 @@ public with sharing class RecordUtilityClass_Test {
         RecordUtilityClass obj = new RecordUtilityClass();
         RecordUtilityClass.exceptionEmail();
         RecordUtilityClass.createRecordsAdminDashboardController();
+        TrueDialog_Keys__c tdKeys = TestDataFactory.createTrueDialog(true);
     }
     public static Testmethod void RecordUtilityClass_TestMethod3()
     {
         RecordUtilityClass obj = new RecordUtilityClass();
         RecordUtilityClass.exceptionEmail();
+        TrueDialog_Keys__c tdKeys = TestDataFactory.createTrueDialog(true);
         RecordUtilityClass.createRecordsforManagerDashboard();
     }
     public static Testmethod void RecordUtilityClass_TestMethod4()
@@ -74,20 +77,18 @@ public with sharing class RecordUtilityClass_Test {
         RecordUtilityClass.sendEmailforCompliance();
         RecordUtilityClass.enableMappingGasPriceTrigger();
         RecordUtilityClass.vehicleUrlMapping();
-        
+        TrueDialog_Keys__c tdKeys = TestDataFactory.createTrueDialog(true);
         UserRole userRole_1 = [SELECT Id FROM UserRole WHERE DeveloperName = 'EMD' LIMIT 1];
         Profile profile_1 = [SELECT Id FROM Profile WHERE Name = 'Customer Community Login User' LIMIT 1];
         User admin = [SELECT Id, Username, UserRoleId FROM User WHERE Profile.Name = 'System Administrator' AND UserRoleId = :userRole_1.Id LIMIT 1];
         User user_1;
         Account acc;
-        Contact con;
-        // List<Contact> obj_Manager_list;
-        // List<Contact> obj_Driver_list;
+        Contact con;       
         List<Contact> listContactManager;
         List<Contact> listContactDriver;
 
         System.runAs(admin) {
-            Account account_1 = new Account( Name = 'Community',Pay_Period_Days__c = 13,  Pay_Period_Start_Date__c = system.today().adddays(-30)  );
+            Account account_1 = new Account( Name = 'Community',Pay_Period_Days__c = 13, True_Dialog__c = false, Pay_Period_Start_Date__c = system.today().adddays(-30)  );
             insert account_1;
             
             Contact contact_1 = new Contact(AccountId = account_1.Id, LastName = 'xgeek',External_Email__c= 'abc@gmail.com');
@@ -97,13 +98,7 @@ public with sharing class RecordUtilityClass_Test {
             insert acc;
     
             con = RecordUtilityClass.buildAdminContact(acc);
-            insert con;       
-    
-            // obj_Manager_list = RecordUtilityClass.buildManagerContact(acc,con);
-            // insert obj_Manager_list;
-    
-            // obj_Driver_list = RecordUtilityClass.buildDriverContact(acc,obj_Manager_list[0]);
-            // insert obj_Driver_list;
+            insert con;
             
             listContactManager = RecordUtilityClass.buildManagerContact(acc,con);
             insert listContactManager;
@@ -138,12 +133,12 @@ public with sharing class RecordUtilityClass_Test {
     
 
     public static Testmethod void RecordUtilityClass_TestMethod5(){
-            RecordUtilityClass obj = new RecordUtilityClass();
-            RecordUtilityClass.exceptionEmail();
+        RecordUtilityClass obj = new RecordUtilityClass();
+        RecordUtilityClass.exceptionEmail();
         RecordUtilityClass.sendEmailforCompliance();
         RecordUtilityClass.enableMappingGasPriceTrigger();
         RecordUtilityClass.vehicleUrlMapping();
-        
+        TrueDialog_Keys__c tdKeys = TestDataFactory.createTrueDialog(true);
         UserRole userRole_1 = [SELECT Id FROM UserRole WHERE DeveloperName = 'EMD' LIMIT 1];
         Profile profile_1 = [SELECT Id FROM Profile WHERE Name = 'Customer Community Login User' LIMIT 1];
         User admin = [SELECT Id, Username, UserRoleId FROM User WHERE Profile.Name = 'System Administrator' AND UserRoleId = :userRole_1.Id LIMIT 1];
@@ -155,7 +150,7 @@ public with sharing class RecordUtilityClass_Test {
         List<Contact> listContactManager;
         List<Contact> listContactDriver;
         System.runAs(admin) {
-            Account account_1 = new Account( Name = 'Community',Pay_Period_Days__c = 13,  Pay_Period_Start_Date__c = system.today().adddays(-30)  );
+            Account account_1 = new Account( Name = 'Community',Pay_Period_Days__c = 13, True_Dialog__c = false, Pay_Period_Start_Date__c = system.today().adddays(-30)  );
             insert account_1;
             
             Contact contact_1 = new Contact(AccountId = account_1.Id, LastName = 'xgeek',External_Email__c= 'abc@gmail.com');
@@ -165,14 +160,7 @@ public with sharing class RecordUtilityClass_Test {
             insert acc;
     
             con = RecordUtilityClass.buildAdminContact(acc);
-            insert con;       
-    
-            // obj_Manager_list = RecordUtilityClass.buildManagerContact(acc,con);
-            // insert obj_Manager_list;
-    
-            // obj_Driver_list = RecordUtilityClass.buildDriverContact(acc,obj_Manager_list[0]);
-            // insert obj_Driver_list;
-
+            insert con;     
             listContactManager = RecordUtilityClass.buildManagerContact(acc,con);
             insert listContactManager;
 
@@ -200,7 +188,7 @@ public with sharing class RecordUtilityClass_Test {
             List<Employee_Reimbursement__c> listemp = RecordUtilityClass.buildPendingEmployee_Reimbursement(listContactDriver);
             insert listemp;
             RecordUtilityClass.getEmployeeReimbursements(listemp);
-        }		
+        }       
         Test.stopTest(); 
     }
 
@@ -210,19 +198,17 @@ public with sharing class RecordUtilityClass_Test {
         RecordUtilityClass.sendEmailforCompliance();
         RecordUtilityClass.enableMappingGasPriceTrigger();
         RecordUtilityClass.vehicleUrlMapping();
-
+        TrueDialog_Keys__c tdKeys = TestDataFactory.createTrueDialog(true);
         UserRole userRole_1 = [SELECT Id FROM UserRole WHERE DeveloperName = 'EMD' LIMIT 1];
         Profile profile_1 = [SELECT Id FROM Profile WHERE Name = 'Customer Community Login User' LIMIT 1];
         User admin = [SELECT Id, Username, UserRoleId FROM User WHERE Profile.Name = 'System Administrator' AND UserRoleId = :userRole_1.Id LIMIT 1];
         User user_1;
         Account acc;
         Contact con;
-        // List<Contact> obj_Manager_list;
-        // List<Contact> obj_Driver_list;
         List<Contact> listContactManager;
         List<Contact> listContactDriver;
         System.runAs(admin) {
-            Account account_1 = new Account( Name = 'Community',Pay_Period_Days__c = 13,  Pay_Period_Start_Date__c = system.today().adddays(-30)  );
+            Account account_1 = new Account( Name = 'Community',Pay_Period_Days__c = 13, True_Dialog__c = false, Pay_Period_Start_Date__c = system.today().adddays(-30)  );
             insert account_1;
             
             Contact contact_1 = new Contact(AccountId = account_1.Id, LastName = 'xgeek',External_Email__c= 'abc@gmail.com');
@@ -233,12 +219,6 @@ public with sharing class RecordUtilityClass_Test {
     
             con = RecordUtilityClass.buildAdminContact(acc);
             insert con;       
-    
-            // obj_Manager_list = RecordUtilityClass.buildManagerContact(acc,con);
-            // insert obj_Manager_list;
-    
-            // obj_Driver_list = RecordUtilityClass.buildDriverContact(acc,obj_Manager_list[0]);
-            // insert obj_Driver_list;
 
             listContactManager = RecordUtilityClass.buildManagerContact(acc,con);
             insert listContactManager;
