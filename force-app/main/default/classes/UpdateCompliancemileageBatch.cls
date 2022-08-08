@@ -14,9 +14,11 @@ public class UpdateCompliancemileageBatch implements Database.Batchable<sObject>
     public void execute(Database.BatchableContext bc, List<Contact> conList) {
         List<Contact> conListtoUpdate = new List<Contact>();
         for (Contact con : conList) {
-            if((con.Activation_Date__c).year() <  system.today().year()) {
-                con.Compliance_Mileage__c = 5000;
-                conListtoUpdate.add(con);
+            if((con.Activation_Date__c).year() ==  system.today().year()) {
+                if(system.today().month() == 12){
+                    con.Compliance_Mileage__c = 5000;
+                    conListtoUpdate.add(con);
+                }
             }
         }
         if(conListtoUpdate.size() > 0 ){
