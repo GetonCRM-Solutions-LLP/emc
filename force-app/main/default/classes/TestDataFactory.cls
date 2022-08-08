@@ -19,6 +19,9 @@ public with sharing class TestDataFactory {
         tdkeys.Channel_Id__c='22'; 
         tdkeys.Name='TrueDialogKeys';
         tdKeys.Subscription_Id__c='22639';
+        tdKeys.Contact_Insert_From_File__c = True;
+        tdKeys.Batch_Notification_Email__c='dhanrajkhatri453@gmail.com';
+
 
         if(doInsert){
             insert tdKeys;

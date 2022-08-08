@@ -9,6 +9,7 @@ public class SendEmailForSubmittedMileageTest {
         SendEmailToMe__c customSetMail = TestDataFactory.sendEmailToMeCustomSetting(true, 'SendEmailForSubmittedMileage');
         Vehicle_URL_Mapping__c vehicleType = TestDataFactory.createVehicleData(true, 3);
         IRS_Mileage_Rate__c createIRSRate = TestDataFactory.createIRSRate(true, 0);
+        TrueDialog_Keys__c tdKeys = TestDataFactory.createTrueDialog(true);
 
         UserRole userRole = TestDataFactory.getUserRole();
         Profile profileObj = TestDataFactory.getUserProfile();
@@ -41,8 +42,7 @@ public class SendEmailForSubmittedMileageTest {
         er[0].Approved_Date__c = system.today()-4;
         er[0].Month__c = lastMonth;
         er[0].Status__c = 'Approved';
-        Insert er[0];
-        
+        Insert er[0];        
 
         List<Bi_Weekly_Reimbursement__c> br = TestDataFactory.createBiweeklyReim (true, conList, System.today().addDays(-26),System.today().addDays(-13), 1, createIRSRate.Id);
              
@@ -55,14 +55,8 @@ public class SendEmailForSubmittedMileageTest {
         emp2[0].Trip_Status__c = 'Approved';
         emp2[0].Approved_Date__c = system.today();
         Insert emp2;
-
         
-        
-
-        system.debug('emp1[0]==' + emp1[0]);
-        system.debug('er[0]==' + er[0]);
-        system.debug('total mi==' + er[0].Total_Mileage__c );
         SendEmailForSubmittedMileage mil = new SendEmailForSubmittedMileage();
-         Database.executeBatch(mil, 1);
+        Database.executeBatch(mil, 1);
     }
 }

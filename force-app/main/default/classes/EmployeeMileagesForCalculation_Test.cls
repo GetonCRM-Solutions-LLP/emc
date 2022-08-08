@@ -1,7 +1,7 @@
 @isTest
 public class EmployeeMileagesForCalculation_Test {
     @isTest
-    	public static void testMethod1() {
+        public static void testMethod1() {
         EmployeeMileagesForCalculation obj = new EmployeeMileagesForCalculation();
         obj.reimbursementid  = 'a001h000001swsP';
         obj.mileageid = 'a002h000001swsP';
@@ -14,5 +14,9 @@ public class EmployeeMileagesForCalculation_Test {
         obj.isSelected = true;
         obj.managerName = 'Doris';
         obj.isSelectedEmailReminder = true;
+        obj.mileageApproval = 'Minkesh';
+        obj.managerEmail = 'test@gmail.com';
+        obj.reimbursementApproval = true;
+        obj.status = 'Approve';
     }
 }

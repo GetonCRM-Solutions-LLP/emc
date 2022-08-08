@@ -10,7 +10,7 @@ public class WrapperUtils_Test {
         RecordUtilityClass.sendEmailforCompliance();
         RecordUtilityClass.enableMappingGasPriceTrigger();
         RecordUtilityClass.vehicleUrlMapping();
-        
+        TrueDialog_Keys__c tdKeys = TestDataFactory.createTrueDialog(true);
         UserRole userRole_1 = TestDataFactory.getUserRole();
         Profile profile_1 = TestDataFactory.getUserProfile();
         User admin = TestDataFactory.getSystemAdminUser(userRole_1.Id);
@@ -46,46 +46,7 @@ public class WrapperUtils_Test {
         insert obj_Employee_Mileage_list;
 
         //List<Employee_Reimbursement__c> obj_newreimbursements = new List<Employee_Reimbursement__c>();
-        List<Employee_Reimbursement__c> obj_newreimbursements = TestDataFactory.createPendingReimbursement(true, obj_Driver_list, 10, obj_IRS_Mileage_Rate.id);
-        /*for(Contact obj:obj_Driver_list) {
-            for(integer i = 1;i < 13; i++) {
-                Employee_Reimbursement__c obj_Employee_Reimbursement = new Employee_Reimbursement__c();
-                if(i<10) {
-                    obj_Employee_Reimbursement.Name = obj.name+':'+'0'+String.valueOf(i)+'-'+String.valueOf(System.today().year()-1);               
-                    obj_Employee_Reimbursement.Month__c = '0'+String.valueOf(i)+'-'+String.valueOf(System.today().year()-1);                               
-                }  else if(i==11) {
-                    obj_Employee_Reimbursement.Name = obj.name+':'+'11-'+String.valueOf(System.today().year()-1);               
-                    obj_Employee_Reimbursement.Month__c = '11-'+String.valueOf(System.today().year()-1);                 
-                }  else {
-                    obj_Employee_Reimbursement.Name = obj.name+':'+'12-'+String.valueOf(System.today().year()-1);               
-                    obj_Employee_Reimbursement.Month__c = '12-'+String.valueOf(System.today().year()-1);              
-                }
-                obj_Employee_Reimbursement.Contact_Id__c = obj.Id;
-                obj_Employee_Reimbursement.Status__c = 'Pending';
-                obj_Employee_Reimbursement.Approved_Date__c = null;
-                obj_Employee_Reimbursement.IRS_Mileage_Rate__c = obj_IRS_Mileage_Rate[2].id;
-                obj_newreimbursements.add(obj_Employee_Reimbursement);
-            }
-            for(integer i=1;i<=12;i++) {
-                Employee_Reimbursement__c obj_Employee_Reimbursement = new Employee_Reimbursement__c();
-                if(i<10) {
-                    obj_Employee_Reimbursement.Name = obj.name+':'+'0'+String.valueOf(i)+'-'+String.valueOf(System.today().year());               
-                    obj_Employee_Reimbursement.Month__c = '0'+String.valueOf(i)+'-'+String.valueOf(System.today().year());                               
-                } else if(i==11) {
-                    obj_Employee_Reimbursement.Name = obj.name+':'+'11-'+String.valueOf(System.today().year());               
-                    obj_Employee_Reimbursement.Month__c = '11-'+String.valueOf(System.today().year());                 
-                } else {
-                    obj_Employee_Reimbursement.Name = obj.name+':'+'12-'+String.valueOf(System.today().year());               
-                    obj_Employee_Reimbursement.Month__c = '12-'+String.valueOf(System.today().year());              
-                }
-                obj_Employee_Reimbursement.Contact_Id__c = obj.Id;
-                obj_Employee_Reimbursement.Status__c = 'Pending';
-                obj_Employee_Reimbursement.Approved_Date__c = null;
-                obj_Employee_Reimbursement.IRS_Mileage_Rate__c = obj_IRS_Mileage_Rate[2].id;
-                obj_newreimbursements.add(obj_Employee_Reimbursement);
-            }            
-        }
-        insert obj_newreimbursements;  */     
+        List<Employee_Reimbursement__c> obj_newreimbursements = TestDataFactory.createPendingReimbursement(true, obj_Driver_list, 10, obj_IRS_Mileage_Rate.id);   
         
         List<Employee_Mileage__c> obj_Employee_Mileage_list1 = RecordUtilityClass.buildNoApprovedYetEmployeeMileages(obj_newreimbursements, empBIweekReimbursementList1[0].Id);
         insert obj_Employee_Mileage_list1;
@@ -205,7 +166,7 @@ public class WrapperUtils_Test {
         RecordUtilityClass.sendEmailforCompliance();
         RecordUtilityClass.enableMappingGasPriceTrigger();
         RecordUtilityClass.vehicleUrlMapping();
-        
+        TrueDialog_Keys__c tdKeys = TestDataFactory.createTrueDialog(true);
         UserRole userRole_1 = TestDataFactory.getUserRole();
         Profile profile_1 = TestDataFactory.getUserProfile();
         User admin = TestDataFactory.getSystemAdminUser(userRole_1.Id);
@@ -399,7 +360,7 @@ public class WrapperUtils_Test {
         RecordUtilityClass.sendEmailforCompliance();
         RecordUtilityClass.enableMappingGasPriceTrigger();
         RecordUtilityClass.vehicleUrlMapping();
-        
+        TrueDialog_Keys__c tdKeys = TestDataFactory.createTrueDialog(true);
         UserRole userRole_1 = TestDataFactory.getUserRole();
         Profile profile_1 = TestDataFactory.getUserProfile();
         User admin = TestDataFactory.getSystemAdminUser(userRole_1.Id);
@@ -436,45 +397,7 @@ public class WrapperUtils_Test {
         insert obj_Employee_Mileage_list;
 
         List<Employee_Reimbursement__c> obj_newreimbursements = TestDataFactory.createPendingReimbursement(true, obj_Driver_list, 10, obj_IRS_Mileage_Rate.id);
-        /*for(Contact obj:obj_Driver_list) {
-                for(integer i=1;i<13;i++) {
-                    Employee_Reimbursement__c obj_Employee_Reimbursement = new Employee_Reimbursement__c();
-                    if(i<10) {
-                        obj_Employee_Reimbursement.Name = obj.name+':'+'0'+String.valueOf(i)+'-'+String.valueOf(System.today().year()-1);               
-                        obj_Employee_Reimbursement.Month__c = '0'+String.valueOf(i)+'-'+String.valueOf(System.today().year()-1);                               
-                    } else if(i==11) {
-                        obj_Employee_Reimbursement.Name = obj.name+':'+'11-'+String.valueOf(System.today().year()-1);               
-                        obj_Employee_Reimbursement.Month__c = '11-'+String.valueOf(System.today().year()-1);                 
-                    } else {
-                        obj_Employee_Reimbursement.Name = obj.name+':'+'12-'+String.valueOf(System.today().year()-1);               
-                        obj_Employee_Reimbursement.Month__c = '12-'+String.valueOf(System.today().year()-1);              
-                    }
-                    obj_Employee_Reimbursement.Contact_Id__c = obj.Id;
-                    obj_Employee_Reimbursement.Status__c = 'Pending';
-                    obj_Employee_Reimbursement.Approved_Date__c = null;
-                    obj_Employee_Reimbursement.IRS_Mileage_Rate__c = obj_IRS_Mileage_Rate[2].id;
-                    obj_newreimbursements.add(obj_Employee_Reimbursement);
-                }
-                for(integer i=1;i<=12;i++) {
-                    Employee_Reimbursement__c obj_Employee_Reimbursement = new Employee_Reimbursement__c();
-                    if(i<10) {
-                        obj_Employee_Reimbursement.Name = obj.name+':'+'0'+String.valueOf(i)+'-'+String.valueOf(System.today().year());               
-                        obj_Employee_Reimbursement.Month__c = '0'+String.valueOf(i)+'-'+String.valueOf(System.today().year());                               
-                    } else if(i==11) {
-                        obj_Employee_Reimbursement.Name = obj.name+':'+'11-'+String.valueOf(System.today().year());               
-                        obj_Employee_Reimbursement.Month__c = '11-'+String.valueOf(System.today().year());                 
-                    } else {
-                        obj_Employee_Reimbursement.Name = obj.name+':'+'12-'+String.valueOf(System.today().year());               
-                        obj_Employee_Reimbursement.Month__c = '12-'+String.valueOf(System.today().year());              
-                    }
-                    obj_Employee_Reimbursement.Contact_Id__c = obj.Id;
-                    obj_Employee_Reimbursement.Status__c = 'Pending';
-                    obj_Employee_Reimbursement.Approved_Date__c = null;
-                    obj_Employee_Reimbursement.IRS_Mileage_Rate__c = obj_IRS_Mileage_Rate[2].id;
-                    obj_newreimbursements.add(obj_Employee_Reimbursement);
-                }                
-            }
-        insert obj_newreimbursements;*/
+       
         list<Bi_Weekly_Reimbursement__c> empBIweekReimbursementList5 = RecordUtilityClass.buildPendingBiReimbursement(obj_Driver_list);
         insert empBIweekReimbursementList5;
     

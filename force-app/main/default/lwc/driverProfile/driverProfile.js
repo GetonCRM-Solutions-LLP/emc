@@ -21,6 +21,7 @@ export default class DriverProfile extends LightningElement {
     notifyList = [];
     fuelPrice;
     fixedAmount;
+    renderText;
     variableRate;
     isComplete = false;
     isfuelPrice = true;
@@ -31,7 +32,8 @@ export default class DriverProfile extends LightningElement {
     vehicleValue;
     drivingState;
     mileageUnapproved;
-    fuelIconUrl = EMC_CSS + '/emc-design/assets/images/Driver-dashboard-icons/Profile_fuel_pump.svg';
+    mileageText;
+    fuelIconUrl = EMC_CSS + '/emc-design/assets/images/Driver-dashboard-icons/Profile_fuel_pump_45-01.svg';
     umbrellaIconUrl = EMC_CSS + '/emc-design/assets/images/Driver-dashboard-icons/Parameters_100_300_100.svg';
     speedometerIconUrl = EMC_CSS + '/emc-design/assets/images/Driver-dashboard-icons/Parameters_Speedometer.svg';
     calendarIconUrl = EMC_CSS + '/emc-design/assets/images/Driver-dashboard-icons/Parameters_years.svg';
@@ -40,13 +42,13 @@ export default class DriverProfile extends LightningElement {
     carImageUrl = EMC_CSS + '/emc-design/assets/images/car.png';
     heckTickUrl = EMC_CSS + '/emc-design/assets/images/Driver-dashboard-icons/Parameters_green_heck_mark.svg';
     blurTickUrl = EMC_CSS + '/emc-design/assets/images/Driver-dashboard-icons/Parameters_grey_heck_mark.svg';
-    locationIconUrl = EMC_CSS + '/emc-design/assets/images/Driver-dashboard-icons/Profile_location.svg';
-    milesIconUrl = EMC_CSS + '/emc-design/assets/images/Driver-dashboard-icons/Profile_miles.svg';
-    moneyIconUrl = EMC_CSS + '/emc-design/assets/images/Driver-dashboard-icons/Profile_money.svg';
+    locationIconUrl = EMC_CSS + '/emc-design/assets/images/Driver-dashboard-icons/Profile_location_45-01.svg';
+    milesIconUrl = EMC_CSS + '/emc-design/assets/images/Driver-dashboard-icons/Profile_miles_45_01.svg';
+    moneyIconUrl = EMC_CSS + '/emc-design/assets/images/Driver-dashboard-icons/Profile_money_45_01.svg';
     // companyIconUrl = EMC_CSS + '/emc-design/assets/images/company-name-img.png';
     flagIconUrl = EMC_CSS + '/emc-design/assets/images/Driver-dashboard-icons/YTD_mileage_flag.svg';
     noNotification = EMC_CSS + '/emc-design/assets/images/no-new-notification.png';
-    variableRateUrl = EMC_CSS + '/emc-design/assets/images/Driver-dashboard-icons/graph.png';
+    variableRateUrl = EMC_CSS + '/emc-design/assets/images/Driver-dashboard-icons/graph_45-01.svg';
     connectedCallback() {
         if (this.contactDetails.accountLogo === null && this.contactDetails.accountName === null && this.contactDetails.annualMileages === null && this.contactDetails.annualReim === null && this.contactDetails.carImage === null && this.contactDetails.city === null && this.contactDetails.complianceMileage === null && this.contactDetails.compliancestatus === null && this.contactDetails.contactName === null && this.contactDetails.driverType === null && this.contactDetails.drivingState === null && this.contactDetails.drivingStates === null && this.contactDetails.fixedAmount === null && this.contactDetails.insurance === null && this.contactDetails.insuranceAttchId === null && this.contactDetails.insuranceDate === null && this.contactDetails.mileagemeet === null && this.contactDetails.notimessage === null && this.contactDetails.planInsurance === null && this.contactDetails.planYears === null && this.contactDetails.state === null && this.contactDetails.vehicalType === null && this.contactDetails.vehicleValue === null && this.contactDetails.vehicleage === null && this.contactDetails.vehiclevaluecheck === null && this.contactDetails.zipCode === null) {
             this.isInformation = false;
@@ -85,12 +87,15 @@ export default class DriverProfile extends LightningElement {
 
             if (this.unapproveMileage[0] === undefined) {
                 this.mileageUnapproved = 0
+                this.mileageText = ' unapproved miles'
             } else {
                 this.mileageUnapproved = formatter.format(this.unapproveMileage[0].Total_Pending__c);
+                this.mileageText = ' (miles) unapproved';
             }
             this.isComplete = (parseFloat(this.contactDetails.annualMileages) >= parseFloat(this.contactDetails.complianceMileage)) ? true : false;
             this.formattedMileage = formatter.format(this.contactDetails.annualMileages);
             this.formattedReim = this.formatNumber(this.contactDetails.annualReim);
+            this.renderText = (!this.contactDetails.biWeekContact) ? 'month' : 'bi-weekly'
             if (this.contactDetails.complianceMileage) {
                 convertedMile = this.formatNumber(this.contactDetails.complianceMileage);
                 this.complianceMileage = convertedMile;
