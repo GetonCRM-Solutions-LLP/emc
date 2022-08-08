@@ -22,7 +22,7 @@ public class UpdateCompliancemileageBatchTest {
             Contact contactObj = TestDataFactory.createCICDContact(true,accountObj.Id);
             acc = TestDataFactory.createAccount(true,'Test',true);
             conList = TestDataFactory.createDriverContact(true, acc.Id, 'Driver', vehicleObj.Name, 'test.email', 1);
-            conList[0].Activation_Date__c = date.valueof('2021-08-01');
+            conList[0].Activation_Date__c = date.valueof('2022-12-01');
             update conList;
 
             userObj = TestDataFactory.createUser(true, profileObj.Id, conList[0].Id);

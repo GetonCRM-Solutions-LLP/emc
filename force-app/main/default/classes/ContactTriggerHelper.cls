@@ -586,9 +586,13 @@ New Contact is created at that time we have to update plan parameter section's f
         Map<Id,Decimal> mapIdvsPlanyear = new Map<Id, Decimal>();
         Map<Id,Decimal> mapIdvsBusinessUse = new Map<Id, Decimal>();
         Map<String,Decimal> mapVehicleValue = new Map<String, Decimal>();
-        Map<String,Decimal> monthvsCompMilieageMap = new Map<String,Decimal> {'01' => 4583.3334, '02' => 4166.6668, '03' => 3750, '04' => 3333.3336, '05' => 2916.667,
-                                                                                    '06' => 2500, '07' => 2083.3334, '08' => 1666.6668, '09' => 1250, '10' => 833.3334,
-                                                                                    '11' => 416.6668, '12' => 0};
+        String[] splitactivationdate ; 
+       
+        // monthvsCompMilieageMap is used for count compliance mileages.
+        Map<String,Decimal> monthvsCompMilieageMap = new Map<String,Decimal> {'12' => 4583.3334, '01' => 4166.6668, '02' => 3750, '03' => 3333.3336, '04' => 2916.667,
+                                                                                    '05' => 2500, '06' => 2083.3334, '07' => 1666.6668, '08' => 1250, '09' => 833.3334,
+                                                                                    '10' => 416.6668, '11' => 0};
+        
         
         for (Vehicle_Value__c vehValue : [SELECT id,Account__c, Vehicle_URL_Mapping__r.Name,Value__c  
                                           FROM Vehicle_Value__c 
@@ -635,9 +639,10 @@ if driver is activate on the 20th of march than Compliance Mileages are (9(From 
 if driver is activate on the 28th of march than Compliance Mileages are (9 (From April to December )* 416.6666) + 104.165 (March month's 1 Weeks of Prorations) = 3854.1644
 */
                                 if(con.Activation_Date__c != null){
-                                    String[] splitactivationdate = String.valueOf(con.Activation_Date__c).split('-');
+                                   splitactivationdate = String.valueOf(con.Activation_Date__c).split('-');
                                     system.debug('splitactivationdate==' + splitactivationdate[1]);
                                     system.debug('date==' + splitactivationdate[2]);
+                                    system.debug('year==' + splitactivationdate[0]);
                                     if(Integer.valueOf(splitactivationdate[0]) == System.today().year()){
                                         if(monthvsCompMilieageMap.containsKey(splitactivationdate[1])){
                                             if(Integer.valueOf(splitactivationdate[2]) < 8){
@@ -650,12 +655,37 @@ if driver is activate on the 28th of march than Compliance Mileages are (9 (From
                                                     con.Compliance_Mileage__c = (monthvsCompMilieageMap.get(splitactivationdate[1])) + 104.165;
                                             }
                                         }
-                                    } else if(Integer.valueOf(splitactivationdate[0]) > System.today().year() || Integer.valueOf(splitactivationdate[0]) < System.today().year()){
-                                        con.Compliance_Mileage__c = 5000;
+                                    } else if(Integer.valueOf(splitactivationdate[0]) < System.today().year()){
+                                        if(splitactivationdate[1] == '12'){
+                                           // con.Compliance_Mileage__c = 5000;
+                                           if(Integer.valueOf(splitactivationdate[2]) < 8){
+                                                con.Compliance_Mileage__c = (monthvsCompMilieageMap.get(splitactivationdate[1])) + 416.6666;
+                                            }   else if (Integer.valueOf(splitactivationdate[2]) >= 8 && Integer.valueOf(splitactivationdate[2]) <= 15) {
+                                                    con.Compliance_Mileage__c = (monthvsCompMilieageMap.get(splitactivationdate[1])) + 312.495;
+                                            }   else if (Integer.valueOf(splitactivationdate[2]) >= 16 && Integer.valueOf(splitactivationdate[2]) <= 23) {
+                                                    con.Compliance_Mileage__c = (monthvsCompMilieageMap.get(splitactivationdate[1])) + 208.33;
+                                            }   else {
+                                                    con.Compliance_Mileage__c = (monthvsCompMilieageMap.get(splitactivationdate[1])) + 104.165;
+                                            }
+                                        } else {
+                                            con.Compliance_Mileage__c = 5000;
+                                        }
+                                        
+                                    }  else if(Integer.valueOf(splitactivationdate[0]) > System.today().year()){                                            
+                                            if(Integer.valueOf(splitactivationdate[2]) < 8){
+                                                con.Compliance_Mileage__c = (monthvsCompMilieageMap.get(splitactivationdate[1])) + 416.6666;
+                                            }   else if (Integer.valueOf(splitactivationdate[2]) >= 8 && Integer.valueOf(splitactivationdate[2]) <= 15) {
+                                                    con.Compliance_Mileage__c = (monthvsCompMilieageMap.get(splitactivationdate[1])) + 312.495;
+                                            }   else if (Integer.valueOf(splitactivationdate[2]) >= 16 && Integer.valueOf(splitactivationdate[2]) <= 23) {
+                                                    con.Compliance_Mileage__c = (monthvsCompMilieageMap.get(splitactivationdate[1])) + 208.33;
+                                            }   else {
+                                                    con.Compliance_Mileage__c = (monthvsCompMilieageMap.get(splitactivationdate[1])) + 104.165;
+                                            }
                                     }
-                                } else {
-                                    con.Compliance_Mileage__c = 0;
-                                }
+                                    /*else if(Integer.valueOf(splitactivationdate[0]) > System.today().year() || Integer.valueOf(splitactivationdate[0]) < System.today().year()){
+                                        con.Compliance_Mileage__c = 5000;
+                                    }*/
+                                } 
                                     updateConList.add(con);
                             }   
         }
