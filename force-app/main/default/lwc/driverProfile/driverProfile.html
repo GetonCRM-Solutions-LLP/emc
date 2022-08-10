@@ -56,12 +56,13 @@
                                 <lightning-layout>
                                     <lightning-layout-item  class="slds-p-around_xx-small" size="4">
                                         <div class="dProfile-section pdl-3 slds-grid slds-grid_vertical">
-                                            <div class="slds-col slds-size_12-of-12 slds-p-top_xx-small">
+                                            <div class="slds-col slds-size_12-of-12 slds-p-top_x-small">
                                                 <img class="common_size" src={milesIconUrl} alt="icon" />
                                             </div>
                                             <div
-                                                class="slds-col slds-size_12-of-12 slds-p-top_medium">
-                                                <p class="text-font-align">{mileageUnapproved} {mileageText}</p>
+                                                class="slds-col slds-size_12-of-12 slds-p-top_x-small">
+                                                <p class="text-font-align" if:true={mileageText}>{mileageUnapproved} (miles) <br/> unapproved</p>
+                                                <p class="text-font-align" if:false={mileageText}>{mileageUnapproved} unapproved <br/> miles</p>
                                             </div>
                                         </div>
                                     </lightning-layout-item>
@@ -72,7 +73,7 @@
                                             </div>
                                             <div
                                                 class="slds-col slds-size_12-of-12">
-                                                <!-- <p class="text-font-align text-padding"  >$2.67/gallon</p>  -->
+                                                <!-- <p class="text-font-align text-padding"  >$2.67/gallon <br/> last month</p>  -->
                                                 <p class="text-font-align" if:true={isfuelPrice}>
                                                     ${fuelPrice}/gallon <br/> last month</p>
                                             </div>
