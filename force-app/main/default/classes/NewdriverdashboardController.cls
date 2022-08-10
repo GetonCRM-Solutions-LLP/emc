@@ -110,8 +110,8 @@ global class NewdriverdashboardController {
              
         }
         if(contactObj.biWeekContact == true){
-            for(Bi_Weekly_Reimbursement__c  biWeek : [SELECT id,Fixed_Amount__c  FROM Bi_Weekly_Reimbursement__c where End_Date__c != null and End_Date__c <= TODAY  and Contact__c  =: contactid order by End_Date__c desc limit 1]){
-                contactObj.fixedAmount = String.valueof(biWeek.Fixed_Amount__c );
+            for(Bi_Weekly_Reimbursement__c  biWeek : [SELECT id,Half_Fixed_Amount__c FROM Bi_Weekly_Reimbursement__c where End_Date__c != null and End_Date__c <= TODAY  and Contact__c  =: contactid order by End_Date__c desc limit 1]){
+                contactObj.fixedAmount = String.valueof(biWeek.Half_Fixed_Amount__c );
             }
         }
         gasPrice = WrapperUtils.getDriverGasPrice(contactObj.state,contactObj.city);

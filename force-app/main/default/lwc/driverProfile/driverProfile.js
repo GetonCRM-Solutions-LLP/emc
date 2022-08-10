@@ -32,7 +32,7 @@ export default class DriverProfile extends LightningElement {
     vehicleValue;
     drivingState;
     mileageUnapproved;
-    mileageText;
+    mileageText = false;
     fuelIconUrl = EMC_CSS + '/emc-design/assets/images/Driver-dashboard-icons/Profile_fuel_pump_45-01.svg';
     umbrellaIconUrl = EMC_CSS + '/emc-design/assets/images/Driver-dashboard-icons/Parameters_100_300_100.svg';
     speedometerIconUrl = EMC_CSS + '/emc-design/assets/images/Driver-dashboard-icons/Parameters_Speedometer.svg';
@@ -87,10 +87,10 @@ export default class DriverProfile extends LightningElement {
 
             if (this.unapproveMileage[0] === undefined) {
                 this.mileageUnapproved = 0
-                this.mileageText = ' unapproved miles'
+                this.mileageText = false;
             } else {
                 this.mileageUnapproved = formatter.format(this.unapproveMileage[0].Total_Pending__c);
-                this.mileageText = ' (miles) unapproved';
+                this.mileageText = true;
             }
             this.isComplete = (parseFloat(this.contactDetails.annualMileages) >= parseFloat(this.contactDetails.complianceMileage)) ? true : false;
             this.formattedMileage = formatter.format(this.contactDetails.annualMileages);
