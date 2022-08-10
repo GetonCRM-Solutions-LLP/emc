@@ -102,7 +102,7 @@ trigger ContactTrigger on Contact (after Update, after insert, before insert, be
             
             TrueDialog_Keys__c tdKeys =TrueDialog_Keys__c.getValues('TrueDialogKeys');
         
-
+			System.debug('****tdKeys.Contact_Insert_From_File__c**** '+tdKeys.Contact_Insert_From_File__c );
             if(contactIdSet.size()>0 && !tdKeys.Contact_Insert_From_File__c ){
 
                TrueDialogContactAPI tdContactApi = new TrueDialogContactAPI(contactIdSet);

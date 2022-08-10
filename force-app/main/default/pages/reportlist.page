@@ -535,21 +535,39 @@
                             scope.monthArr = scope.month.split(',');
                             scope.monthArr.splice(0, 0, scope.defaultOption);
                             scope.monthList = scope.monthArr[0];
-                            scope.selectedMonth = "";
+                            scope.selectedMonth = scope.defaultOption;
                             scope.empType = scope.empl.split(',');
                             scope.empType.splice(0, 0, scope.defaultEmpOption);
                             scope.empTypeList = scope.empType[0];
-                            scope.selectedempType = "";
+                            scope.selectedempType = scope.defaultEmpOption;
+                            scope.monthA = "";
+                            scope.monthB = "";
 
                             function refreshModal() {
                                 location.reload();
                             }
+
                             scope.onmonthChange = function (month) {
                                 scope.selectedMonth = month;
+                                if (scope.selectedMonth === 'Select Month'  || scope.selectedempType == 'Select Employee Type') {
+                                    $('#downloadTaxReportBtn').prop('disabled', true);
+                                }
+                                else {
+                                    $('#downloadTaxReportBtn').prop('disabled', false);
+                                }
                             }
+
                             scope.onemployeeChange = function (el) {
                                 scope.selectedempType = el;
+                                scope.monthB = scope.selectedempType.length;
+                                if ((scope.selectedMonth === 'Select Month' || "") && (scope.selectedempType == 'Select Employee Type' || "")) {
+                                    $('#downloadTaxReportBtn').prop('disabled', true);
+                                }
+                                else {
+                                    $('#downloadTaxReportBtn').prop('disabled', false);
+                                }
                             }
+
                             scope.downloadTaxReport = function () {
                                 //window_url = 'https://' + host + '/apex/TaxReportPage?month=' +  scope.selectedMonth + '&empType=' + scope.selectedempType;
                                 window_url = 'https://' + host + '/app/TaxReportPage?month=' + scope.selectedMonth + '&empType=' + scope.selectedempType;
@@ -573,7 +591,7 @@
                             });
 
                         },
-                        template: '<div class="modal fade driver-dashboard-monthrecord show in monthlyTaxModal" tabindex="-1" role="dialog" aria-labelledby="driver-dashboard-monthrecord" id="driver-dashboard-monthrecord"><div class="fade modal-backdrop"></div><div class="modal-dialog modal-lg modal-dialog-centered"><div class="modal-content rounded-0"> <button type="button" class="close popup-close-btn" data-dismiss="modal" aria-label="Close"> <span aria-hidden="true">×</span> </button><div class="modal-body"><h4>Monthly Tax Report</h4><div class="modal-divider"></div><form name="signup" class="form" id="myform"><div class="form-row"><div class="form-group-theme row-inline"> <label for="Month:" class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-form-label form-lable">Month:<span class="tagquestion1" data-toggle="tooltip" data-placement="top" data-html="true" title="" data-original-title="<b>Please select month</b>"> <i class="fa fa-question"></i> </span> </label><div class="col-xl-6 col-lg-6 col-md-6 col-sm-6"> <select ng-model="monthList" ng-change="onmonthChange(monthList)" class="browser-default custom-select custom-select-xl width-dp"><option ng-repeat="date in monthArr" ng-selected="{{monthList == date}}" value="{{date}}">{{date}}</option> </select></div></div><div class="form-group-theme row-inline"> <label for="Employee:" class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-form-label form-lable">Employee Type: <span class="tagquestion1" data-toggle="tooltip" data-placement="top" data-html="true" title="" data-original-title="<b>Please select employee type</b>"> <i class="fa fa-question"></i> </span> </label><div class="col-xl-6 col-lg-6 col-md-6 col-sm-6"> <select ng-model="empTypeList" ng-change="onemployeeChange(empTypeList)" class="browser-default custom-select custom-select-xl width-dp"><option ng-repeat="empltype in empType" ng-selected="{{empTypeList == empltype}}" value="{{empltype}}">{{empltype}}</option> </select></div></div></div></form></div><div class="modal-footer mb-3"><div class="col-md-12 mt-3 text-center"> <button id="downloadTaxReportBtn" class="btn btn-primary mt-3 mb-3" ng-click="downloadTaxReport()">Download <i class="fa fa-download"></i> </button></div></div></div></div></div>'
+                        template: '<div class="modal fade driver-dashboard-monthrecord show in monthlyTaxModal" tabindex="-1" role="dialog" aria-labelledby="driver-dashboard-monthrecord" id="driver-dashboard-monthrecord"><div class="fade modal-backdrop"></div><div class="modal-dialog modal-lg modal-dialog-centered"><div class="modal-content rounded-0"> <button type="button" class="close popup-close-btn" data-dismiss="modal" aria-label="Close"> <span aria-hidden="true">×</span> </button><div class="modal-body"><h4>Monthly Tax Report</h4><div class="modal-divider"></div><form name="signup" class="form" id="myform"><div class="form-row"><div class="form-group-theme row-inline"> <label for="Month:" class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-form-label form-lable">Month:<span class="tagquestion1" data-toggle="tooltip" data-placement="top" data-html="true" title="" data-original-title="<b>Please select month</b>"> <i class="fa fa-question"></i> </span> </label><div class="col-xl-6 col-lg-6 col-md-6 col-sm-6"> <select ng-model="monthList" ng-change="onmonthChange(monthList)" class="browser-default custom-select custom-select-xl width-dp"><option ng-repeat="date in monthArr" ng-selected="{{monthList == date}}" value="{{date}}">{{date}}</option> </select></div></div><div class="form-group-theme row-inline"> <label for="Employee:" class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-form-label form-lable">Employee Type: <span class="tagquestion1" data-toggle="tooltip" data-placement="top" data-html="true" title="" data-original-title="<b>Please select employee type</b>"> <i class="fa fa-question"></i> </span> </label><div class="col-xl-6 col-lg-6 col-md-6 col-sm-6"> <select ng-model="empTypeList" ng-change="onemployeeChange(empTypeList)" class="browser-default custom-select custom-select-xl width-dp"><option ng-repeat="empltype in empType" ng-selected="{{empTypeList == empltype}}" value="{{empltype}}">{{empltype}}</option> </select></div></div></div></form></div><div class="modal-footer mb-3"><div class="col-md-12 mt-3 text-center"> <button id="downloadTaxReportBtn" class="btn btn-primary mt-3 mb-3" ng-click="downloadTaxReport()" disabled>Download <i class="fa fa-download"></i> </button></div></div></div></div></div>'
                     };
 
                 }
@@ -807,6 +825,95 @@
                     };
             }]);
 
+
+            //EMC - 393 ERMI Report
+
+            var EditTripDetailReportModel = function () {
+                this.visible = false;
+            }
+
+            EditTripDetailReportModel.prototype.open = function () {
+                this.visible = true;
+            }
+
+            EditTripDetailReportModel.prototype.close = function () {
+                this.visible = false;
+            }
+
+            app.directive('editTripDetailReport', ['$filter', '$http',
+                function ($filter, $http) {
+                    return {
+                        restrict: 'E',
+                        scope: {
+                            model: '='
+                        },
+                        link: function (scope, element, attributes) {
+                            scope.$watch('model.visible', function (newValue) {
+                                var modalElement = element.find('.modal');
+                                modalElement.modal(newValue ? 'show' : 'hide');
+                                // if (newValue == true) {
+
+                                // }
+                            });
+
+                            var url_string = $(location).attr("href");
+                            var url = new URL(url_string);
+                            var host = url.host;
+                            scope.accid = url.searchParams.get("accid");
+
+                            function refreshModal() {
+                                location.reload();
+                            }
+
+                            $('body').on('keydown', '#report-startdatepicker-trip', function(e){
+                                return false;
+                            })
+
+                            $('body').on('keydown', '#report-enddatepicker-trip', function(e){
+                                return false;
+                            })
+
+                            $('#report-enddatepicker-trip, #report-startdatepicker-trip').on('change', function () {
+                                var stdateTripVal = $('#report-startdatepicker-trip').val();
+                                var endateTripVal = $('#report-enddatepicker-trip').val();
+                                var reportBtn = stdateTripVal.length == 0 || endateTripVal.length == 0;
+                                if (reportBtn) {
+                                    $('#reportDownloadTripBtn').prop('disabled', true);
+                                }
+                                else {
+                                    $('#reportDownloadTripBtn').prop('disabled', false);
+                                }
+                            });
+
+                            scope.downloadTripDetail = function () {
+                                var window_url;
+                                scope.stDate = $('#report-startdatepicker-trip').val();
+                                scope.enDate = $('#report-enddatepicker-trip').val();
+                                window_url = 'https://' + host + '/app/TripDetailReport?startDate=' + scope.stDate + '&endDate=' + scope.enDate + '&id=' + scope.accid;
+                                window.open(window_url, '_blank');
+                                refreshModal();
+                            }
+
+                            scope.closeModal = function(){
+                                refreshModal();
+                            }
+
+                            element.on('shown.bs.modal', function () {
+                                scope.$apply(function () {
+                                    scope.model.visible = true;
+                                });
+                            });
+
+                            element.on('hidden.bs.modal', function () {
+                                scope.$apply(function () {
+                                    scope.model.visible = false;
+                                });
+                            });
+
+                        },
+                        template: '<div class="modal fade driver-dashboard-monthrecord show in" tabindex="-1" role="dialog" aria-labelledby="driver-dashboard-monthrecord" id="driver-dashboard-monthrecord"> <div class="fade modal-backdrop"></div><div class="modal-dialog modal-lg modal-dialog-centered"> <div class="modal-content rounded-0"> <button type="button" class="close popup-close-btn" data-dismiss="modal" aria-label="Close" ng-click="closeModal()"> <span aria-hidden="true">×</span> </button> <div class="modal-body"> <h4>Trip Detail Report</h4> <div class="modal-divider"></div><form name="signup" class="form"> <div class="form-row"> <div class="form-group-theme row-inline"> <label for="startDate:" class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-form-label form-lable startDate">Start Date: <span class="tagquestion1" data-toggle="tooltip" data-placement="top" data-html="true" data-original-title="<b>Please select start date</b>"> <i class="fa fa-question"></i> </span> </label> <div class="col-xl-8 col-lg-8 col-md-8 col-sm-8 datepickerinput"> <div class="input-group"> <input id="report-startdatepicker-trip" class="form-control rounded-0 reimbdatepicker" placeholder="Select Start Date" ng-model="selectedstartDate" autocomplete="off"> <div class="input-group-prepend"> <span class="input-group-text"> <i class="fas fa-calendar-alt"></i> </span> </div></div></div></div><div class="form-group-theme row-inline"> <label for="endDate:" class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-form-label form-lable endDate">End Date: <span class="tagquestion1" data-toggle="tooltip" data-placement="top" data-html="true" data-original-title="<b>Please select end date</b>"> <i class="fa fa-question"></i> </span> </label> <div class="col-xl-8 col-lg-8 col-md-8 col-sm-8 datepickerinput"> <div class="input-group"> <input id="report-enddatepicker-trip" class="form-control rounded-0 reimbdatepicker" placeholder="Select End Date" ng-model="selectedendDate" autocomplete="off"> <div class="input-group-prepend"> <span class="input-group-text"> <i class="fas fa-calendar-alt"></i> </span> </div></div></div></div></div></form> </div><div class="modal-footer"> <div class="col-md-6" style="padding: 8px;"> <button id="reportDownloadTripBtn" class="btn btn-primary float-right mr-12" ng-click="downloadTripDetail()" disabled>Download <i class="fa fa-download"></i> </button> </div></div></div></div></div>'
+                    };
+            }]);
 
             // Jira Ticket EMC - 342
 
@@ -1986,6 +2093,7 @@
             $scope.editMonthlyTaxReportModel = new EditMonthlyTaxReportModel();
             $scope.editTimeCustomReportModel = new EditTimeCustomReportModel();
             $scope.editNetchexReportModel = new EditNetchexReportModel();
+            $scope.editTripDetailReportModel = new EditTripDetailReportModel();
             // $scope.editTripReportModel = new EditTripReportModel();
             $scope.editMonthlyNetchexReportModel = new EditMonthlyNetchexReportModel();
             $scope.editPartTimeReportModel = new EditPartTimeReportModel();
@@ -2158,6 +2266,11 @@
                                 <a ng-click="editTimeReportModel.open()"> Job Costing Summary Report</a>
                             </p>
                         </div>
+                        <div ng-if="accid === ERMIAcc">
+                            <p>
+                                <a ng-click="editTripDetailReportModel.open()">Trip Detail Report</a>
+                            </p>
+                        </div>
                         <div ng-if="accid === plMAcc">
                             <p>
                                 <a ng-click="editTimeCustomReportModel.open()">Bi-Weekly Reimbursement Report</a>
@@ -2225,6 +2338,7 @@
             </div>
             <edit-lock-Date model="editDateModel"></edit-lock-Date>
             <edit-time-attendance-Report model="editTimeReportModel"></edit-time-attendance-Report>
+            <edit-trip-detail-Report model="editTripDetailReportModel"></edit-trip-detail-Report>
             <edit-time-summary-Report model="editTimeReportSummaryModel"></edit-time-summary-Report>
             <edit-monthly-tax-Report model="editMonthlyTaxReportModel"></edit-monthly-tax-Report>
             <edit-time-custom-Report model="editTimeCustomReportModel"></edit-time-custom-Report>

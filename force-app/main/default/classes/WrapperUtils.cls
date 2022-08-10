@@ -2141,6 +2141,13 @@ public with sharing class WrapperUtils
     }
     public static String readFromFileInchunk(String attachmentBody, String attachmentName, String attachmentId,String did,String accid,String contactattachementid)
     {
+        System.debug('**attachmentBody*'+attachmentBody);
+        System.debug('**attachmentName*'+attachmentName);
+        System.debug('**attachmentId*'+attachmentId);
+        System.debug('**did*'+did);
+        System.debug('**accid*'+accid);
+        System.debug('**contactattachementid*'+contactattachementid);
+
         if(attachmentBody != null) {
             Attachment insuranceAttachment = getAttachment(attachmentId);
             String newBody = '';
@@ -2615,7 +2622,7 @@ public with sharing class WrapperUtils
                                                             EmployeeReimbursement__r.month__c,EmployeeReimbursement__r.Total_Pending__c,Stay_Time__c,
                                                             EmployeeReimbursement__r.Total_Mileage__c,EmployeeReimbursement__r.Contact_Id__c,Driving_Time__c,Total_Time__c,
                                                             CreatedDate,Rejected__c,Origin_Name__c,Tracing_Style__c,StartTime__c,EndTime__c,Mileage_Lock_Date__c,
-                                                            Day_Of_Week__c,Destination_Name__c,EmployeeReimbursement__r.Contact_Id__r.External_Email__c,
+                                                            Day_Of_Week__c,Destination_Name__c,EmployeeReimbursement__r.Contact_Id__r.External_Email__c,Variable_Rate__c,
                                                             Maintenance_and_Tires__c,Fuel_price__c,EmployeeReimbursement__r.Total_Variable_Rate__c,ConvertedStartTime__c,ConvertedEndTime__c, 
                                                             EmployeeReimbursement__r.Total_Rejected__c,Notes__c,EmployeeReimbursement__r.Mileage_Lock_Date__c,Activity__c
                                                     FROM Employee_Mileage__c 
