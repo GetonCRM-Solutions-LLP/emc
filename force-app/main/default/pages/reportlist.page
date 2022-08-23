@@ -953,7 +953,7 @@
 
                                 scope.downloadTripDetail = function () {
                                     $('#spinner').show();
-                                    $('#custom-loading').text("Please wait while generating report !");
+                                    $('#custom-loading').text("The report is being generated now. please wait just a moment.");
                                     scope.stDate = $('#report-startdatepicker-trip').val();
                                     scope.enDate = $('#report-enddatepicker-trip').val();
                                     scope.fileExName = "Trip Detail Report";

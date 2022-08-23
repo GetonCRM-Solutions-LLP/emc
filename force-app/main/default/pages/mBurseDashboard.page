@@ -122,10 +122,10 @@
                 });
                 document.querySelector('c-m-burse-plan-info').addEventListener('sent', (e) => {
                     if(e.detail.contactEmail != undefined && e.detail.mobilePhone != undefined){
-                        toastr.success("The email was sent to "+ e.detail.contactEmail + " as well as a text message to " + e.detail.mobilePhone +". Please check your email and text message to get started.") //  + " as well as a text message to " + contactPhone  Please check your email and text message to get started
+                        toastr.success("Please check your email and text message to get started. We sent the links to "+ e.detail.contactEmail + " and " + e.detail.mobilePhone +".") //  + " as well as a text message to " + contactPhone  Please check your email and text message to get started
                     }else{
                         if(e.detail.contactEmail != undefined){
-                            toastr.success("The email was sent to "+ e.detail.contactEmail +". Please check your email to get started.")
+                            toastr.success("Please check your email to get started. We sent the links to "+ e.detail.contactEmail +".")
                         }
                     }
                 });
