@@ -1,24 +1,24 @@
 /****************************************************************************************************
- * Create By : Dhanraj Khatri
- * Create Date : 06/07//2022
- * Description :  Test Class for Coverage Of All Related API Classes
-            
- * Modification Log:
- *  -------------------------------------------------------------------------------------------------
- *  * Developer                         Date                   Description
- *  *------------------------------------------------------------------------------------------------
- *  *   -                                -                         -
+* Create By : Dhanraj Khatri
+* Create Date : 06/07//2022
+* Description :  Test Class for Coverage Of All Related API Classes
+
+* Modification Log:
+*  -------------------------------------------------------------------------------------------------
+*  * Developer                         Date                   Description
+*  *------------------------------------------------------------------------------------------------
+*  *   -                                -                         -
 *****************************************************************************************************/
 
 @isTest
 public class TrueDialogCalloutTest {
-
+    
     /** 
 * ********************************************************
 * test method for Sending Message API callout
 * ********************************************************
 */
-
+    
     @isTest
     public static void testSendMessageAPICallout(){
         
@@ -31,7 +31,7 @@ public class TrueDialogCalloutTest {
         
         Account acc = new Account();     
         List<Contact> conList = new List<Contact>();
-
+        
         UserRole userRole = TestDataFactory.getUserRole();
         Profile profileObj = TestDataFactory.getUserProfile();
         User admin = TestDataFactory.getSystemAdminUser(userRole.Id);
@@ -48,24 +48,24 @@ public class TrueDialogCalloutTest {
         message.Message__c = 'test contact id';
         message.Contacts__c = conList[0].id;
         insert message;
-
+        
         List<Id> idList = new List<Id>();
         idList.add(conList[0].id);
-            
+        
         Test.setMock(HttpCalloutMock.class, new TrueDialogMockCallout());   
         Test.startTest();
         TrueDialogSendMessageAPI.getAllMessageByContact(conList[0].id);
         TrueDialogSendMessageAPI.sendMessageToContact(conList[0].id,'Hello');
         TrueDialogSendMessageAPI.getContactPicture(conList[0].id);
         Test.stopTest();
-
+        
     }
-
-        /** 
-    * ********************************************************
-    * test method for PUT Contact API callout
-    * ********************************************************
-    */
+    
+    /** 
+* ********************************************************
+* test method for PUT Contact API callout
+* ********************************************************
+*/
     @isTest
     public static void testContactPutAPICallout(){
         
@@ -81,7 +81,7 @@ public class TrueDialogCalloutTest {
         
         Account acc = new Account();     
         List<Contact> conList = new List<Contact>();
-
+        
         UserRole userRole = TestDataFactory.getUserRole();
         Profile profileObj = TestDataFactory.getUserProfile();
         User admin = TestDataFactory.getSystemAdminUser(userRole.Id);
@@ -107,22 +107,22 @@ public class TrueDialogCalloutTest {
         c.TrueDialog_Contact_Id__c = '111111';
         insert c;
         
-                
+        
         Set<Id> lstId = new Set<Id>();
         lstId.add(c.id);
-
+        
         TrueDialogContactAPI tdContactApi = new TrueDialogContactAPI(lstId);
         Database.executeBatch(tdContactApi,1);
         
         Test.stopTest();
     }
-
-
-        /** 
-    * ********************************************************
-    * test method for POST Contact API callout
-    * ********************************************************
-    */
+    
+    
+    /** 
+* ********************************************************
+* test method for POST Contact API callout
+* ********************************************************
+*/
     @isTest
     public static void testContactPostAPICallout(){
         
@@ -135,10 +135,10 @@ public class TrueDialogCalloutTest {
         Vehicle_URL_Mapping__c vehicleObj = TestDataFactory.createVehicleData(true,0);
         
         TrueDialog_Keys__c tdKeys = TestDataFactory.createTrueDialog(true);
-
+        
         Account acc = new Account();     
         List<Contact> conList = new List<Contact>();
-
+        
         UserRole userRole = TestDataFactory.getUserRole();
         Profile profileObj = TestDataFactory.getUserProfile();
         User admin = TestDataFactory.getSystemAdminUser(userRole.Id);
@@ -154,7 +154,7 @@ public class TrueDialogCalloutTest {
         Account a = TestDataFactory.createAccount(false, 'demo', false);
         a.True_Dialog__c = true;
         insert a;
-
+        
         Contact c  = TestDataFactory.createCICDContact(false, a.id);
         
         c.email = 'test@gmail.com';
@@ -165,12 +165,36 @@ public class TrueDialogCalloutTest {
         
         insert c;
         
-                
+        
         Set<Id> lstId = new Set<Id>();
         lstId.add(c.id);
-
-        TrueDialogContactAPI tdContactApi = new TrueDialogContactAPI(lstId);
-        Database.executeBatch(tdContactApi,1);
+        
+          TrueDialogContactAPI tdContactApi = new TrueDialogContactAPI(lstId);
+          Database.executeBatch(tdContactApi,1);
+        //  
+        
+        
+        
+        PageReference pageRef = Page.TrueDialog;
+        Test.setCurrentPage(pageRef);// Add your VF page Name here
+        ApexPages.currentPage().getParameters().put('id', String.valueOf(a.Id));
+        ApexPages.StandardController sc = new ApexPages.StandardController(a);
+        
+        TrueDIalogVFPageController obj = new TrueDIalogVFPageController(sc);
+        System.debug('Adddddd'+obj);
+        
+        
+        
+        obj.getPageRecord();
+        obj.onSubmit();
+        
+        
+        
+        
         Test.stopTest();
     }
+    
+    
+    
+    
 }

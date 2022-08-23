@@ -97,7 +97,7 @@ export default class DriverProfile extends LightningElement {
             this.formattedReim = this.formatNumber(this.contactDetails.annualReim);
             this.renderText = (!this.contactDetails.biWeekContact) ? 'month' : 'bi-weekly'
             if (this.contactDetails.complianceMileage) {
-                convertedMile = this.formatNumber(this.contactDetails.complianceMileage);
+                convertedMile = this.contactDetails.complianceMileage; // this.formatNumber(this.contactDetails.complianceMileage)
                 this.complianceMileage = convertedMile;
                 // console.log("this.complianceMileage", this.complianceMileage);
             }

@@ -18,6 +18,16 @@
                 border-top: none !important;
             }
 
+            .loading-text{
+                position: fixed;
+                top: 55%;
+                left: 40%;
+                right: 40%;
+                z-index: 1000000;
+                text-align: center;
+                color: #fff;
+            }
+
             .font-back-div{
                 font-family: 'Proxima Nova Bold';
                 color: #78bc42;
@@ -112,7 +122,7 @@
                 width: 100%;
                 height: 100%;
                 background: #000;
-                opacity: 0.4;
+                opacity: 0.8;
                 top: 0px;
                 left: 0px;
                 position: fixed;
@@ -300,6 +310,8 @@
         </style>
         <script type="text/javascript">
             var app = angular.module('reportModule', ['ui.bootstrap', 'angularUtils.directives.dirPagination', 'ngSanitize', 'ui.select']);
+
+
             var EditLockDateModel = function () {
                 this.visible = false;
             };
@@ -841,79 +853,161 @@
             }
 
             app.directive('editTripDetailReport', ['$filter', '$http',
-                function ($filter, $http) {
-                    return {
-                        restrict: 'E',
-                        scope: {
-                            model: '='
-                        },
-                        link: function (scope, element, attributes) {
-                            scope.$watch('model.visible', function (newValue) {
-                                var modalElement = element.find('.modal');
-                                modalElement.modal(newValue ? 'show' : 'hide');
-                                // if (newValue == true) {
+                    function ($filter, $http) {
+                        return {
+                            restrict: 'E',
+                            scope: {
+                                model: '='
+                            },
+                            link: function (scope, element, attributes) {
+                                scope.$watch('model.visible', function (newValue) {
+                                    var modalElement = element.find('.modal');
+                                    modalElement.modal(newValue ? 'show' : 'hide');
+                                    // if (newValue == true) {
 
-                                // }
-                            });
-
-                            var url_string = $(location).attr("href");
-                            var url = new URL(url_string);
-                            var host = url.host;
-                            scope.accid = url.searchParams.get("accid");
-
-                            function refreshModal() {
-                                location.reload();
-                            }
-
-                            $('body').on('keydown', '#report-startdatepicker-trip', function(e){
-                                return false;
-                            })
-
-                            $('body').on('keydown', '#report-enddatepicker-trip', function(e){
-                                return false;
-                            })
-
-                            $('#report-enddatepicker-trip, #report-startdatepicker-trip').on('change', function () {
-                                var stdateTripVal = $('#report-startdatepicker-trip').val();
-                                var endateTripVal = $('#report-enddatepicker-trip').val();
-                                var reportBtn = stdateTripVal.length == 0 || endateTripVal.length == 0;
-                                if (reportBtn) {
-                                    $('#reportDownloadTripBtn').prop('disabled', true);
-                                }
-                                else {
-                                    $('#reportDownloadTripBtn').prop('disabled', false);
-                                }
-                            });
-
-                            scope.downloadTripDetail = function () {
-                                var window_url;
-                                scope.stDate = $('#report-startdatepicker-trip').val();
-                                scope.enDate = $('#report-enddatepicker-trip').val();
-                                window_url = 'https://' + host + '/app/TripDetailReport?startDate=' + scope.stDate + '&endDate=' + scope.enDate + '&id=' + scope.accid;
-                                window.open(window_url, '_blank');
-                                refreshModal();
-                            }
-
-                            scope.closeModal = function(){
-                                refreshModal();
-                            }
-
-                            element.on('shown.bs.modal', function () {
-                                scope.$apply(function () {
-                                    scope.model.visible = true;
+                                    // }
                                 });
-                            });
 
-                            element.on('hidden.bs.modal', function () {
-                                scope.$apply(function () {
-                                    scope.model.visible = false;
+                                var url_string = $(location).attr("href");
+                                var url = new URL(url_string);
+                                var host = url.host;
+                                scope.accid = url.searchParams.get("accid");
+                                scope.id = url.searchParams.get("id");
+
+                                function refreshModal() {
+                                    location.reload();
+                                }
+
+                                $('body').on('keydown', '#report-startdatepicker-trip', function (e) {
+                                    return false;
+                                })
+
+                                $('body').on('keydown', '#report-enddatepicker-trip', function (e) {
+                                    return false;
+                                })
+
+                                $('#report-enddatepicker-trip, #report-startdatepicker-trip').on('change', function () {
+                                    var stdateTripVal = $('#report-startdatepicker-trip').val();
+                                    var endateTripVal = $('#report-enddatepicker-trip').val();
+                                    var reportBtn = stdateTripVal.length == 0 || endateTripVal.length == 0;
+                                    if (reportBtn) {
+                                        $('#reportDownloadTripBtn').prop('disabled', true);
+                                    }
+                                    else {
+                                        $('#reportDownloadTripBtn').prop('disabled', false);
+                                    }
                                 });
-                            });
 
-                        },
-                        template: '<div class="modal fade driver-dashboard-monthrecord show in" tabindex="-1" role="dialog" aria-labelledby="driver-dashboard-monthrecord" id="driver-dashboard-monthrecord"> <div class="fade modal-backdrop"></div><div class="modal-dialog modal-lg modal-dialog-centered"> <div class="modal-content rounded-0"> <button type="button" class="close popup-close-btn" data-dismiss="modal" aria-label="Close" ng-click="closeModal()"> <span aria-hidden="true">×</span> </button> <div class="modal-body"> <h4>Trip Detail Report</h4> <div class="modal-divider"></div><form name="signup" class="form"> <div class="form-row"> <div class="form-group-theme row-inline"> <label for="startDate:" class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-form-label form-lable startDate">Start Date: <span class="tagquestion1" data-toggle="tooltip" data-placement="top" data-html="true" data-original-title="<b>Please select start date</b>"> <i class="fa fa-question"></i> </span> </label> <div class="col-xl-8 col-lg-8 col-md-8 col-sm-8 datepickerinput"> <div class="input-group"> <input id="report-startdatepicker-trip" class="form-control rounded-0 reimbdatepicker" placeholder="Select Start Date" ng-model="selectedstartDate" autocomplete="off"> <div class="input-group-prepend"> <span class="input-group-text"> <i class="fas fa-calendar-alt"></i> </span> </div></div></div></div><div class="form-group-theme row-inline"> <label for="endDate:" class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-form-label form-lable endDate">End Date: <span class="tagquestion1" data-toggle="tooltip" data-placement="top" data-html="true" data-original-title="<b>Please select end date</b>"> <i class="fa fa-question"></i> </span> </label> <div class="col-xl-8 col-lg-8 col-md-8 col-sm-8 datepickerinput"> <div class="input-group"> <input id="report-enddatepicker-trip" class="form-control rounded-0 reimbdatepicker" placeholder="Select End Date" ng-model="selectedendDate" autocomplete="off"> <div class="input-group-prepend"> <span class="input-group-text"> <i class="fas fa-calendar-alt"></i> </span> </div></div></div></div></div></form> </div><div class="modal-footer"> <div class="col-md-6" style="padding: 8px;"> <button id="reportDownloadTripBtn" class="btn btn-primary float-right mr-12" ng-click="downloadTripDetail()" disabled>Download <i class="fa fa-download"></i> </button> </div></div></div></div></div>'
-                    };
-            }]);
+                                scope.downloadToExcel = function (sheetData, excelfile) {
+                                    function datenum(v, date1904) {
+                                        if (date1904) v += 1462;
+                                        var epoch = Date.parse(v);
+                                        return (epoch - new Date(Date.UTC(1899, 11, 30))) / (24 * 60 * 60 * 1000);
+                                    };
+
+                                    function getSheet(sheetData, opts) {
+                                        var ws = {};
+                                        var range = { s: { c: 10000000, r: 10000000 }, e: { c: 0, r: 0 } };
+                                        for (var R = 0; R != sheetData.length; ++R) {
+                                            for (var C = 0; C != sheetData[R].length; ++C) {
+                                                if (range.s.r > R) range.s.r = R;
+                                                if (range.s.c > C) range.s.c = C;
+                                                if (range.e.r < R) range.e.r = R;
+                                                if (range.e.c < C) range.e.c = C;
+                                                var cell = { v: sheetData[R][C] };
+                                                if (cell.v == null) continue;
+                                                var cell_ref = XLSX.utils.encode_cell({ c: C, r: R });
+
+                                                if (typeof cell.v === 'number') cell.t = 'n';
+                                                else if (typeof cell.v === 'boolean') cell.t = 'b';
+                                                else if (cell.v instanceof Date) {
+                                                    cell.t = 'n'; cell.z = XLSX.SSF._table[14];
+                                                    cell.v = datenum(cell.v);
+                                                }
+                                                else cell.t = 's';
+                                                ws[cell_ref] = cell;
+                                            }
+                                        }
+                                        if (range.s.c < 10000000) ws['!ref'] = XLSX.utils.encode_range(range);
+                                        return ws;
+                                    };
+
+                                    function Workbook() {
+                                        if (!(this instanceof Workbook)) return new Workbook();
+                                        this.SheetNames = [];
+                                        this.Sheets = {};
+                                    }
+                                    var wb = new Workbook(), ws = getSheet(sheetData);
+                                    /* add worksheet to workbook */
+                                    wb.SheetNames.push(excelfile);
+                                    wb.Sheets[excelfile] = ws;
+                                    var wbout = XLSX.write(wb, { bookType: 'xlsx', bookSST: true, type: 'binary' });
+                                    function s2ab(s) {
+                                        var buf = new ArrayBuffer(s.length);
+                                        var view = new Uint8Array(buf);
+                                        for (var i = 0; i != s.length; ++i) view[i] = s.charCodeAt(i) & 0xFF;
+                                        return buf;
+                                    }
+                                    saveAs(new Blob([s2ab(wbout)], { type: "application/octet-stream" }), excelfile + '.xlsx');
+                                }
+
+                                scope.downloadTripDetail = function () {
+                                    $('#spinner').show();
+                                    $('#custom-loading').text("The report is being generated now. please wait just a moment.");
+                                    scope.stDate = $('#report-startdatepicker-trip').val();
+                                    scope.enDate = $('#report-enddatepicker-trip').val();
+                                    scope.fileExName = "Trip Detail Report";
+                                    scope.summaryreportfordownload = [];
+                                    Visualforce.remoting.Manager.invokeAction('{!$RemoteAction.ReportListController.TripDetailReport}', scope.stDate, scope.enDate, scope.accid,
+                                    function (result, event) {
+                                            if (event.status && result != null) {
+                                                scope.$apply(function () {
+                                                    scope.listOfReport = JSON.parse(result);
+                                                    scope.summaryreportfordownload.push(["Driver",  "Email", "Date", "Day", "Start Time", "End Time", "Mileage (mi)", "From Location Name", "From Location Address", "To Location Name", "To Location Address", "Notes", "Tracking Method", "From Location Lat", "From Location Long", "To Location Lat", "To Location Long"]);
+                                                    angular.forEach(scope.listOfReport, function (item) {
+                                                        scope.summaryreportfordownload.push([item.driverName, item.driverEmail, item.tripDate, item.tripDay, item.starttime, item.endTime, item.mileage, item.FLocationName, item.FLocationAdd, item.TLocationName, item.TLocationAdd, item.notes, item.trackingMethod, item.FLocationLatitude, item.FLocationLongitude, item.TLocationLatitude, item.TLocationLongitude]);
+                                                    });
+                                                    scope.downloadToExcel(scope.summaryreportfordownload, scope.fileExName);
+                                                   $('#spinner').hide();
+                                                   $('#custom-loading').text("");
+                                                })
+                                               refreshModal();
+                                            }else{
+                                                $('#spinner').hide();
+                                                $('#custom-loading').text("");
+                                                toastr.error("No trip found between "+  scope.stDate + " to " +   scope.stDate);
+                                               setTimeout(()=>{
+                                                    refreshModal();
+                                               }, 2000)
+                                            }
+                                        },
+                                        { escape: false }
+                                    )
+                                    // window_url = 'https://' + host + '/app/TripDetailReport?startDate=' + scope.stDate + '&endDate=' + scope.enDate + '&id=' + scope.accid;
+                                    // window.open(window_url, '_blank');
+                                    //refreshModal();
+                                }
+
+                                scope.closeModal = function () {
+                                    refreshModal();
+                                }
+
+                                element.on('shown.bs.modal', function () {
+                                    scope.$apply(function () {
+                                        scope.model.visible = true;
+                                    });
+                                });
+
+                                element.on('hidden.bs.modal', function () {
+                                    scope.$apply(function () {
+                                        scope.model.visible = false;
+                                    });
+                                });
+
+                            },
+                            template: '<div class="modal fade driver-dashboard-monthrecord show in" tabindex="-1" role="dialog" aria-labelledby="driver-dashboard-monthrecord" id="driver-dashboard-monthrecord"> <div class="fade modal-backdrop"></div><div class="modal-dialog modal-lg modal-dialog-centered"> <div class="modal-content rounded-0"> <button type="button" class="close popup-close-btn" data-dismiss="modal" aria-label="Close" ng-click="closeModal()"> <span aria-hidden="true">×</span> </button> <div class="modal-body"> <h4>Trip Detail Report</h4> <div class="modal-divider"></div><form name="signup" class="form"> <div class="form-row"> <div class="form-group-theme row-inline"> <label for="startDate:" class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-form-label form-lable startDate">Start Date: <span class="tagquestion1" data-toggle="tooltip" data-placement="top" data-html="true" data-original-title="<b>Please select start date</b>"> <i class="fa fa-question"></i> </span> </label> <div class="col-xl-8 col-lg-8 col-md-8 col-sm-8 datepickerinput"> <div class="input-group"> <input id="report-startdatepicker-trip" class="form-control rounded-0 reimbdatepicker" placeholder="Select Start Date" ng-model="selectedstartDate" autocomplete="off"> <div class="input-group-prepend"> <span class="input-group-text"> <i class="fas fa-calendar-alt"></i> </span> </div></div></div></div><div class="form-group-theme row-inline"> <label for="endDate:" class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-form-label form-lable endDate">End Date: <span class="tagquestion1" data-toggle="tooltip" data-placement="top" data-html="true" data-original-title="<b>Please select end date</b>"> <i class="fa fa-question"></i> </span> </label> <div class="col-xl-8 col-lg-8 col-md-8 col-sm-8 datepickerinput"> <div class="input-group"> <input id="report-enddatepicker-trip" class="form-control rounded-0 reimbdatepicker" placeholder="Select End Date" ng-model="selectedendDate" autocomplete="off"> <div class="input-group-prepend"> <span class="input-group-text"> <i class="fas fa-calendar-alt"></i> </span> </div></div></div></div></div></form> </div><div class="modal-footer"><div class="col-md-6" style="padding: 8px;"><button id="reportDownloadTripBtn" class="btn btn-primary float-right mr-12" ng-click="downloadTripDetail()" disabled>Download  <i class="fa fa-download"></i> </button> </div></div></div></div></div>'
+                        };
+                    }]);
 
             // Jira Ticket EMC - 342
 
@@ -2191,6 +2285,7 @@
                     <span class="sr-only">Loading...</span>
                 </div>
             </div>
+            <div class="loading-text" id="custom-loading"></div>
         </div>
         <section class="container-fluid">
             <div class="back-btn my-3">

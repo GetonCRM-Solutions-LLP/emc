@@ -5298,9 +5298,9 @@
                                                 <button type="submit" class="btn btn-primary justify-content-center box__button" ng-show="IsVisiblebtn" ng-click="uploadFile($event)"
                                                     data-toggle="modal" data-target="#adminrosterImportProcess">Upload file</button>
                                             </div>
-                                            <div class="box__uploading w-100 text-center">
+                                            <!-- <div class="box__uploading w-100 text-center">
                                                 <img src="animation.svg" />
-                                            </div>
+                                            </div> -->
                                             <div class="box__success w-100 text-center">Done! </div>
                                             <div class="box__error w-100 text-center">Error!
                                                 <span></span>. Try again!</div>

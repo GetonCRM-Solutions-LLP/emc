@@ -5,6 +5,7 @@ public class ReportListController_Test {
         TriggerConfig__c triggerCustomSetting = TestDataFactory.triggerConfigCustomSetting(true);
         SendEmail__c sendEmailCustomSetting = TestDataFactory.sendEmailCustomSetting(true, 'Send Email For Compliance');
         IRS_Mileage_Rate__c irsRateObj = TestDataFactory.createIRSRate(true,0);
+        TrueDialog_Keys__c tdKeys = TestDataFactory.createTrueDialog(true);
         List<Address__c> objAddress = TestDataFactory.createAddress(true, 10);
         Vehicle_URL_Mapping__c vehicleType = TestDataFactory.createVehicleData(false, 3);
         vehicleType.Name = '2019 Full-Size Sedan';
@@ -15,7 +16,6 @@ public class ReportListController_Test {
         Profile profileObj = TestDataFactory.getUserProfile();
         User admin = TestDataFactory.getSystemAdminUser(uRole.Id);
         User userObj;
-
 
         Account obj_acc;
         List<Contact> obj_admin_contact;

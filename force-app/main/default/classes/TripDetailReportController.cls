@@ -7,7 +7,8 @@
  * @version 1.1   - @Author:  Sanket Goswami - 9 August 2022
  */
 public with sharing class TripDetailReportController {
-    public List<mileageWrapper> mileageWrapperList{get;set;}
+    //public List<mileageWrapper> mileageWrapperList{get;set;}
+    /*public string mileageWrapperJson {get;set;}
     public String xlsHeader{
         get{
             String strHeader = '';
@@ -17,15 +18,12 @@ public with sharing class TripDetailReportController {
     
         }
     
-    }
-    public TripDetailReportController() {
-        drivingTime();
-    }
-    public void drivingTime(){
-        String Id = ApexPages.currentPage().getParameters().get('id');
-        String startDate = ApexPages.currentPage().getParameters().get('startDate');
-        String endDate = ApexPages.currentPage().getParameters().get('endDate');
-        mileageWrapperList = new List<mileageWrapper>();
+    }*/
+    public TripDetailReportController() {}
+    
+    public static string drivingTime(String startDate ,String endDate ,String accId ){
+        string mileageWrapperJson;        
+        List<mileageWrapper> mileageWrapperList = new List<mileageWrapper>();
         for(Employee_Mileage__c objMileages : [SELECT id,EmployeeReimbursement__r.Contact_Id_Name__c,
                                                         Contact_Email_Id__c,Trip_Date__c,Day_Of_Week__c,
                                                         ConvertedStartTime__c,ConvertedEndTime__c,Mileage__c,
@@ -34,7 +32,7 @@ public with sharing class TripDetailReportController {
                                                         From_Location__Latitude__s,From_Location__Longitude__s, 
                                                         To_Location__Latitude__s, To_Location__Longitude__s
                                                     FROM Employee_Mileage__c 
-                                                    WHERE EmployeeReimbursement__r.Contact_Id__r.AccountId  =: Id
+                                                    WHERE EmployeeReimbursement__r.Contact_Id__r.AccountId  =: accId 
                                                     AND Trip_Date__c >= : Date.valueOf(startDate)
                                                     AND Trip_Date__c <= : Date.valueOf(endDate)
                                                     LIMIT 49999
@@ -69,6 +67,10 @@ public with sharing class TripDetailReportController {
                                     objMileageWrap.trackingMethod = objMileages.Tracing_Style__c;
                                     mileageWrapperList.add(objMileageWrap);
         }
+        if(mileageWrapperList.size () > 0 ){
+            mileageWrapperJson = Json.serialize(mileageWrapperList);
+        }
+        return      mileageWrapperJson ; 
     }
     public class mileageWrapper{
         public string driverName { get; set; }
