@@ -233,7 +233,11 @@ public with sharing class ReportListController {
         ChangeTripStatusByAdmin tripBtc = new ChangeTripStatusByAdmin(accId,lastMonth);
         Database.executeBatch(tripBtc,10);
     }
-    
+    @RemoteAction
+    public static String TripDetailReport(String tripStartDate,String tripEndDate,String id) {
+        String response = TripDetailReportController.drivingTime(tripStartDate,tripEndDate,id);
+        return response;
+    }
     @RemoteAction
     public static string ErmiDriverList (String startDate,String endDate,String accountId) {
         List<reimbursementWrapper> reimWrapperList = new List<reimbursementWrapper>();

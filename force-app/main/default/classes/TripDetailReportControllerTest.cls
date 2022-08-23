@@ -4,9 +4,7 @@ public class TripDetailReportControllerTest {
     static void utilMethod1() {
         TriggerConfig__c triggerCustomSetting = TestDataFactory.triggerConfigCustomSetting(true);
         SendEmail__c sendEmailCustomSetting1 = TestDataFactory.sendEmailCustomSetting(true,'Send Email For Compliance');
-        TrueDialog_Keys__c tdKeys = TestDataFactory.createTrueDialog(true);
-       // SendEmail__c sendEmailCustomSetting2 = TestDataFactory.sendEmailCustomSetting(true,'ConfirmTripTimeERMIController');
-        //SendEmail__c sendEmailCustomSetting3 = TestDataFactory.sendEmailCustomSetting(true,'ConfirmTripSyncErmi');
+        TrueDialog_Keys__c tdKeys = TestDataFactory.createTrueDialog(true);       
         Vehicle_URL_Mapping__c vehicleObj = TestDataFactory.createVehicleData(true,0);
         IRS_Mileage_Rate__c irsRateObj = TestDataFactory.createIRSRate(true,0);
         
@@ -38,12 +36,10 @@ public class TripDetailReportControllerTest {
         List<Attachment> attachments = [select id, name from Attachment where parent.id =: conList[0].id];
         
         Test.startTest();
-        System.runAs(userObj) {
-            Test.setCurrentPage(Page.TripDetailReport);
-            String Id = ApexPages.currentPage().getParameters().put('id',acc.Id);
-            String startDate = ApexPages.currentPage().getParameters().put('startDate',string.valueOf(system.today().addDays(-2)));
-            String endDate = ApexPages.currentPage().getParameters().put('endDate',string.valueOf(system.today().addDays(3)));
-            TripDetailReportController objClass = new TripDetailReportController();
+        System.runAs(userObj) {           
+            String startDate = string.valueOf(system.today().addDays(-2));
+            String endDate = string.valueOf(system.today().addDays(3));
+            TripDetailReportController.drivingTime(startDate,endDate,acc.Id);
         Test.stopTest();
         }
     }

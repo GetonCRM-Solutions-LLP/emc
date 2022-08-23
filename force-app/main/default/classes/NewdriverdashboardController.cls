@@ -58,34 +58,36 @@ global class NewdriverdashboardController {
         mileageMap = new Map<string,string>();
         ContactDetails contactObj = new ContactDetails();
         String lastMonth = Utils.fetchMonths(1, 0)[0];
+        boolean checkReim = false;
+        String contactFixedAmount ;
         for(Employee_Reimbursement__c reim : [SELECT id,Total_Approved__c,Total_Monthly_Reimbursement__c,Variable_Rate__c,
                                                     Year__c,Contact_Id__r.MailingCity,Contact_Id__r.MailingState, 
                                                     Contact_Id__r.MailingPostalCode, Contact_Id__r.Fixed_Amount__c, 
                                                     Contact_Id__r.Driving_States__c, Contact_Id__r.Vehicle_Type__c,
                                                     Contact_Id__r.Car_Image__c, Contact_Id__r.Annual_Total_Approved_Mileage__c,
-                                                    Contact_Id__r.Total_reimbursment__c,Contact_Id__r.Account.name,
+                                                    Contact_Id__r.Total_reimbursment__c,Contact_Id__r.Account.name,YearMonth__c,
                                                     Contact_Id__r.compliancestatus__c,Contact_Id__r.Account.Logo_Document_Id__c,
-                                                    Contact_Id__r.Name,Contact_Id__r.Insurance_Attachment_Id__c,Month__c,
+                                                    Contact_Id__r.Name,Contact_Id__r.Insurance_Attachment_Id__c,Month__c,Fixed_Amount__c,
                                                     Contact_Id__r.Driver_Type__c,Contact_Id__r.Plan_Years__c,Contact_Id__r.Insurance_Plan__c,
                                                     Contact_Id__r.Compliance_Mileage__c,Contact_Id__r.Vehicle_Value__c,Contact_Id__r.Biweek_Reimbursement__c,
                                                     Contact_Id__r.Insurance_Upload_Date__c,Contact_Id__r.Notification_Message__c,Contact_Id__r.Insurance__c,
                                                     Contact_Id__r.Vehicle_Age__c,Contact_Id__r.Vehicle_Value_Check__c,Contact_Id__r.Mileage_Meet__c
                                                 FROM Employee_Reimbursement__c 
                                                  WHERE Contact_Id__c =: contactid
-                                                 AND Year__c =: System.today().year()]){
+                                                 AND Year__c =: System.today().year()
+                                                 order by YearMonth__c desc limit 2]){
              String m = reim.Month__c;
              List<String> monthList = m.split('-');
              reimMap.put(monthNameMap.get(Integer.valueof(monthList[0])), String.valueof(reim.Total_Monthly_Reimbursement__c+'-'+reim.Total_Monthly_Reimbursement__c));
              mileageMap.put(monthNameMap.get(Integer.valueof(monthList[0])), String.valueof(reim.Total_Approved__c+'-'+reim.Total_Approved__c));
-             
+             contactFixedAmount = String.valueof(reim.Contact_Id__r.Fixed_Amount__c);
              contactObj.accountName = reim.Contact_Id__r.Account.name;
              contactObj.accountLogo = reim.Contact_Id__r.Account.Logo_Document_Id__c;
              contactObj.contactName = reim.Contact_Id__r.Name;
              contactObj.zipCode = reim.Contact_Id__r.MailingPostalCode;
              contactObj.city = reim.Contact_Id__r.MailingCity;
              contactObj.state = reim.Contact_Id__r.MailingState;
-             contactObj.vehicalType = reim.Contact_Id__r.Vehicle_Type__c;
-             contactObj.fixedAmount = String.valueof(reim.Contact_Id__r.Fixed_Amount__c);
+             contactObj.vehicalType = reim.Contact_Id__r.Vehicle_Type__c;             
              contactObj.compliancestatus = reim.Contact_Id__r.compliancestatus__c;
              contactObj.carImage = reim.Contact_Id__r.Car_Image__c;
              contactObj.insuranceAttchId = reim.Contact_Id__r.Insurance_Attachment_Id__c;
@@ -93,7 +95,7 @@ global class NewdriverdashboardController {
              contactObj.annualReim = String.valueof(reim.Contact_Id__r.Total_reimbursment__c);
              contactObj.annualMileages = String.valueof(reim.Contact_Id__r.Annual_Total_Approved_Mileage__c);
              contactObj.planInsurance = String.valueof(reim.Contact_Id__r.Insurance_Plan__c);
-             contactObj.complianceMileage = String.valueof(reim.Contact_Id__r.Compliance_Mileage__c);
+             contactObj.complianceMileage = String.valueof((reim.Contact_Id__r.Compliance_Mileage__c).setScale(2));
              contactObj.planYears = String.valueof(reim.Contact_Id__r.Plan_Years__c);
              contactObj.vehicleValue = String.valueof(reim.Contact_Id__r.Vehicle_Value__c);
              contactObj.insuranceDate = reim.Contact_Id__r.Insurance_Upload_Date__c;
@@ -105,7 +107,12 @@ global class NewdriverdashboardController {
              contactObj.insurance = reim.Contact_Id__r.Insurance__c;
              contactObj.biWeekContact = reim.Contact_Id__r.Biweek_Reimbursement__c != null ? reim.Contact_Id__r.Biweek_Reimbursement__c : false;
              if(reim.Month__c != null && reim.Month__c == lastMonth){
+                 contactObj.fixedAmount = String.valueof(reim.Fixed_Amount__c);
                  contactObj.variableRate = String.valueof(reim.Variable_Rate__c);
+             } else if(checkReim == false){
+                 contactObj.fixedAmount = String.valueof(reim.Fixed_Amount__c);
+                 contactObj.variableRate = String.valueof(reim.Variable_Rate__c);
+                 checkReim = true;
              }
              
         }
@@ -113,6 +120,9 @@ global class NewdriverdashboardController {
             for(Bi_Weekly_Reimbursement__c  biWeek : [SELECT id,Half_Fixed_Amount__c FROM Bi_Weekly_Reimbursement__c where End_Date__c != null and End_Date__c <= TODAY  and Contact__c  =: contactid order by End_Date__c desc limit 1]){
                 contactObj.fixedAmount = String.valueof(biWeek.Half_Fixed_Amount__c );
             }
+        }
+        if(contactObj.fixedAmount == null){
+            contactObj.fixedAmount = contactFixedAmount;
         }
         gasPrice = WrapperUtils.getDriverGasPrice(contactObj.state,contactObj.city);
         return JSON.serialize(contactObj).unescapeHtml4();      
