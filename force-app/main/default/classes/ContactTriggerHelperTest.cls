@@ -45,11 +45,14 @@ public class ContactTriggerHelperTest {
             con1List[0].Deactivated_Date__c = system.today();
             con1List[0].Vehicle_Type__c = vehicleType.Name;
             con1List[0].Vehicle_Value__c = vehValue[0].Value__c;
+            con1List[0].Activation_Date__c = system.today();
+            
             
             Insert con1List[0];
             
             con1List[0].compliancestatus__c = 'Yes';
-            con1List[0].Deactivated_Date__c =null;           
+            con1List[0].Deactivated_Date__c =null;   
+            con1List[0].Activation_Date__c = system.today().adddays(-20);        
             update con1List[0];
             
             
@@ -58,6 +61,7 @@ public class ContactTriggerHelperTest {
             conList[0].Deactivated_Date__c = system.today();
             conList[0].Vehicle_Value__c = vehValue[0].Value__c;
             conList[0].Vehicle_Type__c = vehicleType.Name;
+            conList[0].Activation_Date__c = system.today().adddays(-9);   
             Insert conList[0];
             conIdList.add(conList[0].Id);
             
@@ -110,12 +114,13 @@ public class ContactTriggerHelperTest {
         }
         Test.stopTest();
     }
-        /*@isTest
+     /*   @isTest
     static void testmethod4() {
     
     TriggerConfig__c triggerCustomSetting = TestDataFactory.triggerConfigCustomSetting(true);
     SendEmail__c sendEmailCustomSetting = TestDataFactory.sendEmailCustomSetting(true, 'Send Email For Compliance');
     IRS_Mileage_Rate__c irsRateObj = TestDataFactory.createIRSRate(true,0);
+    TrueDialog_Keys__c tdKeys = TestDataFactory.createTrueDialog(true);
     List<Address__c> objAddress = TestDataFactory.createAddress(true, 10);
     Vehicle_URL_Mapping__c vehicleType = TestDataFactory.createVehicleData(true, 3);
     vehicleType.Name = '2019 Full-Size Sedan';
