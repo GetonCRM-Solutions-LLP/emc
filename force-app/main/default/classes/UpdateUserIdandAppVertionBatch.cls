@@ -28,9 +28,9 @@ Public class UpdateUserIdandAppVertionBatch implements Database.Batchable<sObjec
                                             External_Email__c,
                                             Deactivated_Date__c 
                                         FROM Contact 
-                                        WHERE AccountId = '0010Z00001ygUen'//IN: accountIds 
+                                        WHERE AccountId IN: accountIds 
                                             AND  (Role__c != 'Manager' 
-                                            OR Role__c != 'Admin') LIMIT 1])
+                                            OR Role__c != 'Admin') ])
         {
             contactMap.put(currentContact.External_Email__c.toLowerCase(),currentContact);
         }
