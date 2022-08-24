@@ -483,14 +483,30 @@ global without sharing class RosterController
     }
     
     @RemoteAction
-    public static String readFromFile(String file,String accountId, String adminId) {
+    public static Id readFromFile(String file,String accountId, String adminId) {
         system.debug('file==' + file);
         system.debug('accountId==' + accountId);
-        
+        Id batchId;
         ImportContactdatafromCSVController batch = new ImportContactdatafromCSVController(file, accountId, adminId);
-        Database.executeBatch(batch,100);
+       
+        batchid = Database.executebatch(batch,100);
         
-        return 'sucess';
+        return batchid;
+    }
+
+    @RemoteAction
+    public static PollarResponse CheckStatus(id batchId) {
+        AsyncApexJob aaj = [SELECT Id, Status, JobItemsProcessed, TotalJobItems, NumberOfErrors
+                    FROM AsyncApexJob WHERE ID =: batchid];
+        PollarResponse res = new PollarResponse();
+        res.enablePollar = true;
+        if(aaj != null) {
+            if(aaj.status == 'Completed' || aaj.status == 'Failed'){
+                res.enablePollar = false;
+            }             
+            res.message = aaj.status;
+        }
+        return res;
     }
     
     //AI-000433
@@ -946,5 +962,9 @@ global without sharing class RosterController
         public String ContactName {get;set;} 
         //public String Contact {get;set;} 
         //public String Name {get;set;}
+    }
+    public class PollarResponse {
+        public Boolean enablePollar;
+        public String Message;
     }
 }
