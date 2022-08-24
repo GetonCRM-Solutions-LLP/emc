@@ -4182,6 +4182,14 @@
                     <footer class="slds-modal__footer">
                         <div class="slds-clearfix">
                             <div class="slds-float_right slds-m-right_small">
+                                <div class="file-field">
+                                    <div class="slds-btn slds-btn-primary slds-btn-sm waves-effect bc-blue waves-light mleft-0" id="imageFileBtn">
+                                        <i class="fa fa-paperclip slds-p-right_xx-small"></i>
+                                        <span>Attachment</span>
+                                        <input type="file" class="image-file" multiple="false" accept="image/png, image/jpeg" onchange="angular.element(this).scope().attachmentImage(this)"
+                                        />
+                                    </div>
+                                </div>
                                 <button id="sendMessageBtn" ng-class="{'disable-div' : isSendActive === true}" class="slds-btn slds-btn-primary slds-btn-sm waves-effect bc-mburse-green waves-light mleft-0" ng-click="sendMessageToAll()">
                                     <i class="fa-solid fa-paper-plane slds-p-right_x-small"></i>Send Message
                                 </button>

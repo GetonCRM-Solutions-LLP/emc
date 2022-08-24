@@ -6,6 +6,9 @@
     box-shadow: none !important;
     position: absolute;
 }
+.position-relative{
+    position: relative !important;
+}
 .slds-popover__header{
     -webkit-box-pack: justify;
     justify-content: space-between;
@@ -92,9 +95,14 @@
     font-size: 2rem;
     position: relative;
 }
+
 .c_popover{
     left: 55px;
     top: -8px;
+}
+
+.p_all{
+    padding: 12px 15px !important;
 }
 
 h4{ 
