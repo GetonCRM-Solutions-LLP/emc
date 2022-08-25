@@ -769,11 +769,8 @@
             }
 
             .progress {
-                position: fixed;
-                top: 56%;
-                left: 21%;
                 z-index: 1000000;
-                width: 57%;
+                width: 100%;
             }
 
             .box.has-advanced-upload-error{
@@ -2350,7 +2347,7 @@
                                     $scope.IsVisiblebtn = false;
                                     $scope.IsVisibleText = false;
                                     toastr.success('Successfully Imported data.');
-                                    $('#adminrosterImportProcess').modal('toggle');
+                                   $('#adminrosterImportProcess').modal('toggle');
                                     location.reload();
                                 }else{
                                     toastr.error(result.Message);
