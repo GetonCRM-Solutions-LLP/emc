@@ -34,10 +34,8 @@ public with sharing class TrueDialogAPICallout {
         String accountId = tdKeys.Account_Id__c;  // 18409
 
         String endpoint;
-        if(method=='PUT' && resourceName=='contact'){
-               
-            endpoint = baseURL+accountId+'/'+resourceName+'/'+resourceId+'?overrideSubscription=overrideSubscription';
-           
+        if(method=='PUT' && resourceName=='contact'){      
+            endpoint = baseURL+accountId+'/'+resourceName+'/'+resourceId+'?overrideSubscription=overrideSubscription';    
         }else if(method == 'GET' && resourceName=='media'){
             endpoint = 'https://api.truedialog.com/api/v2.1/media/'+requestBody;
 

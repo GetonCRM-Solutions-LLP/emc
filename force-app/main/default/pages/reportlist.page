@@ -965,7 +965,7 @@
                                                     scope.listOfReport = JSON.parse(result);
                                                     scope.summaryreportfordownload.push(["Driver",  "Email", "Date", "Day", "Start Time", "End Time", "Mileage (mi)", "From Location Name", "From Location Address", "To Location Name", "To Location Address", "Notes", "Tracking Method", "From Location Lat", "From Location Long", "To Location Lat", "To Location Long"]);
                                                     angular.forEach(scope.listOfReport, function (item) {
-                                                        scope.summaryreportfordownload.push([item.driverName, item.driverEmail, item.tripDate, item.tripDay, item.starttime, item.endTime, item.mileage, item.FLocationName, item.FLocationAdd, item.TLocationName, item.TLocationAdd, item.notes, item.trackingMethod, item.FLocationLatitude, item.FLocationLongitude, item.TLocationLatitude, item.TLocationLongitude]);
+                                                        scope.summaryreportfordownload.push([item.driverName, item.driverEmail, item.tripDate, item.tripDay, item.startTime, item.endTime, item.mileage, item.FLocationName, item.FLocationAdd, item.TLocationName, item.TLocationAdd, item.notes, item.trackingMethod, item.FLocationLatitude, item.FLocationLongitude, item.TLocationLatitude, item.TLocationLongitude]);
                                                     });
                                                     scope.downloadToExcel(scope.summaryreportfordownload, scope.fileExName);
                                                    $('#spinner').hide();

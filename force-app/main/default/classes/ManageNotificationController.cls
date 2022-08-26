@@ -1,4 +1,4 @@
-public with sharing class ManageNotificationController {
+public without sharing class ManageNotificationController {
     public static String accId;
     public static String adminId;
     public static String query;
@@ -11,6 +11,7 @@ public with sharing class ManageNotificationController {
     public string milWrapper {get; set;}
     public static Boolean isTestClass = false;
     public static Boolean checkTrueDialog {get; set;} 
+    
     /** 
     * ********************************************************
     Developer Name : Dhanraj Khatri
@@ -24,7 +25,10 @@ public with sharing class ManageNotificationController {
     
     @RemoteAction
     public static String sendMessageToMultipleContacts(String trueDialogContactIdList,String message){   
-        
+        System.debug('**in  sendMessageToMultipleContacts**');
+        System.debug('**trueDialogContactIdList**'+trueDialogContactIdList);
+        System.debug('**message**'+message);
+
         List<String> trueDialogContactIdListArray = (List<String>)System.JSON.deserialize(trueDialogContactIdList, List<String>.class);
         String result;
         try {
@@ -69,6 +73,92 @@ public with sharing class ManageNotificationController {
         }       
         return result;            
     }    
+
+    @RemoteAction
+    public static String sendImageToMultipleContacts(String trueDialogContactIdList,String attachmentBody, String attachmentName,String message){   
+      
+        TrueDialog_Keys__c tdKeys = TrueDialog_Keys__c.getValues('TrueDialogKeys');
+        List<String> trueDialogContactIdListArray = (List<String>)System.JSON.deserialize(trueDialogContactIdList, List<String>.class);
+        String result;
+
+        HttpResponse res = TrueDialogSendMessageAPI.postImageToTrueDialog(trueDialogContactIdList,attachmentBody,attachmentName,message);
+
+        Database.SaveResult[] saveResultList ;
+
+        if(res.getStatusCode() < 300) {
+
+            List<Message__c> lstMessage = new List<Message__c>();
+            for(Contact con : [Select Id,TrueDialog_Contact_Id__c FROM Contact 
+                                WHERE TrueDialog_Contact_Id__c IN: trueDialogContactIdListArray]){
+    
+                        Message__c messageRecord = new Message__c();
+                        messageRecord.Contacts__c = con.Id;
+                        messageRecord.Message__c = message;
+                        lstMessage.add(messageRecord);
+            }
+            saveResultList = Database.insert(lstMessage, false);
+
+            ContentVersion cv = new ContentVersion();
+            cv.Title = attachmentName;
+            cv.PathOnClient = attachmentName;
+            cv.VersionData = EncodingUtil.base64Decode(attachmentBody);
+            cv.IsMajorVersion = true;
+            Insert cv;	
+
+            System.debug('Content Version'+cv);
+            
+         
+          
+            Id conDocId = [SELECT ContentDocumentId FROM ContentVersion WHERE Id =:cv.Id].ContentDocumentId;  
+
+            List<ContentDocumentLink> cdlList = New List<ContentDocumentLink>();
+            for(Message__c messageRecord : lstMessage){
+                ContentDocumentLink cdl = New ContentDocumentLink();
+                cdl.LinkedEntityId = messageRecord.Id;
+                cdl.ContentDocumentId = conDocId;
+                cdl.shareType = 'V';
+                cdlList.add(cdl) ;
+            }
+
+            List<Folder> mmsFolder = [SELECT Id,name FROM Folder where name ='MMS Image' Limit 1];
+        
+            System.debug('**Size***'+mmsFolder.size());
+            System.debug('***mmsFolder***'+mmsFolder);
+            
+            Document myDocument = new Document();
+        
+            if(mmsFolder.size()>0){
+                
+                myDocument.FolderId = mmsFolder[0].Id;
+                myDocument.Body = cv.versionData;
+                myDocument.Name = attachmentName;
+                myDocument.ispublic = true;
+                insert myDocument;
+            }
+
+            System.debug('***MyDocument**'+myDocument);
+        
+            
+            // List<String> domain = URL.getSalesforceBaseUrl().toExternalForm().split('.my');
+            // String imageURL = domain[0]+'--c.documentforce.com/servlet/servlet.ImageServer?id='+myDocument.id+'&oid='+UserInfo.getOrganizationId();
+            
+            String imageURL = tdKeys.Document_URL__c+myDocument.id+'&oid='+UserInfo.getOrganizationId();
+
+            for(Message__c messageRecord : lstMessage){
+                messageRecord.Media_Link__c = imageURL;
+            }
+
+            update lstMessage;    
+
+            result='success';
+        }else{
+            result = 'failed';
+        }  
+
+        return result;
+           
+    }    
+
         /** 
     * ********************************************************
     *  Developer Name-Dhanraj Khatri
