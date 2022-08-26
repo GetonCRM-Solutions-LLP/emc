@@ -119,6 +119,14 @@ public class ManageNotificationControllerTest {
         message.Message__c='test contact id';
         message.Contacts__c=c.id;
         insert message;
+        
+        
+        Attachment attach=new Attachment();   	
+    	attach.Name='Unit Test Attachment';
+    	Blob bodyBlob=Blob.valueOf('Unit Test Attachment');
+    	attach.body=bodyBlob;
+        attach.parentId=message.id;
+        insert attach;
 
         List<Id> idList =new List<Id>();
         idList.add(c.id);
@@ -132,6 +140,81 @@ public class ManageNotificationControllerTest {
         ManageNotificationController.UpdateUnreadMessageStatus(c.Id);
         ManageNotificationController.TrueDialogContact(a.Id,con2.id);
         Test.stopTest();
+        
+    }    
     
+    @isTest
+    public static void sendMessageToMultipleContacts1(){
+      
+        TriggerConfig__c triggerCustomSetting = TestDataFactory.triggerConfigCustomSetting(true);
+        SendEmail__c sendEmailCustomSetting = TestDataFactory.sendEmailCustomSetting(true, 'Send Email For Compliance');
+        IRS_Mileage_Rate__c irsRateObj = TestDataFactory.createIRSRate(true,0);
+        List<Address__c> objAddress = TestDataFactory.createAddress(true, 10);
+        TrueDialog_Keys__c tdKeys = TestDataFactory.createTrueDialog(true);
+
+        Vehicle_URL_Mapping__c vehicleType = TestDataFactory.createVehicleData(false, 3);
+        vehicleType.Name = '2019 Full-Size Sedan';
+        vehicleType.vehicle__c = 'Full-Size Sedan';
+        Insert vehicleType;
+        
+        System.debug('tdKeys in test class'+tdKeys);
+      
+        Account a = TestDataFactory.createAccount(true, 'demo', false);
+        
+        Contact c  = TestDataFactory.createCICDContact(false, a.id);
+        
+        c.email='test@gmail.com';
+        c.MobilePhone='+13239638840';
+        c.lastName='Veer';
+        c.firstName='Sharma';
+        c.External_Email__c='test@gmail.com';
+        c.TrueDialog_Contact_Id__c='81071892';
+        c.MobilePhone='9843223443';
+        insert c;
+        
+        Contact con2 = new Contact();
+        con2.FirstName = 'Priyanka';
+        con2.LastName = 'Gajera';
+        con2.AccountId = a.Id;
+        con2.External_Email__c = 'minkegsh.patel1478@gmail.com';
+        con2.Deactivated_Date__c = Null;
+        con2.Role__c = 'Admin';
+        con2.Insurance_Attachment_Id__c = Null;
+        con2.Employee_ID__c = '123456';
+        con2.MobilePhone='2232316533';
+        insert con2;
+        
+        List<String> lstTDContactId = new List<String>();
+        lstTDContactId.add(c.TrueDialog_Contact_Id__c);
+        
+        String lstTDContactIdJson = JSON.serialize(lstTDContactId);
+        
+            
+        Message__c message = new Message__c();
+        message.Message__c='test contact id';
+        message.Contacts__c=c.id;
+        insert message;
+        
+        
+        Attachment attach=new Attachment();   	
+    	attach.Name='Unit Test Attachment';
+    	Blob bodyBlob=Blob.valueOf('Unit Test Attachment');
+    	attach.body=bodyBlob;
+        attach.parentId=message.id;
+        insert attach;
+
+        List<Id> idList =new List<Id>();
+        idList.add(c.id);
+            
+        Test.setMock(HttpCalloutMock.class, new TrueDialogMockCallout());   
+        Test.startTest();
+
+        ManageNotificationController.sendImageToMultipleContacts(lstTDContactIdJson,'Unit Test Attachment','att1.jpg','Test  Message');
+        Test.stopTest();
+        
+        
+        	
+       
+        
     }    
 }
