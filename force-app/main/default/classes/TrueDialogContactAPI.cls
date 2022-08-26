@@ -19,15 +19,9 @@ global  class  TrueDialogContactAPI implements Database.Batchable<sObject>,Datab
     public integer successRecordCount = 0;
     public integer totalRecordCount = 0;
     
-    
-    
-    
     //Constructor for Batch class that initiliaze contact Id Set
     global TrueDialogContactAPI(Set<Id> contactIdSet){
-        System.debug('Contact Id Set in Constructor:'+contactIdSet);
-        idSetBatch = contactIdSet;
-        
-        
+        idSetBatch = contactIdSet;  
     }
     
     //Batchable Start Method
@@ -43,16 +37,13 @@ global  class  TrueDialogContactAPI implements Database.Batchable<sObject>,Datab
     
     //Batchable execute - 
     global  void execute(Database.BatchableContext BC, List<Contact> scope) {   
-        
-        
         totalRecordCount = scope.size();
         System.debug('Total record:'+totalRecordCount);
         List<Contact> contactToUpdateList = new List<Contact>();
         
         HttpResponse response = new HttpResponse();      
         String requestBody;
-        
-        
+          
         try {
             for(Contact con:scope){
                 requestBody = TrueDialogContact.generateTrueDialogContactReqBody(con);
@@ -78,7 +69,6 @@ global  class  TrueDialogContactAPI implements Database.Batchable<sObject>,Datab
                     }
                 }else{
                     String trueDialogError =response.getBody() + ',' + response.getStatusCode() + ': ' + response.getStatus() + '\n'; 
-                    //throw new TrueDialogApiException(trueDialogError);
                 } 
                 
             }
@@ -91,11 +81,9 @@ global  class  TrueDialogContactAPI implements Database.Batchable<sObject>,Datab
                     successRecordCount++;
                 } 
                 else{
-                    //    failedRecordCount++;
                     Database.Error errors =  myResult.get(i).getErrors().get(0);
                     System.debug('Error Occurs While Processing The Record'+errors.getMessage());
                     System.debug('Failure Record Ids While Updating'+myResult.get(i).Id);
-                    // allFailedId.add(myResult.get(i).Id);
                 }
             }
             
@@ -124,11 +112,9 @@ global  class  TrueDialogContactAPI implements Database.Batchable<sObject>,Datab
         Messaging.SingleEmailMessage mail = new Messaging.SingleEmailMessage();
         String tempEMail = tdKeys.Batch_Notification_Email__c;
         String[] toAddresses = new String[] {tempEMail};
-            mail.setToAddresses(toAddresses);
+        mail.setToAddresses(toAddresses);
         mail.setSubject('TrueDialog Batch Details');
-        // mail.setPlainTextBody('Count Of Record Proceed: ' + totalRecordCount+ 'Count Of Records updated sucessfully:'+ successRecordCount );
         mail.setHtmlBody('<html><body>Hi,<br>'+'<br> Count Of Total Records Proceed In Batch:'+totalRecordCount + ',<br>Count Of Total Records Proceed Sucessfully:'+successRecordCount+ '<br><br><b>Thanks</b></body></html>'); 
-        System.debug('Mail:'+mail);
         Messaging.sendEmail(new Messaging.SingleEmailMessage[] { mail });
         
         
