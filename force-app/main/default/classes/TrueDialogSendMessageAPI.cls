@@ -18,7 +18,7 @@ public without sharing class TrueDialogSendMessageAPI {
     
     @AuraEnabled
     public static String sendMessageToContact(String contactId,String message){
-         System.debug('**In sendMessageToContact***');
+        System.debug('**In sendMessageToContact***');
         String result;
         try {
         
@@ -109,7 +109,6 @@ public without sharing class TrueDialogSendMessageAPI {
             cv.IsMajorVersion = true;
             Insert cv;	
 
-            System.debug('***Content Version'+cv);
             System.debug('****Content Version  type in send Image'+cv.FileType);
             
             Id conDocId = [SELECT ContentDocumentId FROM ContentVersion WHERE Id =:cv.Id].ContentDocumentId;  
@@ -120,9 +119,6 @@ public without sharing class TrueDialogSendMessageAPI {
             Insert cdl; 
 
             List<Folder> mmsFolder = [SELECT Id,name FROM Folder where name ='MMS Image' Limit 1];
-            
-            System.debug('**Size***'+mmsFolder.size());
-            System.debug('***mmsFolder***'+mmsFolder);
             
             Document myDocument = new Document();
            
@@ -137,7 +133,11 @@ public without sharing class TrueDialogSendMessageAPI {
 
             System.debug('***MyDocument**'+myDocument);
         
-            String imageURL = 'https://mburse--partialdev--c.documentforce.com/servlet/servlet.ImageServer?id='+myDocument.id+'&oid=00D8H0000008fkf';  
+            //String imageURL = 'https://mburse--partialdev--c.documentforce.com/servlet/servlet.ImageServer?id='+myDocument.id+'&oid=00D8H0000008fkf';  
+           
+            List<String> domain = URL.getSalesforceBaseUrl().toExternalForm().split('.my');
+            String imageURL = domain[0]+'--c.documentforce.com/servlet/servlet.ImageServer?id='+myDocument.id+'&oid='+UserInfo.getOrganizationId();
+            
             messageRecord.Media_Link__c = imageURL;
             update messageRecord;   
 
@@ -149,8 +149,6 @@ public without sharing class TrueDialogSendMessageAPI {
         return result;
     }
 
-
-    //@Future(callout=true)
     public static HTTPResponse postImageToTrueDialog(String trueDialogContactIdList,String attachmentBody, String attachmentName,String message){
        
             String boundary='webkit1234567';

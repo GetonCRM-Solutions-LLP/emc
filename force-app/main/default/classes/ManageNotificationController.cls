@@ -79,101 +79,11 @@ public without sharing class ManageNotificationController {
       
         List<String> trueDialogContactIdListArray = (List<String>)System.JSON.deserialize(trueDialogContactIdList, List<String>.class);
         String result;
+
+        HttpResponse res = TrueDialogSendMessageAPI.postImageToTrueDialog(trueDialogContactIdList,attachmentBody,attachmentName,message);
+
         Database.SaveResult[] saveResultList ;
 
-        String boundary='webkit1234567';
-
-        String header = '--' + boundary + '\r\n' +
-                            + 'Content-Type: image/jpg\r\n'+
-                            + 'Content-Disposition: form-data; name=\"media\"; filename=\"' + attachmentName +'\"';
-                        
-
-        String headerEncoded = EncodingUtil.base64Encode(Blob.valueOf(header + '\r\n\r\n'));
-
-        String footer = '--' + boundary + '--';
-
-        while(headerEncoded.endsWith('='))
-        {
-            header += ' ';
-            headerEncoded = EncodingUtil.base64Encode(Blob.valueOf(header+'\r\n\r\n'));
-        }
-
-        String bodyEncoded = EncodingUtil.base64Encode(EncodingUtil.base64Decode(attachmentBody));
-
-        Blob bodyBlob = null;
-
-        String last4Bytes = bodyEncoded.substring(bodyEncoded.length()-4,bodyEncoded.length());
-        
-        System.debug('----->last4Bytes: '  + last4Bytes );
-
-        if(last4Bytes.endsWith('==')) {
-            last4Bytes = last4Bytes.substring(0,2) + '0K';
-            bodyEncoded = bodyEncoded.substring(0,bodyEncoded.length()-4) + last4Bytes;
-            // We have appended the \r\n to the Blob, so leave footer as it is.
-            String footerEncoded = EncodingUtil.base64Encode(Blob.valueOf(footer));
-            bodyBlob = EncodingUtil.base64Decode(headerEncoded + bodyEncoded + footerEncoded);
-        } else if(last4Bytes.endsWith('=')) {
-            last4Bytes = last4Bytes.substring(0,3) + 'N';
-            bodyEncoded = bodyEncoded.substring(0,bodyEncoded.length()-4) + last4Bytes;
-            // We have appended the CR e.g. \r, still need to prepend the line feed to the footer
-            footer = '\n' + footer;
-            String footerEncoded = EncodingUtil.base64Encode(Blob.valueOf(footer));
-            bodyBlob = EncodingUtil.base64Decode(headerEncoded+bodyEncoded+footerEncoded);            
-        } else{
-            // Prepend the CR LF to the footer
-            footer = '\r\n' + footer;
-            String footerEncoded = EncodingUtil.base64Encode(Blob.valueOf(footer));
-            bodyBlob = EncodingUtil.base64Decode(headerEncoded + bodyEncoded + footerEncoded);
-        }
-
-        System.debug('---> Body: ' + bodyBlob);
-
-        HttpRequest req = new HttpRequest();
-        
-        TrueDialog_Keys__c tdKeys =TrueDialog_Keys__c.getValues('TrueDialogKeys');
-        String username = tdKeys.Client_Id__c;//'1ab59fe33353401b8fd8da05716caaf5'
-        String password = tdKeys.Client_Secret__c;  //   Jx8$z9*T/rY5
-        String baseURL = tdKeys.Base_URL__c;   // https://api.truedialog.com/api/v2.1/account/
-        String accountId = tdKeys.Account_Id__c;
-
-
-        Blob headerValue = Blob.valueOf(username + ':' + password);
-        String authorizationHeader = 'BASIC ' +EncodingUtil.base64Encode(headerValue);
-
-        String endpoint = baseURL+accountId+'/image';
-        req.setEndpoint(endPoint);
-        req.setHeader('Content-Type', 'multipart/form-data; boundary=' + boundary);
-        req.setMethod('POST');
-        req.setBodyAsBlob(bodyBlob);
-        req.setHeader('Content-Length', String.valueof(req.getBodyAsBlob().size()));
-        req.setHeader('Authorization', authorizationHeader);
-        req.setTimeout(60000);
-
-        Http http = new Http();
-        HTTPResponse res = http.send(req);
-
-        System.debug(res);
-        System.debug('--' +res.getBody());
-    
-        List<Object> lstObject = (List<Object>)JSON.deserializeUntyped(res.getBody());
-
-        Map<String,Object> resultMap = (Map<String,Object>)lstObject[0];
-        System.debug(resultMap.get('id'));
-        String mediaId = String.valueOf(resultMap.get('id'));  
-        String reqBody ='{"message":"'+message+'","channels": ['+tdKeys.Channel_Id__c+'],"targets": ['+ trueDialogContactIdList +'],"MediaId":"'+mediaId+'","execute": true}';
-        SYstem.debug('****reqBody:'+reqBody);
-
-      
-        endpoint = baseURL+accountId+'/action-pushcampaign';
-        req.setEndpoint(endPoint);
-        req.setHeader('Content-Type', 'application/json');
-        req.setMethod('POST');
-        req.setBody('{"message":"'+message+'","channels": ['+tdKeys.Channel_Id__c+'],"targets": '+ trueDialogContactIdList +',"MediaId":"'+mediaId+'","execute": true}');
-        
-        res = http.send(req);
-
-        System.debug(res);
-        System.debug('--' +res.getBody());    
         if(res.getStatusCode() < 300) {
 
             List<Message__c> lstMessage = new List<Message__c>();
@@ -227,8 +137,11 @@ public without sharing class ManageNotificationController {
 
             System.debug('***MyDocument**'+myDocument);
         
-            String imageURL = 'https://mburse--partialdev--c.documentforce.com/servlet/servlet.ImageServer?id='+myDocument.id+'&oid=00D8H0000008fkf';  
-        
+            
+            List<String> domain = URL.getSalesforceBaseUrl().toExternalForm().split('.my');
+            String imageURL = domain[0]+'--c.documentforce.com/servlet/servlet.ImageServer?id='+myDocument.id+'&oid='+UserInfo.getOrganizationId();
+            
+
             for(Message__c messageRecord : lstMessage){
                 messageRecord.Media_Link__c = imageURL;
             }
