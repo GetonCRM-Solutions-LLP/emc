@@ -15,13 +15,14 @@ global without sharing class TrueDialogReceiveMessage {
     public static RestRequest req = RestContext.request;
     public static RestResponse res = RestContext.response;
     public static Map<String, Object> fetchRequestBody = new  Map<String, Object>();
-    
+
+
     @HttpPost
     global static void insertMessage() {
        
         System.debug('request body'+req.requestbody.tostring());
-        
         TrueDialog_Keys__c tdKeys = TrueDialog_Keys__c.getValues('TrueDialogKeys');
+       
         
         fetchRequestBody = (Map<String, Object>)JSON.deserializeUntyped(req.requestbody.tostring());
         
@@ -72,7 +73,7 @@ global without sharing class TrueDialogReceiveMessage {
     
     @future (callout= true)
     public static void generateImageURL(String mediaInput,String messageId){
-        
+        TrueDialog_Keys__c tdKeys = TrueDialog_Keys__c.getValues('TrueDialogKeys');
         System.debug('***generateImageURL***');
         
         Message__c messageRecord = [Select id,Message__c, Action_Id__c, Contacts__c, Incoming_Message__c,Message_Id__c,Media_Link__c from Message__c where Id=:messageId ];
@@ -118,10 +119,10 @@ global without sharing class TrueDialogReceiveMessage {
                 insert myDocument;
             }
             
-           // String imageURL = 'https://mburse--partialdev--c.documentforce.com/servlet/servlet.ImageServer?id='+myDocument.id+'&oid=00D8H0000008fkf';
+            String imageURL = tdKeys.Document_URL__c+myDocument.id+'&oid='+UserInfo.getOrganizationId();
           
-           List<String> domain = URL.getSalesforceBaseUrl().toExternalForm().split('.my');
-           String imageURL = domain[0]+'--c.documentforce.com/servlet/servlet.ImageServer?id='+myDocument.id+'&oid='+UserInfo.getOrganizationId();
+        //    List<String> domain = URL.getSalesforceBaseUrl().toExternalForm().split('.my');
+        //    String imageURL = domain[0]+'--c.documentforce.com/servlet/servlet.ImageServer?id='+myDocument.id+'&oid='+UserInfo.getOrganizationId();
            
 
            messageRecord.Message__c = '';
@@ -135,6 +136,7 @@ global without sharing class TrueDialogReceiveMessage {
     
     @future (callout= true)
     public static void generateImageURLWithText(String mediaInput,String messageId){
+        TrueDialog_Keys__c tdKeys = TrueDialog_Keys__c.getValues('TrueDialogKeys');
         System.debug('***generateImageURLWithText***');
         Message__c messageRecord = [Select id,Message__c, Action_Id__c, Contacts__c, Incoming_Message__c,Message_Id__c,Media_Link__c from Message__c where Id=:messageId ];
        
@@ -183,7 +185,7 @@ global without sharing class TrueDialogReceiveMessage {
                 insert myDocument;
             }
             
-            String imageURL = 'https://mburse--partialdev--c.documentforce.com/servlet/servlet.ImageServer?id='+myDocument.id+'&oid=00D8H0000008fkf';
+            String imageURL = tdKeys.Document_URL__c+myDocument.id+'&oid='+UserInfo.getOrganizationId();
             
             messageRecord.Message__c = txtMessage;
             messageRecord.Media_Link__c = imageURL;

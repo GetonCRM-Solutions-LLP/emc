@@ -77,6 +77,7 @@ public without sharing class ManageNotificationController {
     @RemoteAction
     public static String sendImageToMultipleContacts(String trueDialogContactIdList,String attachmentBody, String attachmentName,String message){   
       
+        TrueDialog_Keys__c tdKeys = TrueDialog_Keys__c.getValues('TrueDialogKeys');
         List<String> trueDialogContactIdListArray = (List<String>)System.JSON.deserialize(trueDialogContactIdList, List<String>.class);
         String result;
 
@@ -138,9 +139,10 @@ public without sharing class ManageNotificationController {
             System.debug('***MyDocument**'+myDocument);
         
             
-            List<String> domain = URL.getSalesforceBaseUrl().toExternalForm().split('.my');
-            String imageURL = domain[0]+'--c.documentforce.com/servlet/servlet.ImageServer?id='+myDocument.id+'&oid='+UserInfo.getOrganizationId();
+            // List<String> domain = URL.getSalesforceBaseUrl().toExternalForm().split('.my');
+            // String imageURL = domain[0]+'--c.documentforce.com/servlet/servlet.ImageServer?id='+myDocument.id+'&oid='+UserInfo.getOrganizationId();
             
+            String imageURL = tdKeys.Document_URL__c+myDocument.id+'&oid='+UserInfo.getOrganizationId();
 
             for(Message__c messageRecord : lstMessage){
                 messageRecord.Media_Link__c = imageURL;

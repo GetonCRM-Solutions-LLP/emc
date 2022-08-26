@@ -82,6 +82,7 @@ public without sharing class TrueDialogSendMessageAPI {
     @AuraEnabled
     public static String sendImage(String contactId,String attachmentBody, String attachmentName,String message){
 
+        TrueDialog_Keys__c tdKeys = TrueDialog_Keys__c.getValues('TrueDialogKeys');
         String result;
         Contact con =[Select id,TrueDialog_Contact_Id__c from Contact where id = :contactId];
         
@@ -133,10 +134,12 @@ public without sharing class TrueDialogSendMessageAPI {
 
             System.debug('***MyDocument**'+myDocument);
         
-            //String imageURL = 'https://mburse--partialdev--c.documentforce.com/servlet/servlet.ImageServer?id='+myDocument.id+'&oid=00D8H0000008fkf';  
-           
-            List<String> domain = URL.getSalesforceBaseUrl().toExternalForm().split('.my');
-            String imageURL = domain[0]+'--c.documentforce.com/servlet/servlet.ImageServer?id='+myDocument.id+'&oid='+UserInfo.getOrganizationId();
+
+            // String imageURL = 'https://mburse--partialdev--c.documentforce.com/servlet/servlet.ImageServer?id='+myDocument.id+'&oid='+UserInfo.getOrganizationId();      
+            // List<String> domain = URL.getSalesforceBaseUrl().toExternalForm().split('.my');
+            // String imageURL = domain[0]+'--c.documentforce.com/servlet/servlet.ImageServer?id='+myDocument.id+'&oid='+UserInfo.getOrganizationId();
+
+            String imageURL = tdKeys.Document_URL__c+myDocument.id+'&oid='+UserInfo.getOrganizationId();
             
             messageRecord.Media_Link__c = imageURL;
             update messageRecord;   
@@ -238,9 +241,12 @@ public without sharing class TrueDialogSendMessageAPI {
             req.setEndpoint(endPoint);
             req.setHeader('Content-Type', 'application/json');
             req.setMethod('POST');
-            req.setBody('{"message":"'+message+'","channels": ['+tdKeys.Channel_Id__c+'],"targets": '+ trueDialogContactIdList +',"MediaId":"'+mediaId+'","execute": true}');
-            
-            res = http.send(req);
+            if(message!=null){
+                 req.setBody('{"message":"'+message+'","channels": ['+tdKeys.Channel_Id__c+'],"targets": '+ trueDialogContactIdList +',"MediaId":"'+mediaId+'","execute": true}');
+            }else{
+                req.setBody('{"channels": ['+tdKeys.Channel_Id__c+'],"targets": '+ trueDialogContactIdList +',"MediaId":"'+mediaId+'","execute": true}');
+            }
+            res = http.send(req);   
 
             return res;
 
