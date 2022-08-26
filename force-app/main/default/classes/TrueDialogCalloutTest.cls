@@ -53,10 +53,24 @@ public class TrueDialogCalloutTest {
         idList.add(conList[0].id);
         
         Test.setMock(HttpCalloutMock.class, new TrueDialogMockCallout());   
-        Test.startTest();
+       
         TrueDialogSendMessageAPI.getAllMessageByContact(conList[0].id);
         TrueDialogSendMessageAPI.sendMessageToContact(conList[0].id,'Hello');
         TrueDialogSendMessageAPI.getContactPicture(conList[0].id);
+        
+        
+
+ 
+        Attachment attach=new Attachment();   	
+    	attach.Name='Unit Test Attachment';
+    	Blob bodyBlob=Blob.valueOf('Unit Test Attachment Body');
+    	attach.body=bodyBlob;
+        attach.parentId=message.id;
+        insert attach;
+        
+        Test.startTest();
+		TrueDialogSendMessageAPI.sendImage(conList[0].id,'Unit Test Attachment Body','att.jpg','Test  Message');
+
         Test.stopTest();
         
     }
@@ -106,7 +120,7 @@ public class TrueDialogCalloutTest {
         c.External_Email__c = 'test@gmail.com';
         c.TrueDialog_Contact_Id__c = '111111';
         insert c;
-        
+
         
         Set<Id> lstId = new Set<Id>();
         lstId.add(c.id);
@@ -181,9 +195,6 @@ public class TrueDialogCalloutTest {
         ApexPages.StandardController sc = new ApexPages.StandardController(a);
         
         TrueDIalogVFPageController obj = new TrueDIalogVFPageController(sc);
-        System.debug('Adddddd'+obj);
-        
-        
         
         obj.getPageRecord();
         obj.onSubmit();
