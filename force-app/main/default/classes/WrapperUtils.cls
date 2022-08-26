@@ -67,12 +67,10 @@ public with sharing class WrapperUtils
         currentEmployeeDetail.territory = currentContact.Territory__c != null ? currentContact.Territory__c : '';
         currentEmployeeDetail.code = currentContact.Code__c != null ? currentContact.Code__c : '';
         currentEmployeeDetail.district = currentContact.District__c != null ? currentContact.District__c : '';
-        currentEmployeeDetail.totalreimbursement = String.valueOf(avgReim);//String.valueOf(currentContact.Total_Reimbursement__c);
+        currentEmployeeDetail.totalreimbursement = String.valueOf(avgReim);
         if(String.isNotBlank(String.valueOf(currentContact.Monthly_Mileage_Limit__c))) {
             currentEmployeeDetail.monthlymileageLimit = String.valueOf(currentContact.Monthly_Mileage_Limit__c);
-            currentEmployeeDetail.approvalThreshold = String.valueOf(currentContact.Monthly_Mileage_Limit__c);
-            //currentEmployeeDetail.monthlymileageLimit = String.valueOf(avgMileage);//String.valueOf(currentContact.Monthly_Mileage_Limit__c);
-            //currentEmployeeDetail.approvalThreshold = String.valueOf(avgMileage);//String.valueOf(currentContact.Monthly_Mileage_Limit__c);
+            currentEmployeeDetail.approvalThreshold = String.valueOf(currentContact.Monthly_Mileage_Limit__c);            
         } else {
             currentEmployeeDetail.monthlymileageLimit = '';
             currentEmployeeDetail.approvalThreshold = '';
@@ -188,12 +186,8 @@ public with sharing class WrapperUtils
         if(currentEmployeeDetail.cellphone!=null)
         {
             currentContact.Phone = currentEmployeeDetail.cellphone;
-        }
+        }      
         
-        if(currentEmployeeDetail.activationDate != null)
-        {
-           // currentContact.Activation_Date__c = currentEmployeeDetail.activationDate;    
-        }
         if(currentEmployeeDetail.compliancestatus!=null)
         {
             currentContact.compliancestatus__c = currentEmployeeDetail.compliancestatus;
@@ -235,214 +229,147 @@ public with sharing class WrapperUtils
             if((String.valueOf(currentEmployeeDetail.lastPayDate).contains('-')))
             {
                 lastPaydateSplitted = String.valueOf(currentEmployeeDetail.lastPayDate).split('-');                
-            }
-            else if(String.valueOf(currentEmployeeDetail.lastPayDate).contains('/'))
-            {
+            } else if(String.valueOf(currentEmployeeDetail.lastPayDate).contains('/')) {
                 lastPaydateSplitted = String.valueOf(currentEmployeeDetail.lastPayDate).split('/');                
             }
             currentContact.Last_Pay_Date__c = Date.newInstance(Integer.valueOf(lastPaydateSplitted[2]), Integer.valueOf(lastPaydateSplitted[0]), Integer.valueOf(lastPaydateSplitted[1]));       
-            //currentContact.Last_Pay_Date__c = date.parse(currentEmployeeDetail.lastPayDate);
-        }
-        else
-        {
+        } else {
             currentContact.Last_Pay_Date__c =null;
         }
 
-        if(currentEmployeeDetail.monthlymileage !=null && currentEmployeeDetail.monthlymileage != '')
-        {
-            //currentEmployeeDetail.monthlymileage = String.valueOf(currentContact.Monthly__c);
+        if(currentEmployeeDetail.monthlymileage !=null && currentEmployeeDetail.monthlymileage != '') {           
             currentContact.Monthly__c = Decimal.valueOf(currentEmployeeDetail.monthlymileage);
         }
 
-        if(currentEmployeeDetail.sage100ID != null && currentEmployeeDetail.sage100ID != '')
-        {
+        if(currentEmployeeDetail.sage100ID != null && currentEmployeeDetail.sage100ID != '') {
             currentContact.Sage_100_ID__c = currentEmployeeDetail.sage100ID;
         }
 
-        if(currentEmployeeDetail.glcode != null && currentEmployeeDetail.glcode != '')
-        {
+        if(currentEmployeeDetail.glcode != null && currentEmployeeDetail.glcode != '') {
             currentContact.GL_Code__c = currentEmployeeDetail.glcode;
         }
-        if(currentEmployeeDetail.territory != null && currentEmployeeDetail.territory != '')
-        {
+        if(currentEmployeeDetail.territory != null && currentEmployeeDetail.territory != '') {
             currentContact.Territory__c = currentEmployeeDetail.territory;
         }
-        if(currentEmployeeDetail.code != null && currentEmployeeDetail.code != '')
-        {
+        if(currentEmployeeDetail.code != null && currentEmployeeDetail.code != '') {
             currentContact.Code__c = currentEmployeeDetail.code;
         }
-        if(currentEmployeeDetail.district != null && currentEmployeeDetail.district != '')
-        {
+        if(currentEmployeeDetail.district != null && currentEmployeeDetail.district != '') {
             currentContact.District__c = currentEmployeeDetail.district;
         }
-        if(currentEmployeeDetail.deactivaedDate  !=  null)
-        {
+        if(currentEmployeeDetail.deactivaedDate  !=  null) {
             List<String> deactivationDateSplitted = new List<String>();
-            if(String.valueOf(currentEmployeeDetail.deactivaedDate).contains('-'))
-            {
+            if(String.valueOf(currentEmployeeDetail.deactivaedDate).contains('-')) {
                 deactivationDateSplitted = String.valueOf(currentEmployeeDetail.deactivaedDate).split('-');
-            }
-            else if((String.valueOf(currentEmployeeDetail.deactivaedDate).contains('/')))
-            {
+            } else if((String.valueOf(currentEmployeeDetail.deactivaedDate).contains('/'))) {
                 deactivationDateSplitted = String.valueOf(currentEmployeeDetail.deactivaedDate).split('/');                
             }
             currentContact.Deactivated_Date__c = Datetime.newInstance(Integer.valueOf(deactivationDateSplitted[2]), Integer.valueOf(deactivationDateSplitted[0]), Integer.valueOf(deactivationDateSplitted[1]),0,0,0);           
-            //currentContact.Deactivated_Date__c = date.parse(currentEmployeeDetail.deactivaedDate);
-        }
-        else
-        {
+        } else {
             currentContact.Deactivated_Date__c =null;
         }
 
         
-        if(currentEmployeeDetail.freeze  !=  null)
-        {
+        if(currentEmployeeDetail.freeze  !=  null) {
             List<String> freezeDateSplitted = new List<String>();
-            if(String.valueOf(currentEmployeeDetail.freeze).contains('-'))
-            {
+            if(String.valueOf(currentEmployeeDetail.freeze).contains('-')) {
                 freezeDateSplitted = String.valueOf(currentEmployeeDetail.freeze).split('-');
-            }
-            else if((String.valueOf(currentEmployeeDetail.freeze).contains('/')))
-            {
+            } else if((String.valueOf(currentEmployeeDetail.freeze).contains('/'))) {
                 freezeDateSplitted = String.valueOf(currentEmployeeDetail.freeze).split('/');                
             }
             if(freezeDateSplitted.size() > 0){
                 currentContact.Freeze__c =  Date.newInstance(Integer.valueOf(freezeDateSplitted[2]), Integer.valueOf(freezeDateSplitted[0]), Integer.valueOf(freezeDateSplitted[1]));
             }
-            
-            //currentContact.Deactivated_Date__c = date.parse(currentEmployeeDetail.deactivaedDate);
-        }
-        else
-        {
+        } else {
             currentContact.Freeze__c =null;
         }
 
-        if(currentEmployeeDetail.drivingStates != null && currentEmployeeDetail.drivingStates.size()>0)
-        {
+        if(currentEmployeeDetail.drivingStates != null && currentEmployeeDetail.drivingStates.size() > 0) {
             String state='';
-            for(String currentState:currentEmployeeDetail.drivingStates)
-            {
-                if(state != '')
-                {
+            for(String currentState:currentEmployeeDetail.drivingStates) {
+                if(state != '') {
                    state=state+ ';'+currentState;
-                }
-                else
-                {
+                } else {
                    state = currentState;
                 }
             }
-            currentContact.Driving_States__c =state; 
+            currentContact.Driving_States__c = state; 
         }
-        if(String.isNotBlank(String.valueOf(currentEmployeeDetail.loaFixedAmount )))
-        {
+        if(String.isNotBlank(String.valueOf(currentEmployeeDetail.loaFixedAmount ))) {
             currentContact.LOA_Fixed_Amount__c = Decimal.valueOf(currentEmployeeDetail.loaFixedAmount );
             System.debug('currentContact.LOA_Fixed_Amount__c='+currentContact.LOA_Fixed_Amount__c);
         }
         if(currentEmployeeDetail.loaStartDate !=  null) {
             List<String> lastPaydateSplitted = new List<String>();
-            if((String.valueOf(currentEmployeeDetail.loaStartDate).contains('-')))
-            {
+            if((String.valueOf(currentEmployeeDetail.loaStartDate).contains('-'))) {
                 lastPaydateSplitted = String.valueOf(currentEmployeeDetail.loaStartDate).split('-');                
             }
-            else if(String.valueOf(currentEmployeeDetail.loaStartDate).contains('/'))
-            {
+            else if(String.valueOf(currentEmployeeDetail.loaStartDate).contains('/')) {
                 lastPaydateSplitted = String.valueOf(currentEmployeeDetail.loaStartDate).split('/');                
             }
             currentContact.LOA_Start_Date__c = Date.newInstance(Integer.valueOf(lastPaydateSplitted[2]), Integer.valueOf(lastPaydateSplitted[0]), Integer.valueOf(lastPaydateSplitted[1]));       
           
-        }
-        else {
+        } else {
             currentContact.LOA_Start_Date__c = null;
         }
         if(currentEmployeeDetail.loaEndDate !=  null) {
             List<String> lastPaydateSplitted = new List<String>();
-            if((String.valueOf(currentEmployeeDetail.loaEndDate).contains('-')))
-            {
+            if((String.valueOf(currentEmployeeDetail.loaEndDate).contains('-'))) {
                 lastPaydateSplitted = String.valueOf(currentEmployeeDetail.loaEndDate).split('-');                
-            }
-            else if(String.valueOf(currentEmployeeDetail.loaEndDate).contains('/'))
-            {
+            } else if(String.valueOf(currentEmployeeDetail.loaEndDate).contains('/')) {
                 lastPaydateSplitted = String.valueOf(currentEmployeeDetail.loaEndDate).split('/');                
             }
             currentContact.LOA_End_Date__c = Date.newInstance(Integer.valueOf(lastPaydateSplitted[2]), Integer.valueOf(lastPaydateSplitted[0]), Integer.valueOf(lastPaydateSplitted[1]));       
           
-        }
-        else {
+        } else {
             currentContact.LOA_End_Date__c = null;
         }
-        if(String.isNotBlank(String.valueOf(currentEmployeeDetail.payRollPeriod)))
-        {
+        if(String.isNotBlank(String.valueOf(currentEmployeeDetail.payRollPeriod))) {
             currentContact.Payroll_Period__c = String.valueOf(currentEmployeeDetail.payRollPeriod);
         }
         return currentContact;      
     }
-    /*public static Employee_Mileage__c getMileagesfromEmployeeMileages(EmployeeMileages employeeMileage)
-    {
-        Employee_Mileage__c currentEmployeeMileage = new Employee_Mileage__c();
-        currentEmployeeMileage.id=employeeMileage.id;
-        if(employeeMileage.isSelected == true)
-        {
-            currentEmployeeMileage.Approved_Date__c = System.today();
-            currentEmployeeMileage.Trip_Status__c = 'Approved';
-            currentEmployeeMileage.Rejected__c = false;
-        }
-        if(employeeMileage.isChecked == true)
-        {
-            currentEmployeeMileage.Trip_Status__c ='Rejected';
-            currentEmployeeMileage.Approved_Date__c =null;
-            currentEmployeeMileage.Rejected__c = true;
-        }        
-        return currentEmployeeMileage;
-    }*/
 
     public static EmployeeMileages getMileagesOfReimbursement(Employee_Mileage__c employeeMileage)
-    {
-        System.debug('getMileagesOfReimbursement ----');
+    {      
         EmployeeMileages currentEmployeeMileage = new EmployeeMileages();
         currentEmployeeMileage.id=employeeMileage.id;
         currentEmployeeMileage.isSelected = false;
         currentEmployeeMileage.isChecked = false;
         currentEmployeeMileage.isUnapprove = false;
-        if(employeeMileage.Trip_Status__c != null)
-        {
+        if(employeeMileage.Trip_Status__c != null) {
             currentEmployeeMileage.status = employeeMileage.Trip_Status__c;    
         }
-        if(employeeMileage.Activity__c != null)
-        {
+        if(employeeMileage.Activity__c != null) {
             currentEmployeeMileage.tripActivity = employeeMileage.Activity__c;    
         }
-        if(employeeMileage.Maintenance_and_Tires__c != null){
+        if(employeeMileage.Maintenance_and_Tires__c != null) {
             currentEmployeeMileage.maintTyre = string.valueof(employeeMileage.Maintenance_and_Tires__c);
         }
 
         if(employeeMileage.Stay_Time__c != null){
             currentEmployeeMileage.staytime = string.valueof(employeeMileage.Stay_Time__c);
-        }
-        else{
+        } else{
             currentEmployeeMileage.staytime = '0';
         }
 
         if(employeeMileage.Driving_Time__c != null){
             currentEmployeeMileage.drivingtime = string.valueof(employeeMileage.Driving_Time__c);
-        }
-        else{
+        } else {
             currentEmployeeMileage.drivingtime = '0';
         }
 
         if(employeeMileage.Total_Time__c   != null){
             currentEmployeeMileage.totaltime = string.valueof(employeeMileage.Total_Time__c);
-        }
-        else{
+        } else {
             currentEmployeeMileage.totaltime = '0';
         }
-
-
         if(employeeMileage.Fuel_price__c != null){
             currentEmployeeMileage.fuelRate = string.valueof(employeeMileage.Fuel_price__c);
         }
 
-        if(employeeMileage.Variable__c != null){
-            currentEmployeeMileage.variablerate = string.valueof(employeeMileage.Variable__c);
+        if(employeeMileage.Variable_Rate__c != null){
+            currentEmployeeMileage.variablerate = string.valueof(employeeMileage.Variable_Rate__c );
         }
 
         currentEmployeeMileage.dayofweek='';
@@ -452,11 +379,10 @@ public with sharing class WrapperUtils
         currentEmployeeMileage.destinationname='';
         currentEmployeeMileage.tracingstyle='';
         currentEmployeeMileage.emailaddress='';
-        if(employeeMileage.Origin_Name__c != null)
-        {
+        if(employeeMileage.Origin_Name__c != null) {
             currentEmployeeMileage.originname= employeeMileage.Origin_Name__c;
         }
-        if(employeeMileage.Notes__c != null){ 
+        if(employeeMileage.Notes__c != null) { 
             currentEmployeeMileage.notes = employeeMileage.Notes__c;
         }
 
@@ -474,30 +400,15 @@ public with sharing class WrapperUtils
         //     //tz = Timezone.getTimeZone(employeeMileage.TimeZone__c);
         // }
         */
-        if(employeeMileage.ConvertedStartTime__c  != null )
-        {
+        if(employeeMileage.ConvertedStartTime__c  != null ) {
            DateTime startTime = employeeMileage.ConvertedStartTime__c;
            currentEmployeeMileage.starttime = startTime.format('h:mm a','America/Panama');
         }
         
-        if(employeeMileage.ConvertedEndTime__c  != null)
-        {
+        if(employeeMileage.ConvertedEndTime__c  != null) {
            DateTime endTime = employeeMileage.ConvertedEndTime__c ;
            currentEmployeeMileage.endTime = endTime.format('h:mm a','America/Panama');
-        }
-
-        /*if(employeeMileage.StartTime__c != null)
-        {
-           
-           DateTime startTime = employeeMileage.StartTime__c;
-           currentEmployeeMileage.starttime=startTime.formatGMT('h:mm a');
-        }
-        if(employeeMileage.EndTime__c != null)
-        {
-           //currentEmployeeMileage.endtime=employeeMileage.EndTime__c;
-           DateTime endTime = employeeMileage.EndTime__c;
-           currentEmployeeMileage.endtime=endTime.formatGMT('h:mm a');
-        }*/
+        }       
         
         if(employeeMileage.Day_Of_Week__c != null)
         {
@@ -507,20 +418,16 @@ public with sharing class WrapperUtils
         {
             currentEmployeeMileage.destinationname=employeeMileage.Destination_Name__c;
         }
-        /* if(employeeMileage.EmployeeReimbursement__r.Contact_Id__r.External_Email__c != null)
-        {*/
-            currentEmployeeMileage.emailaddress=employeeMileage.EmployeeReimbursement__r.Contact_Id__r.External_Email__c;
-        /* }     */  
-        if(employeeMileage.Trip_Status__c != null && employeeMileage.Trip_Status__c == 'Rejected')
-        {
+        
+        currentEmployeeMileage.emailaddress = employeeMileage.EmployeeReimbursement__r.Contact_Id__r.External_Email__c;
+        
+        if(employeeMileage.Trip_Status__c != null && employeeMileage.Trip_Status__c == 'Rejected') {
              currentEmployeeMileage.isChecked = true;
         }        
         currentEmployeeMileage.origin = employeeMileage.Trip_Origin__c;
         currentEmployeeMileage.destination = employeeMileage.Trip_Destination__c;
-        if(employeeMileage.Trip_Date__c != null)
-        {
-            if(String.valueOf(employeeMileage.Trip_Date__c).contains('-'))
-            {
+        if(employeeMileage.Trip_Date__c != null) {
+            if(String.valueOf(employeeMileage.Trip_Date__c).contains('-')) {
                 List<String> tripDateSplitted = new List<String>();
                 tripDateSplitted = String.valueOf(employeeMileage.Trip_Date__c).split('-');
                 currentEmployeeMileage.tripdate  = tripDateSplitted[1]+'/'+tripDateSplitted[2]+'/'+tripDateSplitted[0].substring(2,4);
@@ -567,9 +474,7 @@ public with sharing class WrapperUtils
         if(String.valueOf(createddate).contains('-'))
         {
             List<String> createdDateSplitted = new List<String>();
-            createdDateSplitted = String.valueOf(createddate).split('-');
-            /*List<String> obj_dates = new List<String>();
-            obj_dates = obj_List[0].split('-');*/
+            createdDateSplitted = String.valueOf(createddate).split('-');           
             currentEmployeeMileage.submitteddate =  createdDateSplitted[1]+'/'+createdDateSplitted[2]+'/'+createdDateSplitted[0].substring(2,4);
         }
         currentEmployeeMileage.totalrejected = String.valueOf(employeeMileage.EmployeeReimbursement__r.Total_Rejected__c);
@@ -737,18 +642,7 @@ public with sharing class WrapperUtils
         employeeReimbursement.variableRate  = ' $'+String.valueOf(currentEmployeeReimbursement.Total_Variable_Rate__c);
         employeeReimbursement.month  = getMonthName(currentEmployeeReimbursement.Month__c);
         employeeReimbursement.intmonth  = getMonthInteger(currentEmployeeReimbursement.Month__c);
-        employeeReimbursement.fuel  =String.valueOf(currentEmployeeReimbursement.Fuel_Price__c);
-        //employeeReimbursement.mileage  =String.valueOf(currentEmployeeReimbursement.Total_Mileage__c);
-        /*Integer checkYear;
-        if(currentEmployeeReimbursement.Month__c.contains('-'))
-        {
-           checkYear = Integer.valueOf( currentEmployeeReimbursement.Month__c.split('-')[1]); 
-        }
-        if(employeeReimbursement.intmonth != null && employeeReimbursement.intmonth == system.today().month() && checkYear != null && checkYear == system.today().year()){
-            employeeReimbursement.mileage  = String.valueOf(currentEmployeeReimbursement.Total_Mileage__c);
-        } else {
-            employeeReimbursement.mileage  = String.valueOf(currentEmployeeReimbursement.Total_Approved__c);
-        }*/
+        employeeReimbursement.fuel  = String.valueOf(currentEmployeeReimbursement.Fuel_Price__c);       
 
         /* EMC-260  START
         Description : Added a new field : Total_Approved__c,Total_Mileage__c, Total_Pending__c 
@@ -819,19 +713,17 @@ public with sharing class WrapperUtils
         employeeReimbursement.totalMileages = String.valueOf(currentEmployeeReimbursement.Total_Mileage__c);
         employeeReimbursement.approvedMileages = String.valueOf(currentEmployeeReimbursement.Total_Approved__c);
         employeeReimbursement.managerName = currentEmployeeReimbursement.Contact_Id__r.Manager__r.Name;
+        employeeReimbursement.mileageApproval = currentEmployeeReimbursement.Mileage_Approver__c != null ? currentEmployeeReimbursement.Mileage_Approver__c : '';
+        employeeReimbursement.managerEmail = currentEmployeeReimbursement.Contact_Id__r.Manager_External_Email__c != null ? currentEmployeeReimbursement.Contact_Id__r.Manager_External_Email__c : '';
         employeeReimbursement.status = currentEmployeeReimbursement.Status__c;
-        if(currentEmployeeReimbursement.Approved_Date__c != null)
-        {
+        if(currentEmployeeReimbursement.Approved_Date__c != null) {
             // 2019-03-28
-            if(String.valueOf(currentEmployeeReimbursement.Approved_Date__c).contains('-'))
-            {
+            if(String.valueOf(currentEmployeeReimbursement.Approved_Date__c).contains('-')) {
                 List<String> approvedDateSplitted = new List<String>();
                 approvedDateSplitted = String.valueOf(currentEmployeeReimbursement.Approved_Date__c).split('-');
                 employeeReimbursement.approvedDate = approvedDateSplitted[1]+'/'+approvedDateSplitted[2]+'/'+approvedDateSplitted[0].substring(2,4);
             }
-        }
-        else
-        {
+        } else {
             employeeReimbursement.approvedDate = '';
         }
         /*for(Employee_Mileage__c currentMileage:currentEmployeeReimbursement.Employees_Mileage__r)
@@ -2177,7 +2069,7 @@ public with sharing class WrapperUtils
                                                             Origin_Name__c,Tracing_Style__c,StartTime__c,EndTime__c,Day_Of_Week__c,Destination_Name__c,EmployeeReimbursement__r.Total_Monthly_Approved_Variable__c,
                                                             EmployeeReimbursement__r.Contact_Id__r.External_Email__c,EmployeeReimbursement__r.Monthly_Variable_Amount__c,
                                                             Maintenance_and_Tires__c,Fuel_price__c,EmployeeReimbursement__r.Total_Mileage__c,ConvertedEndTime__c,
-                                                            EmployeeReimbursement__r.Total_Rejected__c,Notes__c,ConvertedStartTime__c,
+                                                            EmployeeReimbursement__r.Total_Rejected__c,Notes__c,ConvertedStartTime__c,Variable_Rate__c,
                                                             TimeZone__c,EmployeeReimbursement__r.Mileage_Lock_Date__c,Activity__c,Mileage_Lock_Date__c
                                                 FROM Employee_Mileage__c 
                                                 WHERE EmployeeReimbursement__r.Month__c =: month AND EmployeeReimbursement__r.Contact_Id__c =: did ])
@@ -2200,7 +2092,7 @@ public with sharing class WrapperUtils
                                                             Origin_Name__c,Tracing_Style__c,StartTime__c,EndTime__c,Day_Of_Week__c,Destination_Name__c,EmployeeReimbursement__r.Total_Monthly_Approved_Variable__c,
                                                             EmployeeReimbursement__r.Contact_Id__r.External_Email__c,EmployeeReimbursement__r.Monthly_Variable_Amount__c,
                                                             Maintenance_and_Tires__c,Fuel_price__c,EmployeeReimbursement__r.Total_Mileage__c,ConvertedEndTime__c,
-                                                            EmployeeReimbursement__r.Total_Rejected__c,Notes__c,ConvertedStartTime__c,
+                                                            EmployeeReimbursement__r.Total_Rejected__c,Notes__c,ConvertedStartTime__c,Variable_Rate__c,
                                                             TimeZone__c,EmployeeReimbursement__r.Mileage_Lock_Date__c,Activity__c,Mileage_Lock_Date__c
                                                 FROM Employee_Mileage__c 
                                                 WHERE Trip_Date__c >= : Date.valueOf(startDate)
@@ -2220,7 +2112,7 @@ public with sharing class WrapperUtils
        
         String month = WrapperUtils.getMonthno(clickedMonth);      
         month = month +'-'+year;
-        String query = 'SELECT id,Name,Trip_Date__c,Mileage_Lock_Date__c,Trip_Origin__c,Stay_Time__c,Trip_Destination__c,Mileage__c,Variable__c,Trip_Status__c,Approved_Date__c,EmployeeReimbursement__c,EmployeeReimbursement__r.month__c, EmployeeReimbursement__r.Contact_Id__c,CreatedDate,Rejected__c,EmployeeReimbursement__r.Total_Variable_Rate__c,EmployeeReimbursement__r.Total_Pending__c,Origin_Name__c,Tracing_Style__c,StartTime__c,EndTime__c,Day_Of_Week__c,Destination_Name__c,EmployeeReimbursement__r.Contact_Id__r.External_Email__c,EmployeeReimbursement__r.Monthly_Variable_Amount__c,EmployeeReimbursement__r.Total_Monthly_Approved_Variable__c,Maintenance_and_Tires__c,Fuel_price__c,EmployeeReimbursement__r.Total_Mileage__c,EmployeeReimbursement__r.Total_Rejected__c,Notes__c,TimeZone__c,EmployeeReimbursement__r.Mileage_Lock_Date__c,ConvertedStartTime__c,ConvertedEndTime__c,Driving_Time__c,Total_Time__c,Tag__c,Activity__c FROM Employee_Mileage__c WHERE EmployeeReimbursement__r.Month__c = \''+month+'\' AND EmployeeReimbursement__r.Contact_Id__c =\''+did+'\'';      
+        String query = 'SELECT id,Name,Trip_Date__c,Mileage_Lock_Date__c,Variable_Rate__c,Trip_Origin__c,Stay_Time__c,Trip_Destination__c,Mileage__c,Variable__c,Trip_Status__c,Approved_Date__c,EmployeeReimbursement__c,EmployeeReimbursement__r.month__c, EmployeeReimbursement__r.Contact_Id__c,CreatedDate,Rejected__c,EmployeeReimbursement__r.Total_Variable_Rate__c,EmployeeReimbursement__r.Total_Pending__c,Origin_Name__c,Tracing_Style__c,StartTime__c,EndTime__c,Day_Of_Week__c,Destination_Name__c,EmployeeReimbursement__r.Contact_Id__r.External_Email__c,EmployeeReimbursement__r.Monthly_Variable_Amount__c,EmployeeReimbursement__r.Total_Monthly_Approved_Variable__c,Maintenance_and_Tires__c,Fuel_price__c,EmployeeReimbursement__r.Total_Mileage__c,EmployeeReimbursement__r.Total_Rejected__c,Notes__c,TimeZone__c,EmployeeReimbursement__r.Mileage_Lock_Date__c,ConvertedStartTime__c,ConvertedEndTime__c,Driving_Time__c,Total_Time__c,Tag__c,Activity__c FROM Employee_Mileage__c WHERE EmployeeReimbursement__r.Month__c = \''+month+'\' AND EmployeeReimbursement__r.Contact_Id__c =\''+did+'\'';      
         
         List<Employee_Mileage__c> employeeMileageList =  (List<Employee_Mileage__c>)ExecuteQueryUtil.getRecordListFromsObject(query);
         System.Debug(employeeMileageList);
@@ -2249,6 +2141,13 @@ public with sharing class WrapperUtils
     }
     public static String readFromFileInchunk(String attachmentBody, String attachmentName, String attachmentId,String did,String accid,String contactattachementid)
     {
+        System.debug('**attachmentBody*'+attachmentBody);
+        System.debug('**attachmentName*'+attachmentName);
+        System.debug('**attachmentId*'+attachmentId);
+        System.debug('**did*'+did);
+        System.debug('**accid*'+accid);
+        System.debug('**contactattachementid*'+contactattachementid);
+
         if(attachmentBody != null) {
             Attachment insuranceAttachment = getAttachment(attachmentId);
             String newBody = '';
@@ -2467,23 +2366,10 @@ public with sharing class WrapperUtils
         List<Employee_Reimbursement__c> employeeReimbursementList = new List<Employee_Reimbursement__c>();
         if(showteam!=null && showteam == true && (role=='Admin' || role == StaticValues.roleAdminDriver)) // || role == 'Admin/Driver'
         {
-            employeeReimbursementList =[SELECT id,
-                                               Name, 
-                                               Month__c, 
-                                               Total_Rejected__c, 
-                                               Approved_Date__c,
-                                               Contact_Id__r.Accountid,
-                                               Contact_Id__r.Manager__r.Name,
-                                               Contact_Id__c, 
-                                               Contact_Id__r.name, 
-                                               Contact_Id__r.Monthly_Mileage_Limit__c, 
-                                               Total_Approved__c, 
-                                               Total_Mileage__c, 
-                                               Status__c, 
-                                               Total_Variable_Rate__c,
-                                               Total_Pending__c,
-                                               Total_Approved_Pending_Mileage__c,
-                                               Reimbursement_Approval__c
+            employeeReimbursementList =[SELECT id, Name, Month__c, Total_Rejected__c, Approved_Date__c, Contact_Id__r.Accountid,
+                                               Contact_Id__r.Manager__r.Name, Contact_Id__c, Contact_Id__r.name, Contact_Id__r.Monthly_Mileage_Limit__c, 
+                                               Total_Approved__c, Total_Mileage__c, Status__c, Total_Variable_Rate__c, Total_Pending__c,
+                                               Total_Approved_Pending_Mileage__c, Reimbursement_Approval__c,Mileage_Approver__c, Contact_Id__r.Manager_External_Email__c
                                         FROM Employee_Reimbursement__c 
                                         WHERE Approved_Date__c = null AND Status__c='Pending' 
                                         AND Contact_Id__r.Accountid =: accountId
@@ -2493,23 +2379,10 @@ public with sharing class WrapperUtils
         }
         else if(showteam!=null && showteam == false && (role=='Admin' || role == StaticValues.roleAdminDriver)) // || role == 'Admin/Driver'
         {
-            employeeReimbursementList =[SELECT id,
-                                               Name, 
-                                               Month__c, 
-                                               Total_Rejected__c, 
-                                               Approved_Date__c,
-                                               Contact_Id__r.Accountid, 
-                                               Contact_Id__c,
-                                               Contact_Id__r.Manager__r.Name,
-                                               Contact_Id__r.name, 
-                                               Contact_Id__r.Monthly_Mileage_Limit__c, 
-                                               Total_Approved__c, 
-                                               Total_Mileage__c, 
-                                               Status__c,
-                                               Total_Approved_Pending_Mileage__c, 
-                                               Total_Variable_Rate__c,
-                                               Total_Pending__c,
-                                               Reimbursement_Approval__c 
+            employeeReimbursementList =[SELECT id, Name, Month__c, Total_Rejected__c, Approved_Date__c, Contact_Id__r.Accountid, Contact_Id__c,
+                                               Contact_Id__r.Manager__r.Name, Contact_Id__r.name, Contact_Id__r.Monthly_Mileage_Limit__c, 
+                                               Total_Approved__c, Total_Mileage__c, Status__c, Total_Approved_Pending_Mileage__c, 
+                                               Total_Variable_Rate__c, Total_Pending__c, Reimbursement_Approval__c, Mileage_Approver__c, Contact_Id__r.Manager_External_Email__c
                                         FROM Employee_Reimbursement__c 
                                         where Approved_Date__c = null 
                                         AND Status__c='Pending' 
@@ -2524,22 +2397,10 @@ public with sharing class WrapperUtils
         }
         else if(showteam!=null && showteam == true && (role=='Manager' || role=='Driver/Manager'))
         {
-            employeeReimbursementList =[SELECT id,
-                                               Name, 
-                                               Month__c, 
-                                               Total_Rejected__c, 
-                                               Approved_Date__c,
-                                               Contact_Id__r.Accountid, 
-                                               Contact_Id__c, 
-                                               Contact_Id__r.name, 
-                                               Contact_Id__r.Manager__r.Name, 
-                                               Contact_Id__r.Monthly_Mileage_Limit__c, 
-                                               Total_Approved__c, 
-                                               Total_Mileage__c, 
-                                               Status__c,Total_Approved_Pending_Mileage__c, 
-                                               Total_Variable_Rate__c,
-                                               Total_Pending__c,
-                                               Reimbursement_Approval__c 
+            employeeReimbursementList =[SELECT id, Name, Month__c, Total_Rejected__c, Approved_Date__c, Contact_Id__r.Accountid, 
+                                               Contact_Id__c, Contact_Id__r.name, Contact_Id__r.Manager__r.Name, Contact_Id__r.Monthly_Mileage_Limit__c, 
+                                               Total_Approved__c, Total_Mileage__c, Status__c,Total_Approved_Pending_Mileage__c, 
+                                               Total_Variable_Rate__c, Total_Pending__c, Reimbursement_Approval__c, Mileage_Approver__c, Contact_Id__r.Manager_External_Email__c
                                         FROM Employee_Reimbursement__c 
                                         where Approved_Date__c = null 
                                         AND Status__c='Pending' 
@@ -2554,23 +2415,11 @@ public with sharing class WrapperUtils
         }
         else if(showteam != null && showteam == false && (role == 'Manager' || role =='Driver/Manager'))
         {
-            employeeReimbursementList = [SELECT id,
-                                               Name, 
-                                               Month__c, 
-                                               Total_Rejected__c, 
-                                               Approved_Date__c,
-                                               Contact_Id__r.Accountid, 
-                                               Contact_Id__c, 
-                                               Contact_Id__r.name, 
-                                               Contact_Id__r.Manager__r.Name, 
-                                               Contact_Id__r.Manager__c,
-                                               Contact_Id__r.Monthly_Mileage_Limit__c, 
-                                               Total_Approved__c, 
-                                               Total_Mileage__c, 
-                                               Status__c, 
-                                               Total_Variable_Rate__c,
-                                               Total_Pending__c,
-                                               Reimbursement_Approval__c 
+            employeeReimbursementList = [SELECT id, Name, Month__c, Total_Rejected__c, Approved_Date__c, Contact_Id__r.Accountid, 
+                                               Contact_Id__c, Contact_Id__r.name, Contact_Id__r.Manager__r.Name, Contact_Id__r.Manager__c,
+                                               Contact_Id__r.Monthly_Mileage_Limit__c, Total_Approved__c, Total_Mileage__c, Status__c, 
+                                               Total_Variable_Rate__c, Total_Pending__c, Reimbursement_Approval__c, Mileage_Approver__c, 
+                                               Contact_Id__r.Manager_External_Email__c 
                                         FROM Employee_Reimbursement__c 
                                         where Approved_Date__c = null 
                                         AND Total_Approved_Pending_Mileage__c > 0
@@ -2608,6 +2457,9 @@ public with sharing class WrapperUtils
                 reimbursement.approvedMileages = String.valueOf(currentReimbursement.Total_Approved__c);             
                 reimbursement.isSelected = false;
                 reimbursement.isSelectedEmailReminder = false;
+                reimbursement.managerName = currentReimbursement.Contact_Id__r.Manager__r.Name != null ? currentReimbursement.Contact_Id__r.Manager__r.Name : '';
+                reimbursement.mileageApproval = currentReimbursement.Mileage_Approver__c != null ? currentReimbursement.Mileage_Approver__c : '';
+                reimbursement.managerEmail = currentReimbursement.Contact_Id__r.Manager_External_Email__c != null ? currentReimbursement.Contact_Id__r.Manager_External_Email__c : '';
                 List<String> reimbursementIdList = new List<String>();
                 reimbursementIdList.add(currentReimbursement.Id);
                 reimbursement.reimbursementIdList = reimbursementIdList;
@@ -2632,19 +2484,9 @@ public with sharing class WrapperUtils
             if(showteam != null && showteam == true && (role=='Admin' || role == StaticValues.roleAdminDriver)) // || role == 'Admin/Driver'
             {
                 system.debug('----->');
-                employeeReimbursementList =[SELECT ID, 
-                                                   Name, 
-                                                   Month__c, 
-                                                   Total_Rejected__c, 
-                                                   Approved_Date__c, 
-                                                   Contact_Id__c, 
-                                                   Contact_Id__r.name, 
-                                                   Contact_Id__r.Monthly_Mileage_Limit__c,
-                                                   Contact_Id__r.Manager__r.Name, 
-                                                   Total_Approved__c, 
-                                                   Total_Mileage__c, 
-                                                   Status__c,
-                                                   Reimbursement_Approval__c 
+                employeeReimbursementList =[SELECT ID, Name, Month__c, Total_Rejected__c, Approved_Date__c, Contact_Id__c, Contact_Id__r.name, Contact_Id__r.Monthly_Mileage_Limit__c,
+                                                   Contact_Id__r.Manager__r.Name, Total_Approved__c, Total_Mileage__c, Status__c, Reimbursement_Approval__c, Mileage_Approver__c,
+                                                   Contact_Id__r.Manager_External_Email__c 
                                             FROM Employee_Reimbursement__c 
                                             WHERE Contact_Id__r.Accountid = :accountId 
                                             AND Month__c = :currentAccount.Last_Reimbursement_Created__c
@@ -2653,19 +2495,10 @@ public with sharing class WrapperUtils
             else if(showteam!=null && showteam == false && (role=='Admin' || role == StaticValues.roleAdminDriver)) //|| role == 'Admin/Driver'
             {
                 system.debug('----->');
-                employeeReimbursementList = [SELECT ID, 
-                                                    Name, 
-                                                    Month__c, 
-                                                    Total_Rejected__c, 
-                                                    Approved_Date__c, 
-                                                    Contact_Id__c, 
-                                                    Contact_Id__r.name, 
-                                                    Contact_Id__r.Monthly_Mileage_Limit__c,
-                                                    Contact_Id__r.Manager__r.Name, 
-                                                    Total_Approved__c, 
-                                                    Total_Mileage__c, 
-                                                    Status__c,
-                                                    Reimbursement_Approval__c 
+                employeeReimbursementList = [SELECT ID, Name, Month__c, Total_Rejected__c, Approved_Date__c, Contact_Id__c, Contact_Id__r.name, 
+                                                    Contact_Id__r.Monthly_Mileage_Limit__c, Contact_Id__r.Manager__r.Name, Total_Approved__c, 
+                                                    Total_Mileage__c, Status__c, Reimbursement_Approval__c, 
+                                                    Mileage_Approver__c, Contact_Id__r.Manager_External_Email__c 
                                             FROM Employee_Reimbursement__c 
                                                 WHERE Contact_Id__r.Accountid = :accountId 
                                                 and Month__c = :currentAccount.Last_Reimbursement_Created__c
@@ -2690,7 +2523,8 @@ public with sharing class WrapperUtils
                                                     Total_Approved__c, 
                                                     Total_Mileage__c, 
                                                     Status__c,
-                                                    Reimbursement_Approval__c 
+                                                    Reimbursement_Approval__c,
+                                                    Mileage_Approver__c,Contact_Id__r.Manager_External_Email__c 
                                             FROM Employee_Reimbursement__c 
                                             WHERE Contact_Id__r.Accountid = :accountId 
                                             AND Contact_Id__r.Deactivated_Date__c = null
@@ -2715,7 +2549,8 @@ public with sharing class WrapperUtils
                                                     Total_Approved__c, 
                                                     Total_Mileage__c, 
                                                     Status__c,
-                                                    Reimbursement_Approval__c 
+                                                    Reimbursement_Approval__c,
+                                                    Mileage_Approver__c,Contact_Id__r.Manager_External_Email__c 
                                             FROM Employee_Reimbursement__c 
                                             WHERE Contact_Id__r.Accountid = :accountId 
                                             AND Contact_Id__r.Deactivated_Date__c = null
@@ -2787,7 +2622,7 @@ public with sharing class WrapperUtils
                                                             EmployeeReimbursement__r.month__c,EmployeeReimbursement__r.Total_Pending__c,Stay_Time__c,
                                                             EmployeeReimbursement__r.Total_Mileage__c,EmployeeReimbursement__r.Contact_Id__c,Driving_Time__c,Total_Time__c,
                                                             CreatedDate,Rejected__c,Origin_Name__c,Tracing_Style__c,StartTime__c,EndTime__c,Mileage_Lock_Date__c,
-                                                            Day_Of_Week__c,Destination_Name__c,EmployeeReimbursement__r.Contact_Id__r.External_Email__c,
+                                                            Day_Of_Week__c,Destination_Name__c,EmployeeReimbursement__r.Contact_Id__r.External_Email__c,Variable_Rate__c,
                                                             Maintenance_and_Tires__c,Fuel_price__c,EmployeeReimbursement__r.Total_Variable_Rate__c,ConvertedStartTime__c,ConvertedEndTime__c, 
                                                             EmployeeReimbursement__r.Total_Rejected__c,Notes__c,EmployeeReimbursement__r.Mileage_Lock_Date__c,Activity__c
                                                     FROM Employee_Mileage__c 

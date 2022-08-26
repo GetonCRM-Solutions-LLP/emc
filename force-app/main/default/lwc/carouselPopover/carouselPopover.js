@@ -8,6 +8,7 @@ export default class CarouselPopover extends LightningElement {
   @api styleHeader;
   @api styleFooter;
   @api styleBody;
+  @api headerTitle;
    // Link for instruction for android
    instructionUrlAndroid;
 

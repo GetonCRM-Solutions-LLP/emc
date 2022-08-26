@@ -19,6 +19,9 @@ public with sharing class TestDataFactory {
         tdkeys.Channel_Id__c='22'; 
         tdkeys.Name='TrueDialogKeys';
         tdKeys.Subscription_Id__c='22639';
+        tdKeys.Contact_Insert_From_File__c = True;
+        tdKeys.Batch_Notification_Email__c='dhanrajkhatri453@gmail.com';
+
 
         if(doInsert){
             insert tdKeys;
@@ -266,7 +269,7 @@ public with sharing class TestDataFactory {
         accountObj.Bi_Weekly_Pay_Period__c = checkByWeek;
         accountObj.Pay_Period_Days__c = 13;
         accountObj.Pay_Period_Start_Date__c = system.today().adddays(-14);
-        accountObj.Triplog_API__c = '123456789';
+        accountObj.Triplog_API__c = '28beeea973f34daf89050a9b6a3b1a71';
         accountObj.Triplog_Status__c = 'U';
         accountObj.isUsingTriplog__c = True;
         if(doInsert){

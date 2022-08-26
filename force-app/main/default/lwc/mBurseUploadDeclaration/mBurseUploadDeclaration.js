@@ -96,7 +96,7 @@ export default class MBurseUploadDeclaration extends LightningElement {
             this.chooseFileName = photofile.name;
             fIndex = this.chooseFileName.lastIndexOf(".");
             subString = this.chooseFileName.substring(fIndex, this.chooseFileName.length);
-            if (subString === '.pdf') {
+            if (subString === '.pdf' || subString === '.PDF') {
                 if (this.choosefile) {
                     if (this.choosefile.files[0].size > 0 && this.choosefile.files[0].size < 4350000) {
                         this.choosefile = baseTarget;
@@ -114,7 +114,7 @@ export default class MBurseUploadDeclaration extends LightningElement {
                 }
             } else {
                 this.toggleBoxError();
-                this.errorUploading = 'Please upload correct File. File extension should be .pdf'
+                this.errorUploading = 'Please upload correct File. File extension should be .pdf/.PDF'
             }
 
             reader = new FileReader();
@@ -152,7 +152,7 @@ export default class MBurseUploadDeclaration extends LightningElement {
         } else {
             attachmentBody = this.attachment.substring(this.positionIndex, this.positionIndex + this.chunkSize);
         }
-        console.log(this.attachmentid, this.contactEmail, this.contactName)
+        console.log(this.attachmentid, this.contactEmail, this.contactName, attachmentBody)
         readFromFileInchunk({
                 attachmentBody: attachmentBody,
                 attachmentName: this.attachmentName,

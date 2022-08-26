@@ -85,6 +85,8 @@ public with sharing class RecordUtilityClass
         sendEmailforCompliance();
         enableMappingGasPriceTrigger();
         vehicleUrlMapping();
+        TrueDialog_Keys__c tdKeys = TestDataFactory.createTrueDialog(true);
+
         UserRole userRole_1 = [SELECT Id FROM UserRole WHERE DeveloperName = 'EMD' LIMIT 1];
         Profile profile_1 = [SELECT Id FROM Profile WHERE Name = 'Customer Community Login User' LIMIT 1];
         User admin = [SELECT Id, Username, UserRoleId FROM User WHERE Profile.Name = 'System Administrator' AND UserRoleId = :userRole_1.Id LIMIT 1];
@@ -408,6 +410,7 @@ public with sharing class RecordUtilityClass
             c.Added_Date__c = System.today();
             c.Activation_Date__c = System.today();
             c.Monthly_Reimbursement__c = true;
+            c.Company__C = 'Park';
             obj_Manager_list.add(c);
         }
         return obj_Manager_list;
@@ -644,7 +647,7 @@ public with sharing class RecordUtilityClass
                     Trip_Origin__c,Fuel_price__c,EmployeeReimbursement__r.Total_Variable_Rate__c,
                     Maintenance_and_Tires__c,Origin_Name__c,Tracing_Style__c,StartTime__c,
                     EndTime__c,Day_Of_Week__c,Destination_Name__c,Trip_Destination__c,Mileage__c,
-                    Variable__c,Trip_Status__c,Approved_Date__c,EmployeeReimbursement__c,
+                    Variable__c,Trip_Status__c,Approved_Date__c,EmployeeReimbursement__c,Variable_Rate__c,
                     EmployeeReimbursement__r.month__c,EmployeeReimbursement__r.Contact_Id__c,CreatedDate,Rejected__c,
                     EmployeeReimbursement__r.Total_Pending__c,EmployeeReimbursement__r.Monthly_Variable_Amount__c,
                     EmployeeReimbursement__r.Contact_Id__r.External_Email__c,EmployeeReimbursement__r.Total_Rejected__c,

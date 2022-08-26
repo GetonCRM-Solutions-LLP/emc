@@ -17,8 +17,9 @@ public with sharing class TrueDiaolgSendMessageWrapper {
     public string id;
     public String[] channels;
 	public String[] targets;
-	public String message;	//
+	public String message;
 	public boolean execute;
+    public String mediaId;
 
     /** 
     * ********************************************************
@@ -79,6 +80,4 @@ public with sharing class TrueDiaolgSendMessageWrapper {
 	public static TrueDiaolgSendMessageWrapper parse(String json){
 		return (TrueDiaolgSendMessageWrapper) System.JSON.deserialize(json, TrueDiaolgSendMessageWrapper.class);
 	}
-
-	
 }

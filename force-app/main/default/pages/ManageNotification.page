@@ -1640,8 +1640,7 @@
             var app = angular.module('manageNotificationModule', ['angularUtils.directives.dirPagination']);
             app.controller('manageNotificationController', ['$scope', '$filter',
                 function ($scope, $filter) {
-                    $scope.driverInfo = {!conWrapper
-                }
+                    $scope.driverInfo = {!conWrapper}
                         $scope.role = '{!role}'
                         $scope.manRole = '{!managerrole}'
                         $scope.mburseUrl = ($scope.role === 'Admin') ? 'admindashboard' : ($scope.role === 'Driver/Manager') ? 'drivermanagerdashboard' : ($scope.role === 'Manager') ? 'managerdashboard' : 'admindriverdashboard';
@@ -1649,6 +1648,39 @@
             $scope.isTextMessaging = {!checkTrueDialog};
             console.log("role->", $scope.role, $scope.manRole,  $scope.isTextMessaging);
             var nTable = document.getElementById('style-2').offsetHeight;
+            var scopeTarget = $scope;
+            window.onmessage = function (event) {
+                if (event.data === 'endchat') {
+                    document.getElementById("chatFrame").removeAttribute("src");
+                    document.getElementById('chatFrame').classList.add('d-none');
+                    document.getElementById("chatBack").classList.add('d-none');
+                    $scope.$apply(function () {
+                        location.reload();
+                        // $scope.nameOfPage = 'Messaging';
+                        // $scope.massNotiTextEnable = false;
+                        // $scope.checkboxShowNotiText = false;
+                        // $scope.showNotiBtn = true;
+                        // $scope.showCancelProBtn = false;
+                        // $scope.showTextNotiBtn = false;
+                        // $scope.massTextEnable = false;
+                        // $scope.checkboxShowText = false;
+                        // $scope.showTextMsgBtn = true;
+                        // $scope.showTextBtn = false;
+                        // document.getElementById('notification-message-area').value = '';
+                        // angular.forEach($scope.driverInfo, function (item) {
+                        //     if (item.massNotiText) {
+                        //         item.massNotiText = false;
+                        //     }
+                        // });
+                        // document.getElementById('chat-message-area').value = '';
+                        // angular.forEach($scope.driverInfo, function (item) {
+                        //     if (item.massText) {
+                        //         item.massText = false;
+                        //     }
+                        // });
+                    })
+                }
+            }
             const styleFilter = () => {
                 if ($scope.driverInfo.length > 10) {
                     var elmHeight = document.getElementById("tableWrap").offsetHeight;
@@ -1796,6 +1828,7 @@
                     }
                 }
             }
+
             function payDate(date) {
                 var st = new Date(date);
                 var today = new Date();
@@ -1877,12 +1910,10 @@
             $scope.sortKey = 'name';
             $scope.reverse = true;
             $scope.sort = function (keyname) {
-
                 $scope.reverse = ($scope.sortKey === keyname) ? !$scope.reverse : false;
                 $scope.sortKey = keyname;
                 if (keyname === 'name' || keyname === 'insurance') {
                     $scope.driverInfo.sort(function (a, b) {
-
                         var nameA = (a[keyname] === null) ? '' : a[keyname].toLowerCase(),
                             nameB = (b[keyname] === null) ? '' : b[keyname].toLowerCase()
                         if ($scope.reverse) {
@@ -1900,6 +1931,27 @@
                         }
                     })
                 }
+
+                if (keyname === 'unReadMessageCount') {
+                    $scope.driverInfo.sort(function (a, b) {
+                        var intA = (a[keyname] === null) ? '' : parseInt(a[keyname]),
+                            intB = (b[keyname] === null) ? '' : parseInt(b[keyname])
+                        if ($scope.reverse) {
+                            if (intA < intB) //sort string ascending
+                                return -1
+                            if (intA > intB)
+                                return 1
+                            return 0 //default return value (no sorting)
+                        } else {
+                            if (intA < intB) //sort string ascending
+                                return 1
+                            if (intA > intB)
+                                return -1
+                            return 0 //default return value (no sorting)
+                        }
+                    })
+                }
+
                 if (keyname === 'expirationDate') {
                     $scope.driverInfo.sort(function (a, b) {
 
@@ -3870,7 +3922,7 @@
                                 </tr>
                             </thead>
                             <tbody ng-class="{'table-scroll' : driverInfo.length > 5}" id="style-2">
-                                <tr dir-paginate="info in driverInfo | filter:search | itemsPerPage: pageSize" current-page="currentPage">
+                                <tr dir-paginate="info in driverInfo | filter:search | orderBy: '-unReadMessageCount' | itemsPerPage: pageSize" current-page="currentPage">
                                     <td ng-model="info.check" ng-show="checkboxShow" class="align-text em-2">
                                         <input class="custom-check" type="checkbox" ng-model="info.massEmail" ng-change="CheckUncheckForEmail(info);" />
                                     </td>
@@ -4130,6 +4182,14 @@
                     <footer class="slds-modal__footer">
                         <div class="slds-clearfix">
                             <div class="slds-float_right slds-m-right_small">
+                                <div class="file-field">
+                                    <div class="slds-btn slds-btn-primary slds-btn-sm waves-effect bc-blue waves-light mleft-0" id="imageFileBtn">
+                                        <i class="fa fa-paperclip slds-p-right_xx-small"></i>
+                                        <span>Attachment</span>
+                                        <input type="file" class="image-file" multiple="false" accept="image/png, image/jpeg" onchange="angular.element(this).scope().attachmentImage(this)"
+                                        />
+                                    </div>
+                                </div>
                                 <button id="sendMessageBtn" ng-class="{'disable-div' : isSendActive === true}" class="slds-btn slds-btn-primary slds-btn-sm waves-effect bc-mburse-green waves-light mleft-0" ng-click="sendMessageToAll()">
                                     <i class="fa-solid fa-paper-plane slds-p-right_x-small"></i>Send Message
                                 </button>
@@ -4230,13 +4290,6 @@
         <div class="chatFrame-backdrop d-none" id="chatBack"></div>
         <iframe id="chatFrame" frameborder="0" class="vf-chat-iframe d-none"></iframe>
         <script>
-            window.onmessage = function (event) {
-                if (event.data === 'endchat') {
-                    document.getElementById("chatFrame").removeAttribute("src");
-                    document.getElementById('chatFrame').classList.add('d-none');
-                    document.getElementById("chatBack").classList.add('d-none');
-                }
-            }
             $('.menuToggler').click(function () {
                 var overlay_navigation = $('.overlay-navigation'),
                     nav_item_1 = $('#action-nav .action-nav-list:nth-of-type(1)'),
