@@ -654,7 +654,8 @@
                                                 <td >License/Registration</td>
                                             </tr>
                                             <tr>
-                                                <td class="col-12 col-lg-6 col-xl-5 col-md-6 col-sm-12">{{empContact[0].Taxes__c| currency:"$":2}}</td>
+                                                <td class="col-12 col-lg-6 col-xl-5 col-md-6 col-sm-12" ng-if="empContact[0].Taxes__c != undefined">{{empContact[0].Taxes__c| currency:"$":2}}</td>
+                                                <td class="col-12 col-lg-6 col-xl-5 col-md-6 col-sm-12" ng-if="empContact[0].Taxes__c === undefined">{{ 0 | currency:"$":2}}</td>
                                                 <td >Taxes</td>
                                             </tr>
                                             <tr>
