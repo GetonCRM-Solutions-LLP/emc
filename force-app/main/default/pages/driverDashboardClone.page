@@ -761,7 +761,7 @@
                     if (window.screen.width != 1366) {
                         document.getElementById("vfFrame").height = "338";
                     } else {
-                        document.getElementById("vfFrame").height = "342";
+                        document.getElementById("vfFrame").height = "391";
                     }
                 }
                 if (window.screen.width != 1366) {
@@ -2287,6 +2287,9 @@
                                                         <th>Total Time
                                                             <span class="sort-icon pull-right" ng-show="sortKey=='totalTime'" ng-class="{'fa fa-chevron-up':reverse,'fa fa-chevron-down':!reverse}"></span>
                                                         </th>
+                                                        <th>Approval Date
+                                                            <span class="sort-icon pull-right" ng-show="sortKey=='approvalDate'" ng-class="{'fa fa-chevron-up':reverse,'fa fa-chevron-down':!reverse}"></span>
+                                                        </th>
                                                         <th></th>
                                                     </tr>
                                                 </thead>
@@ -2297,6 +2300,7 @@
                                                         <td>{{time.totaldrivingTime}}</td>
                                                         <td>{{time.totalStayTime}}</td>
                                                         <td>{{time.totalTime}}</td>
+                                                        <td>{{time.approvalDate}}</td>
                                                         <td class="vw-4">
                                                             <button class="btn btn-primary font-14 mr-11 cursor-type" ng-click="downloadReport(time.startDate,time.endDate)">Download
                                                                 <i class="fa fa-download"></i>
@@ -2304,7 +2308,7 @@
                                                         </td>
                                                     </tr>
                                                     <tr ng-if="timeAttendence.length == 0">
-                                                        <td colspan="5" class="table-nodata">No Data Available</td>
+                                                        <td colspan="7" class="table-nodata">No Data Available</td>
                                                     </tr>
                                                 </tbody>
                                             </table>
@@ -2521,10 +2525,10 @@
                     }
                 } else {
                     if (event.data == 'slds-is-open') {
-                        iFrame.height = "680"
+                        iFrame.height = "762"
                         console.log('Reply received!');
                     } else if (event.data == 'slds-is-close') {
-                        iFrame.height = "345";
+                        iFrame.height = "391";
                         console.log('Reply received!');
                     }
                 }

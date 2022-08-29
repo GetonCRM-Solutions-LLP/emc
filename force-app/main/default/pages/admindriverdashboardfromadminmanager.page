@@ -3,12 +3,36 @@
 
     <head>
         <apex:include pageName="EMC_Common_Head" />
-
         <link rel="stylesheet" type="text/css" href="{!URLFOR($Resource.EmcCSS, 'emc-design/assets/css/CustomStyle.css')}" />
+        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v6.1.1/css/all.css"/>
         <apex:include pageName="EMC_Common_Scripts" />
         <script src="{!URLFOR($Resource.modelJs)}"></script>
         <script src="{!URLFOR($Resource.dirPagination)}"></script>
+        <script src="../../soap/ajax/44.0/connection.js"
+          type="text/javascript"></script>
         <style>
+            @keyframes roundB {
+                0% {
+                    opacity: 0;
+                }
+                100% {
+                    opacity: 1;
+                }
+            }
+
+            @keyframes xA {
+                0% {
+                    box-shadow:  #78bc427a 0px 0px 0px 10px;
+                }
+
+                70% {
+                    box-shadow: rgb(106 120 209 / 0%) 0px 0px 0px 6px;
+                } 
+
+                100% {
+                    box-shadow: rgb(106 120 209 / 0%) 0px 0px 0px 10px;
+                }
+            }
             /* Large screens ----------- */
             @media (min-width: 2560px)  {
                 .fuel_td{
@@ -150,6 +174,11 @@
             .mr-15{
                 margin-right: 15px !important;
             }
+
+            .pl-15{
+                padding-left: 15px;
+            }
+
             table#driver-dashbord-month-model th {
                 position: relative;
             }
@@ -165,6 +194,36 @@
             .card-footer{
                 padding: 0.35rem 1.15rem !important;
             }
+            .tips-button{
+                border-radius: 50%;
+                padding: 0px;
+                background: #78bc42 !important;
+                border: 0px;
+                color: rgb(255, 255, 255);
+                font-weight: 500;
+                opacity: 0;
+                width: 27px;
+                height: 27px;
+                font-size: 12px;
+                line-height: 27px;
+                box-shadow: rgb(106 120 209 / 0%) 0px 0px 0px 0px;
+                animation: 2s ease 2.1s infinite normal none running xA, 0.5s ease 1.4s 1 normal forwards running roundB;
+            }
+
+            .tips-button::selection {
+                background: none !important;
+                text-shadow: none !important;
+                color: none !important;
+            }
+
+            .tips-button:focus-visible{
+                outline: none !important;
+            }
+
+            .tips-button:focus{
+                outline: none !important;
+            }
+
         </style>
         <script>
              window.onload = function () {
@@ -1184,12 +1243,14 @@
                     $scope.syncMonth = (currDate.getMonth() > 0) ? (compareDate >= 18) ? (daymonth[currDate.getMonth()]) : (daymonth[currDate.getMonth() - 1]) : (compareDate >= 18) ? (daymonth[currDate.getMonth()]) : (daymonth[11]);
                     console.log($scope.syncMonth);
                     $scope.driverType = "";
+                    $scope.clickName = "Back";
                     $scope.adminid = url.searchParams.get("adminid");
                     $scope.accid = url.searchParams.get("accid");
                     $scope.id = url.searchParams.get("id");
                     $scope.showteam = url.searchParams.get("showteam");
                     $scope.admindriver = false;
                     $scope.syncHeader = false;
+                    $scope.isWorking = false;
                     $scope.syncMileageLabel = '{!($Label.unapproveMileageMessage)}';
                     $scope.approvalTopMsg = '{!($Label.mileageApprovalTopMsg)}';
                     $scope.approvalBottomMsg = '{!($Label.mileageApprovalBottomMsg)}';
@@ -1202,6 +1263,7 @@
                     $scope.WeiserAccID = '{!($Label.Weiser_Account)}';
                     $scope.admindriver = url.searchParams.get("admindriver");
                     $scope.modalType = "Monthly";
+                    $scope.showCarousel = false;
                     if ($scope.admindriver == undefined || $scope.admindriver == '') {
                         $scope.admindriver = false;
                     }
@@ -1247,6 +1309,7 @@
             this.clear = function () {
                 toastr.clear();
             };
+
             $scope.packetandMeeting = function () {
                 Visualforce.remoting.Manager.invokeAction('{!$RemoteAction.DriverDashboardFromAdminManager.getPacketandMeeting}', $scope.id,
                     function (result, event) {
@@ -2504,10 +2567,16 @@
             </div>
         </header>
         <section class="container-fluid">
-            <div class="font-s mb-2">
-                <a href="/app/admindriverdashboard?accid={{accid}}&id={{adminid}}&showteam={{showteam}}&admindriver={{admindriver}}">
-                    <i class="fas fa-chevron-left"></i> Back</a>
+            <div class="row">
+                <div class="font-s mb-2 pr-2 pl-15">
+                    <a href="/app/admindriverdashboard?accid={{accid}}&id={{adminid}}&showteam={{showteam}}&admindriver={{admindriver}}">
+                        <i class="fas fa-chevron-left"></i> Back</a>
+                </div>
+                <!-- <div>
+                    <button class="tips-button" ng-click="publishMC()"><i class="fa-solid fa-info"></i></button>
+                </div> -->
             </div>
+           
             <!-- <div class="font-s my-3">
                 <h1 class="form-heading mb-30">{{empContact[0].Name}}</h1>
             </div> -->
@@ -2832,6 +2901,9 @@
                                                         <th>Total Time
                                                             <span class="sort-icon pull-right" ng-show="sortKey=='totalTime'" ng-class="{'fa fa-chevron-up':reverse,'fa fa-chevron-down':!reverse}"></span>
                                                         </th>
+                                                        <th>Approval Date
+                                                            <span class="sort-icon pull-right" ng-show="sortKey=='approvalDate'" ng-class="{'fa fa-chevron-up':reverse,'fa fa-chevron-down':!reverse}"></span>
+                                                        </th>
                                                         <th></th>
                                                     </tr>
                                                 </thead>
@@ -2842,6 +2914,7 @@
                                                         <td>{{time.totaldrivingTime}}</td>
                                                         <td>{{time.totalStayTime}}</td>
                                                         <td>{{time.totalTime}}</td>
+                                                        <td>{{time.approvalDate}}</td>
                                                         <td class="vw-4">
                                                             <button class="btn btn-primary font-14 mr-11 cursor-type" ng-click="downloadReport(time.startDate,time.endDate)">Download
                                                                 <i class="fa fa-download"></i>
@@ -2849,7 +2922,7 @@
                                                         </td>
                                                     </tr>
                                                     <tr ng-if="timeAttendence.length == 0">
-                                                        <td colspan="6" class="table-nodata">No Data Available</td>
+                                                        <td colspan="7" class="table-nodata">No Data Available</td>
                                                     </tr>
                                                 </tbody>
                                             </table>
