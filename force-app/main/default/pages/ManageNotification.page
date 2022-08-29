@@ -740,6 +740,9 @@
                 opacity: 0.6;
             }
 
+            .waves-effect.bc-red:hover {
+                opacity: 1;
+            }
             .tWarning {
                 font-family: 'Proxima Nova';
                 font-size: 12px;
@@ -1243,6 +1246,13 @@
                 background-color: #78bc42;
             }
 
+            .chat_background{
+                padding: 0.25rem;
+                background-color: #f1f5f7;
+                border: 1px solid #f1f5f7;
+                border-radius: 0.25rem;
+            }
+
             .vw-12 {
                 width: 10em;
             }
@@ -1288,6 +1298,16 @@
             .bc-blue {
                 background: none !important;
                 background-color: #404e5e !important;
+            }
+
+            .bc-red {
+                background: none !important;
+                background-color: #ff0000 !important;
+            }
+
+            .close-image{
+                right: 0;
+                top: -11px;
             }
 
             .bc-grey {
@@ -1728,6 +1748,7 @@
             $scope.isNotiActive = true;
             $scope.enableNotification = false;
             $scope.massTextEnable = false;
+            $scope.imageUploading = false;
             $scope.massNotiTextEnable = false;
             $scope.uploadmileageProcess = false; /* EMC - 182 Added On 21 December 2021 */
             $scope.mileageBtn = true;  /* EMC - 182 Added On 21 December 2021 */
@@ -2713,6 +2734,7 @@
             $scope.locationdata = '';
             $scope.data = "";
             $scope.filesChoose = [];
+            $scope.imageChoose = [];
             $scope.locationChoose = [];
             $scope.mileageChoose = [];
             $scope.loaChoose = [];
@@ -3072,32 +3094,38 @@
 
             $scope.onChatMessage = function(){
                 var messageTextInput = document.getElementById('chat-message-area').value;
-                $scope.isSendActive = (messageTextInput != '') ? false : true;
+                $scope.isSendActive = (messageTextInput != '' || $scope.imageUploading) ? false : true;
             }
 
-            $scope.sendMessageToAll = function(){
+            $scope.sendMessageToAll = function(element){
                 $('#loading').text("Your text is being sent");
                 $('#spinner').show();
                 $scope.massTextEnable = false;
                 var text = document.getElementById('chat-message-area').value;
                 var driverTextInfo = angular.copy($scope.driverTextList);
-                Visualforce.remoting.Manager.invokeAction('{!$RemoteAction.ManageNotificationController.sendMessageToMultipleContacts}', JSON.stringify(driverTextInfo), text,
-                    function (result, event) {
-                        if (event.status) {
-                            $('#spinner').hide();
-                            $('#loading').text("");
-                            toastr.success("Message Sent Successfully");
-                            location.reload();
-                        }
-                        else {
-                            $('#spinner').hide();
-                            $('#loading').text("");
-                            toastr.error('Some error has occur');
-                        }
-                        $scope.$apply();
-                    },
-                    { buffer: true, escape: true, timeout: 120000 }
-                );
+                if($scope.imageUploading){
+                    $scope.uploadImageFileInChunk(element, text, driverTextInfo);
+                }else{
+                    Visualforce.remoting.Manager.invokeAction('{!$RemoteAction.ManageNotificationController.sendMessageToMultipleContacts}', JSON.stringify(driverTextInfo), text,
+                        function (result, event) {
+                            if (event.status) {
+                                $('#spinner').hide();
+                                $('#loading').text("");
+                                toastr.success("Message Sent Successfully");
+                                location.reload();
+                            }
+                            else {
+                                $('#spinner').hide();
+                                $('#loading').text("");
+                                toastr.error('Some error has occur');
+                            }
+                            $scope.$apply();
+                        },
+                        { buffer: true, escape: true, timeout: 120000 }
+                    );
+                }
+               
+              
             }
 
             $scope.acceptRequest = function () {
@@ -3392,6 +3420,132 @@
                     reader.readAsBinaryString(selectedFile);
                 }
                 console.log("from location file", lfile);
+            }
+
+            /* EMC - 396 Starts-------- */
+
+            $scope.removeImageUpload = function(){
+                var messageTextInput = document.getElementById('chat-message-area').value;
+                $scope.isSendActive = (messageTextInput != '') ? false : true;
+                document.getElementById('file-image').src = "";
+                document.getElementById('image-file_type').value = "";
+                $scope.imageUploading = false;
+            }
+
+            $scope.attachmentImage = function (element) {
+                chooseFileName = '';
+                attachment = '';
+                choosefile = '';
+                $scope.data = '';
+                choosefile = element;
+                var findex = (element.files[0].name).lastIndexOf(".");
+                var photofile = element.files[0];
+                var chat_file = document.getElementById('file-image');
+                chooseFileName = photofile.name;
+                //console.log('file size :- '+choosefile.files[0].size);
+                var strsubstring = (element.files[0].name).substring(findex, (element.files[0].name).length);
+                if (strsubstring == '.png' || strsubstring == '.jpg' || strsubstring == '.jpeg') {
+                    if (choosefile.files[0].size > 0 && choosefile.files[0].size < 4350000) {
+                        choosefile = element;
+                        $scope.imageChoose.push(element);
+                        $scope.$apply(function (scope) {
+                            $scope.isSendActive = false;
+                            $scope.imageUploading = true;
+                            choosenfileType = photofile.type;
+                            var reader = new FileReader();
+                            reader.onload = function (e) {
+                                chat_file.src = reader.result;
+                            };
+                            reader.readAsDataURL(photofile);
+                        });
+                    }
+                    else {
+                        $scope.imageUploading = false;
+                        toastr.error('Base 64 Encoded file is too large.  Maximum size is 4 MB .');
+                    }
+                }
+                else {
+                    $scope.imageUploading = false;
+                    toastr.error('Please upload correct File. File extension should be .png, .jpg or .jpeg');
+                    $('#loading').text("");
+                    $('#spinner').hide();
+                }
+
+            }
+
+            $scope.uploadImageFileInChunk = function (element, textMessage, driverTextInfo) {
+                var file;
+                if (element.currentTarget != null || element.currentTarget != undefined) {
+                    angular.forEach($scope.imageChoose, function (f) {
+                        if (f.name === element.currentTarget.name) {
+                            file = f.files[0];
+                        }
+                    })
+                }
+
+                console.log(file);
+                //var file = choosefile.files[0];
+                if (file != undefined) {
+                    if (file.size <= maxFileSize) {
+                        attachmentName = file.name;
+                        var fileReader = new FileReader();
+                        fileReader.onloadend = function (e) {
+                            e.preventDefault();
+                            attachment = window.btoa(this.result);
+                            positionIndex = 0;
+                            fileSize = attachment.length;
+                            doneUploading = false;
+                            if (fileSize < maxStringSize) {
+                                uploadImageAttachment(textMessage, driverTextInfo);
+                            } else {
+                                toastr.error('Base 64 Encoded file is too large.  Maximum size is " + maxStringSize + " your file is " + fileSize + "."');
+                            }
+                        }
+
+                        fileReader.onerror = function (e) {
+                            toastr.error('There was an error reading the file.  Please try again.');
+                        }
+                        fileReader.onabort = function (e) {
+                            toastr.error('There was an error reading the file.  Please try again.');
+                        }
+
+                        fileReader.readAsBinaryString(file);
+                    }
+                    else {
+                        toastr.error('File must be under 4.3 MB in size.  Your file is too large.  Please try again.');
+                    }
+                }
+                else {
+                    toastr.error('You must choose a file before trying to upload it');
+                }
+            }
+
+            function uploadImageAttachment(textToSend, driverTextInfo) {
+                $('#spinner').show();
+                var attachmentBody = "";
+                if (fileSize <= positionIndex + chunkSize) {
+                    attachmentBody = attachment.substring(positionIndex);
+                    doneUploading = true;
+                } else {
+                    attachmentBody = attachment.substring(positionIndex, positionIndex + chunkSize);
+                }
+                Visualforce.remoting.Manager.invokeAction('{!$RemoteAction.ManageNotificationController.sendImageToMultipleContacts}', JSON.stringify(driverTextInfo), attachmentBody, attachmentName, textToSend,
+                    function (result, event) {
+                        if (event.status) {
+                            $('#spinner').hide();
+                            $('#loading').text("");
+                            toastr.success("Message Sent Successfully");
+                            location.reload();
+                        }
+                        else {
+                            $('#spinner').hide();
+                            $('#loading').text("");
+                            toastr.error('Some error has occur');
+                        }
+                        $scope.$apply();
+                    },
+                    { buffer: true, escape: true, timeout: 120000 }
+                );
             }
 
             const changeKeyObjects = (arr, replaceKeys) => {
@@ -4176,6 +4330,14 @@
                     <div class="slds-modal__content slds-p-around_medium slds-scrollable" id="modal-content-id-1">
                         <div class="slds-align_absolute-center">
                             <textarea ng-model="truedailogChat"  placeholder="Type your message here.." class="slds-textarea" id="chat-message-area" ng-change="onChatMessage()"></textarea>
+                            <div class="col-6 col-sm-6 col-md-3 col-lg-3 col-xl-3" ng-show="imageUploading">
+                                <div class="close-image position-absolute">
+                                    <button class="slds-btn slds-btn-primary slds-btn-sm waves-effect bc-red waves-light mleft-0" ng-click="removeImageUpload()">
+                                        <i class="fa fa-times"></i>
+                                    </button>
+                                </div>
+                                <img id="file-image"   class="chat__file-image chat_background" style="height: auto;" />
+                            </div>
                         </div>
                     </div>
                     <!-- Modal/Popup Box LWC footer starts here -->
@@ -4186,11 +4348,11 @@
                                     <div class="slds-btn slds-btn-primary slds-btn-sm waves-effect bc-blue waves-light mleft-0" id="imageFileBtn">
                                         <i class="fa fa-paperclip slds-p-right_xx-small"></i>
                                         <span>Attachment</span>
-                                        <input type="file" class="image-file" multiple="false" accept="image/png, image/jpeg" onchange="angular.element(this).scope().attachmentImage(this)"
+                                        <input id="image-file_type" type="file" class="image-file" multiple="false" accept="image/png, image/jpeg" onchange="angular.element(this).scope().attachmentImage(this)"
                                         />
                                     </div>
                                 </div>
-                                <button id="sendMessageBtn" ng-class="{'disable-div' : isSendActive === true}" class="slds-btn slds-btn-primary slds-btn-sm waves-effect bc-mburse-green waves-light mleft-0" ng-click="sendMessageToAll()">
+                                <button id="sendMessageBtn" ng-class="{'disable-div' : isSendActive === true}" class="slds-btn slds-btn-primary slds-btn-sm waves-effect bc-mburse-green waves-light mleft-0" ng-click="sendMessageToAll($event)">
                                     <i class="fa-solid fa-paper-plane slds-p-right_x-small"></i>Send Message
                                 </button>
                             </div>
