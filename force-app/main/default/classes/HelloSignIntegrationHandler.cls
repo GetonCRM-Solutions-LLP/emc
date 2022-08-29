@@ -67,7 +67,7 @@ public class HelloSignIntegrationHandler{
                 }
                 
                 System.debug('responseJSON-->'+String.valueOf(responseJSON));
-                String emailString='';
+                String emailString = '';
                 if(responseJSON != null){
                     for(HelloSign.ServiceObjects.Signature signatureObj : responseJSON.signature_request.signatures){
                         if(contactMap.containskey(signatureObj.signer_email_address)){contactMap.get(signatureObj.signer_email_address).Hello_Sign_Request_Id__c = responseJSON.signature_request.signature_request_id;contactMap.get(signatureObj.signer_email_address).Packet__c = Constants.sentForSignature; ContactMap.get(signatureObj.signer_email_address).Document_Sent_Date__c = System.today();
