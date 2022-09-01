@@ -294,6 +294,8 @@ public with sharing class WrapperUtils
                 }
             }
             currentContact.Driving_States__c = state; 
+        } else {
+            currentContact.Driving_States__c = '';
         }
         if(String.isNotBlank(String.valueOf(currentEmployeeDetail.loaFixedAmount ))) {
             currentContact.LOA_Fixed_Amount__c = Decimal.valueOf(currentEmployeeDetail.loaFixedAmount );
@@ -471,8 +473,7 @@ public with sharing class WrapperUtils
 
 
         Date createddate = Date.valueOf(employeeMileage.CreatedDate);
-        if(String.valueOf(createddate).contains('-'))
-        {
+        if(String.valueOf(createddate).contains('-')) {
             List<String> createdDateSplitted = new List<String>();
             createdDateSplitted = String.valueOf(createddate).split('-');           
             currentEmployeeMileage.submitteddate =  createdDateSplitted[1]+'/'+createdDateSplitted[2]+'/'+createdDateSplitted[0].substring(2,4);
@@ -613,6 +614,8 @@ public with sharing class WrapperUtils
                 }
             }
             currentContact.Driving_States__c =state; 
+        } else {
+            currentContact.Driving_States__c = null;
         }
         return currentContact;      
     }
@@ -701,8 +704,7 @@ public with sharing class WrapperUtils
         return employeeReimbursement;
     }
 
-    public static EmployeeReimbursementDetailsAdmin getEmployeeReimbursementDetails(Employee_Reimbursement__c currentEmployeeReimbursement)
-    {   
+    public static EmployeeReimbursementDetailsAdmin getEmployeeReimbursementDetails(Employee_Reimbursement__c currentEmployeeReimbursement) {   
         Double totalrejected =0;    
         EmployeeReimbursementDetailsAdmin employeeReimbursement = new EmployeeReimbursementDetailsAdmin();
         employeeReimbursement.id= currentEmployeeReimbursement.id;
@@ -725,19 +727,14 @@ public with sharing class WrapperUtils
             }
         } else {
             employeeReimbursement.approvedDate = '';
-        }
-        /*for(Employee_Mileage__c currentMileage:currentEmployeeReimbursement.Employees_Mileage__r)
-        {
-            totalrejected  = totalrejected+ Double.valueOf(currentMileage.Mileage__c);             
-        }*/
+        }       
         employeeReimbursement.rejectedMileages = String.valueOf(currentEmployeeReimbursement.Total_Rejected__c);
         employeeReimbursement.reimbursementApproval = currentEmployeeReimbursement.Reimbursement_Approval__c;
         employeeReimbursement.isSelected = false;
         return employeeReimbursement;
     }
 
-    public static Employee_Reimbursement__c approveReimbursementofDriver(EmployeeReimbursements currentEmployeeReimbursement)
-    {       
+    public static Employee_Reimbursement__c approveReimbursementofDriver(EmployeeReimbursements currentEmployeeReimbursement){       
         Employee_Reimbursement__c currentReimbursement = new Employee_Reimbursement__c();
         currentReimbursement.id= currentEmployeeReimbursement.employeeReimbursementId;
         currentReimbursement.Status__c = 'Approved';
@@ -765,13 +762,11 @@ public with sharing class WrapperUtils
     @param monthname monthname is the String value which is passed as string value of 01. 
     @return String as January.
     */
-    public static String getMonthName(String monthname)
-    {
+    public static String getMonthName(String monthname) {
         Map<Integer,String> monthNameMap=new Map<Integer, String>{01 =>'January', 02=>'February', 03=>'March', 04=>'April', 05=>'May',
                                                                     06=>'June', 07=>'July', 08=>'August', 09=>'September',10=>'October',
                                                                     11=>'November', 12=>'December'};
-        if(monthname.contains('-'))
-        {
+        if(monthname.contains('-'))    {
            return monthNameMap.get(Integer.valueOf((monthname.split('-')[0]))); 
         }
         return '';
@@ -785,11 +780,8 @@ public with sharing class WrapperUtils
     @param monthname monthname is the String value which is passed as string value of 01. 
     @return String as January.
     */
-    public static Integer getMonthInteger(String monthname)
-    {
-        
-        if(monthname.contains('-'))
-        {
+    public static Integer getMonthInteger(String monthname) {        
+        if(monthname.contains('-')) {
            return Integer.valueOf( monthname.split('-')[0]); 
         }
         return 0;
@@ -801,13 +793,11 @@ public with sharing class WrapperUtils
     @param monthname monthname is the String value which is passed as January. 
     @return String as 01.
     */
-    public static String getMonthno(String monthname)
-    {
+    public static String getMonthno(String monthname){
         Map<String,String> monthNameMap=new Map<String,String>{'January'=>'01', 'February'=>'02', 'March'=>'03', 'April'=>'04', 'May'=>'05',
                                                                     'June'=>'06', 'July'=>'07', 'August'=>'08', 'September'=>'09','October'=>'10',
                                                                     'November'=>'11', 'December'=>'12'};
-        if(monthNameMap.containsKey(monthname))
-        {
+        if(monthNameMap.containsKey(monthname)) {
            return String.valueOf(monthNameMap.get(monthname));    
         }                                                            
         return '';
@@ -825,9 +815,7 @@ public with sharing class WrapperUtils
         if(((month == '12') && (Date.today().month() == 12))||((month == '11')&&((Date.today().month() == 11) || (Date.today().month() == 12)))||((Integer.valueOf(month)<11)&&(Date.today().month()<11)))
         {
             month=month+'-'+String.valueOf(Date.today().year());
-        }
-        else if(((month == '12'|| month == '11') && (Date.today().month()<11)))
-        {
+        } else if(((month == '12'|| month == '11') && (Date.today().month()<11)))  {
             month=month+'-'+String.valueOf(Date.today().year()-1);
         }
         return month;
@@ -848,8 +836,7 @@ public with sharing class WrapperUtils
         List<String> driverPlanInfoList = new List<String>();
         List<Contact> currentDriver = new List<Contact>();
         currentDriver = [Select id,name,Meeting__c,Packet__c from Contact where id =:did];
-        if(currentDriver.size()>0)
-        {
+        if(currentDriver.size()>0) {
            driverPlanInfoList.add(JSON.serialize(currentDriver));
         }
         return driverPlanInfoList;
