@@ -3889,7 +3889,7 @@
                             con.drivingStates = (con.drivingStates === undefined) ? [''] : con.drivingStates
                             $scope.editList.push(con)
                             let arrayInput = $scope.editList[0].drivingStates;
-                            let inputToArray = (arrayInput != '') ? arrayInput.join() : arrayInput;
+                            let inputToArray = (typeof arrayInput != 'string') ? arrayInput.join() : arrayInput;
                             $scope.inputTag = (update === true) ?  $("#drivingstateContact").val() : $("#drivingstatenew").val();
                             let inputToCheck = ($scope.editList[0] != undefined) ? findCommon(inputToArray, $scope.inputTag) : true;
                             if(con.userid != "" && con.userid != undefined){
