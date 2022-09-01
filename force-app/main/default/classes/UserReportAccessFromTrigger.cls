@@ -7,28 +7,25 @@
  * @description:
  */
 public class UserReportAccessFromTrigger {
-    public UserReportAccessFromTrigger() {
-
-    }
+    public UserReportAccessFromTrigger() { }
 
     //method to create a report accessibility record for admin and admin/driver.
     @future 
     public static void createReportAccessibility(set<Id> setUserids)
     {
         List<Report_Accessibility__c> reportAccList = new List<Report_Accessibility__c>();
-        for(User currentUser : [SELECT ID,Name FROM User WHERE Id IN : setUserids]){
-           
+        for(User currentUser : [SELECT ID,Name FROM User WHERE Id IN : setUserids]){           
             Report_Accessibility__c reportObj = new Report_Accessibility__c();
             reportObj.Custom_Report__c = System.Label.EmployeeRosterReportID;
             reportObj.User__c = currentUser.Id;
             reportObj.Name = 'Employee Roster Report '+ currentUser.Name;
             reportAccList.add(reportObj);
 
-            // Report_Accessibility__c reportObjReim = new Report_Accessibility__c();
-            // reportObjReim.Custom_Report__c = System.Label.VariableReimbursementReportID;
-            // reportObjReim.User__c = currentUser.Id;
-            // reportObjReim.Name = 'Variable Reimbursement Report '+ currentUser.Name;
-            // reportAccList.add(reportObjReim);
+            Report_Accessibility__c reportObjReim = new Report_Accessibility__c();
+            reportObjReim.Custom_Report__c = System.Label.Onboarding_Status_ReportID;
+            reportObjReim.User__c = currentUser.Id;
+            reportObjReim.Name = 'Onboarding Status Report '+ currentUser.Name;
+            reportAccList.add(reportObjReim);
 
             Report_Accessibility__c ObjVariableReim = new Report_Accessibility__c();
             ObjVariableReim.Custom_Report__c = System.Label.FixedandVariableReportId;
@@ -49,8 +46,7 @@ public class UserReportAccessFromTrigger {
             reportAccList.add(ObjMilegeReport);
         }
         
-        if(!reportAccList.isEmpty() && !Test.isRunningTest()){
-            System.debug('reportAccList'+reportAccList);
+        if(!reportAccList.isEmpty() && !Test.isRunningTest()){            
             insert reportAccList;
         }
 
