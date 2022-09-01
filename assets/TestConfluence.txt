@@ -1,1 +1,1 @@
-BiweeklyPayPeriodTest,WrapperUtils_Test,UserReportAccessFromTriggerTest
+BiweeklyPayPeriodTest,WrapperUtils_Test,UserReportAccessFromTriggerTest,HelloSignIntegrationHandlerTest
