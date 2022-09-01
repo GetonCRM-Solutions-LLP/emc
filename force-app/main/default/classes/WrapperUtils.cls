@@ -295,7 +295,7 @@ public with sharing class WrapperUtils
             }
             currentContact.Driving_States__c = state; 
         } else {
-            currentContact.Driving_States__c = '';
+            currentContact.Driving_States__c = null;
         }
         if(String.isNotBlank(String.valueOf(currentEmployeeDetail.loaFixedAmount ))) {
             currentContact.LOA_Fixed_Amount__c = Decimal.valueOf(currentEmployeeDetail.loaFixedAmount );
