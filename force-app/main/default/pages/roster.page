@@ -1862,6 +1862,8 @@
             $scope.size = '10mb';
             $scope.employeeslist = [];
             $scope.employeeslistLOA = [];
+            $scope.editList = [];
+            $scope.inputTag = '';
             $scope.isSync = true;
             $scope.IsDisplay = false;
             $scope.editDialog = new EditDrivingStatesModel();
@@ -3267,7 +3269,7 @@
                             // count ++;
                             //  if(form['job_' +  $scope.empupdatelist[i].userid].$invalid)
                             // count++;
-                            // if(form['dept_' +  $scope.empupdatelist[i].userid].$invalid)
+                            // if(form['dept_' +  $scope.empupdatelist[i].userid].$invalid)invalid
                             //  count++;
                             if (form['zip_' + $scope.empupdatelist[i].userid].$invalid)
                                 count++;
@@ -3676,6 +3678,7 @@
                     $scope.relatedcitylist = [];
                     /*$scope.statelist = [];*/
                     $scope.contactData = JSON.parse(result);
+                    $scope.editList = JSON.parse(result);
                     console.log('contact->', $scope.contactData);
                     // if(empId){
                     //     angular.forEach($scope.contactData,function(item){
@@ -3816,6 +3819,7 @@
                     $scope.relatedcitylist = [];
                     /*$scope.statelist = [];*/
                     $scope.contactData = JSON.parse(result);
+                    $scope.editList = JSON.parse(result);
                     console.log('contact->', $scope.contactData);
 
                     angular.forEach($scope.contactData, function (item) {
@@ -3876,17 +3880,27 @@
                 }
             }
 
+            function findCommon(a, b) {
+                    return a === b;
+                }
+
             /* Contact Insert Before Check Is already available or not */
                 $scope.createUpdateContact = function (con, elementId, sourceId, suffix, form, update) {
-                    if(con.userid != "" && con.userid != undefined){
-                        con.monthlyReimbursement = true
-                    }
-                    if (form.$dirty != true) {
-                        toastr.error("There is no change to update");
-                        setTimeout(function () {
-                            refreshForm();
-                        }, 10)
-                    } else {
+                            con.drivingStates = (con.drivingStates === undefined) ? [''] : con.drivingStates
+                            $scope.editList.push(con)
+                            let arrayInput = $scope.editList[0].drivingStates;
+                            let inputToArray = (typeof arrayInput != 'string') ? arrayInput.join() : arrayInput;
+                            $scope.inputTag = (update === true) ?  $("#drivingstateContact").val() : $("#drivingstatenew").val();
+                            let inputToCheck = ($scope.editList[0] != undefined) ? findCommon(inputToArray, $scope.inputTag) : true;
+                            if(con.userid != "" && con.userid != undefined){
+                                con.monthlyReimbursement = true
+                            }
+                            if (form.$dirty != true && inputToCheck === true) {
+                                    toastr.error("There is no change to update");
+                                    setTimeout(function () {
+                                        refreshForm();
+                                    }, 10)
+                        } else {
                         $('#spinner').show();
                         if (con.role == 'Driver' || con.role == 'Driver/Manager' || con.role == valueofreport) {
                             $scope.showrequiredfield = true;
@@ -3921,46 +3935,82 @@
                         let inputtovalidate;
                         if ($scope.accid === $scope.designAIR) {
                             if (con.role == 'Driver' || con.role == 'Driver/Manager' || con.role == valueofreport) {
-                                inputtovalidate = ["firstname", "lastname", "email", "city", "state", "zip", "role", "jobtitle", "cellphone","department", "deptDesign", "manager", "vehicalType", "activedate"];
+                                if($scope.accTrueDialog){
+                                    inputtovalidate = ["firstname", "lastname", "email", "city", "state", "zip", "role", "jobtitle", "cellphone","department", "deptDesign", "manager", "vehicalType", "activedate"];
+                                }else{
+                                    inputtovalidate = ["firstname", "lastname", "email", "city", "state", "zip", "role", "jobtitle","department", "deptDesign", "manager", "vehicalType", "activedate"];
+                                }
                             }
                         }
                         else if($scope.accid === $scope.NWPipe){
+                            if($scope.accTrueDialog){
                                 inputtovalidate = ["firstname", "lastname", "email", "city", "state", "zip", "role", "company", "cellphone","manager", "vehicalType", "activedate"];
+                            }else{
+                                inputtovalidate = ["firstname", "lastname", "email", "city", "state", "zip", "role", "company","manager", "vehicalType", "activedate"];
+                            }
                         }
                         else if ($scope.accid === $scope.PLMarketing) {
                             if (con.role == 'Driver' || con.role == 'Driver/Manager' || con.role == valueofreport) {
-                                inputtovalidate = ["firstname", "lastname", "email", "city", "state", "zip", "role", "jobtitle", "divison", "deptPL", "cellphone", "manager", "vehicalType", "firstPayrollPer", "activedate"];
+                                if($scope.accTrueDialog){
+                                     inputtovalidate = ["firstname", "lastname", "email", "city", "state", "zip", "role", "jobtitle", "divison", "deptPL", "cellphone", "manager", "vehicalType", "firstPayrollPer", "activedate"];
+                                }else{
+                                    inputtovalidate = ["firstname", "lastname", "email", "city", "state", "zip", "role", "jobtitle", "divison", "deptPL", "manager", "vehicalType", "firstPayrollPer", "activedate"];
+                                }
                             }
                         }
                         else if ($scope.accid === $scope.accountERMI) {
                             if (con.role == 'Driver' || con.role == 'Driver/Manager' || con.role == valueofreport) {
-                                inputtovalidate = ["firstname", "lastname", "email", "city", "state", "zip", "role", "netchexEmployeeID", "code", "district", "territory","cellphone", "manager", "vehicalType", "activedate"];
+                                if($scope.accTrueDialog){
+                                    inputtovalidate = ["firstname", "lastname", "email", "city", "state", "zip", "role", "netchexEmployeeID", "code", "district", "territory","cellphone", "manager", "vehicalType", "activedate"];
+                                }else{
+                                    inputtovalidate = ["firstname", "lastname", "email", "city", "state", "zip", "role", "netchexEmployeeID", "code", "district", "territory", "manager", "vehicalType", "activedate"];
+                                }
                             }
                         }
                         else {
                             if (con.role == 'Driver' || con.role == 'Driver/Manager' || con.role == valueofreport) {
-                                inputtovalidate = ["firstname", "lastname", "email", "city", "state", "zip", "role", "manager", "vehicalType","cellphone", "activedate"];
+                                if($scope.accTrueDialog){
+                                     inputtovalidate = ["firstname", "lastname", "email", "city", "state", "zip", "role", "manager", "vehicalType","cellphone", "activedate"];
+                                }else{
+                                    inputtovalidate = ["firstname", "lastname", "email", "city", "state", "zip", "role", "manager", "vehicalType","activedate"];
+                                }
                             }
                         }
 
                         if ($scope.accid === $scope.designAIR) {
                             if (con.role == 'Admin' || con.role == 'Manager') {
-                                inputtovalidate = ["firstname", "lastname", "email", "role", "jobtitle", "department","cellphone", "deptDesign", "activedate"];
+                                if($scope.accTrueDialog){
+                                    inputtovalidate = ["firstname", "lastname", "email", "role", "jobtitle", "department","cellphone", "deptDesign", "activedate"];
+                                }else{
+                                    inputtovalidate = ["firstname", "lastname", "email", "role", "jobtitle", "department", "deptDesign", "activedate"];
+                                }
                             }
                         }
                         else if ($scope.accid === $scope.PLMarketing) {
                             if (con.role == 'Admin' || con.role == 'Manager') {
-                                inputtovalidate = ["firstname", "lastname", "email", "role", "jobtitle","cellphone", "deptPL", "divison", "activedate"];
+                                if ($scope.accTrueDialog) {
+                                    inputtovalidate = ["firstname", "lastname", "email", "role", "jobtitle", "cellphone", "deptPL", "divison", "activedate"];
+                                } else {
+                                    inputtovalidate = ["firstname", "lastname", "email", "role", "jobtitle", "deptPL", "divison", "activedate"];
+                                }
                             }
                         }
                         else if ($scope.accid === $scope.accountERMI) {
                             if (con.role == 'Admin' || con.role == 'Manager') {
-                                inputtovalidate = ["firstname", "lastname", "email","cellphone", "role", "activedate"];
+                                if ($scope.accTrueDialog) {
+                                    inputtovalidate = ["firstname", "lastname", "email","cellphone", "role", "activedate"];
+                                }else{
+                                    inputtovalidate = ["firstname", "lastname", "email", "role", "activedate"];
+                                }
                             }
                         }
                         else {
                             if (con.role == 'Admin' || con.role == 'Manager') {
-                                inputtovalidate = ["firstname", "lastname", "email","cellphone", "role", "activedate"];
+                                if ($scope.accTrueDialog) {
+                                    inputtovalidate = ["firstname", "lastname", "email","cellphone", "role", "activedate"];
+                                }else{
+                                    inputtovalidate = ["firstname", "lastname", "email", "role", "activedate"];
+                                }
                             }
                         }
 
@@ -3968,15 +4018,18 @@
                         angular.forEach(inputtovalidate, function (item) {
                             if (form[item + suffix].$invalid) {
                                 count++;
-                                if (count < 10)
+                                console.log(form[item + suffix], count);
+                                if (count < 10) {
                                     if ($scope.addfilds == '') {
                                         $scope.addfilds = ((item === 'deptPL') ? 'department' : item);
                                     }
                                     else {
                                         $scope.addfilds = $scope.addfilds + ', ' + ((item === 'deptPL') ? 'department' : (item === 'firstPayrollPer') ? 'first payroll' : item);
                                     }
-                                else
+                                }
+                                else {
                                     $scope.addfilds = '';
+                                }
                             }
                         });
                         if (count > 0) {
@@ -3985,7 +4038,6 @@
                             toastr.error(message);
                             return;
                         }
-
                         if (con == "" || con.length == 0) {
                             toastr.error('Please fill the required field');
                             $('#spinner').hide();
@@ -4203,8 +4255,8 @@
                             }
                         }
                         /*$('#spinner').hide();*/
-
                     }
+          
                 }
 
 
@@ -4245,9 +4297,9 @@
             /* reset Form complete*/
 
             $scope.updateContact = function () {
-
                 $('#spinner').hide();
                 toastr.success('Success! You Just Updated ' + $scope.contactListForUpdateInsert[0].firstName + '\'s Details.');
+                refreshForm();
             }
 
             $scope.insertContact = function () {
@@ -5172,9 +5224,9 @@
                                                         <i class="fa fa-question"></i>
                                                     </span>
                                                     <input type="text" id="cellphone" ng-model="contactData[0].cellphone" ng-show="IsShow" class="cellphoneinput form-control rounded-0"
-                                                        data-mask="000-000-0000" placeholder="Enter Cell Phone Number"  ng-required="accTrueDialog" />
+                                                        data-mask="000-000-0000" placeholder="Enter Cell Phone Number" name="cellphone_0"  ng-required="accTrueDialog" />
                                                     <input type="text" id="cellphone" ng-model="contactData.cellphone" class="cellphoneinput form-control rounded-0" ng-show="!IsShow"
-                                                        data-mask="000-000-0000" placeholder="Enter Cell Phone Number" ng-required="accTrueDialog" />
+                                                        data-mask="000-000-0000" placeholder="Enter Cell Phone Number" name="cellphone_1" ng-required="accTrueDialog" />
                                                 </div>
                                             </div>
                                             <div class="form-group-theme row" ng-if="accid === designAIR">
@@ -5200,33 +5252,31 @@
                                             <div class="form-group-theme row" ng-if="accid === accountERMI">
                                                 <label for="inputnetchexid" class="col-xl-4 col-lg-3 col-md-3 col-sm-3 col-form-label form-lable">Employee Netchex Id:</label>
                                                 <div class="col-xl-8 col-lg-8 col-md-8 col-sm-8 validate-div">
-                                                    <span class="span-validation" data-toggle="tooltip" data-placement="top" title="Required field" ng-if="showvalidation">*</span>
+                                                    <span class="span-validation" data-toggle="tooltip" data-placement="top" title="Required field" ng-if="isFieldRequired">*</span>
                                                     <input type="text" id="netchexEmployeeID" ng-model="contactData[0].netchexEmployeeID" ng-show="IsShow" class="form-control rounded-0"
-                                                        ng-if="showrequiredfield" required="true" placeholder="" name="netchexEmployeeID_0"
+                                                    ng-required="isFieldRequired" placeholder="" name="netchexEmployeeID_0"
                                                     />
-                                                    <input type="text" id="netchexEmployeeID" ng-model="contactData[0].netchexEmployeeID" ng-show="IsShow" class="form-control rounded-0"
+                                                    <!-- <input type="text" id="netchexEmployeeID" ng-model="contactData[0].netchexEmployeeID" ng-show="IsShow" class="form-control rounded-0"
                                                         ng-if="!showrequiredfield" placeholder="" name="netchexEmployeeID_0"
-                                                    />
+                                                    /> -->
                                                     <input type="text" id="netchexEmployeeID" ng-model="contactData.netchexEmployeeID" ng-show="!IsShow" class="form-control rounded-0"
-                                                        ng-if="showrequiredfield" required="true" placeholder="" name="netchexEmployeeID_1"
+                                                    ng-required="isFieldRequired" placeholder="" name="netchexEmployeeID_1"
                                                     />
-                                                    <input type="text" id="netchexEmployeeID" ng-model="contactData.netchexEmployeeID" ng-show="!IsShow" class="form-control rounded-0"
+                                                    <!-- <input type="text" id="netchexEmployeeID" ng-model="contactData.netchexEmployeeID" ng-show="!IsShow" class="form-control rounded-0"
                                                         ng-if="!showrequiredfield" placeholder="" name="netchexEmployeeID_1"
-                                                    />
+                                                    /> -->
                                                 </div>
                                             </div>
                                             <div class="form-group-theme row" ng-if="accid === accountERMI">
                                                 <label for="inputCode" class="col-xl-4 col-lg-3 col-md-3 col-sm-3 col-form-label form-lable">Code:</label>
                                                 <div class="col-xl-8 col-lg-8 col-md-8 col-sm-8 validate-div">
-                                                    <span class="span-validation" data-toggle="tooltip" data-placement="top" title="Required field" ng-if="showvalidation">*</span>
-                                                    <input type="text" id="code" ng-model="contactData[0].code" ng-show="IsShow" class="form-control rounded-0" ng-if="showrequiredfield"
-                                                        required="true" placeholder="" name="code_0" />
-                                                    <input type="text" id="code" ng-model="contactData[0].code" ng-show="IsShow" class="form-control rounded-0" ng-if="!showrequiredfield"
-                                                        placeholder="" name="code_0" />
-                                                    <input type="text" id="code" ng-model="contactData.code" ng-show="!IsShow" class="form-control rounded-0" ng-if="showrequiredfield"
-                                                        required="true" placeholder="" name="code_1" />
-                                                    <input type="text" id="code" ng-model="contactData.code" ng-show="!IsShow" class="form-control rounded-0" ng-if="!showrequiredfield"
-                                                        placeholder="" name="code_1" />
+                                                    <span class="span-validation" data-toggle="tooltip" data-placement="top" title="Required field" ng-if="isFieldRequired">*</span>
+                                                    <input type="text" id="code" ng-model="contactData[0].code" ng-show="IsShow" class="form-control rounded-0"  ng-required="isFieldRequired" placeholder="" name="code_0" />
+                                                    <!-- <input type="text" id="code" ng-model="contactData[0].code" ng-show="IsShow" class="form-control rounded-0" ng-if="!showrequiredfield"
+                                                        placeholder="" name="code_0" /> -->
+                                                    <input type="text" id="code" ng-model="contactData.code" ng-show="!IsShow" class="form-control rounded-0"  ng-required="isFieldRequired" placeholder="" name="code_1" />
+                                                    <!-- <input type="text" id="code" ng-model="contactData.code" ng-show="!IsShow" class="form-control rounded-0" ng-if="!showrequiredfield"
+                                                        placeholder="" name="code_1" /> -->
                                                 </div>
                                             </div>
                                             <div class="form-group-theme row" ng-if="accid === accountERMI">
@@ -5391,7 +5441,7 @@
                                                         data-html="true" data-placement="top">
                                                         <i class="fa fa-question"></i>
                                                     </span>
-                                                    <input ng-model="contactData[0].drivingStates" id="drivingstateContact" type="text" placeholder="Enter Driving States" data-role="tagsinput"
+                                                    <input ng-model="contactData[0].drivingStates" id="drivingstateContact"  type="text" placeholder="Enter Driving States" data-role="tagsinput"
                                                     />
                                                     <input ng-model="contactData[0].drivingStates" id="hiddenConState" type="hidden" />
                                                 </div>
@@ -5402,7 +5452,7 @@
                                                     </span>
                                                     <input ng-model="contactData.drivingStates" id="drivingstatenew" type="text" placeholder="Enter Driving States" data-role="tagsinput"
                                                         value="{{contactData.drivingStates}}" />
-                                                    <input ng-model="contactData.drivingStates" id="hiddennewConState" type="hidden" />
+                                                    <input ng-model="contactData.drivingStates"  id="hiddennewConState" type="hidden" />
                                                 </div>
 
                                             </div>
@@ -5481,33 +5531,33 @@
                                             <div class="form-group-theme row" ng-if="accid === accountERMI">
                                                 <label for="inputDistrict:" class="col-xl-4 col-lg-3 col-md-3 col-sm-3 col-form-label form-lable">District:</label>
                                                 <div class="col-xl-8 col-lg-8 col-md-8 col-sm-8 validate-div">
-                                                    <span class="span-validation" data-toggle="tooltip" data-placement="top" title="Required field" ng-if="showvalidation">*</span>
+                                                    <span class="span-validation" data-toggle="tooltip" data-placement="top" title="Required field" ng-if="isFieldRequired">*</span>
                                                     <input type="text" id="district" ng-model="contactData[0].district" ng-show="IsShow" class="form-control rounded-0 districtInput"
-                                                        required="true" ng-if="showrequiredfield" name="district_0" placeholder=""
+                                                        ng-required="isFieldRequired" name="district_0" placeholder=""
                                                     />
-                                                    <input type="text" id="district" ng-model="contactData[0].district" ng-show="IsShow" class="form-control rounded-0 districtInput"
-                                                        ng-if="!showrequiredfield" name="district_0" placeholder="" />
+                                                    <!-- <input type="text" id="district" ng-model="contactData[0].district" ng-show="IsShow" class="form-control rounded-0 districtInput"
+                                                        ng-if="!showrequiredfield" name="district_0" placeholder="" /> -->
                                                     <input type="text" id="district" ng-model="contactData.district" ng-show="!IsShow" class="form-control rounded-0 districtInput"
-                                                        required="true" name="district_1" placeholder="" ng-if="showrequiredfield"
+                                                        ng-required="isFieldRequired" name="district_1" placeholder=""
                                                     />
-                                                    <input type="text" id="district" ng-model="contactData.district" ng-show="!IsShow" class="form-control rounded-0 districtInput"
-                                                        name="district_1" placeholder="" ng-if="!showrequiredfield" />
+                                                    <!-- <input type="text" id="district" ng-model="contactData.district" ng-show="!IsShow" class="form-control rounded-0 districtInput"
+                                                        name="district_1" placeholder="" ng-if="!showrequiredfield" /> -->
                                                 </div>
                                             </div>
                                             <div class="form-group-theme row" ng-if="accid === accountERMI">
                                                 <label for="inputTerritory:" class="col-xl-4 col-lg-3 col-md-3 col-sm-3 col-form-label form-lable">Territory:</label>
                                                 <div class="col-xl-8 col-lg-8 col-md-8 col-sm-8 validate-div">
-                                                    <span class="span-validation" data-toggle="tooltip" data-placement="top" title="Required field" ng-if="showvalidation">*</span>
+                                                    <span class="span-validation" data-toggle="tooltip" data-placement="top" title="Required field" ng-if="isFieldRequired">*</span>
                                                     <input type="text" id="territory" ng-model="contactData[0].territory" ng-show="IsShow" class="form-control rounded-0 territoryInput"
-                                                        required="true" name="territory_0" ng-if="showrequiredfield" placeholder=""
+                                                        ng-required="isFieldRequired" name="territory_0" placeholder=""
                                                     />
-                                                    <input type="text" id="territory" ng-model="contactData[0].territory" ng-show="IsShow" class="form-control rounded-0 territoryInput"
-                                                        name="territory_0" ng-if="!showrequiredfield" placeholder="" />
+                                                    <!-- <input type="text" id="territory" ng-model="contactData[0].territory" ng-show="IsShow" class="form-control rounded-0 territoryInput"
+                                                        name="territory_0" ng-if="!showrequiredfield" placeholder="" /> -->
                                                     <input type="text" id="territory" ng-model="contactData.territory" ng-show="!IsShow" class="form-control rounded-0 territoryInput"
-                                                        required="true" name="territory_1" ng-if="showrequiredfield" placeholder=""
+                                                    ng-required="isFieldRequired" name="territory_1"  placeholder=""
                                                     />
-                                                    <input type="text" id="territory" ng-model="contactData.territory" ng-show="!IsShow" class="form-control rounded-0 territoryInput"
-                                                        name="territory_1" ng-if="!showrequiredfield" placeholder="" />
+                                                    <!-- <input type="text" id="territory" ng-model="contactData.territory" ng-show="!IsShow" class="form-control rounded-0 territoryInput"
+                                                        name="territory_1" ng-if="!showrequiredfield" placeholder="" /> -->
                                                 </div>
                                             </div>
 

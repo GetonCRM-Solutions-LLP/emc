@@ -45,10 +45,24 @@ public with sharing class BiweeklyPayPeriod {
         return timeWrapList;
     }
     public static TimeAttedanceWrap calculateTimeAtt (String startdates,String enddates,String contactid){
-        Map<Id,Decimal> tripdateDrivingTimeMap = new Map<Id,Decimal>();
-        Map<Id,Decimal> tripStayTimeMap = new Map<Id,Decimal>();
-        Map<Id,Decimal> tripTotalTimeMap = new Map<Id,Decimal>();
-        for(AggregateResult ar : [SELECT EmployeeReimbursement__r.Contact_Id__c cid, SUM(Driving_Time__c) rtotal, 
+        TimeAttedanceWrap  objWrap;
+        for(Bi_Weekly_Reimbursement__c biReim : [SELECT id,Start_Date__c, End_Date__c, 
+                                                    Total_Drive_Time__c, Total_Stay_Time__c, Total_Time__c, Approved_Date__c 
+                                                    FROM Bi_Weekly_Reimbursement__c
+                                                    WHERE  Contact__c =: contactid
+                                                        AND Start_Date__c >= : Date.valueOf(startdates)
+                                                        AND End_Date__c <= : Date.valueOf(enddates)]){
+                
+                                                            objWrap = new TimeAttedanceWrap();
+                objWrap.startDate = startdates;
+                objWrap.endDate = enddates;
+                objWrap.totaldrivingTime = Utils.ConvertMinuteToHours(Integer.valueOf(biReim.Total_Drive_Time__c));
+                objWrap.totalStayTime = Utils.ConvertMinuteToHours(Integer.valueOf(biReim.Total_Stay_Time__c));
+                objWrap.totalTime = Utils.ConvertMinuteToHours(Integer.valueOf(biReim.Total_Time__c));
+                objWrap.approvalDate = string.valueOf(biReim.Approved_Date__c); 
+
+        }
+        /*for(AggregateResult ar : [SELECT EmployeeReimbursement__r.Contact_Id__c cid, SUM(Driving_Time__c) rtotal, 
                                         SUM(Stay_Time__c) stay , SUM(Total_Time__c) ttime
                                     FROM Employee_Mileage__c 
                                     WHERE EmployeeReimbursement__r.Contact_Id__c =: contactid 
@@ -65,6 +79,7 @@ public with sharing class BiweeklyPayPeriod {
         objWrap.totaldrivingTime = Utils.ConvertMinuteToHours(Integer.valueOf(tripdateDrivingTimeMap.get(contactid)));
         objWrap.totalStayTime = Utils.ConvertMinuteToHours(Integer.valueOf(tripStayTimeMap.get(contactid)));
         objWrap.totalTime = Utils.ConvertMinuteToHours(Integer.valueOf(tripTotalTimeMap.get(contactid)));
+        */
         return objWrap;
     }
 
@@ -73,7 +88,8 @@ public with sharing class BiweeklyPayPeriod {
         public string endDate { get; set; }
         public String totaldrivingTime { get; set; }
         public String totalStayTime { get; set; }
-        public String totalTime { get; set; }
+        public String totalTime { get; set; }   
+        public String approvalDate { get; set; }
     }
     
     public static List<BiweeklyWrap> getBiweeklyMileage(String contactid,Integer years) {
@@ -238,7 +254,7 @@ public with sharing class BiweeklyPayPeriod {
                                                             EmployeeReimbursement__r.Total_Rejected__c,Notes__c,
                                                             TimeZone__c,EmployeeReimbursement__r.Mileage_Lock_Date__c,
                                                             ConvertedStartTime__c,ConvertedEndTime__c,Driving_Time__c,
-                                                            Total_Time__c,Tag__c,Mileage_Lock_Date__c 
+                                                            Total_Time__c,Tag__c,Mileage_Lock_Date__c,Variable_Rate__c 
                                                         FROM Employee_Mileage__c 
                                                         WHERE Trip_Date__c >=: startdate 
                                                             AND Trip_Date__c <=: enddate 

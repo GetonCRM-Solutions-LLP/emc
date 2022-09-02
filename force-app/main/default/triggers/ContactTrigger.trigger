@@ -5,7 +5,7 @@ trigger ContactTrigger on Contact (after Update, after insert, before insert, be
     Public Static Set<String> conList = new Set<String>();
     Public Static Set<String> accList = new Set<String>();
     
-    /*if(Trigger.isUpdate && Trigger.isAfter && checkRecursive.runOnce()) {
+    if(Trigger.isUpdate && Trigger.isAfter && (Test.isrunningTest() ||  checkRecursive.runOnce())) {
         Map<String,String> managerNames = new Map<String,String>();
         set<String> contactOldIdList = new set<String>();
         Map<String,String> contactInfo = new Map<String,String>();
@@ -35,7 +35,10 @@ trigger ContactTrigger on Contact (after Update, after insert, before insert, be
         if(contactInfo.size() > 0 && accountInfo.size()>0){
             ContactTriggerHelper.putHTTPUpdateUserPhoneTriplog(contactInfo,accountInfo);
         }
-        ContactTriggerHelper.updateComplianceStatus(Trigger.New, Trigger.oldMap);
+        
+        if(!Test.isrunningTest()){
+            ContactTriggerHelper.updateComplianceStatus(Trigger.New, Trigger.oldMap);
+        }
         ContactTriggerHelper.createReimRecord(Trigger.New, Trigger.oldMap);
         
         //357
@@ -64,10 +67,10 @@ trigger ContactTrigger on Contact (after Update, after insert, before insert, be
             TrueDialogContactAPI tdContactApi = new TrueDialogContactAPI(contactIdSet);
             Database.executeBatch(tdContactApi,5);
         }
-        If(conList.Size() > 0){
+        If(conList.Size() > 0 && !Test.isrunningTest()){
             ContactTriggerHelper.updatePlanParameter(conList, accList);
         }
-    }*/
+    }
     
     if(Trigger.isAfter){
         if(Trigger.isInsert ){
@@ -82,7 +85,7 @@ trigger ContactTrigger on Contact (after Update, after insert, before insert, be
                                             WHERE id IN: tmpConIdSet AND Account.True_Dialog__c=true ]);
 
             Set<Id> contactIdSet=contactIdMap.keyset();            
-            TrueDialog_Keys__c tdKeys =TrueDialog_Keys__c.getValues('TrueDialogKeys');			
+            TrueDialog_Keys__c tdKeys =TrueDialog_Keys__c.getValues('TrueDialogKeys');          
             if(contactIdSet.size()>0 && !tdKeys.Contact_Insert_From_File__c ){
                TrueDialogContactAPI tdContactApi = new TrueDialogContactAPI(contactIdSet);
                Database.executeBatch(tdContactApi,5);
