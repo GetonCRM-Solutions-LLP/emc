@@ -2624,7 +2624,7 @@ public with sharing class WrapperUtils
         System.debug('reimbursement'+reimbursement);
         return JSON.serialize(reimbursement).unescapeHtml4();
     }
-    public static void approveMileagesClone1(String mileages) {
+   /* public static void approveMileagesClone1(String mileages) {
         List<String> updatedlist = new List<String>();
         if(mileages!=null) {            
             List<String> reimbursementIdList = new List<String>();
@@ -2642,7 +2642,7 @@ public with sharing class WrapperUtils
                 update employeeReimbursementList;                              
             }
         }
-    }
+    }*/
 
     //method is use for fatch mileages from triplog 
     //AI-000429
