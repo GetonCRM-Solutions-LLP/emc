@@ -213,7 +213,7 @@ public without sharing class ContactTriggerHelper {
         } else {
             fuelPriceDate = date.valueOf(splitDate[0] + '-' + string.valueOf(integer.valueOf(splitDate[1])-1) + '-01');
         } 
-        
+        SYSTEM.DEBUG('fuelPriceDate===' + fuelPriceDate);
         for(Gas_Prices__c objGasPrice : [SELECT id,
                                          name,
                                          City__c,
