@@ -321,11 +321,12 @@ export default class MBurseSMS extends LightningElement {
             .then((result) => {
                 this.messageLoading = false;
                 this.insertedText = false;
-                if (this.doneUploading === true) {
+                if (result === 'success') {
                     console.log(result)
                 } else {
                     this.positionIndex += this.chunkSize;
-                    this.uploadAttachment(textValue);
+                  //  this.uploadAttachment(textValue);
+                  this.toggleError('There was an error uploading the file.  Please try again.');
                 }
             })
             .catch((error) => {
