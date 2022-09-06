@@ -2740,6 +2740,7 @@
             $scope.loaChoose = [];
             var maxStringSize = 6000000;    //Maximum String size is 6,000,000 characters
             var maxFileSize = 4350000;      //After Base64 Encoding, this is the max file size
+            var dialogFileSize = 300000;
             var chunkSize = 950000;         //Maximum Javascript Remoting message size is 1,000,000
             var attachment;
             var attachmentName;
@@ -3445,7 +3446,7 @@
                 //console.log('file size :- '+choosefile.files[0].size);
                 var strsubstring = (element.files[0].name).substring(findex, (element.files[0].name).length);
                 if (strsubstring == '.png' || strsubstring == '.jpg' || strsubstring == '.jpeg') {
-                    if (choosefile.files[0].size > 0 && choosefile.files[0].size < 4350000) {
+                    if (choosefile.files[0].size > 0 && choosefile.files[0].size < 300000) {
                         choosefile = element;
                         $scope.imageChoose.push(element);
                         $scope.$apply(function (scope) {
@@ -3461,7 +3462,7 @@
                     }
                     else {
                         $scope.imageUploading = false;
-                        toastr.error('Base 64 Encoded file is too large.  Maximum size is 4 MB .');
+                        toastr.error('Base 64 Encoded file is too large.  Maximum size is 300 KB .');
                     }
                 }
                 else {
@@ -3486,7 +3487,7 @@
                 console.log(file);
                 //var file = choosefile.files[0];
                 if (file != undefined) {
-                    if (file.size <= maxFileSize) {
+                    if (file.size <= dialogFileSize) {
                         attachmentName = file.name;
                         var fileReader = new FileReader();
                         fileReader.onloadend = function (e) {
