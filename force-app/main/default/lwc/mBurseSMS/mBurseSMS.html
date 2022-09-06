@@ -43,7 +43,7 @@
                                                             class="chat_container">
                                                             <div class="chat__message-truedialog chat__message-sender">
                                                                     <div if:false={record.Media_Link__c}>
-                                                                        <p>{record.Message__c}</p>
+                                                                        <p class="word-style">{record.Message__c}</p>
                                                                     </div>
                                                                     <div if:true={record.Media_Link__c}>
                                                                         <div if:false={record.Message__c}>
@@ -51,7 +51,7 @@
                                                                        </div>
                                                                        <div if:true={record.Message__c}>
                                                                            <img class="image-record" src={record.Media_Link__c} loading="lazy"/>
-                                                                           <p>{record.Message__c}</p>
+                                                                           <p class="word-style">{record.Message__c}</p>
                                                                       </div>
                                                                     </div>
                                                             </div>
@@ -70,7 +70,7 @@
                                                                 class="chat__message-truedialog chat__message-receiver">
                                                                 <div class="date"></div>
                                                                 <div if:false={record.Media_Link__c}>
-                                                                    <p>{record.Message__c}</p>
+                                                                    <p class="word-style">{record.Message__c}</p>
                                                                 </div>
                                                                 <div if:true={record.Media_Link__c}>
                                                                     <div if:false={record.Message__c}>
@@ -78,7 +78,7 @@
                                                                     </div>
                                                                     <div if:true={record.Message__c}>
                                                                         <img class="image-record" src={record.Media_Link__c} loading="lazy"/>
-                                                                        <p>{record.Message__c}</p>
+                                                                        <p class="word-style">{record.Message__c}</p>
                                                                    </div>
                                                                 </div>
                                                             </div>
