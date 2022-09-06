@@ -247,7 +247,7 @@ export default class MBurseSMS extends LightningElement {
             subString = this.chooseFileName.substring(fIndex, this.chooseFileName.length);
             if (subString === '.jpg' || subString === '.png' || subString === '.jpeg') {
                 if (this.choosefile) {
-                    if (this.choosefile.files[0].size > 0 && this.choosefile.files[0].size < 4350000) {
+                    if (this.choosefile.files[0].size > 0 && this.choosefile.files[0].size < 300000) {
                         this.choosefile = baseTarget;
                         this.imageUploaded = true;
                         this.template.querySelector('.send_chat_button').style.pointerEvents = 'auto';
@@ -260,9 +260,9 @@ export default class MBurseSMS extends LightningElement {
                             this.template.querySelector('.fa-paper-plane').classList.add('send-icon');
                         }
                         this.imageUploaded = false;
-                        this.toggleError('Base 64 Encoded file is too large.  Maximum size is 4 MB.');
+                        this.toggleError('Base 64 Encoded file is too large.  Maximum size is 300 KB.');
                         // this.errorUploading = 'Base 64 Encoded file is too large.  Maximum size is 4 MB .';
-                        console.error('Base 64 Encoded file is too large.  Maximum size is 4 MB .');
+                        console.error('Base 64 Encoded file is too large.  Maximum size is 300 KB .');
                     }
                 } else {
                     if (this.imageUploaded) {
@@ -337,7 +337,7 @@ export default class MBurseSMS extends LightningElement {
     uploadFileInChunk(textValue) {
         var file = this.fileList;
         var maxStringSize = 6000000; //Maximum String size is 6,000,000 characters
-        var maxFileSize = 4350000; //After Base64 Encoding, this is the max file size
+        var maxFileSize = 300000; //After Base64 Encoding, this is the max file size
         if (file !== undefined) {
             this.messageLoading = true;
             this.template.querySelector('.chat__file-image').src = "";
