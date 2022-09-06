@@ -33,7 +33,7 @@
     </style>
     <script>
         $Lightning.use("c:profileLWC", function () {
-                $Lightning.createComponent("c:reportPage", {
+                $Lightning.createComponent("c:emcDashboard", {
                     //pass parameter values to lwc js controller
                 }, "lwcDemo", function (cmp) {
                     console.log("Component Created Successfully");

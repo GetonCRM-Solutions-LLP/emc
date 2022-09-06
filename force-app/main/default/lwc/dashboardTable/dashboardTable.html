@@ -1,0 +1,105 @@
+<!-- sldsValidatorIgnore -->
+<template>
+    <table class="slds-table slds-table_cell-buffer slds-table_striped" id="tableSel" >
+        <thead class="slds-border_bottom">
+            <tr class="slds-line-height_reset">
+                <template if:true={headers}>
+                    <template for:each={headers} for:item="head">
+                        <th scope="col" key={head.label} class={head.thClass}>
+                            <div  title={head.label} class={head.cssClass}>
+                                <a onclick={sort} name={head.name} class="header-link">
+                                    {head.label}
+                                </a>
+                                <span>
+                                    <lightning-icon icon-name="utility:chevronup" size="x-small" if:true={head.arrowUp} class="sort-icon slds-p-left_xx-small"></lightning-icon>
+                                    <lightning-icon icon-name="utility:chevrondown" size="x-small" if:true={head.arrowDown} class="sort-icon slds-p-left_xx-small"></lightning-icon>
+                                </span>
+                            </div>
+                            
+                        </th>
+                    </template>
+                    <template if:true={isCheckbox}>
+                        <th class="" scope="col">
+                            <div class="btn btn-primary-approve" if:true={displayCheckboxForApprove}>
+                                <span class="appspan">Approve</span>
+                                <input class="slds-checkbox app_check select-all-checkbox slds-m-right_xxx-small" type="checkbox"
+                                    onchange={handleAllRowsSelection} />
+                            </div>
+                        </th>
+                    </template>
+                </template>
+            </tr>
+        </thead>
+        <tbody>
+            <template if:true={isRecord}>
+                <template for:each={body} for:item="rowData" for:index="index">
+                    <tr key={rowData.contactid}>
+                        <template for:each={rowData.keyFields} for:item="mapKey">
+                            <template if:true={mapKey.isEmail}>
+                                <td key={mapKey.key}><a href={mapKey.href} target="_blank"><lightning-icon icon-name="utility:email" size="x-small" class="email-icon slds-p-right_x-small"></lightning-icon>{mapKey.value}</a></td>
+                            </template>
+                            <template if:false={mapKey.isEmail}>
+                                <template if:true={mapKey.isLink}>
+                                    <td key={mapKey.key}>
+                                        <template if:true={mapKey.isApprovalProcessing}>
+                                            <a class="name_link modal" onclick={modalForProcessing} data-value={index}>{mapKey.value}</a>
+                                        </template>
+                                        <template if:false={mapKey.isApprovalProcessing}>
+                                            <template if:true={mapKey.unappoveList}>
+                                                <a class="name_link" onclick={openunapprovemodal} data-value={index}>{mapKey.value}</a>
+                                            </template>
+                                            <template if:false={mapKey.unappoveList}>
+                                                <a class="name_link">{mapKey.value}</a>
+                                            </template>
+                                        </template>
+                                    </td>
+                                </template>
+                                <template if:false={mapKey.isLink}>
+                                    <!-- <td key={mapKey.key}>{mapKey.value}</td> -->
+                                    <template if:true={mapKey.isNumber}>
+                                        <td key={mapKey.key}><lightning-formatted-number value={mapKey.value} format-style="decimal" minimum-fraction-digits="2"></lightning-formatted-number></td>
+                                    </template>
+                                    <template if:false={mapKey.isNumber}>
+                                        <td key={mapKey.key}>{mapKey.value}</td>
+                                    </template>
+                                </template>
+                            </template>
+                       </template>
+                        <td if:true={isCheckbox}>
+                            <template if:false={rowData.reimbursementApproval}>
+                                <template if:true={rowData.checkboxforapprove}>
+                                    <input data-id={rowData.contactid} data-rid={rowData.id} data-unid={rowData.reimbursementid} type="checkbox" class="td_check team" checked={rowData.isSelected} onchange={handleRowSelection} />
+                                </template>
+                                <template if:true={rowData.isApproveDate}>
+                                    <div class="slds-float_right">
+                                        {rowData.status} on {rowData.approvedDate}
+                                    </div>
+                                </template>
+                            </template>
+                            <template if:true={rowData.reimbursementApproval}>
+                                <div class="slds-float_right">
+                                   Approval Processing
+                                </div>
+                            </template>
+                        </td>
+                      </tr>
+                    <!-- <tr key={rowData.key}>
+                      <td>{rowData.Contact_Id_Name__c}</td>
+                      <td>{rowData.Trip_Date__c}</td>
+                      <td>{rowData.Origin_Name__c}</td>
+                      <td>{rowData.Destination_Name__c}</td>
+                      <td>{rowData.Mileage__c}</td>
+                      <td if:true={showCheckbox}><input type="checkbox" /></td>
+                    </tr> -->
+                </template>
+            </template>
+            <template if:false={isRecord}>
+                <tr>
+                    <td colspan="100%"><div class="slds-align_absolute-center">{noData}</div></td>
+                </tr>
+            </template>
+        </tbody>
+        <tfoot >
+        </tfoot>
+    </table> 
+</template>

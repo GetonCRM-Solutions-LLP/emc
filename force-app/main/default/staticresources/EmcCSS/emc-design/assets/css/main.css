@@ -691,9 +691,6 @@ table input[type=text], table select {
   background-color: #0f3c4b;
 }
 
-.box__file {
-  visibility: hidden;
-}
 
 #example_length {
   display: none;

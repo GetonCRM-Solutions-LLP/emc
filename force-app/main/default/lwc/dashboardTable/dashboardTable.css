@@ -1,0 +1,71 @@
+table thead th { color: #78bc42; font-size:16px; }
+table tfoot tr th { color: #78bc42; font-size:16pt; font-weight: bold; }
+table tbody tr td { font-size:16px; font-family: 'Proxima Nova' !important;}
+table thead.slds-border_bottom{
+    border-color: var(--sds-c-thead-color-background, #78bc42);
+    border-radius: var(--sds-c-thead-radius-border, 50rem);
+}
+table tfoot.slds-border_top{
+    border-color: var(--sds-c-thead-color-background, #78bc42);
+    border-radius: var(--sds-c-thead-radius-border, 50rem);
+}
+.name_link{
+    text-decoration: underline;
+    font-size: 16px;
+}
+.name_link:hover{
+  font-family: 'Proxima Nova SemiBold' !important;
+}
+
+a {
+    color: #78bc42 !important;
+    text-decoration: none;
+    font-family: 'Proxima Nova' !important;
+ }
+ .sort-icon {
+    --lwc-colorTextIconDefault: #78bc42;
+  }
+  .btn-primary-approve{
+    display: inline-block;
+    font-weight: 400;
+    text-align: center;
+    vertical-align: middle;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    border: 1px solid transparent;
+    padding: .375rem .75rem;
+    line-height: 1.5;
+    transition: color .15s ease-in-out, background-color .15s ease-in-out, border-color .15s ease-in-out, box-shadow .15s ease-in-out;
+    color: #fff;
+    float: right;
+    background: #78bc42;
+    border-color: #78bc42;
+    font-size: 17px;
+    font-family: 'Proxima Nova Bold' !important;
+  }
+  .vertical_align{
+    vertical-align: bottom;
+  }
+  .app_check{
+    vertical-align: middle;
+  }
+  .td_check{
+    float: right;
+    margin-right: 11pt;
+  }
+  .appspan{
+    padding-right: 5px;
+  }
+  .email-icon{
+    --sds-c-icon-color-foreground-default: #78bc42;
+  }
+  .head-title{
+    line-height: 1.5;
+    width: 100px;
+    white-space: break-spaces;
+  }
+  .header-link{
+    text-decoration: none !important;
+  }

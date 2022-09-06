@@ -1,0 +1,29 @@
+<apex:component >
+    <!-- Begin Default Content REMOVE THIS -->
+    <div class="content">
+        <div class="slds-align_absolute-center">
+            <div class="">
+                <div class="slds-text-align_center">
+                    <div class="format-head">
+                        What's next?
+                    </div>
+                </div>
+                <div class="slds-m-top_medium">
+                    <div class="slds-grid slds-wrap">
+                        <div class="slds-col slds-size_12-of-12">
+                            <div>
+                                <apex:image url="{!URLFOR($Resource.EmcCSS,'emc-design/assets/images/Intake_phone_image.svg')}" />
+                            </div>
+                        </div>
+                        <div class="slds-col slds-size_12-of-12">
+                            <div>
+                                <button class="slds-button slds-button_outline-brand btnKickOffCall">SCHEDULE YOUR KICKOFF CALL</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- End Default Content REMOVE THIS -->
+</apex:component>

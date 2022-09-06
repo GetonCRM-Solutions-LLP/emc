@@ -9,7 +9,14 @@
             <script src="{!URLFOR($Resource.dirPagination)}"></script>
             <!-- <script src="{!URLFOR($Resource.accrodiandriverdashboard)}"></script> -->           
         </head>
-        <body>
+        <script>
+           var app = angular.module('loginModule', ['ui.bootstrap', 'angularUtils.directives.dirPagination']);
+           app.controller('LoginRedirection',['$scope', function($scope){
+            let link = {!scheduleLink}
+            console.log("link", link);
+           }])
+        </script>
+        <body ng-app="loginModule" ng-controller="LoginRedirection">
              <header>
                 <div class="main-header sticky" id="myHeader">
                     <div class="container-fluid">

@@ -334,6 +334,18 @@
                 $scope.reportdatetimefields = [];
                 $scope.reportdatefields = [];
                 $scope.reportdatetimetotimefields = [];
+                $scope.reportbooleanfields = [];
+                if($scope.report.Boolean_Field__c != undefined)
+                {
+                    if($scope.report.Boolean_Field__c.includes(','))
+                    {
+                        $scope.reportbooleanfields = $scope.report.Boolean_Field__c.split(',');
+                    }
+                    else
+                    {
+                        $scope.reportbooleanfields.push($scope.report.Boolean_Field__c.trim());
+                    }
+                }
                 if($scope.report.Numeric_Fields__c != undefined)
                 {
                 
@@ -463,6 +475,16 @@
                         datetimefields.set($scope.reportdatetimefields[j],apifieldstoheader.get($scope.reportdatetimefields[j]));
                     }
                 }
+
+                var booleanfields = new Map();
+                for(var j = 0; j<$scope.reportbooleanfields.length;j++)
+                {
+                    if(apifieldstoheader.has($scope.reportbooleanfields[j]))
+                    {
+                        booleanfields.set($scope.reportbooleanfields[j],apifieldstoheader.get($scope.reportbooleanfields[j]));
+                    }
+                }
+
                 var datefields = new Map();
                 for(var j = 0;j<$scope.reportdatefields.length;j++)
                 {
@@ -548,6 +570,11 @@
                                     {
                                         $scope.datevalues= $scope.getdataofmanager[i][key].split('-');
                                         $scope.valueofkey.push(apifieldstoheader.get(key),$scope.datevalues[1]+"/"+$scope.datevalues[2]+"/"+$scope.datevalues[0]);
+                                    }
+                                    else if(booleanfields.has(key))
+                                    {
+                                        $scope.booleanValues = ($scope.getdataofmanager[i][key] === true) ? 'Yes' : 'No';
+                                        $scope.valueofkey.push(apifieldstoheader.get(key),$scope.booleanValues);
                                     }
                                     else
                                     {

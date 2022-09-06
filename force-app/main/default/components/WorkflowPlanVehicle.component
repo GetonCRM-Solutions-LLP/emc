@@ -1,0 +1,35 @@
+<apex:component >
+<!-- Begin Default Content REMOVE THIS -->
+<div class="content">
+    <div class="slds-align_absolute-center">
+        <div class="">
+            <div class="slds-text-align_center">
+                <div class="format-head">
+                    Welcome to the mBurse <br/> Plan of Vehicles
+                </div>
+                <div class="slds-m-top_x-large">
+                    <p class="pgraph">The following questions will provide us more information about your<br/>
+                        business, your drivers, and your overall goals to help us design the<br/>
+                        best vehicle reimbursement program for your organization.</p>
+                </div>
+                <div class="slds-m-top_large">
+                    <p class="ready">Ready?</p>
+                </div>
+                <div class="slds-m-top_large">
+                    <button class="slds-button slds-button_success" data-toggle="pageSlide" data-target="#vehicleInsurance" aria-expanded="false" aria-controls="vehicleInsurance" onclick="showPlanVehicle()">LETS DO THIS</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+</div> 
+<!-- End Default Content REMOVE THIS -->
+<script type="text/javascript">
+    function showPlanVehicle() {
+       var element = document.getElementById("vehicleInsurance");
+       var planElement = document.getElementById("vehiclePlan");
+       planElement.classList.toggle("active");
+       element.classList.toggle("active");
+    }
+</script>
+</apex:component>

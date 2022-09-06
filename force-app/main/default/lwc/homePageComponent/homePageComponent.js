@@ -842,6 +842,8 @@ export default class HomePageComponent extends LightningElement {
         syncModalBackdrop.classList.remove("slds-hide");
         this.typeOfTripList = '';
     }
+
+
     renderedCallback() {
         if (!this.ready) {
             this.ready = true;

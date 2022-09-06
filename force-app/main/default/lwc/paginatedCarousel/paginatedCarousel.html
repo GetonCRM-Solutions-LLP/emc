@@ -1,0 +1,37 @@
+<template>
+    <section aria-describedby="dialog-body-id-110" aria-label="Dialog Title" class={styleCarousel} role="dialog">
+        <!-- Close popover -->
+        <button type="button" class="close-popover slds-float_right" data-dismiss="modal" aria-label="Close" onclick={closePopover}>
+          <span aria-hidden="true">&times;</span>
+        </button>
+          <!-- Popover header -->
+          <header class={styleHeader}>
+            <div class="slds-media slds-media_center slds-has-flexi-truncate">
+              <div class="slds-media__body">
+                <h4>{headerTitle}</h4>
+              </div>
+            </div>
+          </header>
+           <!-- Popover header -->
+
+        <!-- Popover body  -->
+          <div class={styleBody} id="dialog-body-id-110">
+            <div class="slds-media">
+              <div class="slds-media__body">
+                 <c-carousel records={totalContacts}  onupdate={updateContactHandler}></c-carousel>
+              </div>
+            </div>
+          </div>
+          <!-- Popover body  -->
+
+          <!-- Popover footer -->
+          
+          <footer class={styleFooter}>
+            <!-- Placeholder to render html content -->
+                 <slot></slot>
+            <!-- Placeholder to render html content -->
+          </footer>
+
+          <!-- Popover footer  -->
+        </section>
+</template>

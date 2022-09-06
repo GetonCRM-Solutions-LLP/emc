@@ -286,6 +286,7 @@
 
                             <button class="slds-button slds-button_outline-brand font-color ml-15"
                                 onclick={handleCancelEvent}>Cancel</button>
+
                             <!-- <a class="slds-button ml-15" onclick={handleCancelEvent}>Cancel</a> -->
                         </td>
                     </tr>
@@ -418,7 +419,8 @@
                 onhandlesearchcountexcel={handleSearchCountExcel}
                 onhandlesearchactivity={handleSearchActivity}
                 onhandledefaultactivity={handleDefaultActivity}
-                onhandletripmodal={handleTripModal}></c-data-table-component>
+                onhandletripmodal={handleTripModal}
+                 ></c-data-table-component>
 
             <c-modal-popup modal-header={modalHeader} modal-content={modalContent}
                 approved-trip-list={emailaddressvalue} is-checked={isSelectedChecked} is-unapprove={unapproveCheck}

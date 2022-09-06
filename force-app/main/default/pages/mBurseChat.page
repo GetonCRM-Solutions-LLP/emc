@@ -4,6 +4,14 @@
         var lexOrigin = location.origin;
         /* var lexOrigin ="https://mburse.force.com"; 
           var resultActive = false; */
+          window.zESettings = {
+                webWidget: {
+                position: { horizontal: 'left'}
+                }
+          };
+          zE(function() {
+            zE.activate();
+         });
           zE('webWidget:on', 'open', function() {
                 console.log('The widget has been opened!');
             });

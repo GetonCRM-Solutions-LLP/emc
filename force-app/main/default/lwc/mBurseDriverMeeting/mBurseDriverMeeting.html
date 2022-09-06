@@ -1,7 +1,73 @@
 <template>
-    <div class="slds-align_absolute-center slds-m-top_xx-large video-flow">
-            <div class="video-container">
-                <iframe scrolling="no" class="vfFrame" src={vfHost} height="337" width="600" style="border: 0"></iframe>
+    <div class="slds-p-around_medium">
+        <lightning-card  title="Help Text With Only Text Content - FooterLess">
+            <div class="tooltip_container">
+                <button class="tips-button" onclick={popOut}><i class="fa-solid fa-info"></i></button>
             </div>
+            <template if:true={carouselT}>
+                <!-- child component-->
+                <c-paginated-carousel style-carousel={carousel} style-header={header} style-body={body}
+                    style-footer={footer} total-contacts={carouselKey} header-title={title} onpop={handlePopover}>
+                </c-paginated-carousel>
+                <!-- child component-->
+            </template>
+        </lightning-card>    
     </div>
+  
+    <div  class="slds-p-around_medium">
+        <lightning-card  title="Help Text With Image And Text Content - FooterLess">
+            <div class="tooltip_container">
+                <button class="tips-button" onclick={popOutS}><i class="fa-solid fa-info"></i></button>
+            </div>
+            <template if:true={carouselS}>
+                  <!-- child component-->
+                  <c-paginated-carousel style-carousel={styleOfImageCarousel} style-header={styleOfImageHeader}
+                      style-body={styleOfImageBody} style-footer={styleOfImageFooter} total-contacts={carouselImageKey}
+                      header-title={titleOfImage} onpop={handleImagePopover}></c-paginated-carousel>
+                  <!-- child component-->
+            </template>
+        </lightning-card>
+    </div>
+
+    <div class="slds-p-around_medium">
+        <lightning-card  title="Help Text With Only Text Content - Footer">
+            <div class="tooltip_container">
+                <button class="tips-button" onclick={popOut}><i class="fa-solid fa-info"></i></button>
+            </div>
+            <template if:true={carouselT}>
+                <c-paginated-carousel style-carousel={carousel} style-header={header} style-body={body}
+                    style-footer={styleFooter} total-contacts={carouselKey} header-title={title} onpop={handlePopover}>
+                        <!-- Footer (Add your own html as required to place in footer)-->
+                            <!-- Section: Social media -->
+                            <section class="d-flex border-bottom">
+                                <!-- Left -->
+                                <div class="me-5">
+                                    <span>Get connected with us on social networks:</span>
+                                </div>
+                                <!-- Left -->
+
+                                <!-- Right -->
+                                <div class="me">
+                                    <a href="" class="text-reset">
+                                        <i class="fa-brands fa-facebook fa-xl"></i>
+                                    </a>
+                                    <a href="" class="text-reset">
+                                        <i class="fa-brands fa-twitter fa-xl"></i>
+                                    </a>
+                                    <a href="" class="text-reset">
+                                        <i class="fa-brands fa-linkedin fa-xl"></i>
+                                    </a>
+                                    <a href="" class="text-reset">
+                                        <i class="fa-brands fa-github fa-xl"></i>
+                                    </a>
+                                </div>
+                                <!-- Right -->
+                            </section>
+                            <!-- Section: Social media -->
+                        <!-- Footer Ends -->
+                </c-paginated-carousel>
+            </template>
+        </lightning-card>    
+    </div>
+
 </template>

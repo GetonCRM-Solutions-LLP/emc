@@ -1,0 +1,68 @@
+<apex:component >
+<!-- Begin Default Content REMOVE THIS -->
+<div class="content">
+    <div class="slds-align_absolute-center">
+        <div class="">
+            <div class="slds-text-align_center">
+                <div class="format-head">
+                    Employee Data
+                </div>
+                <div class="slds-m-top_x-large pgraphins" >
+                    <p class="pgraph">Your employees data is used to generate their reimbursements
+                        as well as establish your organizational hierarchy.</p>
+                </div>
+            </div>
+            <div class="slds-m-top_xx-large"> 
+                <div class="slds-grid slds-wrap">
+                    <div class="slds-col slds-size_1-of-12 step">
+                        <b>STEP</b>
+                    </div>
+                    <div class="slds-col slds-size_1-of-12">
+                        <div >
+                            <button class="slds-button slds-button_outline-brand btnCircle">1</button>
+                        </div>
+                    </div>
+                    <div class="slds-col slds-size_9-of-12 slds-m-left_large">
+                        <div >
+                            <button class="slds-button slds-button_outline-brand btnDown">DOWNLOAD THE TEMPLATE</button>
+                            <p class="slds-m-top_medium pgraph-emp">Need help defining the fields?<br/>
+                                Download the <a class="pdf-field-link">Field Definitions PDF </a></p>
+                        </div>
+                    </div>
+                    
+                </div>
+                <div class="slds-grid slds-wrap slds-m-top_xx-large">
+                    <div class="slds-col slds-size_1-of-12  step">
+                        <b>STEP</b>
+                    </div>
+                    <div class="slds-col slds-size_1-of-12">
+                        <div >
+                            <button class="slds-button slds-button_outline-brand btnCircle">2</button>
+                        </div>
+                    </div>
+                    <div class="slds-col slds-size_8-of-12 slds-m-left_large">
+                        <div >
+                            <button class="slds-button slds-button_outline-brand btnDown">UPLOAD YOUR COMPLETED FILE</button>
+                            <p class="slds-m-top_medium pgraph-emp">The required fields are mandatory for getting started.<br/>
+                                Optional fields can be renamed based on your naming rules.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="slds-m-top_xx-large">
+                <button class="slds-button slds-button_success" data-toggle="pageSlide" data-target="#vehicleNext" aria-expanded="false" aria-controls="vehicleNext" onclick="submitPlanEmployee()">SUBMIT</button>
+            </div>
+        </div>
+    </div>
+    
+</div>
+<script type="text/javascript">
+    function submitPlanEmployee() {
+       var nextElement = document.getElementById("vehicleNext");
+       var employeePlanElement = document.getElementById("vehicleEmployee");
+       employeePlanElement.classList.toggle("active");
+       nextElement.classList.toggle("active");
+    }
+</script>
+<!-- End Default Content REMOVE THIS -->
+</apex:component>

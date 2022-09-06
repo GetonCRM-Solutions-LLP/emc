@@ -1,0 +1,359 @@
+<apex:page sidebar="false" showHeader="false" standardStylesheets="false">
+
+    <!-- Begin Default Content REMOVE THIS -->
+
+    <head>
+        <meta charset="utf-8" />
+        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v6.1.1/css/all.css" />
+        <link rel="stylesheet" href="{!URLFOR($Resource.EmcCSS,'emc-design/assets/css/main.css')}" />
+        <apex:slds />
+        <style>
+            /* Add some padding on document's body to prevent the content
+    to go underneath the header and footer */
+
+            /***** Slide Left *****/
+
+            @keyframes slide-left {
+                from {
+                    margin-left: 100%;
+                }
+                to {
+                    margin-left: 0%;
+                }
+            }
+
+            body {
+                padding-top: 60px;
+                /* padding-bottom: 40px; */
+            }
+
+            /* .slide-container{
+                -webkit-transition:all 1.0s ease-in-out;
+                -moz-transition:all 1.0s ease-in-out;
+                -o-transition:all 1.0s ease-in-out;
+                transition:all 1.0s ease-in-out;
+            } */
+
+            .footer-area{
+                background: #fbfbfb;
+            }
+
+            .fixed-header {
+                width: 100%;
+                position: fixed;
+                background: #FFFFFF;
+                padding: 18px 0;
+                z-index: 9;
+                opacity: 1;
+                color: #fff;
+                border-bottom-color: #000;
+                animation: slide-down 0.2s ease;
+                transition: all 0.2s ease;
+            }
+
+            .fixed-header {
+                top: 0;
+            }
+
+            .container-footer {
+                width: 80%;
+                padding: 25px 0;
+                /* margin: 0px; auto; Center the DIV horizontally */
+                margin-left: 10%;
+            }
+
+            nav a {
+                color: #fff;
+                text-decoration: none;
+                padding: 7px 25px;
+                display: inline-block;
+            }
+
+            .pageSlide {
+                display: none;
+            }
+
+            .pageSlide.active {
+                display: block;
+                width: 100%;
+                animation: 2s slide-left;
+            }
+
+            .toggle {
+                color: #3F4A5B;
+                font-size: 30px;
+                margin-top: 8px;
+            }
+
+            .form-field {
+                border: 1px solid rgb(255, 255, 255) !important;
+            }
+
+            .default-font {
+                font-family: 'Proxima Nova' !important;
+            }
+
+            .address-area{
+                width: 100%;
+                display: flex;
+                justify-content: center;
+            }
+
+            .icon-address{
+                padding-bottom: 10px;
+            }
+            
+            .slds-scope .slds-form-element {
+                position: inherit !important;
+            }
+
+            .content {
+                margin-top: 60px;
+                margin-right: 25%;
+                margin-left: 25%;
+            }
+
+            .pgraphins {
+                font-size: 20px;
+                color: #3F4A5B;
+            }
+
+            .slds-radio__label {
+                font-size: 16px;
+                font-family: 'Proxima Nova Light';
+            }
+
+            .questions {
+                font-size: 20px;
+                font-family: 'Proxima Nova Bold';
+                color: #42475C;
+            }
+
+            .slds-form-element {
+                position: inherit !important;
+            }
+
+            .format-head {
+                font-family: 'Proxima Nova';
+                font-size: 50px;
+                color: #3F4A5B;
+            }
+
+            .pdf-field-link {
+                font-family: 'Proxima Nova Bold' !important;
+                color: #3F4A5B !important
+            }
+
+            .pgraph-emp {
+                font-family: 'Proxima Nova Light';
+                color: #3F4A5B;
+            }
+
+            .pgraph {
+                font-family: 'Proxima Nova Light';
+                font-size: 20px;
+                color: #3F4A5B;
+            }
+
+            .ready {
+                font-weight: bold;
+                font-size: 20px;
+                color: #42475C;
+            }
+
+            .fixed-footer {
+                /* bottom: 0; */
+                width: 100%;
+                /* position: fixed;         */
+                background: #FFFFFF;
+                /* color: #fff; */
+                border-bottom-color: #000;
+                color: #3F4A5B;
+                bottom: 0;
+            }
+
+            .container {
+                width: 80%;
+                /* margin: 0px; auto; Center the DIV horizontally */
+                margin-left: 10%;
+            }
+
+            nav a {
+                color: #fff;
+                text-decoration: none;
+                padding: 7px 25px;
+                display: inline-block;
+            }
+
+            .copyright {
+                font-size: 15px;
+                color: #000;
+            }
+
+            .footer-content {
+                background: #F8F8F8;
+            }
+
+            .fcontent {
+                margin-left: 10%;
+                margin-top: 30px;
+            }
+
+            .question {
+                font-size: 20px;
+                color: #78bc42;
+                font-weight: bold;
+            }
+
+            .slds-input {
+                height: 40px;
+            }
+
+            .slds-textarea {
+                height: 140px;
+            }
+
+            .slds-form-element__label {
+                font-weight: bold;
+            }
+
+            .slds-button_brand {
+                background-color: #42475C !important;
+                border-color: #42475C !important;
+                font-family: 'Proxima Nova' !important;
+                position: inherit !important;
+                padding: 3px 20px !important;
+                border-radius: .35rem !important;
+            }
+
+            .slds-button_brand:active {
+                background-color: #42475C !important;
+                border-color: #42475C !important;
+            }
+
+            .slds-button_brand:hover {
+                background-color: #42475C !important;
+                border-color: #42475C !important;
+            }
+
+            .ready {
+                font-weight: bold;
+                font-size: 20px;
+                color: #42475C;
+            }
+
+            .slds-button_success {
+                padding: 4px 28px !important;
+                border-radius: .35rem !important;
+                background-color: #78bc42 !important;
+                border-color: #78bc42 !important;
+                color: #FFFFFF !important;
+                position: inherit !important;
+                font-family: 'Proxima Nova SemiBold' !important;
+            }
+
+            .slds-button_success:hover {
+                background-color: rgba(76, 150, 53, 1) !important;
+                border-color: rgba(76, 150, 53, 1) !important;
+                color: rgb(255, 255, 255) !important;
+            }
+
+            .slds-form-element input[type="radio"] {
+                position: inherit !important;
+            }
+
+            .slds-form-element__control {
+                position: inherit !important;
+            }
+
+            .btnCircle {
+                border-radius: 50% !important;
+                font-size: 20px !important;
+                font-weight: bold !important;
+                border: 1.5px solid #10C3FF !important;
+                width: 45px !important;
+                height: 45px !important;
+                color: #10C3FF !important;
+                position: inherit !important;
+            }
+
+            b {
+                color: #10C3FF;
+                font-weight: bold;
+                font-size: 20px;
+            }
+
+            .step {
+                margin-top: 11px;
+            }
+
+            .btnDown {
+                border-radius: 5px !important;
+                font-size: 20px !important;
+                font-weight: bold !important;
+                border: 2px solid #10C3FF !important;
+                /* width: 36px !important; */
+                height: 45px !important;
+                color: #10C3FF !important;
+                position: inherit !important;
+            }
+
+            .btnKickOffCall {
+                border-radius: 5px !important;
+                font-size: 20px !important;
+                font-family: 'Proxima Nova Bold' !important;
+                border: 2px solid #78bc42 !important;
+                height: 45px !important;
+                color: #78bc42 !important;
+                position: inherit !important;
+            }
+
+            .btnKickOffCall:active {
+                background-color: rgb(255, 255, 255) !important;
+                border-color: #78bc42 !important;
+            }
+
+            .btnKickOffCall:hover {
+                background-color: rgb(255, 255, 255) !important;
+                border-color: #78bc42 !important;
+            }
+
+            .slds-button {
+                box-shadow: none !important;
+            }
+
+            .btnDown p {
+                color: #42475C;
+            }
+        </style>
+    </head>
+
+    <body>
+        <c:WorkflowHeader />
+        <div class="slide-container" style="overflow:hidden" id="slide-plan">
+            <div class="pageSlide active" id="vehiclePlan">
+                <c:WorkflowPlanVehicle />
+            </div>
+            <div class="pageSlide" id="vehicleInsurance">
+                <c:WorkflowInsurance />
+            </div>
+            <div class="pageSlide" id="vehicleMileage">
+                <c:WorkflowMileage />
+            </div>
+            <div class="pageSlide" id="vehicleEmployee">
+                <c:WorkflowEmployee />
+            </div>
+            <div class="pageSlide" id="vehicleNext">
+                <c:WorkflowNext />
+            </div>
+        </div>
+
+        <!-- <c:vehiclePlanInsurance/> -->
+        <!-- <c:vehiclePlanMileage /> -->
+        <!-- <c:vehiclePlanEmployee /> -->
+        <c:WorkflowFooter />
+
+    </body>
+
+    <!-- End Default Content REMOVE THIS -->
+</apex:page>

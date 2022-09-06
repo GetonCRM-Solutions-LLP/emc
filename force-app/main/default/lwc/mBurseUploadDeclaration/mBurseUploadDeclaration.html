@@ -149,17 +149,24 @@
       
         <div class="slds-clearfix slds-p-top_x-large m-left m-right">
             <div class="footer-button slds-float_right mright-0 mleft-0">
-                <template if:false={dPacket}>
+                <template if:false={packet}>
                     <button class="slds-btn slds-btn-primary slds-btn-sm waves-effect bc-blue waves-light"
                         onclick={nextDriverPacket}>
                         Next Sign Driver Packet
                     </button>
                 </template>
-                <template if:true={dPacket}>
-                    <button class="slds-btn slds-btn-primary slds-btn-sm waves-effect bc-blue waves-light"
-                        onclick={nextmLog}>
-                        Next mLog Preview
-                    </button>
+                <template if:true={packet}>
+                    <template if:false={dPacket}>
+                        <button class="slds-btn slds-btn-primary slds-btn-sm waves-effect bc-blue waves-light"
+                            onclick={nextmLog}>
+                            Next mLog Preview
+                        </button>
+                    </template>
+                    <template if:true={dPacket}>
+                        <button class="slds-btn slds-btn-primary slds-btn-sm waves-effect bc-blue waves-light" onclick={redirectToDashboard}>
+                            {renderText}
+                        </button>
+                    </template>
                 </template>
                 <div>
                     <div class="back_to_previous slds-float_left">

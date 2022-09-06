@@ -42,9 +42,18 @@
                                                         <div if:false={record.Incoming_Message__c}
                                                             class="chat_container">
                                                             <div class="chat__message-truedialog chat__message-sender">
-                                                                <div>
-                                                                    <p>{record.Message__c}</p>
-                                                                </div>
+                                                                    <div if:false={record.Media_Link__c}>
+                                                                        <p class="word-style">{record.Message__c}</p>
+                                                                    </div>
+                                                                    <div if:true={record.Media_Link__c}>
+                                                                        <div if:false={record.Message__c}>
+                                                                            <img class="image-record" src={record.Media_Link__c} loading="lazy"/>
+                                                                       </div>
+                                                                       <div if:true={record.Message__c}>
+                                                                           <img class="image-record" src={record.Media_Link__c} loading="lazy"/>
+                                                                           <p class="word-style">{record.Message__c}</p>
+                                                                      </div>
+                                                                    </div>
                                                             </div>
                                                             <div
                                                                 class="slds-grid slds-grid_vertical-align-center slds-grid_align-end chat_message-time slds-p-vertical_medium">
@@ -60,8 +69,17 @@
                                                             <div
                                                                 class="chat__message-truedialog chat__message-receiver">
                                                                 <div class="date"></div>
-                                                                <div>
-                                                                    <p>{record.Message__c}</p>
+                                                                <div if:false={record.Media_Link__c}>
+                                                                    <p class="word-style">{record.Message__c}</p>
+                                                                </div>
+                                                                <div if:true={record.Media_Link__c}>
+                                                                    <div if:false={record.Message__c}>
+                                                                         <img class="image-record" src={record.Media_Link__c} loading="lazy"/>
+                                                                    </div>
+                                                                    <div if:true={record.Message__c}>
+                                                                        <img class="image-record" src={record.Media_Link__c} loading="lazy"/>
+                                                                        <p class="word-style">{record.Message__c}</p>
+                                                                   </div>
                                                                 </div>
                                                             </div>
                                                             <div
@@ -119,23 +137,70 @@
                                         </ul>
                                     </template>
                                 </template>
+                                <template if:false={filterMessage}>
+                                    <div class='spinner'>
+                                        <div class='bounce1'></div>
+                                        <div class='bounce2'></div>
+                                        <div class='bounce3'></div>      
+                                    </div>
+                                </template>
+                                <template if:true={messageLoading}>
+                                    <div class="chat_container">
+                                        <div class="chat__message-truedialog chat__message-sender">
+                                            <div class='spinner'>
+                                                <div class='bounce1'></div>
+                                                <div class='bounce2'></div>
+                                                <div class='bounce3'></div>      
+                                            </div>
+                                        </div>
+                                    </div>
+                                </template>
                             </div>
                         </div>
-                        <div class="inputWrapper" tabindex="-1">
-                            <div class="message-controls">
-                                <textarea class="slds-textarea message-input" role="textbox" rows="2"
-                                    placeholder="Type your message..." onkeypress={onSendMessage}></textarea>
+                        <div class="inputWrapper" tabindex="-1"  ondrop={handleDropFile} ondragstart={handleDragStart}>
+                            <div class="message-controls slds-grid">
+                                <div class={textStyle}>
+                                    <textarea class="slds-textarea message-input" role="textbox" rows="2"
+                                    placeholder="Type your message..." onkeypress={onKeyPress} oninput={onCreateSMS} ></textarea>
+                                </div>
+                                <div class={imageHolderStyle}>
+                                    <div class="close-image" if:true={imageUploaded}>
+                                        <button class="slds-button slds-button_brand btn-brand-padding slds-modal__close" onclick={removeSelection}>
+                                            <i class="fa-solid fa-xmark"></i>
+                                        </button>
+                                    </div>
+                                    <img id="file-image" src=""  class={classForFile} style="height: auto;"><!--https://mburse--partialdev--c.documentforce.com/servlet/servlet.ImageServer?id=0158H0000000hV2QAI&oid=00D8H0000008fkf-->
+                                </div>
+                                <div class="slds-col slds-p-horizontal_medium">
+                                    <div class="file-upload-button">
+                                        <label>
+                                            <input type="file" class="file-input" accept="image/png, image/jpeg" onchange={inputChange}>
+                                            <span class="chat__input-fileupload naoTooltip-wrap">
+                                                <i class="fa-solid fa-circle-plus attachment-icon fa-xl"></i>
+                                                <div class="naoTooltip nt-top nt-small">
+                                                    Attachments
+                                                </div>
+                                            </span>
+                                        </label>
+                                        <button class="slds-button slds-p-left_small slds-button_icon send_chat_button" onclick={onSendMessage}>
+                                            <i class="fa-solid fa-paper-plane send-icon fa-xl"></i>
+                                        </button>
+                                    </div>
+                                </div>
                             </div>
                             <!-- <div class="file-upload-button">
                                 <img id="file-image" src=""  class="chat__file-image">
                                 <label>
                                     <input type="file" class="file-input" accept="image/png, image/jpeg" onchange={inputChange}>
-                                    <span class="chat__input-fileupload"><i class="fa-solid fa-circle-plus fa-xl"></i></span>
+                                    <span class="chat__input-fileupload naoTooltip-wrap">
+                                        <i class="fa-solid fa-circle-plus attachment-icon fa-xl"></i>
+                                        <div class="naoTooltip nt-top nt-small">
+                                            Attachments
+                                        </div>
+                                    </span>
                                 </label>
-                            </div>
-                            <div class="close-image">
-                                <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse">
-                                    <i class="fa-solid fa-circle-xmark fa-xl"></i>
+                                <button class="slds-button slds-p-left_small slds-button_icon send_chat_button" onclick={onSendMessage}>
+                                    <i class="fa-solid fa-paper-plane send-icon fa-xl"></i>
                                 </button>
                             </div> -->
                         </div>

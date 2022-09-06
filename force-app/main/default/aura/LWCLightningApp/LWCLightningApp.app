@@ -4,4 +4,5 @@
     <aura:dependency resource="mBursePlanInfo"/>
     <aura:dependency resource="dashboardUploadInsurance"/>
     <aura:dependency resource="mBurseSMS"/>
+    <aura:dependency resource="mBurseDriverMeeting"/>
 </aura:application>

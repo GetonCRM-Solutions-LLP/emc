@@ -27,6 +27,7 @@ export default class DataTableComponent extends LightningElement {
   // tz = TIME_ZONE;
   // ln = LOCALE;
   isRenderCallbackActionExecuted = true;
+  isPdf = false;
   isRowSplitterExcecuted = false;
   isPerPageActionExecuted = false;
   isClicked = false;

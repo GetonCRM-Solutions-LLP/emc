@@ -5,7 +5,7 @@ import {
 } from 'lwc';
 import mBurseCss from '@salesforce/resourceUrl/EmcCSS';
 import readFromFileInchunk from '@salesforce/apex/NewAccountDriverController.readFromFileInchunk';
-import contactInfo from  '@salesforce/apex/NewAccountDriverController.getContactDetail';
+import contactInfo from '@salesforce/apex/NewAccountDriverController.getContactDetail';
 import sendInsuranceEmail from '@salesforce/apex/NewAccountDriverController.sendInsuranceEmail';
 import updateContactDetail from '@salesforce/apex/NewAccountDriverController.updateContactDetail';
 import {
@@ -22,7 +22,13 @@ export default class MBurseUploadDeclaration extends LightningElement {
     @api contactName;
     @api contactEmail;
     @api dayLeft;
+    @api accountType;
+    // Watch driver meeting
+    @api meeting;
+    // Schedule driver meeting 
+    @api schedule;
     driverDetails;
+    renderText;
     host;
     protocol;
     pathname;
@@ -42,6 +48,7 @@ export default class MBurseUploadDeclaration extends LightningElement {
     doneUploading;
     driverObject;
     dPacket = false;
+    packet = false;
     nextShow = false;
     nextPacketShow = false;
     isError = false;
@@ -51,12 +58,12 @@ export default class MBurseUploadDeclaration extends LightningElement {
     renderInitialized = false;
     promiseError = false;
     uploaded = mBurseCss + '/emc-design/assets/images/file-uploaded.png';
-    @api 
-    get client(){
+    @api
+    get client() {
         return this.driverObject;
     }
-    set client(value){
-        let tempObject =  this.proxyToObject(value)
+    set client(value) {
+        let tempObject = this.proxyToObject(value)
         this.driverObject = tempObject[0];
     }
     toggleBoxError() {
@@ -80,7 +87,7 @@ export default class MBurseUploadDeclaration extends LightningElement {
             photofile, reader, fileExt, i = 0,
             exactSize, fIndex, subString;
         this.choosefile = baseTarget;
-        if(this.choosefile){
+        if (this.choosefile) {
             fileSize = this.choosefile.files[0].size;
             photofile = baseTarget.files[0];
             choosenfileType = photofile.type;
@@ -88,8 +95,8 @@ export default class MBurseUploadDeclaration extends LightningElement {
             this.chooseFileName = photofile.name;
             fIndex = this.chooseFileName.lastIndexOf(".");
             subString = this.chooseFileName.substring(fIndex, this.chooseFileName.length);
-            if (subString === '.pdf') {
-                if(this.choosefile){
+            if (subString === '.pdf' || subString === '.PDF') {
+                if (this.choosefile) {
                     if (this.choosefile.files[0].size > 0 && this.choosefile.files[0].size < 4350000) {
                         this.choosefile = baseTarget;
                         this.toggleBox();
@@ -99,14 +106,14 @@ export default class MBurseUploadDeclaration extends LightningElement {
                         this.errorUploading = 'Base 64 Encoded file is too large.  Maximum size is 4 MB .';
                         console.error('Base 64 Encoded file is too large.  Maximum size is 4 MB .');
                     }
-                }else{
+                } else {
                     this.toggleBoxError();
                     this.errorUploading = 'There was an error uploading the file. Please try again'
                     console.error('There was an error uploading the file. Please try again');
                 }
             } else {
                 this.toggleBoxError();
-                this.errorUploading = 'Please upload correct File. File extension should be .pdf'
+                this.errorUploading = 'Please upload correct File. File extension should be .pdf/.PDF'
             }
 
             reader = new FileReader();
@@ -144,7 +151,7 @@ export default class MBurseUploadDeclaration extends LightningElement {
         } else {
             attachmentBody = this.attachment.substring(this.positionIndex, this.positionIndex + this.chunkSize);
         }
-        console.log(this.attachmentid, this.contactEmail, this.contactName)
+        console.log(this.attachmentid, this.contactEmail, this.contactName, attachmentBody)
         readFromFileInchunk({
                 attachmentBody: attachmentBody,
                 attachmentName: this.attachmentName,
@@ -240,11 +247,11 @@ export default class MBurseUploadDeclaration extends LightningElement {
         events(this, 'Next Driver Packet');
     }
 
-    nextmLog(){
+    nextmLog() {
         let contactData, drList;
         drList = this.driverDetails;
         contactData = this.proxyToObject(drList);
-        if((contactData[0].driverPacketStatus === 'Uploaded' && contactData[0].insuranceStatus === 'Skip' )){
+        if ((contactData[0].driverPacketStatus === 'Uploaded' && contactData[0].insuranceStatus === 'Skip')) {
             events(this, 'Next mLog Preview');
         }
     }
@@ -252,10 +259,14 @@ export default class MBurseUploadDeclaration extends LightningElement {
     nextDoneUpload() {
         let obj, contactObject;
         contactObject = this.driverDetails;
-        obj  = this.proxyToObject(contactObject);
-        if((obj[0].driverPacketStatus === 'Uploaded')){
-            events(this, 'Next mLog Preview');
-        }else{
+        obj = this.proxyToObject(contactObject);
+        if ((obj[0].driverPacketStatus === 'Uploaded')) {
+            if((obj[0].mlogApp === true)){
+                this.redirectToDashboard()
+            }else{
+                events(this, 'Next mLog Preview');
+            }
+        } else {
             events(this, 'Next Driver Packet');
         }
     }
@@ -264,63 +275,91 @@ export default class MBurseUploadDeclaration extends LightningElement {
         backEvents(this, 'Next Declaration Upload');
     }
 
-    toggleHide(){
+    toggleHide() {
         var list, status;
-        contactInfo({contactId: this.contactId})
-        .then((data) => {
-          if (data) {
-            this.promiseError = false;
-            this.driverDetails = data;
-            list = this.proxyToObject(data);
-            status = list[0].insuranceStatus;
-             this.nextPacketShow =  (status === 'Uploaded' && list[0].driverPacketStatus !== 'Uploaded') ? true : false;
-             if(this.dayLeft === true){
-                this.nextShow = (status === 'Uploaded') ? true : false;
-             }else{
-                 this.nextShow = true;
-             }
-             this.dPacket = (list[0].driverPacketStatus === 'Uploaded') ? true : false;
-          }
-        })
-        .catch((error)=>{
-            // If the promise rejects, we enter this code block
-            console.log(error); 
-        })
-    } 
+        contactInfo({
+                contactId: this.contactId
+            })
+            .then((data) => {
+                if (data) {
+                    this.promiseError = false;
+                    this.driverDetails = data;
+                    list = this.proxyToObject(data);
+                    status = list[0].insuranceStatus;
+                    this.nextPacketShow = (status === 'Uploaded' && list[0].driverPacketStatus !== 'Uploaded') ? true : false;
+                    if (this.dayLeft === true) {
+                        this.nextShow = (status === 'Uploaded') ? true : false;
+                    } else {
+                        this.nextShow = true;
+                    }
+                    this.dPacket = list[0].mlogApp;
+                    this.packet = list[0].driverPacketStatus !== 'Uploaded' ? false : true;
+                }
+            })
+            .catch((error) => {
+                // If the promise rejects, we enter this code block
+                console.log(error);
+            })
+    }
 
     skipToPage() {
         var contactData, beforeUpdate, toUpdate, tempList;
-        if(this.driverDetails){
+        if (this.driverDetails) {
             this.promiseError = false;
             tempList = this.driverDetails;
             contactData = this.proxyToObject(tempList);
-            beforeUpdate =  contactData[0].insuranceStatus;
+            beforeUpdate = contactData[0].insuranceStatus;
             toUpdate = "Skip";
-            if(beforeUpdate !== toUpdate) {
+            if (beforeUpdate !== toUpdate) {
                 contactData[0].insuranceStatus = "Skip";
                 updateContactDetail({
-                    contactData: JSON.stringify(contactData),
-                    driverPacket: false
-                })
-                .then(()=>{
-                    this.toggleHide();
-                })
-                .catch((error)=>{
-                    // If the promise rejects, we enter this code block
-                    this.errorMessage = 'Disconnected! Please check your connection and log in';
-                    this.promiseError = true;
-                    console.log(error); 
-                })
+                        contactData: JSON.stringify(contactData),
+                        driverPacket: false
+                    })
+                    .then(() => {
+                        this.toggleHide();
+                    })
+                    .catch((error) => {
+                        // If the promise rejects, we enter this code block
+                        this.errorMessage = 'Disconnected! Please check your connection and log in';
+                        this.promiseError = true;
+                        console.log(error);
+                    })
             }
-        } 
+        }
         skipEvents(this, 'Next Declaration Upload');
+    }
+
+    redirectToDashboard() {
+        var list, d;
+        contactInfo({
+                contactId: this.contactId
+            })
+            .then((data) => {
+                if (data) {
+                    list = this.proxyToObject(data);
+                    this.arrayList = list;
+                    d = this.arrayList;
+                    d[0].checkDriverMeeting = true;
+                    updateContactDetail({
+                        contactData: JSON.stringify(d),
+                        driverPacket: true
+                    })
+                    events(this, 'Next mburse meeting');
+                }
+            })
+            .catch((error) => {
+                // If the promise rejects, we enter this code block
+                console.log(error);
+            })
     }
 
     renderedCallback() {
         if (this.renderInitialized) {
             return;
-          }
+        }
         this.renderInitialized = true;
+        this.renderText = (this.accountType === 'New Account') ? 'Register for your driver meeting' : 'Next watch your driver meeting';
         this.toggleHide();
         if (this.template.querySelector('form') != null) {
             this.template.querySelector('form').addEventListener(

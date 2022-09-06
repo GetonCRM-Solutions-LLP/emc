@@ -1,0 +1,25 @@
+<apex:component >
+<!-- Begin Default Content REMOVE THIS -->
+<style>
+  .fa-solid,
+.fas {
+    font-family: "Font Awesome 6 Free" !important;
+}
+</style>
+<div class="slds-border_bottom fixed-header">
+    <div class="container">
+        <div class="slds-clearfix">
+            <div class="slds-float_left">
+                <nav>
+                    <apex:image url="{!URLFOR($Resource.EmcCSS,'emc-design/assets/images/logo/mBurse-logo_@2x.png')}" />
+                </nav>
+            </div>
+            <div class="slds-float_right">
+                <div class="toggle"><i class="fa-solid fa-bars"></i></div>
+            </div>
+        </div>
+        
+    </div>
+</div>
+<!-- End Default Content REMOVE THIS -->
+</apex:component>

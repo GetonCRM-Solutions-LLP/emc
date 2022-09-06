@@ -14,6 +14,7 @@
                         <div class="carousel_inner">
                             <template if:true={visibleRecords}>
                                 <template for:each={visibleRecords} for:item="contact">
+                                    <div align="center" key={contact.id} if:true={contact.icon}><img class="icon-unit" src={contact.icon}/></div>
                                     <p align="center" key={contact.id}> <span>{contact.name}</span></p>
                                 </template>
                             </template>

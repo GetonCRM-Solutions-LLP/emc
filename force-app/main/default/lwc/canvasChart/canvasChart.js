@@ -1,3 +1,5 @@
+/* eslint-disable no-else-return */
+/* eslint-disable vars-on-top */
 import {
     LightningElement,
     api
@@ -21,15 +23,14 @@ export default class CanvasChart extends LightningElement {
         if (this.chartJsInitialized) {
             return;
         }
-
-        this.chartJsInitialized = true;
         /* Load Static Resource For Script*/
         Promise.all([
-                loadScript(this, Chart + '/Chart.min.js'),
+                loadScript(this, Chart + '/Chart.bundle.min.js'),
                 loadStyle(this, Chart + '/Chart.min.css')
             ]).then(() => {
+                this.chartJsInitialized = true;
                 // disable Chart.js CSS injection
-                if (this.chartData != undefined) {
+                if (this.chartData !== undefined) {
                     var monthData = ["January", "February", "March", "April", "May", "June",
                         "July", "August", "September", "October", "November", "December"
                     ];

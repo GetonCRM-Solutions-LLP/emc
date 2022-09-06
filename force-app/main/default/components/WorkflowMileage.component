@@ -1,0 +1,59 @@
+<apex:component >
+<!-- Begin Default Content REMOVE THIS -->
+<div class="content">
+    <div class="slds-align_absolute-center">
+        <div class="">
+            <div class="slds-text-align_center">
+                <div class="format-head">
+                    Mileage Deadlines
+                </div>
+                <div class="slds-m-top_x-large pgraphins" >
+                    <p>***Should we add an intro here?***</p>
+                </div>
+            </div>
+            <div class="slds-m-top_xx-large"> 
+                    <fieldset class="slds-form-element">
+                        <div class="slds-form-element__control slds-m-top_xx-large ">
+                            <p class="questions">How long after the month ends do you want to allow drivers to submit mileage?</p>
+                            <span class="slds-radio slds-m-top_x-large">
+                                <input type="radio" id="radio-21" value="" name="days" checked="" />
+                                <label class="slds-radio__label" for="radio-21">
+                                    <span class="slds-radio_faux"></span>
+                                    <span >30 days</span>
+                                </label>
+                            </span>
+                            <span class="slds-radio slds-m-top_large">
+                                <input type="radio" id="radio-22" name="days" />
+                                <label class="slds-radio__label" for="radio-22">
+                                    <span class="slds-radio_faux"></span>
+                                    <span >60 days</span>
+                                </label>
+                            </span>
+                            <span class="slds-radio slds-m-top_large">
+                                <input type="radio" id="radio-23" name="days" />
+                                <label class="slds-radio__label" for="radio-23">
+                                    <span class="slds-radio_faux"></span>
+                                    <span >90 days</span>
+                                </label>
+                            </span>
+                        </div>
+                        <div class="slds-m-top_xx-large">
+                            <button class="slds-button slds-button_success" data-toggle="pageSlide" data-target="#vehicleEmployee" aria-expanded="false" aria-controls="vehicleEmployee" onclick="submitPlanMileage()">SUBMIT</button>
+                        </div>
+                    </fieldset>
+            </div>
+        </div>
+    </div>
+    
+</div>
+<script type="text/javascript">
+    function submitPlanMileage() {
+       var employeeElement = document.getElementById("vehicleEmployee");
+       var planMileageElement = document.getElementById("vehicleMileage");
+       planMileageElement.classList.toggle("active");
+       employeeElement.classList.toggle("active");
+
+    }
+</script>
+<!-- End Default Content REMOVE THIS -->
+</apex:component>

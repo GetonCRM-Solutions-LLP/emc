@@ -111,9 +111,9 @@
         font-size: 22px !important;
     } */
 
-    figcaption {
+    /* figcaption {
         font-size: 20px !important;
-    }
+    } */
 }
 
 @-webkit-keyframes swing {
@@ -239,14 +239,14 @@ table tr td {
     border-radius: 0px; */
 }
 .car-image-pl{
-    min-height: 8rem !important;
-    max-height: 8rem !important;
+    /* min-height: 8rem !important;
+    max-height: 8rem !important; */
     width: fit-content !important;
     object-fit: cover;
 }
 .car-image{
-    min-height: 9rem !important;
-    max-height: 9rem !important;
+    /* min-height: 9rem !important;
+    max-height: 9rem !important; */
     width: fit-content !important;
 }
 .dProfileGrid {
@@ -314,7 +314,7 @@ table tr td {
 
 .flag-text {
     position: absolute;
-    right: 8px;
+    right: -8px;
     top: 42px;
 }
 
@@ -405,12 +405,11 @@ table tr td {
     color: #000;
 }
 .text-font-align {
-    text-align: left;
-    font-size: 16px;
+    font-size: 14px;
     color: #000;
 }
 figcaption {
-    font-size: 16px;
+    font-size: 14px;
     color: #000;
 }
 
@@ -483,4 +482,13 @@ figcaption {
 
 .notify-head {
     font-weight: 500;
+}
+
+.common_size{
+    width: 50px;
+}
+
+.common_size_50{
+    width: 50px;
+    height: 50px;
 }

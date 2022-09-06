@@ -1,0 +1,108 @@
+<apex:component>
+    <!-- Begin Default Content REMOVE THIS -->
+    <style>
+        ul{
+            flex-flow: column;
+        }
+        li{
+            color: #000 !important;
+        }
+        .footer-heading::after{
+            content: '';
+            width: 28px;
+            padding-top: 6px;
+            display: block;
+            border-bottom: 2px solid #404b5b;
+        }
+    </style>
+    <div class="fixed-footer">
+        <div class="footer-content">
+            <div class="slds-m-top_xx-large ">
+                <div class="slds-grid slds-wrap fcontent">
+                    <div class="slds-col slds-size_2-of-12 slds-m-top_xx-large  ">
+                        <nav>
+                            <apex:image url="{!URLFOR($Resource.EmcCSS,'emc-design/assets/images/logo/mBurse-logo_@2x.png')}" />
+                        </nav>
+                    </div>
+                    <div class="slds-col slds-size_2-of-12 slds-m-top_xx-large">
+                        <a class="address-area icon-address">
+                            <svg version="1.1" id="play" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+                                x="0px" y="0px" height="40px" width="40px" viewBox="0 0 40 40" enable-background="new 0 0 40 40"
+                                xml:space="preserve">
+                                <circle class="stroke-under" fill="none" stroke="#808080" cx="20" cy="20.1" r="19.3"></circle>
+                                <path class="stroke-solid" fill="none" stroke="#dcdcdc" d="M39.3,20.1c0,10.7-8.7,19.3-19.3,19.3S0.7,30.7,0.7,20.1"></path>
+                                <path class="stroke-solid" fill="none" stroke="#dcdcdc" d="M0.7,20.1C0.7,9.4,9.3,0.7,20,0.7s19.3,8.7,19.3,19.3"></path>
+                                <g class="st0">
+                                    <g>
+                                        <path d="M13.1,26.7l6.9,6.8l6.9-6.8c1.9-1.8,2.9-4.2,2.9-6.8s-1-5-2.9-6.8c-1.9-1.8-4.3-2.8-6.9-2.8
+                                    c-2.6,0-5.1,1-6.9,2.8c-1.9,1.8-2.9,4.2-2.9,6.8C10.2,22.4,11.2,24.9,13.1,26.7z M14.5,14.5c1.5-1.4,3.4-2.2,5.5-2.2
+                                    c2.1,0,4.1,0.8,5.5,2.2c1.5,1.4,2.3,3.4,2.3,5.4s-0.8,3.9-2.3,5.4L20,30.7l-5.5-5.4c-1.5-1.4-2.3-3.4-2.3-5.4
+                                    C12.2,17.8,13,15.9,14.5,14.5z"></path>
+                                        <path d="M20,24.4c1,0,2.1-0.4,2.9-1.3c1.6-1.7,1.6-4.5,0-6.2c-0.8-0.9-1.8-1.3-2.9-1.3c-1,0-2.1,0.4-2.9,1.3
+                                    c-1.6,1.7-1.6,4.5,0,6.2C17.9,24,19,24.4,20,24.4z M18,17.8c0.5-0.6,1.3-0.9,2.1-0.9c0.8,0,1.5,0.3,2.1,0.9c1.1,1.2,1.1,3.2,0,4.4
+                                    c-0.5,0.6-1.3,0.9-2.1,0.9c-0.8,0-1.5-0.3-2.1-0.9C16.8,21,16.8,19,18,17.8z"></path>
+                                    </g>
+                                </g>
+                            </svg>
+                        </a>
+                
+                        <ul class="default-font address-area slds-p-left_xx-large">
+                                <li class="slds-p-bottom_x-small">1660 S. Albion Street</li>
+                                <li class="slds-p-bottom_x-small">Suite 625</li>
+                                <li class="slds-p-bottom_x-small">Denver, CO 80222</li>
+                                <li class="slds-p-bottom_x-small">303-357-2550</li>
+                                <li class="slds-p-bottom_x-small">888-658-2982</li>
+                        </ul>
+                    </div>
+                    <div class="slds-col slds-size_6-of-12 slds-m-top_xx-large slds-m-left_x-large">
+                        <p class="question footer-heading">I have a question</p>
+                        <fieldset class="slds-form-element slds-form-element_compound slds-form-element_address">
+                            <div class="slds-form-element__control">
+                                <div class="slds-form-element__row slds-m-top_x-large">
+                                    <div class="slds-size_2-of-6">
+                                        <div class="slds-form-element">
+                                            <label class="slds-form-element__label slds-m-bottom_small" for="form-element-id-06">Name*</label>
+                                            <div class="slds-form-element__control">
+                                                <input type="text" id="form-element-id-06" required="" class="slds-input form-field" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="slds-size_4-of-6">
+                                        <div class="slds-form-element">
+                                            <label class="slds-form-element__label slds-m-bottom_small" for="form-element-id-05">Email*</label>
+                                            <div class="slds-form-element__control">
+                                                <input type="text" id="form-element-id-05" required="" class="slds-input form-field" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="slds-form-element__row slds-m-top_large">
+                                    <div class="slds-size_1-of-1">
+                                        <div class="slds-form-element">
+                                            <label class="slds-form-element__label slds-m-bottom_small" for="form-element-id-04">We’re all ears!</label>
+                                            <div class="slds-form-element__control">
+                                                <textarea id="form-element-id-04" required="" class="slds-textarea form-field"></textarea>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="slds-from-element_row slds-m-top_x-large slds-m-bottom_xx-large">
+                                    <button class="slds-button slds-button_brand">SUBMIT</button>
+                                </div>
+                            </div>
+                        </fieldset>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="footer-area">
+            <div class="container-footer">
+                <div class="copyright">
+                    &copy; 2022, all rights reserved.
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <!-- End Default Content REMOVE THIS -->
+</apex:component>

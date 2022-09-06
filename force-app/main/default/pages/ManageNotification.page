@@ -46,15 +46,6 @@
             //         }
             //     });
             $(document).ready(function () {
-                // debugger
-                // $('tr').each(function(index) {
-                //     var x = $($(this).find('td')[6]).text();
-                //     if (isEllipsisActive($(this).find('.notify-para'))) {
-                //         debugger
-                //         $($(this).find('.notify-para')).prop('title', x);
-                //     }
-                // });
-
                 $(function () {
                     $("#notifyTable").tooltip({
                         classes: {
@@ -687,7 +678,7 @@
                 width: 100%;
                 display: flex !important;
                 flex-flow: column !important;
-                height: calc(100vh - 230px) !important;
+                height: calc(100vh - 230px);
             }
 
             .slds-table td {
@@ -749,6 +740,9 @@
                 opacity: 0.6;
             }
 
+            .waves-effect.bc-red:hover {
+                opacity: 1;
+            }
             .tWarning {
                 font-family: 'Proxima Nova';
                 font-size: 12px;
@@ -1252,6 +1246,13 @@
                 background-color: #78bc42;
             }
 
+            .chat_background{
+                padding: 0.25rem;
+                background-color: #f1f5f7;
+                border: 1px solid #f1f5f7;
+                border-radius: 0.25rem;
+            }
+
             .vw-12 {
                 width: 10em;
             }
@@ -1297,6 +1298,16 @@
             .bc-blue {
                 background: none !important;
                 background-color: #404e5e !important;
+            }
+
+            .bc-red {
+                background: none !important;
+                background-color: #ff0000 !important;
+            }
+
+            .close-image{
+                right: 0;
+                top: -11px;
             }
 
             .bc-grey {
@@ -1640,32 +1651,76 @@
             .slds-button:focus {
                 box-shadow: none !important;
             }
+            .aHeight{
+                height: fit-content !important;
+            }
         </style>
         <!-- Common script -->
         <script type="text/javascript">
             var app = angular.module('manageNotificationModule', ['angularUtils.directives.dirPagination']);
             app.controller('manageNotificationController', ['$scope', '$filter',
                 function ($scope, $filter) {
-                    $scope.driverInfo = {!conWrapper
-                }
+                    $scope.driverInfo = {!conWrapper}
                         $scope.role = '{!role}'
                         $scope.manRole = '{!managerrole}'
                         $scope.mburseUrl = ($scope.role === 'Admin') ? 'admindashboard' : ($scope.role === 'Driver/Manager') ? 'drivermanagerdashboard' : ($scope.role === 'Manager') ? 'managerdashboard' : 'admindriverdashboard';
             $scope.nameOfPage = 'Communications';
             $scope.isTextMessaging = {!checkTrueDialog};
             console.log("role->", $scope.role, $scope.manRole,  $scope.isTextMessaging);
-            if ($scope.driverInfo.length > 10) {
-                var elmHeight = document.getElementById("tableWrap").offsetHeight;
-                var screenHeight = window.screen.height;
-                var scrollHeight = screenHeight - elmHeight;
-                // console.log("scroll", scrollHeight, document.getElementById('style-2'));
-                document.getElementById('style-2').style.height = scrollHeight + "px";
-                // console.log("window.screen.height", window.screen.height);
-                // console.log("document.body.clientHeight", document.body.clientHeight);
-                // console.log("table", table);
-                // console.log("tableWrap", document.getElementById("tableWrap").offsetHeight , document.getElementById("tableWrap").clientHeight);
-                var nTable = document.getElementById('style-2').offsetHeight;
+            var nTable = document.getElementById('style-2').offsetHeight;
+            var scopeTarget = $scope;
+            window.onmessage = function (event) {
+                if (event.data === 'endchat') {
+                    document.getElementById("chatFrame").removeAttribute("src");
+                    document.getElementById('chatFrame').classList.add('d-none');
+                    document.getElementById("chatBack").classList.add('d-none');
+                    $scope.$apply(function () {
+                        location.reload();
+                        // $scope.nameOfPage = 'Messaging';
+                        // $scope.massNotiTextEnable = false;
+                        // $scope.checkboxShowNotiText = false;
+                        // $scope.showNotiBtn = true;
+                        // $scope.showCancelProBtn = false;
+                        // $scope.showTextNotiBtn = false;
+                        // $scope.massTextEnable = false;
+                        // $scope.checkboxShowText = false;
+                        // $scope.showTextMsgBtn = true;
+                        // $scope.showTextBtn = false;
+                        // document.getElementById('notification-message-area').value = '';
+                        // angular.forEach($scope.driverInfo, function (item) {
+                        //     if (item.massNotiText) {
+                        //         item.massNotiText = false;
+                        //     }
+                        // });
+                        // document.getElementById('chat-message-area').value = '';
+                        // angular.forEach($scope.driverInfo, function (item) {
+                        //     if (item.massText) {
+                        //         item.massText = false;
+                        //     }
+                        // });
+                    })
+                }
             }
+            const styleFilter = () => {
+                if ($scope.driverInfo.length > 10) {
+                    var elmHeight = document.getElementById("tableWrap").offsetHeight;
+                    var screenHeight = window.screen.height;
+                    var scrollHeight = screenHeight - elmHeight;
+                    // console.log("scroll", scrollHeight, document.getElementById('style-2'));
+                    document.getElementById('style-2').style.height = scrollHeight + "px";
+                    // console.log("window.screen.height", window.screen.height);
+                    // console.log("document.body.clientHeight", document.body.clientHeight);
+                    // console.log("table", table);
+                    // console.log("tableWrap", document.getElementById("tableWrap").offsetHeight , document.getElementById("tableWrap").clientHeight);
+                    $('#style-2').removeClass("aHeight");
+                    $('#notifyTable').removeClass("aHeight");
+                }else{
+                    $('#style-2').addClass("aHeight");
+                    $('#notifyTable').addClass("aHeight");
+                }
+            }
+            styleFilter();
+            
             var url_string = $(location).attr("href");
             var url = new URL(url_string);
             $scope.id = url.searchParams.get("id");
@@ -1693,6 +1748,7 @@
             $scope.isNotiActive = true;
             $scope.enableNotification = false;
             $scope.massTextEnable = false;
+            $scope.imageUploading = false;
             $scope.massNotiTextEnable = false;
             $scope.uploadmileageProcess = false; /* EMC - 182 Added On 21 December 2021 */
             $scope.mileageBtn = true;  /* EMC - 182 Added On 21 December 2021 */
@@ -1793,6 +1849,7 @@
                     }
                 }
             }
+
             function payDate(date) {
                 var st = new Date(date);
                 var today = new Date();
@@ -1874,12 +1931,10 @@
             $scope.sortKey = 'name';
             $scope.reverse = true;
             $scope.sort = function (keyname) {
-
                 $scope.reverse = ($scope.sortKey === keyname) ? !$scope.reverse : false;
                 $scope.sortKey = keyname;
                 if (keyname === 'name' || keyname === 'insurance') {
                     $scope.driverInfo.sort(function (a, b) {
-
                         var nameA = (a[keyname] === null) ? '' : a[keyname].toLowerCase(),
                             nameB = (b[keyname] === null) ? '' : b[keyname].toLowerCase()
                         if ($scope.reverse) {
@@ -1897,6 +1952,27 @@
                         }
                     })
                 }
+
+                if (keyname === 'unReadMessageCount') {
+                    $scope.driverInfo.sort(function (a, b) {
+                        var intA = (a[keyname] === null) ? '' : parseInt(a[keyname]),
+                            intB = (b[keyname] === null) ? '' : parseInt(b[keyname])
+                        if ($scope.reverse) {
+                            if (intA < intB) //sort string ascending
+                                return -1
+                            if (intA > intB)
+                                return 1
+                            return 0 //default return value (no sorting)
+                        } else {
+                            if (intA < intB) //sort string ascending
+                                return 1
+                            if (intA > intB)
+                                return -1
+                            return 0 //default return value (no sorting)
+                        }
+                    })
+                }
+
                 if (keyname === 'expirationDate') {
                     $scope.driverInfo.sort(function (a, b) {
 
@@ -2177,6 +2253,8 @@
                 $('#loading').text("Sending...");
                 var textInput = document.getElementById(`message-area${index}`).value;
                 if (notifyObj.notiMessage === null || notifyObj.notiMessage === "" || textInput === "") {
+                    $('#loading').text("");
+                    $('#spinner').hide();
                     $(`#span-error${index}`).removeClass("d-none");
                     $(`#message-area${index}`).addClass("border-error");
                 } else {
@@ -2199,9 +2277,11 @@
                                     $scope.refreshEmployees();
                                     $scope.$apply();
                                 }else{
+                                    $('#loading').text("");
                                     $('#spinner').hide();
                                 }
                             }else{
+                                $('#loading').text("");
                                 $('#spinner').hide();
                             }
                         }
@@ -2212,12 +2292,21 @@
             $scope.pageChangeHandler = function (num) {
                 if ($scope.driverInfo.length > 10) {
                     if (num === $scope.maxPage) {
-                        //  document.getElementById('style-2').style.height = nTable + "px";
-                        document.getElementById('style-2').style.height = "";
-                        document.getElementById('style-2').style.overflow = "hidden";
+                         if($scope.maxPage > 5){
+                            document.getElementById('style-2').style.height = nTable + "px";
+                            $('#style-2').removeClass("aHeight");
+                            $('#notifyTable').removeClass("aHeight");
+                            document.getElementById('style-2').style.overflowY = "scroll";
+                         }else{
+                            $('#style-2').addClass("aHeight");
+                            $('#notifyTable').addClass("aHeight");
+                            document.getElementById('style-2').style.overflow = "hidden";
+                         }
+                       // document.getElementById('style-2').style.height = "";
+                      //  document.getElementById('style-2').style.overflow = "hidden";
                     } else {
-                        document.getElementById('style-2').style.height = nTable + "px";
-                        document.getElementById('style-2').style.overflow = '';
+                        document.getElementById('style-2').style.overflowY = "scroll";
+                       styleFilter()
                     }
                 }
             }
@@ -2229,6 +2318,7 @@
                         if (event.status) {
                             $scope.$apply(function () {
                                 $scope.driverInfo = JSON.parse(result);
+                                styleFilter()
                                 //console.log('added->', JSON.parse(result));
                             });
                         } else {
@@ -2248,6 +2338,7 @@
                         if (event.status) {
                             $scope.$apply(function () {
                                 $scope.driverInfo = JSON.parse(result);
+                                styleFilter();
                                 //console.log('TrueDialogContact->', result, JSON.parse(result));
                             });
                         } else {
@@ -2421,7 +2512,7 @@
                     }
 
                     if ($scope.recordfoundindex != -1) {
-                        $scope.driverEmailList.remove($scope.recordfoundindex);
+                        $scope.driverEmailList.splice($scope.recordfoundindex, 1);
                     }
 
                     else {
@@ -2430,7 +2521,7 @@
                 } else {
                     $scope.driverEmailList.push(detail);
                 }
-                // console.log($scope.driverEmailList);
+                console.log($scope.driverEmailList);
             }
 
 
@@ -2506,14 +2597,14 @@
 
                 if ($scope.driverTextList.length > 0) {
                     for (var i = 0; i < $scope.driverTextList.length; i++) {
-                        if ($scope.driverTextList[i].contactId === detail.contactId) {
+                        if ($scope.driverTextList[i] === detail.trueDialogId) {
                             $scope.recordfoundindex = i;
                             break;
                         }
                     }
 
                     if ($scope.recordfoundindex != -1) {
-                        $scope.driverTextList.remove($scope.recordfoundindex);
+                        $scope.driverTextList.splice($scope.recordfoundindex, 1)
                     }
 
                     else {
@@ -2567,7 +2658,7 @@
                     $scope.showTextNotiBtn = false;
                 }
                 angular.forEach($scope.driverInfo, function (detail) {
-                    detail.massText = $scope.checkboxobj.isCheckedAllForNotiText;
+                    detail.massNotiText = $scope.checkboxobj.isCheckedAllForNotiText;
                     $scope.driverNotificationList.push(detail);
                 });
                 // console.log($scope.driverEmailList);
@@ -2614,7 +2705,7 @@
                     }
 
                     if ($scope.recordfoundindex != -1) {
-                        $scope.driverNotificationList.remove($scope.recordfoundindex);
+                        $scope.driverNotificationList.splice($scope.recordfoundindex, 1);
                     }
 
                     else {
@@ -2626,7 +2717,9 @@
                 console.log($scope.driverNotificationList);
             }
 
-            $scope.closeNotificationPopup = function(){
+            $scope.closeNotificationPopup = function(index){
+                $(`#span-error${index}`).addClass("d-none");
+                $(`#message-area${index}`).removeClass("border-error");
                 $scope.singleMessage = {};
                 $scope.msgIndex = 0;
                 $scope.enableNotification = false;
@@ -2641,11 +2734,13 @@
             $scope.locationdata = '';
             $scope.data = "";
             $scope.filesChoose = [];
+            $scope.imageChoose = [];
             $scope.locationChoose = [];
             $scope.mileageChoose = [];
             $scope.loaChoose = [];
             var maxStringSize = 6000000;    //Maximum String size is 6,000,000 characters
             var maxFileSize = 4350000;      //After Base64 Encoding, this is the max file size
+            var dialogFileSize = 300000;
             var chunkSize = 950000;         //Maximum Javascript Remoting message size is 1,000,000
             var attachment;
             var attachmentName;
@@ -3000,32 +3095,38 @@
 
             $scope.onChatMessage = function(){
                 var messageTextInput = document.getElementById('chat-message-area').value;
-                $scope.isSendActive = (messageTextInput != '') ? false : true;
+                $scope.isSendActive = (messageTextInput != '' || $scope.imageUploading) ? false : true;
             }
 
-            $scope.sendMessageToAll = function(){
+            $scope.sendMessageToAll = function(element){
                 $('#loading').text("Your text is being sent");
                 $('#spinner').show();
                 $scope.massTextEnable = false;
                 var text = document.getElementById('chat-message-area').value;
                 var driverTextInfo = angular.copy($scope.driverTextList);
-                Visualforce.remoting.Manager.invokeAction('{!$RemoteAction.ManageNotificationController.sendMessageToMultipleContacts}', JSON.stringify(driverTextInfo), text,
-                    function (result, event) {
-                        if (event.status) {
-                            $('#spinner').hide();
-                            $('#loading').text("");
-                            toastr.success("Message Sent Successfully");
-                            location.reload();
-                        }
-                        else {
-                            $('#spinner').hide();
-                            $('#loading').text("");
-                            toastr.error('Some error has occur');
-                        }
-                        $scope.$apply();
-                    },
-                    { buffer: true, escape: true, timeout: 120000 }
-                );
+                if($scope.imageUploading){
+                    $scope.uploadImageFileInChunk(element, text, driverTextInfo);
+                }else{
+                    Visualforce.remoting.Manager.invokeAction('{!$RemoteAction.ManageNotificationController.sendMessageToMultipleContacts}', JSON.stringify(driverTextInfo), text,
+                        function (result, event) {
+                            if (event.status) {
+                                $('#spinner').hide();
+                                $('#loading').text("");
+                                toastr.success("Message Sent Successfully");
+                                location.reload();
+                            }
+                            else {
+                                $('#spinner').hide();
+                                $('#loading').text("");
+                                toastr.error('Some error has occur');
+                            }
+                            $scope.$apply();
+                        },
+                        { buffer: true, escape: true, timeout: 120000 }
+                    );
+                }
+               
+              
             }
 
             $scope.acceptRequest = function () {
@@ -3320,6 +3421,132 @@
                     reader.readAsBinaryString(selectedFile);
                 }
                 console.log("from location file", lfile);
+            }
+
+            /* EMC - 396 Starts-------- */
+
+            $scope.removeImageUpload = function(){
+                var messageTextInput = document.getElementById('chat-message-area').value;
+                $scope.isSendActive = (messageTextInput != '') ? false : true;
+                document.getElementById('file-image').src = "";
+                document.getElementById('image-file_type').value = "";
+                $scope.imageUploading = false;
+            }
+
+            $scope.attachmentImage = function (element) {
+                chooseFileName = '';
+                attachment = '';
+                choosefile = '';
+                $scope.data = '';
+                choosefile = element;
+                var findex = (element.files[0].name).lastIndexOf(".");
+                var photofile = element.files[0];
+                var chat_file = document.getElementById('file-image');
+                chooseFileName = photofile.name;
+                //console.log('file size :- '+choosefile.files[0].size);
+                var strsubstring = (element.files[0].name).substring(findex, (element.files[0].name).length);
+                if (strsubstring == '.png' || strsubstring == '.jpg' || strsubstring == '.jpeg') {
+                    if (choosefile.files[0].size > 0 && choosefile.files[0].size < 300000) {
+                        choosefile = element;
+                        $scope.imageChoose.push(element);
+                        $scope.$apply(function (scope) {
+                            $scope.isSendActive = false;
+                            $scope.imageUploading = true;
+                            choosenfileType = photofile.type;
+                            var reader = new FileReader();
+                            reader.onload = function (e) {
+                                chat_file.src = reader.result;
+                            };
+                            reader.readAsDataURL(photofile);
+                        });
+                    }
+                    else {
+                        $scope.imageUploading = false;
+                        toastr.error('Base 64 Encoded file is too large.  Maximum size is 300 KB .');
+                    }
+                }
+                else {
+                    $scope.imageUploading = false;
+                    toastr.error('Please upload correct File. File extension should be .png, .jpg or .jpeg');
+                    $('#loading').text("");
+                    $('#spinner').hide();
+                }
+
+            }
+
+            $scope.uploadImageFileInChunk = function (element, textMessage, driverTextInfo) {
+                var file;
+                if (element.currentTarget != null || element.currentTarget != undefined) {
+                    angular.forEach($scope.imageChoose, function (f) {
+                        if (f.name === element.currentTarget.name) {
+                            file = f.files[0];
+                        }
+                    })
+                }
+
+                console.log(file);
+                //var file = choosefile.files[0];
+                if (file != undefined) {
+                    if (file.size <= dialogFileSize) {
+                        attachmentName = file.name;
+                        var fileReader = new FileReader();
+                        fileReader.onloadend = function (e) {
+                            e.preventDefault();
+                            attachment = window.btoa(this.result);
+                            positionIndex = 0;
+                            fileSize = attachment.length;
+                            doneUploading = false;
+                            if (fileSize < maxStringSize) {
+                                uploadImageAttachment(textMessage, driverTextInfo);
+                            } else {
+                                toastr.error('Base 64 Encoded file is too large.  Maximum size is " + maxStringSize + " your file is " + fileSize + "."');
+                            }
+                        }
+
+                        fileReader.onerror = function (e) {
+                            toastr.error('There was an error reading the file.  Please try again.');
+                        }
+                        fileReader.onabort = function (e) {
+                            toastr.error('There was an error reading the file.  Please try again.');
+                        }
+
+                        fileReader.readAsBinaryString(file);
+                    }
+                    else {
+                        toastr.error('File must be under 4.3 MB in size.  Your file is too large.  Please try again.');
+                    }
+                }
+                else {
+                    toastr.error('You must choose a file before trying to upload it');
+                }
+            }
+
+            function uploadImageAttachment(textToSend, driverTextInfo) {
+                $('#spinner').show();
+                var attachmentBody = "";
+                if (fileSize <= positionIndex + chunkSize) {
+                    attachmentBody = attachment.substring(positionIndex);
+                    doneUploading = true;
+                } else {
+                    attachmentBody = attachment.substring(positionIndex, positionIndex + chunkSize);
+                }
+                Visualforce.remoting.Manager.invokeAction('{!$RemoteAction.ManageNotificationController.sendImageToMultipleContacts}', JSON.stringify(driverTextInfo), attachmentBody, attachmentName, textToSend,
+                    function (result, event) {
+                        if (event.status) {
+                            $('#spinner').hide();
+                            $('#loading').text("");
+                            toastr.success("Message Sent Successfully");
+                            location.reload();
+                        }
+                        else {
+                            $('#spinner').hide();
+                            $('#loading').text("");
+                            toastr.error('Some error has occur');
+                        }
+                        $scope.$apply();
+                    },
+                    { buffer: true, escape: true, timeout: 120000 }
+                );
             }
 
             const changeKeyObjects = (arr, replaceKeys) => {
@@ -3821,15 +4048,15 @@
                         <table class="slds-table slds-table_cell-buffer slds-table_striped" id="notifyTable">
                             <thead class="table-thead">
                                 <tr class="slds-line-height_reset">
-                                    <th ng-show="checkboxShow" class="align-text resendCheck">
+                                    <th ng-show="checkboxShow" class="align-text resendCheck" ng-if="driverInfo.length > 0">
                                         <input class="custom-check" type="checkbox" ng-model="checkboxobj.isCheckedAllForEmail" ng-click="CheckUncheckAllForEmail(checkboxobj.isCheckedAllForEmail,info);"
                                         />
                                     </th>
-                                    <th ng-show="checkboxShowText" class="align-text resendCheck">
+                                    <th ng-show="checkboxShowText" class="align-text resendCheck" ng-if="driverInfo.length > 0">
                                         <input class="custom-check" type="checkbox" ng-model="checkboxobj.isCheckedAllForText" ng-click="CheckUncheckAllForText(checkboxobj.isCheckedAllForText,info);"
                                         />
                                     </th>
-                                    <th ng-show="checkboxShowNotiText" class="align-text resendCheck">
+                                    <th ng-show="checkboxShowNotiText" class="align-text resendCheck" ng-if="driverInfo.length > 0">
                                         <input class="custom-check" type="checkbox" ng-model="checkboxobj.isCheckedAllForNotiText" ng-click="CheckUncheckAllForNotiText(checkboxobj.isCheckedAllForNotiText,info);"
                                         />
                                     </th>
@@ -3849,8 +4076,8 @@
                                     <th>Message</th>
                                 </tr>
                             </thead>
-                            <tbody ng-class="{'table-scroll' : driverInfo.length > 10}" id="style-2">
-                                <tr dir-paginate="info in driverInfo | filter:search | itemsPerPage: pageSize" current-page="currentPage">
+                            <tbody ng-class="{'table-scroll' : driverInfo.length > 5}" id="style-2">
+                                <tr dir-paginate="info in driverInfo | filter:search | orderBy: '-unReadMessageCount' | itemsPerPage: pageSize" current-page="currentPage">
                                     <td ng-model="info.check" ng-show="checkboxShow" class="align-text em-2">
                                         <input class="custom-check" type="checkbox" ng-model="info.massEmail" ng-change="CheckUncheckForEmail(info);" />
                                     </td>
@@ -4104,13 +4331,29 @@
                     <div class="slds-modal__content slds-p-around_medium slds-scrollable" id="modal-content-id-1">
                         <div class="slds-align_absolute-center">
                             <textarea ng-model="truedailogChat"  placeholder="Type your message here.." class="slds-textarea" id="chat-message-area" ng-change="onChatMessage()"></textarea>
+                            <div class="col-6 col-sm-6 col-md-3 col-lg-3 col-xl-3" ng-show="imageUploading">
+                                <div class="close-image position-absolute">
+                                    <button class="slds-btn slds-btn-primary slds-btn-sm waves-effect bc-red waves-light mleft-0" ng-click="removeImageUpload()">
+                                        <i class="fa fa-times"></i>
+                                    </button>
+                                </div>
+                                <img id="file-image"   class="chat__file-image chat_background" style="height: auto;" />
+                            </div>
                         </div>
                     </div>
                     <!-- Modal/Popup Box LWC footer starts here -->
                     <footer class="slds-modal__footer">
                         <div class="slds-clearfix">
                             <div class="slds-float_right slds-m-right_small">
-                                <button id="sendMessageBtn" ng-class="{'disable-div' : isSendActive === true}" class="slds-btn slds-btn-primary slds-btn-sm waves-effect bc-mburse-green waves-light mleft-0" ng-click="sendMessageToAll()">
+                                <div class="file-field">
+                                    <div class="slds-btn slds-btn-primary slds-btn-sm waves-effect bc-blue waves-light mleft-0" id="imageFileBtn">
+                                        <i class="fa fa-paperclip slds-p-right_xx-small"></i>
+                                        <span>Attachment</span>
+                                        <input id="image-file_type" type="file" class="image-file" multiple="false" accept="image/png, image/jpeg" onchange="angular.element(this).scope().attachmentImage(this)"
+                                        />
+                                    </div>
+                                </div>
+                                <button id="sendMessageBtn" ng-class="{'disable-div' : isSendActive === true}" class="slds-btn slds-btn-primary slds-btn-sm waves-effect bc-mburse-green waves-light mleft-0" ng-click="sendMessageToAll($event)">
                                     <i class="fa-solid fa-paper-plane slds-p-right_x-small"></i>Send Message
                                 </button>
                             </div>
@@ -4166,7 +4409,7 @@
                                         <h2 class="noti_Title">{{singleMessage.fullname}}</h2>
                                     </div>
                                 
-                                    <button type="button" class="slds-button close-noti-message" data-dismiss="modal" ng-click="closeNotificationPopup()"><i class="fa-solid fa-xmark"></i></button>
+                                    <button type="button" class="slds-button close-noti-message" data-dismiss="modal" ng-click="closeNotificationPopup(msgIndex)"><i class="fa-solid fa-xmark"></i></button>
                                 </div>
                             </header>
                             <form class="noti_FormContainer">
@@ -4210,13 +4453,6 @@
         <div class="chatFrame-backdrop d-none" id="chatBack"></div>
         <iframe id="chatFrame" frameborder="0" class="vf-chat-iframe d-none"></iframe>
         <script>
-            window.onmessage = function (event) {
-                if (event.data === 'endchat') {
-                    document.getElementById("chatFrame").removeAttribute("src");
-                    document.getElementById('chatFrame').classList.add('d-none');
-                    document.getElementById("chatBack").classList.add('d-none');
-                }
-            }
             $('.menuToggler').click(function () {
                 var overlay_navigation = $('.overlay-navigation'),
                     nav_item_1 = $('#action-nav .action-nav-list:nth-of-type(1)'),

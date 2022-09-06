@@ -17,73 +17,73 @@
                     </lightning-layout-item>
                     <lightning-layout-item size="12">
                         <lightning-layout>
-                            <lightning-layout-item class="slds-p-around_x-small" size="7">
+                            <lightning-layout-item class="slds-p-around_x-small" size="6">
                                 <lightning-layout>
-                                    <lightning-layout-item padding="around-small" size="4">
-                                        <div class="dProfile-section pdl-3 slds-grid slds-wrap">
-                                            <div class="slds-col slds-size_5-of-12 slds-p-top_x-small">
-                                                <img class="odd-icon-size" src={locationIconUrl} alt="icon" />
+                                    <lightning-layout-item  class="slds-p-around_xx-small" size="4">
+                                        <div class="dProfile-section pdl-3 slds-grid slds-grid_vertical">
+                                            <div class="slds-col slds-size_12-of-12 slds-p-top_x-small">
+                                                <img class="common_size" src={locationIconUrl} alt="icon" />
                                             </div>
                                             <div
-                                                class="slds-col slds-size_5-of-12 slds-m-left_small slds-p-vertical_x-small">
-                                                <p class="text-font-align">{contactDetails.city}
-                                                    <br />{contactDetails.state}&nbsp;{contactDetails.zipCode}</p>
+                                                class="slds-col slds-size_12-of-12 slds-p-vertical_x-small">
+                                                <p class="text-font-align" style="word-break: break-word;">{contactDetails.city},&nbsp;{contactDetails.state}&nbsp;{contactDetails.zipCode}</p>
                                             </div>
                                         </div>
                                     </lightning-layout-item>
-                                    <lightning-layout-item padding="around-small" size="4">
-                                        <div class=" dProfile-section pdl-3 slds-grid slds-wrap">
-                                            <div class="slds-col slds-size_5-of-12">
-                                                <img class="even-icon-size" src={moneyIconUrl} alt="icon" />
+                                    <lightning-layout-item  class="slds-p-around_xx-small" size="4">
+                                        <div class=" dProfile-section pdl-3 slds-grid slds-grid_vertical">
+                                            <div class="slds-col slds-size_12-of-12 slds-p-top_x-small">
+                                                <img class="common_size_50" src={moneyIconUrl} alt="icon" />
                                             </div>
                                             <div
-                                                class="slds-col slds-size_5-of-12 slds-m-left_medium slds-p-vertical_small">
-                                                <p class="text-font-align pt-6">${fixedAmount}</p>
+                                                class="slds-col slds-size_12-of-12 slds-p-vertical_x-small">
+                                                <p class="text-font-align">${fixedAmount}/{renderText} <br/> fixed amount</p>
                                             </div>
                                         </div>
                                     </lightning-layout-item>
-                                    <lightning-layout-item padding="around-small" size="4">
-                                        <div class=" dProfile-section pdl-3 slds-grid slds-wrap">
-                                            <div class="slds-col slds-size_5-of-12">
-                                                <img class="even-icon-size" src={variableRateUrl} alt="icon" />
+                                    <lightning-layout-item  class="slds-p-around_xx-small" size="4">
+                                        <div class=" dProfile-section pdl-3 slds-grid slds-grid_vertical">
+                                            <div class="slds-col slds-size_12-of-12 slds-p-top_x-small">
+                                                <img class="common_size" src={variableRateUrl} alt="icon" />
                                             </div>
                                             <div
-                                                class="slds-col slds-size_5-of-12 slds-m-left_medium slds-p-vertical_small">
-                                                <p class="text-font-align pt-6">${variableRate}</p>
+                                                class="slds-col slds-size_12-of-12 slds-p-vertical_x-small">
+                                                <p class="text-font-align">${variableRate}/mile <br/> mileage rate</p>
                                             </div>
                                         </div>
                                     </lightning-layout-item>
                                 </lightning-layout>
                                 <lightning-layout>
-                                    <lightning-layout-item padding="around-small" size="4">
-                                        <div class="dProfile-section pdl-3 slds-grid slds-wrap">
-                                            <div class="slds-col slds-size_5-of-12">
-                                                <img src={milesIconUrl} alt="icon" />
+                                    <lightning-layout-item  class="slds-p-around_xx-small" size="4">
+                                        <div class="dProfile-section pdl-3 slds-grid slds-grid_vertical">
+                                            <div class="slds-col slds-size_12-of-12 slds-p-top_x-small">
+                                                <img class="common_size" src={milesIconUrl} alt="icon" />
                                             </div>
                                             <div
-                                                class="slds-col slds-size_5-of-12 slds-m-left_small slds-p-vertical_small">
-                                                <p class="text-font-align pt-2">{mileageUnapproved} miles </p>
+                                                class="slds-col slds-size_12-of-12 slds-p-top_x-small">
+                                                <p class="text-font-align" if:true={mileageText}>{mileageUnapproved} (miles) <br/> unapproved</p>
+                                                <p class="text-font-align" if:false={mileageText}>{mileageUnapproved} unapproved <br/> miles</p>
                                             </div>
                                         </div>
                                     </lightning-layout-item>
-                                    <lightning-layout-item padding="around-small" size="4">
-                                        <div class=" dProfile-section pdl-3 slds-grid slds-wrap">
-                                            <div class="slds-col slds-size_5-of-12">
-                                                <img class="odd-icon-gas-size" src={fuelIconUrl} alt="icon" />
+                                    <lightning-layout-item  class="slds-p-around_xx-small" size="4">
+                                        <div class=" dProfile-section pdl-3 slds-grid slds-grid_vertical">
+                                            <div class="slds-col slds-size_12-of-12">
+                                                <img class="common_size" src={fuelIconUrl} alt="icon" />
                                             </div>
                                             <div
-                                                class="slds-col slds-size_5-of-12 slds-m-left_medium slds-p-vertical_small">
-                                                <!-- <p class="text-font-align text-padding"  >$2.67/gallon</p>  -->
-                                                <p class="text-font-align text-padding" if:true={isfuelPrice}>
-                                                    ${fuelPrice}/gallon</p>
+                                                class="slds-col slds-size_12-of-12">
+                                                <!-- <p class="text-font-align text-padding"  >$2.67/gallon <br/> last month</p>  -->
+                                                <p class="text-font-align" if:true={isfuelPrice}>
+                                                    ${fuelPrice}/gallon <br/> last month</p>
                                             </div>
                                         </div>
                                     </lightning-layout-item>
                                 </lightning-layout>
                             </lightning-layout-item>
-                            <lightning-layout-item class="slds-p-around_x-small" size="5">
+                            <lightning-layout-item class="slds-p-around_x-small" size="6">
                                 <lightning-layout>
-                                    <lightning-layout-item padding="small" size="6" class="custom-layout">
+                                    <lightning-layout-item padding="small" size="7" class="custom-layout">
                                         <div class="carProfile slds-grid slds-wrap">
                                             <figure>
                                                 <template if:false={isShowMessage}>
@@ -93,12 +93,12 @@
                                                 <template if:true={isShowMessage}>
                                                     <img class="car-image" src={contactDetails.carImage} alt="icon" />
                                                 </template>
-
+                                                <figcaption><strong>Your Reimbursement Vehicle</strong></figcaption>
                                                 <figcaption>{contactDetails.vehicalType}</figcaption>
                                             </figure>
                                         </div>
                                     </lightning-layout-item>
-                                    <lightning-layout-item padding="around-small" size="6">
+                                    <lightning-layout-item padding="around-small" size="5">
                                         <div class="dProfile-section page-main">
                                             <h2 class="dProfile-states">Driving States:</h2>
                                             <div class="dPara slds-grid slds-wrap slds-m-top_x-small">
@@ -206,7 +206,7 @@
                     </div>
                     <div class="relative-position flag-fluid">
                         <img src={flagIconUrl} />
-                        <div class="flag-text"><strong>{complianceMileage}</strong></div>
+                        <div class="flag-text"><strong><lightning-formatted-number value={complianceMileage} maximum-fraction-digits="2"></lightning-formatted-number></strong></div>
                     </div>
                 </div>
                 <div
@@ -276,7 +276,7 @@
                                             </div>
                                             <div
                                                 class="slds-col slds-size_7-of-12 slds-p-vertical_small vertical-padding">
-                                                <p class="text-align"><strong>{complianceMileage} miles</strong></p>
+                                                <p class="text-align"><strong><lightning-formatted-number value={complianceMileage} maximum-fraction-digits="2"></lightning-formatted-number> miles</strong></p>
                                             </div>
                                             <div
                                                 class="slds-col slds-size_2-of-12 slds-p-right_xx-small slds-p-top_x-small">

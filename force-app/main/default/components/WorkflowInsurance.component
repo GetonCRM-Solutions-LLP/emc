@@ -1,0 +1,98 @@
+<apex:component >
+<!-- Begin Default Content REMOVE THIS -->
+<div class="content">
+    <div class="slds-align_absolute-center">
+        <div class="">
+            <div class="slds-text-align_center">
+                <div class="format-head">
+                   Insurance
+                </div>
+                <div class="slds-m-top_x-large pgraphins" >
+                    <p class="pgraph">Your employee’s vehicle insurance is critical to your business.</p>
+                </div>
+            </div>
+            <div class="slds-m-top_xx-large"> 
+                    <fieldset class="slds-form-element">
+                        <div class="slds-form-element__control ">
+                            <p class="questions">How much vehicle insurance (minimum) would you like to require
+                                your employees to carry on their personal vehicles?</p>
+                            <span class="slds-radio slds-m-top_x-large">
+                                <input type="radio" id="radio-41" value="" name="minimum" checked="" />
+                                <label class="slds-radio__label" for="radio-41">
+                                    <span class="slds-radio_faux"></span>
+                                    <span >100/300/50 (Recommended minimum)</span>
+                                </label>
+                            </span>
+                            <span class="slds-radio slds-m-top_large">
+                                <input type="radio" id="radio-42" name="minimum" />
+                                <label class="slds-radio__label" for="radio-42">
+                                    <span class="slds-radio_faux"></span>
+                                    <span >100/300/100</span>
+                                </label>
+                            </span>
+                            <span class="slds-radio slds-m-top_large">
+                                <input type="radio" id="radio-43" name="minimum" />
+                                <label class="slds-radio__label" for="radio-43">
+                                    <span class="slds-radio_faux"></span>
+                                    <span >300/Single Limit</span>
+                                </label>
+                            </span>
+                            <span class="slds-radio slds-m-top_large">
+                                <input type="radio" id="radio-44" name="minimum" />
+                                <label class="slds-radio__label" for="radio-44">
+                                    <span class="slds-radio_faux"></span>
+                                    <span >250/500/100</span>
+                                </label>
+                            </span>
+                            <span class="slds-radio slds-m-top_large">
+                                <input type="radio" id="radio-45" name="minimum" />
+                                <label class="slds-radio__label" for="radio-45">
+                                    <span class="slds-radio_faux"></span>
+                                    <span >I need a little help</span>
+                                </label>
+                            </span>
+                        </div>
+                        <div class="slds-form-element__control slds-m-top_xx-large ">
+                            <p class="questions">What kind of deductible would you like to require?</p>
+                            <span class="slds-radio slds-m-top_x-large">
+                                <input type="radio" id="radio-1" name="default" checked="" />
+                                <label class="slds-radio__label" for="radio-1">
+                                    <span class="slds-radio_faux"></span>
+                                    <span >$500</span>
+                                </label>
+                            </span>
+                            <span class="slds-radio slds-m-top_large">
+                                <input type="radio" id="radio-2" name="default" />
+                                <label class="slds-radio__label" for="radio-2">
+                                    <span class="slds-radio_faux"></span>
+                                    <span >$1,000</span>
+                                </label>
+                            </span>
+                            <span class="slds-radio slds-m-top_large">
+                                <input type="radio" id="radio-3" name="default" />
+                                <label class="slds-radio__label" for="radio-3">
+                                    <span class="slds-radio_faux"></span>
+                                    <span >I need a little help</span>
+                                </label>
+                            </span>
+                        </div>
+                        <div class="slds-m-top_xx-large">
+                            <button class="slds-button slds-button_success" data-toggle="pageSlide" data-target="#vehicleMileage" aria-expanded="false" aria-controls="vehicleMileage" onclick="submitInsurance()">SUBMIT</button>
+                        </div>
+                    </fieldset>
+            </div>
+        </div>
+    </div>
+    
+</div>
+<!-- End Default Content REMOVE THIS -->
+<script type="text/javascript">
+    function submitInsurance() {
+       var mileageElement = document.getElementById("vehicleMileage");
+       var insuranceElement = document.getElementById("vehicleInsurance");
+       insuranceElement.classList.toggle("active");
+       mileageElement.classList.toggle("active");
+      
+    }
+</script>
+</apex:component>
