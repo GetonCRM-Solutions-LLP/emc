@@ -1,18 +1,16 @@
 @isTest
 public class ReportDetailsController_test {
     public static boolean flag {get;set;}
-     public static testmethod void TestMethod1() 
-     {        
-        TriggerConfig__c customEmailSetting =  new TriggerConfig__c();
-        customEmailSetting.Name = 'Defaulttrigger';
-        customEmailSetting.ContactTriCommunityReimCreate__c = false;
-        insert customEmailSetting;
-
+     public static testmethod void TestMethod1() {
+        TriggerConfig__c triggerCustomSetting = TestDataFactory.triggerConfigCustomSetting(false);
+        triggerCustomSetting.ContactTriCommunityReimCreate__c = false;
+        insert triggerCustomSetting;
+        TrueDialog_Keys__c tdKeys = TestDataFactory.createTrueDialog(true);
         flag= false;
-        UserRole userRole_1 = [SELECT Id FROM UserRole WHERE DeveloperName = 'EMD' LIMIT 1];
-        Profile profile_1 = [SELECT Id FROM Profile WHERE Name = 'Customer Community Login User' LIMIT 1];
-        User admin = [SELECT Id, Username, UserRoleId FROM User WHERE Profile.Name = 'System Administrator' AND UserRoleId = :userRole_1.Id LIMIT 1];
-        User user_1;
+        UserRole uRole = TestDataFactory.getUserRole();
+        Profile profileObj = TestDataFactory.getUserProfile();
+        User admin = TestDataFactory.getSystemAdminUser(uRole.Id);
+        User userObj;
         List<Contact> driverlist;
         Account obj_account;
         Contact obj_admin;
@@ -24,31 +22,16 @@ public class ReportDetailsController_test {
             insert obj_account ;
             obj_admin =RecordUtilityClass.getAdminContact();
             obj_manager =RecordUtilityClass.getManagerContact();
-            Contact contact_1 = new Contact(AccountId = obj_account.Id, LastName = 'xgeek',External_Email__c= 'abc@gmail.com');
-            insert contact_1;
+            Contact contactObj = TestDataFactory.createCICDContact(true,obj_account.Id);
             
-            user_1 = new User( 
-            Email = 'yourusername@gmail.com',
-            ProfileId = profile_1.Id, 
-            UserName = 'yourusername@gmail.com', 
-            Alias = 'Test',
-            TimeZoneSidKey = 'America/New_York',
-            EmailEncodingKey = 'ISO-8859-1',
-            LocaleSidKey = 'en_US', 
-            LanguageLocaleKey = 'en_US',
-            ContactId = contact_1.Id,
-            PortalRole = 'Manager',
-            FirstName = 'Firstname',
-            LastName = 'Lastname'
-          );
-          insert user_1;
+            userObj = TestDataFactory.createUser(True, profileObj.Id, contactObj.Id);
         }
         
         
         Custom_Report__c rep = createReport('Select id from Contact','Contact Created Between 2 Dates');
         insert rep;
         Test.startTest();
-        System.runAs(user_1) {
+        System.runAs(userObj) {
             Test.setCurrentPage(Page.reportdetail);
             String reportid = ApexPages.currentPage().getParameters().put('reportid',rep.Id);
             String accId = ApexPages.currentPage().getParameters().put('accid',obj_account.Id);
@@ -150,18 +133,16 @@ public class ReportDetailsController_test {
         Test.stopTest(); 
         
      }
-     public static testmethod void TestMethod2() 
-     {      
-        TriggerConfig__c customEmailSetting =  new TriggerConfig__c();
-        customEmailSetting.Name = 'Defaulttrigger';
-        customEmailSetting.ContactTriCommunityReimCreate__c = false;
-        insert customEmailSetting;
-
+     public static testmethod void TestMethod2() {      
+        TriggerConfig__c triggerCustomSetting = TestDataFactory.triggerConfigCustomSetting(false);
+        triggerCustomSetting.ContactTriCommunityReimCreate__c = false;
+        insert triggerCustomSetting;
+        TrueDialog_Keys__c tdKeys = TestDataFactory.createTrueDialog(true);
         flag= true;  
-        UserRole userRole_1 = [SELECT Id FROM UserRole WHERE DeveloperName = 'EMD' LIMIT 1];
-        Profile profile_1 = [SELECT Id FROM Profile WHERE Name = 'Customer Community Login User' LIMIT 1];
-        User admin = [SELECT Id, Username, UserRoleId FROM User WHERE Profile.Name = 'System Administrator' AND UserRoleId = :userRole_1.Id LIMIT 1];
-        User user_1;
+        UserRole uRole = TestDataFactory.getUserRole();
+        Profile profileObj = TestDataFactory.getUserProfile();
+        User admin = TestDataFactory.getSystemAdminUser(uRole.Id);
+        User userObj;
         List<Contact> driverlist;
         Account obj_account;
         Contact obj_admin;
@@ -173,31 +154,16 @@ public class ReportDetailsController_test {
             insert obj_account ;
             obj_admin =RecordUtilityClass.getAdminContact();
             obj_manager =RecordUtilityClass.getManagerContact();
-            Contact contact_1 = new Contact(AccountId = obj_account.Id, LastName = 'xgeek',External_Email__c= 'abc@gmail.com');
-            insert contact_1;
+            Contact contactObj = TestDataFactory.createCICDContact(true,obj_account.Id);
             
-            user_1 = new User( 
-            Email = 'yourusername@gmail.com',
-            ProfileId = profile_1.Id, 
-            UserName = 'yourusername@gmail.com', 
-            Alias = 'Test',
-            TimeZoneSidKey = 'America/New_York',
-            EmailEncodingKey = 'ISO-8859-1',
-            LocaleSidKey = 'en_US', 
-            LanguageLocaleKey = 'en_US',
-            ContactId = contact_1.Id,
-            PortalRole = 'Manager',
-            FirstName = 'Firstname',
-            LastName = 'Lastname'
-          );
-          insert user_1;
+            userObj = TestDataFactory.createUser(True, profileObj.Id, contactObj.Id);
         }
  
         Custom_Report__c rep = createReport('Select id from Contact','Contact Created Between 2 Dates');
         insert rep;
 
         Test.startTest();
-        System.runAs(user_1) {
+        System.runAs(userObj) {
             Test.setCurrentPage(Page.reportdetail);
             String reportid = ApexPages.currentPage().getParameters().put('reportid',rep.Id);
             String accId = ApexPages.currentPage().getParameters().put('accid',obj_account.Id);
@@ -283,28 +249,24 @@ public class ReportDetailsController_test {
         }
         Test.stopTest();
      }
-     public static testmethod void TestMethod3() 
-     { 
-        TriggerConfig__c customEmailSetting =  new TriggerConfig__c();
-        customEmailSetting.Name = 'Defaulttrigger';
-        customEmailSetting.ContactTriCommunityReimCreate__c = false;
-        insert customEmailSetting;
-
+     public static testmethod void TestMethod3() { 
+        TriggerConfig__c triggerCustomSetting = TestDataFactory.triggerConfigCustomSetting(false);
+        triggerCustomSetting.ContactTriCommunityReimCreate__c = false;
+        insert triggerCustomSetting;
+        TrueDialog_Keys__c tdKeys = TestDataFactory.createTrueDialog(true);
          ReportDetailsController.getAllManagers('Driver');
          ReportDetailsController.getAllManagers('Manager');
      }
-     public static testmethod void TestMethod4() 
-     {      
-        TriggerConfig__c customEmailSetting =  new TriggerConfig__c();
-        customEmailSetting.Name = 'Defaulttrigger';
-        customEmailSetting.ContactTriCommunityReimCreate__c = false;
-        insert customEmailSetting;
-
+     public static testmethod void TestMethod4() {      
+        TriggerConfig__c triggerCustomSetting = TestDataFactory.triggerConfigCustomSetting(false);
+        triggerCustomSetting.ContactTriCommunityReimCreate__c = false;
+        insert triggerCustomSetting;
+        TrueDialog_Keys__c tdKeys = TestDataFactory.createTrueDialog(true);
           flag= false;  
-        UserRole userRole_1 = [SELECT Id FROM UserRole WHERE DeveloperName = 'EMD' LIMIT 1];
-        Profile profile_1 = [SELECT Id FROM Profile WHERE Name = 'Customer Community Login User' LIMIT 1];
-        User admin = [SELECT Id, Username, UserRoleId FROM User WHERE Profile.Name = 'System Administrator' AND UserRoleId = :userRole_1.Id LIMIT 1];
-        User user_1;
+        UserRole uRole = TestDataFactory.getUserRole();
+        Profile profileObj = TestDataFactory.getUserProfile();
+        User admin = TestDataFactory.getSystemAdminUser(uRole.Id);
+        User userObj;
         List<Contact> driverlist;
         Account obj_account;
         Contact obj_admin;
@@ -316,30 +278,14 @@ public class ReportDetailsController_test {
             insert obj_account ;
             obj_admin =RecordUtilityClass.getAdminContact();
             obj_manager =RecordUtilityClass.getManagerContact();
-            Contact contact_1 = new Contact(AccountId = obj_account.Id, LastName = 'xgeek',External_Email__c= 'abc@gmail.com');
-            insert contact_1;
-            
-            user_1 = new User( 
-            Email = 'yourusername@gmail.com',
-            ProfileId = profile_1.Id, 
-            UserName = 'yourusername@gmail.com', 
-            Alias = 'Test',
-            TimeZoneSidKey = 'America/New_York',
-            EmailEncodingKey = 'ISO-8859-1',
-            LocaleSidKey = 'en_US', 
-            LanguageLocaleKey = 'en_US',
-            ContactId = contact_1.Id,
-            PortalRole = 'Manager',
-            FirstName = 'Firstname',
-            LastName = 'Lastname'
-          );
-          insert user_1;
+            Contact contactObj = TestDataFactory.createCICDContact(true,obj_account.Id);            
+            userObj = TestDataFactory.createUser(True, profileObj.Id, contactObj.Id);
         }
         Custom_Report__c rep = createReport('Select id from Contact','Contact Created Between 2 Dates');
         insert rep;
 
         Test.startTest();
-        System.runAs(user_1) {
+        System.runAs(userObj ) {
             Test.setCurrentPage(Page.reportdetail);
             String reportid = ApexPages.currentPage().getParameters().put('reportid',rep.Id);
             String accId = ApexPages.currentPage().getParameters().put('accid',obj_account.Id);
@@ -348,8 +294,7 @@ public class ReportDetailsController_test {
             ReportDetailsController.getAllReportHeaders(rep.id);
             ReportDetailsController.getRedirected();
             ReportDetailsController.getAllManagers('Driver');
-            ReportDetailsController.getAllManagers('Manager');
-            
+            ReportDetailsController.getAllManagers('Manager');            
     
             Custom_Report__c rep13 =createReport('Select id from Employee_Mileage__c','Mileages Between 2 Dates for Month Range');
             insert rep13;
@@ -360,18 +305,16 @@ public class ReportDetailsController_test {
         }
         Test.stopTest(); 
      }
-     public static testmethod void TestMethod5() 
-     {        
-        TriggerConfig__c customEmailSetting =  new TriggerConfig__c();
-        customEmailSetting.Name = 'Defaulttrigger';
-        customEmailSetting.ContactTriCommunityReimCreate__c = false;
-        insert customEmailSetting;
-
+     public static testmethod void TestMethod5() {        
+        TriggerConfig__c triggerCustomSetting = TestDataFactory.triggerConfigCustomSetting(false);
+        triggerCustomSetting.ContactTriCommunityReimCreate__c = false;
+        insert triggerCustomSetting;
+        TrueDialog_Keys__c tdKeys = TestDataFactory.createTrueDialog(true);
          flag= false;
-        UserRole userRole_1 = [SELECT Id FROM UserRole WHERE DeveloperName = 'EMD' LIMIT 1];
-        Profile profile_1 = [SELECT Id FROM Profile WHERE Name = 'Customer Community Login User' LIMIT 1];
-        User admin = [SELECT Id, Username, UserRoleId FROM User WHERE Profile.Name = 'System Administrator' AND UserRoleId = :userRole_1.Id LIMIT 1];
-        User user_1;
+        UserRole uRole = TestDataFactory.getUserRole();
+        Profile profileObj = TestDataFactory.getUserProfile();
+        User admin = TestDataFactory.getSystemAdminUser(uRole.Id);
+        User userObj;
         List<Contact> driverlist;
         Account obj_account;
         Contact obj_admin;
@@ -383,30 +326,15 @@ public class ReportDetailsController_test {
             insert obj_account ;
             obj_admin =RecordUtilityClass.getAdminContact();
             obj_manager =RecordUtilityClass.getManagerContact();
-            Contact contact_1 = new Contact(AccountId = obj_account.Id, LastName = 'xgeek',External_Email__c= 'abc@gmail.com');
-            insert contact_1;
+            Contact contactObj = TestDataFactory.createCICDContact(true,obj_account.Id);
             
-            user_1 = new User( 
-            Email = 'yourusername@gmail.com',
-            ProfileId = profile_1.Id, 
-            UserName = 'yourusername@gmail.com', 
-            Alias = 'Test',
-            TimeZoneSidKey = 'America/New_York',
-            EmailEncodingKey = 'ISO-8859-1',
-            LocaleSidKey = 'en_US', 
-            LanguageLocaleKey = 'en_US',
-            ContactId = contact_1.Id,
-            PortalRole = 'Manager',
-            FirstName = 'Firstname',
-            LastName = 'Lastname'
-          );
-          insert user_1;
+            userObj = TestDataFactory.createUser(True, profileObj.Id, contactObj.Id);        
         }
         Custom_Report__c rep = createReport('Select id from Contact','Contact Created Between 2 Dates');
         insert rep;
 
         Test.startTest();
-        System.runAs(user_1) {
+        System.runAs(userObj ) {
             Test.setCurrentPage(Page.reportdetail);
             String reportid = ApexPages.currentPage().getParameters().put('reportid',rep.Id);
             String accId = ApexPages.currentPage().getParameters().put('accid',obj_account.Id);
@@ -491,13 +419,11 @@ public class ReportDetailsController_test {
         }
         Test.stopTest();     
      }
-     public static List<Contact> insertrecords()
-     {
-        TriggerConfig__c customEmailSetting =  new TriggerConfig__c();
-        customEmailSetting.Name = 'Defaulttrigger';
-        customEmailSetting.ContactTriCommunityReimCreate__c = false;
-        insert customEmailSetting;
-        
+     public static List<Contact> insertrecords() {
+        TriggerConfig__c triggerCustomSetting = TestDataFactory.triggerConfigCustomSetting(false);
+        triggerCustomSetting.ContactTriCommunityReimCreate__c = false;
+        insert triggerCustomSetting;
+        TrueDialog_Keys__c tdKeys = TestDataFactory.createTrueDialog(true);
         List<IRS_Mileage_Rate__c> obj_IRS_Mileage_Rate =  RecordUtilityClass.insertIrsRate();
         RecordUtilityClass.sendEmailforCompliance();
         RecordUtilityClass.enableMappingGasPriceTrigger();
@@ -521,15 +447,13 @@ public class ReportDetailsController_test {
             obj_admincontact.Activation_Date__c = System.today();
             insert obj_admincontact;
             obj_Manager_list = RecordUtilityClass.buildManagerContact(obj_Account,obj_admincontact);
-            for(Contact obj:obj_Manager_list)
-            {
+            for(Contact obj:obj_Manager_list) {
                 obj.Activation_Date__c = System.today();
                 obj_Manager_list1.add(obj);
             }
             insert obj_Manager_list1;
             obj_Driver_list = RecordUtilityClass.buildDriverContact(obj_Account,obj_Manager_list[0]);
-            for(Contact obj:obj_Driver_list)
-            {
+            for(Contact obj:obj_Driver_list) {
                 obj.Activation_Date__c = System.today();
                 obj_Driver_list1.add(obj);
             }
@@ -538,13 +462,11 @@ public class ReportDetailsController_test {
         return obj_Driver_list1;
        
      }
-     public static void insertReimbursements(List<Contact> driverList)
-     {
-        TriggerConfig__c customEmailSetting =  new TriggerConfig__c();
-        customEmailSetting.Name = 'Defaulttrigger';
-        customEmailSetting.ContactTriCommunityReimCreate__c = false;
-        insert customEmailSetting;
-
+     public static void insertReimbursements(List<Contact> driverList) {
+        TriggerConfig__c triggerCustomSetting = TestDataFactory.triggerConfigCustomSetting(false);
+        triggerCustomSetting.ContactTriCommunityReimCreate__c = false;
+        insert triggerCustomSetting;
+        TrueDialog_Keys__c tdKeys = TestDataFactory.createTrueDialog(true);
         list<Gas_Prices__c> gaslist = RecordUtilityClass.buildGasPrice();
         insert gaslist;
         list<Employee_Reimbursement__c> obj_Employee_Reimbursement_list = RecordUtilityClass.buildPendingEmployee_Reimbursement(driverList);
@@ -555,29 +477,23 @@ public class ReportDetailsController_test {
         insert obj_Employee_Mileage_list;
         
      }
-     public static Custom_Report__c createReport(String reportsoql,String reporttype)
-     {
-        TriggerConfig__c customEmailSetting =  new TriggerConfig__c();
-        customEmailSetting.Name = 'Defaulttrigger';
-        customEmailSetting.ContactTriCommunityReimCreate__c = false;
-        insert customEmailSetting;
-
+     public static Custom_Report__c createReport(String reportsoql,String reporttype) {
+        TriggerConfig__c triggerCustomSetting = TestDataFactory.triggerConfigCustomSetting(false);
+        triggerCustomSetting.ContactTriCommunityReimCreate__c = false;
+        insert triggerCustomSetting;
+        TrueDialog_Keys__c tdKeys = TestDataFactory.createTrueDialog(true);
         Custom_Report__c rep = new Custom_Report__c();
         rep.Name = 'Test Productivity Report';
         rep.Report_Category__c = 'My Custom Reports';
         rep.Report_For__c = '';
-        if(flag==false)
-        {
+        if(flag==false) {
             rep.Use_Manager_List__c = true;
             flag=true;
-        }
-        else
-        {
+        } else {
         
             rep.Use_Driver_List__c = true;
              flag=false;
-        }
-        
+        }        
         rep.Report_Soql__c = reportsoql;
         rep.Report_Type__c = reporttype;
         rep.Sort_By__c = 'asc';
