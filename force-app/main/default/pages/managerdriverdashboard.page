@@ -1465,6 +1465,13 @@
             this.clear = function () {
                 toastr.clear();
             };
+
+            function escapeSpecialChars(str){
+                return str
+                .replace(/\\'/g, "\'")
+                .replace(/(&quot\;)/g,"\"");
+            }
+
             $scope.packetandMeeting = function () {
                 Visualforce.remoting.Manager.invokeAction('{!$RemoteAction.ManagerDriverDashboardController.getPacketandMeeting}', $scope.id,
                     function (result, event) {
@@ -2379,8 +2386,8 @@
                     function (result, event) {
                         if (event.status && result != null) {
                             if (result != '') {
-                                console.log("All Mileages result", JSON.parse(result[0]));
-                                var biDetailList = JSON.parse(result[0]);
+                                 let escapeChar = escapeSpecialChars(result[0]);
+                                var biDetailList = JSON.parse(escapeChar);
                                 if (biDetailList.length > 0) {
                                     $scope.exportReimDetailList.push(["Contact Email", "Tracing Style", "Day Of Week", "Trip Date", "Start Time", "End Time", "Trip Origin", "Trip Destination", "Mileage", "Status", "Date Submitted", "Date Approved", "Maint/Tires", "Fuel Rate", "Variable Rate", "Variable", "Fixed Amount", "Trip Type", "Drive Time", "Stay Time", "Total Time", "Notes", "Tags"]);
                                     angular.forEach(biDetailList, function (item, key) {
@@ -2414,8 +2421,8 @@
                 function (result, event) {
                     if (event.status && result != null) {
                         if (result != '') {
-                            var detailedList = JSON.parse(result);
-                            // console.log(detailedList);
+                            let escapeChar = escapeSpecialChars(result);
+                            var detailedList = JSON.parse(escapeChar);
                             $scope.exportPeriodList = [];
                             $scope.exportPeriodList.push(["Contact Email", "Tracing Style", "Day Of Week", "Trip Date", "Start Time", "End Time", "Trip Origin", "Trip Destination", "Mileage", "Status", "Date Submitted", "Date Approved", "Maint/Tires", "Fuel Rate", "Variable Rate", "Variable Amount", "Drive Time", "Stay Time", "Total Time", "Notes", "Tags"]);
                             angular.forEach(detailedList, function (item, key) {
@@ -2470,8 +2477,8 @@
                     function (result, event) {
                         if (event.status && result != null) {
                             if (result != '') {
-                                // console.log("Biweekly result", JSON.parse(result[0]));
-                                var biweeklyList = JSON.parse(result[0]);
+                                let escapeChar = escapeSpecialChars(result[0]);
+                                var biweeklyList = JSON.parse(escapeChar);
                                 angular.forEach(biweeklyList, function (item) {
                                     item.drivingtime = $scope.timeConversion(item.drivingtime);
                                     item.staytime = $scope.timeConversion(item.staytime);

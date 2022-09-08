@@ -1230,6 +1230,13 @@
 
             $('#spinner').hide();
             $scope.tabs = [{ active: true }, { active: false }, { active: false }, { active: false }];
+
+            function escapeSpecialChars(str){
+                return str
+                .replace(/\\'/g, "\'")
+                .replace(/(&quot\;)/g,"\"");
+            }
+
             $scope.packetandMeeting = function () {
                 Visualforce.remoting.Manager.invokeAction('{!$RemoteAction.DriverDashboardController.getPacketandMeeting}', $scope.id,
                     function (result, event) {
@@ -1432,7 +1439,7 @@
                     function (result, event) {
                         if (event.status && result != null) {
                             if (result != '') {
-                                console.log("Biweekly result", JSON.parse(result[0]));
+                                // let escapeChar = escapeSpecialChars(result[0]);
                                 var mileageList = JSON.parse(result[0]);
                                 $scope.totalMileage = JSON.parse(result[1]);
                                 $scope.totalVariableAmount = JSON.parse(result[2]);
@@ -1827,6 +1834,9 @@
                 }
                 return 0;
             }
+
+          
+
             $scope.exportToDetail = function () {
                 var lenOfReimb, stDate, enDate, detailFileName;
                 $scope.exportReimDetailList = [];
@@ -1841,8 +1851,8 @@
                     function (result, event) {
                         if (event.status && result != null) {
                             if (result != '') {
-                                console.log("All Mileages result", JSON.parse(result[0]));
-                                var biDetailList = JSON.parse(result[0]);
+                                let escapeChar = escapeSpecialChars(result[0]);
+                                var biDetailList = JSON.parse(escapeChar);
                                 $scope.exportReimDetailList.push(["Contact Email", "Tracing Style", "Day Of Week", "Trip Date", "Start Time", "End Time", "Trip Origin", "Trip Destination", "Mileage", "Status", "Date Submitted", "Date Approved", "Maint/Tires", "Fuel Rate", "Variable Rate", "Variable", "Fixed Amount", "Trip Type", "Drive Time", "Stay Time", "Total Time", "Notes", "Tags"]);
                                 angular.forEach(biDetailList, function (item, key) {
                                     $scope.exportReimDetailList.push([item.emailaddress, item.tracingstyle, item.dayofweek, item.tripdate, item.starttime, item.endtime, item.origin, item.destination, item.mileage, item.status, item.submitteddate, item.approveddate, item.maintTyre, item.fuelRate, item.variablerate, item.variableamount, item.halfFixedAmount, item.tripActivity, item.drivingtime, item.staytime, item.totaltime, item.notes, item.tag]);
@@ -1869,7 +1879,8 @@
                     function (result, event) {
                         if (event.status && result != null) {
                             if (result != '') {
-                                var detailedList = JSON.parse(result);
+                                let escapeChar = escapeSpecialChars(result);
+                                var detailedList = JSON.parse(escapeChar);
                                 console.log(detailedList);
                                 $scope.exportPeriodList = [];
                                 $scope.exportPeriodList.push(["Contact Email", "Tracing Style", "Day Of Week", "Trip Date", "Start Time", "End Time", "Trip Origin", "Trip Destination", "Mileage", "Status", "Date Submitted", "Date Approved", "Maint/Tires", "Fuel Rate", "Variable Rate", "Variable Amount", "Drive Time", "Stay Time", "Total Time", "Notes", "Tags"]);
@@ -1928,8 +1939,8 @@
                     function (result, event) {
                         if (event.status && result != null) {
                             if (result != '') {
-                                console.log("Biweekly result", JSON.parse(result[0]));
-                                var biweeklyList = JSON.parse(result[0]);
+                                let escapeChar = escapeSpecialChars(result[0]);
+                                var biweeklyList = JSON.parse(escapeChar);
                                 angular.forEach(biweeklyList, function (item) {
                                     item.drivingtime = $scope.timeConversion(item.drivingtime);
                                     item.staytime = $scope.timeConversion(item.staytime);
