@@ -8,6 +8,7 @@ public class NewAccountDriverControllerTest {
         IRS_Mileage_Rate__c irsRateObj = TestDataFactory.createIRSRate(true,0);
         SendEmail__c sendEmailCustomSetting = TestDataFactory.sendEmailCustomSetting(True, 'ConfirmTripTimeERMIController');
         SendEmail__c sendEmailSetting = TestDataFactory.sendEmailCustomSetting(True, 'Send Email For Compliance');
+        NewDashboardVideoLink__c videoCustomSetting  = TestDataFactory.NewDashboardVideoLink(true);
         Account accData;
         List<Contact> conList;
         UserRole userRole = TestDataFactory.getUserRole();
