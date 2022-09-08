@@ -7,8 +7,8 @@ import mBurseCss from '@salesforce/resourceUrl/mBurseCss';
 import getCustomSettings from '@salesforce/apex/NewAccountDriverController.getCustomSettings';
 import contactInfo from '@salesforce/apex/NewAccountDriverController.getContactDetail';
 import updateContactDetail from '@salesforce/apex/NewAccountDriverController.updateContactDetail';
-import redirectionURL from '@salesforce/apex/NewAccountDriverController.loginRedirection';
 import {
+    events,
     backEvents
 } from 'c/utils';
 export default class MBurseDownloadMlog extends LightningElement {
@@ -208,24 +208,13 @@ export default class MBurseDownloadMlog extends LightningElement {
                         contactData: JSON.stringify(d),
                         driverPacket: true
                     })
-                    if (d[0].accountStatus === 'New Account') {
-                        window.open(this.schedule)
-                    } else {
-                        window.open(this.meeting)
-                    }
+                    events(this, 'Next mburse meeting');
+                    // if (d[0].accountStatus === 'New Account') {
+                    //     window.open(this.schedule)
+                    // } else {
+                    //     window.open(this.meeting)
+                    // }
                 }
-            })
-            .catch((error) => {
-                // If the promise rejects, we enter this code block
-                console.log(error);
-            })
-
-        redirectionURL({
-                contactId: this.contactId
-            })
-            .then((result) => {
-                let url = window.location.origin + result;
-                window.open(url, '_self');
             })
             .catch((error) => {
                 // If the promise rejects, we enter this code block
@@ -305,7 +294,7 @@ export default class MBurseDownloadMlog extends LightningElement {
         this.render = (this.cellType === 'Company Provide') ? true : false;
         this.isChatBot = (this.render) ? true : false;
         this.carouselLists = (this.cellType === 'Company Provide') ? this.carouselB : this.carouselA;
-        this.buttonRender = (this.accountType === 'New Account') ? 'Register your meeting ' : 'Next watch the meeting';
+        this.buttonRender = (this.accountType === 'New Account') ? 'Register for your driver meeting' : 'Next watch your driver meeting';
     }
 
 }

@@ -37,7 +37,7 @@ export default class MBurseDriverPacket extends LightningElement {
     sendDriverPacket() {
         this.packetSent = true;
         let contactList, mLogList;
-        if(this.driverDetails){
+        if (this.driverDetails) {
             mLogList = this.driverDetails;
             contactList = this.proxyToObject(mLogList);
             this.isAppDone = (contactList[0].mlogApp) ? true : false;
@@ -47,7 +47,8 @@ export default class MBurseDriverPacket extends LightningElement {
                 })
                 .then((result) => {
                     console.log("Packet received --", result);
-                    contactList[0].driverPacketStatus = "Uploaded";
+                    contactList[0].driverPacketStatus = (contactList[0].driverPacketStatus === null) ? "Sent" :
+                        (contactList[0].driverPacketStatus === "Sent") ? "Resent" : (contactList[0].driverPacketStatus === "Resent") ? "Resent Again" : (contactList[0].driverPacketStatus === "Skip") ? "Sent" : "Resent Again"
                     updateContactDetail({
                         contactData: JSON.stringify(contactList),
                         driverPacket: true
@@ -59,7 +60,7 @@ export default class MBurseDriverPacket extends LightningElement {
                     console.log(error);
                 });
         }
-     
+
     }
     nextmLogPreview() {
         events(this, 'Next mLog Preview');
@@ -77,7 +78,7 @@ export default class MBurseDriverPacket extends LightningElement {
                     this.promiseError = false;
                     this.driverDetails = data;
                     list = this.proxyToObject(data);
-                    packetStatus =  list[0].driverPacketStatus;// list[0].driverPacketStatus;
+                    packetStatus = list[0].driverPacketStatus; // list[0].driverPacketStatus;
                     status = list[0].insuranceStatus;
                     this.isShowUpload = (status === 'Uploaded') ? false : true;
                     if (this.days === true) {
@@ -125,25 +126,21 @@ export default class MBurseDriverPacket extends LightningElement {
                                             contactData: JSON.stringify(d),
                                             driverPacket: true
                                         })
-                                        if (d[0].accountStatus === 'New Account') {
-                                            window.open(this.schedule)
-                                        } else {
-                                            window.open(this.meeting)
-                                        }
+                                        events(this, 'Next mburse meeting');
                                     }
                                 })
                                 .catch((error) => {
                                     // If the promise rejects, we enter this code block
                                     console.log(error);
                                 })
-                            this.redirectToDashboard()
+                           // this.redirectToDashboard()
                         } else {
                             skipEvents(this, 'Next mLog Preview');
                         }
                     }).catch(error => {
                         console.log("error", error)
                     })
-            }else{
+            } else {
                 if (downloadApp === true) {
                     let list, d;
                     contactInfo({
@@ -159,19 +156,21 @@ export default class MBurseDriverPacket extends LightningElement {
                                     contactData: JSON.stringify(d),
                                     driverPacket: true
                                 })
-                                if (d[0].accountStatus === 'New Account') {
-                                    window.open(this.schedule)
-                                } else {
-                                    window.open(this.meeting)
-                                }
+                                events(this, 'Next mburse meeting');
+                                // if (d[0].accountStatus === 'New Account') {
+                                //     window.open(this.schedule)
+                                // } else {
+                                //     window.open(this.meeting)
+                                // }
+                                
                             }
                         })
                         .catch((error) => {
                             // If the promise rejects, we enter this code block
                             console.log(error);
                         })
-                    this.redirectToDashboard()
-                }else {
+                   //this.redirectToDashboard()
+                } else {
                     skipEvents(this, 'Next mLog Preview');
                 }
             }
@@ -207,18 +206,13 @@ export default class MBurseDriverPacket extends LightningElement {
                         contactData: JSON.stringify(d),
                         driverPacket: true
                     })
-                    if (d[0].accountStatus === 'New Account') {
-                        window.open(this.schedule)
-                    } else {
-                        window.open(this.meeting)
-                    }
+                    events(this, 'Next mburse meeting');
                 }
             })
             .catch((error) => {
                 // If the promise rejects, we enter this code block
                 console.log(error);
             })
-        this.redirectToDashboard();
     }
 
     backToPage() {
@@ -236,6 +230,6 @@ export default class MBurseDriverPacket extends LightningElement {
         this.renderInitialized = true;
         this.toggleHide();
         this.renderText = (this.cellType === 'Company Provide') ? 'mLog Preview' : 'mLog Preview';
-        this.renderBtnText = (this.accountType === 'New Account') ? 'Register your meeting ' : 'Next watch the meeting';
+        this.renderBtnText = (this.accountType === 'New Account') ? 'Register for your driver meeting' : 'Next watch your driver meeting';
     }
 }

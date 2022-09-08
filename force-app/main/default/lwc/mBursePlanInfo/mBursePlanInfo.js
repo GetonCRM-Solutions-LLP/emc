@@ -11,8 +11,8 @@ export default class MBursePlanInfo extends LightningElement {
         );
     }
     emailSent(event){
-        console.log(event.detail.contactEmail, event.detail.accountId)
         var emailOfContact
+        console.log(event.detail.contactEmail, event.detail.accountId)
         if(event.detail.contactEmail !== '' && event.detail.contactEmail != null && event.detail.contactEmail !== undefined){
             emailOfContact = event.detail.contactEmail;
             this.sending = true;
