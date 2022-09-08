@@ -192,6 +192,7 @@ public with sharing class LoginRedirection_Test {
     
     @isTest
     static void fakeTest(){
-     LoginRedirection.fakeMethod();     
+     LoginRedirection.fakeMethod(); 
+     LoginRedirection.fakeMethod2();      
   }  
 }

@@ -7,7 +7,6 @@ import mBurseCss from '@salesforce/resourceUrl/EmcCSS';
 import readFromFileInchunk from '@salesforce/apex/NewAccountDriverController.readFromFileInchunk';
 import contactInfo from '@salesforce/apex/NewAccountDriverController.getContactDetail';
 import sendInsuranceEmail from '@salesforce/apex/NewAccountDriverController.sendInsuranceEmail';
-import redirectionURL from '@salesforce/apex/NewAccountDriverController.loginRedirection';
 import updateContactDetail from '@salesforce/apex/NewAccountDriverController.updateContactDetail';
 import {
     events,
@@ -346,23 +345,8 @@ export default class MBurseUploadDeclaration extends LightningElement {
                         contactData: JSON.stringify(d),
                         driverPacket: true
                     })
-                    if (d[0].accountStatus === 'New Account') {
-                        window.open(this.schedule)
-                    } else {
-                        window.open(this.meeting)
-                    }
+                    events(this, 'Next mburse meeting');
                 }
-            })
-            .catch((error) => {
-                // If the promise rejects, we enter this code block
-                console.log(error);
-            })
-        redirectionURL({
-                contactId: this.contactId
-            })
-            .then((result) => {
-                let url = window.location.origin + result;
-                window.open(url, '_self');
             })
             .catch((error) => {
                 // If the promise rejects, we enter this code block
@@ -375,7 +359,7 @@ export default class MBurseUploadDeclaration extends LightningElement {
             return;
         }
         this.renderInitialized = true;
-        this.renderText = (this.accountType === 'New Account') ? 'Register your meeting ' : 'Next watch the meeting';
+        this.renderText = (this.accountType === 'New Account') ? 'Register for your driver meeting' : 'Next watch your driver meeting';
         this.toggleHide();
         if (this.template.querySelector('form') != null) {
             this.template.querySelector('form').addEventListener(
