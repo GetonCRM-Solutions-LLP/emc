@@ -60,7 +60,7 @@ public without sharing class ManageNotificationController {
             }
             
             for(Integer i=0;i<saveResultList.size();i++){
-            	if (saveResultList[i].isSuccess()) {
+                if (saveResultList[i].isSuccess()) {
                     System.debug('Successfully inserted message. Message ID: ' + saveResultList[0].getId());
                     result = 'success';
                 }else {                 
@@ -103,7 +103,7 @@ public without sharing class ManageNotificationController {
             cv.PathOnClient = attachmentName;
             cv.VersionData = EncodingUtil.base64Decode(attachmentBody);
             cv.IsMajorVersion = true;
-            Insert cv;	
+            Insert cv;  
 
             System.debug('Content Version'+cv);
             
@@ -803,7 +803,84 @@ public without sharing class ManageNotificationController {
     public static void sendInsuranceEmail (String Id,String Name,String email){
         BiWeeklyWrapperUtils.sendInsuranceEmail(Id, Name, email);
     }
-
+    @RemoteAction
+    public static string ImportMileage(String accountId) {       
+        String currentMonth = Utils.fetchMonths(1, 0)[0];
+        List<MileageWrapper> mileageUpdateList = new List<MileageWrapper>();
+        for(Employee_Reimbursement__c empReim : [SELECT id,Contact_Id__r.name,Total_Mileage__c,Fuel_Price__c,MPG__c, Maintenance_and_Tires__c,Contact_Email__c FROM Employee_Reimbursement__c where Contact_Id__r.AccountId =: accountId and Month__c =: currentMonth]){
+            MileageWrapper objWrap = new MileageWrapper();
+            objWrap.contactId = empReim.Contact_Id__c;
+            objWrap.driverName = empReim.Contact_Id__r.name;
+            objWrap.totalMileage = String.valueOf(empReim.Total_Mileage__c);
+            objWrap.reimbursementId = empReim.Id; 
+            objWrap.iseditable = false;
+            objWrap.mpg = !CheckNull(String.ValueOf(empReim.MPG__c)) ?  empReim.MPG__c: null;
+            objWrap.maintaincetyre = !CheckNull(String.ValueOf(empReim.Maintenance_and_Tires__c)) ?  empReim.Maintenance_and_Tires__c : null;           
+            objWrap.fuelprice = !CheckNull(String.ValueOf(empReim.Fuel_Price__c)) ?  empReim.Fuel_Price__c: null;
+            objWrap.contactEmail = empReim.Contact_Email__c;
+            mileageUpdateList.add(objWrap);
+        }
+        String wrapjson = JSON.serialize(mileageUpdateList);
+        System.debug('wrapjson =='+wrapjson );
+        return wrapjson;
+    }
+    @RemoteAction
+    public static string UpdateImportMileage(String responseData) {
+        List<MileageWrapper> mileageWrapList = new List<MileageWrapper>();
+        Set<Id> reimbursementIds = new Set<Id>();
+        Set<Id> contactIds = new Set<Id>();
+        System.debug('responseData=='+responseData);
+        if(responseData != null) {
+                Map<Id,Id> biweekContactId = new Map<Id,Id>();
+                List<Employee_Mileage__c> empList = new List<Employee_Mileage__c>();
+                mileageWrapList = (List<MileageWrapper>)Json.deserialize(responseData,List<MileageWrapper>.class);               
+                for(MileageWrapper wrapObj : mileageWrapList ){ 
+                    reimbursementIds.add(wrapObj.reimbursementId);
+                    contactIds.add(wrapObj.contactId );
+                }
+                if(reimbursementIds.size() > 0){
+                    delete [SELECT id FROM Employee_Mileage__c WHERE EmployeeReimbursement__c IN : reimbursementIds];                
+                }
+                for(Bi_Weekly_Reimbursement__c biWeekObj : [SELECT id,Contact__c FROM Bi_Weekly_Reimbursement__c WHERE Contact__c IN : contactIds]){
+                    biweekContactId.put(biWeekObj.Contact__c , biWeekObj.Id);
+                }
+                Integer index = 0;
+                for(MileageWrapper wrapObj : mileageWrapList ){ 
+                    String empMilName = !CheckNull(String.ValueOf(wrapObj.reimbursementId)) ? String.valueOf(wrapObj.reimbursementId).substring(0, 15) : null;
+                    Employee_Mileage__c emp = new Employee_Mileage__c();
+                    emp.Name = 'EMP-' + empMilName + index;
+                    emp.Trip_Status__c = 'Approved';                    
+                    emp.EMP_Mileage__c  = Decimal.valueOf(wrapObj.totalMileage);                    
+                    emp.Activity__c = 'Business';
+                    emp.EmployeeReimbursement__c = !CheckNull(String.ValueOf(wrapObj.reimbursementId)) ? wrapObj.reimbursementId : null;
+                    emp.StartTime__c = system.today();
+                    DateTime myDateTime = system.today();
+                    String dayOfWeek = myDateTime.format('EEEE');
+                    emp.Day_Of_Week__c = dayOfWeek ;
+                    emp.EndTime__c = system.today();
+                    emp.Fuel_price__c = !CheckNull(String.ValueOf(wrapObj.fuelprice)) ? wrapObj.fuelprice : null;
+                    emp.MPG__c = !CheckNull(String.ValueOf(wrapObj.mpg)) ? wrapObj.mpg : null;
+                    emp.Maintenance_and_Tires__c = !CheckNull(String.ValueOf(wrapObj.maintaincetyre )) ? wrapObj.maintaincetyre : null;
+                    if(biweekContactId.containsKey(wrapObj.contactId)){
+                        emp.Bi_Weekly_Reimbursement__c = biweekContactId.get(wrapObj.contactId);
+                    }      
+                    emp.Contact_Email_Id__c = wrapObj.contactEmail;
+                    emp.Trip_Date__c = date.today();
+                    if(emp.EmployeeReimbursement__c != null && emp.Bi_Weekly_Reimbursement__c != null){
+                        empList.add(emp);
+                    }                    
+                }
+            if(empList.size() > 0 ){
+                insert empList;
+            }
+        }
+        
+        System.debug('reimbursementIds=='+reimbursementIds);
+        return 'sucess';
+    }
+    public static Boolean CheckNull(String param1) {
+        return param1 == null || param1 == '' ? true : false;
+    }
     public class ContactWrapper {
         public string contactId { get; set; }
         public string triploguserid{ get; set; }
@@ -833,6 +910,16 @@ public without sharing class ManageNotificationController {
         public string loaEnd { get; set; }
         public string conDeactivation { get; set; }
     }
-
+    public class MileageWrapper {
+        public string contactId{ get; set; }
+        public string contactEmail{ get; set; }
+        public string driverName{ get; set; }
+        public string reimbursementId{ get; set; }
+        public string totalMileage{ get; set; }
+        public Boolean iseditable { get; set; }
+        public Decimal mpg { get; set; }
+        public Decimal maintaincetyre { get; set; }
+        public Decimal fuelprice { get; set; }
+    }
     public class TrueDialogApiException extends Exception {}
 }
