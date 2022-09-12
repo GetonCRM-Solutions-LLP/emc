@@ -1757,20 +1757,26 @@
                             }
                         }
                         const styleFilter = () => {
-                            console.log('inside filter')
                             let viewTable =  (!$scope.isDefault) ? $scope.importList : $scope.driverInfo;
                             if (viewTable.length > 10) {
-                                var elmHeight = document.getElementById("tableWrap").offsetHeight;
-                                var screenHeight = window.screen.height;
-                                var scrollHeight = screenHeight - elmHeight;
-                                // console.log("scroll", scrollHeight, document.getElementById('style-2'));
-                                document.getElementById('style-2').style.height = scrollHeight + "px";
-                                // console.log("window.screen.height", window.screen.height);
-                                // console.log("document.body.clientHeight", document.body.clientHeight);
-                                // console.log("table", table);
-                                // console.log("tableWrap", document.getElementById("tableWrap").offsetHeight , document.getElementById("tableWrap").clientHeight);
-                                $('#style-2').removeClass("aHeight");
-                                $('#notifyTable').removeClass("aHeight");
+                                let searchList = $filter('filter')(viewTable, {'fullname':$scope.search[$scope.searchTerm]})
+                                let lengthOfSearch = searchList.length
+                                if(lengthOfSearch > 0 && lengthOfSearch < 30){
+                                    $('#style-2').addClass("aHeight");
+                                    $('#notifyTable').addClass("aHeight");
+                                }else{
+                                    var elmHeight = document.getElementById("tableWrap").offsetHeight;
+                                    var screenHeight = window.screen.height;
+                                    var scrollHeight = screenHeight - elmHeight;
+                                    // console.log("scroll", scrollHeight, document.getElementById('style-2'));
+                                    document.getElementById('style-2').style.height = scrollHeight + "px";
+                                    // console.log("window.screen.height", window.screen.height);
+                                    // console.log("document.body.clientHeight", document.body.clientHeight);
+                                    // console.log("table", table);
+                                    // console.log("tableWrap", document.getElementById("tableWrap").offsetHeight , document.getElementById("tableWrap").clientHeight);
+                                    $('#style-2').removeClass("aHeight");
+                                    $('#notifyTable').removeClass("aHeight");
+                                }
                             }else{
                                 $('#style-2').addClass("aHeight");
                                 $('#notifyTable').addClass("aHeight");
@@ -1995,12 +2001,12 @@
                         /* Toaster Option Complete with clear funtion */
 
                         /* Sorting For table */
-                        $scope.sortKey = ($scope.isDefault) ? 'name' : 'driverName';
+                        $scope.sortKey = ($scope.isDefault) ? 'fullname' : 'driverName';
                         $scope.reverse = true;
                         $scope.sort = function (keyname) {
                             $scope.reverse = ($scope.sortKey === keyname) ? !$scope.reverse : false;
                             $scope.sortKey = keyname;
-                            if (keyname === 'name' || keyname === 'insurance' || keyname === 'driverName') {
+                            if (keyname === 'fullname' || keyname === 'insurance' || keyname === 'driverName') {
                                 if($scope.isDefault === true){
                                         $scope.driverInfo.sort(function (a, b) {
                                             var nameA = (a[keyname] === null) ? '' : a[keyname].toLowerCase(),
@@ -2062,10 +2068,8 @@
                                     })
                                 }else{
                                     $scope.importList.sort(function (a, b) {
-                                        debugger
                                         var floatA = (a[keyname] === null) ? '' : parseFloat(a[keyname]),
                                         floatB = (b[keyname] === null) ? '' : parseFloat(b[keyname])
-                                        debugger
                                         if ($scope.reverse) {
                                             if (floatA < floatB) //sort string ascending
                                                 return -1
@@ -2138,7 +2142,7 @@
                             navToggle();
                             $scope.refreshEmployees();
                             $scope.nameOfPage = 'Insurance Reminder';
-                            $scope.sortKey = 'name';
+                            $scope.sortKey = 'fullname';
                             $scope.showResendBtn = true;
                             $scope.isDefault = true;
                             $scope.isMileageImport = false;
@@ -2154,7 +2158,7 @@
                         $scope.massText = function () {
                             navToggle();
                             $scope.nameOfPage = 'Messaging'
-                            $scope.sortKey = 'name';
+                            $scope.sortKey = 'fullname';
                             $scope.showTextMsgBtn = true;
                             $scope.isDefault = true;
                             $scope.isMileageImport = false;
@@ -2171,7 +2175,7 @@
                             $scope.refreshEmployees();
                             navToggle();
                             $scope.nameOfPage = 'Mileage Upload';
-                            $scope.sortKey = 'name';
+                            $scope.sortKey = 'fullname';
                             $scope.isDefault = true;
                             $scope.isMileageImport = false;
                             $scope.isUpdateVisible = false;
@@ -2187,7 +2191,7 @@
                             $scope.refreshEmployees();
                             navToggle();
                             $scope.nameOfPage = 'Leave Of Absence Upload';
-                            $scope.sortKey = 'name';
+                            $scope.sortKey = 'fullname';
                             $scope.isDefault = true;
                             $scope.isMileageImport = false;
                             $scope.isUpdateVisible = false;
@@ -2436,7 +2440,9 @@
                             if (keyEvent.keyCode == 13 || ((keyEvent.keyCode == 32 || keyEvent.keyCode == 39) && !len) || !(keyEvent.keyCode >= 65 && keyEvent.keyCode <= 90 || keyEvent.keyCode >= 97 && keyEvent.keyCode <= 122 || keyEvent.keyCode == 39 || keyEvent.keyCode == 32)) {
                                 event.preventDefault();
                             }else{
-                                styleFilter();
+                                if(len != 0){
+                                    styleFilter();
+                                }
                             }
 
                             // return keyEvent.which !== 32;
@@ -2444,6 +2450,7 @@
 
                         $scope.resetSearch = function () {
                             $scope.search[$scope.searchTerm] = "";
+                            styleFilter();
                         }
 
                         $scope.openProfile = function (profile) {
@@ -2765,7 +2772,7 @@
                             $scope.refreshEmployees();
                             $scope.showCancelProBtn = false;
                             $scope.nameOfPage = 'Communications';
-                            $scope.sortKey = 'name';
+                            $scope.sortKey = 'fullname';
                             if ($scope.checkboxobj) {
                                 if ($scope.checkboxobj.isCheckedAllForEmail) {
                                     $scope.checkboxobj.isCheckedAllForEmail = false;
@@ -3385,7 +3392,7 @@
                         /* EMC - 217 Added On 8 February 2022  */
                         $scope.openModalForDeleteTrips = function () {
                             $scope.refreshEmployees();
-                            $scope.sortKey = 'name';
+                            $scope.sortKey = 'fullname';
                             $scope.deleteTripProcess = true;
                         }
 
@@ -4434,7 +4441,7 @@
                             <i class="fa fa-search" id="filtericon" ng-if="(search[searchTerm]).length===0"></i>
                             <i class="fa fa-times" id="cancelicon" ng-if="(search[searchTerm]).length>0" ng-click="resetSearch()"></i>
                             <input aria-controls="example" class="form-control py-2 table_filter_input" placeholder="Search by name" type="search" ng-model="search[searchTerm]"
-                                ng-keypress="keyPressed($event, search[searchTerm].length)" />
+                              id="filter-input"  ng-keypress="keyPressed($event, search[searchTerm].length)" />
                         </div>
                     </div>
                     <div class="d-block w-search" id="search_filter" ng-if="lengthofrecordImport > 30 && isMileageImport">
@@ -4464,8 +4471,8 @@
                                         <input class="custom-check" type="checkbox" ng-model="checkboxobj.isCheckedAllForNotiText" ng-click="CheckUncheckAllForNotiText(checkboxobj.isCheckedAllForNotiText,info);"
                                         />
                                     </th>
-                                    <th ng-click="sort('name')" class="em-15">Name
-                                        <span class="sort-icon m-icon" ng-show="sortKey=='name'" ng-class="{'fa fa-chevron-up':reverse,'fa fa-chevron-down':!reverse}"></span>
+                                    <th ng-click="sort('fullname')" class="em-15">Name
+                                        <span class="sort-icon m-icon" ng-show="sortKey=='fullname'" ng-class="{'fa fa-chevron-up':reverse,'fa fa-chevron-down':!reverse}"></span>
                                     </th>
                                     <th ng-click="sort('insurance')" class="em-10">Insurance Status
                                         <span class="sort-icon m-icon" ng-show="sortKey=='insurance'" ng-class="{'fa fa-chevron-up':reverse,'fa fa-chevron-down':!reverse}"></span>
@@ -4491,13 +4498,9 @@
                                     <td ng-model="info.checkNotiText" ng-show="checkboxShowNotiText" class="align-text em-2">
                                         <input class="custom-check" type="checkbox" ng-model="info.massNotiText" ng-change="CheckUncheckForNotiText(info);" />
                                     </td>
-                                    <td class="name-td em-15" ng-if="role != 'Admin' && role != 'Driver/Admin' && info.name != null">{{info.name + ' ' + info.lastname}}</td>
-                                    <td class="em-15" ng-if="role === 'Admin' || role === 'Driver/Admin' && info.name != null ">
-                                        <a ng-click="openProfile(info)" class="name-info-link name-td ">{{info.name + ' ' + info.lastname}}</a>
-                                    </td>
-                                    <td class="name-td em-15" ng-if="role != 'Admin' && role != 'Driver/Admin' && info.name === null">{{info.lastname}}</td>
-                                    <td class="em-15" ng-if="role === 'Admin' || role === 'Driver/Admin' && info.name === null">
-                                        <a ng-click="openProfile(info)" class="name-info-link name-td ">{{info.lastname}}</a>
+                                    <td class="name-td em-15" ng-if="role != 'Admin' && role != 'Driver/Admin'">{{info.fullname}}</td>
+                                    <td class="em-15" ng-if="role === 'Admin' || role === 'Driver/Admin'">
+                                        <a ng-click="openProfile(info)" class="name-info-link name-td ">{{info.fullname}}</a>
                                     </td>
                                     <td ng-model="info.insurance" class="em-10" ng-if="info.role != 'Manager'">
                                         <!-- {{info.insurance}} -->
