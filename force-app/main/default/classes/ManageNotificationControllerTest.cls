@@ -59,6 +59,9 @@ public class ManageNotificationControllerTest {
             ManageNotificationController.editInlineNewEmployee(json3 ,conAdminList[0].Id);
             ManageNotificationController.UploadLOA(json4,Acc.Id,'2021-06-30','2021-08-31');
             ManageNotificationController.DeleteTrips(conAdminList[0].Id);
+            String response = ManageNotificationController.ImportMileage(Acc.Id);
+            String json5 = '[{"totalMileage":"0.00","reimbursementId":null,"mpg":null,"maintaincetyre":null,"iseditable":false,"fuelprice":null,"driverName":"Priyanka Gajera","contactId":null,"contactEmail":"test.email1@gmail.com"}]';
+            ManageNotificationController.UpdateImportMileage(json5 );
         }
     }    
     /** 
@@ -119,12 +122,11 @@ public class ManageNotificationControllerTest {
         message.Message__c='test contact id';
         message.Contacts__c=c.id;
         insert message;
-        
-        
-        Attachment attach=new Attachment();   	
-    	attach.Name='Unit Test Attachment';
-    	Blob bodyBlob=Blob.valueOf('Unit Test Attachment');
-    	attach.body=bodyBlob;
+
+        Attachment attach=new Attachment();     
+        attach.Name='Unit Test Attachment';
+        Blob bodyBlob=Blob.valueOf('Unit Test Attachment');
+        attach.body=bodyBlob;
         attach.parentId=message.id;
         insert attach;
 
@@ -139,8 +141,7 @@ public class ManageNotificationControllerTest {
         ManageNotificationController.getUnreadMessageCount();
         ManageNotificationController.UpdateUnreadMessageStatus(c.Id);
         ManageNotificationController.TrueDialogContact(a.Id,con2.id);
-        Test.stopTest();
-        
+        Test.stopTest();        
     }    
     
     @isTest
@@ -187,19 +188,17 @@ public class ManageNotificationControllerTest {
         List<String> lstTDContactId = new List<String>();
         lstTDContactId.add(c.TrueDialog_Contact_Id__c);
         
-        String lstTDContactIdJson = JSON.serialize(lstTDContactId);
-        
+        String lstTDContactIdJson = JSON.serialize(lstTDContactId);        
             
         Message__c message = new Message__c();
         message.Message__c='test contact id';
         message.Contacts__c=c.id;
         insert message;
         
-        
-        Attachment attach=new Attachment();   	
-    	attach.Name='Unit Test Attachment';
-    	Blob bodyBlob=Blob.valueOf('Unit Test Attachment');
-    	attach.body=bodyBlob;
+        Attachment attach=new Attachment();     
+        attach.Name='Unit Test Attachment';
+        Blob bodyBlob=Blob.valueOf('Unit Test Attachment');
+        attach.body=bodyBlob;
         attach.parentId=message.id;
         insert attach;
 
@@ -210,11 +209,6 @@ public class ManageNotificationControllerTest {
         Test.startTest();
 
         ManageNotificationController.sendImageToMultipleContacts(lstTDContactIdJson,'Unit Test Attachment','att1.jpg','Test  Message');
-        Test.stopTest();
-        
-        
-        	
-       
-        
+        Test.stopTest();   
     }    
 }
