@@ -2004,6 +2004,7 @@
                         $scope.sortKey = ($scope.isDefault) ? 'fullname' : 'driverName';
                         $scope.reverse = true;
                         $scope.sort = function (keyname) {
+                            debugger
                             $scope.reverse = ($scope.sortKey === keyname) ? !$scope.reverse : false;
                             $scope.sortKey = keyname;
                             if (keyname === 'fullname' || keyname === 'insurance' || keyname === 'driverName') {
@@ -2068,21 +2069,22 @@
                                     })
                                 }else{
                                     $scope.importList.sort(function (a, b) {
-                                        var floatA = (a[keyname] === null) ? '' : parseFloat(a[keyname]),
-                                        floatB = (b[keyname] === null) ? '' : parseFloat(b[keyname])
-                                        if ($scope.reverse) {
-                                            if (floatA < floatB) //sort string ascending
-                                                return -1
-                                            if (floatA > floatB)
-                                                return 1
-                                            return 0 //default return value (no sorting)
-                                        } else {
-                                            if (floatA < floatB) //sort string ascending
-                                                return 1
-                                            if (floatA > floatB)
-                                                return -1
-                                            return 0 //default return value (no sorting)
-                                        }
+                                        debugger
+                                        var nameA = (a[keyname] == null) ? '' : parseFloat(a[keyname]),
+                                                nameB = (b[keyname] == null) ? '' : parseFloat(b[keyname]);
+                                            if ($scope.reverse) {
+                                                if (nameA < nameB) //sort string ascending
+                                                    return -1
+                                                if (nameA > nameB)
+                                                    return 1
+                                                return 0 //default return valuscope.model.mileageList=e (no sorting)
+                                            } else {
+                                                if (nameA < nameB) //sort string ascending
+                                                    return 1
+                                                if (nameA > nameB)
+                                                    return -1
+                                                return 0 //default return value (no sorting)
+                                            }
                                     })
                                 }
                             }
@@ -2538,7 +2540,11 @@
                         $scope.exportToMileageExcel = function () {
                             var exportData = [];
                             var excelData = $scope.importList
-                    
+                            exportData.push(["Name", "Mileage", "Month"]);
+                            angular.forEach(excelData, function (l) {
+                                exportData.push([l.driverName, l.totalMileage, $scope.monthName]);
+                            })
+
                             function datenum(v, date1904) {
                                 if (date1904) v += 1462;
                                 var epoch = Date.parse(v);
@@ -4623,7 +4629,7 @@
                                 </tr>
                             </thead>
                             <tbody ng-class="{'table-scroll' : importList.length > 5}" id="style-2">
-                                <tr dir-paginate="import in importList | filter:search  | orderBy:'driverName':!reverse | itemsPerPage: pageSize" current-page="currentPage" ng-class="{'selected':import.reimbursementId == selectedRow}">
+                                <tr dir-paginate="import in importList | filter:search | itemsPerPage: pageSize" current-page="currentPage" ng-class="{'selected':import.reimbursementId == selectedRow}">
                                     <td class="name-td ">{{import.driverName}}</td>
                                     <td ng-model="import.totalMileage"  ng-show="import.iseditable">                                            
                                         <input type="text"  ng-model="import.totalMileage" ng-change="numInput(import.totalMileage, this)"
