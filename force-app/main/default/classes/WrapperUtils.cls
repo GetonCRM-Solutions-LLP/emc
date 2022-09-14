@@ -68,6 +68,8 @@ public with sharing class WrapperUtils
         currentEmployeeDetail.code = currentContact.Code__c != null ? currentContact.Code__c : '';
         currentEmployeeDetail.district = currentContact.District__c != null ? currentContact.District__c : '';
         currentEmployeeDetail.totalreimbursement = String.valueOf(avgReim);
+        currentEmployeeDetail.am = currentContact.AM__c != null ? currentContact.AM__c : '';
+        currentEmployeeDetail.an = currentContact.AN__c != null ? currentContact.AN__c : '';
         if(String.isNotBlank(String.valueOf(currentContact.Monthly_Mileage_Limit__c))) {
             currentEmployeeDetail.monthlymileageLimit = String.valueOf(currentContact.Monthly_Mileage_Limit__c);
             currentEmployeeDetail.approvalThreshold = String.valueOf(currentContact.Monthly_Mileage_Limit__c);            
@@ -561,6 +563,8 @@ public with sharing class WrapperUtils
         currentContact.Department__c = currentEmployeeDetail.department;
         currentContact.Dept__c = currentEmployeeDetail.deptDesign;
         currentContact.Department = currentEmployeeDetail.deptPL ;
+        currentContact.AM__c = currentEmployeeDetail.am;
+        currentContact.AN__c = currentEmployeeDetail.an;
         if(String.isNotBlank(currentEmployeeDetail.divison)){
          currentContact.Division__c = Decimal.valueOf(currentEmployeeDetail.divison) ;
         }
