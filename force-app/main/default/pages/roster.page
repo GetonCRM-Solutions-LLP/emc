@@ -2150,7 +2150,7 @@
                         });
                 }
                 else if($scope.accid === $scope.accountSurfacePrep){
-                    $scope.emplistfordownload.push(["First Name", "Last name", "EmployeeID", "Email", "City", "State", "Zip Code", "Cell Phone", "Driving States", "Activation Date", "Frozen Date", "Deactivation Date", "Role", "Manager", "Standard Vehicle", "Fixed Amount", "Compliance", "AM", "AN", "Average Monthly Reimbursement", "Average Monthly Mileage", "App Version"]);
+                    $scope.emplistfordownload.push(["First Name", "Last name", "EmployeeID", "Email", "City", "State", "Zip Code", "Cell Phone", "Driving States", "Activation Date", "Frozen Date", "Deactivation Date", "Role", "Manager", "Standard Vehicle", "Fixed Amount", "Compliance", "Region", "Job Title", "Average Monthly Reimbursement", "Average Monthly Mileage", "App Version"]);
                     angular.forEach(empToUpdate, function (item, key) {
                             $scope.emplistfordownload.push([item.firstName, item.lastName, item.employeeId, item.email, item.city, item.state, item.zipCode, item.cellphone, item.drivingStates != null ? item.drivingStates.join(';') : '', item.activationDate, item.freeze, item.deactivaedDate, item.role, item.managerName, item.vehicalType, item.fixedamount, item.compliancestatus, item.am, item.an, item.totalreimbursement, item.monthlymileageLimit, item.appVersion]);
                      });
@@ -3976,9 +3976,9 @@
                         else if ($scope.accid === $scope.accountSurfacePrep) {
                             if (con.role == 'Driver' || con.role == 'Driver/Manager' || con.role == valueofreport) {
                                 if($scope.accTrueDialog){
-                                     inputtovalidate = ["firstname", "lastname", "email", "city", "state", "zip", "role", "manager", "vehicalType","cellphone","am","an", "activedate"];
+                                     inputtovalidate = ["firstname", "lastname", "email", "city", "state", "zip", "role", "manager", "vehicalType","cellphone","region","job", "activedate"];
                                 }else{
-                                    inputtovalidate = ["firstname", "lastname", "email", "city", "state", "zip", "role", "manager", "vehicalType","am","an","activedate"];
+                                    inputtovalidate = ["firstname", "lastname", "email", "city", "state", "zip", "role", "manager", "vehicalType","region","job","activedate"];
                                 }
                             }
                         }
@@ -5310,19 +5310,19 @@
                                                 </div>
                                             </div>
                                             <div class="form-group-theme row" ng-if="accid === accountSurfacePrep">
-                                                <label for="inputCode" class="col-xl-4 col-lg-3 col-md-3 col-sm-3 col-form-label form-lable">AM:</label>
+                                                <label for="inputCode" class="col-xl-4 col-lg-3 col-md-3 col-sm-3 col-form-label form-lable">Region:</label>
                                                 <div class="col-xl-8 col-lg-8 col-md-8 col-sm-8 validate-div">
                                                     <span class="span-validation" data-toggle="tooltip" data-placement="top" title="Required field" ng-if="isFieldRequired">*</span>
-                                                    <input type="text" id="am" ng-model="contactData[0].am" ng-show="IsShow" class="form-control rounded-0 nonuminput"  ng-required="isFieldRequired" placeholder="" name="am_0" />
-                                                    <input type="text" id="am" ng-model="contactData.am" ng-show="!IsShow" class="form-control rounded-0 nonuminput"  ng-required="isFieldRequired" placeholder="" name="am_1" />
+                                                    <input type="text" id="am" ng-model="contactData[0].am" ng-show="IsShow" class="form-control rounded-0 nonuminput"  ng-required="isFieldRequired" placeholder="" name="region_0" />
+                                                    <input type="text" id="am" ng-model="contactData.am" ng-show="!IsShow" class="form-control rounded-0 nonuminput"  ng-required="isFieldRequired" placeholder="" name="region_1" />
                                                 </div>
                                             </div>
                                             <div class="form-group-theme row" ng-if="accid === accountSurfacePrep">
-                                                <label for="inputCode" class="col-xl-4 col-lg-3 col-md-3 col-sm-3 col-form-label form-lable">AN:</label>
+                                                <label for="inputCode" class="col-xl-4 col-lg-3 col-md-3 col-sm-3 col-form-label form-lable">Job Title:</label>
                                                 <div class="col-xl-8 col-lg-8 col-md-8 col-sm-8 validate-div">
                                                     <span class="span-validation" data-toggle="tooltip" data-placement="top" title="Required field" ng-if="isFieldRequired">*</span>
-                                                    <input type="text" id="an" ng-model="contactData[0].an" ng-show="IsShow" class="form-control rounded-0 nonuminput"  ng-required="isFieldRequired" placeholder="" name="an_0" />
-                                                    <input type="text" id="an" ng-model="contactData.an" ng-show="!IsShow" class="form-control rounded-0 nonuminput"  ng-required="isFieldRequired" placeholder="" name="an_1" />
+                                                    <input type="text" id="an" ng-model="contactData[0].an" ng-show="IsShow" class="form-control rounded-0 nonuminput"  ng-required="isFieldRequired" placeholder="" name="job_0" />
+                                                    <input type="text" id="an" ng-model="contactData.an" ng-show="!IsShow" class="form-control rounded-0 nonuminput"  ng-required="isFieldRequired" placeholder="" name="job_1" />
                                                 </div>
                                             </div>
 
