@@ -130,5 +130,8 @@ public with sharing class EmployeeDetails
     public Boolean timeAttandance{ get; set; }
     /* END */
     /*EMC - 331 */
+    //Below am and an field is used for SurfacePrep account.
     public string company {get;set;}
+    public string am {get;set;}
+    public string an {get;set;}
 }
