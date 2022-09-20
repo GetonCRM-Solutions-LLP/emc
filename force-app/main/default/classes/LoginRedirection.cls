@@ -38,7 +38,7 @@ public with sharing class LoginRedirection
                     Boolean checkActivationDate;
                     date activationDate = u.Contact.Activation_Date__c != null ? u.Contact.Activation_Date__c : null;                
                     daysBetweenActivation = activationDate != null ? activationDate.daysBetween(currentDate) : null;
-                    if(daysBetweenActivation != null && daysBetweenActivation >= 0 && daysBetweenActivation <= 30){
+                    if(daysBetweenActivation != null && daysBetweenActivation <= 30){
                         checkActivationDate = true;
                     } else if(daysBetweenActivation > 30 && u.Contact.Hello_Sign_Status__c != null && u.Contact.Hello_Sign_Status__c == 'signed'){
                         checkActivationDate = true;
