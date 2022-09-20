@@ -7,7 +7,8 @@ import contactInfo from '@salesforce/apex/NewAccountDriverController.getContactD
 import {
     events,
     skipEvents,
-    backEvents
+    backEvents,
+    nextSkipEvents
 } from 'c/utils';
 export default class MBurseWelcomeInsurance extends LightningElement {
     videoWidth = 396;
@@ -15,6 +16,7 @@ export default class MBurseWelcomeInsurance extends LightningElement {
     welcomeVideoUrl;
     insuranceVideoUrl;
     nextShow = false;
+    nextPreview = false;
     isPlay = false;
     renderInitialized = false;
     promiseError = false;
@@ -51,6 +53,7 @@ export default class MBurseWelcomeInsurance extends LightningElement {
                     list = this.proxyToObject(data);
                     status = list[0].insuranceStatus;
                     packetStatus = list[0].driverPacketStatus;
+                    this.nextPreview = ((list[0].driverPacketStatus === null && list[0].insuranceStatus === null) || (list[0].driverPacketStatus !== 'Uploaded' &&  (list[0].insuranceStatus === null || list[0].insuranceStatus === 'Skip')) || (list[0].driverPacketStatus === null &&  (list[0].insuranceStatus === null || list[0].insuranceStatus === 'Skip')) || (list[0].driverPacketStatus === 'Uploaded' &&  (list[0].insuranceStatus === null || list[0].insuranceStatus === 'Skip'))) ? false : true;
                     if (this.dayLeft === true) {
                         this.nextShow = (status === 'Uploaded' || packetStatus === 'Uploaded') ? true : false;
                     } else {
@@ -128,6 +131,9 @@ export default class MBurseWelcomeInsurance extends LightningElement {
             }
         }
         skipEvents(this, 'Next Declaration Upload');
+    }
+    skipToNext(){
+        nextSkipEvents(this, this.driverDetails)
     }
     backToPage() {
         // let delayInMilliseconds = 100;

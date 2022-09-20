@@ -9,6 +9,7 @@ public with sharing class AdminDashboardController {
     public static String totalvariableamount{get;set;}
    
     public AdminDashboardController() {
+        UpdateTimezonAppVer(getAccountid()); 
     }
     public static String getAccountid() {
         if (ApexPages.currentPage().getParameters().containsKey('accid') && String.isNotBlank(ApexPages.currentPage().getParameters().get('accid'))) {
@@ -318,5 +319,10 @@ public with sharing class AdminDashboardController {
         updatedlist.add(getAllDriversLastMonthUpdatedReimbursements(did,accid,showTeamRecord));
         updatedlist.add(getAllDriversLastMonthUpdatedUnapprovedReimburseClone(did,accid,boolean.valueOf(showTeamRecord)));
         return updatedlist;
+    }
+    public static void UpdateTimezonAppVer(String accid){
+        System.debug('UpdateTimezonAppVer==  Inserted');
+        UpdateUserIdandAppVertionBatch bcn = new UpdateUserIdandAppVertionBatch(accid);
+        ID batchprocessid = Database.executeBatch(bcn,200);
     }
 }
