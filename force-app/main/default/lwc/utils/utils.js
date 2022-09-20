@@ -12,4 +12,10 @@ const backEvents  = (component, param) => {
     const e = new CustomEvent('back', {detail: param});
     component.dispatchEvent(e);
 }
-export {events, skipEvents, backEvents}
+
+const nextSkipEvents  = (component, param) => {
+    const e = new CustomEvent('nextskip', {detail: param});
+    component.dispatchEvent(e);
+}
+
+export {events, skipEvents, backEvents, nextSkipEvents}

@@ -246,4 +246,9 @@
   -webkit-animation: bounceRight 2s infinite;
   animation: bounceRight 2s infinite;
 }
+.font-bold{
+  font-size: 1.5vw;
+  font-weight: bold;
+  color: #000000;
+}
 .fa-angle-right{ padding-left: 6px;}

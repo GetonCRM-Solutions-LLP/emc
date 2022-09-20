@@ -21,20 +21,22 @@ Public class UpdateUserIdandAppVertionBatchTest {
             Account accountObj = TestDataFactory.createAccount(true,'Test',true);
             Contact contactObj = TestDataFactory.createCICDContact(true,accountObj.Id);
             acc = TestDataFactory.createAccount(true,'Test',true);
-            conList = TestDataFactory.createDriverContact(true, acc.Id, 'Driver', vehicleObj.Name, 'test.email', 1);
+            conList = TestDataFactory.createDriverContact(true, acc.Id, 'Driver', vehicleObj.Name, 'test', 1);
+            conList[0].External_Email__c = 'test@gmail.com';
+            conList[0].Email = 'test@gmail.com';
+            update conList;
+
             adminConList = TestDataFactory.createDriverContact(true, acc.Id, 'Admin', vehicleObj.Name, 'test1.email', 1);
             userObj = TestDataFactory.createUser(true, profileObj.Id, conList[0].Id);
         }  
-        
         Test.StartTest();
         Test.setMock(HttpCalloutMock.class, new TriplogUserIdUpdateBatchTestMock());
-        UpdateUserIdandAppVertionBatch batchobj = new UpdateUserIdandAppVertionBatch();
-        UpdateUserIdandAppVertionBatch.getTripIds(acc.Triplog_API__c);  
         
+        UpdateUserIdandAppVertionBatch batchobj = new UpdateUserIdandAppVertionBatch(acc.Id); 
+        UpdateUserIdandAppVertionBatch.getTripIds(acc.Triplog_API__c); 
         batchobj.responseOfAPICall = UpdateUserIdandAppVertionBatch.getTripIds(acc.Triplog_API__c);  
          
         Database.executeBatch(batchobj);
-        Test.StopTest();
-        
+        Test.StopTest(); 
    }
 }

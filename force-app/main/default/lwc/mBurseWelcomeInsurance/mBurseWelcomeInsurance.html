@@ -25,12 +25,15 @@
                 </div>
             </div>
             <div class="footer-button slds-float_right mright-0 mleft-0">
-                <button class="slds-btn slds-btn-primary slds-btn-sm waves-effect bc-blue waves-light" onclick={nextDeclaration}>
+                <button class="slds-btn slds-btn-primary slds-btn-sm waves-effect bc-blue waves-light" onclick={nextDeclaration} if:false={nextPreview}>
                     Next Insurance Preview
                 </button>
                 <div>
                     <div class="back_to_previous slds-float_left">
                         <a class="font-s" onclick={backToPrevious}><i class="fa-solid fa-angle-left"></i> Back</a>
+                    </div>
+                    <div class="back_to_previous  slds-float_right" if:true={nextPreview}>
+                        <a class="font-s" onclick={skipToNext}>Skip<i class="fa-solid fa-angle-right"></i></a>
                     </div>
                 </div>
             </div>

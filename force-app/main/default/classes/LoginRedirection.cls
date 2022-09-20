@@ -16,7 +16,7 @@ public with sharing class LoginRedirection
                     Contact.Schedule_Driver_Meeting__c,
                     Contact.Account.MburseDashboardRedirect__c,
                     Contact.Account.Account_Status__c,
-                    Contact.Account.Schedule_Goto_Meeting__c    
+                    Contact.Account.Schedule_Goto_Meeting__c                       
                 FROM user 
                 WHERE id =: userinfo.getuserid()];     
         if(u.contact.Accountid == System.label.ERMI_Account){
@@ -53,8 +53,7 @@ public with sharing class LoginRedirection
                     return pageRef;
                 } else if(u.Profile.Name == 'Customer Community Login User - Driver') {                                         
                     if(u.Contact.Driver_Packet_Status__c != null && u.Contact.Insurance_Declaration_Status__c != null && u.Contact.Driver_Packet_Status__c != 'Skip' && u.Contact.Insurance_Declaration_Status__c == 'Uploaded' && u.Contact.App__c != null && checkActivationDate == true){
-                        //AI-000414
-                        system.debug('profile contact==');  
+                        //AI-000414                       
                         if(biWeekList.size() > 0){
                             if(biWeekList[0].Confirm_Hours__c == false &&  u.Contact.Insurance_Attachment_Id__c != null && biWeekList[0].Count_Error_Check__c < 3){
                                 pageRef = new PageReference('/app/driverDashboardWeekly?accid='+u.contact.Accountid+'&id='+u.contactid);
@@ -62,7 +61,7 @@ public with sharing class LoginRedirection
                                 pageRef = new PageReference('/app/driverDashboardClone?accid='+u.contact.Accountid+'&id='+u.contactid);
                             } 
                         } else {
-                            if(u.Contact.Schedule_Driver_Meeting__c == true){
+                            if(u.Contact.Schedule_Driver_Meeting__c == true || (u.Contact.Account.Account_Status__c != null && u.Contact.Account.Account_Status__c == 'Existing Account')){
                                 pageRef = new PageReference('/app/driverDashboardClone?accid='+u.contact.Accountid+'&id='+u.contactid);
                             } else {
                                 pageRef = new PageReference('/app/mBurseDashboard?accid='+u.contact.Accountid+'&id='+u.contactid);  
@@ -80,7 +79,7 @@ public with sharing class LoginRedirection
                             } else if(biWeekList[0].Confirm_Hours__c == true ||  (biWeekList[0].Count_Error_Check__c != null && biWeekList[0].Count_Error_Check__c > 2)){
                                 pageRef = new PageReference('/app/drivermanagerdashboard?accid='+u.contact.Accountid+'&id='+u.contactid+'&showteam='+String.valueOf(u.contact.showTeamRecord__c));
                             }
-                        } else if(u.Contact.Schedule_Driver_Meeting__c == true){
+                        } else if(u.Contact.Schedule_Driver_Meeting__c == true ||(u.Contact.Account.Account_Status__c != null && u.Contact.Account.Account_Status__c == 'Existing Account')){
                             pageRef = new PageReference('/app/drivermanagerdashboard?accid='+u.contact.Accountid+'&id='+u.contactid+'&showteam='+String.valueOf(u.contact.showTeamRecord__c));
                         }   
                     } else {
@@ -95,7 +94,7 @@ public with sharing class LoginRedirection
                             } else if(biWeekList[0].Confirm_Hours__c == true ||  (biWeekList[0].Count_Error_Check__c != null && biWeekList[0].Count_Error_Check__c > 2)){
                                 pageRef = new PageReference('/app/admindriverdashboard?accid='+u.contact.Accountid+'&id='+u.contactid+'&showteam='+String.valueOf(u.contact.showTeamRecord__c)+'&admindriver=true');
                             }
-                        } else if(u.Contact.Schedule_Driver_Meeting__c == true){
+                        } else if(u.Contact.Schedule_Driver_Meeting__c == true || (u.Contact.Account.Account_Status__c != null && u.Contact.Account.Account_Status__c == 'Existing Account')){
                             pageRef = new PageReference('/app/admindriverdashboard?accid='+u.contact.Accountid+'&id='+u.contactid+'&showteam='+String.valueOf(u.contact.showTeamRecord__c)+'&admindriver=true');
                         }
                     } else {
