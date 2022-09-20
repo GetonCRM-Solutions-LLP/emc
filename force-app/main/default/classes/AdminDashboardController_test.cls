@@ -86,13 +86,14 @@ public class AdminDashboardController_test {
         System.debug('obj_EmployeeMileages_list1'+obj_EmployeeMileages_list1);
         System.debug('obj_EmployeeMileages_list2'+obj_EmployeeMileages_list2);
         // AdminDashboardController.approveMileages(null,null,selectedDriver.Name,selectedDriver.Email);
-        
+        Test.setMock(HttpCalloutMock.class, new TriplogUserIdUpdateBatchTestMock());
         AdminDashboardController.approveMileages(null,null,null,JSON.serialize(obj_EmployeeMileages_list1),JSON.serialize(obj_EmployeeMileages_list2));
         AdminDashboardController.CheckBatchStatus(batch.id);
         AdminDashboardController.CheckBatchStatusLWC(batch.id);
         AdminDashboardController.UpdatedReimList(currentAdmin.id, currentAccount.Id, 'true');
         AdminDashboardController.UpdatedReimListLWC(currentAdmin.id, currentAccount.Id, 'true');
         AdminDashboardController.approveMileagesCloneLWC(JSON.serialize(reimbursementIdList), currentAdmin.id,currentAccount.id, 'true');
+        AdminDashboardController.UpdateTimezonAppVer(currentAccount.ID);
        // Test.stopTest();
     }
 }

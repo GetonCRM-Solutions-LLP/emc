@@ -14,6 +14,8 @@ import {
 } from 'c/utils';
 export default class MBurseDriverPacket extends LightningElement {
     packetCss = mBurseCss + '/mburse/assets/Sign.png';
+    packetHeaderText = '';
+    packetSignDate = '';
     packetSent = false;
     isShowUpload = false;
     isShow = false;
@@ -22,6 +24,8 @@ export default class MBurseDriverPacket extends LightningElement {
     promiseError = false;
     driverDetails;
     isAppDone = false;
+    packetAlreadySent = false;
+    packetIntial = false;
     @api days
     @api cellType;
     @api contactId;
@@ -34,7 +38,10 @@ export default class MBurseDriverPacket extends LightningElement {
     // Type of account (New or Existing)
     @api accountType;
 
+
     sendDriverPacket() {
+        this.packetIntial = false;
+        this.packetAlreadySent  = false;
         this.packetSent = true;
         let contactList, mLogList;
         if (this.driverDetails) {
@@ -62,25 +69,32 @@ export default class MBurseDriverPacket extends LightningElement {
         }
 
     }
+
     nextmLogPreview() {
         events(this, 'Next mLog Preview');
     }
+
     proxyToObject(e) {
         return JSON.parse(e)
     }
     toggleHide() {
-        var list, status, packetStatus;
+        var list, packetStatus;
         contactInfo({
                 contactId: this.contactId
             })
             .then((data) => {
+                console.log("Packet data", data)
                 if (data) {
                     this.promiseError = false;
                     this.driverDetails = data;
                     list = this.proxyToObject(data);
+                    this.packetHeaderText = list[0].documentDate;
+                    this.packetSignDate = list[0].addedActivationDate;
                     packetStatus = list[0].driverPacketStatus; // list[0].driverPacketStatus;
-                    status = list[0].insuranceStatus;
-                    this.isShowUpload = (status === 'Uploaded') ? false : true;
+                   // status = list[0].insuranceStatus;
+                    this.packetIntial =  (packetStatus === 'Sent' || packetStatus  === 'Resent' || packetStatus  === 'Resent Again') ? false : true;
+                    this.packetAlreadySent = this.packetSent === false && (packetStatus === 'Sent' || packetStatus === 'Resent' || packetStatus === 'Resent Again') ? true : false;
+                    this.isShowUpload =  true; // (status === 'Uploaded') ? false : true;
                     if (this.days === true) {
                         this.isShow = (packetStatus === 'Uploaded') ? true : false;
                     } else {
@@ -220,7 +234,15 @@ export default class MBurseDriverPacket extends LightningElement {
     }
 
     backToPacket() {
+        let checkList, info, packetStatus;
         this.packetSent = false;
+        if (this.driverDetails) {
+            checkList = this.driverDetails;
+            info = this.proxyToObject(checkList);
+            packetStatus = info[0].driverPacketStatus; 
+            this.packetIntial =  (packetStatus === 'Sent' || packetStatus  === 'Resent' || packetStatus  === 'Resent Again') ? false : true;
+            this.packetAlreadySent = this.packetSent === false && (packetStatus === 'Sent' || packetStatus === 'Resent' || packetStatus === 'Resent Again') ? true : false;
+        }
     }
 
     renderedCallback() {

@@ -26,6 +26,7 @@ public with sharing class NewAccountDriverController {
                                                 Insurance_Declaration_Status__c,
                                                 Driver_Packet_Status__c,
                                                 App__c,
+                                                Document_Sent_Date__c,
                                                 Activation_Date__c,
                                                 Hello_Sign_Status__c,                                                 
                                                 Schedule_Driver_Meeting__c,
@@ -64,9 +65,11 @@ public with sharing class NewAccountDriverController {
                                                 contactWrapper.checkDriverMeeting =  contactobj.Schedule_Driver_Meeting__c != null ? contactobj.Schedule_Driver_Meeting__c : false;
                                                 contactWrapper.mburseDashboard =  contactobj.Account.MburseDashboardRedirect__c != null ? contactobj.Account.MburseDashboardRedirect__c : false;                                                
                                                 date activationDate = contactobj.Activation_Date__c != null ? contactobj.Activation_Date__c : null;
+                                                contactWrapper.addedActivationDate  = activationDate != null ? activationDate.addDays(30) : null ;
+                                                contactWrapper.documentDate = contactobj.Document_Sent_Date__c != null ? contactobj.Document_Sent_Date__c : null;
                                                 //contactWrapper.daysBetweenActivation = activationDate != null ? currentDate.daysBetween(activationDate) : null;
                                                 contactWrapper.daysBetweenActivation = activationDate != null ? activationDate.daysBetween(currentDate) : null;
-                                                if(contactWrapper.daysBetweenActivation != null && contactWrapper.daysBetweenActivation >= 0 && contactWrapper.daysBetweenActivation <= 30){
+                                                if(contactWrapper.daysBetweenActivation != null && contactWrapper.daysBetweenActivation <= 30){
                                                     contactWrapper.checkActivationDate = true;
                                                 } else if(contactWrapper.daysBetweenActivation > 30 &&  contactWrapper.helloSignDriverSign != null && contactWrapper.helloSignDriverSign == 'signed'){
                                                     contactWrapper.checkActivationDate = true;
@@ -303,5 +306,7 @@ public with sharing class NewAccountDriverController {
         public Boolean planPreview {get; set;}
         public integer daysBetweenActivation {get; set;}
         public string helloSignDriverSign{get; set;}
+        public Date documentDate {get; set;}
+        public Date addedActivationDate {get; set;}
     }
 }

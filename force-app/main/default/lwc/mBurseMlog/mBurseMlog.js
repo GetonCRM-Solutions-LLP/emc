@@ -28,15 +28,16 @@ export default class MBurseMlog extends LightningElement {
         }
     }
     toggleHide(){
-        var list, status;
+        var list;
         contactInfo({contactId: this.contactId})
         .then((data) => {
           if (data) {
             this.promiseError = false;
             list = this.proxyToObject(data);
             this.arrayList = list;
-            status = list[0].driverPacketStatus;
-            this.isShow = (status === 'Uploaded') ? false : true;
+           // status = list[0].driverPacketStatus;
+           this.isShow = true;
+            //this.isShow = (status === 'Uploaded') ? false : true;
             // this.renderStyle()
           }
         })
