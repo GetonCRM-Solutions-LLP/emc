@@ -3,13 +3,6 @@ public class AdminDashboardController_test {
     public static testmethod void AdminDashboardControllerTestMethod() {
         RecordUtilityClass.createRecordsAdminDashboardController();
         
-        /*Account currentAccount = new Account(); // retriving the Accounts EmployeeMileagesForCalculation
-        currentAccount.Name = 'test';
-        currentAccount.Pay_Period_Start_Date__c = system.today().adddays(-30);
-        currentAccount.Pay_Period_Days__c= 13;
-        
-        insert currentAccount;*/
-        
         Account currentAccount = RecordUtilityClass.getAccount();
         system.debug('currentAccount='+ currentAccount);
         
@@ -91,7 +84,7 @@ public class AdminDashboardController_test {
         AdminDashboardController.CheckBatchStatus(batch.id);
         AdminDashboardController.CheckBatchStatusLWC(batch.id);
         AdminDashboardController.UpdatedReimList(currentAdmin.id, currentAccount.Id, 'true');
-        AdminDashboardController.UpdatedReimListLWC(currentAdmin.id, currentAccount.Id, 'true');
+        //AdminDashboardController.UpdatedReimListLWC(currentAdmin.id, currentAccount.Id, 'true');
         AdminDashboardController.approveMileagesCloneLWC(JSON.serialize(reimbursementIdList), currentAdmin.id,currentAccount.id, 'true');
         AdminDashboardController.UpdateTimezonAppVer(currentAccount.ID);
        // Test.stopTest();
