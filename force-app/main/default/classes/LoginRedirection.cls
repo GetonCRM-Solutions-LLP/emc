@@ -79,9 +79,13 @@ public with sharing class LoginRedirection
                             } else if(biWeekList[0].Confirm_Hours__c == true ||  (biWeekList[0].Count_Error_Check__c != null && biWeekList[0].Count_Error_Check__c > 2)){
                                 pageRef = new PageReference('/app/drivermanagerdashboard?accid='+u.contact.Accountid+'&id='+u.contactid+'&showteam='+String.valueOf(u.contact.showTeamRecord__c));
                             }
-                        } else if(u.Contact.Schedule_Driver_Meeting__c == true ||(u.Contact.Account.Account_Status__c != null && u.Contact.Account.Account_Status__c == 'Existing Account')){
-                            pageRef = new PageReference('/app/drivermanagerdashboard?accid='+u.contact.Accountid+'&id='+u.contactid+'&showteam='+String.valueOf(u.contact.showTeamRecord__c));
-                        }   
+                        } else {
+                            if(u.Contact.Schedule_Driver_Meeting__c == true ||(u.Contact.Account.Account_Status__c != null && u.Contact.Account.Account_Status__c == 'Existing Account')){
+                                pageRef = new PageReference('/app/drivermanagerdashboard?accid='+u.contact.Accountid+'&id='+u.contactid+'&showteam='+String.valueOf(u.contact.showTeamRecord__c));
+                            }  else {
+                                pageRef = new PageReference('/app/mBurseDashboard?accid='+u.contact.Accountid+'&id='+u.contactid);
+                            }  
+                        }                        
                     } else {
                         pageRef = new PageReference('/app/mBurseDashboard?accid='+u.contact.Accountid+'&id='+u.contactid);
                     }             
@@ -94,9 +98,13 @@ public with sharing class LoginRedirection
                             } else if(biWeekList[0].Confirm_Hours__c == true ||  (biWeekList[0].Count_Error_Check__c != null && biWeekList[0].Count_Error_Check__c > 2)){
                                 pageRef = new PageReference('/app/admindriverdashboard?accid='+u.contact.Accountid+'&id='+u.contactid+'&showteam='+String.valueOf(u.contact.showTeamRecord__c)+'&admindriver=true');
                             }
-                        } else if(u.Contact.Schedule_Driver_Meeting__c == true || (u.Contact.Account.Account_Status__c != null && u.Contact.Account.Account_Status__c == 'Existing Account')){
-                            pageRef = new PageReference('/app/admindriverdashboard?accid='+u.contact.Accountid+'&id='+u.contactid+'&showteam='+String.valueOf(u.contact.showTeamRecord__c)+'&admindriver=true');
-                        }
+                        } else {
+                            if(u.Contact.Schedule_Driver_Meeting__c == true || (u.Contact.Account.Account_Status__c != null && u.Contact.Account.Account_Status__c == 'Existing Account')){
+                                pageRef = new PageReference('/app/admindriverdashboard?accid='+u.contact.Accountid+'&id='+u.contactid+'&showteam='+String.valueOf(u.contact.showTeamRecord__c)+'&admindriver=true');
+                            } else {
+                                pageRef = new PageReference('/app/mBurseDashboard?accid='+u.contact.Accountid+'&id='+u.contactid);
+                            }
+                        }                        
                     } else {
                         pageRef = new PageReference('/app/mBurseDashboard?accid='+u.contact.Accountid+'&id='+u.contactid);
                     }        
