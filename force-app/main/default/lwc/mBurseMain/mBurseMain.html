@@ -2,7 +2,7 @@
     <c-m-burse-welcome-account if:true={welcomePage} onnavigate={navigateToInsurance} account-type={accountType}
         cellphone-type={cellphoneType}></c-m-burse-welcome-account>
     <c-m-burse-welcome-insurance contact-id={contactId} welcome-insurance={isInsurance}
-        insurance-declaration={isDeclaration} if:true={nextInsurance} onnavigate={navigateToDeclaration}
+        insurance-declaration={isDeclaration} if:true={nextInsurance} onnextskip={renderView} onnavigate={navigateToDeclaration}
         day-left={leftDays} onskip={skipToDriverPacket} onback={backToWelcome} custom-setting={settings}></c-m-burse-welcome-insurance>
     <c-m-burse-upload-declaration if:true={nextDeclationUpload} is-upload-show={uploadVal} is-upload-skip={skipUpload}
         account-id={accountId} contact-id={contactId} attachmentid={attachmentid} contact-name={contactName}

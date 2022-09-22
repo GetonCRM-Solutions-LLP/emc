@@ -1313,6 +1313,7 @@
             function escapeSpecialChars(str){
                 return str
                 .replace(/\\'/g, "\'")
+                .replace(/\\&#39;/g, "\'")
                 .replace(/(&quot\;)/g,"\"");
             }
 
@@ -2213,10 +2214,8 @@
                     function (result, event) {
                         if (event.status && result != null) {
                             if (result != '') {
-                                var pattern = /&quot\;/g;
-                                 var resultdata = result.replace(pattern, '"')
-                                console.log(resultdata)
-                                var mileageReimbList = JSON.parse(resultdata);
+                                let escapeChar = escapeSpecialChars(result);
+                                var mileageReimbList = JSON.parse(escapeChar);
                                 console.log(mileageReimbList)
                                 $scope.exportReimbusList.push(["Contact Email", "Tracing Style", "Day Of Week", "Trip Date", "Start Time", "End Time", "Trip Origin", "Trip Destination", "Mileage", "Status", "Date Submitted", "Date Approved", "Maint/Tires", "Fuel Rate", "Variable Rate", "Variable Amount", "Total Time", "Notes", "Tags"]);
                                 angular.forEach(mileageReimbList, function (item, key) {
