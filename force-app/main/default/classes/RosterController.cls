@@ -489,7 +489,7 @@ global without sharing class RosterController
         Id batchId;
         ImportContactdatafromCSVController batch = new ImportContactdatafromCSVController(file, accountId, adminId);
        
-        batchid = Database.executebatch(batch,200);
+        batchid = Database.executebatch(batch,10);
         system.debug('batchid==' + batchid);
         return batchid;
     }
@@ -914,6 +914,27 @@ global without sharing class RosterController
         }     
         return result;   
     }
+    
+    /*This method is use for Hello sign integration.It will send driver packet to Driver */
+    @RemoteAction
+    public static string sendSignatureRequestForDriver(String accountID){
+        Set<String> newUserEmailSet = new Set<String>();
+        for(Contact con : [SELECT id,name,Email 
+                                FROM Contact 
+                                WHERE Packet__c != 'Completed' 
+                                    AND Hello_Sign_Request_Id__c = null 
+                                    AND AccountId =: accountID 
+                                    AND Deactivated_Date__c = null 
+                                    AND Role__c != 'Admin' 
+                                    AND Role__c != 'Manager' ]){
+            newUserEmailSet.add(con.Email);
+        }        
+        if(newUserEmailSet.size() > 0){
+            HelloSignIntegrationHandler.sendSignatureRequestForDriver(newUserEmailSet);
+        }        
+        return 'success';
+    }
+    
     @RemoteAction
     public static List<LOAWrapper> BiweekReimRecord(String startdate,String enddate,String accID)
     {
