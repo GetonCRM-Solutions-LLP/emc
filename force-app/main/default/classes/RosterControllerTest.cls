@@ -120,14 +120,13 @@ public class RosterControllerTest {
             RosterController.manageEmployee(JSON.serialize(obj_list_EmployeeDetails),String.valueOf(obj_Account.id),String.valueOf(obj_admincontact.Id));
             RosterController.getCountryStateCity('36310');
             RosterController.getCity('Abbeville','36310');
+            RosterController.getCompany();
+            RosterController.sendSignatureRequestForDriver(accId );
             RosterController.getPickListValuesIntoList();
             List<String> conIdList = new List<String>();
             for(contact cont:obj_Manager_list){
                 conIdList.add(cont.Id);
-            }
-            
-            
-            
+            } 
             Bi_Weekly_Reimbursement__c br = new Bi_Weekly_Reimbursement__c();
             br.Name = system.today()-13 + ' to ' + system.today() ; 
             br.Contact__c = obj_Driver_list[0].Id;
