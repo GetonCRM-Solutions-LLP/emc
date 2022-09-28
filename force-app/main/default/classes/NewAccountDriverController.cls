@@ -26,11 +26,10 @@ public with sharing class NewAccountDriverController {
                                                 Insurance_Declaration_Status__c,
                                                 Driver_Packet_Status__c,
                                                 App__c,
+                                                Meeting__c,
                                                 Document_Sent_Date__c,
                                                 Activation_Date__c,
-                                                Hello_Sign_Status__c,                                                 
-                                                Schedule_Driver_Meeting__c,
-                                                Account.Goto_Driver_Meeting__c,
+                                                Hello_Sign_Status__c,
                                                 Account.Schedule_Goto_Meeting__c,
                                                 Account.Bodily_Injury__c, 
                                                 Account.Uninsured_Motorist__c, 
@@ -52,7 +51,7 @@ public with sharing class NewAccountDriverController {
                                                 contactWrapper.accountStatus =  contactobj.Account.Account_Status__c != null ? contactobj.Account.Account_Status__c : 'New Account';
                                                 contactWrapper.insuranceStatus =  contactobj.Insurance_Declaration_Status__c != null ? contactobj.Insurance_Declaration_Status__c : null;
                                                 contactWrapper.driverPacketStatus =  contactobj.Driver_Packet_Status__c != null ? contactobj.Driver_Packet_Status__c : null;
-                                                contactWrapper.meetingVideoLink =  contactobj.Account.Goto_Driver_Meeting__c != null ? contactobj.Account.Goto_Driver_Meeting__c : null;
+                                                contactWrapper.driverMeeting =  contactobj.Meeting__c != null ? contactobj.Meeting__c: null;                                                
                                                 contactWrapper.scheduleLink =  contactobj.Account.Schedule_Goto_Meeting__c != null ? contactobj.Account.Schedule_Goto_Meeting__c : null;
                                                 contactWrapper.bodilyInjury =  contactobj.Account.Bodily_Injury__c != null ? contactobj.Account.Bodily_Injury__c : null;
                                                 contactWrapper.unInsuranceMotorist =  contactobj.Account.Uninsured_Motorist__c != null ? contactobj.Account.Uninsured_Motorist__c : null;
@@ -61,8 +60,7 @@ public with sharing class NewAccountDriverController {
                                                 contactWrapper.collision =  contactobj.Account.Collision__c != null ? contactobj.Account.Collision__c : null;
                                                 contactWrapper.umbrella =  contactobj.Account.Umbrella_Coverage__c != null ? contactobj.Account.Umbrella_Coverage__c : null;
                                                 contactWrapper.helloSignDriverSign =  contactobj.Hello_Sign_Status__c != null ? contactobj.Hello_Sign_Status__c : null;                                                
-                                                contactWrapper.mlogApp =  contactobj.App__c != null ? true : false;
-                                                contactWrapper.checkDriverMeeting =  contactobj.Schedule_Driver_Meeting__c != null ? contactobj.Schedule_Driver_Meeting__c : false;
+                                                contactWrapper.mlogApp =  contactobj.App__c != null ? true : false;                                                
                                                 contactWrapper.mburseDashboard =  contactobj.Account.MburseDashboardRedirect__c != null ? contactobj.Account.MburseDashboardRedirect__c : false;                                                
                                                 date activationDate = contactobj.Activation_Date__c != null ? contactobj.Activation_Date__c : null;
                                                 contactWrapper.addedActivationDate  = activationDate != null ? activationDate.addDays(30) : null ;
@@ -101,9 +99,7 @@ public with sharing class NewAccountDriverController {
                     if(conObj.Insurance_Declaration_Status__c == 'Skip' && (driverPacket != true)){
                         sendEmailToDriver(contactData,conWrap.contactName,conWrap.contactId);
                     }
-                    conObj.Driver_Packet_Status__c = conWrap.driverPacketStatus != null ? conWrap.driverPacketStatus : null ;
-                    //conObj.mlog_App__c = conWrap.mlogApp != null ? conWrap.mlogApp : false ;                    
-                    conObj.Schedule_Driver_Meeting__c = conWrap.checkDriverMeeting != null ? conWrap.checkDriverMeeting : false ;
+                    conObj.Driver_Packet_Status__c = conWrap.driverPacketStatus != null ? conWrap.driverPacketStatus : null ;                   
                     contactList.add(conObj);
                 }
             }
@@ -290,17 +286,16 @@ public with sharing class NewAccountDriverController {
         public string mobilePhone { get; set; }
         public string accountStatus { get; set; }        
         public string insuranceStatus { get; set; }
-        public string driverPacketStatus {get; set;}
-        public string meetingVideoLink {get; set;}
+        public string driverPacketStatus {get; set;}        
         public string scheduleLink {get; set;}
+        public string driverMeeting {get; set;}
         public string bodilyInjury {get; set;}
         public string unInsuranceMotorist {get; set;}
         public Decimal propertyDamage {get; set;}
         public Decimal comprehensive {get; set;}
         public Decimal collision {get; set;}
         public Decimal umbrella {get; set;}
-        public Boolean mlogApp {get; set;}
-        public Boolean checkDriverMeeting {get; set;}
+        public Boolean mlogApp {get; set;}        
         public Boolean checkActivationDate {get; set;}
         public Boolean mburseDashboard {get; set;}
         public Boolean planPreview {get; set;}

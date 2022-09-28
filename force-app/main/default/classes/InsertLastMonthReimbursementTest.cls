@@ -20,7 +20,11 @@ public class InsertLastMonthReimbursementTest {
         User userObj;
 
         System.runAs(admin) {
-            acc = TestDataFactory.createAccount(True, 'ermi', False);
+            acc = TestDataFactory.createAccount(True, 'Ermi', False);
+            acc.Pay_Period_Days__c = 13;
+            acc.Pay_Period_Start_Date__c = system.today().adddays(-14);
+            update acc;
+
             con = TestDataFactory.createDriverContact(False, acc.Id, 'Driver', vehicleType.Name, 'Paras.Patel', 2);
             con[0].Driver_Type__c = 'Driver - Salary';
             con[0].isCommunityUser__c = true;
@@ -56,6 +60,8 @@ public class InsertLastMonthReimbursementTest {
         System.runAs(admin) {
             acc = TestDataFactory.createAccount(True, 'Ermi', False);
             acc.isUsingTriplog__c = True;
+            acc.Pay_Period_Days__c = 13;
+            acc.Pay_Period_Start_Date__c = system.today().adddays(-14);
             Update acc;
 
             con = TestDataFactory.createDriverContact(True, acc.Id, 'Driver', vehicleType.Name, 'Paras.Patel', 2);
@@ -101,6 +107,8 @@ public class InsertLastMonthReimbursementTest {
         System.runAs(admin) {
             acc = TestDataFactory.createAccount(True, 'Ermi', False);
             acc.isUsingTriplog__c = True;
+            acc.Pay_Period_Days__c = 13;
+            acc.Pay_Period_Start_Date__c = system.today().adddays(-14);
             Update acc;
 
             con = TestDataFactory.createDriverContact(True, acc.Id, 'Driver', vehicleType.Name, 'Paras.Patel', 2);
@@ -144,6 +152,8 @@ public class InsertLastMonthReimbursementTest {
         System.runAs(admin) {
             acc = TestDataFactory.createAccount(True, 'Ermi', False);
             acc.isUsingTriplog__c = True;
+            acc.Pay_Period_Days__c = 13;
+            acc.Pay_Period_Start_Date__c = system.today().adddays(-14);
             Update acc;
 
             con = TestDataFactory.createDriverContact(True, acc.Id, 'Driver', vehicleType.Name, 'Paras.Patel', 2);

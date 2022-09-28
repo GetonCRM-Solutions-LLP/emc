@@ -90,21 +90,29 @@
                 <img class="sent__packet__img" src={packetCss} />
             </div>
         </div>
-        <div class="m-top m-right">
-            <div class="footer-button slds-float_right mright-10 mleft-0">
+        <div class=""> <!--m-top m-right-->
+            <div class="footer-button slds-align_absolute-center" style="flex-flow: column">
                 <template if:true={isAppDone}>
-                    <button class="slds-btn slds-btn-primary slds-btn-sm waves-effect bc-blue waves-light packet_btn"
-                        onclick={goToDashboard}>
+                    <button class="slds-btn slds-btn-primary slds-btn-sm waves-effect bc-blue waves-light"
+                        onclick={goToDashboard} if:false={afterRegister}>
                         {renderBtnText}
+                    </button>
+                    <button class="slds-btn slds-btn-primary slds-btn-sm waves-effect bc-blue waves-light"
+                    onclick={redirectToDashboard} if:true={afterRegister}>
+                        Go To My Account
+                    </button>
+                    <button class="slds-btn slds-btn-primary slds-btn-sm waves-effect bc-blue waves-light"
+                    onclick={redirectToDashboard} if:true={showWatchBtn}>
+                        I don't want to watch the driver meeting now take me to the dashboard
                     </button>
                 </template>
                 <template if:false={isAppDone}>
-                    <button class="slds-btn slds-btn-primary slds-btn-sm waves-effect bc-blue waves-light packet_btn"
+                    <button class="slds-btn slds-btn-primary slds-btn-sm waves-effect bc-blue waves-light"
                         onclick={nextmLogPreview}>
                         {renderText}
                     </button>
                 </template>
-                <div class="back_to_previous slds-float_left back-btn" if:true={isShowUpload}>
+                <div class="back_to_previous slds-float_left" if:true={isShowUpload}>
                     <a class="font-s" onclick={backToPacket}><i class="fa-solid fa-angle-left"></i> Back</a>
                 </div>
             </div>

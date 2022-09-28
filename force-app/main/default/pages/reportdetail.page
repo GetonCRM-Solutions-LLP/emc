@@ -787,7 +787,7 @@
                         previousSortKey=keyname;
                     }
                      /* AI - 000616 : added column name ComplianceStatus InsuranceDeclarationPage and ActiveDriver */
-                    if(keyname === 'Name' || keyname === 'Email' || keyname === 'DriverName' || keyname === 'CoCode' || keyname === 'Manager' || keyname === 'ContactName'|| keyname === 'E-mail' || keyname === 'MileageApprover' || keyname === 'Status' || keyname === 'ComplianceStatus' || keyname === 'InsuranceDeclarationPage' || keyname === 'ActiveDriver'){
+                    if(keyname === 'Name' || keyname === 'Email' || keyname === 'CompletedOnboarding' || keyname === 'Insurance' || keyname === 'DriverName' || keyname === 'CoCode' || keyname === 'Manager' || keyname === 'ContactName'|| keyname === 'E-mail' || keyname === 'MileageApprover' || keyname === 'Status' || keyname === 'ComplianceStatus' || keyname === 'InsuranceDeclarationPage' || keyname === 'ActiveDriver' || keyname === 'WatchedDriverMeeting' || keyname === 'DriverSigned' || keyname === 'AdminSigned' || keyname === 'StartTime' || keyname === 'EndTime' || keyname === 'FromLocation' || keyname === 'ToLocation' || keyname === 'Notes' || keyname === 'Origin' || keyname === 'Destination' || keyname='FromLocationName' || keyname === 'FromLocationAddress' || keyname === 'ToLocationName'	|| keyname === 'ToLocationAddress' || keyname === 'TripType' || keyname === 'Tag' || keyname ==='DeactivatedBy' || keyname === 'Driver' || keyname === 'GLCode' || keyname === 'Sage100'){
                         $scope.finnalArr.sort(function (a, b) {
 
                                             var nameA = (a[keyname] == null) ? '' : (a[keyname].toLowerCase()),
@@ -807,7 +807,7 @@
                                             }
                                         })
                     }
-                    if (keyname === 'Month' || keyname === 'FixedAmount' || keyname === 'EmployeeID' || keyname === 'VariableReimbursement') {
+                    if (keyname === 'Month' || keyname === 'FixedAmount'  || keyname === 'EmployeeID' || keyname === 'VariableReimbursement') {
                                        $scope.finnalArr.sort(function (a, b) {
                                             
                                             var dateA = (a[keyname] == null) ? '' : (a[keyname]),
@@ -827,7 +827,7 @@
                                             }
                                         })
                     }
-                    if (keyname === 'TotalMileage' || keyname === 'Mileage' || keyname === 'MonthlyFixedAmount' || keyname === 'VariableAmount'  || keyname === 'VariableReimbursementRate' || keyname === 'TotalMonthlyReimbursement' || keyname === 'MonthlyVariableAmount' || keyname === 'MonthlyApprovedVariableAmount' || keyname === 'TotalApprovedMiles' || keyname === 'TotalApprovedVariable' || keyname === 'TotalReimbursement' || keyname === 'Division') {
+                    if (keyname === 'TotalMileage' || keyname === 'StayTime'  || keyname === 'DriveTime' || keyname === 'Mileage' || keyname === 'MonthlyFixedAmount' || keyname === 'VariableAmount'  || keyname === 'VariableReimbursementRate' || keyname === 'TotalMonthlyReimbursement' || keyname === 'MonthlyVariableAmount' || keyname === 'MonthlyApprovedVariableAmount' || keyname === 'TotalApprovedMiles' || keyname === 'TotalApprovedVariable' || keyname === 'TotalReimbursement' || keyname === 'Division' || keyname === 'VariableRate' || keyname === 'ApprovedMileage' || keyname === 'ActualMileage' || keyname === 'NetMiles' || keyname === 'NetMileage' ||  keyname === 'TotalMileages' || keyname === 'Reimbursement') {
 
                                 $scope.finnalArr.sort(function (a, b) {
                                             var nameA = (a[keyname] == null) ? '' : parseFloat(a[keyname]),
@@ -847,7 +847,7 @@
                                             }
                                         })
                     }
-                    if (keyname === 'ActivationDate' || keyname === 'DeactivatedDate') {
+                    if (keyname === 'ActivationDate' || keyname === 'DeactivatedDate' || keyname === 'DeactivationDate' || keyname === 'TripDate' || keyname === 'ApprovalDate' || keyname === 'LockDate') {
                                        $scope.finnalArr.sort(function (a, b) {
 
                                             var dateA = (a[keyname] == null) ? '' : new Date(a[keyname].toLowerCase()),
