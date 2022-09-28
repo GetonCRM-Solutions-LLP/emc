@@ -45,8 +45,7 @@ public class NewAccountDriverControllerTest {
             conWrap.cellPhone = string.valueOf(conList[0].Phone);
             conWrap.accountStatus = 'New Account';
             conWrap.insuranceStatus = 'Uploaded';
-            conWrap.driverPacketStatus = 'Uploaded';            
-            conWrap.meetingVideoLink = 'www.gmeet.com';
+            conWrap.driverPacketStatus = 'Uploaded'; 
             conWrap.scheduleLink = 'www.gmeetSchedule.com';
             conWrap.bodilyInjury = '100,000/300,000';
             conWrap.unInsuranceMotorist = '1000';
@@ -55,7 +54,6 @@ public class NewAccountDriverControllerTest {
             conWrap.collision = 1000;
             conWrap.umbrella = 1000;
             conWrap.mlogApp = true;
-            conWrap.checkDriverMeeting = true;
             conWrap.checkActivationDate = true;
             conWrap.daysBetweenActivation = 30;
             conWrapList.add(conWrap);
