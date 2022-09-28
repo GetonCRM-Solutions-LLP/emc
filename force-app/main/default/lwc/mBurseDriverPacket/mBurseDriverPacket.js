@@ -16,6 +16,8 @@ export default class MBurseDriverPacket extends LightningElement {
     packetCss = mBurseCss + '/mburse/assets/Sign.png';
     packetHeaderText = '';
     packetSignDate = '';
+    showWatchBtn = false;
+    afterRegister = false;
     packetSent = false;
     isShowUpload = false;
     isShow = false;
@@ -31,6 +33,7 @@ export default class MBurseDriverPacket extends LightningElement {
     @api contactId;
     @api emailOfDriver;
     @api contactOfDriver;
+    @api driverMeeting;
     // Watch driver meeting
     @api meeting;
     // Schedule driver meeting 
@@ -206,27 +209,28 @@ export default class MBurseDriverPacket extends LightningElement {
     }
 
     goToDashboard() {
-        var list, d;
-        contactInfo({
-                contactId: this.contactId
-            })
-            .then((data) => {
-                if (data) {
-                    list = this.proxyToObject(data);
-                    this.arrayList = list;
-                    d = this.arrayList;
-                    d[0].checkDriverMeeting = true;
-                    updateContactDetail({
-                        contactData: JSON.stringify(d),
-                        driverPacket: true
-                    })
-                    events(this, 'Next mburse meeting');
-                }
-            })
-            .catch((error) => {
-                // If the promise rejects, we enter this code block
-                console.log(error);
-            })
+        events(this, 'Next mburse meeting');
+        // var list, d;
+        // contactInfo({
+        //         contactId: this.contactId
+        //     })
+        //     .then((data) => {
+        //         if (data) {
+        //             list = this.proxyToObject(data);
+        //             this.arrayList = list;
+        //             d = this.arrayList;
+        //             d[0].checkDriverMeeting = true;
+        //             updateContactDetail({
+        //                 contactData: JSON.stringify(d),
+        //                 driverPacket: true
+        //             })
+        //             events(this, 'Next mburse meeting');
+        //         }
+        //     })
+        //     .catch((error) => {
+        //         // If the promise rejects, we enter this code block
+        //         console.log(error);
+        //     })
     }
 
     backToPage() {
@@ -253,5 +257,7 @@ export default class MBurseDriverPacket extends LightningElement {
         this.toggleHide();
         this.renderText = (this.cellType === 'Company Provide') ? 'mLog Preview' : 'mLog Preview';
         this.renderBtnText = (this.accountType === 'New Account') ? 'Register for your driver meeting' : 'Next watch your driver meeting';
+        this.showWatchBtn = (this.accountType === 'New Account') ? false : true;
+        this.afterRegister = (this.accountType === 'New Account' && this.driverMeeting === 'Scheduled') ? true : false;
     }
 }
