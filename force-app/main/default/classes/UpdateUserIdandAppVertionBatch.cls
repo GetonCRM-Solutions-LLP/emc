@@ -26,10 +26,9 @@ Public class UpdateUserIdandAppVertionBatch implements Database.Batchable<sObjec
     }
 
     Public Database.QueryLocator start(Database.BatchableContext bc) {  
-        system.debug('Query==' + Query);
         return Database.getQueryLocator(query);
     }
-    Public void execute(Database.BatchableContext bc, List<sObject> scope){
+    Public void execute(Database.BatchableContext bc, List<sObject> scope) {
        Set<Id> accountIds = new Set<Id>();
         List<Contact> contactToUpdateList = new List<Contact>();
         Map<String,Contact> contactMap = new Map<String,Contact>();
@@ -38,7 +37,7 @@ Public class UpdateUserIdandAppVertionBatch implements Database.Batchable<sObjec
         Map<String,String> timeZoneMap = new Map<String,String>();
         List<String> resZone;
         String apikey;
-        for (contact currentContact : (List<contact>) scope){
+        for (contact currentContact : (List<contact>) scope) {
             apikey = currentContact.Account.Triplog_API__c;
             accountIds.add(currentContact.AccountId);
             contactMap.put(currentContact.External_Email__c.toLowerCase(),currentContact);
@@ -53,31 +52,24 @@ Public class UpdateUserIdandAppVertionBatch implements Database.Batchable<sObjec
                 if(triplogRes.user !=null && !triplogRes.user.isEmpty()) {
 
                     for(TriplogJsonUserParse.Users currentUser : triplogRes.user) {
-                        system.debug('currentUser==' + currentUser.Email);
-                        system.debug('mapemail==' + contactMap);
                         if(String.isNotBlank(currentUser.email) && contactMap.containsKey(currentUser.email.toLowerCase())) {                             
                             Contact currentContact = new Contact();
-                            system.debug('currentUser.id==' + currentUser.id);
                             currentContact = contactMap.get(currentUser.email);
-                            if(currentUser.timeZone != null){
+                            if(currentUser.timeZone != null) {
                                 resZone = currentUser.timeZone.split(',');                                  
                             } 
-                            if(!userIDMap.containsKey(String.valueOf(currentUser.id))){
+                            if(!userIDMap.containsKey(String.valueOf(currentUser.id))) {
                                 currentContact.Triplog_UserID__c = String.valueOf(currentUser.id);
                             }
-                            if(!appVertionMap.containsKey(String.valueOf(currentUser.appVersion))){
+                            if(!appVertionMap.containsKey(String.valueOf(currentUser.appVersion))) {
                                 currentContact.App__c = currentUser.appVersion;
                             }
-                            if(currentUser.timeZone != null){
+                            if(currentUser.timeZone != null) {
                                 resZone = currentUser.timeZone.split(',');                                  
                             } 
-                            if(!timeZoneMap.containsKey(resZone[0].substringAfter('=').replace('\"', ''))){
+                            if(!timeZoneMap.containsKey(resZone[0].substringAfter('=').replace('\"', ''))) {
                                 currentContact.Time_Zone__c = resZone[0].substringAfter('=').replace('\"', '');
-                            }
-                            /*if(currentUser.timeZone != null){
-                                List<String> resZone = currentUser.timeZone.split(',');                                
-                                currentContact.Time_Zone__c = resZone[0].substringAfter('=').replace('\"', '');
-                            } */                            
+                            }                           
                             contactToUpdateList.add(currentContact);
                         }
                     }
@@ -86,14 +78,9 @@ Public class UpdateUserIdandAppVertionBatch implements Database.Batchable<sObjec
                     List<Database.SaveResult> srList = Database.update(contactToUpdateList, false);
                 }
             }
-        
-
     }
-
     Public void finish(Database.BatchableContext bc){}
-
-    Public Static String getTripIds(String passedApikey)
-    {
+    Public Static String getTripIds(String passedApikey) {
         String baseURL = !MLOGACCOUNT.Contains(passedApikey) ? StaticValues.TRIPLOG_BASEURL : StaticValues.MLOG_BASEURL;
         Http http = new Http();
         HttpRequest request = new HttpRequest();
@@ -101,7 +88,6 @@ Public class UpdateUserIdandAppVertionBatch implements Database.Batchable<sObjec
         request.setMethod('GET');
         request.setHeader('Authorization','apikey ' + passedApikey);
         HttpResponse response = http.send(request);
-        
         return response.getStatusCode() == 200 ? response.getBody() : 'Error';
     }
 }

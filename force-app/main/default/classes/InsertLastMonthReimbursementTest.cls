@@ -20,7 +20,7 @@ public class InsertLastMonthReimbursementTest {
         User userObj;
 
         System.runAs(admin) {
-            acc = TestDataFactory.createAccount(True, 'ermi', False);
+            acc = TestDataFactory.createAccount(True, 'Test Accounts', False);
             acc.Pay_Period_Days__c = 13;
             acc.Pay_Period_Start_Date__c = system.today().adddays(-14);
             update acc;
@@ -58,7 +58,7 @@ public class InsertLastMonthReimbursementTest {
         User userObj;
 
         System.runAs(admin) {
-            acc = TestDataFactory.createAccount(True, 'Ermi', False);
+            acc = TestDataFactory.createAccount(True, 'Test Accounts', False);
             acc.isUsingTriplog__c = True;
             acc.Pay_Period_Days__c = 13;
             acc.Pay_Period_Start_Date__c = system.today().adddays(-14);
@@ -105,7 +105,7 @@ public class InsertLastMonthReimbursementTest {
         User userObj;
 
         System.runAs(admin) {
-            acc = TestDataFactory.createAccount(True, 'Ermi', False);
+            acc = TestDataFactory.createAccount(True, 'Test Accounts', False);
             acc.isUsingTriplog__c = True;
             acc.Pay_Period_Days__c = 13;
             acc.Pay_Period_Start_Date__c = system.today().adddays(-14);
@@ -150,7 +150,7 @@ public class InsertLastMonthReimbursementTest {
         User userObj;
 
         System.runAs(admin) {
-            acc = TestDataFactory.createAccount(True, 'Ermi', False);
+            acc = TestDataFactory.createAccount(True, 'Test Accounts', False);
             acc.isUsingTriplog__c = True;
             acc.Pay_Period_Days__c = 13;
             acc.Pay_Period_Start_Date__c = system.today().adddays(-14);

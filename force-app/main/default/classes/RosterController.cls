@@ -489,7 +489,7 @@ global without sharing class RosterController
         Id batchId;
         ImportContactdatafromCSVController batch = new ImportContactdatafromCSVController(file, accountId, adminId);
        
-        batchid = Database.executebatch(batch,10);
+        batchid = Database.executebatch(batch,1);
         system.debug('batchid==' + batchid);
         return batchid;
     }

@@ -1,7 +1,6 @@
 import { LightningElement,api } from 'lwc';
 import redirectionURL from '@salesforce/apex/NewAccountDriverController.loginRedirection';
 import contactInfo from  '@salesforce/apex/NewAccountDriverController.getContactDetail';
-import updateContactDetail from '@salesforce/apex/NewAccountDriverController.updateContactDetail';
 export default class MBurseMeeting extends LightningElement {
     renderInitialized = false;
     promiseError = false;
@@ -58,35 +57,17 @@ export default class MBurseMeeting extends LightningElement {
     }
 
     redirectToDashboard() {
-        let contact;
-        contactInfo({contactId: this.contactId})
-        .then((data) => {
-          if (data) {
-            this.driverInfo = data;
-            contact = this.proxyToObject(data);
-            contact[0].checkDriverMeeting = true;
-            updateContactDetail({
-                contactData: JSON.stringify(contact),
-                driverPacket: true
-            }).then(() => {
-                redirectionURL({
-                    contactId: this.contactId
-                })
-                .then((result) => {
-                    let url = window.location.origin + result;
-                    window.open(url, '_self');
-                })
-                .catch((error) => {
-                    // If the promise rejects, we enter this code block
-                    console.log(error);
-                })
+        redirectionURL({
+                contactId: this.contactId
             })
-          }
-        })
-        .catch((error)=>{
-            // If the promise rejects, we enter this code block
-            console.log(error);
-        })
+            .then((result) => {
+                let url = window.location.origin + result;
+                window.open(url, '_self');
+            })
+            .catch((error) => {
+                // If the promise rejects, we enter this code block
+                console.log(error);
+            })
     }
 
     renderedCallback() {
