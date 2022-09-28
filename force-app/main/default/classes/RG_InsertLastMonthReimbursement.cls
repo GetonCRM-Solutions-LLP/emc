@@ -48,7 +48,7 @@ Public class RG_InsertLastMonthReimbursement implements Database.Batchable<Conta
                                                                     WHERE (Deactivated_Date__c = NULL OR Deactivated_Date__c > Today) 
                                                                             AND (Role__c = 'Driver' OR Role__c = 'Driver/Manager' OR Role__c =: StaticValues.roleAdminDriver) 
                                                                             AND (Driver_Type__c != 'Driver - Part Time' OR Driver_Type__c != 'Driver - Full Time')  
-                                                                            AND Account.Name = 'Test Accounts'
+                                                                            AND Account.Name != 'Test Accounts'
                                                                             AND Account.isUsingTriplog__c = true
                                                                             AND MailingState != null
                                                                             AND MailingCity != null ]);
