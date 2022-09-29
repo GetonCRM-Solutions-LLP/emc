@@ -782,12 +782,12 @@
                 $scope.reverse = false;
                 let previousSortKey = "";
                 $scope.sort = function(keyname) {
-                    if(keyname !== previousSortKey){
+                    if(keyname != previousSortKey){
                         $scope.reverse = false;
                         previousSortKey=keyname;
                     }
                      /* AI - 000616 : added column name ComplianceStatus InsuranceDeclarationPage and ActiveDriver */
-                    if(keyname === 'Name' || keyname === 'Email' || keyname === 'CompletedOnboarding' || keyname === 'Insurance' || keyname === 'DriverName' || keyname === 'CoCode' || keyname === 'Manager' || keyname === 'ContactName'|| keyname === 'E-mail' || keyname === 'MileageApprover' || keyname === 'Status' || keyname === 'ComplianceStatus' || keyname === 'InsuranceDeclarationPage' || keyname === 'ActiveDriver' || keyname === 'WatchedDriverMeeting' || keyname === 'DriverSigned' || keyname === 'AdminSigned' || keyname === 'StartTime' || keyname === 'EndTime' || keyname === 'FromLocation' || keyname === 'ToLocation' || keyname === 'Notes' || keyname === 'Origin' || keyname === 'Destination' || keyname='FromLocationName' || keyname === 'FromLocationAddress' || keyname === 'ToLocationName'	|| keyname === 'ToLocationAddress' || keyname === 'TripType' || keyname === 'Tag' || keyname ==='DeactivatedBy' || keyname === 'Driver' || keyname === 'GLCode' || keyname === 'Sage100'){
+                    if(keyname === 'Name' || keyname === 'Email' || keyname === 'CompletedOnboarding' || keyname === 'Insurance' || keyname === 'DriverName' || keyname === 'CoCode' || keyname === 'Manager' || keyname === 'ContactName'|| keyname === 'E-mail' || keyname === 'MileageApprover' || keyname === 'Status' || keyname === 'ComplianceStatus' || keyname === 'InsuranceDeclarationPage' || keyname === 'ActiveDriver' || keyname === 'WatchedDriverMeeting' || keyname === 'DriverSigned' || keyname === 'AdminSigned' || keyname === 'StartTime' || keyname === 'EndTime' || keyname === 'FromLocation' || keyname === 'ToLocation' || keyname === 'Notes' || keyname === 'Origin' || keyname === 'Destination' || keyname === 'FromLocationName' || keyname === 'FromLocationAddress' || keyname === 'ToLocationName'	|| keyname === 'ToLocationAddress' || keyname === 'TripType' || keyname === 'Tag' || keyname ==='DeactivatedBy' || keyname === 'Driver' || keyname === 'GLCode' || keyname === 'Sage100'){
                         $scope.finnalArr.sort(function (a, b) {
 
                                             var nameA = (a[keyname] == null) ? '' : (a[keyname].toLowerCase()),

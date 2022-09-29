@@ -36,7 +36,7 @@ public class InsertLastMonthReimbursementTest {
         Batch_Setup__c batc = TestUtilityClass.getTestBatchSetup();
         Gas_Prices__c gas = TestUtilityClass.getTestGasPrices();
         RG_InsertLastMonthReimbursement Ins = new RG_InsertLastMonthReimbursement();
-        Database.executeBatch(Ins, 1);
+        Database.executeBatch(Ins, 200);
     }
 
      public static testmethod void testMethod2(){
@@ -83,7 +83,7 @@ public class InsertLastMonthReimbursementTest {
         
         system.System.debug('month== ' + month);
         RG_InsertLastMonthReimbursement Ins = new RG_InsertLastMonthReimbursement(month);
-        Database.executeBatch(Ins, 1);
+        Database.executeBatch(Ins, 200);
     }
 
     public static testmethod void testMethod3(){
@@ -128,7 +128,7 @@ public class InsertLastMonthReimbursementTest {
              month = date.today().addMonths(-1).month() + '-'+ date.today().addMonths(-1).year();
         }
         RG_InsertLastMonthReimbursement Ins = new RG_InsertLastMonthReimbursement(month,'test123@gmail.com,test23@gmail.com');
-        Database.executeBatch(Ins, 1);
+        Database.executeBatch(Ins, 200);
     }
 
     public static testmethod void testMethod4(){
@@ -173,7 +173,7 @@ public class InsertLastMonthReimbursementTest {
              month = date.today().addMonths(-1).month() + '-'+ date.today().addMonths(-1).year();
         }
         RG_InsertLastMonthReimbursement Ins = new RG_InsertLastMonthReimbursement(month,'test123@gmail.com');
-        Database.executeBatch(Ins, 1);
+        Database.executeBatch(Ins, 200);
 
         scheduledRG_InsertLastMonthReimbursement m = new scheduledRG_InsertLastMonthReimbursement();
         String sch = '  0 0 6 2 1/1 ? *';        
