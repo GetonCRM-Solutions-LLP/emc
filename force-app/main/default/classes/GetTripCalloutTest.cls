@@ -8,7 +8,7 @@ public class GetTripCalloutTest {
         TriggerConfig__c triggerCustomSetting = TestDataFactory.triggerConfigCustomSetting(true);
         SendEmail__c customSetting1 = TestDataFactory.sendEmailCustomSetting(true, 'Send Email For Compliance');
         SendEmailToMe__c objSendEmailToMe = TestDataFactory.sendEmailToMeCustomSetting(true, 'GetTripCallOutApprovePutCall');
-        
+        TrueDialog_Keys__c trueDialogCustom = TestDataFactory.createTrueDialog(true);
         IRS_Mileage_Rate__c irs = TestDataFactory.createIRSRate(false,0);
         irs.year__c = String.valueof(system.today().year());
         irs.IRS_Rate__c = 0.85;
@@ -48,12 +48,13 @@ public class GetTripCalloutTest {
         List<Employee_Reimbursement__c> er = TestDataFactory.createPendingReimbursement(true,currentContact,2,irs.id);
         List<Bi_Weekly_Reimbursement__c> bob = TestDataFactory.createBiweeklyReim(true,currentContact,system.today().adddays(-7),system.today(), 1,irs.id);
         
-        Employee_Mileage__c emp = new Employee_Mileage__c();
+        List<Employee_Mileage__c> emp = TestDataFactory.getEmpMileage(true,0,er, bob);
+        /*Employee_Mileage__c emp = new Employee_Mileage__c();
         emp.Contact_Email_Id__c = 'test@test.gmail.com';
         emp.Name = 'Test Mileage Record';
         emp.EmployeeReimbursement__c = er[0].id;
         emp.Bi_Weekly_Reimbursement__c = bob[0].id;
-        insert emp;
+        insert emp;*/
         
         priMin = '2016-12-01';
         priMax = '2017-12-01';
@@ -63,8 +64,9 @@ public class GetTripCalloutTest {
         
         Test.startTest();
         Test.setMock(HttpCalloutMock.class, new GetTripCalloutMock());
-        GetTripCallout.GetTripCalloutForMileage(er[0].id, currentContact[0].External_Email__c,currentContact[0].id, priMin, priMax, fuelPrice, mpg, mat, account.Triplog_API__c, er[0].Triplog_Status__c,true,false,'');
-        
+        //GetTripCallout.GetTripCalloutForMileage(er[0].id, currentContact[0].External_Email__c,currentContact[0].id, priMin, priMax, fuelPrice, mpg, mat, account.Triplog_API__c, er[0].Triplog_Status__c,true,false,'');
+        GetTripCallout.GetTripCalloutForMileage(er[0].id, currentContact[0].External_Email__c,currentContact[0].id, priMin, priMax, fuelPrice, mpg, mat, account.Triplog_API__c, er[0].Triplog_Status__c,true,true,'');
+        GetTripCallout.getBiWeekReimId(String.valueOf(currentContact[0]));
         String body = 'test';
         String apiToken = 'test';
         String finalstr = 'test';       

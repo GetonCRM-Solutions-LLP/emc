@@ -39,8 +39,8 @@ global class GetTripCallout {
         String empMilName = String.valueOf(empReID).substring(0, 15);
         Integer index = 0;
         if(res.getStatusCode() == 200) {                
-            TripLogJSONClass.TripLogJSONClassInner tripLog = TripLogJSONClass.parse(res.getBody());
-            List<TripLogJSONClass.Trips> listTrips = tripLog.trips;
+            TripLogDeserializeClass tripLog = TripLogDeserializeClass.parse(res.getBody());
+            List<TripLogDeserializeClass.Trips> listTrips = tripLog.trips;
             Datetime MaxTime;
             Boolean CheckHomeTrip = false;
             String BiWeekId;
@@ -51,8 +51,8 @@ global class GetTripCallout {
             Date minTripdate;
             Date maxtripdate;
             Map<String, Id> biWeeklyReimMap = new Map<String, Id>();
-            if(checkByWeek == true && biWeekReimId == null) {
-                for(TripLogJSONClass.Trips lt : listTrips) 
+            if(checkByWeek) {
+                for(TripLogDeserializeClass.Trips lt : listTrips) 
                 {
                     if(!CheckNull(lt.startTime)) {
                         Date tripDate = Date.valueof(lt.startTime.split('T')[0]);
@@ -71,7 +71,7 @@ global class GetTripCallout {
                 biWeeklyReimMap = BiWeeklyWrapperUtils.getBiweeklyReimMap (contactId, minTripDate, maxTripDate, false);
             }
             /**** Create Employee Mileage Record ****/
-            for(TripLogJSONClass.Trips lt : listTrips) 
+            for(TripLogDeserializeClass.Trips lt : listTrips) 
             {   
                 Employee_Mileage__c emp = new Employee_Mileage__c();
                 emp.Name = 'EMP-' + empMilName + index;
@@ -101,40 +101,36 @@ global class GetTripCallout {
                 emp.Maintenance_and_Tires__c = !CheckNull(maintenansAndTires) ? Decimal.valueof(maintenansAndTires) : null;
 
                 
-                if(lt.fromLocation != null && lt.fromLocation.display != null ) {
-                    emp.FromLocationId__c = lt.fromLocation.id;
-                    emp.Trip_Origin__c = lt.fromLocation.display;
-                    if(lt.fromLocation.display.contains(',')) {
-                        emp.Origin_Name__c = (lt.fromLocation.display.split(','))[0];  
-                    } else if(lt.fromLocation.display.contains(' ')) {
-                        emp.Origin_Name__c = (lt.fromLocation.display.split(' '))[0];
-                    } else {
-                        emp.Origin_Name__c =  lt.fromLocation.display;
+                TripLogDeserializeClass.FromLocation fromLocationOfTrip = lt.fromLocation;
+                if(fromLocationOfTrip != null && fromLocationOfTrip.id != null ) {
+                    emp.FromLocationId__c = fromLocationOfTrip.id;                    
+                    if(fromLocationOfTrip.name != null) {
+                        emp.Origin_Name__c = String.valueOf(fromLocationOfTrip.name);  
+                    }
+                    if(fromLocationOfTrip.address != null) {
+                        emp.Trip_Origin__c = fromLocationOfTrip.address;
                     }
                 }
-                if(lt.toLocation != null && lt.toLocation.display != null) {
-                    emp.ToLocationId__c = lt.toLocation.id;
-                    emp.Trip_Destination__c = lt.toLocation.display;
-                    if(lt.toLocation.display.contains(',')) {
-                        emp.Destination_Name__c = (lt.toLocation.display.split(','))[0];  
-                    } else if(lt.toLocation.display.contains(' ')) {
-                        emp.Destination_Name__c = (lt.toLocation.display.split(' '))[0];
-                    } else {
-                        emp.Destination_Name__c =  lt.toLocation.display;
+                TripLogDeserializeClass.FromLocation toLocationOfTrip = lt.toLocation;
+                if(toLocationOfTrip != null && toLocationOfTrip.id != null ) {
+                    emp.ToLocationId__c = toLocationOfTrip.id;                    
+                    if(toLocationOfTrip.name != null) {
+                        emp.Destination_Name__c = String.valueOf(toLocationOfTrip.name);  
+                    }
+                    if(toLocationOfTrip.address != null) {
+                        emp.Trip_Destination__c = toLocationOfTrip.address;
                     }
                 }
 
-                emp.Notes__c = !CheckNull(lt.notes) ? lt.notes : null;
-                emp.Tracing_Style__c = !CheckNull(lt.trackingMethod) ? lt.trackingMethod : null;
-                emp.Tag__c = !CheckNull(lt.tags) ? lt.tags : null;
-                //EMC - 340 
-				// update stay  time 0 if last trip destination of the day is home and next day's first trips origin is home.
-                 emp.Stay_Time__c = !CheckNull(String.valueOf(lt.stayTimeMins)) ? lt.stayTimeMins : null;
-                if( MaxTime != null && emp.StartTime__c.day() > MaxTime.day() && !empList.isEmpty()){
-                    empList.get(empList.size()-1).Stay_Time__c = 0;
-                }
-               
+                emp.Notes__c = !CheckNull(String.valueOf(lt.notes)) ? String.valueOf(lt.notes) : null;	
+                emp.Tracing_Style__c = !CheckNull(String.valueOf(lt.trackingMethod)) ? String.valueOf(lt.trackingMethod) : null;	
+                emp.Tag__c = !CheckNull(String.valueOf(lt.tags)) ? String.valueOf(lt.tags) : null;	
+                emp.Stay_Time__c = !CheckNull(String.valueOf(lt.stayTimeMins)) ? lt.stayTimeMins : null;	
+                if( MaxTime != null && emp.StartTime__c.day() > MaxTime.day() && !empList.isEmpty()){	
+                    empList.get(empList.size()-1).Stay_Time__c = 0;	
+                }	
                 MaxTime = emp.EndTime__c;
+                
                 if(emp.Destination_Name__c != null && (emp.Destination_Name__c).toUppercase() == 'HOME'){
                    CheckHomeTrip = true;
                 }
