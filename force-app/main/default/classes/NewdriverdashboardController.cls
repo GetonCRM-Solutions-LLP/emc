@@ -107,10 +107,10 @@ global class NewdriverdashboardController {
              contactObj.insurance = reim.Contact_Id__r.Insurance__c != null ? reim.Contact_Id__r.Insurance__c : null;
              contactObj.biWeekContact = reim.Contact_Id__r.Biweek_Reimbursement__c != null ? reim.Contact_Id__r.Biweek_Reimbursement__c : false;
              if(reim.Month__c != null && reim.Month__c == lastMonth){
-                 contactObj.fixedAmount = String.valueof(reim.Fixed_Amount__c);
+                 contactObj.fixedAmount = String.valueof((reim.Fixed_Amount__c).setScale(2));
                  contactObj.variableRate = String.valueof(reim.Variable_Rate__c);
              } else if(checkReim == false){
-                 contactObj.fixedAmount = String.valueof(reim.Fixed_Amount__c);
+                 contactObj.fixedAmount = String.valueof((reim.Fixed_Amount__c).setScale(2));
                  contactObj.variableRate = String.valueof(reim.Variable_Rate__c);
                  checkReim = true;
              }
