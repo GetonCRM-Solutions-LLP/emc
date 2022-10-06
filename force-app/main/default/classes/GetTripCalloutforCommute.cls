@@ -152,7 +152,7 @@ global class GetTripCalloutforCommute {
                 }               
                 empList.add(emp);
                 trip_IDs.add(Integer.valueOf(lt.id));
-                totalmileages += Double.valueOf(emp.Mileage__c);    
+                totalmileages += !CheckNull(String.valueOf(emp.Mileage__c)) ? Double.valueof(emp.Mileage__c) : 0;    
                 index ++;                
             }
 

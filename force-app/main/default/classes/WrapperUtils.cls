@@ -649,7 +649,7 @@ public with sharing class WrapperUtils
         employeeReimbursement.variableRate  = ' $'+String.valueOf(currentEmployeeReimbursement.Total_Variable_Rate__c);
         employeeReimbursement.month  = getMonthName(currentEmployeeReimbursement.Month__c);
         employeeReimbursement.intmonth  = getMonthInteger(currentEmployeeReimbursement.Month__c);
-        employeeReimbursement.fuel  = String.valueOf(currentEmployeeReimbursement.Fuel_Price__c);       
+        employeeReimbursement.fuel  = String.valueOf(currentEmployeeReimbursement.Fuel_Price__c) != null ? String.valueOf((currentEmployeeReimbursement.Fuel_Price__c).setScale(2)) : null ;       
 
         /* EMC-260  START
         Description : Added a new field : Total_Approved__c,Total_Mileage__c, Total_Pending__c 
