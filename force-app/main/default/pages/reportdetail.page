@@ -885,6 +885,12 @@
                     loaddatepicker(selectedDate);
                 }
 
+                if($scope.report.Date_Fields__c){
+                    if ($scope.report.Date_Fields__c.includes("Activation_Date__c")) {
+                        $scope.sort("ActivationDate");
+                    } 
+                }
+               
                 // Concur Sync -->
                 $scope.submitExpense = function(){
                     $('#spinner').show();
