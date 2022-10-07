@@ -102,16 +102,17 @@ public class TripLogDeserializeClass {
         public String activity {get;set;} 
         public Double parking {get;set;} 
         public Double toll {get;set;} 
-        public String tags {get;set;} 
-        public String notes {get;set;} 
+        public Object tags {get;set;} 
+        public Object notes {get;set;} 
         public String status {get;set;} 
         public String statusUpdateTime {get;set;} 
-        public String statusUpdatedBy {get;set;} 
-        public String polyline {get;set;} 
+        public User statusUpdatedBy {get;set;} 
+        public Object polyline {get;set;} 
         public String route {get;set;} 
         public String receipts {get;set;} 
         public String map_Z {get;set;} // in json: map
         public String trackingMethod {get;set;} 
+        public String updateMethod {get;set;} 
         public Integer stayTimeMins {get;set;} 
 
         public Trips(JSONParser parser) {
@@ -150,17 +151,17 @@ public class TripLogDeserializeClass {
                         } else if (text == 'toll') {
                             toll = parser.getDoubleValue();
                         } else if (text == 'tags') {
-                            tags = parser.getText();
+                            tags = parser.readValueAs(Object.class);
                         } else if (text == 'notes') {
-                            notes = parser.getText();
+                            notes = parser.readValueAs(Object.class);
                         } else if (text == 'status') {
                             status = parser.getText();
                         } else if (text == 'statusUpdateTime') {
                             statusUpdateTime = parser.getText();
                         } else if (text == 'statusUpdatedBy') {
-                            statusUpdatedBy = parser.getText();
+                            statusUpdatedBy = new User(parser);
                         } else if (text == 'polyline') {
-                            polyline = parser.getText();
+                            polyline = parser.readValueAs(Object.class);
                         } else if (text == 'route') {
                             route = parser.getText();
                         } else if (text == 'receipts') {
@@ -169,6 +170,8 @@ public class TripLogDeserializeClass {
                             map_Z = parser.getText();
                         } else if (text == 'trackingMethod') {
                             trackingMethod = parser.getText();
+                        } else if (text == 'updateMethod') {
+                            updateMethod = parser.getText();
                         } else if (text == 'stayTimeMins') {
                             stayTimeMins = parser.getIntegerValue();
                         } else {
@@ -215,42 +218,6 @@ public class TripLogDeserializeClass {
             }
         }
     }
-    
-    public class ToLocation {
-        public Integer id {get;set;} 
-        public String url {get;set;} 
-        public String lastUpdated {get;set;} 
-        public String display {get;set;} 
-        public String name {get;set;} 
-        public String address {get;set;} 
-
-        public ToLocation(JSONParser parser) {
-            while (parser.nextToken() != System.JSONToken.END_OBJECT) {
-                if (parser.getCurrentToken() == System.JSONToken.FIELD_NAME) {
-                    String text = parser.getText();
-                    if (parser.nextToken() != System.JSONToken.VALUE_NULL) {
-                        if (text == 'id') {
-                            id = parser.getIntegerValue();
-                        } else if (text == 'url') {
-                            url = parser.getText();
-                        } else if (text == 'lastUpdated') {
-                            lastUpdated = parser.getText();
-                        } else if (text == 'display') {
-                            display = parser.getText();
-                        } else if (text == 'name') {
-                            name = parser.getText();
-                        } else if (text == 'address') {
-                            address = parser.getText();
-                        } else {
-                            System.debug(LoggingLevel.WARN, 'ToLocation consuming unrecognized property: '+text);
-                            consumeObject(parser);
-                        }
-                    }
-                }
-            }
-        }
-    }
-    
     
     public static TripLogDeserializeClass parse(String json) {
         System.JSONParser parser = System.JSON.createParser(json);

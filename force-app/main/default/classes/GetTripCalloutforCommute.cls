@@ -73,11 +73,12 @@ global class GetTripCalloutforCommute {
 
             /**** Create Employee Mileage Record ****/
             for(TripLogDeserializeClass.Trips lt : listTrips) 
-            {   
+            {   System.debug('lt.id=='+lt);  
                 Employee_Mileage__c emp = new Employee_Mileage__c();
                 emp.Name = 'EMP-' + empMilName + index;
                 emp.Trip_Status__c = StaticValues.noApprovedYet;
                 emp.Trip_Id__c = lt.id;
+                System.debug('lt.id=='+lt.id);    
                 emp.Mileage__c = lt.mileage;
                 emp.EMP_Mileage__c = lt.mileage;
                 //AI-000408
@@ -149,7 +150,8 @@ global class GetTripCalloutforCommute {
                     emp.Bi_Weekly_Reimbursement__c = BiWeekId;
                 } else {
                     emp.Bi_Weekly_Reimbursement__c = checkByWeek ? getReimId(emp.Trip_Date__c, biWeeklyReimMap) : biWeeklyReimMap.values()[0];//BiWeeklyWrapperUtils.getBiweekReimId(contactid,emp.Trip_Date__c,checkByWeek);
-                }               
+                }     
+                System.debug('emp=='+emp);          
                 empList.add(emp);
                 trip_IDs.add(Integer.valueOf(lt.id));
                 totalmileages += !CheckNull(String.valueOf(emp.Mileage__c)) ? Double.valueof(emp.Mileage__c) : 0;    
@@ -162,10 +164,12 @@ global class GetTripCalloutforCommute {
                 if(objSendEmailToMe.Send_email_to_me__c && putCall == true){
                     GetTripCallout.putHTTP(apiToken, contactid, empReID, trip_IDs); 
                 }
-
-                Database.UpsertResult[] insertedTrips = Database.upsert(empList,Employee_Mileage__c.Fields.Trip_Id__c, false);
+                System.debug('empList=='+empList);
                 
+                Database.UpsertResult[] insertedTrips = Database.upsert(empList,Employee_Mileage__c.Fields.Trip_Id__c, true);
+                System.debug('insertedTrips=='+insertedTrips );
                 for(Database.UpsertResult srresult : insertedTrips) {
+                System.debug('srresult =='+srresult );
                     if(srresult.isSuccess())
                         successCount ++;
                 }
@@ -195,7 +199,7 @@ global class GetTripCalloutforCommute {
         if(!obj_Tripslog_list.isEmpty()) {
             insert obj_Tripslog_list;
             
-            if(!System.isBatch() ) {
+            if(!System.isBatch() && !Test.isRunningTest()) {
                 Database.executeBatch(new LoadMileageLocationBatch(new Set<Id>{ empReID }, true ),50);
             }
         }
