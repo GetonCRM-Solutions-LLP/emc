@@ -11,7 +11,7 @@ public class GetTripCalloutforCommmiteTripTest {
         SendEmail__c customSetting1 = TestDataFactory.sendEmailCustomSetting(true,'Send Email For Compliance');
         
         SendEmailToMe__c objSendEmailToMe = TestDataFactory.sendEmailToMeCustomSetting(true, 'GetTripCallOutApprovePutCall');
-       
+        daylight_saving_time_config__c customSetting2 =  TestDataFactory.dayLightCustomSetting(true,'2022',System.today(),System.today() + 60);        
         IRS_Mileage_Rate__c irs = TestDataFactory.createIRSRate(true,0);        
         UserRole userRole_1 = TestDataFactory.getUserRole();
         Profile profile_1 = TestDataFactory.getUserProfile();
@@ -86,7 +86,7 @@ public class GetTripCalloutforCommmiteTripTest {
         TrueDialog_Keys__c trueDialogCustom = TestDataFactory.createTrueDialog(true); 
 
         Vehicle_URL_Mapping__c veh = TestDataFactory.createVehicleData(true,0);        
-        
+        daylight_saving_time_config__c customSetting2 =  TestDataFactory.dayLightCustomSetting(true,'2022',System.today(),System.today() + 60);        
         SendEmail__c customSetting1 = TestDataFactory.sendEmailCustomSetting(true,'Send Email For Compliance');     
         IRS_Mileage_Rate__c irs = TestDataFactory.createIRSRate(true,0);      
         UserRole userRole_1 = TestDataFactory.getUserRole();
