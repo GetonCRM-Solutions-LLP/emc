@@ -27,6 +27,7 @@ export default class DataTableComponent extends LightningElement {
   // tz = TIME_ZONE;
   // ln = LOCALE;
   isRenderCallbackActionExecuted = true;
+  isPdf = false;
   isRowSplitterExcecuted = false;
   isPerPageActionExecuted = false;
   isClicked = false;
@@ -61,11 +62,11 @@ export default class DataTableComponent extends LightningElement {
     },
     {
       label: "From",
-      fieldName: "TripOrigin",
+      fieldName: "FromLocation",
     },
     {
       label: "To",
-      fieldName: "TripDestination",
+      fieldName: "ToLocation",
     },
     {
       label: "Notes",
@@ -805,9 +806,9 @@ export default class DataTableComponent extends LightningElement {
         if (header === "Driver") {
           keyName = "Name";
         } else if (header === "From") {
-          keyName = "TripOrigin";
+          keyName = "FromLocation";
         } else if (header === "To") {
-          keyName = "TripDestination";
+          keyName = "ToLocation";
         } else if (header === "Mileage") {
           keyName = "Mileage";
         } else if (header === "Date & Time") {
@@ -824,8 +825,8 @@ export default class DataTableComponent extends LightningElement {
         this.reverse = true;
         if (
           keyName === "Name" ||
-          keyName === "TripOrigin" ||
-          keyName === "TripDestination" ||
+          keyName === "FromLocation" ||
+          keyName === "ToLocation" ||
           keyName === "Tags" ||
           keyName === "Notes" || 
           keyName === "Activity"
@@ -978,8 +979,8 @@ export default class DataTableComponent extends LightningElement {
         this.reverse = false;
         if (
           keyName === "Name" ||
-          keyName === "TripOrigin" ||
-          keyName === "TripDestination" ||
+          keyName === "FromLocation" ||
+          keyName === "ToLocation" ||
           keyName === "Tags" ||
           keyName === "Notes" || 
           keyName === "Activity"
