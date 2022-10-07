@@ -33,6 +33,7 @@ public class GetTripCalloutforCommmiteTripTest {
             currentContact = TestDataFactory.createDriverContact(true, account.Id, 'Manager',  null, 'minkesh.patel', 1);
             currentContact[0].Vehicle_Type__c  = '2019 Mileage Rate';  
             currentContact[0].Role__c = 'Driver';  
+            currentContact[0].Time_Zone__c = 'US/Eastern';
             currentContact[0].Monthly_Reimbursement__c = true;
             update currentContact[0];
             
@@ -65,8 +66,8 @@ public class GetTripCalloutforCommmiteTripTest {
         emp3[0].EndTime__c = null;
         insert emp3;
         
-        priMin = '2016-12-01';
-        priMax = '2017-12-01';
+        priMin = '2021-12-01';
+        priMax = '2022-12-01';
         fuelPrice = '1.0';       
         mpg = String.valueof(er[0].MPG__c);
         mat = '1.0';
@@ -107,7 +108,8 @@ public class GetTripCalloutforCommmiteTripTest {
             
             currentContact = TestDataFactory.createDriverContact(true, account.Id, 'Manager',  null, 'minkesh.patel', 1);
             currentContact[0].Vehicle_Type__c  = '2019 Mileage Rate';  
-            currentContact[0].Role__c = 'Driver';  
+            currentContact[0].Role__c = 'Driver';
+            currentContact[0].Time_Zone__c = 'US/Eastern';  
             update currentContact[0];
             
             Contact contact_1 = new Contact(AccountId = account.Id, LastName = 'xgeek',External_Email__c='newmail@gmail.com');
@@ -123,8 +125,7 @@ public class GetTripCalloutforCommmiteTripTest {
         Set<Integer> tripSet = new Set<Integer>();
         tripSet.add(1242);
         //GetTripCallout.trip_IDs = tripSet;
-        GetTripCalloutforCommute.putHTTP(apiToken,currentContact[0].Id,er[0].Id,tripSet );
-        
+        GetTripCalloutforCommute.putHTTP(apiToken,currentContact[0].Id,er[0].Id,tripSet );        
         Test.stopTest();
     }
 }
