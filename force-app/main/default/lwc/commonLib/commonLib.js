@@ -57,10 +57,10 @@ const formatData = (data, pID, aID) => {
         if(pID === aID){
           rowData.ActualMileage = (row.EMP_Mileage__c === undefined) ? 0 : row.EMP_Mileage__c.toString();
         }
-        rowData.TripOrigin = row.Trip_Origin__c;
-        rowData.TripDestination = row.Trip_Destination__c;
-        if (row.Trip_Destination__c != undefined) {
-          let getState = validateState(row.Trip_Destination__c);
+        rowData.TripOrigin = row.Origin_Name__c;
+        rowData.TripDestination = row.Destination_Name__c;
+        if (row.Destination_Name__c != undefined) {
+          let getState = validateState(row.Destination_Name__c);
           rowData.State = getState.slice(0, 2);
         }
         rowData.TriplogMap = row.Triplog_Map__c;
