@@ -4,2269 +4,425 @@
 
 @IsTest
 public class TripLogDeserializeClass_Test {
-	
-	// This test method should give 100% coverage
-	static testMethod void testParse() {
-		String json = '{'+
-		'    \"message\": \"OK\",'+
-		'    \"trips\": ['+
-		'        {'+
-		'            \"id\": 2001602735,'+
-		'            \"url\": \"https://app.mburse.com/web/api/trips/2001602735\",'+
-		'            \"lastUpdated\": \"2022-08-31T12:25:00.882Z\",'+
-		'            \"user\": {'+
-		'                \"id\": 344649,'+
-		'                \"url\": \"https://app.mburse.com/web/api/users/344649\",'+
-		'                \"email\": \"c.santaliz@ermi-motion.com\",'+
-		'                \"display\": \"Santaliz, Ceasar\"'+
-		'            },'+
-		'            \"vehicle\": {'+
-		'                \"id\": 1053773,'+
-		'                \"url\": \"https://app.mburse.com/web/api/vehicles/1053773\",'+
-		'                \"lastUpdated\": \"2019-10-07T01:40:24.055Z\",'+
-		'                \"display\": \"2018 Dodge Ram 1500\"'+
-		'            },'+
-		'            \"startTime\": \"2022-08-31T10:33:00.000Z\",'+
-		'            \"endTime\": \"2022-08-31T12:19:00.000Z\",'+
-		'            \"startOdometer\": 249279,'+
-		'            \"endOdometer\": 249325,'+
-		'            \"mileage\": 45.7,'+
-		'            \"fromLocation\": {'+
-		'                \"id\": 144137381,'+
-		'                \"url\": \"https://app.mburse.com/web/api/locations/144137381\",'+
-		'                \"lastUpdated\": \"2022-09-07T13:03:33.877Z\",'+
-		'                \"display\": \"1816 Woodbury Road, Orlando, FL 32828\",'+
-		'                \"name\": null,'+
-		'                \"address\": \"1816 Woodbury Road, Orlando, FL 32828\"'+
-		'            },'+
-		'            \"toLocation\": {'+
-		'                \"id\": 136403115,'+
-		'                \"url\": \"https://app.mburse.com/web/api/locations/136403115\",'+
-		'                \"lastUpdated\": \"2022-08-12T13:12:31.416Z\",'+
-		'                \"display\": \"12914 E Colonial Dr, Orlando, FL 32826\",'+
-		'                \"name\": null,'+
-		'                \"address\": \"12914 E Colonial Dr, Orlando, FL 32826\"'+
-		'            },'+
-		'            \"activity\": \"Business\",'+
-		'            \"parking\": 0.0,'+
-		'            \"toll\": 0.0,'+
-		'            \"tags\": null,'+
-		'            \"notes\": null,'+
-		'            \"status\": \"Not Submitted\",'+
-		'            \"statusUpdateTime\": null,'+
-		'            \"statusUpdatedBy\": null,'+
-		'            \"polyline\": \"w{_mDbdxoN`MjW`Dd[Fb\\\\Ov\\\\Lp\\\\tGlYfT|SjSvPlTpPhQjP|U`SzQxQzQlTxQ`UbPzSbNjRlQzVbOpQ`N~OlOfRpMnQxE`OkHvJyD|@gHP{FnB@|Hk@fCkGDyAA_DBs@pCt@bB_AzAjBzEnAK\\\\{@dAcAG_Au@gAIxDmDp@NoDGcCYcAJa@vDyAvIOx@CSLlAkHUeKoAoIy@}@}EmIeGaMr@eDbMx@jLYtEc@|@kDcKaLeNaM}LuNcT}V{NgTqOuR_NuQ_MuPoN_QcSgRyTeQkS}OkSwQ{NsLiMoKaIwHyEmNiBwJU_M@wH?yLDyNA}R[yOm@{O}EaTkLeRuKkRqUsQoR_BsWOeUoBsR{EcN_OmGcWkEmWYm[Ew[wC{\\\\y@yXCsZDmZQkYPaa@EaYW_a@aDgTOgQVmML}L@yLD}KJiHq@{A~Is@vMLfG_@bAa@n@qHNmJlA_C~Dk@F{HOw@BwJPrCVfEvJj@u@]u@?kEj@a@c@aAjBaAfHwDh@mDMcEk@cBq@wCKeBXcFQ{Fh@y@}B@mR[g[UyWgCqg@gd@{qAoFq`@Jga@Gad@CoYFu_@j@q[QgPRoCI{B?uAByC@iCWo@TiFQsAOsSn@gCWuASaHaAoH|@uADeBEeHFgIaAkXqA}Y}CgZqC}^aE{Y}DgXaDsYqQqNeVKaXYyLq@DJaAf@BhMIrGB@nKvAfApBzAtB]zA}Ab@oBY@oCKkB?l@FxDt@n@nBOtA_By@eAs@kBfAaB~De@mGRmK?o@gCRcSF{M?aGhAq@A{A\",'+
-		'            \"route\": \"https://app.mburse.com/web/api/trips/2001602735/routes\",'+
-		'            \"receipts\": \"https://app.mburse.com/web/api/trips/2001602735/receipts\",'+
-		'            \"map\": \"https://app.mburse.com/web/kml/embed/fzja3p3x2.kml\",'+
-		'            \"trackingMethod\": \"MagicTrip\"'+
-		'        },'+
-		'        {'+
-		'            \"id\": 2001603104,'+
-		'            \"url\": \"https://app.mburse.com/web/api/trips/2001603104\",'+
-		'            \"lastUpdated\": \"2022-08-31T12:43:33.681Z\",'+
-		'            \"user\": {'+
-		'                \"id\": 344649,'+
-		'                \"url\": \"https://app.mburse.com/web/api/users/344649\",'+
-		'                \"email\": \"c.santaliz@ermi-motion.com\",'+
-		'                \"display\": \"Santaliz, Ceasar\"'+
-		'            },'+
-		'            \"vehicle\": {'+
-		'                \"id\": 1053773,'+
-		'                \"url\": \"https://app.mburse.com/web/api/vehicles/1053773\",'+
-		'                \"lastUpdated\": \"2019-10-07T01:40:24.055Z\",'+
-		'                \"display\": \"2018 Dodge Ram 1500\"'+
-		'            },'+
-		'            \"startTime\": \"2022-08-31T12:32:00.000Z\",'+
-		'            \"endTime\": \"2022-08-31T12:38:00.000Z\",'+
-		'            \"startOdometer\": 249325,'+
-		'            \"endOdometer\": 249326,'+
-		'            \"mileage\": 0.9,'+
-		'            \"fromLocation\": {'+
-		'                \"id\": 136403115,'+
-		'                \"url\": \"https://app.mburse.com/web/api/locations/136403115\",'+
-		'                \"lastUpdated\": \"2022-08-12T13:12:31.416Z\",'+
-		'                \"display\": \"12914 E Colonial Dr, Orlando, FL 32826\",'+
-		'                \"name\": null,'+
-		'                \"address\": \"12914 E Colonial Dr, Orlando, FL 32826\"'+
-		'            },'+
-		'            \"toLocation\": {'+
-		'                \"id\": 144137381,'+
-		'                \"url\": \"https://app.mburse.com/web/api/locations/144137381\",'+
-		'                \"lastUpdated\": \"2022-09-07T13:03:33.877Z\",'+
-		'                \"display\": \"1816 Woodbury Road, Orlando, FL 32828\",'+
-		'                \"name\": null,'+
-		'                \"address\": \"1816 Woodbury Road, Orlando, FL 32828\"'+
-		'            },'+
-		'            \"activity\": \"Business\",'+
-		'            \"parking\": 0.0,'+
-		'            \"toll\": 0.0,'+
-		'            \"tags\": null,'+
-		'            \"notes\": null,'+
-		'            \"status\": \"Not Submitted\",'+
-		'            \"statusUpdateTime\": null,'+
-		'            \"statusUpdatedBy\": null,'+
-		'            \"polyline\": \"ubjmDfzonNaAxBBpYKfKAt@LtBvJj@lAzAnBpBIr@}A`B_Ba@_@uBQwB\",'+
-		'            \"route\": \"https://app.mburse.com/web/api/trips/2001603104/routes\",'+
-		'            \"receipts\": \"https://app.mburse.com/web/api/trips/2001603104/receipts\",'+
-		'            \"map\": \"https://app.mburse.com/web/kml/embed/e8uaep3x8.kml\",'+
-		'            \"trackingMethod\": \"MagicTrip\",'+
-		'            \"stayTimeMins\": 13'+
-		'        },'+
-		'        {'+
-		'            \"id\": 2001603326,'+
-		'            \"url\": \"https://app.mburse.com/web/api/trips/2001603326\",'+
-		'            \"lastUpdated\": \"2022-08-31T13:17:21.945Z\",'+
-		'            \"user\": {'+
-		'                \"id\": 344649,'+
-		'                \"url\": \"https://app.mburse.com/web/api/users/344649\",'+
-		'                \"email\": \"c.santaliz@ermi-motion.com\",'+
-		'                \"display\": \"Santaliz, Ceasar\"'+
-		'            },'+
-		'            \"vehicle\": {'+
-		'                \"id\": 1053773,'+
-		'                \"url\": \"https://app.mburse.com/web/api/vehicles/1053773\",'+
-		'                \"lastUpdated\": \"2019-10-07T01:40:24.055Z\",'+
-		'                \"display\": \"2018 Dodge Ram 1500\"'+
-		'            },'+
-		'            \"startTime\": \"2022-08-31T12:38:00.000Z\",'+
-		'            \"endTime\": \"2022-08-31T13:17:00.000Z\",'+
-		'            \"startOdometer\": 249326,'+
-		'            \"endOdometer\": 249326,'+
-		'            \"mileage\": 0.0,'+
-		'            \"fromLocation\": {'+
-		'                \"id\": 144137381,'+
-		'                \"url\": \"https://app.mburse.com/web/api/locations/144137381\",'+
-		'                \"lastUpdated\": \"2022-09-07T13:03:33.877Z\",'+
-		'                \"display\": \"1816 Woodbury Road, Orlando, FL 32828\",'+
-		'                \"name\": null,'+
-		'                \"address\": \"1816 Woodbury Road, Orlando, FL 32828\"'+
-		'            },'+
-		'            \"toLocation\": {'+
-		'                \"id\": 144137381,'+
-		'                \"url\": \"https://app.mburse.com/web/api/locations/144137381\",'+
-		'                \"lastUpdated\": \"2022-09-07T13:03:33.877Z\",'+
-		'                \"display\": \"1816 Woodbury Road, Orlando, FL 32828\",'+
-		'                \"name\": null,'+
-		'                \"address\": \"1816 Woodbury Road, Orlando, FL 32828\"'+
-		'            },'+
-		'            \"activity\": \"Business\",'+
-		'            \"parking\": 0.0,'+
-		'            \"toll\": 0.0,'+
-		'            \"tags\": \"Clean devices \",'+
-		'            \"notes\": \"\",'+
-		'            \"status\": \"Not Submitted\",'+
-		'            \"statusUpdateTime\": null,'+
-		'            \"statusUpdatedBy\": null,'+
-		'            \"polyline\": null,'+
-		'            \"route\": \"https://app.mburse.com/web/api/trips/2001603326/routes\",'+
-		'            \"receipts\": \"https://app.mburse.com/web/api/trips/2001603326/receipts\",'+
-		'            \"map\": \"https://app.mburse.com/web/kml/embed/4e0bfp3x1.kml\",'+
-		'            \"trackingMethod\": \"App Manual Entry\",'+
-		'            \"stayTimeMins\": 0'+
-		'        },'+
-		'        {'+
-		'            \"id\": 2001603333,'+
-		'            \"url\": \"https://app.mburse.com/web/api/trips/2001603333\",'+
-		'            \"lastUpdated\": \"2022-08-31T14:12:01.067Z\",'+
-		'            \"user\": {'+
-		'                \"id\": 344649,'+
-		'                \"url\": \"https://app.mburse.com/web/api/users/344649\",'+
-		'                \"email\": \"c.santaliz@ermi-motion.com\",'+
-		'                \"display\": \"Santaliz, Ceasar\"'+
-		'            },'+
-		'            \"vehicle\": {'+
-		'                \"id\": 1053773,'+
-		'                \"url\": \"https://app.mburse.com/web/api/vehicles/1053773\",'+
-		'                \"lastUpdated\": \"2019-10-07T01:40:24.055Z\",'+
-		'                \"display\": \"2018 Dodge Ram 1500\"'+
-		'            },'+
-		'            \"startTime\": \"2022-08-31T13:17:00.000Z\",'+
-		'            \"endTime\": \"2022-08-31T14:06:00.000Z\",'+
-		'            \"startOdometer\": 249326,'+
-		'            \"endOdometer\": 249355,'+
-		'            \"mileage\": 28.8,'+
-		'            \"fromLocation\": {'+
-		'                \"id\": 144137381,'+
-		'                \"url\": \"https://app.mburse.com/web/api/locations/144137381\",'+
-		'                \"lastUpdated\": \"2022-09-07T13:03:33.877Z\",'+
-		'                \"display\": \"1816 Woodbury Road, Orlando, FL 32828\",'+
-		'                \"name\": null,'+
-		'                \"address\": \"1816 Woodbury Road, Orlando, FL 32828\"'+
-		'            },'+
-		'            \"toLocation\": {'+
-		'                \"id\": 512060974,'+
-		'                \"url\": \"https://app.mburse.com/web/api/locations/512060974\",'+
-		'                \"lastUpdated\": \"2022-09-06T17:29:30.493Z\",'+
-		'                \"display\": \"1225 Bennett Drive, Longwood, FL 32750\",'+
-		'                \"name\": null,'+
-		'                \"address\": \"1225 Bennett Drive, Longwood, FL 32750\"'+
-		'            },'+
-		'            \"activity\": \"Business\",'+
-		'            \"parking\": 0.0,'+
-		'            \"toll\": 0.0,'+
-		'            \"tags\": null,'+
-		'            \"notes\": null,'+
-		'            \"status\": \"Not Submitted\",'+
-		'            \"statusUpdateTime\": null,'+
-		'            \"statusUpdatedBy\": null,'+
-		'            \"polyline\": \"i{imDdoqnNLbErFOF}AcAUYgDr@_@|DYuH@kHRMG{BrCeAdO}@zR}@jQoAdOkAfCmIL}HCsAmAw@QyATq@_@u@Ig@tA|BBXn@sBG_EjA`@oAhOt@hNBzCXSw@DT`I[lPoAnGEjHGvIIdBAxMu@rGqChF{CbJaDbIpRxC`XlBr]fB|\\\\b@v^Mba@d@t^Kt^k@d]@~_@Dz^X|b@An]lCp\\\\lKp\\\\hMp[~Kf^|Bp]Drb@Gb[d@j]@~^}@t\\\\a@nVhBbZrDbZTdZKvVFnX\\\\nYQ~[BlXJbZfDtZ^z\\\\TfUl@tT`EhTgBdPyNnBaSj@uS^oT\\\\eSY}SmCgUwEkQeMgS{KsRgCmV^mWe@sX_CsXnAkVtGyOjNyNbRsP`P_RlG_XVkUTwUIcVM_^Po[Te[f@aYxCuZDeZ~@c\\\\nAi[\\\\a\\\\Do[DeYHw[E{YE_XJc[F{XCmWc@aHScBe@sBqEf@k@yEqG{HoPmJwRkHqRuAmUVuA?_H@_TRmRg@kWPkPJmSh@aG~MWrOAbIjEzDuDrJeD|AlA\",'+
-		'            \"route\": \"https://app.mburse.com/web/api/trips/2001603333/routes\",'+
-		'            \"receipts\": \"https://app.mburse.com/web/api/trips/2001603333/receipts\",'+
-		'            \"map\": \"https://app.mburse.com/web/kml/embed/7l0bap3x5.kml\",'+
-		'            \"trackingMethod\": \"MagicTrip\",'+
-		'            \"stayTimeMins\": 0'+
-		'        },'+
-		'        {'+
-		'            \"id\": 2001603651,'+
-		'            \"url\": \"https://app.mburse.com/web/api/trips/2001603651\",'+
-		'            \"lastUpdated\": \"2022-08-31T14:20:50.447Z\",'+
-		'            \"user\": {'+
-		'                \"id\": 344649,'+
-		'                \"url\": \"https://app.mburse.com/web/api/users/344649\",'+
-		'                \"email\": \"c.santaliz@ermi-motion.com\",'+
-		'                \"display\": \"Santaliz, Ceasar\"'+
-		'            },'+
-		'            \"vehicle\": {'+
-		'                \"id\": 1053773,'+
-		'                \"url\": \"https://app.mburse.com/web/api/vehicles/1053773\",'+
-		'                \"lastUpdated\": \"2019-10-07T01:40:24.055Z\",'+
-		'                \"display\": \"2018 Dodge Ram 1500\"'+
-		'            },'+
-		'            \"startTime\": \"2022-08-31T14:06:00.000Z\",'+
-		'            \"endTime\": \"2022-08-31T14:20:00.000Z\",'+
-		'            \"startOdometer\": 249355,'+
-		'            \"endOdometer\": 249355,'+
-		'            \"mileage\": 0.0,'+
-		'            \"fromLocation\": {'+
-		'                \"id\": 512060974,'+
-		'                \"url\": \"https://app.mburse.com/web/api/locations/512060974\",'+
-		'                \"lastUpdated\": \"2022-09-06T17:29:30.493Z\",'+
-		'                \"display\": \"1225 Bennett Drive, Longwood, FL 32750\",'+
-		'                \"name\": null,'+
-		'                \"address\": \"1225 Bennett Drive, Longwood, FL 32750\"'+
-		'            },'+
-		'            \"toLocation\": {'+
-		'                \"id\": 512060974,'+
-		'                \"url\": \"https://app.mburse.com/web/api/locations/512060974\",'+
-		'                \"lastUpdated\": \"2022-09-06T17:29:30.493Z\",'+
-		'                \"display\": \"1225 Bennett Drive, Longwood, FL 32750\",'+
-		'                \"name\": null,'+
-		'                \"address\": \"1225 Bennett Drive, Longwood, FL 32750\"'+
-		'            },'+
-		'            \"activity\": \"Business\",'+
-		'            \"parking\": 0.0,'+
-		'            \"toll\": 0.0,'+
-		'            \"tags\": \"DC\",'+
-		'            \"notes\": \"\",'+
-		'            \"status\": \"Not Submitted\",'+
-		'            \"statusUpdateTime\": null,'+
-		'            \"statusUpdatedBy\": null,'+
-		'            \"polyline\": null,'+
-		'            \"route\": \"https://app.mburse.com/web/api/trips/2001603651/routes\",'+
-		'            \"receipts\": \"https://app.mburse.com/web/api/trips/2001603651/receipts\",'+
-		'            \"map\": \"https://app.mburse.com/web/kml/embed/7f9b2p3xa.kml\",'+
-		'            \"trackingMethod\": \"App Manual Entry\",'+
-		'            \"stayTimeMins\": 0'+
-		'        },'+
-		'        {'+
-		'            \"id\": 2001603657,'+
-		'            \"url\": \"https://app.mburse.com/web/api/trips/2001603657\",'+
-		'            \"lastUpdated\": \"2022-08-31T15:37:07.180Z\",'+
-		'            \"user\": {'+
-		'                \"id\": 344649,'+
-		'                \"url\": \"https://app.mburse.com/web/api/users/344649\",'+
-		'                \"email\": \"c.santaliz@ermi-motion.com\",'+
-		'                \"display\": \"Santaliz, Ceasar\"'+
-		'            },'+
-		'            \"vehicle\": {'+
-		'                \"id\": 1053773,'+
-		'                \"url\": \"https://app.mburse.com/web/api/vehicles/1053773\",'+
-		'                \"lastUpdated\": \"2019-10-07T01:40:24.055Z\",'+
-		'                \"display\": \"2018 Dodge Ram 1500\"'+
-		'            },'+
-		'            \"startTime\": \"2022-08-31T14:21:00.000Z\",'+
-		'            \"endTime\": \"2022-08-31T15:32:00.000Z\",'+
-		'            \"startOdometer\": 249355,'+
-		'            \"endOdometer\": 249404,'+
-		'            \"mileage\": 49.3,'+
-		'            \"fromLocation\": {'+
-		'                \"id\": 512060974,'+
-		'                \"url\": \"https://app.mburse.com/web/api/locations/512060974\",'+
-		'                \"lastUpdated\": \"2022-09-06T17:29:30.493Z\",'+
-		'                \"display\": \"1225 Bennett Drive, Longwood, FL 32750\",'+
-		'                \"name\": null,'+
-		'                \"address\": \"1225 Bennett Drive, Longwood, FL 32750\"'+
-		'            },'+
-		'            \"toLocation\": {'+
-		'                \"id\": 512069388,'+
-		'                \"url\": \"https://app.mburse.com/web/api/locations/512069388\",'+
-		'                \"lastUpdated\": \"2022-08-31T15:48:10.989Z\",'+
-		'                \"display\": \"703 Lucaya Dr, Poinciana, FL 34758\",'+
-		'                \"name\": null,'+
-		'                \"address\": \"703 Lucaya Dr, Poinciana, FL 34758\"'+
-		'            },'+
-		'            \"activity\": \"Business\",'+
-		'            \"parking\": 0.0,'+
-		'            \"toll\": 0.0,'+
-		'            \"tags\": null,'+
-		'            \"notes\": null,'+
-		'            \"status\": \"Not Submitted\",'+
-		'            \"statusUpdateTime\": null,'+
-		'            \"statusUpdatedBy\": null,'+
-		'            \"polyline\": \"k`bnDhepoNBsAjTW`E\\\\FbOCjS}BzO?nGD|M?jQBhO@jOlAvEvLB~N@nMDhLJ|NPjI`@PFx@|K|@zQAnR_ElMyMjGa@rLEBFn@rLh@fXMdZKvY@vY@pYCxYk@vYyAvYeAtY\\\\lYgDtYs@pYE`ZErYDrYK~YUhYuAhVqMrQ}ThRuSbX{HxYw@fYfCtYXtY\\\\pWnJrUbOpXtGlYnC|ZE`Z_@vYr@~WpHnWxJtYbArYE~XrEzRvRnO`WbKnYbAh]Dd]@h]jBr\\\\|MbXbTfQhTlQdTrQfTpQfTpQ~QbTjQjUfQ~T~PlUtPzUnQzTxQlTpQzTfQbU|PhUnVdMrYh@vYDvYA|YCxYBxYCvYA~YAxYExYBlV~GjS`QrSpQjTdRnTfR|UrStTpRxSpQbTvQ~OtOvFnG|CxAxNeBlRkBdQqBtPwBbQsC~QqJfMeKz@s@fBwAlLoJ`NkM~M}LxNaMdPwMrMiKxEgAhDjD~@h@vJbE`CdQvMbDtJWRAhDBnMArOEvOrBhSSnSmAtMqK~CuDnJ}KhLuMfMkNpRcHjIgBBAdKyBxPoDzSmEhUaFzUeFrU_FhVyBrUpDxRvMfMhTvKhUxLnThUfFrVEpMClNVjRhDfTzAdUI`VGpTOdS@~SAbTMjOqIrDgC@@zCsBbMcJ~MqKdQkFzS}F~SmItX}DvYAtTaJ`M}QbO{MvQsJ|MgLtJePlKgQ~OeOrPoN|PaK`SwKvQwJpPiEjS]dTmClPoJnLmKpGiJpGM~M`GvEbCrC|A|G~J_@vNbB~Pt@fIXlDJr@_C|@_JlAuLL{LeAyMiCsEHeEhPaBbSy@`UeBlEgHCcIw@{GyCzBeEvDu@XeDu@aD`E}GnJcH~CrAMrA\",'+
-		'            \"route\": \"https://app.mburse.com/web/api/trips/2001603657/routes\",'+
-		'            \"receipts\": \"https://app.mburse.com/web/api/trips/2001603657/receipts\",'+
-		'            \"map\": \"https://app.mburse.com/web/kml/embed/fl9b9p3xd.kml\",'+
-		'            \"trackingMethod\": \"MagicTrip\",'+
-		'            \"stayTimeMins\": 1'+
-		'        },'+
-		'        {'+
-		'            \"id\": 2001604124,'+
-		'            \"url\": \"https://app.mburse.com/web/api/trips/2001604124\",'+
-		'            \"lastUpdated\": \"2022-08-31T15:48:10.994Z\",'+
-		'            \"user\": {'+
-		'                \"id\": 344649,'+
-		'                \"url\": \"https://app.mburse.com/web/api/users/344649\",'+
-		'                \"email\": \"c.santaliz@ermi-motion.com\",'+
-		'                \"display\": \"Santaliz, Ceasar\"'+
-		'            },'+
-		'            \"vehicle\": {'+
-		'                \"id\": 1053773,'+
-		'                \"url\": \"https://app.mburse.com/web/api/vehicles/1053773\",'+
-		'                \"lastUpdated\": \"2019-10-07T01:40:24.055Z\",'+
-		'                \"display\": \"2018 Dodge Ram 1500\"'+
-		'            },'+
-		'            \"startTime\": \"2022-08-31T15:32:00.000Z\",'+
-		'            \"endTime\": \"2022-08-31T15:47:00.000Z\",'+
-		'            \"startOdometer\": 249404,'+
-		'            \"endOdometer\": 249404,'+
-		'            \"mileage\": 0.0,'+
-		'            \"fromLocation\": {'+
-		'                \"id\": 512069388,'+
-		'                \"url\": \"https://app.mburse.com/web/api/locations/512069388\",'+
-		'                \"lastUpdated\": \"2022-08-31T15:48:10.989Z\",'+
-		'                \"display\": \"703 Lucaya Dr, Poinciana, FL 34758\",'+
-		'                \"name\": null,'+
-		'                \"address\": \"703 Lucaya Dr, Poinciana, FL 34758\"'+
-		'            },'+
-		'            \"toLocation\": {'+
-		'                \"id\": 512069388,'+
-		'                \"url\": \"https://app.mburse.com/web/api/locations/512069388\",'+
-		'                \"lastUpdated\": \"2022-08-31T15:48:10.989Z\",'+
-		'                \"display\": \"703 Lucaya Dr, Poinciana, FL 34758\",'+
-		'                \"name\": null,'+
-		'                \"address\": \"703 Lucaya Dr, Poinciana, FL 34758\"'+
-		'            },'+
-		'            \"activity\": \"Business\",'+
-		'            \"parking\": 0.0,'+
-		'            \"toll\": 0.0,'+
-		'            \"tags\": \"KF Adjustment \",'+
-		'            \"notes\": \"\",'+
-		'            \"status\": \"Not Submitted\",'+
-		'            \"statusUpdateTime\": null,'+
-		'            \"statusUpdatedBy\": null,'+
-		'            \"polyline\": null,'+
-		'            \"route\": \"https://app.mburse.com/web/api/trips/2001604124/routes\",'+
-		'            \"receipts\": \"https://app.mburse.com/web/api/trips/2001604124/receipts\",'+
-		'            \"map\": \"https://app.mburse.com/web/kml/embed/5kmbcp3x5.kml\",'+
-		'            \"trackingMethod\": \"App Manual Entry\",'+
-		'            \"stayTimeMins\": 0'+
-		'        },'+
-		'        {'+
-		'            \"id\": 2001604138,'+
-		'            \"url\": \"https://app.mburse.com/web/api/trips/2001604138\",'+
-		'            \"lastUpdated\": \"2022-08-31T16:43:36.454Z\",'+
-		'            \"user\": {'+
-		'                \"id\": 344649,'+
-		'                \"url\": \"https://app.mburse.com/web/api/users/344649\",'+
-		'                \"email\": \"c.santaliz@ermi-motion.com\",'+
-		'                \"display\": \"Santaliz, Ceasar\"'+
-		'            },'+
-		'            \"vehicle\": {'+
-		'                \"id\": 1053773,'+
-		'                \"url\": \"https://app.mburse.com/web/api/vehicles/1053773\",'+
-		'                \"lastUpdated\": \"2019-10-07T01:40:24.055Z\",'+
-		'                \"display\": \"2018 Dodge Ram 1500\"'+
-		'            },'+
-		'            \"startTime\": \"2022-08-31T15:48:00.000Z\",'+
-		'            \"endTime\": \"2022-08-31T16:38:00.000Z\",'+
-		'            \"startOdometer\": 249404,'+
-		'            \"endOdometer\": 249436,'+
-		'            \"mileage\": 32.2,'+
-		'            \"fromLocation\": {'+
-		'                \"id\": 512069388,'+
-		'                \"url\": \"https://app.mburse.com/web/api/locations/512069388\",'+
-		'                \"lastUpdated\": \"2022-08-31T15:48:10.989Z\",'+
-		'                \"display\": \"703 Lucaya Dr, Poinciana, FL 34758\",'+
-		'                \"name\": null,'+
-		'                \"address\": \"703 Lucaya Dr, Poinciana, FL 34758\"'+
-		'            },'+
-		'            \"toLocation\": {'+
-		'                \"id\": 512091210,'+
-		'                \"url\": \"https://app.mburse.com/web/api/locations/512091210\",'+
-		'                \"lastUpdated\": \"2022-08-31T16:56:25.376Z\",'+
-		'                \"display\": \"8990 Turkey Lake Rd, Orlando, FL 32819\",'+
-		'                \"name\": null,'+
-		'                \"address\": \"8990 Turkey Lake Rd, Orlando, FL 32819\"'+
-		'            },'+
-		'            \"activity\": \"Business\",'+
-		'            \"parking\": 0.0,'+
-		'            \"toll\": 0.0,'+
-		'            \"tags\": null,'+
-		'            \"notes\": null,'+
-		'            \"status\": \"Not Submitted\",'+
-		'            \"statusUpdateTime\": null,'+
-		'            \"statusUpdatedBy\": null,'+
-		'            \"polyline\": \"wuzjDfrdpNSqEkW~TwJfOwJjOqEfOzKpHfFrKwD~AwOfLeOxR}OnSgOxRkO~RwOzNsQhLeF~CqExDaKpN}BrWm@jTa@rGoKhBsUdGcXdIwXhBuXCcWIyVfAgS`LwKlUaGxWcGnWeG~WaGrW{F|VcG~WsFjUgDxNuFvVmDzPaB`FqFjMkIvMiG`K{@zA??}ArCoHfLsIvMkE`Mk@nByCrKqDtP{B|QgCpSgAbU?vTBlR?rMuApJgCjQjBbScB`S{GfRkF`SgEvSsGnUqJ|S{IjRwC|NuFzAqPaEyIgMcAaHA{Jr@sIN{AJcA^yJqAaHsKwGoOkMoQiPuPoOmPoOaPcOmP}OmOuNkPeOyQyPkQePiTyRwTsSoUgTuU_TyUmTeV}TsUaVoV{VsXiT_Y_WsXkW{XaWuXiWwXgW}WmU_WkTqVeT_WsTwVkTsW}TaXqUmXsUkVcT{UmS_RaPgScQwRsPoRqPwQ}O}Q}OuSqQoSiQiSaKiVw@{VBgYIuYAuZBwX?kWDeV@gTc@yJq@CCeAvH?v@?|@@xBApD?|@|Ht@lKsKv@}@~HcBpKJdAvCnF?bBRE`C_BZWl@\",'+
-		'            \"route\": \"https://app.mburse.com/web/api/trips/2001604138/routes\",'+
-		'            \"receipts\": \"https://app.mburse.com/web/api/trips/2001604138/receipts\",'+
-		'            \"map\": \"https://app.mburse.com/web/kml/embed/7ymb1p3x2.kml\",'+
-		'            \"trackingMethod\": \"MagicTrip\",'+
-		'            \"stayTimeMins\": 1'+
-		'        },'+
-		'        {'+
-		'            \"id\": 2001604530,'+
-		'            \"url\": \"https://app.mburse.com/web/api/trips/2001604530\",'+
-		'            \"lastUpdated\": \"2022-08-31T16:56:25.377Z\",'+
-		'            \"user\": {'+
-		'                \"id\": 344649,'+
-		'                \"url\": \"https://app.mburse.com/web/api/users/344649\",'+
-		'                \"email\": \"c.santaliz@ermi-motion.com\",'+
-		'                \"display\": \"Santaliz, Ceasar\"'+
-		'            },'+
-		'            \"vehicle\": {'+
-		'                \"id\": 1053773,'+
-		'                \"url\": \"https://app.mburse.com/web/api/vehicles/1053773\",'+
-		'                \"lastUpdated\": \"2019-10-07T01:40:24.055Z\",'+
-		'                \"display\": \"2018 Dodge Ram 1500\"'+
-		'            },'+
-		'            \"startTime\": \"2022-08-31T16:38:00.000Z\",'+
-		'            \"endTime\": \"2022-08-31T16:56:00.000Z\",'+
-		'            \"startOdometer\": 249436,'+
-		'            \"endOdometer\": 249436,'+
-		'            \"mileage\": 0.0,'+
-		'            \"fromLocation\": {'+
-		'                \"id\": 512091210,'+
-		'                \"url\": \"https://app.mburse.com/web/api/locations/512091210\",'+
-		'                \"lastUpdated\": \"2022-08-31T16:56:25.376Z\",'+
-		'                \"display\": \"8990 Turkey Lake Rd, Orlando, FL 32819\",'+
-		'                \"name\": null,'+
-		'                \"address\": \"8990 Turkey Lake Rd, Orlando, FL 32819\"'+
-		'            },'+
-		'            \"toLocation\": {'+
-		'                \"id\": 512091210,'+
-		'                \"url\": \"https://app.mburse.com/web/api/locations/512091210\",'+
-		'                \"lastUpdated\": \"2022-08-31T16:56:25.376Z\",'+
-		'                \"display\": \"8990 Turkey Lake Rd, Orlando, FL 32819\",'+
-		'                \"name\": null,'+
-		'                \"address\": \"8990 Turkey Lake Rd, Orlando, FL 32819\"'+
-		'            },'+
-		'            \"activity\": \"Business\",'+
-		'            \"parking\": 0.0,'+
-		'            \"toll\": 0.0,'+
-		'            \"tags\": \"\",'+
-		'            \"notes\": \"\",'+
-		'            \"status\": \"Not Submitted\",'+
-		'            \"statusUpdateTime\": null,'+
-		'            \"statusUpdatedBy\": null,'+
-		'            \"polyline\": null,'+
-		'            \"route\": \"https://app.mburse.com/web/api/trips/2001604530/routes\",'+
-		'            \"receipts\": \"https://app.mburse.com/web/api/trips/2001604530/receipts\",'+
-		'            \"map\": \"https://app.mburse.com/web/kml/embed/3uxb5p3xe.kml\",'+
-		'            \"trackingMethod\": \"App Manual Entry\",'+
-		'            \"stayTimeMins\": 0'+
-		'        },'+
-		'        {'+
-		'            \"id\": 2001604542,'+
-		'            \"url\": \"https://app.mburse.com/web/api/trips/2001604542\",'+
-		'            \"lastUpdated\": \"2022-08-31T17:10:09.652Z\",'+
-		'            \"user\": {'+
-		'                \"id\": 344649,'+
-		'                \"url\": \"https://app.mburse.com/web/api/users/344649\",'+
-		'                \"email\": \"c.santaliz@ermi-motion.com\",'+
-		'                \"display\": \"Santaliz, Ceasar\"'+
-		'            },'+
-		'            \"vehicle\": {'+
-		'                \"id\": 1053773,'+
-		'                \"url\": \"https://app.mburse.com/web/api/vehicles/1053773\",'+
-		'                \"lastUpdated\": \"2019-10-07T01:40:24.055Z\",'+
-		'                \"display\": \"2018 Dodge Ram 1500\"'+
-		'            },'+
-		'            \"startTime\": \"2022-08-31T16:57:00.000Z\",'+
-		'            \"endTime\": \"2022-08-31T17:05:00.000Z\",'+
-		'            \"startOdometer\": 249436,'+
-		'            \"endOdometer\": 249437,'+
-		'            \"mileage\": 1.1,'+
-		'            \"fromLocation\": {'+
-		'                \"id\": 512091210,'+
-		'                \"url\": \"https://app.mburse.com/web/api/locations/512091210\",'+
-		'                \"lastUpdated\": \"2022-08-31T16:56:25.376Z\",'+
-		'                \"display\": \"8990 Turkey Lake Rd, Orlando, FL 32819\",'+
-		'                \"name\": null,'+
-		'                \"address\": \"8990 Turkey Lake Rd, Orlando, FL 32819\"'+
-		'            },'+
-		'            \"toLocation\": {'+
-		'                \"id\": 512095868,'+
-		'                \"url\": \"https://app.mburse.com/web/api/locations/512095868\",'+
-		'                \"lastUpdated\": \"2022-08-31T17:48:33.184Z\",'+
-		'                \"display\": \"8031 Turkey Lake Rd, Orlando, FL 32819\",'+
-		'                \"name\": null,'+
-		'                \"address\": \"8031 Turkey Lake Rd, Orlando, FL 32819\"'+
-		'            },'+
-		'            \"activity\": \"Business\",'+
-		'            \"parking\": 0.0,'+
-		'            \"toll\": 0.0,'+
-		'            \"tags\": null,'+
-		'            \"notes\": null,'+
-		'            \"status\": \"Not Submitted\",'+
-		'            \"statusUpdateTime\": null,'+
-		'            \"statusUpdatedBy\": null,'+
-		'            \"polyline\": \"_|qlDhnhpNzBc@H_Iy@w@_NCaQhAyEzF_AyAu@mAmBhAiBU_Dp@IzC~@BpBKRxA?r@Pm@VwAzAJ\",'+
-		'            \"route\": \"https://app.mburse.com/web/api/trips/2001604542/routes\",'+
-		'            \"receipts\": \"https://app.mburse.com/web/api/trips/2001604542/receipts\",'+
-		'            \"map\": \"https://app.mburse.com/web/kml/embed/b6yb1p3x3.kml\",'+
-		'            \"trackingMethod\": \"MagicTrip\",'+
-		'            \"stayTimeMins\": 1'+
-		'        },'+
-		'        {'+
-		'            \"id\": 2001604868,'+
-		'            \"url\": \"https://app.mburse.com/web/api/trips/2001604868\",'+
-		'            \"lastUpdated\": \"2022-08-31T17:48:33.185Z\",'+
-		'            \"user\": {'+
-		'                \"id\": 344649,'+
-		'                \"url\": \"https://app.mburse.com/web/api/users/344649\",'+
-		'                \"email\": \"c.santaliz@ermi-motion.com\",'+
-		'                \"display\": \"Santaliz, Ceasar\"'+
-		'            },'+
-		'            \"vehicle\": {'+
-		'                \"id\": 1053773,'+
-		'                \"url\": \"https://app.mburse.com/web/api/vehicles/1053773\",'+
-		'                \"lastUpdated\": \"2019-10-07T01:40:24.055Z\",'+
-		'                \"display\": \"2018 Dodge Ram 1500\"'+
-		'            },'+
-		'            \"startTime\": \"2022-08-31T17:04:00.000Z\",'+
-		'            \"endTime\": \"2022-08-31T17:48:00.000Z\",'+
-		'            \"startOdometer\": 249437,'+
-		'            \"endOdometer\": 249437,'+
-		'            \"mileage\": 0.0,'+
-		'            \"fromLocation\": {'+
-		'                \"id\": 512095868,'+
-		'                \"url\": \"https://app.mburse.com/web/api/locations/512095868\",'+
-		'                \"lastUpdated\": \"2022-08-31T17:48:33.184Z\",'+
-		'                \"display\": \"8031 Turkey Lake Rd, Orlando, FL 32819\",'+
-		'                \"name\": null,'+
-		'                \"address\": \"8031 Turkey Lake Rd, Orlando, FL 32819\"'+
-		'            },'+
-		'            \"toLocation\": {'+
-		'                \"id\": 512095868,'+
-		'                \"url\": \"https://app.mburse.com/web/api/locations/512095868\",'+
-		'                \"lastUpdated\": \"2022-08-31T17:48:33.184Z\",'+
-		'                \"display\": \"8031 Turkey Lake Rd, Orlando, FL 32819\",'+
-		'                \"name\": null,'+
-		'                \"address\": \"8031 Turkey Lake Rd, Orlando, FL 32819\"'+
-		'            },'+
-		'            \"activity\": \"Business\",'+
-		'            \"parking\": 0.0,'+
-		'            \"toll\": 0.0,'+
-		'            \"tags\": \"Leslie\",'+
-		'            \"notes\": \"\",'+
-		'            \"status\": \"Not Submitted\",'+
-		'            \"statusUpdateTime\": null,'+
-		'            \"statusUpdatedBy\": null,'+
-		'            \"polyline\": null,'+
-		'            \"route\": \"https://app.mburse.com/web/api/trips/2001604868/routes\",'+
-		'            \"receipts\": \"https://app.mburse.com/web/api/trips/2001604868/receipts\",'+
-		'            \"map\": \"https://app.mburse.com/web/kml/embed/087c1p3xb.kml\",'+
-		'            \"trackingMethod\": \"App Manual Entry\",'+
-		'            \"stayTimeMins\": -1'+
-		'        },'+
-		'        {'+
-		'            \"id\": 2001604882,'+
-		'            \"url\": \"https://app.mburse.com/web/api/trips/2001604882\",'+
-		'            \"lastUpdated\": \"2022-08-31T19:00:27.224Z\",'+
-		'            \"user\": {'+
-		'                \"id\": 344649,'+
-		'                \"url\": \"https://app.mburse.com/web/api/users/344649\",'+
-		'                \"email\": \"c.santaliz@ermi-motion.com\",'+
-		'                \"display\": \"Santaliz, Ceasar\"'+
-		'            },'+
-		'            \"vehicle\": {'+
-		'                \"id\": 1053773,'+
-		'                \"url\": \"https://app.mburse.com/web/api/vehicles/1053773\",'+
-		'                \"lastUpdated\": \"2019-10-07T01:40:24.055Z\",'+
-		'                \"display\": \"2018 Dodge Ram 1500\"'+
-		'            },'+
-		'            \"startTime\": \"2022-08-31T17:49:00.000Z\",'+
-		'            \"endTime\": \"2022-08-31T18:55:00.000Z\",'+
-		'            \"startOdometer\": 249437,'+
-		'            \"endOdometer\": 249481,'+
-		'            \"mileage\": 43.8,'+
-		'            \"fromLocation\": {'+
-		'                \"id\": 512095868,'+
-		'                \"url\": \"https://app.mburse.com/web/api/locations/512095868\",'+
-		'                \"lastUpdated\": \"2022-08-31T17:48:33.184Z\",'+
-		'                \"display\": \"8031 Turkey Lake Rd, Orlando, FL 32819\",'+
-		'                \"name\": null,'+
-		'                \"address\": \"8031 Turkey Lake Rd, Orlando, FL 32819\"'+
-		'            },'+
-		'            \"toLocation\": {'+
-		'                \"id\": 512096102,'+
-		'                \"url\": \"https://app.mburse.com/web/api/locations/512096102\",'+
-		'                \"lastUpdated\": \"2022-08-31T19:15:12.009Z\",'+
-		'                \"display\": \"119 Big Sioux Dr, Poinciana, FL 34759\",'+
-		'                \"name\": null,'+
-		'                \"address\": \"119 Big Sioux Dr, Poinciana, FL 34759\"'+
-		'            },'+
-		'            \"activity\": \"Business\",'+
-		'            \"parking\": 0.0,'+
-		'            \"toll\": 0.0,'+
-		'            \"tags\": null,'+
-		'            \"notes\": null,'+
-		'            \"status\": \"Not Submitted\",'+
-		'            \"statusUpdateTime\": null,'+
-		'            \"statusUpdatedBy\": null,'+
-		'            \"polyline\": \"sfslD~khpNfDFmLlEcB?UECoFn@}FdQwBjVO~UKpVAjVAdVAbYKd[@d[CvYdEbStOxStQvTpRrTnRxTlRbSbQrSlQ`SxPnShQdSdQpSpQvSpQ|SxQvTlRrTjRjTfRpSnQhSdQhV`TdVdT`VpTnUfTjVbU~VrUjVvUbUnVjWlT`V|RzSpR`GlFxDpD|@t@lEdEfBdBtApA`DpCxErEnDbDvEjE`FnEpBlBjE`EbFtEnH~GfKrJ`KjJfMjL~PfP`QxOrLbLtJbJxKnJ`IvHxJzIpKxJbKnJtK~JjNnMzN`NhO|N~P~OfQzSxPjWlPvWjPrVhPjVxPlWjOdUhOhUpNlTbH~QcI`IyG}EUa@xEuG~MeHxAs@nE{BnNeHjNeHhOyHrPqIdRsI|L}BvF]vRCvU@pS?zS@`V?tV?dY?lR@`PC`FAzG?dRCrTAfUAlT?pTCjVCzS@~Ta@~SwBlWoEzWeCzVpDjWxFlVl@fFAfFAvAAr@@lB?z@?bJ?hBAlG@`K?bQ@bS|@hUjFtUdIlWhJ`XdJjZdHr[pDt[|CtSRvEY@B`Ek@xUyGzXcPtYgQpXqPzXmOnWmHdAe@CeBA_TBu[De\\\\D_H?OBsBpLWtSAjQ`ChSj@`Qg@RyK@}UB{VEaVGuYEm[Gg[CaZEgZEkSEuXAcZAmYUaZQuYCgZCoYEkYKsZRsYtHwVhNsPbOqQhIiVtGiYrKqTdLgR`CmVEaYKyRyJc@qNuCaM@yPp@sICdFkBwAaDoK`@{ArD|@G\",'+
-		'            \"route\": \"https://app.mburse.com/web/api/trips/2001604882/routes\",'+
-		'            \"receipts\": \"https://app.mburse.com/web/api/trips/2001604882/receipts\",'+
-		'            \"map\": \"https://app.mburse.com/web/kml/embed/fm7c6p3xb.kml\",'+
-		'            \"trackingMethod\": \"MagicTrip\",'+
-		'            \"stayTimeMins\": 1'+
-		'        },'+
-		'        {'+
-		'            \"id\": 2001605387,'+
-		'            \"url\": \"https://app.mburse.com/web/api/trips/2001605387\",'+
-		'            \"lastUpdated\": \"2022-08-31T19:15:12.025Z\",'+
-		'            \"user\": {'+
-		'                \"id\": 344649,'+
-		'                \"url\": \"https://app.mburse.com/web/api/users/344649\",'+
-		'                \"email\": \"c.santaliz@ermi-motion.com\",'+
-		'                \"display\": \"Santaliz, Ceasar\"'+
-		'            },'+
-		'            \"vehicle\": {'+
-		'                \"id\": 1053773,'+
-		'                \"url\": \"https://app.mburse.com/web/api/vehicles/1053773\",'+
-		'                \"lastUpdated\": \"2019-10-07T01:40:24.055Z\",'+
-		'                \"display\": \"2018 Dodge Ram 1500\"'+
-		'            },'+
-		'            \"startTime\": \"2022-08-31T18:55:00.000Z\",'+
-		'            \"endTime\": \"2022-08-31T19:15:00.000Z\",'+
-		'            \"startOdometer\": 249481,'+
-		'            \"endOdometer\": 249481,'+
-		'            \"mileage\": 0.0,'+
-		'            \"fromLocation\": {'+
-		'                \"id\": 512096102,'+
-		'                \"url\": \"https://app.mburse.com/web/api/locations/512096102\",'+
-		'                \"lastUpdated\": \"2022-08-31T19:15:12.009Z\",'+
-		'                \"display\": \"119 Big Sioux Dr, Poinciana, FL 34759\",'+
-		'                \"name\": null,'+
-		'                \"address\": \"119 Big Sioux Dr, Poinciana, FL 34759\"'+
-		'            },'+
-		'            \"toLocation\": {'+
-		'                \"id\": 512096102,'+
-		'                \"url\": \"https://app.mburse.com/web/api/locations/512096102\",'+
-		'                \"lastUpdated\": \"2022-08-31T19:15:12.009Z\",'+
-		'                \"display\": \"119 Big Sioux Dr, Poinciana, FL 34759\",'+
-		'                \"name\": null,'+
-		'                \"address\": \"119 Big Sioux Dr, Poinciana, FL 34759\"'+
-		'            },'+
-		'            \"activity\": \"Business\",'+
-		'            \"parking\": 0.0,'+
-		'            \"toll\": 0.0,'+
-		'            \"tags\": \"\",'+
-		'            \"notes\": \"\",'+
-		'            \"status\": \"Not Submitted\",'+
-		'            \"statusUpdateTime\": null,'+
-		'            \"statusUpdatedBy\": null,'+
-		'            \"polyline\": null,'+
-		'            \"route\": \"https://app.mburse.com/web/api/trips/2001605387/routes\",'+
-		'            \"receipts\": \"https://app.mburse.com/web/api/trips/2001605387/receipts\",'+
-		'            \"map\": \"https://app.mburse.com/web/kml/embed/8nlc0p3xe.kml\",'+
-		'            \"trackingMethod\": \"App Manual Entry\",'+
-		'            \"stayTimeMins\": 0'+
-		'        },'+
-		'        {'+
-		'            \"id\": 2001605397,'+
-		'            \"url\": \"https://app.mburse.com/web/api/trips/2001605397\",'+
-		'            \"lastUpdated\": \"2022-08-31T20:04:28.641Z\",'+
-		'            \"user\": {'+
-		'                \"id\": 344649,'+
-		'                \"url\": \"https://app.mburse.com/web/api/users/344649\",'+
-		'                \"email\": \"c.santaliz@ermi-motion.com\",'+
-		'                \"display\": \"Santaliz, Ceasar\"'+
-		'            },'+
-		'            \"vehicle\": {'+
-		'                \"id\": 1053773,'+
-		'                \"url\": \"https://app.mburse.com/web/api/vehicles/1053773\",'+
-		'                \"lastUpdated\": \"2019-10-07T01:40:24.055Z\",'+
-		'                \"display\": \"2018 Dodge Ram 1500\"'+
-		'            },'+
-		'            \"startTime\": \"2022-08-31T19:14:00.000Z\",'+
-		'            \"endTime\": \"2022-08-31T19:59:00.000Z\",'+
-		'            \"startOdometer\": 249481,'+
-		'            \"endOdometer\": 249505,'+
-		'            \"mileage\": 23.5,'+
-		'            \"fromLocation\": {'+
-		'                \"id\": 512096102,'+
-		'                \"url\": \"https://app.mburse.com/web/api/locations/512096102\",'+
-		'                \"lastUpdated\": \"2022-08-31T19:15:12.009Z\",'+
-		'                \"display\": \"119 Big Sioux Dr, Poinciana, FL 34759\",'+
-		'                \"name\": null,'+
-		'                \"address\": \"119 Big Sioux Dr, Poinciana, FL 34759\"'+
-		'            },'+
-		'            \"toLocation\": {'+
-		'                \"id\": 512096200,'+
-		'                \"url\": \"https://app.mburse.com/web/api/locations/512096200\",'+
-		'                \"lastUpdated\": \"2022-09-01T23:12:37.332Z\",'+
-		'                \"display\": \"3020 Alyssa Ln, Davenport, FL 33837\",'+
-		'                \"name\": null,'+
-		'                \"address\": \"3020 Alyssa Ln, Davenport, FL 33837\"'+
-		'            },'+
-		'            \"activity\": \"Business\",'+
-		'            \"parking\": 0.0,'+
-		'            \"toll\": 0.0,'+
-		'            \"tags\": null,'+
-		'            \"notes\": null,'+
-		'            \"status\": \"Not Submitted\",'+
-		'            \"statusUpdateTime\": null,'+
-		'            \"statusUpdatedBy\": null,'+
-		'            \"polyline\": \"gncjD~pmpNHaDhPt@wFrByA|AgL|BgPdF{MtD{AwNa@gHeQh@eXdA_Wh@{U{FcOkPiLeQeJcKoHtIiKpS}HzPgHhPaJtPeBr@Vd@jErPbEnQxBrJsBtAyR`GkXrI_RhGiU~DqU{GeI`DuQjJgNlI_JpTyCdEqE`EaEhFuI_@qL~E{MzKcPpDwStDyG`P{BnUiEzY|BjO|H|PzE|Io@VH^hBbIjBhRMlUF|PEpX@t[Fr[GnUJvXCfOPrAKnCmElB{PTaRBeSAaTDeVAcU[aS^{UIyTOcUGsTHuIzBoAfR}JGaK^wMGaFAuIb@iGUA~NTvJuw@uNqUiEkSgGmQmJiNsImNiGaNaH}Q}KcOsHwMiGUy@sEpK}FtTeHrWkShKyV\\\\uPnIo@nB?FoAnJsVhI_NjMLdXC|[BhUkBjX_J|U_J~S}OxOgJvOhAfS`AvPyJpIaH`ENf@yHbDs@nIdFnG`@}@fBgAaBwCXkAlBkCk@e@\",'+
-		'            \"route\": \"https://app.mburse.com/web/api/trips/2001605397/routes\",'+
-		'            \"receipts\": \"https://app.mburse.com/web/api/trips/2001605397/receipts\",'+
-		'            \"map\": \"https://app.mburse.com/web/kml/embed/exlc0p3xb.kml\",'+
-		'            \"trackingMethod\": \"MagicTrip\",'+
-		'            \"stayTimeMins\": -1'+
-		'        },'+
-		'        {'+
-		'            \"id\": 2001605978,'+
-		'            \"url\": \"https://app.mburse.com/web/api/trips/2001605978\",'+
-		'            \"lastUpdated\": \"2022-08-31T20:38:33.173Z\",'+
-		'            \"user\": {'+
-		'                \"id\": 344649,'+
-		'                \"url\": \"https://app.mburse.com/web/api/users/344649\",'+
-		'                \"email\": \"c.santaliz@ermi-motion.com\",'+
-		'                \"display\": \"Santaliz, Ceasar\"'+
-		'            },'+
-		'            \"vehicle\": {'+
-		'                \"id\": 1053773,'+
-		'                \"url\": \"https://app.mburse.com/web/api/vehicles/1053773\",'+
-		'                \"lastUpdated\": \"2019-10-07T01:40:24.055Z\",'+
-		'                \"display\": \"2018 Dodge Ram 1500\"'+
-		'            },'+
-		'            \"startTime\": \"2022-08-31T19:59:00.000Z\",'+
-		'            \"endTime\": \"2022-08-31T20:38:00.000Z\",'+
-		'            \"startOdometer\": 249505,'+
-		'            \"endOdometer\": 249505,'+
-		'            \"mileage\": 0.0,'+
-		'            \"fromLocation\": {'+
-		'                \"id\": 512096200,'+
-		'                \"url\": \"https://app.mburse.com/web/api/locations/512096200\",'+
-		'                \"lastUpdated\": \"2022-09-01T23:12:37.332Z\",'+
-		'                \"display\": \"3020 Alyssa Ln, Davenport, FL 33837\",'+
-		'                \"name\": null,'+
-		'                \"address\": \"3020 Alyssa Ln, Davenport, FL 33837\"'+
-		'            },'+
-		'            \"toLocation\": {'+
-		'                \"id\": 512096237,'+
-		'                \"url\": \"https://app.mburse.com/web/api/locations/512096237\",'+
-		'                \"lastUpdated\": \"2022-08-31T20:38:33.171Z\",'+
-		'                \"display\": \"5015 Christopher Cross, Four Corners, FL 33837\",'+
-		'                \"name\": null,'+
-		'                \"address\": \"5015 Christopher Cross, Four Corners, FL 33837\"'+
-		'            },'+
-		'            \"activity\": \"Business\",'+
-		'            \"parking\": 0.0,'+
-		'            \"toll\": 0.0,'+
-		'            \"tags\": \"KF Setup \",'+
-		'            \"notes\": \"\",'+
-		'            \"status\": \"Not Submitted\",'+
-		'            \"statusUpdateTime\": null,'+
-		'            \"statusUpdatedBy\": null,'+
-		'            \"polyline\": null,'+
-		'            \"route\": \"https://app.mburse.com/web/api/trips/2001605978/routes\",'+
-		'            \"receipts\": \"https://app.mburse.com/web/api/trips/2001605978/receipts\",'+
-		'            \"map\": \"https://app.mburse.com/web/kml/embed/a22dep3xd.kml\",'+
-		'            \"trackingMethod\": \"App Manual Entry\",'+
-		'            \"stayTimeMins\": 0'+
-		'        },'+
-		'        {'+
-		'            \"id\": 2001606246,'+
-		'            \"url\": \"https://app.mburse.com/web/api/trips/2001606246\",'+
-		'            \"lastUpdated\": \"2022-08-31T21:51:34.805Z\",'+
-		'            \"user\": {'+
-		'                \"id\": 344649,'+
-		'                \"url\": \"https://app.mburse.com/web/api/users/344649\",'+
-		'                \"email\": \"c.santaliz@ermi-motion.com\",'+
-		'                \"display\": \"Santaliz, Ceasar\"'+
-		'            },'+
-		'            \"vehicle\": {'+
-		'                \"id\": 1053773,'+
-		'                \"url\": \"https://app.mburse.com/web/api/vehicles/1053773\",'+
-		'                \"lastUpdated\": \"2019-10-07T01:40:24.055Z\",'+
-		'                \"display\": \"2018 Dodge Ram 1500\"'+
-		'            },'+
-		'            \"startTime\": \"2022-08-31T21:26:00.000Z\",'+
-		'            \"endTime\": \"2022-08-31T21:46:00.000Z\",'+
-		'            \"startOdometer\": 249505,'+
-		'            \"endOdometer\": 249509,'+
-		'            \"mileage\": 3.5,'+
-		'            \"fromLocation\": {'+
-		'                \"id\": 512096295,'+
-		'                \"url\": \"https://app.mburse.com/web/api/locations/512096295\",'+
-		'                \"lastUpdated\": \"2022-08-31T21:27:39.997Z\",'+
-		'                \"display\": \"12900 Challenger Pkwy, Orlando, FL 32826\",'+
-		'                \"name\": null,'+
-		'                \"address\": \"12900 Challenger Pkwy, Orlando, FL 32826\"'+
-		'            },'+
-		'            \"toLocation\": {'+
-		'                \"id\": 144137381,'+
-		'                \"url\": \"https://app.mburse.com/web/api/locations/144137381\",'+
-		'                \"lastUpdated\": \"2022-09-07T13:03:33.877Z\",'+
-		'                \"display\": \"1816 Woodbury Road, Orlando, FL 32828\",'+
-		'                \"name\": null,'+
-		'                \"address\": \"1816 Woodbury Road, Orlando, FL 32828\"'+
-		'            },'+
-		'            \"activity\": \"Business\",'+
-		'            \"parking\": 0.0,'+
-		'            \"toll\": 0.0,'+
-		'            \"tags\": null,'+
-		'            \"notes\": null,'+
-		'            \"status\": \"Not Submitted\",'+
-		'            \"statusUpdateTime\": null,'+
-		'            \"statusUpdatedBy\": null,'+
-		'            \"polyline\": \"_zkmD~yqnN~Dfb@{ArQVnHQNj@n@lKf@rNQrHYCS_GKeNAgDeAcB]lAjAmGDSiK~BsLE}KaDeMg@kECsAZ}OfMmEnGSvIjFdDB|EBpBQELpJTfCxAnCdBo@nB{Bf@yAa@MqD\",'+
-		'            \"route\": \"https://app.mburse.com/web/api/trips/2001606246/routes\",'+
-		'            \"receipts\": \"https://app.mburse.com/web/api/trips/2001606246/receipts\",'+
-		'            \"map\": \"https://app.mburse.com/web/kml/embed/bi9d4p3x1.kml\",'+
-		'            \"trackingMethod\": \"MagicTrip\"'+
-		'        },'+
-		'        {'+
-		'            \"id\": 2001606444,'+
-		'            \"url\": \"https://app.mburse.com/web/api/trips/2001606444\",'+
-		'            \"lastUpdated\": \"2022-08-31T22:21:48.871Z\",'+
-		'            \"user\": {'+
-		'                \"id\": 344649,'+
-		'                \"url\": \"https://app.mburse.com/web/api/users/344649\",'+
-		'                \"email\": \"c.santaliz@ermi-motion.com\",'+
-		'                \"display\": \"Santaliz, Ceasar\"'+
-		'            },'+
-		'            \"vehicle\": {'+
-		'                \"id\": 1053773,'+
-		'                \"url\": \"https://app.mburse.com/web/api/vehicles/1053773\",'+
-		'                \"lastUpdated\": \"2019-10-07T01:40:24.055Z\",'+
-		'                \"display\": \"2018 Dodge Ram 1500\"'+
-		'            },'+
-		'            \"startTime\": \"2022-08-31T22:06:00.000Z\",'+
-		'            \"endTime\": \"2022-08-31T22:16:00.000Z\",'+
-		'            \"startOdometer\": 249509,'+
-		'            \"endOdometer\": 249510,'+
-		'            \"mileage\": 1.4,'+
-		'            \"fromLocation\": {'+
-		'                \"id\": 144137381,'+
-		'                \"url\": \"https://app.mburse.com/web/api/locations/144137381\",'+
-		'                \"lastUpdated\": \"2022-09-07T13:03:33.877Z\",'+
-		'                \"display\": \"1816 Woodbury Road, Orlando, FL 32828\",'+
-		'                \"name\": null,'+
-		'                \"address\": \"1816 Woodbury Road, Orlando, FL 32828\"'+
-		'            },'+
-		'            \"toLocation\": {'+
-		'                \"id\": 155498118,'+
-		'                \"url\": \"https://app.mburse.com/web/api/locations/155498118\",'+
-		'                \"lastUpdated\": \"2021-01-04T23:47:50.846Z\",'+
-		'                \"display\": \"11841 E Colonial Dr, Orlando, FL 32826\",'+
-		'                \"name\": null,'+
-		'                \"address\": \"11841 E Colonial Dr, Orlando, FL 32826\"'+
-		'            },'+
-		'            \"activity\": \"Business\",'+
-		'            \"parking\": 0.0,'+
-		'            \"toll\": 0.0,'+
-		'            \"tags\": null,'+
-		'            \"notes\": null,'+
-		'            \"status\": \"Not Submitted\",'+
-		'            \"statusUpdateTime\": null,'+
-		'            \"statusUpdatedBy\": null,'+
-		'            \"polyline\": \"a{imDhnqnNjAlGdCWjAUOeBiAkAq@cCxB]rB?m@G{CIwGAs@VeAIqCtGmApKTnAa@hIa@rKgAlFqG@F`Bz@Z\",'+
-		'            \"route\": \"https://app.mburse.com/web/api/trips/2001606444/routes\",'+
-		'            \"receipts\": \"https://app.mburse.com/web/api/trips/2001606444/receipts\",'+
-		'            \"map\": \"https://app.mburse.com/web/kml/embed/00fdbp3x8.kml\",'+
-		'            \"trackingMethod\": \"MagicTrip\",'+
-		'            \"stayTimeMins\": 20'+
-		'        },'+
-		'        {'+
-		'            \"id\": 2001606594,'+
-		'            \"url\": \"https://app.mburse.com/web/api/trips/2001606594\",'+
-		'            \"lastUpdated\": \"2022-08-31T22:51:04.680Z\",'+
-		'            \"user\": {'+
-		'                \"id\": 344649,'+
-		'                \"url\": \"https://app.mburse.com/web/api/users/344649\",'+
-		'                \"email\": \"c.santaliz@ermi-motion.com\",'+
-		'                \"display\": \"Santaliz, Ceasar\"'+
-		'            },'+
-		'            \"vehicle\": {'+
-		'                \"id\": 1053773,'+
-		'                \"url\": \"https://app.mburse.com/web/api/vehicles/1053773\",'+
-		'                \"lastUpdated\": \"2019-10-07T01:40:24.055Z\",'+
-		'                \"display\": \"2018 Dodge Ram 1500\"'+
-		'            },'+
-		'            \"startTime\": \"2022-08-31T22:41:00.000Z\",'+
-		'            \"endTime\": \"2022-08-31T22:46:00.000Z\",'+
-		'            \"startOdometer\": 249510,'+
-		'            \"endOdometer\": 249511,'+
-		'            \"mileage\": 1.1,'+
-		'            \"fromLocation\": {'+
-		'                \"id\": 155498118,'+
-		'                \"url\": \"https://app.mburse.com/web/api/locations/155498118\",'+
-		'                \"lastUpdated\": \"2021-01-04T23:47:50.846Z\",'+
-		'                \"display\": \"11841 E Colonial Dr, Orlando, FL 32826\",'+
-		'                \"name\": null,'+
-		'                \"address\": \"11841 E Colonial Dr, Orlando, FL 32826\"'+
-		'            },'+
-		'            \"toLocation\": {'+
-		'                \"id\": 144137381,'+
-		'                \"url\": \"https://app.mburse.com/web/api/locations/144137381\",'+
-		'                \"lastUpdated\": \"2022-09-07T13:03:33.877Z\",'+
-		'                \"display\": \"1816 Woodbury Road, Orlando, FL 32828\",'+
-		'                \"name\": null,'+
-		'                \"address\": \"1816 Woodbury Road, Orlando, FL 32828\"'+
-		'            },'+
-		'            \"activity\": \"Business\",'+
-		'            \"parking\": 0.0,'+
-		'            \"toll\": 0.0,'+
-		'            \"tags\": null,'+
-		'            \"notes\": null,'+
-		'            \"status\": \"Not Submitted\",'+
-		'            \"statusUpdateTime\": null,'+
-		'            \"statusUpdatedBy\": null,'+
-		'            \"polyline\": \"crjmD~csnN`CcBxDgLp@iMn@kLl@}Iv@k@rHQjAjCfBlBeAlBkC`@}As@ZaE\",'+
-		'            \"route\": \"https://app.mburse.com/web/api/trips/2001606594/routes\",'+
-		'            \"receipts\": \"https://app.mburse.com/web/api/trips/2001606594/receipts\",'+
-		'            \"map\": \"https://app.mburse.com/web/kml/embed/26jdfp3x9.kml\",'+
-		'            \"trackingMethod\": \"MagicTrip\",'+
-		'            \"stayTimeMins\": 25'+
-		'        },'+
-		'        {'+
-		'            \"id\": 2001606642,'+
-		'            \"url\": \"https://app.mburse.com/web/api/trips/2001606642\",'+
-		'            \"lastUpdated\": \"2022-08-31T23:09:59.356Z\",'+
-		'            \"user\": {'+
-		'                \"id\": 344649,'+
-		'                \"url\": \"https://app.mburse.com/web/api/users/344649\",'+
-		'                \"email\": \"c.santaliz@ermi-motion.com\",'+
-		'                \"display\": \"Santaliz, Ceasar\"'+
-		'            },'+
-		'            \"vehicle\": {'+
-		'                \"id\": 1053773,'+
-		'                \"url\": \"https://app.mburse.com/web/api/vehicles/1053773\",'+
-		'                \"lastUpdated\": \"2019-10-07T01:40:24.055Z\",'+
-		'                \"display\": \"2018 Dodge Ram 1500\"'+
-		'            },'+
-		'            \"startTime\": \"2022-08-31T22:57:00.000Z\",'+
-		'            \"endTime\": \"2022-08-31T23:04:00.000Z\",'+
-		'            \"startOdometer\": 249511,'+
-		'            \"endOdometer\": 249513,'+
-		'            \"mileage\": 1.6,'+
-		'            \"fromLocation\": {'+
-		'                \"id\": 144137381,'+
-		'                \"url\": \"https://app.mburse.com/web/api/locations/144137381\",'+
-		'                \"lastUpdated\": \"2022-09-07T13:03:33.877Z\",'+
-		'                \"display\": \"1816 Woodbury Road, Orlando, FL 32828\",'+
-		'                \"name\": null,'+
-		'                \"address\": \"1816 Woodbury Road, Orlando, FL 32828\"'+
-		'            },'+
-		'            \"toLocation\": {'+
-		'                \"id\": 136711837,'+
-		'                \"url\": \"https://app.mburse.com/web/api/locations/136711837\",'+
-		'                \"lastUpdated\": \"2022-08-05T22:28:51.457Z\",'+
-		'                \"display\": \"Unnamed Road, Orlando, FL 32828\",'+
-		'                \"name\": null,'+
-		'                \"address\": \"Unnamed Road, Orlando, FL 32828\"'+
-		'            },'+
-		'            \"activity\": \"Business\",'+
-		'            \"parking\": 0.0,'+
-		'            \"toll\": 0.0,'+
-		'            \"tags\": null,'+
-		'            \"notes\": null,'+
-		'            \"status\": \"Not Submitted\",'+
-		'            \"statusUpdateTime\": null,'+
-		'            \"statusUpdatedBy\": null,'+
-		'            \"polyline\": \"kyimD|oqnNw@WfA~FxBc@tA_BuBkB`@iChJCbNg@rMH|IDhAhCk@dLeCrFeBTn@xBL|DtCd@|BcBdCcB~Ah@`AlBPfDuAb@\",'+
-		'            \"route\": \"https://app.mburse.com/web/api/trips/2001606642/routes\",'+
-		'            \"receipts\": \"https://app.mburse.com/web/api/trips/2001606642/receipts\",'+
-		'            \"map\": \"https://app.mburse.com/web/kml/embed/fikd0p3x0.kml\",'+
-		'            \"trackingMethod\": \"MagicTrip\",'+
-		'            \"stayTimeMins\": 11'+
-		'        },'+
-		'        {'+
-		'            \"id\": 2001606798,'+
-		'            \"url\": \"https://app.mburse.com/web/api/trips/2001606798\",'+
-		'            \"lastUpdated\": \"2022-08-31T23:43:50.371Z\",'+
-		'            \"user\": {'+
-		'                \"id\": 344649,'+
-		'                \"url\": \"https://app.mburse.com/web/api/users/344649\",'+
-		'                \"email\": \"c.santaliz@ermi-motion.com\",'+
-		'                \"display\": \"Santaliz, Ceasar\"'+
-		'            },'+
-		'            \"vehicle\": {'+
-		'                \"id\": 1053773,'+
-		'                \"url\": \"https://app.mburse.com/web/api/vehicles/1053773\",'+
-		'                \"lastUpdated\": \"2019-10-07T01:40:24.055Z\",'+
-		'                \"display\": \"2018 Dodge Ram 1500\"'+
-		'            },'+
-		'            \"startTime\": \"2022-08-31T23:26:00.000Z\",'+
-		'            \"endTime\": \"2022-08-31T23:38:00.000Z\",'+
-		'            \"startOdometer\": 249513,'+
-		'            \"endOdometer\": 249515,'+
-		'            \"mileage\": 1.7,'+
-		'            \"fromLocation\": {'+
-		'                \"id\": 136711837,'+
-		'                \"url\": \"https://app.mburse.com/web/api/locations/136711837\",'+
-		'                \"lastUpdated\": \"2022-08-05T22:28:51.457Z\",'+
-		'                \"display\": \"Unnamed Road, Orlando, FL 32828\",'+
-		'                \"name\": null,'+
-		'                \"address\": \"Unnamed Road, Orlando, FL 32828\"'+
-		'            },'+
-		'            \"toLocation\": {'+
-		'                \"id\": 144137381,'+
-		'                \"url\": \"https://app.mburse.com/web/api/locations/144137381\",'+
-		'                \"lastUpdated\": \"2022-09-07T13:03:33.877Z\",'+
-		'                \"display\": \"1816 Woodbury Road, Orlando, FL 32828\",'+
-		'                \"name\": null,'+
-		'                \"address\": \"1816 Woodbury Road, Orlando, FL 32828\"'+
-		'            },'+
-		'            \"activity\": \"Business\",'+
-		'            \"parking\": 0.0,'+
-		'            \"toll\": 0.0,'+
-		'            \"tags\": null,'+
-		'            \"notes\": null,'+
-		'            \"status\": \"Not Submitted\",'+
-		'            \"statusUpdateTime\": null,'+
-		'            \"statusUpdatedBy\": null,'+
-		'            \"polyline\": \"oogmD`yrnN{DwD_CbAsBeCRoBsDJs@i@gAoBi@gAc@i@t@w@vEkIH{F@_BFoAcG{@{P^y@c@cVf@mBOWh@`BpDw@|B{AZsBq@j@kAE{B\",'+
-		'            \"route\": \"https://app.mburse.com/web/api/trips/2001606798/routes\",'+
-		'            \"receipts\": \"https://app.mburse.com/web/api/trips/2001606798/receipts\",'+
-		'            \"map\": \"https://app.mburse.com/web/kml/embed/4uodep3xb.kml\",'+
-		'            \"trackingMethod\": \"MagicTrip\",'+
-		'            \"stayTimeMins\": 22'+
-		'        },'+
-		'        {'+
-		'            \"id\": 2001606946,'+
-		'            \"url\": \"https://app.mburse.com/web/api/trips/2001606946\",'+
-		'            \"lastUpdated\": \"2022-09-01T00:14:05.510Z\",'+
-		'            \"user\": {'+
-		'                \"id\": 344649,'+
-		'                \"url\": \"https://app.mburse.com/web/api/users/344649\",'+
-		'                \"email\": \"c.santaliz@ermi-motion.com\",'+
-		'                \"display\": \"Santaliz, Ceasar\"'+
-		'            },'+
-		'            \"vehicle\": {'+
-		'                \"id\": 1053773,'+
-		'                \"url\": \"https://app.mburse.com/web/api/vehicles/1053773\",'+
-		'                \"lastUpdated\": \"2019-10-07T01:40:24.055Z\",'+
-		'                \"display\": \"2018 Dodge Ram 1500\"'+
-		'            },'+
-		'            \"startTime\": \"2022-09-01T00:06:00.000Z\",'+
-		'            \"endTime\": \"2022-09-01T00:08:00.000Z\",'+
-		'            \"startOdometer\": 249515,'+
-		'            \"endOdometer\": 249515,'+
-		'            \"mileage\": 0.3,'+
-		'            \"fromLocation\": {'+
-		'                \"id\": 144137381,'+
-		'                \"url\": \"https://app.mburse.com/web/api/locations/144137381\",'+
-		'                \"lastUpdated\": \"2022-09-07T13:03:33.877Z\",'+
-		'                \"display\": \"1816 Woodbury Road, Orlando, FL 32828\",'+
-		'                \"name\": null,'+
-		'                \"address\": \"1816 Woodbury Road, Orlando, FL 32828\"'+
-		'            },'+
-		'            \"toLocation\": {'+
-		'                \"id\": 140883017,'+
-		'                \"url\": \"https://app.mburse.com/web/api/locations/140883017\",'+
-		'                \"lastUpdated\": \"2020-02-04T19:55:02.910Z\",'+
-		'                \"display\": \"1528 Cricket Club Cir, Orlando, FL 32828\",'+
-		'                \"name\": null,'+
-		'                \"address\": \"1528 Cricket Club Cir, Orlando, FL 32828\"'+
-		'            },'+
-		'            \"activity\": \"Business\",'+
-		'            \"parking\": 0.0,'+
-		'            \"toll\": 0.0,'+
-		'            \"tags\": null,'+
-		'            \"notes\": null,'+
-		'            \"status\": \"Not Submitted\",'+
-		'            \"statusUpdateTime\": null,'+
-		'            \"statusUpdatedBy\": null,'+
-		'            \"polyline\": \"}timDxvqnNtCaAfDtBL`BF|CMrA\",'+
-		'            \"route\": \"https://app.mburse.com/web/api/trips/2001606946/routes\",'+
-		'            \"receipts\": \"https://app.mburse.com/web/api/trips/2001606946/receipts\",'+
-		'            \"map\": \"https://app.mburse.com/web/kml/embed/9ysddp3x3.kml\",'+
-		'            \"trackingMethod\": \"MagicTrip\",'+
-		'            \"stayTimeMins\": 28'+
-		'        },'+
-		'        {'+
-		'            \"id\": 2001607037,'+
-		'            \"url\": \"https://app.mburse.com/web/api/trips/2001607037\",'+
-		'            \"lastUpdated\": \"2022-09-01T00:51:38.336Z\",'+
-		'            \"user\": {'+
-		'                \"id\": 344649,'+
-		'                \"url\": \"https://app.mburse.com/web/api/users/344649\",'+
-		'                \"email\": \"c.santaliz@ermi-motion.com\",'+
-		'                \"display\": \"Santaliz, Ceasar\"'+
-		'            },'+
-		'            \"vehicle\": {'+
-		'                \"id\": 1053773,'+
-		'                \"url\": \"https://app.mburse.com/web/api/vehicles/1053773\",'+
-		'                \"lastUpdated\": \"2019-10-07T01:40:24.055Z\",'+
-		'                \"display\": \"2018 Dodge Ram 1500\"'+
-		'            },'+
-		'            \"startTime\": \"2022-09-01T00:42:00.000Z\",'+
-		'            \"endTime\": \"2022-09-01T00:46:00.000Z\",'+
-		'            \"startOdometer\": 249515,'+
-		'            \"endOdometer\": 249516,'+
-		'            \"mileage\": 0.5,'+
-		'            \"fromLocation\": {'+
-		'                \"id\": 140883017,'+
-		'                \"url\": \"https://app.mburse.com/web/api/locations/140883017\",'+
-		'                \"lastUpdated\": \"2020-02-04T19:55:02.910Z\",'+
-		'                \"display\": \"1528 Cricket Club Cir, Orlando, FL 32828\",'+
-		'                \"name\": null,'+
-		'                \"address\": \"1528 Cricket Club Cir, Orlando, FL 32828\"'+
-		'            },'+
-		'            \"toLocation\": {'+
-		'                \"id\": 144137381,'+
-		'                \"url\": \"https://app.mburse.com/web/api/locations/144137381\",'+
-		'                \"lastUpdated\": \"2022-09-07T13:03:33.877Z\",'+
-		'                \"display\": \"1816 Woodbury Road, Orlando, FL 32828\",'+
-		'                \"name\": null,'+
-		'                \"address\": \"1816 Woodbury Road, Orlando, FL 32828\"'+
-		'            },'+
-		'            \"activity\": \"Business\",'+
-		'            \"parking\": 0.0,'+
-		'            \"toll\": 0.0,'+
-		'            \"tags\": null,'+
-		'            \"notes\": null,'+
-		'            \"status\": \"Not Submitted\",'+
-		'            \"statusUpdateTime\": null,'+
-		'            \"statusUpdatedBy\": null,'+
-		'            \"polyline\": \"akimDbdrnN^c@DwBIcDNwBeDB_AkBy@`@qBrAeBNw@aA?iDXq@\",'+
-		'            \"route\": \"https://app.mburse.com/web/api/trips/2001607037/routes\",'+
-		'            \"receipts\": \"https://app.mburse.com/web/api/trips/2001607037/receipts\",'+
-		'            \"map\": \"https://app.mburse.com/web/kml/embed/3hvd7p3xf.kml\",'+
-		'            \"trackingMethod\": \"MagicTrip\",'+
-		'            \"stayTimeMins\": 34'+
-		'        },'+
-		'        {'+
-		'            \"id\": 2001607368,'+
-		'            \"url\": \"https://app.mburse.com/web/api/trips/2001607368\",'+
-		'            \"lastUpdated\": \"2022-09-01T12:17:14.357Z\",'+
-		'            \"user\": {'+
-		'                \"id\": 344649,'+
-		'                \"url\": \"https://app.mburse.com/web/api/users/344649\",'+
-		'                \"email\": \"c.santaliz@ermi-motion.com\",'+
-		'                \"display\": \"Santaliz, Ceasar\"'+
-		'            },'+
-		'            \"vehicle\": {'+
-		'                \"id\": 1053773,'+
-		'                \"url\": \"https://app.mburse.com/web/api/vehicles/1053773\",'+
-		'                \"lastUpdated\": \"2019-10-07T01:40:24.055Z\",'+
-		'                \"display\": \"2018 Dodge Ram 1500\"'+
-		'            },'+
-		'            \"startTime\": \"2022-09-01T10:35:00.000Z\",'+
-		'            \"endTime\": \"2022-09-01T12:12:00.000Z\",'+
-		'            \"startOdometer\": 249516,'+
-		'            \"endOdometer\": 249563,'+
-		'            \"mileage\": 46.6,'+
-		'            \"fromLocation\": {'+
-		'                \"id\": 144137381,'+
-		'                \"url\": \"https://app.mburse.com/web/api/locations/144137381\",'+
-		'                \"lastUpdated\": \"2022-09-07T13:03:33.877Z\",'+
-		'                \"display\": \"1816 Woodbury Road, Orlando, FL 32828\",'+
-		'                \"name\": null,'+
-		'                \"address\": \"1816 Woodbury Road, Orlando, FL 32828\"'+
-		'            },'+
-		'            \"toLocation\": {'+
-		'                \"id\": 144137381,'+
-		'                \"url\": \"https://app.mburse.com/web/api/locations/144137381\",'+
-		'                \"lastUpdated\": \"2022-09-07T13:03:33.877Z\",'+
-		'                \"display\": \"1816 Woodbury Road, Orlando, FL 32828\",'+
-		'                \"name\": null,'+
-		'                \"address\": \"1816 Woodbury Road, Orlando, FL 32828\"'+
-		'            },'+
-		'            \"activity\": \"Business\",'+
-		'            \"parking\": 0.0,'+
-		'            \"toll\": 0.0,'+
-		'            \"tags\": null,'+
-		'            \"notes\": null,'+
-		'            \"status\": \"Not Submitted\",'+
-		'            \"statusUpdateTime\": null,'+
-		'            \"statusUpdatedBy\": null,'+
-		'            \"polyline\": \"}zimDdnqnNBtAzCvDfBaB]eAiAkC~@m@xCc@uG_@mJn@@yHfIqG~QsBfZkAzQ`I~GpXdEhZ|DhZpChYhBp^dCp_@bAh]Jr[E`]KfXEd_@Al^GxZBt^_@jZr@t^hB|\\\\zG`WfLlYnKxXxGn^|@n[Sd^T`[TpY@~WeAx[C`ZhBt^fDdWBzZBnYKvZC|X^jZHfRIvKLpObBhOvA`PJvOB~PG|TfBxMhEhUlAfYxQtMpWjDzV[xYIdU~H`SlWbNvWlGh\\\\Ld^Dh^An]`Ip\\\\bQpRlUfRnVfSrXrU`VlRbQtRfRdVnPlTtOzSzMbR|OjSbNxP~JfLpMjPrL|O`GdP}GnLgIrAwD]uCGoCrGCxEwA~@}An@iAN_Fe@eAP?~A`@f@YrEVl@RzA_@^fCPzAeAJ{@oBhBcCuAPmAFcCA_FdJEpBn@Ve@HKr@uDhAgEu@{Ka@uCgBcE{D{GuEoG}@wEBkAxHH|LIjLs@L]n@uAkIaLyPeNuOkRwQaV_NcPePmTqPkUuIwK{HuH_FkImE_FeE_EcDiC_DwBsCyAcCyB}AoBaDeBgCgCeDmCkEaBkA{A]qAsCqABu@oA]k@_AoAaAcBuAcAqAi@a@g@g@oAo@gAoAc@uAuDwB_EaDoCgCsC_BsCgCgCkBwB_CuCgDiCyEwA{FiByE]mGA{ID{IO}LA}MIiQKmPs@iQoD}PkIuN}FeKwH{O{SyL{VaDcWIcZ{BkOcH{KeScGuXyC{SImZU{YmD{\\\\WcZ?wZP{[Si`@B_\\\\Mqc@wCm[aB{UrAcNRgP?_ICwKc@kJhAuD|L_AfNp@pBy@NVp@oJHaK~By@jCaBF_HNiA~CQxDPi@LeAQ_EMeAPb@hJeF|A}BWwCeAyEIyC[}DZ}DNsFAa@_ICsQ]}YEuZoBm_@iGoXcLoXsLsYwGo^a@_[q@ia@T{`@Oa\\\\p@o^Vy^Se[Ao_@@m`@iAq]gBu^_By]mEgYaE}Z{Dy]cH{W_SaGaWQgScAgI?q@TQzE[fMAnAJhAhH^dCZtAx@r@hDqBrAgDIKcCDuB\",'+
-		'            \"route\": \"https://app.mburse.com/web/api/trips/2001607368/routes\",'+
-		'            \"receipts\": \"https://app.mburse.com/web/api/trips/2001607368/receipts\",'+
-		'            \"map\": \"https://app.mburse.com/web/kml/embed/9o4e9p3x4.kml\",'+
-		'            \"trackingMethod\": \"MagicTrip\",'+
-		'            \"stayTimeMins\": 589'+
-		'        },'+
-		'        {'+
-		'            \"id\": 2001607811,'+
-		'            \"url\": \"https://app.mburse.com/web/api/trips/2001607811\",'+
-		'            \"lastUpdated\": \"2022-09-01T13:09:56.738Z\",'+
-		'            \"user\": {'+
-		'                \"id\": 344649,'+
-		'                \"url\": \"https://app.mburse.com/web/api/users/344649\",'+
-		'                \"email\": \"c.santaliz@ermi-motion.com\",'+
-		'                \"display\": \"Santaliz, Ceasar\"'+
-		'            },'+
-		'            \"vehicle\": {'+
-		'                \"id\": 1053773,'+
-		'                \"url\": \"https://app.mburse.com/web/api/vehicles/1053773\",'+
-		'                \"lastUpdated\": \"2019-10-07T01:40:24.055Z\",'+
-		'                \"display\": \"2018 Dodge Ram 1500\"'+
-		'            },'+
-		'            \"startTime\": \"2022-09-01T12:12:00.000Z\",'+
-		'            \"endTime\": \"2022-09-01T13:09:00.000Z\",'+
-		'            \"startOdometer\": 249563,'+
-		'            \"endOdometer\": 249563,'+
-		'            \"mileage\": 0.0,'+
-		'            \"fromLocation\": {'+
-		'                \"id\": 144137381,'+
-		'                \"url\": \"https://app.mburse.com/web/api/locations/144137381\",'+
-		'                \"lastUpdated\": \"2022-09-07T13:03:33.877Z\",'+
-		'                \"display\": \"1816 Woodbury Road, Orlando, FL 32828\",'+
-		'                \"name\": null,'+
-		'                \"address\": \"1816 Woodbury Road, Orlando, FL 32828\"'+
-		'            },'+
-		'            \"toLocation\": {'+
-		'                \"id\": 144137381,'+
-		'                \"url\": \"https://app.mburse.com/web/api/locations/144137381\",'+
-		'                \"lastUpdated\": \"2022-09-07T13:03:33.877Z\",'+
-		'                \"display\": \"1816 Woodbury Road, Orlando, FL 32828\",'+
-		'                \"name\": null,'+
-		'                \"address\": \"1816 Woodbury Road, Orlando, FL 32828\"'+
-		'            },'+
-		'            \"activity\": \"Business\",'+
-		'            \"parking\": 0.0,'+
-		'            \"toll\": 0.0,'+
-		'            \"tags\": \"FSL\",'+
-		'            \"notes\": \"\",'+
-		'            \"status\": \"Not Submitted\",'+
-		'            \"statusUpdateTime\": null,'+
-		'            \"statusUpdatedBy\": null,'+
-		'            \"polyline\": null,'+
-		'            \"route\": \"https://app.mburse.com/web/api/trips/2001607811/routes\",'+
-		'            \"receipts\": \"https://app.mburse.com/web/api/trips/2001607811/receipts\",'+
-		'            \"map\": \"https://app.mburse.com/web/kml/embed/4zgefp3x9.kml\",'+
-		'            \"trackingMethod\": \"App Manual Entry\",'+
-		'            \"stayTimeMins\": 0'+
-		'        },'+
-		'        {'+
-		'            \"id\": 2001607818,'+
-		'            \"url\": \"https://app.mburse.com/web/api/trips/2001607818\",'+
-		'            \"lastUpdated\": \"2022-09-01T13:20:22.679Z\",'+
-		'            \"user\": {'+
-		'                \"id\": 344649,'+
-		'                \"url\": \"https://app.mburse.com/web/api/users/344649\",'+
-		'                \"email\": \"c.santaliz@ermi-motion.com\",'+
-		'                \"display\": \"Santaliz, Ceasar\"'+
-		'            },'+
-		'            \"vehicle\": {'+
-		'                \"id\": 1053773,'+
-		'                \"url\": \"https://app.mburse.com/web/api/vehicles/1053773\",'+
-		'                \"lastUpdated\": \"2019-10-07T01:40:24.055Z\",'+
-		'                \"display\": \"2018 Dodge Ram 1500\"'+
-		'            },'+
-		'            \"startTime\": \"2022-09-01T13:10:00.000Z\",'+
-		'            \"endTime\": \"2022-09-01T13:15:00.000Z\",'+
-		'            \"startOdometer\": 249563,'+
-		'            \"endOdometer\": 249564,'+
-		'            \"mileage\": 1.1,'+
-		'            \"fromLocation\": {'+
-		'                \"id\": 144137381,'+
-		'                \"url\": \"https://app.mburse.com/web/api/locations/144137381\",'+
-		'                \"lastUpdated\": \"2022-09-07T13:03:33.877Z\",'+
-		'                \"display\": \"1816 Woodbury Road, Orlando, FL 32828\",'+
-		'                \"name\": null,'+
-		'                \"address\": \"1816 Woodbury Road, Orlando, FL 32828\"'+
-		'            },'+
-		'            \"toLocation\": {'+
-		'                \"id\": 136403115,'+
-		'                \"url\": \"https://app.mburse.com/web/api/locations/136403115\",'+
-		'                \"lastUpdated\": \"2022-08-12T13:12:31.416Z\",'+
-		'                \"display\": \"12914 E Colonial Dr, Orlando, FL 32826\",'+
-		'                \"name\": null,'+
-		'                \"address\": \"12914 E Colonial Dr, Orlando, FL 32826\"'+
-		'            },'+
-		'            \"activity\": \"Business\",'+
-		'            \"parking\": 0.0,'+
-		'            \"toll\": 0.0,'+
-		'            \"tags\": null,'+
-		'            \"notes\": null,'+
-		'            \"status\": \"Not Submitted\",'+
-		'            \"statusUpdateTime\": null,'+
-		'            \"statusUpdatedBy\": null,'+
-		'            \"polyline\": \"{zimDrnqnNn@bG|EaB{@kA@}DtCm@f@@yGLuFBiCyBRyQZ_PWeGx@yBHm@\",'+
-		'            \"route\": \"https://app.mburse.com/web/api/trips/2001607818/routes\",'+
-		'            \"receipts\": \"https://app.mburse.com/web/api/trips/2001607818/receipts\",'+
-		'            \"map\": \"https://app.mburse.com/web/kml/embed/d6he5p3x8.kml\",'+
-		'            \"trackingMethod\": \"MagicTrip\",'+
-		'            \"stayTimeMins\": 1'+
-		'        },'+
-		'        {'+
-		'            \"id\": 2001607900,'+
-		'            \"url\": \"https://app.mburse.com/web/api/trips/2001607900\",'+
-		'            \"lastUpdated\": \"2022-09-01T13:41:40.221Z\",'+
-		'            \"user\": {'+
-		'                \"id\": 344649,'+
-		'                \"url\": \"https://app.mburse.com/web/api/users/344649\",'+
-		'                \"email\": \"c.santaliz@ermi-motion.com\",'+
-		'                \"display\": \"Santaliz, Ceasar\"'+
-		'            },'+
-		'            \"vehicle\": {'+
-		'                \"id\": 1053773,'+
-		'                \"url\": \"https://app.mburse.com/web/api/vehicles/1053773\",'+
-		'                \"lastUpdated\": \"2019-10-07T01:40:24.055Z\",'+
-		'                \"display\": \"2018 Dodge Ram 1500\"'+
-		'            },'+
-		'            \"startTime\": \"2022-09-01T13:29:00.000Z\",'+
-		'            \"endTime\": \"2022-09-01T13:36:00.000Z\",'+
-		'            \"startOdometer\": 249564,'+
-		'            \"endOdometer\": 249566,'+
-		'            \"mileage\": 1.8,'+
-		'            \"fromLocation\": {'+
-		'                \"id\": 136403115,'+
-		'                \"url\": \"https://app.mburse.com/web/api/locations/136403115\",'+
-		'                \"lastUpdated\": \"2022-08-12T13:12:31.416Z\",'+
-		'                \"display\": \"12914 E Colonial Dr, Orlando, FL 32826\",'+
-		'                \"name\": null,'+
-		'                \"address\": \"12914 E Colonial Dr, Orlando, FL 32826\"'+
-		'            },'+
-		'            \"toLocation\": {'+
-		'                \"id\": 157362752,'+
-		'                \"url\": \"https://app.mburse.com/web/api/locations/157362752\",'+
-		'                \"lastUpdated\": \"2022-01-05T22:18:24.432Z\",'+
-		'                \"display\": \"1819 N Alafaya Trail, Orlando, FL 32826\",'+
-		'                \"name\": null,'+
-		'                \"address\": \"1819 N Alafaya Trail, Orlando, FL 32826\"'+
-		'            },'+
-		'            \"activity\": \"Business\",'+
-		'            \"parking\": 0.0,'+
-		'            \"toll\": 0.0,'+
-		'            \"tags\": null,'+
-		'            \"notes\": null,'+
-		'            \"status\": \"Not Submitted\",'+
-		'            \"statusUpdateTime\": null,'+
-		'            \"statusUpdatedBy\": null,'+
-		'            \"polyline\": \"m`jmD~vonNkAzAw@nSO`OEfEq@hAJ|Km@pINv@YzD_AzTiB~Qy@rHuNfA_L_@eAcB\\\\fAhA]\",'+
-		'            \"route\": \"https://app.mburse.com/web/api/trips/2001607900/routes\",'+
-		'            \"receipts\": \"https://app.mburse.com/web/api/trips/2001607900/receipts\",'+
-		'            \"map\": \"https://app.mburse.com/web/kml/embed/2gjedp3x4.kml\",'+
-		'            \"trackingMethod\": \"MagicTrip\",'+
-		'            \"stayTimeMins\": 14'+
-		'        },'+
-		'        {'+
-		'            \"id\": 2001607968,'+
-		'            \"url\": \"https://app.mburse.com/web/api/trips/2001607968\",'+
-		'            \"lastUpdated\": \"2022-09-01T13:56:28.720Z\",'+
-		'            \"user\": {'+
-		'                \"id\": 344649,'+
-		'                \"url\": \"https://app.mburse.com/web/api/users/344649\",'+
-		'                \"email\": \"c.santaliz@ermi-motion.com\",'+
-		'                \"display\": \"Santaliz, Ceasar\"'+
-		'            },'+
-		'            \"vehicle\": {'+
-		'                \"id\": 1053773,'+
-		'                \"url\": \"https://app.mburse.com/web/api/vehicles/1053773\",'+
-		'                \"lastUpdated\": \"2019-10-07T01:40:24.055Z\",'+
-		'                \"display\": \"2018 Dodge Ram 1500\"'+
-		'            },'+
-		'            \"startTime\": \"2022-09-01T13:42:00.000Z\",'+
-		'            \"endTime\": \"2022-09-01T13:51:00.000Z\",'+
-		'            \"startOdometer\": 249566,'+
-		'            \"endOdometer\": 249568,'+
-		'            \"mileage\": 1.6,'+
-		'            \"fromLocation\": {'+
-		'                \"id\": 157362752,'+
-		'                \"url\": \"https://app.mburse.com/web/api/locations/157362752\",'+
-		'                \"lastUpdated\": \"2022-01-05T22:18:24.432Z\",'+
-		'                \"display\": \"1819 N Alafaya Trail, Orlando, FL 32826\",'+
-		'                \"name\": null,'+
-		'                \"address\": \"1819 N Alafaya Trail, Orlando, FL 32826\"'+
-		'            },'+
-		'            \"toLocation\": {'+
-		'                \"id\": 140017125,'+
-		'                \"url\": \"https://app.mburse.com/web/api/locations/140017125\",'+
-		'                \"lastUpdated\": \"2021-08-24T15:21:56.871Z\",'+
-		'                \"display\": \"12321 FL-50, Orlando, FL 32826\",'+
-		'                \"name\": null,'+
-		'                \"address\": \"12321 FL-50, Orlando, FL 32826\"'+
-		'            },'+
-		'            \"activity\": \"Business\",'+
-		'            \"parking\": 0.0,'+
-		'            \"toll\": 0.0,'+
-		'            \"tags\": null,'+
-		'            \"notes\": null,'+
-		'            \"status\": \"Not Submitted\",'+
-		'            \"statusUpdateTime\": null,'+
-		'            \"statusUpdatedBy\": null,'+
-		'            \"polyline\": \"klkmDdysnN}B`AqCBZ\\\\bMOnNGnDQzBwBv@mMHaABa@r@yLx@{Ox@wORqHACa@jCsAtA\",'+
-		'            \"route\": \"https://app.mburse.com/web/api/trips/2001607968/routes\",'+
-		'            \"receipts\": \"https://app.mburse.com/web/api/trips/2001607968/receipts\",'+
-		'            \"map\": \"https://app.mburse.com/web/kml/embed/2cle3p3xe.kml\",'+
-		'            \"trackingMethod\": \"MagicTrip\",'+
-		'            \"stayTimeMins\": 6'+
-		'        },'+
-		'        {'+
-		'            \"id\": 2001608050,'+
-		'            \"url\": \"https://app.mburse.com/web/api/trips/2001608050\",'+
-		'            \"lastUpdated\": \"2022-09-01T14:41:06.724Z\",'+
-		'            \"user\": {'+
-		'                \"id\": 344649,'+
-		'                \"url\": \"https://app.mburse.com/web/api/users/344649\",'+
-		'                \"email\": \"c.santaliz@ermi-motion.com\",'+
-		'                \"display\": \"Santaliz, Ceasar\"'+
-		'            },'+
-		'            \"vehicle\": {'+
-		'                \"id\": 1053773,'+
-		'                \"url\": \"https://app.mburse.com/web/api/vehicles/1053773\",'+
-		'                \"lastUpdated\": \"2019-10-07T01:40:24.055Z\",'+
-		'                \"display\": \"2018 Dodge Ram 1500\"'+
-		'            },'+
-		'            \"startTime\": \"2022-09-01T13:57:00.000Z\",'+
-		'            \"endTime\": \"2022-09-01T14:36:00.000Z\",'+
-		'            \"startOdometer\": 249568,'+
-		'            \"endOdometer\": 249600,'+
-		'            \"mileage\": 31.5,'+
-		'            \"fromLocation\": {'+
-		'                \"id\": 140017125,'+
-		'                \"url\": \"https://app.mburse.com/web/api/locations/140017125\",'+
-		'                \"lastUpdated\": \"2021-08-24T15:21:56.871Z\",'+
-		'                \"display\": \"12321 FL-50, Orlando, FL 32826\",'+
-		'                \"name\": null,'+
-		'                \"address\": \"12321 FL-50, Orlando, FL 32826\"'+
-		'            },'+
-		'            \"toLocation\": {'+
-		'                \"id\": 157310462,'+
-		'                \"url\": \"https://app.mburse.com/web/api/locations/157310462\",'+
-		'                \"lastUpdated\": \"2022-09-01T14:52:25.626Z\",'+
-		'                \"display\": \"6265 Arborwood Ave, Cocoa, FL 32927\",'+
-		'                \"name\": null,'+
-		'                \"address\": \"6265 Arborwood Ave, Cocoa, FL 32927\"'+
-		'            },'+
-		'            \"activity\": \"Business\",'+
-		'            \"parking\": 0.0,'+
-		'            \"toll\": 0.0,'+
-		'            \"tags\": null,'+
-		'            \"notes\": null,'+
-		'            \"status\": \"Not Submitted\",'+
-		'            \"statusUpdateTime\": null,'+
-		'            \"statusUpdatedBy\": null,'+
-		'            \"polyline\": \"qkjmDhsqnNP_GdAKzA?nAmLB{QAoMEmQB_SA_UCyQA{JAmS?{H?iC@aKSuQAiPNkS@uTCqXlAcXdDyV|EsVvEkT`DwO|DaR|DqRfE{RvEeU~EaVlFuWbEaSpDuPbHeWnJiWfMaVzPeVlQuTdPeUtJkYbDw[Bs\\\\Cw^C_^A}]As^Hm^rA}]v@c_@oAm_@mAi^kA}]Q{\\\\Ia\\\\I{\\\\Gs[EgSGcSEqXGg[c@q[uDs[uEg]gE_^gBy_@cBg_@aBc_@{Bw^kFk\\\\q@o\\\\@u\\\\D_^@w^@m]Bi^Bi]Mk\\\\aHaY_QsRqMsVyA}[?q]Di]@o]Fm^PgZHoZwAuVfDgGdSm@xWAlZFd[Ad[Fn\\\\Bn[@tXgHjVqQrWuRpWwRzVeR|ViRzUiQjUaQhVuQxV_R`Y}IzZMd\\\\H~[Lf[NbSpFfMhOr@rT{AdFkP\\\\_RnC_HdBmMbGiOv@eMAeMCyJ?PfFrF?tFAvHBbG?tCtBy@zFaA@\",'+
-		'            \"route\": \"https://app.mburse.com/web/api/trips/2001608050/routes\",'+
-		'            \"receipts\": \"https://app.mburse.com/web/api/trips/2001608050/receipts\",'+
-		'            \"map\": \"https://app.mburse.com/web/kml/embed/9mnedp3x3.kml\",'+
-		'            \"trackingMethod\": \"MagicTrip\",'+
-		'            \"stayTimeMins\": 6'+
-		'        },'+
-		'        {'+
-		'            \"id\": 2001608333,'+
-		'            \"url\": \"https://app.mburse.com/web/api/trips/2001608333\",'+
-		'            \"lastUpdated\": \"2022-09-01T14:52:25.627Z\",'+
-		'            \"user\": {'+
-		'                \"id\": 344649,'+
-		'                \"url\": \"https://app.mburse.com/web/api/users/344649\",'+
-		'                \"email\": \"c.santaliz@ermi-motion.com\",'+
-		'                \"display\": \"Santaliz, Ceasar\"'+
-		'            },'+
-		'            \"vehicle\": {'+
-		'                \"id\": 1053773,'+
-		'                \"url\": \"https://app.mburse.com/web/api/vehicles/1053773\",'+
-		'                \"lastUpdated\": \"2019-10-07T01:40:24.055Z\",'+
-		'                \"display\": \"2018 Dodge Ram 1500\"'+
-		'            },'+
-		'            \"startTime\": \"2022-09-01T14:36:00.000Z\",'+
-		'            \"endTime\": \"2022-09-01T14:52:00.000Z\",'+
-		'            \"startOdometer\": 249600,'+
-		'            \"endOdometer\": 249600,'+
-		'            \"mileage\": 0.0,'+
-		'            \"fromLocation\": {'+
-		'                \"id\": 157310462,'+
-		'                \"url\": \"https://app.mburse.com/web/api/locations/157310462\",'+
-		'                \"lastUpdated\": \"2022-09-01T14:52:25.626Z\",'+
-		'                \"display\": \"6265 Arborwood Ave, Cocoa, FL 32927\",'+
-		'                \"name\": null,'+
-		'                \"address\": \"6265 Arborwood Ave, Cocoa, FL 32927\"'+
-		'            },'+
-		'            \"toLocation\": {'+
-		'                \"id\": 157310462,'+
-		'                \"url\": \"https://app.mburse.com/web/api/locations/157310462\",'+
-		'                \"lastUpdated\": \"2022-09-01T14:52:25.626Z\",'+
-		'                \"display\": \"6265 Arborwood Ave, Cocoa, FL 32927\",'+
-		'                \"name\": null,'+
-		'                \"address\": \"6265 Arborwood Ave, Cocoa, FL 32927\"'+
-		'            },'+
-		'            \"activity\": \"Business\",'+
-		'            \"parking\": 0.0,'+
-		'            \"toll\": 0.0,'+
-		'            \"tags\": \"KF Pickup \",'+
-		'            \"notes\": \"\",'+
-		'            \"status\": \"Not Submitted\",'+
-		'            \"statusUpdateTime\": null,'+
-		'            \"statusUpdatedBy\": null,'+
-		'            \"polyline\": null,'+
-		'            \"route\": \"https://app.mburse.com/web/api/trips/2001608333/routes\",'+
-		'            \"receipts\": \"https://app.mburse.com/web/api/trips/2001608333/receipts\",'+
-		'            \"map\": \"https://app.mburse.com/web/kml/embed/4hve1p3xe.kml\",'+
-		'            \"trackingMethod\": \"App Manual Entry\",'+
-		'            \"stayTimeMins\": 0'+
-		'        },'+
-		'        {'+
-		'            \"id\": 2001608336,'+
-		'            \"url\": \"https://app.mburse.com/web/api/trips/2001608336\",'+
-		'            \"lastUpdated\": \"2022-09-01T16:27:02.564Z\",'+
-		'            \"user\": {'+
-		'                \"id\": 344649,'+
-		'                \"url\": \"https://app.mburse.com/web/api/users/344649\",'+
-		'                \"email\": \"c.santaliz@ermi-motion.com\",'+
-		'                \"display\": \"Santaliz, Ceasar\"'+
-		'            },'+
-		'            \"vehicle\": {'+
-		'                \"id\": 1053773,'+
-		'                \"url\": \"https://app.mburse.com/web/api/vehicles/1053773\",'+
-		'                \"lastUpdated\": \"2019-10-07T01:40:24.055Z\",'+
-		'                \"display\": \"2018 Dodge Ram 1500\"'+
-		'            },'+
-		'            \"startTime\": \"2022-09-01T14:52:00.000Z\",'+
-		'            \"endTime\": \"2022-09-01T16:21:00.000Z\",'+
-		'            \"startOdometer\": 249600,'+
-		'            \"endOdometer\": 249669,'+
-		'            \"mileage\": 68.8,'+
-		'            \"fromLocation\": {'+
-		'                \"id\": 157310462,'+
-		'                \"url\": \"https://app.mburse.com/web/api/locations/157310462\",'+
-		'                \"lastUpdated\": \"2022-09-01T14:52:25.626Z\",'+
-		'                \"display\": \"6265 Arborwood Ave, Cocoa, FL 32927\",'+
-		'                \"name\": null,'+
-		'                \"address\": \"6265 Arborwood Ave, Cocoa, FL 32927\"'+
-		'            },'+
-		'            \"toLocation\": {'+
-		'                \"id\": 157312313,'+
-		'                \"url\": \"https://app.mburse.com/web/api/locations/157312313\",'+
-		'                \"lastUpdated\": \"2022-09-14T19:26:34.278Z\",'+
-		'                \"display\": \"2303 River Park Cir, Orlando, FL 32817\",'+
-		'                \"name\": null,'+
-		'                \"address\": \"2303 River Park Cir, Orlando, FL 32817\"'+
-		'            },'+
-		'            \"activity\": \"Business\",'+
-		'            \"parking\": 0.0,'+
-		'            \"toll\": 0.0,'+
-		'            \"tags\": null,'+
-		'            \"notes\": null,'+
-		'            \"status\": \"Not Submitted\",'+
-		'            \"statusUpdateTime\": null,'+
-		'            \"statusUpdatedBy\": null,'+
-		'            \"polyline\": \"q~vlDrgklNrAgDoKmEwGGgI?iFU\\\\gEbJ@zL?fL@jN]zMmFdFiBzPcCvOqA|Ga@LgPdFuPbPkPxXuAb\\\\i@d]o@b^Kz]Ap]Ev[XzPnGdLjSJr]sEd`@gNd\\\\uTxUiW~TaYhWwVpTa[hUeWlV{WhU}XpViTvRkOvg@Gbc@Dtc@Lrc@@dg@@l^F`c@@`b@B|a@Bla@@pa@Dna@?x`@?xa@Bte@Fp`@Ht_@@x`@@f`@?n_@?~a@Jz\\\\A|^R~]UxYNt[Dl]D~\\\\?|\\\\Lp`@@d_@Jf]]p_@d@j^\\\\jb@Lj\\\\Dfa@Tf_@Hv\\\\Hz[Cnc@^r\\\\Pj_@D|_@Dz]Gla@J|\\\\Ip^Or[A|]@j[Ktb@GvXB~^Bn^Q|\\\\Ivb@PzZ?b]?f]Vh`@K|WDv[Dr]@d\\\\B|[Fb]Bj_@Dt_@Fn_@Db^Dj_@dAv_@|G~^dEd`@Bv`@E|a@J~d@{@vb@yAl[_D`\\\\oCb]cCpXm@lXgIpQzGrJvQiAv^tH`RtGpOeDbZTdOn@jN]tLeG{EiUmJkDqCrDDtB^jAShBGxAPx@EjAIbB?~DbFbDnJ{C~CeL}GaNqOuCcOX}O~GcQdF{Q_BuP_BkM}@eNPaJqIm@gTbCs\\\\xC{_@fD{a@rBa]Joa@C_`@Moc@D}]iBaXiG{XmDsY]{\\\\FiWnEiWqGiPaOcMaVjEgWpMaVvJaXrLsZhHg[zEc^lGs[jF}TrCkZ~@}XbAoUdGwU|HwXtIeVtJsUfCcWDoWLeWWyVh@iXVuVlFkQpPgMsCIyYNya@Ls[Es`@D_\\\\[aa@y@m]gBw\\\\{Ag[gBwVUaLBo@iBg@kJdAgInEgHnFoMpBoP@iQVgOdAwDNgBt@mBzLkAtRgAbVaAtQcAtN?~@i@jJsAnIa@zP}@~M_@lQGbQh@vSx@vPhAbRb@dPr@hMZnAIdEoHlB}LbEoPtCuPd@kKh@sK`JuHfNuLfHqPB_Oj@oPHoPF{BuANqPLeSGoOGcJQmQGyLEqGImQA_TCiSC_UCeU?qOlI{@pRc@lRKfRG|PCnQIdPGtPGtOKhNE|EZy@hN_AxPeAvR_@pU`@hUv@jQX`J_Jf@oOJmLI~@gJq@oGiDn@eBAyAiCc@cB]aBFqBw@Xl@vBp@bAbA|BdAfAfAZ\",'+
-		'            \"route\": \"https://app.mburse.com/web/api/trips/2001608336/routes\",'+
-		'            \"receipts\": \"https://app.mburse.com/web/api/trips/2001608336/receipts\",'+
-		'            \"map\": \"https://app.mburse.com/web/kml/embed/bkve4p3x3.kml\",'+
-		'            \"trackingMethod\": \"MagicTrip\",'+
-		'            \"stayTimeMins\": 0'+
-		'        },'+
-		'        {'+
-		'            \"id\": 2001608981,'+
-		'            \"url\": \"https://app.mburse.com/web/api/trips/2001608981\",'+
-		'            \"lastUpdated\": \"2022-09-01T16:59:20.975Z\",'+
-		'            \"user\": {'+
-		'                \"id\": 344649,'+
-		'                \"url\": \"https://app.mburse.com/web/api/users/344649\",'+
-		'                \"email\": \"c.santaliz@ermi-motion.com\",'+
-		'                \"display\": \"Santaliz, Ceasar\"'+
-		'            },'+
-		'            \"vehicle\": {'+
-		'                \"id\": 1053773,'+
-		'                \"url\": \"https://app.mburse.com/web/api/vehicles/1053773\",'+
-		'                \"lastUpdated\": \"2019-10-07T01:40:24.055Z\",'+
-		'                \"display\": \"2018 Dodge Ram 1500\"'+
-		'            },'+
-		'            \"startTime\": \"2022-09-01T16:39:00.000Z\",'+
-		'            \"endTime\": \"2022-09-01T16:54:00.000Z\",'+
-		'            \"startOdometer\": 249669,'+
-		'            \"endOdometer\": 249673,'+
-		'            \"mileage\": 4.3,'+
-		'            \"fromLocation\": {'+
-		'                \"id\": 157312313,'+
-		'                \"url\": \"https://app.mburse.com/web/api/locations/157312313\",'+
-		'                \"lastUpdated\": \"2022-09-14T19:26:34.278Z\",'+
-		'                \"display\": \"2303 River Park Cir, Orlando, FL 32817\",'+
-		'                \"name\": null,'+
-		'                \"address\": \"2303 River Park Cir, Orlando, FL 32817\"'+
-		'            },'+
-		'            \"toLocation\": {'+
-		'                \"id\": 144137381,'+
-		'                \"url\": \"https://app.mburse.com/web/api/locations/144137381\",'+
-		'                \"lastUpdated\": \"2022-09-07T13:03:33.877Z\",'+
-		'                \"display\": \"1816 Woodbury Road, Orlando, FL 32828\",'+
-		'                \"name\": null,'+
-		'                \"address\": \"1816 Woodbury Road, Orlando, FL 32828\"'+
-		'            },'+
-		'            \"activity\": \"Business\",'+
-		'            \"parking\": 0.0,'+
-		'            \"toll\": 0.0,'+
-		'            \"tags\": null,'+
-		'            \"notes\": null,'+
-		'            \"status\": \"Not Submitted\",'+
-		'            \"statusUpdateTime\": null,'+
-		'            \"statusUpdatedBy\": null,'+
-		'            \"polyline\": \"kglmD|nznNbAjIoAtHr@`@CAjI`@jNRlLsAf@N\\\\]OqLi@cWYoTb@{R~AkUj@}QZsEr@iO`@{HAsAdBqPlAeTt@aVNmE^uAt@kOnA{Pn@wOd@eOdAyIdCwE~Gh@hC|Cw@xC{AR_Cw@Zy@\",'+
-		'            \"route\": \"https://app.mburse.com/web/api/trips/2001608981/routes\",'+
-		'            \"receipts\": \"https://app.mburse.com/web/api/trips/2001608981/receipts\",'+
-		'            \"map\": \"https://app.mburse.com/web/kml/embed/7hdfbp3x4.kml\",'+
-		'            \"trackingMethod\": \"MagicTrip\",'+
-		'            \"stayTimeMins\": 18'+
-		'        },'+
-		'        {'+
-		'            \"id\": 2001609307,'+
-		'            \"url\": \"https://app.mburse.com/web/api/trips/2001609307\",'+
-		'            \"lastUpdated\": \"2022-09-01T17:35:47.946Z\",'+
-		'            \"user\": {'+
-		'                \"id\": 344649,'+
-		'                \"url\": \"https://app.mburse.com/web/api/users/344649\",'+
-		'                \"email\": \"c.santaliz@ermi-motion.com\",'+
-		'                \"display\": \"Santaliz, Ceasar\"'+
-		'            },'+
-		'            \"vehicle\": {'+
-		'                \"id\": 1053773,'+
-		'                \"url\": \"https://app.mburse.com/web/api/vehicles/1053773\",'+
-		'                \"lastUpdated\": \"2019-10-07T01:40:24.055Z\",'+
-		'                \"display\": \"2018 Dodge Ram 1500\"'+
-		'            },'+
-		'            \"startTime\": \"2022-09-01T16:54:00.000Z\",'+
-		'            \"endTime\": \"2022-09-01T17:35:00.000Z\",'+
-		'            \"startOdometer\": 249673,'+
-		'            \"endOdometer\": 249673,'+
-		'            \"mileage\": 0.0,'+
-		'            \"fromLocation\": {'+
-		'                \"id\": 144137381,'+
-		'                \"url\": \"https://app.mburse.com/web/api/locations/144137381\",'+
-		'                \"lastUpdated\": \"2022-09-07T13:03:33.877Z\",'+
-		'                \"display\": \"1816 Woodbury Road, Orlando, FL 32828\",'+
-		'                \"name\": null,'+
-		'                \"address\": \"1816 Woodbury Road, Orlando, FL 32828\"'+
-		'            },'+
-		'            \"toLocation\": {'+
-		'                \"id\": 144137381,'+
-		'                \"url\": \"https://app.mburse.com/web/api/locations/144137381\",'+
-		'                \"lastUpdated\": \"2022-09-07T13:03:33.877Z\",'+
-		'                \"display\": \"1816 Woodbury Road, Orlando, FL 32828\",'+
-		'                \"name\": null,'+
-		'                \"address\": \"1816 Woodbury Road, Orlando, FL 32828\"'+
-		'            },'+
-		'            \"activity\": \"Business\",'+
-		'            \"parking\": 0.0,'+
-		'            \"toll\": 0.0,'+
-		'            \"tags\": \"Clean Devices\",'+
-		'            \"notes\": \"\",'+
-		'            \"status\": \"Not Submitted\",'+
-		'            \"statusUpdateTime\": null,'+
-		'            \"statusUpdatedBy\": null,'+
-		'            \"polyline\": null,'+
-		'            \"route\": \"https://app.mburse.com/web/api/trips/2001609307/routes\",'+
-		'            \"receipts\": \"https://app.mburse.com/web/api/trips/2001609307/receipts\",'+
-		'            \"map\": \"https://app.mburse.com/web/kml/embed/0jmf0p3x8.kml\",'+
-		'            \"trackingMethod\": \"App Manual Entry\",'+
-		'            \"stayTimeMins\": 0'+
-		'        },'+
-		'        {'+
-		'            \"id\": 2001609313,'+
-		'            \"url\": \"https://app.mburse.com/web/api/trips/2001609313\",'+
-		'            \"lastUpdated\": \"2022-09-01T18:18:40.914Z\",'+
-		'            \"user\": {'+
-		'                \"id\": 344649,'+
-		'                \"url\": \"https://app.mburse.com/web/api/users/344649\",'+
-		'                \"email\": \"c.santaliz@ermi-motion.com\",'+
-		'                \"display\": \"Santaliz, Ceasar\"'+
-		'            },'+
-		'            \"vehicle\": {'+
-		'                \"id\": 1053773,'+
-		'                \"url\": \"https://app.mburse.com/web/api/vehicles/1053773\",'+
-		'                \"lastUpdated\": \"2019-10-07T01:40:24.055Z\",'+
-		'                \"display\": \"2018 Dodge Ram 1500\"'+
-		'            },'+
-		'            \"startTime\": \"2022-09-01T17:35:00.000Z\",'+
-		'            \"endTime\": \"2022-09-01T18:13:00.000Z\",'+
-		'            \"startOdometer\": 249673,'+
-		'            \"endOdometer\": 249697,'+
-		'            \"mileage\": 24.2,'+
-		'            \"fromLocation\": {'+
-		'                \"id\": 144137381,'+
-		'                \"url\": \"https://app.mburse.com/web/api/locations/144137381\",'+
-		'                \"lastUpdated\": \"2022-09-07T13:03:33.877Z\",'+
-		'                \"display\": \"1816 Woodbury Road, Orlando, FL 32828\",'+
-		'                \"name\": null,'+
-		'                \"address\": \"1816 Woodbury Road, Orlando, FL 32828\"'+
-		'            },'+
-		'            \"toLocation\": {'+
-		'                \"id\": 512078970,'+
-		'                \"url\": \"https://app.mburse.com/web/api/locations/512078970\",'+
-		'                \"lastUpdated\": \"2022-08-10T17:38:08.303Z\",'+
-		'                \"display\": \"Basketball Court\",'+
-		'                \"name\": \"Basketball Court\",'+
-		'                \"address\": \"Orlando, FL 32819\"'+
-		'            },'+
-		'            \"activity\": \"Business\",'+
-		'            \"parking\": 0.0,'+
-		'            \"toll\": 0.0,'+
-		'            \"tags\": null,'+
-		'            \"notes\": null,'+
-		'            \"status\": \"Not Submitted\",'+
-		'            \"statusUpdateTime\": null,'+
-		'            \"statusUpdatedBy\": null,'+
-		'            \"polyline\": \"a{imDtnqnNJ~EfFML}AgB{AFmBfEEj@WaBWsJCiDLo@c@~AuLfQ}D~Yk@vVnCdKhYjE~\\\\pEl]hElc@`Aj`@fDx`@\\\\|[Ad_@Bxa@Cf`@]z^Wt_@d@pYDp]A|_@tAvZrJz[`Oh]tLd]jCd[@h_@Uz_@Xbc@Lp]e@d^KjZtB|[|Chb@M|_@Wn\\\\Zta@?z]Uz\\\\vCf]zAzVHz[RzWrFdXcE`ReTtB{V@sRLiIU}@EVdDrNSrQ[bXExWxDfTvK`XzDf\\\\@tXFhXnPfM|TnNbYjEf^X`a@Id]Tr\\\\~HnVxWfVxUlQjQ~OtMxL`GzD~EpExBvAxAdB~DnCj@p@bG~FxBtAhBtBfClC`ApAnAvChAfAr@bB~B`CtBlCpBdChAbCnBvBtD`E|F`I~HzJnFxH~EvHzJfN`MjOnMvOvOfSrP~RhJzQeH|KgErA}B\\\\iHCcD~Fh@|FK^}@T{KZuBfBShCEvC\",'+
-		'            \"route\": \"https://app.mburse.com/web/api/trips/2001609313/routes\",'+
-		'            \"receipts\": \"https://app.mburse.com/web/api/trips/2001609313/receipts\",'+
-		'            \"map\": \"https://app.mburse.com/web/kml/embed/dpmf7p3xd.kml\",'+
-		'            \"trackingMethod\": \"MagicTrip\",'+
-		'            \"stayTimeMins\": 0'+
-		'        },'+
-		'        {'+
-		'            \"id\": 2001609736,'+
-		'            \"url\": \"https://app.mburse.com/web/api/trips/2001609736\",'+
-		'            \"lastUpdated\": \"2022-09-01T19:19:37.235Z\",'+
-		'            \"user\": {'+
-		'                \"id\": 344649,'+
-		'                \"url\": \"https://app.mburse.com/web/api/users/344649\",'+
-		'                \"email\": \"c.santaliz@ermi-motion.com\",'+
-		'                \"display\": \"Santaliz, Ceasar\"'+
-		'            },'+
-		'            \"vehicle\": {'+
-		'                \"id\": 1053773,'+
-		'                \"url\": \"https://app.mburse.com/web/api/vehicles/1053773\",'+
-		'                \"lastUpdated\": \"2019-10-07T01:40:24.055Z\",'+
-		'                \"display\": \"2018 Dodge Ram 1500\"'+
-		'            },'+
-		'            \"startTime\": \"2022-09-01T18:40:00.000Z\",'+
-		'            \"endTime\": \"2022-09-01T19:14:00.000Z\",'+
-		'            \"startOdometer\": 249697,'+
-		'            \"endOdometer\": 249717,'+
-		'            \"mileage\": 20.1,'+
-		'            \"fromLocation\": {'+
-		'                \"id\": 512078970,'+
-		'                \"url\": \"https://app.mburse.com/web/api/locations/512078970\",'+
-		'                \"lastUpdated\": \"2022-08-10T17:38:08.303Z\",'+
-		'                \"display\": \"Basketball Court\",'+
-		'                \"name\": \"Basketball Court\",'+
-		'                \"address\": \"Orlando, FL 32819\"'+
-		'            },'+
-		'            \"toLocation\": {'+
-		'                \"id\": 157312313,'+
-		'                \"url\": \"https://app.mburse.com/web/api/locations/157312313\",'+
-		'                \"lastUpdated\": \"2022-09-14T19:26:34.278Z\",'+
-		'                \"display\": \"2303 River Park Cir, Orlando, FL 32817\",'+
-		'                \"name\": null,'+
-		'                \"address\": \"2303 River Park Cir, Orlando, FL 32817\"'+
-		'            },'+
-		'            \"activity\": \"Business\",'+
-		'            \"parking\": 0.0,'+
-		'            \"toll\": 0.0,'+
-		'            \"tags\": null,'+
-		'            \"notes\": null,'+
-		'            \"status\": \"Not Submitted\",'+
-		'            \"statusUpdateTime\": null,'+
-		'            \"statusUpdatedBy\": null,'+
-		'            \"polyline\": \"}zwlDfahpNzBt@nMaBOx@hAEx@mJ?{Ay@{C}BgNaEoGq@MkCqDkAqFIaCtDw@vMP~Ia@tB]jB{@iEoHqDyCcBqA_BgBm@m@u@u@yBqBw@k@wGcHaDsEyC_DqDiF_CqDeGiHmJqLgK}MmOySqOwRaLyNuSuUeXuSeSmOeUaS}RoQgTuRcIgUaA}ZSsWSyVLkVyBoT_JgUgOmViTuToUyDg[QwYsBmQ{GiKkSaFiXkDm]g@{a@gAuZuBe[Gu[u@s[L_\\\\R_Zg@u]`@a[uCwYmD_]pAm_@f@cZSu`@MsX_@a^Na[eCk_@{HuYkOe\\\\_La]yCm`@Uc^F{`@P}[Fg\\\\xAcRLq@oEsAoHNmD@}OZwSGmMTiSV}JDcCWqCNmM@oLBaOJ{NFsGgErAeJoAkB_@V\",'+
-		'            \"route\": \"https://app.mburse.com/web/api/trips/2001609736/routes\",'+
-		'            \"receipts\": \"https://app.mburse.com/web/api/trips/2001609736/receipts\",'+
-		'            \"map\": \"https://app.mburse.com/web/kml/embed/9gyf2p3x0.kml\",'+
-		'            \"trackingMethod\": \"MagicTrip\",'+
-		'            \"stayTimeMins\": 27'+
-		'        },'+
-		'        {'+
-		'            \"id\": 2001610123,'+
-		'            \"url\": \"https://app.mburse.com/web/api/trips/2001610123\",'+
-		'            \"lastUpdated\": \"2022-09-01T20:01:57.983Z\",'+
-		'            \"user\": {'+
-		'                \"id\": 344649,'+
-		'                \"url\": \"https://app.mburse.com/web/api/users/344649\",'+
-		'                \"email\": \"c.santaliz@ermi-motion.com\",'+
-		'                \"display\": \"Santaliz, Ceasar\"'+
-		'            },'+
-		'            \"vehicle\": {'+
-		'                \"id\": 1053773,'+
-		'                \"url\": \"https://app.mburse.com/web/api/vehicles/1053773\",'+
-		'                \"lastUpdated\": \"2019-10-07T01:40:24.055Z\",'+
-		'                \"display\": \"2018 Dodge Ram 1500\"'+
-		'            },'+
-		'            \"startTime\": \"2022-09-01T19:43:00.000Z\",'+
-		'            \"endTime\": \"2022-09-01T19:56:00.000Z\",'+
-		'            \"startOdometer\": 249717,'+
-		'            \"endOdometer\": 249721,'+
-		'            \"mileage\": 3.8,'+
-		'            \"fromLocation\": {'+
-		'                \"id\": 157312313,'+
-		'                \"url\": \"https://app.mburse.com/web/api/locations/157312313\",'+
-		'                \"lastUpdated\": \"2022-09-14T19:26:34.278Z\",'+
-		'                \"display\": \"2303 River Park Cir, Orlando, FL 32817\",'+
-		'                \"name\": null,'+
-		'                \"address\": \"2303 River Park Cir, Orlando, FL 32817\"'+
-		'            },'+
-		'            \"toLocation\": {'+
-		'                \"id\": 157717772,'+
-		'                \"url\": \"https://app.mburse.com/web/api/locations/157717772\",'+
-		'                \"lastUpdated\": \"2022-09-13T17:29:10.487Z\",'+
-		'                \"display\": \"1100 N Alafaya Trail, Orlando, FL 32828\",'+
-		'                \"name\": null,'+
-		'                \"address\": \"1100 N Alafaya Trail, Orlando, FL 32828\"'+
-		'            },'+
-		'            \"activity\": \"Business\",'+
-		'            \"parking\": 0.0,'+
-		'            \"toll\": 0.0,'+
-		'            \"tags\": null,'+
-		'            \"notes\": null,'+
-		'            \"status\": \"Not Submitted\",'+
-		'            \"statusUpdateTime\": null,'+
-		'            \"statusUpdatedBy\": null,'+
-		'            \"polyline\": \"ellmDtrznNlFgAWzIy@xFn@\\\\zCDnLCxHa@bHPlAPnByH{BmSc@}Y`AaRu@q@HMjAsRv@uSb@aCh@yLfAsQhAgSv@cOf@aIn@gKCiE^_@T}BdCsGpNe@rLYlAlEx@gDhDXnBY\",'+
-		'            \"route\": \"https://app.mburse.com/web/api/trips/2001610123/routes\",'+
-		'            \"receipts\": \"https://app.mburse.com/web/api/trips/2001610123/receipts\",'+
-		'            \"map\": \"https://app.mburse.com/web/kml/embed/a79gcp3x2.kml\",'+
-		'            \"trackingMethod\": \"MagicTrip\",'+
-		'            \"stayTimeMins\": 29'+
-		'        },'+
-		'        {'+
-		'            \"id\": 2001610230,'+
-		'            \"url\": \"https://app.mburse.com/web/api/trips/2001610230\",'+
-		'            \"lastUpdated\": \"2022-09-01T20:05:02.322Z\",'+
-		'            \"user\": {'+
-		'                \"id\": 344649,'+
-		'                \"url\": \"https://app.mburse.com/web/api/users/344649\",'+
-		'                \"email\": \"c.santaliz@ermi-motion.com\",'+
-		'                \"display\": \"Santaliz, Ceasar\"'+
-		'            },'+
-		'            \"vehicle\": {'+
-		'                \"id\": 1053773,'+
-		'                \"url\": \"https://app.mburse.com/web/api/vehicles/1053773\",'+
-		'                \"lastUpdated\": \"2019-10-07T01:40:24.055Z\",'+
-		'                \"display\": \"2018 Dodge Ram 1500\"'+
-		'            },'+
-		'            \"startTime\": \"2022-09-01T19:56:00.000Z\",'+
-		'            \"endTime\": \"2022-09-01T20:04:00.000Z\",'+
-		'            \"startOdometer\": 249721,'+
-		'            \"endOdometer\": 249721,'+
-		'            \"mileage\": 0.0,'+
-		'            \"fromLocation\": {'+
-		'                \"id\": 157717772,'+
-		'                \"url\": \"https://app.mburse.com/web/api/locations/157717772\",'+
-		'                \"lastUpdated\": \"2022-09-13T17:29:10.487Z\",'+
-		'                \"display\": \"1100 N Alafaya Trail, Orlando, FL 32828\",'+
-		'                \"name\": null,'+
-		'                \"address\": \"1100 N Alafaya Trail, Orlando, FL 32828\"'+
-		'            },'+
-		'            \"toLocation\": {'+
-		'                \"id\": 157717772,'+
-		'                \"url\": \"https://app.mburse.com/web/api/locations/157717772\",'+
-		'                \"lastUpdated\": \"2022-09-13T17:29:10.487Z\",'+
-		'                \"display\": \"1100 N Alafaya Trail, Orlando, FL 32828\",'+
-		'                \"name\": null,'+
-		'                \"address\": \"1100 N Alafaya Trail, Orlando, FL 32828\"'+
-		'            },'+
-		'            \"activity\": \"Business\",'+
-		'            \"parking\": 0.0,'+
-		'            \"toll\": 0.0,'+
-		'            \"tags\": \"Fedex\",'+
-		'            \"notes\": \"\",'+
-		'            \"status\": \"Not Submitted\",'+
-		'            \"statusUpdateTime\": null,'+
-		'            \"statusUpdatedBy\": null,'+
-		'            \"polyline\": null,'+
-		'            \"route\": \"https://app.mburse.com/web/api/trips/2001610230/routes\",'+
-		'            \"receipts\": \"https://app.mburse.com/web/api/trips/2001610230/receipts\",'+
-		'            \"map\": \"https://app.mburse.com/web/kml/embed/66cgbp3x0.kml\",'+
-		'            \"trackingMethod\": \"App Manual Entry\",'+
-		'            \"stayTimeMins\": 0'+
-		'        },'+
-		'        {'+
-		'            \"id\": 2001610240,'+
-		'            \"url\": \"https://app.mburse.com/web/api/trips/2001610240\",'+
-		'            \"lastUpdated\": \"2022-09-01T20:13:10.115Z\",'+
-		'            \"user\": {'+
-		'                \"id\": 344649,'+
-		'                \"url\": \"https://app.mburse.com/web/api/users/344649\",'+
-		'                \"email\": \"c.santaliz@ermi-motion.com\",'+
-		'                \"display\": \"Santaliz, Ceasar\"'+
-		'            },'+
-		'            \"vehicle\": {'+
-		'                \"id\": 1053773,'+
-		'                \"url\": \"https://app.mburse.com/web/api/vehicles/1053773\",'+
-		'                \"lastUpdated\": \"2019-10-07T01:40:24.055Z\",'+
-		'                \"display\": \"2018 Dodge Ram 1500\"'+
-		'            },'+
-		'            \"startTime\": \"2022-09-01T20:04:00.000Z\",'+
-		'            \"endTime\": \"2022-09-01T20:08:00.000Z\",'+
-		'            \"startOdometer\": 249721,'+
-		'            \"endOdometer\": 249722,'+
-		'            \"mileage\": 0.6,'+
-		'            \"fromLocation\": {'+
-		'                \"id\": 157717772,'+
-		'                \"url\": \"https://app.mburse.com/web/api/locations/157717772\",'+
-		'                \"lastUpdated\": \"2022-09-13T17:29:10.487Z\",'+
-		'                \"display\": \"1100 N Alafaya Trail, Orlando, FL 32828\",'+
-		'                \"name\": null,'+
-		'                \"address\": \"1100 N Alafaya Trail, Orlando, FL 32828\"'+
-		'            },'+
-		'            \"toLocation\": {'+
-		'                \"id\": 136928262,'+
-		'                \"url\": \"https://app.mburse.com/web/api/locations/136928262\",'+
-		'                \"lastUpdated\": \"2022-05-02T14:06:09.327Z\",'+
-		'                \"display\": \"555 N Alafaya Trail, Orlando, FL 32828\",'+
-		'                \"name\": null,'+
-		'                \"address\": \"555 N Alafaya Trail, Orlando, FL 32828\"'+
-		'            },'+
-		'            \"activity\": \"Business\",'+
-		'            \"parking\": 0.0,'+
-		'            \"toll\": 0.0,'+
-		'            \"tags\": null,'+
-		'            \"notes\": null,'+
-		'            \"status\": \"Not Submitted\",'+
-		'            \"statusUpdateTime\": null,'+
-		'            \"statusUpdatedBy\": null,'+
-		'            \"polyline\": \"y}hmDnzsnNnBgAbSmDo@kDrBaC_AsBi@wAc@aAh@sA\",'+
-		'            \"route\": \"https://app.mburse.com/web/api/trips/2001610240/routes\",'+
-		'            \"receipts\": \"https://app.mburse.com/web/api/trips/2001610240/receipts\",'+
-		'            \"map\": \"https://app.mburse.com/web/kml/embed/dgcg8p3x2.kml\",'+
-		'            \"trackingMethod\": \"MagicTrip\",'+
-		'            \"stayTimeMins\": 0'+
-		'        },'+
-		'        {'+
-		'            \"id\": 2001610295,'+
-		'            \"url\": \"https://app.mburse.com/web/api/trips/2001610295\",'+
-		'            \"lastUpdated\": \"2022-09-01T20:26:01.647Z\",'+
-		'            \"user\": {'+
-		'                \"id\": 344649,'+
-		'                \"url\": \"https://app.mburse.com/web/api/users/344649\",'+
-		'                \"email\": \"c.santaliz@ermi-motion.com\",'+
-		'                \"display\": \"Santaliz, Ceasar\"'+
-		'            },'+
-		'            \"vehicle\": {'+
-		'                \"id\": 1053773,'+
-		'                \"url\": \"https://app.mburse.com/web/api/vehicles/1053773\",'+
-		'                \"lastUpdated\": \"2019-10-07T01:40:24.055Z\",'+
-		'                \"display\": \"2018 Dodge Ram 1500\"'+
-		'            },'+
-		'            \"startTime\": \"2022-09-01T20:12:00.000Z\",'+
-		'            \"endTime\": \"2022-09-01T20:20:00.000Z\",'+
-		'            \"startOdometer\": 249722,'+
-		'            \"endOdometer\": 249724,'+
-		'            \"mileage\": 1.6,'+
-		'            \"fromLocation\": {'+
-		'                \"id\": 136928262,'+
-		'                \"url\": \"https://app.mburse.com/web/api/locations/136928262\",'+
-		'                \"lastUpdated\": \"2022-05-02T14:06:09.327Z\",'+
-		'                \"display\": \"555 N Alafaya Trail, Orlando, FL 32828\",'+
-		'                \"name\": null,'+
-		'                \"address\": \"555 N Alafaya Trail, Orlando, FL 32828\"'+
-		'            },'+
-		'            \"toLocation\": {'+
-		'                \"id\": 144137381,'+
-		'                \"url\": \"https://app.mburse.com/web/api/locations/144137381\",'+
-		'                \"lastUpdated\": \"2022-09-07T13:03:33.877Z\",'+
-		'                \"display\": \"1816 Woodbury Road, Orlando, FL 32828\",'+
-		'                \"name\": null,'+
-		'                \"address\": \"1816 Woodbury Road, Orlando, FL 32828\"'+
-		'            },'+
-		'            \"activity\": \"Business\",'+
-		'            \"parking\": 0.0,'+
-		'            \"toll\": 0.0,'+
-		'            \"tags\": null,'+
-		'            \"notes\": null,'+
-		'            \"status\": \"Not Submitted\",'+
-		'            \"statusUpdateTime\": null,'+
-		'            \"statusUpdatedBy\": null,'+
-		'            \"polyline\": \"kghmDh}rnN_BuFgCsF`CqE~HkGzBsLuAq@?yAgCkBcLL_JTuFGk@KqFFeIRGlBvBxAJ|BwCp@cBW}@_B|@oC\",'+
-		'            \"route\": \"https://app.mburse.com/web/api/trips/2001610295/routes\",'+
-		'            \"receipts\": \"https://app.mburse.com/web/api/trips/2001610295/receipts\",'+
-		'            \"map\": \"https://app.mburse.com/web/kml/embed/9zdgfp3x4.kml\",'+
-		'            \"trackingMethod\": \"MagicTrip\",'+
-		'            \"stayTimeMins\": 4'+
-		'        },'+
-		'        {'+
-		'            \"id\": 2001610536,'+
-		'            \"url\": \"https://app.mburse.com/web/api/trips/2001610536\",'+
-		'            \"lastUpdated\": \"2022-09-01T21:35:07.710Z\",'+
-		'            \"user\": {'+
-		'                \"id\": 344649,'+
-		'                \"url\": \"https://app.mburse.com/web/api/users/344649\",'+
-		'                \"email\": \"c.santaliz@ermi-motion.com\",'+
-		'                \"display\": \"Santaliz, Ceasar\"'+
-		'            },'+
-		'            \"vehicle\": {'+
-		'                \"id\": 1053773,'+
-		'                \"url\": \"https://app.mburse.com/web/api/vehicles/1053773\",'+
-		'                \"lastUpdated\": \"2019-10-07T01:40:24.055Z\",'+
-		'                \"display\": \"2018 Dodge Ram 1500\"'+
-		'            },'+
-		'            \"startTime\": \"2022-09-01T21:10:00.000Z\",'+
-		'            \"endTime\": \"2022-09-01T21:30:00.000Z\",'+
-		'            \"startOdometer\": 249724,'+
-		'            \"endOdometer\": 249734,'+
-		'            \"mileage\": 10.0,'+
-		'            \"fromLocation\": {'+
-		'                \"id\": 144137381,'+
-		'                \"url\": \"https://app.mburse.com/web/api/locations/144137381\",'+
-		'                \"lastUpdated\": \"2022-09-07T13:03:33.877Z\",'+
-		'                \"display\": \"1816 Woodbury Road, Orlando, FL 32828\",'+
-		'                \"name\": null,'+
-		'                \"address\": \"1816 Woodbury Road, Orlando, FL 32828\"'+
-		'            },'+
-		'            \"toLocation\": {'+
-		'                \"id\": 157524551,'+
-		'                \"url\": \"https://app.mburse.com/web/api/locations/157524551\",'+
-		'                \"lastUpdated\": \"2021-08-05T22:27:10.502Z\",'+
-		'                \"display\": \"5985 La Costa Dr, Orlando, FL 32807\",'+
-		'                \"name\": null,'+
-		'                \"address\": \"5985 La Costa Dr, Orlando, FL 32807\"'+
-		'            },'+
-		'            \"activity\": \"Business\",'+
-		'            \"parking\": 0.0,'+
-		'            \"toll\": 0.0,'+
-		'            \"tags\": null,'+
-		'            \"notes\": null,'+
-		'            \"status\": \"Not Submitted\",'+
-		'            \"statusUpdateTime\": null,'+
-		'            \"statusUpdatedBy\": null,'+
-		'            \"polyline\": \"uwimD|uqnN~AkDbCsD`@SuEWoDT}BGoAAi@GTmJfQeGpSw@lWV~OdPrDdYrDrXrDzYvB|VfBjTtApWbBfXTjUEdUHtTItU?|UIrU[~ZCvTLjWMnXNhVA`X|@bVxDlUjI~SvIjTvJ|V|E`ZZjZGvMP~NBvO]tTD~QoEjKl@rAx@\\\\xFb@lGUnKJxKKvByDe@mMh@{DxFk@J}G~BqBpDN|@o@\",'+
-		'            \"route\": \"https://app.mburse.com/web/api/trips/2001610536/routes\",'+
-		'            \"receipts\": \"https://app.mburse.com/web/api/trips/2001610536/receipts\",'+
-		'            \"map\": \"https://app.mburse.com/web/kml/embed/9okgfp3x4.kml\",'+
-		'            \"trackingMethod\": \"MagicTrip\",'+
-		'            \"stayTimeMins\": 50'+
-		'        },'+
-		'        {'+
-		'            \"id\": 2001610654,'+
-		'            \"url\": \"https://app.mburse.com/web/api/trips/2001610654\",'+
-		'            \"lastUpdated\": \"2022-09-01T23:01:42.107Z\",'+
-		'            \"user\": {'+
-		'                \"id\": 344649,'+
-		'                \"url\": \"https://app.mburse.com/web/api/users/344649\",'+
-		'                \"email\": \"c.santaliz@ermi-motion.com\",'+
-		'                \"display\": \"Santaliz, Ceasar\"'+
-		'            },'+
-		'            \"vehicle\": {'+
-		'                \"id\": 1053773,'+
-		'                \"url\": \"https://app.mburse.com/web/api/vehicles/1053773\",'+
-		'                \"lastUpdated\": \"2019-10-07T01:40:24.055Z\",'+
-		'                \"display\": \"2018 Dodge Ram 1500\"'+
-		'            },'+
-		'            \"startTime\": \"2022-09-01T21:34:00.000Z\",'+
-		'            \"endTime\": \"2022-09-01T22:56:00.000Z\",'+
-		'            \"startOdometer\": 249734,'+
-		'            \"endOdometer\": 249780,'+
-		'            \"mileage\": 45.9,'+
-		'            \"fromLocation\": {'+
-		'                \"id\": 157524551,'+
-		'                \"url\": \"https://app.mburse.com/web/api/locations/157524551\",'+
-		'                \"lastUpdated\": \"2021-08-05T22:27:10.502Z\",'+
-		'                \"display\": \"5985 La Costa Dr, Orlando, FL 32807\",'+
-		'                \"name\": null,'+
-		'                \"address\": \"5985 La Costa Dr, Orlando, FL 32807\"'+
-		'            },'+
-		'            \"toLocation\": {'+
-		'                \"id\": 512096200,'+
-		'                \"url\": \"https://app.mburse.com/web/api/locations/512096200\",'+
-		'                \"lastUpdated\": \"2022-09-01T23:12:37.332Z\",'+
-		'                \"display\": \"3020 Alyssa Ln, Davenport, FL 33837\",'+
-		'                \"name\": null,'+
-		'                \"address\": \"3020 Alyssa Ln, Davenport, FL 33837\"'+
-		'            },'+
-		'            \"activity\": \"Business\",'+
-		'            \"parking\": 0.0,'+
-		'            \"toll\": 0.0,'+
-		'            \"tags\": null,'+
-		'            \"notes\": null,'+
-		'            \"status\": \"Not Submitted\",'+
-		'            \"statusUpdateTime\": null,'+
-		'            \"statusUpdatedBy\": null,'+
-		'            \"polyline\": \"aicmDjtfoN_HNyA`N}D?UvH?|G?bCoCbAeEBcE@kAB_C?gC?kB@eJC?qDf@rK@zGGdFKpCElAM~CQlFK~G@rPhBfVjDr[Nt\\\\Ah]Fv\\\\Fl\\\\Rv]Jh]hDt\\\\h@n\\\\Bj]vEn[lDr[Dh`@@n`@Bb`@eAv_@_OxZyQxW}Q`XuIx\\\\K|_@wAd_@iKx\\\\Gt_@@z_@J~_@gBb_@{Gf^lC`_@rDn_@`@r_@oBt_@l@t_@bDf_@zCp_@zCf_@dDha@lDf_@zJd]lQdXnRzVxDdXcQdP_DlB{A~@w@f@qA|@_An@yAdAyE`EiApAsA|A_CbDkClEkAjCqBnFw@fCiA`Fe@pC}@vIUjHC`CI`GIbFAv@[lC[bC]hBo@jCSv@mB~H{@xDg@hE^`Ex@pBd@p@dBpAx@ZhGFnA_@dA[lA_@b@Kz@Yt@QzAi@`Co@xCm@bC[dFQhIPbJZtIt@tIfCxGhEjEzEpFrLpDbOfEpQzEjSfGhRpKjQ`MtSjQhYrLfZ~Cn\\\\rA~VhDvSfInTfQ~UdSzOlSxOdVdRbV`RpX|ShXdTrXxSh\\\\`Jf_@L~^Gn]lExVrRnTfTlVhNpZhEd[{BjX}LnY{Pb]cGz[yBtZ_JfYyKdYgLdZuLpZyLxYiLtXaLrZwLnZyLxZ_Mj[kLd^wGl_@mA|[nB~[pIl\\\\xIx\\\\vI~`@hCz^sAf]mA|]mAt]kGtWyTfZsNx]a@x]Bz\\\\qBxXmQjXyR`XiR`W}MvVu@hFbBjDrBlD`CtDtCpB|AfB`BnCdCfGrFhIpHvFjFzJdJrLzKdNfMrQ~PhRnQfSbU|PjWbPhWzO|UjNzSpOnUlPhVdOrUrNnTzKvReG|NcIiFBAzBwFpI{Eh@W|GmDjKgFpBaAjCuArJ_FlAs@JGpBmEeFcGaEIaMrE_JgFrAcBc@}DpAiDKwA\",'+
-		'            \"route\": \"https://app.mburse.com/web/api/trips/2001610654/routes\",'+
-		'            \"receipts\": \"https://app.mburse.com/web/api/trips/2001610654/receipts\",'+
-		'            \"map\": \"https://app.mburse.com/web/kml/embed/dyng5p3x3.kml\",'+
-		'            \"trackingMethod\": \"MagicTrip\",'+
-		'            \"stayTimeMins\": 4'+
-		'        },'+
-		'        {'+
-		'            \"id\": 2001611181,'+
-		'            \"url\": \"https://app.mburse.com/web/api/trips/2001611181\",'+
-		'            \"lastUpdated\": \"2022-09-01T23:12:37.333Z\",'+
-		'            \"user\": {'+
-		'                \"id\": 344649,'+
-		'                \"url\": \"https://app.mburse.com/web/api/users/344649\",'+
-		'                \"email\": \"c.santaliz@ermi-motion.com\",'+
-		'                \"display\": \"Santaliz, Ceasar\"'+
-		'            },'+
-		'            \"vehicle\": {'+
-		'                \"id\": 1053773,'+
-		'                \"url\": \"https://app.mburse.com/web/api/vehicles/1053773\",'+
-		'                \"lastUpdated\": \"2019-10-07T01:40:24.055Z\",'+
-		'                \"display\": \"2018 Dodge Ram 1500\"'+
-		'            },'+
-		'            \"startTime\": \"2022-09-01T22:56:00.000Z\",'+
-		'            \"endTime\": \"2022-09-01T23:12:00.000Z\",'+
-		'            \"startOdometer\": 249780,'+
-		'            \"endOdometer\": 249780,'+
-		'            \"mileage\": 0.0,'+
-		'            \"fromLocation\": {'+
-		'                \"id\": 512096200,'+
-		'                \"url\": \"https://app.mburse.com/web/api/locations/512096200\",'+
-		'                \"lastUpdated\": \"2022-09-01T23:12:37.332Z\",'+
-		'                \"display\": \"3020 Alyssa Ln, Davenport, FL 33837\",'+
-		'                \"name\": null,'+
-		'                \"address\": \"3020 Alyssa Ln, Davenport, FL 33837\"'+
-		'            },'+
-		'            \"toLocation\": {'+
-		'                \"id\": 512096200,'+
-		'                \"url\": \"https://app.mburse.com/web/api/locations/512096200\",'+
-		'                \"lastUpdated\": \"2022-09-01T23:12:37.332Z\",'+
-		'                \"display\": \"3020 Alyssa Ln, Davenport, FL 33837\",'+
-		'                \"name\": null,'+
-		'                \"address\": \"3020 Alyssa Ln, Davenport, FL 33837\"'+
-		'            },'+
-		'            \"activity\": \"Business\",'+
-		'            \"parking\": 0.0,'+
-		'            \"toll\": 0.0,'+
-		'            \"tags\": \"KE Setup \",'+
-		'            \"notes\": \"\",'+
-		'            \"status\": \"Not Submitted\",'+
-		'            \"statusUpdateTime\": null,'+
-		'            \"statusUpdatedBy\": null,'+
-		'            \"polyline\": null,'+
-		'            \"route\": \"https://app.mburse.com/web/api/trips/2001611181/routes\",'+
-		'            \"receipts\": \"https://app.mburse.com/web/api/trips/2001611181/receipts\",'+
-		'            \"map\": \"https://app.mburse.com/web/kml/embed/el2h4p3x8.kml\",'+
-		'            \"trackingMethod\": \"App Manual Entry\",'+
-		'            \"stayTimeMins\": 0'+
-		'        },'+
-		'        {'+
-		'            \"id\": 2001611187,'+
-		'            \"url\": \"https://app.mburse.com/web/api/trips/2001611187\",'+
-		'            \"lastUpdated\": \"2022-09-02T00:10:24.803Z\",'+
-		'            \"user\": {'+
-		'                \"id\": 344649,'+
-		'                \"url\": \"https://app.mburse.com/web/api/users/344649\",'+
-		'                \"email\": \"c.santaliz@ermi-motion.com\",'+
-		'                \"display\": \"Santaliz, Ceasar\"'+
-		'            },'+
-		'            \"vehicle\": {'+
-		'                \"id\": 1053773,'+
-		'                \"url\": \"https://app.mburse.com/web/api/vehicles/1053773\",'+
-		'                \"lastUpdated\": \"2019-10-07T01:40:24.055Z\",'+
-		'                \"display\": \"2018 Dodge Ram 1500\"'+
-		'            },'+
-		'            \"startTime\": \"2022-09-01T23:12:00.000Z\",'+
-		'            \"endTime\": \"2022-09-02T00:05:00.000Z\",'+
-		'            \"startOdometer\": 249780,'+
-		'            \"endOdometer\": 249827,'+
-		'            \"mileage\": 47.1,'+
-		'            \"fromLocation\": {'+
-		'                \"id\": 512096200,'+
-		'                \"url\": \"https://app.mburse.com/web/api/locations/512096200\",'+
-		'                \"lastUpdated\": \"2022-09-01T23:12:37.332Z\",'+
-		'                \"display\": \"3020 Alyssa Ln, Davenport, FL 33837\",'+
-		'                \"name\": null,'+
-		'                \"address\": \"3020 Alyssa Ln, Davenport, FL 33837\"'+
-		'            },'+
-		'            \"toLocation\": {'+
-		'                \"id\": 144137381,'+
-		'                \"url\": \"https://app.mburse.com/web/api/locations/144137381\",'+
-		'                \"lastUpdated\": \"2022-09-07T13:03:33.877Z\",'+
-		'                \"display\": \"1816 Woodbury Road, Orlando, FL 32828\",'+
-		'                \"name\": null,'+
-		'                \"address\": \"1816 Woodbury Road, Orlando, FL 32828\"'+
-		'            },'+
-		'            \"activity\": \"Business\",'+
-		'            \"parking\": 0.0,'+
-		'            \"toll\": 0.0,'+
-		'            \"tags\": null,'+
-		'            \"notes\": null,'+
-		'            \"status\": \"Not Submitted\",'+
-		'            \"statusUpdateTime\": null,'+
-		'            \"statusUpdatedBy\": null,'+
-		'            \"polyline\": \"qxhkDnlhqNo@lCp@fHcALuAxAhFrFzKk@tFoCvG`Dr@jCDD{FfEmQjA}T{DcU{IeP_UePsV}PeWcQoWmPoV_OuSuN{S}NcQqQuPgSiQyRqQyRuQsRwQwRmQsRaRuRsQwRuQmRmQqRuQgSuQwRqQeRmRgReRyRuQ_S{QwS}SoT}UqTuRgT{ReFs\\\\SiYHmXgB{[gHk[oO}YyU}TiYwN{XuOqRmXyHw^Ws`@aBk`@cNiYwRsWyM}[}@s`@~Hw^|Fi_@eEy_@oFy_@eFq_@_F_`@kH}^oPkZuTkVgTuVyR_XcLi]kCg`@tCm`@nJ_^|Ja^rJc^|D}_@H}`@Uwb@Qq`@{@{`@sBw`@e@s`@bAu`@dAs`@lAw`@bAs`@tAy`@pAm`@]{`@gE}_@sE{_@uEa`@kFs_@kHc_@kJc^oJi^{J}]uJe^mJe^gI{`@sNg[cWcScWwReViTsO{ZcNk\\\\iN{[{RyWyXcPc\\\\wFs\\\\t@s\\\\~B{\\\\zBw\\\\pBi^jCu\\\\pAy\\\\H{\\\\`@q[nH{YvMaZlMo[`Ie\\\\hFi\\\\nFa\\\\pFg\\\\~Ew\\\\`@o\\\\xCo\\\\bLoZxK}Z~Js\\\\tBw\\\\Ja]Ny\\\\Ns\\\\x@_XbK{PjNyGuM?oZZ_]Hc^C}]?}[Ac[}@a[_BqY}AaYaCmYyDeZyDyYuDoZmKeSaVmBgUKsPu@oFQGBy@xBBfMCdBhBfEnI@lAdDbA|B_Cz@wBUa@gD\",'+
-		'            \"route\": \"https://app.mburse.com/web/api/trips/2001611187/routes\",'+
-		'            \"receipts\": \"https://app.mburse.com/web/api/trips/2001611187/receipts\",'+
-		'            \"map\": \"https://app.mburse.com/web/kml/embed/2r2h4p3x3.kml\",'+
-		'            \"trackingMethod\": \"MagicTrip\",'+
-		'            \"stayTimeMins\": 0'+
-		'        }'+
-		'    ]'+
-		'}';
-		TripLogDeserializeClass r = TripLogDeserializeClass.parse(json);
-		System.assert(r != null);
+    
+    // This test method should give 100% coverage
+    static testMethod void testParse() {
+        String json = '{'+
+        '    \"message\": \"OK\",'+
+        '    \"trips\": ['+
+        '        {'+
+        '            \"id\": 2001732264,'+
+        '            \"url\": \"https://app.mburse.com/web/api/trips/2001732264\",'+
+        '            \"lastUpdated\": \"2022-10-07T06:52:22.108Z\",'+
+        '            \"user\": {'+
+        '                \"id\": 20001880,'+
+        '                \"url\": \"https://app.mburse.com/web/api/users/20001880\",'+
+        '                \"email\": \"ashwin.morari@kiwiqa.com\",'+
+        '                \"display\": \"morari, ashwin\"'+
+        '            },'+
+        '            \"vehicle\": {'+
+        '                \"id\": 62511414,'+
+        '                \"url\": \"https://app.mburse.com/web/api/vehicles/62511414\",'+
+        '                \"lastUpdated\": \"2022-10-07T05:50:54.733Z\",'+
+        '                \"display\": \"2020 Hyundai 2020\"'+
+        '            },'+
+        '            \"startTime\": \"2022-09-11T06:12:00.000Z\",'+
+        '            \"endTime\": \"2022-09-11T07:00:00.000Z\",'+
+        '            \"startOdometer\": 1118,'+
+        '            \"endOdometer\": 1219,'+
+        '            \"mileage\": 101.0,'+
+        '            \"fromLocation\": {'+
+        '                \"id\": 1395219240,'+
+        '                \"url\": \"https://app.mburse.com/web/api/locations/1395219240\",'+
+        '                \"lastUpdated\": \"2022-10-07T05:41:26.524Z\",'+
+        '                \"display\": \"Google\",'+
+        '                \"name\": \"Google\",'+
+        '                \"address\": \"Google Building 40, Amphitheatre Parkway, Mountain View, CA 94043\"'+
+        '            },'+
+        '            \"toLocation\": {'+
+        '                \"id\": 1395219241,'+
+        '                \"url\": \"https://app.mburse.com/web/api/locations/1395219241\",'+
+        '                \"lastUpdated\": \"2022-10-07T05:41:51.774Z\",'+
+        '                \"display\": \"Microsoft\",'+
+        '                \"name\": \"Microsoft\",'+
+        '                \"address\": \"Microsoft Building 92, Northeast 36th Street, Redmond, WA 98052\"'+
+        '            },'+
+        '            \"activity\": \"Business\",'+
+        '            \"parking\": 0.0,'+
+        '            \"toll\": 0.0,'+
+        '            \"tags\": null,'+
+        '            \"notes\": null,'+
+        '            \"status\": \"Not Submitted\",'+
+        '            \"statusUpdateTime\": \"2022-10-07T06:49:04.000Z\",'+
+        '            \"statusUpdatedBy\": {'+
+        '                \"id\": 294928,'+
+        '                \"url\": \"https://app.mburse.com/web/api/users/294928\",'+
+        '                \"email\": \"driverservices@mburse.com\",'+
+        '                \"display\": \"Isbell, Ben\"'+
+        '            },'+
+        '            \"polyline\": null,'+
+        '            \"route\": \"https://app.mburse.com/web/api/trips/2001732264/routes\",'+
+        '            \"receipts\": \"https://app.mburse.com/web/api/trips/2001732264/receipts\",'+
+        '            \"map\": \"https://app.mburse.com/web/kml/embed/b0i2as3x9.kml\",'+
+        '            \"trackingMethod\": \"Manual Entry on the Web\",'+
+        '            \"updateMethod\": \"Updated on the Web\"'+
+        '        },'+
+        '        {'+
+        '            \"id\": 2001732265,'+
+        '            \"url\": \"https://app.mburse.com/web/api/trips/2001732265\",'+
+        '            \"lastUpdated\": \"2022-10-07T06:49:03.648Z\",'+
+        '            \"user\": {'+
+        '                \"id\": 20001880,'+
+        '                \"url\": \"https://app.mburse.com/web/api/users/20001880\",'+
+        '                \"email\": \"ashwin.morari@kiwiqa.com\",'+
+        '                \"display\": \"morari, ashwin\"'+
+        '            },'+
+        '            \"vehicle\": {'+
+        '                \"id\": 62511414,'+
+        '                \"url\": \"https://app.mburse.com/web/api/vehicles/62511414\",'+
+        '                \"lastUpdated\": \"2022-10-07T05:50:54.733Z\",'+
+        '                \"display\": \"2020 Hyundai 2020\"'+
+        '            },'+
+        '            \"startTime\": \"2022-09-19T06:14:00.000Z\",'+
+        '            \"endTime\": \"2022-09-19T07:00:00.000Z\",'+
+        '            \"startOdometer\": 1219,'+
+        '            \"endOdometer\": 1421,'+
+        '            \"mileage\": 202.0,'+
+        '            \"fromLocation\": {'+
+        '                \"id\": 1395219241,'+
+        '                \"url\": \"https://app.mburse.com/web/api/locations/1395219241\",'+
+        '                \"lastUpdated\": \"2022-10-07T05:41:51.774Z\",'+
+        '                \"display\": \"Microsoft\",'+
+        '                \"name\": \"Microsoft\",'+
+        '                \"address\": \"Microsoft Building 92, Northeast 36th Street, Redmond, WA 98052\"'+
+        '            },'+
+        '            \"toLocation\": {'+
+        '                \"id\": 1395219240,'+
+        '                \"url\": \"https://app.mburse.com/web/api/locations/1395219240\",'+
+        '                \"lastUpdated\": \"2022-10-07T05:41:26.524Z\",'+
+        '                \"display\": \"Google\",'+
+        '                \"name\": \"Google\",'+
+        '                \"address\": \"Google Building 40, Amphitheatre Parkway, Mountain View, CA 94043\"'+
+        '            },'+
+        '            \"activity\": \"Business\",'+
+        '            \"parking\": 0.0,'+
+        '            \"toll\": 0.0,'+
+        '            \"tags\": null,'+
+        '            \"notes\": null,'+
+        '            \"status\": \"Not Submitted\",'+
+        '            \"statusUpdateTime\": \"2022-10-07T06:49:04.000Z\",'+
+        '            \"statusUpdatedBy\": {'+
+        '                \"id\": 294928,'+
+        '                \"url\": \"https://app.mburse.com/web/api/users/294928\",'+
+        '                \"email\": \"driverservices@mburse.com\",'+
+        '                \"display\": \"Isbell, Ben\"'+
+        '            },'+
+        '            \"polyline\": null,'+
+        '            \"route\": \"https://app.mburse.com/web/api/trips/2001732265/routes\",'+
+        '            \"receipts\": \"https://app.mburse.com/web/api/trips/2001732265/receipts\",'+
+        '            \"map\": \"https://app.mburse.com/web/kml/embed/81i28s3x0.kml\",'+
+        '            \"trackingMethod\": \"Manual Entry on the Web\",'+
+        '            \"updateMethod\": null,'+
+        '            \"stayTimeMins\": 11474'+
+        '        },'+
+        '        {'+
+        '            \"id\": 2001732266,'+
+        '            \"url\": \"https://app.mburse.com/web/api/trips/2001732266\",'+
+        '            \"lastUpdated\": \"2022-10-07T06:49:03.664Z\",'+
+        '            \"user\": {'+
+        '                \"id\": 20001880,'+
+        '                \"url\": \"https://app.mburse.com/web/api/users/20001880\",'+
+        '                \"email\": \"ashwin.morari@kiwiqa.com\",'+
+        '                \"display\": \"morari, ashwin\"'+
+        '            },'+
+        '            \"vehicle\": {'+
+        '                \"id\": 62511414,'+
+        '                \"url\": \"https://app.mburse.com/web/api/vehicles/62511414\",'+
+        '                \"lastUpdated\": \"2022-10-07T05:50:54.733Z\",'+
+        '                \"display\": \"2020 Hyundai 2020\"'+
+        '            },'+
+        '            \"startTime\": \"2022-09-19T06:14:00.000Z\",'+
+        '            \"endTime\": \"2022-09-19T11:00:00.000Z\",'+
+        '            \"startOdometer\": 1421,'+
+        '            \"endOdometer\": 1724,'+
+        '            \"mileage\": 303.0,'+
+        '            \"fromLocation\": {'+
+        '                \"id\": 1395219240,'+
+        '                \"url\": \"https://app.mburse.com/web/api/locations/1395219240\",'+
+        '                \"lastUpdated\": \"2022-10-07T05:41:26.524Z\",'+
+        '                \"display\": \"Google\",'+
+        '                \"name\": \"Google\",'+
+        '                \"address\": \"Google Building 40, Amphitheatre Parkway, Mountain View, CA 94043\"'+
+        '            },'+
+        '            \"toLocation\": {'+
+        '                \"id\": 1395219241,'+
+        '                \"url\": \"https://app.mburse.com/web/api/locations/1395219241\",'+
+        '                \"lastUpdated\": \"2022-10-07T05:41:51.774Z\",'+
+        '                \"display\": \"Microsoft\",'+
+        '                \"name\": \"Microsoft\",'+
+        '                \"address\": \"Microsoft Building 92, Northeast 36th Street, Redmond, WA 98052\"'+
+        '            },'+
+        '            \"activity\": \"Business\",'+
+        '            \"parking\": 0.0,'+
+        '            \"toll\": 0.0,'+
+        '            \"tags\": null,'+
+        '            \"notes\": null,'+
+        '            \"status\": \"Not Submitted\",'+
+        '            \"statusUpdateTime\": \"2022-10-07T06:49:04.000Z\",'+
+        '            \"statusUpdatedBy\": {'+
+        '                \"id\": 294928,'+
+        '                \"url\": \"https://app.mburse.com/web/api/users/294928\",'+
+        '                \"email\": \"driverservices@mburse.com\",'+
+        '                \"display\": \"Isbell, Ben\"'+
+        '            },'+
+        '            \"polyline\": null,'+
+        '            \"route\": \"https://app.mburse.com/web/api/trips/2001732266/routes\",'+
+        '            \"receipts\": \"https://app.mburse.com/web/api/trips/2001732266/receipts\",'+
+        '            \"map\": \"https://app.mburse.com/web/kml/embed/a2i22s3x7.kml\",'+
+        '            \"trackingMethod\": \"Manual Entry on the Web\",'+
+        '            \"updateMethod\": null,'+
+        '            \"stayTimeMins\": -46'+
+        '        },'+
+        '        {'+
+        '            \"id\": 2001732267,'+
+        '            \"url\": \"https://app.mburse.com/web/api/trips/2001732267\",'+
+        '            \"lastUpdated\": \"2022-10-07T06:49:03.631Z\",'+
+        '            \"user\": {'+
+        '                \"id\": 20001880,'+
+        '                \"url\": \"https://app.mburse.com/web/api/users/20001880\",'+
+        '                \"email\": \"ashwin.morari@kiwiqa.com\",'+
+        '                \"display\": \"morari, ashwin\"'+
+        '            },'+
+        '            \"vehicle\": {'+
+        '                \"id\": 62511414,'+
+        '                \"url\": \"https://app.mburse.com/web/api/vehicles/62511414\",'+
+        '                \"lastUpdated\": \"2022-10-07T05:50:54.733Z\",'+
+        '                \"display\": \"2020 Hyundai 2020\"'+
+        '            },'+
+        '            \"startTime\": \"2022-09-19T06:15:00.000Z\",'+
+        '            \"endTime\": \"2022-09-19T10:00:00.000Z\",'+
+        '            \"startOdometer\": 1724,'+
+        '            \"endOdometer\": 2229,'+
+        '            \"mileage\": 505.0,'+
+        '            \"fromLocation\": {'+
+        '                \"id\": 1395219241,'+
+        '                \"url\": \"https://app.mburse.com/web/api/locations/1395219241\",'+
+        '                \"lastUpdated\": \"2022-10-07T05:41:51.774Z\",'+
+        '                \"display\": \"Microsoft\",'+
+        '                \"name\": \"Microsoft\",'+
+        '                \"address\": \"Microsoft Building 92, Northeast 36th Street, Redmond, WA 98052\"'+
+        '            },'+
+        '            \"toLocation\": {'+
+        '                \"id\": 1395219240,'+
+        '                \"url\": \"https://app.mburse.com/web/api/locations/1395219240\",'+
+        '                \"lastUpdated\": \"2022-10-07T05:41:26.524Z\",'+
+        '                \"display\": \"Google\",'+
+        '                \"name\": \"Google\",'+
+        '                \"address\": \"Google Building 40, Amphitheatre Parkway, Mountain View, CA 94043\"'+
+        '            },'+
+        '            \"activity\": \"Business\",'+
+        '            \"parking\": 0.0,'+
+        '            \"toll\": 0.0,'+
+        '            \"tags\": null,'+
+        '            \"notes\": null,'+
+        '            \"status\": \"Not Submitted\",'+
+        '            \"statusUpdateTime\": \"2022-10-07T06:49:04.000Z\",'+
+        '            \"statusUpdatedBy\": {'+
+        '                \"id\": 294928,'+
+        '                \"url\": \"https://app.mburse.com/web/api/users/294928\",'+
+        '                \"email\": \"driverservices@mburse.com\",'+
+        '                \"display\": \"Isbell, Ben\"'+
+        '            },'+
+        '            \"polyline\": null,'+
+        '            \"route\": \"https://app.mburse.com/web/api/trips/2001732267/routes\",'+
+        '            \"receipts\": \"https://app.mburse.com/web/api/trips/2001732267/receipts\",'+
+        '            \"map\": \"https://app.mburse.com/web/kml/embed/53i2es3x2.kml\",'+
+        '            \"trackingMethod\": \"Manual Entry on the Web\",'+
+        '            \"updateMethod\": null,'+
+        '            \"stayTimeMins\": -285'+
+        '        },'+
+        '        {'+
+        '            \"id\": 2001732268,'+
+        '            \"url\": \"https://app.mburse.com/web/api/trips/2001732268\",'+
+        '            \"lastUpdated\": \"2022-10-07T06:49:03.614Z\",'+
+        '            \"user\": {'+
+        '                \"id\": 20001880,'+
+        '                \"url\": \"https://app.mburse.com/web/api/users/20001880\",'+
+        '                \"email\": \"ashwin.morari@kiwiqa.com\",'+
+        '                \"display\": \"morari, ashwin\"'+
+        '            },'+
+        '            \"vehicle\": {'+
+        '                \"id\": 62511414,'+
+        '                \"url\": \"https://app.mburse.com/web/api/vehicles/62511414\",'+
+        '                \"lastUpdated\": \"2022-10-07T05:50:54.733Z\",'+
+        '                \"display\": \"2020 Hyundai 2020\"'+
+        '            },'+
+        '            \"startTime\": \"2022-09-19T06:18:00.000Z\",'+
+        '            \"endTime\": \"2022-09-19T11:00:00.000Z\",'+
+        '            \"startOdometer\": 2229,'+
+        '            \"endOdometer\": 2835,'+
+        '            \"mileage\": 606.0,'+
+        '            \"fromLocation\": {'+
+        '                \"id\": 1395219240,'+
+        '                \"url\": \"https://app.mburse.com/web/api/locations/1395219240\",'+
+        '                \"lastUpdated\": \"2022-10-07T05:41:26.524Z\",'+
+        '                \"display\": \"Google\",'+
+        '                \"name\": \"Google\",'+
+        '                \"address\": \"Google Building 40, Amphitheatre Parkway, Mountain View, CA 94043\"'+
+        '            },'+
+        '            \"toLocation\": {'+
+        '                \"id\": 1395219241,'+
+        '                \"url\": \"https://app.mburse.com/web/api/locations/1395219241\",'+
+        '                \"lastUpdated\": \"2022-10-07T05:41:51.774Z\",'+
+        '                \"display\": \"Microsoft\",'+
+        '                \"name\": \"Microsoft\",'+
+        '                \"address\": \"Microsoft Building 92, Northeast 36th Street, Redmond, WA 98052\"'+
+        '            },'+
+        '            \"activity\": \"Business\",'+
+        '            \"parking\": 0.0,'+
+        '            \"toll\": 0.0,'+
+        '            \"tags\": null,'+
+        '            \"notes\": null,'+
+        '            \"status\": \"Not Submitted\",'+
+        '            \"statusUpdateTime\": \"2022-10-07T06:49:04.000Z\",'+
+        '            \"statusUpdatedBy\": {'+
+        '                \"id\": 294928,'+
+        '                \"url\": \"https://app.mburse.com/web/api/users/294928\",'+
+        '                \"email\": \"driverservices@mburse.com\",'+
+        '                \"display\": \"Isbell, Ben\"'+
+        '            },'+
+        '            \"polyline\": null,'+
+        '            \"route\": \"https://app.mburse.com/web/api/trips/2001732268/routes\",'+
+        '            \"receipts\": \"https://app.mburse.com/web/api/trips/2001732268/receipts\",'+
+        '            \"map\": \"https://app.mburse.com/web/kml/embed/04i26s3x7.kml\",'+
+        '            \"trackingMethod\": \"Manual Entry on the Web\",'+
+        '            \"updateMethod\": null,'+
+        '            \"stayTimeMins\": -222'+
+        '        },'+
+        '        {'+
+        '            \"id\": 2001732269,'+
+        '            \"url\": \"https://app.mburse.com/web/api/trips/2001732269\",'+
+        '            \"lastUpdated\": \"2022-10-07T06:49:03.467Z\",'+
+        '            \"user\": {'+
+        '                \"id\": 20001880,'+
+        '                \"url\": \"https://app.mburse.com/web/api/users/20001880\",'+
+        '                \"email\": \"ashwin.morari@kiwiqa.com\",'+
+        '                \"display\": \"morari, ashwin\"'+
+        '            },'+
+        '            \"vehicle\": {'+
+        '                \"id\": 62511414,'+
+        '                \"url\": \"https://app.mburse.com/web/api/vehicles/62511414\",'+
+        '                \"lastUpdated\": \"2022-10-07T05:50:54.733Z\",'+
+        '                \"display\": \"2020 Hyundai 2020\"'+
+        '            },'+
+        '            \"startTime\": \"2022-09-19T06:20:00.000Z\",'+
+        '            \"endTime\": \"2022-09-19T08:00:00.000Z\",'+
+        '            \"startOdometer\": 2835,'+
+        '            \"endOdometer\": 3542,'+
+        '            \"mileage\": 707.0,'+
+        '            \"fromLocation\": {'+
+        '                \"id\": 1395219241,'+
+        '                \"url\": \"https://app.mburse.com/web/api/locations/1395219241\",'+
+        '                \"lastUpdated\": \"2022-10-07T05:41:51.774Z\",'+
+        '                \"display\": \"Microsoft\",'+
+        '                \"name\": \"Microsoft\",'+
+        '                \"address\": \"Microsoft Building 92, Northeast 36th Street, Redmond, WA 98052\"'+
+        '            },'+
+        '            \"toLocation\": {'+
+        '                \"id\": 1395219240,'+
+        '                \"url\": \"https://app.mburse.com/web/api/locations/1395219240\",'+
+        '                \"lastUpdated\": \"2022-10-07T05:41:26.524Z\",'+
+        '                \"display\": \"Google\",'+
+        '                \"name\": \"Google\",'+
+        '                \"address\": \"Google Building 40, Amphitheatre Parkway, Mountain View, CA 94043\"'+
+        '            },'+
+        '            \"activity\": \"Business\",'+
+        '            \"parking\": 0.0,'+
+        '            \"toll\": 0.0,'+
+        '            \"tags\": null,'+
+        '            \"notes\": null,'+
+        '            \"status\": \"Not Submitted\",'+
+        '            \"statusUpdateTime\": \"2022-10-07T06:49:03.000Z\",'+
+        '            \"statusUpdatedBy\": {'+
+        '                \"id\": 294928,'+
+        '                \"url\": \"https://app.mburse.com/web/api/users/294928\",'+
+        '                \"email\": \"driverservices@mburse.com\",'+
+        '                \"display\": \"Isbell, Ben\"'+
+        '            },'+
+        '            \"polyline\": null,'+
+        '            \"route\": \"https://app.mburse.com/web/api/trips/2001732269/routes\",'+
+        '            \"receipts\": \"https://app.mburse.com/web/api/trips/2001732269/receipts\",'+
+        '            \"map\": \"https://app.mburse.com/web/kml/embed/15i20s3xc.kml\",'+
+        '            \"trackingMethod\": \"Manual Entry on the Web\",'+
+        '            \"updateMethod\": null,'+
+        '            \"stayTimeMins\": -280'+
+        '        }'+
+        '    ]'+
+        '}';
+        TripLogDeserializeClass r = TripLogDeserializeClass.parse(json);
+        System.assert(r != null);
 
-		json = '{\"TestAMissingObject\": { \"TestAMissingArray\": [ { \"TestAMissingProperty\": \"Some Value\" } ] } }';
-		TripLogDeserializeClass.Vehicle objVehicle = new TripLogDeserializeClass.Vehicle(System.JSON.createParser(json));
-		System.assert(objVehicle != null);
-		System.assert(objVehicle.id == null);
-		System.assert(objVehicle.url == null);
-		System.assert(objVehicle.lastUpdated == null);
-		System.assert(objVehicle.display == null);
+        json = '{\"TestAMissingObject\": { \"TestAMissingArray\": [ { \"TestAMissingProperty\": \"Some Value\" } ] } }';
+        TripLogDeserializeClass.Vehicle objVehicle = new TripLogDeserializeClass.Vehicle(System.JSON.createParser(json));
+        System.assert(objVehicle != null);
+        System.assert(objVehicle.id == null);
+        System.assert(objVehicle.url == null);
+        System.assert(objVehicle.lastUpdated == null);
+        System.assert(objVehicle.display == null);
 
-		json = '{\"TestAMissingObject\": { \"TestAMissingArray\": [ { \"TestAMissingProperty\": \"Some Value\" } ] } }';
-		TripLogDeserializeClass objTripLogDeserializeClass = new TripLogDeserializeClass(System.JSON.createParser(json));
-		System.assert(objTripLogDeserializeClass != null);
-		System.assert(objTripLogDeserializeClass.message == null);
-		System.assert(objTripLogDeserializeClass.trips == null);
+        json = '{\"TestAMissingObject\": { \"TestAMissingArray\": [ { \"TestAMissingProperty\": \"Some Value\" } ] } }';
+        TripLogDeserializeClass objTripLogDeserializeClass = new TripLogDeserializeClass(System.JSON.createParser(json));
+        System.assert(objTripLogDeserializeClass != null);
+        System.assert(objTripLogDeserializeClass.message == null);
+        System.assert(objTripLogDeserializeClass.trips == null);
 
-		json = '{\"TestAMissingObject\": { \"TestAMissingArray\": [ { \"TestAMissingProperty\": \"Some Value\" } ] } }';
-		TripLogDeserializeClass.User objUser = new TripLogDeserializeClass.User(System.JSON.createParser(json));
-		System.assert(objUser != null);
-		System.assert(objUser.id == null);
-		System.assert(objUser.url == null);
-		System.assert(objUser.email == null);
-		System.assert(objUser.display == null);
+        json = '{\"TestAMissingObject\": { \"TestAMissingArray\": [ { \"TestAMissingProperty\": \"Some Value\" } ] } }';
+        TripLogDeserializeClass.User objUser = new TripLogDeserializeClass.User(System.JSON.createParser(json));
+        System.assert(objUser != null);
+        System.assert(objUser.id == null);
+        System.assert(objUser.url == null);
+        System.assert(objUser.email == null);
+        System.assert(objUser.display == null);
 
-		json = '{\"TestAMissingObject\": { \"TestAMissingArray\": [ { \"TestAMissingProperty\": \"Some Value\" } ] } }';
-		TripLogDeserializeClass.Trips objTrips = new TripLogDeserializeClass.Trips(System.JSON.createParser(json));
-		System.assert(objTrips != null);
-		System.assert(objTrips.id == null);
-		System.assert(objTrips.url == null);
-		System.assert(objTrips.lastUpdated == null);
-		System.assert(objTrips.user == null);
-		System.assert(objTrips.vehicle == null);
-		System.assert(objTrips.startTime == null);
-		System.assert(objTrips.endTime == null);
-		System.assert(objTrips.startOdometer == null);
-		System.assert(objTrips.endOdometer == null);
-		System.assert(objTrips.mileage == null);
-		System.assert(objTrips.fromLocation == null);
-		System.assert(objTrips.toLocation == null);
-		System.assert(objTrips.activity == null);
-		System.assert(objTrips.parking == null);
-		System.assert(objTrips.toll == null);
-		System.assert(objTrips.tags == null);
-		System.assert(objTrips.notes == null);
-		System.assert(objTrips.status == null);
-		System.assert(objTrips.statusUpdateTime == null);
-		System.assert(objTrips.statusUpdatedBy == null);
-		System.assert(objTrips.polyline == null);
-		System.assert(objTrips.route == null);
-		System.assert(objTrips.receipts == null);
-		System.assert(objTrips.map_Z == null);
-		System.assert(objTrips.trackingMethod == null);
-		System.assert(objTrips.stayTimeMins == null);
+        json = '{\"TestAMissingObject\": { \"TestAMissingArray\": [ { \"TestAMissingProperty\": \"Some Value\" } ] } }';
+        TripLogDeserializeClass.Trips objTrips = new TripLogDeserializeClass.Trips(System.JSON.createParser(json));
+        System.assert(objTrips != null);
+        System.assert(objTrips.id == null);
+        System.assert(objTrips.url == null);
+        System.assert(objTrips.lastUpdated == null);
+        System.assert(objTrips.user == null);
+        System.assert(objTrips.vehicle == null);
+        System.assert(objTrips.startTime == null);
+        System.assert(objTrips.endTime == null);
+        System.assert(objTrips.startOdometer == null);
+        System.assert(objTrips.endOdometer == null);
+        System.assert(objTrips.mileage == null);
+        System.assert(objTrips.fromLocation == null);
+        System.assert(objTrips.toLocation == null);
+        System.assert(objTrips.activity == null);
+        System.assert(objTrips.parking == null);
+        System.assert(objTrips.toll == null);
+        System.assert(objTrips.tags == null);
+        System.assert(objTrips.notes == null);
+        System.assert(objTrips.status == null);
+        System.assert(objTrips.statusUpdateTime == null);
+        System.assert(objTrips.statusUpdatedBy == null);
+        System.assert(objTrips.polyline == null);
+        System.assert(objTrips.route == null);
+        System.assert(objTrips.receipts == null);
+        System.assert(objTrips.map_Z == null);
+        System.assert(objTrips.trackingMethod == null);
+        System.assert(objTrips.updateMethod == null);
+        System.assert(objTrips.stayTimeMins == null);
 
-		json = '{\"TestAMissingObject\": { \"TestAMissingArray\": [ { \"TestAMissingProperty\": \"Some Value\" } ] } }';
-		TripLogDeserializeClass.FromLocation objFromLocation = new TripLogDeserializeClass.FromLocation(System.JSON.createParser(json));
-		System.assert(objFromLocation != null);
-		System.assert(objFromLocation.id == null);
-		System.assert(objFromLocation.url == null);
-		System.assert(objFromLocation.lastUpdated == null);
-		System.assert(objFromLocation.display == null);
-		System.assert(objFromLocation.name == null);
-		System.assert(objFromLocation.address == null);
-
-		json = '{\"TestAMissingObject\": { \"TestAMissingArray\": [ { \"TestAMissingProperty\": \"Some Value\" } ] } }';
-		TripLogDeserializeClass.ToLocation objToLocation = new TripLogDeserializeClass.ToLocation(System.JSON.createParser(json));
-		System.assert(objToLocation != null);
-		System.assert(objToLocation.id == null);
-		System.assert(objToLocation.url == null);
-		System.assert(objToLocation.lastUpdated == null);
-		System.assert(objToLocation.display == null);
-		System.assert(objToLocation.name == null);
-		System.assert(objToLocation.address == null);
-	}
+        json = '{\"TestAMissingObject\": { \"TestAMissingArray\": [ { \"TestAMissingProperty\": \"Some Value\" } ] } }';
+        TripLogDeserializeClass.FromLocation objFromLocation = new TripLogDeserializeClass.FromLocation(System.JSON.createParser(json));
+        System.assert(objFromLocation != null);
+        System.assert(objFromLocation.id == null);
+        System.assert(objFromLocation.url == null);
+        System.assert(objFromLocation.lastUpdated == null);
+        System.assert(objFromLocation.display == null);
+        System.assert(objFromLocation.name == null);
+        System.assert(objFromLocation.address == null);
+    }
 }
