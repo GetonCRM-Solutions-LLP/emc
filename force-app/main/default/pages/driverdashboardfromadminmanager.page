@@ -698,7 +698,7 @@
                                         }
                                     })
                                 }
-                                if (keyName === 'originnamename' || keyName === 'destinationname' || keyName === 'tripActivity') {
+                                if (keyName === 'originname' || keyName === 'destinationname' || keyName === 'tripActivity') {
                                     scope.model.mileageList.sort(function (a, b) {
                                         var nameA = (a[keyName] == null) ? '' :  a[keyName].toLowerCase(),
                                             nameB = (b[keyName] == null) ? '' :  b[keyName].toLowerCase()
