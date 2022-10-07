@@ -111,7 +111,6 @@
                     font-size: 12px;
                     right: 0;
                 }*/
-
             .pagination {
                 display: inline-block;
                 padding-left: 0;
