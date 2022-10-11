@@ -106,6 +106,12 @@ global class GetTripCallout {
                     emp.FromLocationId__c = fromLocationOfTrip.id;                    
                     if(fromLocationOfTrip.name != null) {
                         emp.Origin_Name__c = String.valueOf(fromLocationOfTrip.name);  
+                    } else if(fromLocationOfTrip.address != null && fromLocationOfTrip.address.contains(',')){
+                        emp.Origin_Name__c = fromLocationOfTrip.address.split(',')[0];
+                    } else if(fromLocationOfTrip.address != null && fromLocationOfTrip.address.contains(' ')){
+                        emp.Origin_Name__c = fromLocationOfTrip.address.split(' ')[0];
+                    } else {
+                        emp.Origin_Name__c = fromLocationOfTrip.address;
                     }
                     if(fromLocationOfTrip.address != null) {
                         emp.Trip_Origin__c = fromLocationOfTrip.address;
@@ -116,19 +122,25 @@ global class GetTripCallout {
                     emp.ToLocationId__c = toLocationOfTrip.id;                    
                     if(toLocationOfTrip.name != null) {
                         emp.Destination_Name__c = String.valueOf(toLocationOfTrip.name);  
+                    } else if(toLocationOfTrip.address != null && toLocationOfTrip.address.contains(',')){
+                        emp.Destination_Name__c = toLocationOfTrip.address.split(',')[0];
+                    } else if(toLocationOfTrip.address != null && toLocationOfTrip.address.contains(' ')){
+                        emp.Destination_Name__c = toLocationOfTrip.address.split(' ')[0];
+                    } else {
+                        emp.Destination_Name__c = toLocationOfTrip.address;
                     }
                     if(toLocationOfTrip.address != null) {
                         emp.Trip_Destination__c = toLocationOfTrip.address;
                     }
                 }
 
-                emp.Notes__c = !CheckNull(String.valueOf(lt.notes)) ? String.valueOf(lt.notes) : null;	
-                emp.Tracing_Style__c = !CheckNull(String.valueOf(lt.trackingMethod)) ? String.valueOf(lt.trackingMethod) : null;	
-                emp.Tag__c = !CheckNull(String.valueOf(lt.tags)) ? String.valueOf(lt.tags) : null;	
-                emp.Stay_Time__c = !CheckNull(String.valueOf(lt.stayTimeMins)) ? lt.stayTimeMins : null;	
-                if( MaxTime != null && emp.StartTime__c.day() > MaxTime.day() && !empList.isEmpty()){	
-                    empList.get(empList.size()-1).Stay_Time__c = 0;	
-                }	
+                emp.Notes__c = !CheckNull(String.valueOf(lt.notes)) ? String.valueOf(lt.notes) : null;  
+                emp.Tracing_Style__c = !CheckNull(String.valueOf(lt.trackingMethod)) ? String.valueOf(lt.trackingMethod) : null;    
+                emp.Tag__c = !CheckNull(String.valueOf(lt.tags)) ? String.valueOf(lt.tags) : null;  
+                emp.Stay_Time__c = !CheckNull(String.valueOf(lt.stayTimeMins)) ? lt.stayTimeMins : null;    
+                if( MaxTime != null && emp.StartTime__c.day() > MaxTime.day() && !empList.isEmpty()){   
+                    empList.get(empList.size()-1).Stay_Time__c = 0; 
+                }   
                 MaxTime = emp.EndTime__c;
                 
                 if(emp.Destination_Name__c != null && (emp.Destination_Name__c).toUppercase() == 'HOME'){
