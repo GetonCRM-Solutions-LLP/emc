@@ -60,7 +60,7 @@ public with sharing class ReportDetailsController
     public static String getReportDetail(String reportid)
     {
         List<String> obj_list_of_headers = new List<String>();
-        String query = 'Select id,Name,Report_Type__c,Report_Soql__c,Report_Header__c,Date_Fields__c,Boolean_Field__c,Date_Time_Fields__c,Date_Time_To_Time__c,Numeric_Fields__c,Report_Category__c,Use_Bussiness_Unit__c,Use_Driver_List__c,Use_Manager_List__c from Custom_Report__c where id=\''+reportid+'\'';
+        String query = 'Select id,Name,Report_Type__c,Report_Soql__c,Report_Header__c,Date_Fields__c,Two_Decimal_Places__c,Boolean_Field__c,Date_Time_Fields__c,Date_Time_To_Time__c,Numeric_Fields__c,Report_Category__c,Use_Bussiness_Unit__c,Use_Driver_List__c,Use_Manager_List__c from Custom_Report__c where id=\''+reportid+'\'';
         obj_current_report = (Custom_Report__c)(((List<Custom_Report__c>)ExecuteQueryUtil.getRecordListFromsObject(query))[0]);
         return String.escapeSingleQuotes(JSON.serialize(obj_current_report)); 
        // return '';     
