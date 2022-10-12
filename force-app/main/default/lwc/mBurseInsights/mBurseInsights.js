@@ -122,7 +122,7 @@ export default class MBurseInsights extends LightningElement {
         this.showInsight = (hashVal === '#G4') ? true : false;  /* ---- Hide content based on hash value --- */
         this.watchMeeting = (hashVal === '#G5' && this.showInsight === false) ? true : false;  /* ---- Hide component based on hash value --- */
         this.header =  (hashVal === '#G1') ? 'Your Plan Preview' : (hashVal === '#G2') ? 'Your Plan Parameters' : (hashVal === '#G3') ? 'mLog App Overview' : (hashVal === '#G4') ? 'Get the mLog app' : 'Your Company Plan'
-        this.frameUrl = (hashVal === '#G1') ? this.linkList.Welcome_Link__c : (hashVal === '#G2') ? this.linkList.Insurance_Link__c : (hashVal === '#G3') ? this.linkList.mLog_Preview_Company_Provided_Link__c : (hashVal === '#G5') ? this.client.meetingVideoLink : ""
+        this.frameUrl = (hashVal === '#G1') ? this.linkList.Welcome_Link__c : (hashVal === '#G2') ? this.linkList.Insurance_Link__c : (hashVal === '#G3') ? this.linkList.mLog_Preview_Company_Provided_Link__c : (hashVal === '#G5') ? this.client.scheduleLink : ""
     }
 
 

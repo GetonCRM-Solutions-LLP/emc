@@ -77,15 +77,46 @@
                 </div>
             </lightning-layout-item>
             <lightning-layout-item padding="around-small">
-                <div class="step" if:true={accountType}>
-                    <img class="step-num" src={number5} />
-                    <img class="p-step" src={step5Url} />
-                    <div class="step-info">Schedule your  <br/> <strong>Driver Meeting</strong></div>
+                <div class="step"  if:true={accountType}>
+                    <div>
+                        <img class="step-num" src={number5} />
+                        <template if:true={isSchedule}>
+                            <img class="step-check" src={checkmark}/>
+                        </template>
+                    </div>
+                    <template if:true={isSchedule}>
+                        <div class="opacity">
+                            <img class="p-step" src={step5Url} />
+                            <div class="step-info">Schedule your  <br/> <strong>Driver Meeting</strong></div>
+                        </div>
+                    </template>
+                    <template if:false={isSchedule}>
+                        <div>
+                            <img class="p-step" src={step5Url} />
+                            <div class="step-info">Schedule your  <br/> <strong>Driver Meeting</strong></div>
+                        </div>
+                    </template>
                 </div>
-                <div class="step" if:false={accountType}>
-                    <img class="step-num" src={number5} />
-                    <img class="p-step" src={step1Url} />
-                    <div class="step-info">Watch your  <br/> <strong>Driver Meeting</strong></div>
+
+                <div class="step"  if:false={accountType}>
+                    <div>
+                        <img class="step-num" src={number5} />
+                        <template if:true={isRegister}>
+                            <img class="step-check" src={checkmark}/>
+                        </template>
+                    </div>
+                    <template if:true={isRegister}>
+                        <div class="opacity">
+                            <img class="p-step" src={step1Url} />
+                            <div class="step-info">Watch your  <br/> <strong>Driver Meeting</strong></div>
+                        </div>
+                    </template>
+                    <template if:false={isRegister}>
+                        <div>
+                            <img class="p-step" src={step1Url} />
+                            <div class="step-info">Watch your  <br/> <strong>Driver Meeting</strong></div>
+                        </div>
+                    </template>
                 </div>
             </lightning-layout-item>
             </lightning-layout>

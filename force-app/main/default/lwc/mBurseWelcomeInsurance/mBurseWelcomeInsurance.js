@@ -29,9 +29,11 @@ export default class MBurseWelcomeInsurance extends LightningElement {
     // get backgroundStyle() {
     //     return `background-image:url(${background})`;
     // }
+
     nextDeclarationUpload() {
         events(this, 'Next Declaration Upload')
     }
+    
     nextDeclaration() {
         // eslint-disable-next-line @lwc/lwc/no-api-reassignments
         this.welcomeInsurance = false;
