@@ -15,7 +15,7 @@
         contact-id={contactId} cell-type={cellphoneType} custom-setting={settings}></c-m-burse-mlog>
     <c-m-burse-download-mlog if:true={nextmLogDownload}  onback={backTomLog}
         account-id={accountId} contact-id={contactId} contact-email={contactEmail} meeting={registerMeeting} mobile-phone={mobilePhone} driver-meeting={meetingType}
-        schedule={scheduleMeeting} account-type={accountType} cell-type={cellphoneType} onsend={handleLink} onnavigate={navigateToMeeting}></c-m-burse-download-mlog>
+        day-left={leftDays} schedule={scheduleMeeting} account-type={accountType} cell-type={cellphoneType} onsend={handleLink} onnavigate={navigateToMeeting}></c-m-burse-download-mlog>
     <!-- <c-m-burse-final if:true={nextBurseFinal} contact-id={contactId} day-left={leftDays} custom-setting={settings}>
     </c-m-burse-final> -->
     <c-m-burse-meeting if:true={nextBurseMeeting} contact-id={contactId} day-left={leftDays} meeting={registerMeeting} account-type={accountType}  schedule={scheduleMeeting}></c-m-burse-meeting>

@@ -69,7 +69,7 @@ public with sharing class NewAccountDriverController {
                                                 contactWrapper.daysBetweenActivation = activationDate != null ? activationDate.daysBetween(currentDate) : null;
                                                 if(contactWrapper.daysBetweenActivation != null && contactWrapper.daysBetweenActivation <= 30){
                                                     contactWrapper.checkActivationDate = true;
-                                                } else if(contactWrapper.daysBetweenActivation > 30 &&  contactWrapper.helloSignDriverSign != null && contactWrapper.helloSignDriverSign == 'signed'){
+                                                } else if(contactWrapper.daysBetweenActivation > 30 &&  contactWrapper.helloSignDriverSign != null && contactWrapper.helloSignDriverSign == 'signed' && contactWrapper.insuranceStatus != null && contactWrapper.insuranceStatus == 'Uploaded'){
                                                     contactWrapper.checkActivationDate = true;
                                                 } else {
                                                     contactWrapper.checkActivationDate = false;

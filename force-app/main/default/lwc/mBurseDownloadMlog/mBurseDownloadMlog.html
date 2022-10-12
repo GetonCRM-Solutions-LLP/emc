@@ -92,13 +92,28 @@
                 </div> -->
                 <div class="footer-button slds-p-top_large  slds-p-bottom_large p_top">
                     <div>
-                        <div class="watch-meet">
+                        <div class="watch-meet slds-align_absolute-center slds-p-bottom_medium" if:false={afterRegister}>
                             <button class="slds-btn slds-btn-primary slds-btn-sm waves-effect bc-blue waves-light"
                                 onclick={nextDriverMeeting}>
                                 {buttonRender}
                             </button>
                         </div>
-                        <div class="back_to_previous slds-m-top_small back-btn_div">
+                        <template if:true={allowRedirect}>
+                            <div class="watch-meet slds-align_absolute-center" if:true={afterRegister}>
+                                <button class="slds-btn slds-btn-primary slds-btn-sm waves-effect bc-blue waves-light"
+                                    onclick={takeMeToDashboard}>
+                                    Go To My Account
+                                </button>
+                            </div>
+                            <div class="watch-meet slds-align_absolute-center" if:true={showWatchBtn}>
+                                <button class="slds-btn slds-btn-primary slds-btn-sm waves-effect bc-blue waves-light"
+                                    onclick={takeMeToDashboard}>
+                                    Take me to the dashboard
+                                </button>
+                            </div>
+                        </template>
+                       
+                        <div class="back_to_previous slds-m-top_small slds-align_absolute-center">
                             <a class="font-s" onclick={backToPage}><i class="fa-solid fa-angle-left"></i> Back</a>
                         </div>
                     </div>
@@ -186,13 +201,27 @@
                 <template if:true={render}>
                     <div class="footer-button slds-p-bottom_large">
                         <div>
-                            <div class="watch-meet">
+                            <div class="watch-meet slds-align_absolute-center slds-p-bottom_medium" if:false={afterRegister}>
                                 <button class="slds-btn slds-btn-primary slds-btn-sm waves-effect bc-blue waves-light"
                                     onclick={nextDriverMeeting}>
                                     {buttonRender}
                                 </button>
                             </div>
-                            <div class="back_to_previous slds-m-top_small back-btn_div">
+                            <template if:true={allowRedirect}>
+                                <div class="watch-meet slds-align_absolute-center" if:true={afterRegister}>
+                                    <button class="slds-btn slds-btn-primary slds-btn-sm waves-effect bc-blue waves-light"
+                                        onclick={takeMeToDashboard}>
+                                        Go To My Account
+                                    </button>
+                                </div>
+                                <div class="watch-meet slds-align_absolute-center"  if:true={showWatchBtn}>
+                                    <button class="slds-btn slds-btn-primary slds-btn-sm waves-effect bc-blue waves-light"
+                                        onclick={takeMeToDashboard}>
+                                    Take me to the dashboard
+                                    </button>
+                                </div>
+                            </template>
+                            <div class="back_to_previous slds-m-top_small slds-align_absolute-center">
                                 <a class="font-s" onclick={backToPage}><i class="fa-solid fa-angle-left"></i> Back</a>
                             </div>
                         </div>
@@ -279,13 +308,27 @@
                 </div>
             </div> -->
             <div class="footer-button slds-p-bottom_large p_top">
-                <div class="watch-meet">
+                <div class="watch-meet slds-align_absolute-center slds-p-bottom_medium" if:false={afterRegister}>
                     <button class="slds-btn slds-btn-primary slds-btn-sm waves-effect bc-blue waves-light"
                         onclick={nextDriverMeeting}>
                         {buttonRender}
                     </button>
                 </div>
-                <div class="back_to_previous slds-m-top_small back-btn_div">
+                <template if:true={allowRedirect}>
+                    <div class="watch-meet slds-align_absolute-center" if:true={afterRegister}>
+                        <button class="slds-btn slds-btn-primary slds-btn-sm waves-effect bc-blue waves-light"
+                            onclick={takeMeToDashboard}>
+                            Go To My Account
+                        </button>
+                    </div>
+                    <div class="watch-meet slds-align_absolute-center"  if:true={showWatchBtn}>
+                        <button class="slds-btn slds-btn-primary slds-btn-sm waves-effect bc-blue waves-light"
+                            onclick={takeMeToDashboard}>
+                            Take me to the dashboard
+                        </button>
+                    </div>
+                </template>
+                <div class="back_to_previous slds-m-top_small slds-align_absolute-center">
                     <a class="font-s" onclick={backToDownloadPage}><i class="fa-solid fa-angle-left"></i> Back</a>
                 </div>
                 <!-- <div>
@@ -373,13 +416,27 @@
             </div> -->
             <div class="footer-button slds-p-bottom_large p_top">
                 <div>
-                    <div class="watch-meet">
+                    <div class="watch-meet slds-align_absolute-center slds-p-bottom_medium" if:false={afterRegister}>
                         <button class="slds-btn slds-btn-primary slds-btn-sm waves-effect bc-blue waves-light"
                             onclick={nextDriverMeeting}>
                             {buttonRender}
                         </button>
                     </div>
-                    <div class="back_to_previous slds-m-top_small back-btn_div">
+                    <template if:true={allowRedirect}>
+                        <div class="watch-meet slds-align_absolute-center" if:true={afterRegister}>
+                            <button class="slds-btn slds-btn-primary slds-btn-sm waves-effect bc-blue waves-light"
+                                onclick={takeMeToDashboard}>
+                                Go To My Account
+                            </button>
+                        </div>
+                        <div class="watch-meet slds-align_absolute-center" if:true={showWatchBtn}>
+                            <button class="slds-btn slds-btn-primary slds-btn-sm waves-effect bc-blue waves-light"
+                                onclick={takeMeToDashboard}>
+                                Take me to the dashboard
+                            </button>
+                        </div>
+                    </template>
+                    <div class="back_to_previous slds-m-top_small slds-align_absolute-center">
                         <a class="font-s" onclick={backToDownloadPage}><i class="fa-solid fa-angle-left"></i> Back</a>
                     </div>
                 </div>
@@ -401,9 +458,9 @@
             </div>
         </div>
         <div class="slds-text-heading_small slds-text-align_center slds-p-bottom_medium emcFont p_bottom font-style">
-            <strong>Did you downloaded mLog without receiving a link?</strong><br/> If so there is a good chance you are not signed into your
+            <strong>Did you downloaded mLog without receiving a link?</strong><br/> If so, you are not signed into your
             company account <br/>
-            and you risk losing your mileage and delaying your reimbursement.
+            and you risk delaying your reimbursement or worse, losing your mileage.
         </div>
         <div class="slds-text-heading_small slds-text-align_center slds-p-bottom_medium emcFont p_bottom font-style">
             Click the button below and when you receive the link select Step 2.
@@ -474,13 +531,27 @@
             </div> -->
             <div class="footer-button slds-p-bottom_large p_top">
                 <div>
-                    <div class="watch-meet">
+                    <div class="watch-meet slds-align_absolute-center slds-p-bottom_medium" if:false={afterRegister}>
                         <button class="slds-btn slds-btn-primary slds-btn-sm waves-effect bc-blue waves-light"
                             onclick={nextDriverMeeting}>
                             {buttonRender}
                         </button>
                     </div>
-                    <div class="back_to_previous slds-m-top_small back-btn_div">
+                    <template if:true={allowRedirect}>
+                        <div class="watch-meet slds-align_absolute-center" if:true={afterRegister}>
+                            <button class="slds-btn slds-btn-primary slds-btn-sm waves-effect bc-blue waves-light"
+                                onclick={takeMeToDashboard}>
+                                Go To My Account
+                            </button>
+                        </div>
+                        <div class="watch-meet slds-align_absolute-center"  if:true={showWatchBtn}>
+                            <button class="slds-btn slds-btn-primary slds-btn-sm waves-effect bc-blue waves-light"
+                                onclick={takeMeToDashboard}>
+                                Take me to the dashboard
+                            </button>
+                        </div>
+                    </template>
+                    <div class="back_to_previous slds-m-top_small slds-align_absolute-center">
                         <a class="font-s" onclick={backToDownloadPage}><i class="fa-solid fa-angle-left"></i> Back</a>
                     </div>
                 </div>

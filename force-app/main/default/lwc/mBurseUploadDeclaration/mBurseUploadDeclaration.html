@@ -163,9 +163,19 @@
                         </button>
                     </template>
                     <template if:true={dPacket}>
-                        <button class="slds-btn slds-btn-primary slds-btn-sm waves-effect bc-blue waves-light" onclick={redirectToDashboard}>
+                        <button class="slds-btn slds-btn-primary slds-btn-sm waves-effect bc-blue waves-light" onclick={redirectToDashboard} if:false={afterRegister}>
                             {renderText}
                         </button>
+                        <template if:true={allowRedirect}>
+                            <button class="slds-btn slds-btn-primary slds-btn-sm waves-effect bc-blue waves-light packet_btn"
+                            onclick={takeMeToDashboard} if:true={afterRegister}>
+                                Go To My Account
+                            </button>
+                            <button class="slds-btn slds-btn-primary slds-btn-sm waves-effect bc-blue waves-light packet_btn"
+                            onclick={takeMeToDashboard} if:true={showWatchBtn}>
+                               Take me to the dashboard
+                            </button>
+                        </template>
                     </template>
                 </template>
                 <div>
