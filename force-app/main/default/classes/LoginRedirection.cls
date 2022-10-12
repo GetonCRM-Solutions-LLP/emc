@@ -29,10 +29,11 @@ public with sharing class LoginRedirection
                                     AND End_Date__c <= TODAY 
                                     Order By End_Date__c desc limit 1];
         }  
-
+		System.debug('biWeekList : '+biWeekList);
         if(u != null) { 
             PageReference pageRef;  
-            if(u.Contact.Account.MburseDashboardRedirect__c == true|| Test.isRunningTest()){
+            System.debug('MburseDashboardRedirect__c value'+u.Contact.Account.MburseDashboardRedirect__c);
+            if(u.Contact.Account.MburseDashboardRedirect__c == true){
                 date currentDate = system.today();
                     integer daysBetweenActivation ;
                     Boolean checkActivationDate;
@@ -57,6 +58,7 @@ public with sharing class LoginRedirection
                         System.debug('Contact Insurance status ln-57'+u.Contact.Insurance_Declaration_Status__c);
                         System.debug('contact app ln-58'+u.Contact.App__c);
                         System.debug('checkActivationDate ln-59'+checkActivationDate);
+                        System.debug('biWeekList.size ln-60'+biWeekList.size());
                         //AI-000414                       
                         if(biWeekList.size() > 0){
                             if(biWeekList[0].Confirm_Hours__c == false &&  u.Contact.Insurance_Attachment_Id__c != null && biWeekList[0].Count_Error_Check__c < 3){

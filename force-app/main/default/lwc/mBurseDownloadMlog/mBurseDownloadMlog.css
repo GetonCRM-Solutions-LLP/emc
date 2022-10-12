@@ -604,7 +604,6 @@ a {
     margin: 0px;
     position: relative;
     text-decoration: none;
-    display: block;
 }
 
 .mburse-support {
@@ -627,8 +626,8 @@ a {
 
 .watch-meet {
     position: relative;
-    float: right;
-    margin-right: 29%;
+    /* float: right;
+    margin-right: 29%; */
 }
 
 .back-btn_div {

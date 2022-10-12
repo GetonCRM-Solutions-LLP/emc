@@ -97,14 +97,16 @@
                         onclick={goToDashboard} if:false={afterRegister}>
                         {renderBtnText}
                     </button>
-                    <button class="slds-btn slds-btn-primary slds-btn-sm waves-effect bc-blue waves-light"
-                    onclick={redirectToDashboard} if:true={afterRegister}>
-                        Go To My Account
-                    </button>
-                    <button class="slds-btn slds-btn-primary slds-btn-sm waves-effect bc-blue waves-light"
-                    onclick={redirectToDashboard} if:true={showWatchBtn}>
-                        I don't want to watch the driver meeting now take me to the dashboard
-                    </button>
+                    <template if:true={allowRedirect}>
+                        <button class="slds-btn slds-btn-primary slds-btn-sm waves-effect bc-blue waves-light"
+                        onclick={redirectToDashboard} if:true={afterRegister}>
+                            Go To My Account
+                        </button>
+                        <button class="slds-btn slds-btn-primary slds-btn-sm waves-effect bc-blue waves-light"
+                        onclick={redirectToDashboard} if:true={showWatchBtn}>
+                            Take me to the dashboard
+                        </button>
+                    </template>
                 </template>
                 <template if:false={isAppDone}>
                     <button class="slds-btn slds-btn-primary slds-btn-sm waves-effect bc-blue waves-light"
