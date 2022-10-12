@@ -335,6 +335,8 @@
                 $scope.reportdatefields = [];
                 $scope.reportdatetimetotimefields = [];
                 $scope.reportbooleanfields = [];
+                $scope.reporttwodecimalfields = [];
+
                 if($scope.report.Boolean_Field__c != undefined)
                 {
                     if($scope.report.Boolean_Field__c.includes(','))
@@ -358,6 +360,18 @@
                         $scope.headerfields.push($scope.report.Numeric_Fields__c.trim());
                     }
                 }
+
+                if($scope.report.Two_Decimal_Places__c != undefined){
+                    if($scope.report.Two_Decimal_Places__c.includes(','))
+                    {
+                        $scope.reporttwodecimalfields = $scope.report.Two_Decimal_Places__c.split(',');
+                    }
+                    else
+                    {
+                        $scope.reporttwodecimalfields.push($scope.report.Numeric_Fields__c.trim());
+                    }
+                }
+
                 if($scope.report.Date_Time_Fields__c != undefined)
                 {
                     if($scope.report.Date_Time_Fields__c.includes(','))
@@ -502,6 +516,15 @@
                     }
                 }
 
+                var twodecimalfields = new Map();
+                for(var j = 0;j<$scope.reporttwodecimalfields.length;j++)
+                {
+                    if(apifieldstoheader.has($scope.reporttwodecimalfields[j]))
+                    {
+                        twodecimalfields.set($scope.reporttwodecimalfields[j],apifieldstoheader.get($scope.reporttwodecimalfields[j]));
+                    }
+                }
+
                 var temp = true;
                 if($scope.reporttype != 'Without Date Range')
                 {
@@ -575,6 +598,11 @@
                                     {
                                         $scope.booleanValues = ($scope.getdataofmanager[i][key] === true) ? 'Yes' : 'No';
                                         $scope.valueofkey.push(apifieldstoheader.get(key),$scope.booleanValues);
+                                    }
+                                    else if(twodecimalfields.has(key))
+                                    {
+                                        $scope.twodecimalValues = $scope.getdataofmanager[i][key].toFixed(2);
+                                        $scope.valueofkey.push(apifieldstoheader.get(key),$scope.twodecimalValues);
                                     }
                                     else
                                     {

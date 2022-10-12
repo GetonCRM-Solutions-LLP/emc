@@ -106,6 +106,12 @@ global class GetTripCalloutforCommute {
                     emp.FromLocationId__c = fromLocationOfTrip.id;                    
                     if(fromLocationOfTrip.name != null) {
                         emp.Origin_Name__c = String.valueOf(fromLocationOfTrip.name);  
+                    } else if(fromLocationOfTrip.address != null && fromLocationOfTrip.address.contains(',')){
+                        emp.Origin_Name__c = fromLocationOfTrip.address.split(',')[0];
+                    } else if(fromLocationOfTrip.address != null && fromLocationOfTrip.address.contains(' ')){
+                        emp.Origin_Name__c = fromLocationOfTrip.address.split(' ')[0];
+                    } else {
+                        emp.Origin_Name__c = fromLocationOfTrip.address;
                     }
                     if(fromLocationOfTrip.address != null) {
                         emp.Trip_Origin__c = fromLocationOfTrip.address;
@@ -116,6 +122,12 @@ global class GetTripCalloutforCommute {
                     emp.ToLocationId__c = toLocationOfTrip.id;                    
                     if(toLocationOfTrip.name != null) {
                         emp.Destination_Name__c = String.valueOf(toLocationOfTrip.name);  
+                    } else if(toLocationOfTrip.address != null && toLocationOfTrip.address.contains(',')){
+                        emp.Destination_Name__c = toLocationOfTrip.address.split(',')[0];
+                    } else if(toLocationOfTrip.address != null && toLocationOfTrip.address.contains(' ')){
+                        emp.Destination_Name__c = toLocationOfTrip.address.split(' ')[0];
+                    } else {
+                        emp.Destination_Name__c = toLocationOfTrip.address;
                     }
                     if(toLocationOfTrip.address != null) {
                         emp.Trip_Destination__c = toLocationOfTrip.address;
