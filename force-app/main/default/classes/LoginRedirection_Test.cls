@@ -98,11 +98,13 @@ public with sharing class LoginRedirection_Test {
         System.runAs(admin) {
           
         acc = TestDataFactory.createAccount(True, 'Test Account', True);
-        conList = TestDataFactory.createDriverContact(false, acc.Id, 'Driver', vehicleType.Name, 'Paras.Patel', 2);
-        conList[0].IsCreatedFromCommunity__c = false;
-        Insert conList[0];
-        system.assertEquals(2, conList.size(), true);
-         userObj = TestDataFactory.createUser(True, profileObj.Id, conList[0].Id);
+            conList = TestDataFactory.createDriverContact(false, acc.Id, 'Driver', vehicleType.Name, 'Paras.Patel', 2);
+            system.assertEquals(2, conList.size(), true);
+            conList[0].IsCreatedFromCommunity__c = false;
+            Insert conList[0];
+            system.assertEquals(2, conList.size(), true);
+          
+            userObj = TestDataFactory.createUser(True, profileObj.Id, conList[0].Id);
          }
 
         List<User> u = [Select id from User WHERE Profile.name='Customer Community Login User - Manager/Driver' and IsActive = true limit 1];
@@ -123,19 +125,15 @@ public with sharing class LoginRedirection_Test {
         IRS_Mileage_Rate__c createIRSRate = TestDataFactory.createIRSRate(true, 0);
         TrueDialog_Keys__c tdKeys = TestDataFactory.createTrueDialog(true);
         
-        Account acc = new Account();   
-        acc = TestDataFactory.createAccount(false, 'Test Account', True);
-        acc.MburseDashboardRedirect__c = true;
-        Insert acc;
+        Account acc = new Account();     
         List<Contact> conList = new List<Contact>(); 
         UserRole userRole = TestDataFactory.getUserRole();
         Profile profileObj = TestDataFactory.getUserProfile();
         User admin = TestDataFactory.getSystemAdminUser(userRole.Id);
         User userObj;
         
-        System.runAs(admin) {
-          
-        
+        System.runAs(admin) {          
+        acc = TestDataFactory.createAccount(True, 'Test Account', True);
         conList = TestDataFactory.createDriverContact(false, acc.Id, 'Driver', vehicleType.Name, 'Paras.Patel', 2);
         conList[0].Activation_Date__c = system.today()-35;
         conList[0].IsCreatedFromCommunity__c = false;
