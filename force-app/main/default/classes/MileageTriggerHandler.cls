@@ -4,8 +4,8 @@ public class MileageTriggerHandler {
     Public Static string accId;
     Public static List<String> accIdList;
     
-    public static void MileageRemoveApprovalDateHandler(List<Employee_Mileage__c> empMileageList) {
-        List<Employee_Reimbursement__c> Reimbursementlist = new List<Employee_Reimbursement__c>();
+    public static void mileageRemoveApprovalDateHandler(List<Employee_Mileage__c> empMileageList) {
+        List<Employee_Reimbursement__c> reimbursementlist = new List<Employee_Reimbursement__c>();
         set<Id> reimbursementApprovalStatusSet = new set<Id>();
         for(Employee_Mileage__c empmilege : empMileageList) {
             if(empmilege.Trip_Status__c == 'Not Approved Yet'){
@@ -35,6 +35,7 @@ public class MileageTriggerHandler {
 * as only one date and onther trips are count individual so the total working days are 15 + 1 = 16.   
 */   
     Public static void updateWorkingDays(List<Employee_Mileage__c> empMileageList) {
+        system.debug('empMileageList==' + empMileageList);
         accId = System.Label.MileageDeductionAccount;
         system.debug('accId==' + accId);
         accIdList = new List<String>();
@@ -106,5 +107,38 @@ public class MileageTriggerHandler {
         if(reimList != null && reimList.size() > 0) {
             Update reimList;
         }        
+    }
+
+    Public static void workingDaysforBiweeklyDrivers(List<Employee_Mileage__c> empMileageList) {
+        set<Id> biWeeklyRem = new set<Id>();
+        for(Employee_Mileage__c em : empMileageList){
+            biWeeklyRem.add(em.Bi_Weekly_Reimbursement__c);
+        }
+        set<date> uniqueDates = new set<date>();
+        Map<Id,Integer> biweeklyWorkingDaysMap = new map<Id,Integer>();
+        for(Employee_Mileage__c em : [SELECT id,Bi_Weekly_Reimbursement__c,Bi_Weekly_Reimbursement__r.Start_Date__c,Bi_Weekly_Reimbursement__r.End_Date__c,Trip_Date__c 
+                                      FROM Employee_Mileage__c 
+                                      WHERE Bi_Weekly_Reimbursement__c IN : biWeeklyRem ]){
+                                          
+                                          if(em.Bi_Weekly_Reimbursement__r.Start_Date__c <= em.Trip_Date__c &&
+                                             em.Bi_Weekly_Reimbursement__r.End_Date__c >= em.Trip_Date__c && 
+                                             !uniqueDates.contains(em.Trip_Date__c)){
+                                                 
+                                                 if(!biweeklyWorkingDaysMap.containsKey(em.Bi_Weekly_Reimbursement__c))
+                                                     biweeklyWorkingDaysMap.put(em.Bi_Weekly_Reimbursement__c,0);
+                                                 biweeklyWorkingDaysMap.put(em.Bi_Weekly_Reimbursement__c,biweeklyWorkingDaysMap.get(em.Bi_Weekly_Reimbursement__c)+1);
+                                                 uniqueDates.add(em.Trip_Date__c);
+                                             }
+                                      }
+        
+        if(biweeklyWorkingDaysMap.keySet().size()>0){
+            List<Bi_Weekly_Reimbursement__c> workingDayUpdateLST = new List<Bi_Weekly_Reimbursement__c>();
+            for(Id i : biweeklyWorkingDaysMap.keySet()){
+                workingDayUpdateLST.add(new Bi_Weekly_Reimbursement__c(Id = i, Working_Days__c = biweeklyWorkingDaysMap.get(i)));
+            }
+            if(workingDayUpdateLST.size()>0){
+                update workingDayUpdateLST;
+            }
+        }      
     }
 }
