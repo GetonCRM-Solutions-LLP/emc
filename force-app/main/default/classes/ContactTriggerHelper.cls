@@ -41,7 +41,7 @@ public without sharing class ContactTriggerHelper {
         Http h;
         HttpRequest req;
         HttpResponse res;
-        String mLOGACCOUNT = System.Label.Triplog_New_URL;
+        String mLOGACCOUNT = System.Label.Triplog_New_URL + ',' + System.Label.Triplog_New_URL2;
         for(String currentUserId : triplogidwiseAPIkey.keySet()) {
             String baseURL = !mLOGACCOUNT.Contains( triplogidwiseAPIkey.get(currentUserId) ) ? StaticValues.TRIPLOG_BASEURL : StaticValues.MLOG_BASEURL;
             if(tripIdWisePhone.containsKey(currentUserId) && tripIdWisePhone.get(currentUserId) != null) {
@@ -174,14 +174,24 @@ public without sharing class ContactTriggerHelper {
     public static void createReimRecord(List<Contact> newCon, Map<ID, Contact> conOldMap) { 
         List<Employee_Reimbursement__c> reimToInsert   = new List<Employee_Reimbursement__c>();
         List<Bi_Weekly_Reimbursement__c> bireimToInsert   = new List<Bi_Weekly_Reimbursement__c>();
+        map<string, Decimal> gasPriceMap = GetGasPrice();
+        Boolean monthlyReimValue;
+
         for(Contact con : newCon) {
+            if (con.Monthly_Reimbursement__c == true) {
+                monthlyReimValue = true;
+            }
+            else{
+                monthlyReimValue = false;
+            }
+
             if(conOldMap.get(con.id).Deactivated_Date__c != null  && con.Deactivated_Date__c == null && (conOldMap.get(con.id).Deactivated_Date__c != con.Deactivated_Date__c) && con.Activation_Date__c <= System.today()){
                 if(con.Role__c != 'Admin' && con.Role__c != 'Manager') {
                     TriggerConfig__c customSetting = TriggerConfig__c.getInstance('Defaulttrigger');
                     if(customSetting.ContactTriCommunityReimCreate__c == true) {
-                        reimToInsert.add(CreateReimbursement(con));
+                        reimToInsert.add(CreateReimbursement(con,gasPriceMap));
                         if(customSetting.ContactTriBiReimCreate__c == true) {
-                            bireimToInsert.add(CreateBiweekReimbursement(con));
+                            bireimToInsert.add(CreateBiweekReimbursement(con,gasPriceMap,monthlyReimValue));
                         }
                     }
                 }
@@ -203,8 +213,8 @@ public without sharing class ContactTriggerHelper {
         }
     }
     
-    public static Employee_Reimbursement__c CreateReimbursement(Contact con){
-        //EMC-283 Update Fuel Price based on the contact city and state as past month's fuel price FROM Gas price object. 
+    public static map<string, Decimal> GetGasPrice(){
+        map<string, Decimal> fuelPricereimMap = new map<string, Decimal>();
         String currentDate = String.valueOf(system.today());
         String[] splitDate = currentDate.split('-');
         
@@ -223,10 +233,17 @@ public without sharing class ContactTriggerHelper {
                                          Month_State_City__c 
                                          FROM Gas_Prices__c 
                                          WHERE  Month_Year__c =: date.valueOf(fuelPriceDate)
-                                         WITH SECURITY_ENFORCED ]) {
-                                             monthStateCityVsFuelPricereimMap.put(objGasPrice.Month_State_City__c, objGasPrice.Fuel_Price__c); 
+                                         ]) {
+                                             fuelPricereimMap.put(objGasPrice.Month_State_City__c, objGasPrice.Fuel_Price__c); 
                                          }
+         return fuelPricereimMap;
+    }
+    
+    public static Employee_Reimbursement__c CreateReimbursement(Contact con, map<string, Decimal> monthFuelPricereimMap){
+        //EMC-283 Update Fuel Price based on the contact city and state as past month's fuel price FROM Gas price object. 
         
+        String currentDate = String.valueOf(system.today());
+        String[] splitDate = currentDate.split('-');
         List<IRS_Mileage_Rate__c> objIRSRate = [SELECT id,year__c,IRS_Rate__c FROM IRS_Mileage_Rate__c WHERE year__c =: String.valueOf(System.today().year()) Limit 1];
         String lastMonth = Utils.fetchMonths(1, -1)[0];
         Employee_Reimbursement__c er = new Employee_Reimbursement__c();
@@ -237,15 +254,16 @@ public without sharing class ContactTriggerHelper {
         er.Contact_Id__c = con.id;
         er.Name = con.Name__c + ':' + lastMonth;
         er.Month__c = lastMonth;
+        
         if(integer.valueOf(splitDate[1]) == 01){
-            if (monthStateCityVsFuelPricereimMap.containsKey(con.MailingCity+ con.MailingState + '12' + string.valueOf(integer.valueOf(splitDate[0])-1)) ) {
-                er.Fuel_Price__c = monthStateCityVsFuelPricereimMap.get(con.MailingCity+ con.MailingState + '12' + string.valueOf(integer.valueOf(splitDate[0])-1)) ;
+            if (monthFuelPricereimMap.containsKey(con.MailingCity+ con.MailingState + '12' + string.valueOf(integer.valueOf(splitDate[0])-1)) ) {
+                er.Fuel_Price__c = monthFuelPricereimMap.get(con.MailingCity+ con.MailingState + '12' + string.valueOf(integer.valueOf(splitDate[0])-1)) ;
             }   else {
                 er.Fuel_Price__c = 0;
             }
         }   else {   
-            if (monthStateCityVsFuelPricereimMap.containsKey(con.MailingCity + con.MailingState + string.valueOf(integer.valueOf(splitDate[1])-1) + splitDate[0]) ) {
-                er.Fuel_Price__c = monthStateCityVsFuelPricereimMap.get(con.MailingCity + con.MailingState + string.valueOf(integer.valueOf(splitDate[1])-1) + splitDate[0]);
+            if (monthFuelPricereimMap.containsKey(con.MailingCity + con.MailingState + string.valueOf(integer.valueOf(splitDate[1])-1) + splitDate[0]) ) {
+                er.Fuel_Price__c = monthFuelPricereimMap.get(con.MailingCity + con.MailingState + string.valueOf(integer.valueOf(splitDate[1])-1) + splitDate[0]);
             }   else {
                 er.Fuel_Price__c = 0;
             }
@@ -256,16 +274,26 @@ public without sharing class ContactTriggerHelper {
     public static void  communityReimCreate(List<Contact> contactList) {
         List<Employee_Reimbursement__c> reimToInsert   = new List<Employee_Reimbursement__c>();
         List<Bi_Weekly_Reimbursement__c> bireimToInsert   = new List<Bi_Weekly_Reimbursement__c>();
+        map<string, Decimal> gasPriceMap = GetGasPrice();
+        Boolean monthlyReimValue;
+
         TriggerConfig__c customSetting = TriggerConfig__c.getInstance('Defaulttrigger');
         for(Contact con : contactList){
+            if (con.Monthly_Reimbursement__c == true) {
+                monthlyReimValue = true;
+            }
+            else{
+                monthlyReimValue = false;
+            }
+
             if(!System.isBatch()){
                 putHTTP(con.AccountId,con.External_Email__c);
             }
             if(con.Role__c != 'Admin' && con.Role__c != 'Manager' && con.Deactivated_Date__c == null) {
                 if(con != null && customSetting.ContactTriCommunityReimCreate__c == true) {
-                    reimToInsert.add(CreateReimbursement(con));
+                    reimToInsert.add(CreateReimbursement(con,gasPriceMap));
                     if(customSetting.ContactTriBiReimCreate__c == true) {
-                        bireimToInsert.add(CreateBiweekReimbursement(con)); 
+                        bireimToInsert.add(CreateBiweekReimbursement(con,gasPriceMap,monthlyReimValue)); 
                     }
                 }               
             }
@@ -277,8 +305,36 @@ public without sharing class ContactTriggerHelper {
             insert bireimToInsert;
         }
     }
+
+   /* public static map<string, Decimal> CreateBiweekReimbursementForMap(){
+        map<string, Decimal> monthlyFuelPriceMap = new map<string, Decimal>(); 
+        List<String> dtList = new list<String>();
+        string splitEndDate;
+        splitdate = dtList[1].split('-');
+        splitEndDate = splitdate[1]+'/'+splitdate[2]+'/'+splitdate[0];
+
+        if(integer.valueOf(splitdate[1]) == 01){
+            fuelPriceDate = date.valueOf(string.valueOf(integer.valueOf(splitdate[0])-1) + '-12' + '-01' );   
+        } else {
+            fuelPriceDate = date.valueOf(splitdate[0] + '-' + string.valueOf(integer.valueOf(splitdate[1])-1) + '-01');
+        } 
+        
+        for(Gas_Prices__c objGasPrice : [SELECT id,
+                                         name,
+                                         City__c,
+                                         State__c, 
+                                         Fuel_Price__c, 
+                                         Month_Year__c,
+                                         Month_State_City__c 
+                                         FROM Gas_Prices__c 
+                                         WHERE  Month_Year__c =: date.valueOf(fuelPriceDate)]) {
+                                             
+                                            monthlyFuelPriceMap.put(objGasPrice.Month_State_City__c, objGasPrice.Fuel_Price__c); 
+                                         }
+        return monthlyFuelPriceMap;
+    }*/
     //This method is used to create a Bi-Weekly reimbursment
-    public static Bi_Weekly_Reimbursement__c CreateBiweekReimbursement(Contact con){        
+    public static Bi_Weekly_Reimbursement__c CreateBiweekReimbursement(Contact con, map<string, Decimal> monthlyFuelPriceMap, Boolean monthlyReimbursecheckValue){        
         contact contest = [select id,account.Pay_Period_Days__c,account.Pay_Period_Start_Date__c FROM contact WHERE id =: con.id];
         List<String> dtList = new list<String>();
         Date payStartDate = contest.Account.Pay_Period_Start_Date__c;
@@ -299,25 +355,7 @@ public without sharing class ContactTriggerHelper {
             splitdate = dtList[1].split('-');
             splitEndDate = splitdate[1]+'/'+splitdate[2]+'/'+splitdate[0];
             //EMC -283 use to update fuel price of biweekly reim based on the contact city and state of past month's fuel price FROM gas price object
-            if(integer.valueOf(splitdate[1]) == 01){
-                fuelPriceDate = date.valueOf(string.valueOf(integer.valueOf(splitdate[0])-1) + '-12' + '-01' );   
-            } else {
-                fuelPriceDate = date.valueOf(splitdate[0] + '-' + string.valueOf(integer.valueOf(splitdate[1])-1) + '-01');
-            } 
             
-            
-            for(Gas_Prices__c objGasPrice : [SELECT id,
-                                             name,
-                                             City__c,
-                                             State__c, 
-                                             Fuel_Price__c, 
-                                             Month_Year__c,
-                                             Month_State_City__c 
-                                             FROM Gas_Prices__c 
-                                             WHERE  Month_Year__c =: date.valueOf(fuelPriceDate)]) {
-                                                 
-                                                 monthStateCityVsFuelPriceMap.put(objGasPrice.Month_State_City__c, objGasPrice.Fuel_Price__c); 
-                                             }
         }
         Bi_Weekly_Reimbursement__c er = new Bi_Weekly_Reimbursement__c();
         er.Fixed_Amount__c = con.Fixed_Amount__c;
@@ -327,18 +365,22 @@ public without sharing class ContactTriggerHelper {
         er.Contact__c = con.id;
         er.Name = splitStartDate+' to '+ splitEndDate;
         er.Count_Error_Check__c = 0;
-        if(integer.valueOf(splitdate[1]) == 01){
-            if (monthStateCityVsFuelPriceMap.containsKey(con.MailingCity+ con.MailingState + '12' + string.valueOf(integer.valueOf(splitdate[0])-1)) ) {
-                er.Fuel_Price__c = monthStateCityVsFuelPriceMap.get(con.MailingCity+ con.MailingState + '12' + string.valueOf(integer.valueOf(splitdate[0])-1)) ;
+        if(monthlyReimbursecheckValue != true){
+            if(integer.valueOf(splitdate[1]) == 01){
+                if (monthlyFuelPriceMap.containsKey(con.MailingCity+ con.MailingState + '12' + string.valueOf(integer.valueOf(splitdate[0])-1)) ) {
+                    er.Fuel_Price__c = monthlyFuelPriceMap.get(con.MailingCity+ con.MailingState + '12' + string.valueOf(integer.valueOf(splitdate[0])-1)) ;
+                }   else {
+                    er.Fuel_Price__c = 0;
+                }
             }   else {
-                er.Fuel_Price__c = 0;
+                if (monthlyFuelPriceMap.containsKey(con.MailingCity+ con.MailingState + string.valueOf(integer.valueOf(splitdate[1])-1) + splitdate[0]) ) {
+                    er.Fuel_Price__c = monthlyFuelPriceMap.get(con.MailingCity+ con.MailingState + string.valueOf(integer.valueOf(splitdate[1])-1) + splitdate[0]);
+                }   else {
+                    er.Fuel_Price__c = 0;
+                }
             }
-        }   else {
-            if (monthStateCityVsFuelPriceMap.containsKey(con.MailingCity+ con.MailingState + string.valueOf(integer.valueOf(splitdate[1])-1) + splitdate[0]) ) {
-                er.Fuel_Price__c = monthStateCityVsFuelPriceMap.get(con.MailingCity+ con.MailingState + string.valueOf(integer.valueOf(splitdate[1])-1) + splitdate[0]);
-            }   else {
-                er.Fuel_Price__c = 0;
-            }
+        } else{
+            er.Fuel_Price__c = 0;
         }
         er.Start_Date__c = Date.valueOf(dtList[0]);
         er.End_Date__c = Date.valueOf(dtList[1]);
@@ -355,7 +397,7 @@ public without sharing class ContactTriggerHelper {
                                      FROM Account 
                                      WHERE Id =: accountID];
          if(accountList.size() > 0 && accountList[0].MburseDashboardRedirect__c == false){
-            String MLOGACCOUNT = System.Label.Triplog_New_URL;        
+            String MLOGACCOUNT = System.Label.Triplog_New_URL  + ',' + System.Label.Triplog_New_URL2;        
             String body, apiToken;
             
             if(accountList.size() > 0 ){
@@ -395,7 +437,7 @@ public without sharing class ContactTriggerHelper {
         Http h;
         HttpRequest req;
         HttpResponse res;
-        String mLOGACCOUNT = System.Label.Triplog_New_URL;
+        String mLOGACCOUNT = System.Label.Triplog_New_URL + ',' + System.Label.Triplog_New_URL2; 
         for(Contact conObj : [SELECT id,Triplog_UserID__c, Account.Triplog_API__c  FROM Contact WHERE id =: conId]) {
             if(conObj.Triplog_UserID__c != null && conObj.Account.Triplog_API__c != null){
                 String baseURL = !mLOGACCOUNT.Contains( conObj.Account.Triplog_API__c ) ? StaticValues.TRIPLOG_BASEURL : StaticValues.MLOG_BASEURL;
