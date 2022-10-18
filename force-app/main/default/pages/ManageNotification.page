@@ -2771,6 +2771,28 @@
                         }
 
 
+                        $scope.clearMass = function(){
+                            $('#spinner').show();
+                            Visualforce.remoting.Manager.invokeAction(
+                                '{!$RemoteAction.ManageNotificationController.clearMassNotification}', $scope.accid,
+                                function (result, event) {
+                                    if (event.status) {
+                                        $scope.$apply(function () {
+                                            $('#spinner').hide();
+                                            toastr.success("Notification message cleared successfully!!");
+                                            setTimeout(function () {
+                                                location.reload();
+                                            }, 2000);
+                                        });
+                                    } else {
+                                        $scope.$apply(function () {
+                                            console.log('error in method clearMassNotification ->', result);
+                                        });
+                                    }
+                                },
+                                { escape: false }
+                            )
+                        }
 
                         $scope.endProcess = function () {
                             $scope.isDefault = true;
@@ -4404,6 +4426,10 @@
                         <button class="slds-btn slds-btn-primary slds-btn-sm waves-effect bc-black waves-light mleft cancelBtn" ng-show="showCancelProBtn"
                             ng-click="endProcess()">
                             Cancel Process
+                        </button>
+                        <button class="slds-btn slds-btn-primary slds-btn-sm waves-effect bc-grey waves-light mleft-0" 
+                            ng-click="clearMass()">
+                            Clear Mass Notification 
                         </button>
                         <div>
                             <!-- <div class="file-field" ng-if="accid === PLMarketing">
