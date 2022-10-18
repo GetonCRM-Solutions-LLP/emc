@@ -881,6 +881,23 @@ public without sharing class ManageNotificationController {
     public static Boolean CheckNull(String param1) {
         return param1 == null || param1 == '' ? true : false;
     }
+    @RemoteAction
+    Public Static void clearMassNotification(String accID){
+    List<Contact > contactList = new List<Contact >();
+        for(Contact con : [SELECT Id, Name,Notification_Message__c,Notification_Date__c,Deactivated_Date__c 
+                                FROM contact 
+                                WHERE accountId =: accID 
+                                    AND Deactivated_Date__c = NULL]) {
+                                        if(con.Notification_Message__c != NULL || con.Notification_Date__c != NULL){
+                                            con.Notification_Message__c = null;
+                                            con.Notification_Date__c = null;
+                                            contactList.add(con);
+                                        }     
+        }
+        if(contactList.size() > 0){
+            update contactList;
+        }
+    }
     public class ContactWrapper {
         public string contactId { get; set; }
         public string triploguserid{ get; set; }
