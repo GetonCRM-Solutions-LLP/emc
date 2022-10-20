@@ -301,7 +301,7 @@ global without sharing class RosterController
     @Future(callout = true)
     webservice static void postHTTPCreateNewUserTriplog(List<Id> newListContact) 
     {
-        String MLOGACCOUNT = System.Label.Triplog_New_URL;
+        String MLOGACCOUNT = System.Label.Triplog_New_URL  + ',' + System.Label.Triplog_New_URL2;
         //String url = 'https://triplogmileage.com/web/api/users';
         Http h;
         HttpRequest req;
@@ -489,7 +489,7 @@ global without sharing class RosterController
         Id batchId;
         ImportContactdatafromCSVController batch = new ImportContactdatafromCSVController(file, accountId, adminId);
        
-        batchid = Database.executebatch(batch,1);
+        batchid = Database.executebatch(batch,101);
         system.debug('batchid==' + batchid);
         return batchid;
     }
@@ -679,7 +679,7 @@ global without sharing class RosterController
         system.debug('accountID=='+accountID);
         system.debug('empEmail=='+empEmail);
         
-        String MLOGACCOUNT = System.Label.Triplog_New_URL;
+        String MLOGACCOUNT = System.Label.Triplog_New_URL + ',' + System.Label.Triplog_New_URL2;
         
         String body, apiToken;
         List<Account> accountList = [SELECT id,Triplog_API__c  
@@ -730,7 +730,7 @@ global without sharing class RosterController
     public static void putHTTPConcurConnect(String accountID,String empEmail) {
         system.debug('putHTTPConcurConnect accountID'+accountID);
         system.debug('putHTTPConcurConnect empEmail='+empEmail);
-        String MLOGACCOUNT = System.Label.Triplog_New_URL;
+        String MLOGACCOUNT = System.Label.Triplog_New_URL  + ',' + System.Label.Triplog_New_URL2;
         
         String body, apiToken;
         List<Account> accountList = [SELECT id,Triplog_API__c  

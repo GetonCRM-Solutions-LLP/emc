@@ -53,21 +53,53 @@ global class ImportContactdatafromCSVController implements Database.Batchable<St
             Database.UpsertResult[] urVehicleList = Database.upsert(allVehiclelist, Vehicle_URL_Mapping__c.Name );
 
             for(String row : scope){
+            System.debug('row=== '+row );
                 String[] csvRecordData = row.split(',');
+                System.debug('CSV Records'+csvRecordData);
+                //System.debug('preparecontactList==='+preparecontactList(csvRecordData, accId));
                 allContactList.add(preparecontactList(csvRecordData, accId));
             }
+            system.debug('allContactList=='  + allContactList);
             if(!allContactList.isEmpty()){
+               
+                System.debug('All Contact List: '+allContactList);
                 Database.saveResult[] insertDriverList = Database.insert(allContactList, false);
+                system.debug('insertDriverList=='  + insertDriverList);
                 Integer erroFlagCount = 0;
+
                 for (Database.saveResult sr : insertDriverList) {
+                    system.debug('sr=='  + sr);
+                    System.debug('sr sucess: '+ sr.isSuccess());
                     if (sr.isSuccess() == false) {
                         for(Database.Error objErr : sr.getErrors()) {
+                            String errorlog = json.serialize(objErr);
+                            system.debug('error list: '+errorlog);
+                            //errorMap.put(erroFlagCount, errorlog);
                             errorMap.put(erroFlagCount, objErr.getMessage());
+                            System.debug('Error in insert Contact ' + errorMap);
                         }
                     }
                     erroFlagCount ++;
                 }
+            
+                /*List<Database.SaveResult> insertDriverList = Database.insert(allContactList, false);
+                Integer erroFlagCount = 0;
+                for(Integer i=0;i<insertDriverList.size();i++){
+                    if (insertDriverList.get(i).isSuccess()){
+                        insertDriverList.get(i).getId();
+
+                    }else if (!insertDriverList.get(i).isSuccess()){
+                        // DML operation failed
+                       Database.Error error = insertDriverList.get(i).getErrors().get(0);
+                        //String failedDML = error.getMessage();
+                        allContactList.get(i);//failed record from the list
+                        system.debug('Failed ID'+allContactList.get(i).Id);
+                            errorMap.put(erroFlagCount, error.getMessage());
+                    }
+                    erroFlagCount ++;
+                }  */
             }
+            system.debug('errorMap=='  + errorMap);
             Map<String, Contact> contactMap = new Map<String, Contact>();
             Id adminId;
             system.debug('');
@@ -110,11 +142,13 @@ global class ImportContactdatafromCSVController implements Database.Batchable<St
             
         }   catch(Exception e){
             exceptionMessage = 'Exception:-'+e.getMessage()+' '+e.getLineNumber();
+            System.debug('Exception error Messagae'+e.getMessage());
             Database.rollback(spMain);
         }
     }
 
     public static Contact preparecontactList(String[] csvRecordData, string accId){
+        System.debug('csv record data'+csvRecordData);
         String invalidNumbers = '[^0-9]';
         Contact conObj = new Contact();
         conObj.Role__c = csvRecordData[0] ;
@@ -208,6 +242,7 @@ global class ImportContactdatafromCSVController implements Database.Batchable<St
             }
            
         }       
+       
         Set<String> tmpConIdSet = new Set<String>();
         for(contact con : allContactList){
             tmpConIdSet.add(con.Id);     
@@ -215,7 +250,7 @@ global class ImportContactdatafromCSVController implements Database.Batchable<St
         Map<Id,Contact> contactIdMap =  new Map<Id, Contact>([select id, MobilePhone,
                                         Email,Account.True_Dialog__c FROM Contact 
                                         WHERE id IN: tmpConIdSet AND Account.True_Dialog__c=true ]);
-
+        system.debug('contactIdMap=='+ contactIdMap);
         Set<Id> contactIdSet=contactIdMap.keyset();      
      
         TrueDialog_Keys__c tdKeys =TrueDialog_Keys__c.getInstance('TrueDialogKeys');
@@ -234,48 +269,50 @@ global class ImportContactdatafromCSVController implements Database.Batchable<St
         String errorSubject;
         String htmlbody;
         Boolean emailFalg = false;
+        System.debug('exception message: '+exceptionMessage);
+        System.debug('error map is empty: '+errorMap.isEmpty());
       
         if((exceptionMessage == null || exceptionMessage == '') && !errorMap.isEmpty()) {           
             Messaging.EmailFileAttachment attach = new Messaging.EmailFileAttachment();
             String finalstr;
             
            string header = 'Role'+','+'First Name'+','+'Last Name'+','+'Email Address'+','+'Cell Phone'+','+'City'+','+'State'+','+'Zip Code'+','+'Department'+','+'Job Title'+','+'Managers First Name'+','+'Managers Last Name'+','+'Managers Email'+','+'Insurance Rate'+','+'License and Registration'+','+'Personal Property Tax'+','+'Depreciation'+','+'Annual Fixed Cost'+','+'Fixed Amount'+','+'FCA'+','+'Total Fixed Amount'+','+'Meeting'+','+'Packet'+','+'Date Added'+','+'Activation Date'+','+'MPG'+','+'Maint'+','+'Tires'+','+'Maint/Tires'+','+'Standard Vehicle'+','+'Compliance Mileage'+','+'Vehicle URL'+','+'Error'+' \n';
-           //string header = 'Role'+'\t'+'First Name'+'\t'+'Last Name'+'\t'+'Email Address'+'\t'+'Cell Phone'+'\t'+'City'+'\t'+'State'+'\t'+'Zip Code'+'\t'+'Department'+'\t'+'Job Title'+'\t'+'Managers First Name'+'\t'+'Managers Last Name'+'\t'+'Managers Email'+'\t'+'Insurance Rate'+'\t'+'License and Registration'+'\t'+'Personal Property Tax'+'\t'+'Depreciation'+'\t'+'Annual Fixed Cost'+'\t'+'Fixed Amount'+'\t'+'FCA'+'\t'+'Total Fixed Amount'+'\t'+'Meeting'+'\t'+'Packet'+'\t'+'Date Added'+'\t'+'Activation Date'+'\t'+'MPG'+'\t'+'Maint'+'\t'+'Tires'+'\t'+'Maint/Tires'+'\t'+'Standard Vehicle'+'\t'+'Compliance Mileage'+'\t'+'Vehicle URL'+'\t'+'Error'+' \n';
+           
             finalstr = header;
             String cellPhone,managersEmail,insuraceRate,licenseandRegistration,personalPropertyTax,depreciation,annualFixedCost,
             fixedAmount,fca,totalFixedAmount,meeting,addedDate,activationDate,mpg,maint,tires,maintTires,standardVehicle,
             complianceMileage,vehicleURL;
 
             for(Integer mapkey : errorMap.keySet()){
-                cellPhone = String.valueof(allContactList.get(mapkey)?.Phone) != null ? String.valueof(allContactList.get(mapkey)?.Phone) : '';
-                managersEmail = allContactList.get(mapkey).Manager_External_Email__c != null ? allContactList.get(mapkey).Manager_External_Email__c : '';
-                insuraceRate = String.valueof(allContactList.get(mapkey)?.Insurance_Rate__c) != null ? String.valueof(allContactList.get(mapkey)?.Insurance_Rate__c)  : '';
-                licenseandRegistration = String.valueof(allContactList.get(mapkey).License_Ragistration__c) != null ? String.valueof(allContactList.get(mapkey).License_Ragistration__c) : '';
-                personalPropertyTax = String.valueof(allContactList.get(mapkey).Taxes__c) != null ? String.valueof(allContactList.get(mapkey).Taxes__c) : '';
-                depreciation = String.valueof(allContactList.get(mapkey).Depreciation__c) != null ? String.valueof(allContactList.get(mapkey).Depreciation__c) : '';
-                annualFixedCost = String.valueof(allContactList.get(mapkey).Annual_Fixed_Cost__c) != null ? String.valueof(allContactList.get(mapkey).Annual_Fixed_Cost__c) : '';
-                fixedAmount = String.valueof(allContactList.get(mapkey).Fixed_Amount__c) != null ? String.valueof(allContactList.get(mapkey).Fixed_Amount__c) : '';
-                fca = String.valueof(allContactList.get(mapkey).Fixed_Cost_Adjustment__c) != null ? String.valueof(allContactList.get(mapkey).Fixed_Cost_Adjustment__c) : '';
-                totalFixedAmount = String.valueof(allContactList.get(mapkey).Total_Fixed_Costs__c) != null ? String.valueof(allContactList.get(mapkey).Total_Fixed_Costs__c) : '';
-                meeting = allContactList.get(mapkey).Meeting__c != null ? allContactList.get(mapkey).Meeting__c : '';
-                mpg = String.valueof(allContactList.get(mapkey).MPG__c) != null ? String.valueof(allContactList.get(mapkey).MPG__c) : '';
-                maint = String.valueof(allContactList.get(mapkey).Maintenance__c) != null ? String.valueof(allContactList.get(mapkey).Maintenance__c) : '';
-                tires = String.valueof(allContactList.get(mapkey).Tires__c) != null ? String.valueof(allContactList.get(mapkey).Tires__c) : '';
-                maintTires = String.valueof(allContactList.get(mapkey).Maintenance_and_Tires__c) != null ? String.valueof(allContactList.get(mapkey).Maintenance_and_Tires__c): '';
-                standardVehicle = allContactList.get(mapkey).Vehicle_Type__c != null ? allContactList.get(mapkey).Vehicle_Type__c : '';
-                complianceMileage = String.valueOf(allContactList.get(mapkey).Compliance_Mileage__c) != null ? String.valueof(allContactList.get(mapkey).Compliance_Mileage__c) : '';
-                vehicleURL = allContactList.get(mapkey).Car_Image__c != null ? allContactList.get(mapkey).Car_Image__c : '';
-                
-                if(allContactList.get(mapkey).Added_Date__c != null) {
-                    addedDate = allContactList.get(mapkey).Added_Date__c != null ? allContactList.get(mapkey).Added_Date__c.day() + '/' + allContactList.get(mapkey).Added_Date__c.month()+'/'+ allContactList.get(mapkey).Added_Date__c.year() : '';
-                }
-                if(allContactList.get(mapkey)?.Activation_Date__c != null) {
-                    activationDate = allContactList.get(mapkey).Activation_Date__c != null ? allContactList.get(mapkey).Activation_Date__c.day() + '/' + allContactList.get(mapkey).Activation_Date__c.month()+'/'+ allContactList.get(mapkey).Activation_Date__c.year() : '';
-                //String Recordstring = 'Account Id'+','+allContactList.get(mapkey).AccountId+','+allContactList.get(mapkey).Role__c+','+allContactList.get(mapkey).FirstName+','+allContactList.get(mapkey).LastName+','+allContactList.get(mapkey).Email+','+allContactList.get(mapkey).Phone+','+allContactList.get(mapkey).MailingCity+','+allContactList.get(mapkey).MailingState+','+allContactList.get(mapkey).MailingPostalCode+','+allContactList.get(mapkey).Department+','+allContactList.get(mapkey).Job_Title__c+','+allContactList.get(mapkey).Manager_First_Name__c+','+allContactList.get(mapkey).Manager_Last_Name__c+','+allContactList.get(mapkey).Manager_External_Email__c+','+allContactList.get(mapkey).Vehicle_Type__c+','+insuraceRate +','+allContactList.get(mapkey).License_Ragistration__c+','+allContactList.get(mapkey).Taxes__c+','+allContactList.get(mapkey).Depreciation__c+','+allContactList.get(mapkey).Annual_Fixed_Cost__c+','+allContactList.get(mapkey).Business_Use__c+','+allContactList.get(mapkey).Fixed_Amount__c+','+allContactList.get(mapkey).Fixed_Cost_Adjustment__c+','+allContactList.get(mapkey).Total_Fixed_Costs__c+','+allContactList.get(mapkey).Meeting__c+','+''+','+addedDate+','+activationDate+','+allContactList.get(mapkey).MPG__c+','+allContactList.get(mapkey).Maintenance__c+','+allContactList.get(mapkey).Tires__c+','+allContactList.get(mapkey).Maintenance_and_Tires__c+','+allContactList.get(mapkey).Vehicle_Type__c+','+allContactList.get(mapkey).Insurance_Plan__c+','+allContactList.get(mapkey).Vehicle_Age__c+','+allContactList.get(mapkey).Vehicle_Value__c+','+allContactList.get(mapkey).Compliance_Mileage__c+','+allContactList.get(mapkey).Car_Image__c+','+allContactList.get(mapkey).Company_Logo__c+','+allContactList.get(mapkey).mLog_API__c+','+errorMap.get(mapkey)+'    \n';
-                String recordstring = allContactList.get(mapkey).Role__c+','+allContactList.get(mapkey).FirstName+','+allContactList.get(mapkey).LastName+','+allContactList.get(mapkey).Email+','+CellPhone+','+allContactList.get(mapkey).MailingCity+','+allContactList.get(mapkey).MailingState+','+allContactList.get(mapkey).MailingPostalCode+','+allContactList.get(mapkey).Department+','+allContactList.get(mapkey).Job_Title__c+','+allContactList.get(mapkey).Manager_First_Name__c+','+allContactList.get(mapkey).Manager_Last_Name__c+','+ManagersEmail+','+insuraceRate +','+LicenseandRegistration+','+PersonalPropertyTax+','+Depreciation+','+AnnualFixedCost+','+FixedAmount+','+FCA+','+TotalFixedAmount+','+Meeting+','+''+','+addedDate+','+activationDate+','+MPG+','+Maint+','+Tires+','+MaintTires+','+StandardVehicle+','+ComplianceMileage+','+VehicleURL+','+errorMap.get(mapkey)+'    \n';
-                //String Recordstring = allContactList.get(mapkey).Role__c+'\t'+allContactList.get(mapkey).FirstName+'\t'+allContactList.get(mapkey).LastName+'\t'+allContactList.get(mapkey).Email+'\t'+CellPhone+'\t'+allContactList.get(mapkey).MailingCity+'\t'+allContactList.get(mapkey).MailingState+'\t'+allContactList.get(mapkey).MailingPostalCode+'\t'+allContactList.get(mapkey).Department+'\t'+allContactList.get(mapkey).Job_Title__c+'\t'+allContactList.get(mapkey).Manager_First_Name__c+'\t'+allContactList.get(mapkey).Manager_Last_Name__c+'\t'+ManagersEmail+'\t'+insuraceRate +'\t'+LicenseandRegistration+'\t'+PersonalPropertyTax+'\t'+Depreciation+'\t'+AnnualFixedCost+'\t'+FixedAmount+'\t'+FCA+'\t'+TotalFixedAmount+'\t'+Meeting+'\t'+''+'\t'+addedDate+'\t'+activationDate+'\t'+MPG+'\t'+Maint+'\t'+Tires+'\t'+MaintTires+'\t'+StandardVehicle+'\t'+ComplianceMileage+'\t'+VehicleURL+'\t'+errorMap.get(mapkey)+'    \n';
-                finalstr = finalstr + recordstring;
-                }      
+                    cellPhone = String.valueof(allContactList.get(mapkey)?.Phone) != null ? String.valueof(allContactList.get(mapkey)?.Phone) : '';
+                    managersEmail = allContactList.get(mapkey).Manager_External_Email__c != null ? allContactList.get(mapkey).Manager_External_Email__c : '';
+                    insuraceRate = String.valueof(allContactList.get(mapkey)?.Insurance_Rate__c) != null ? String.valueof(allContactList.get(mapkey)?.Insurance_Rate__c)  : '';
+                    licenseandRegistration = String.valueof(allContactList.get(mapkey).License_Ragistration__c) != null ? String.valueof(allContactList.get(mapkey).License_Ragistration__c) : '';
+                    personalPropertyTax = String.valueof(allContactList.get(mapkey).Taxes__c) != null ? String.valueof(allContactList.get(mapkey).Taxes__c) : '';
+                    depreciation = String.valueof(allContactList.get(mapkey).Depreciation__c) != null ? String.valueof(allContactList.get(mapkey).Depreciation__c) : '';
+                    annualFixedCost = String.valueof(allContactList.get(mapkey).Annual_Fixed_Cost__c) != null ? String.valueof(allContactList.get(mapkey).Annual_Fixed_Cost__c) : '';
+                    fixedAmount = String.valueof(allContactList.get(mapkey).Fixed_Amount__c) != null ? String.valueof(allContactList.get(mapkey).Fixed_Amount__c) : '';
+                    fca = String.valueof(allContactList.get(mapkey).Fixed_Cost_Adjustment__c) != null ? String.valueof(allContactList.get(mapkey).Fixed_Cost_Adjustment__c) : '';
+                    totalFixedAmount = String.valueof(allContactList.get(mapkey).Total_Fixed_Costs__c) != null ? String.valueof(allContactList.get(mapkey).Total_Fixed_Costs__c) : '';
+                    meeting = allContactList.get(mapkey).Meeting__c != null ? allContactList.get(mapkey).Meeting__c : '';
+                    mpg = String.valueof(allContactList.get(mapkey).MPG__c) != null ? String.valueof(allContactList.get(mapkey).MPG__c) : '';
+                    maint = String.valueof(allContactList.get(mapkey).Maintenance__c) != null ? String.valueof(allContactList.get(mapkey).Maintenance__c) : '';
+                    tires = String.valueof(allContactList.get(mapkey).Tires__c) != null ? String.valueof(allContactList.get(mapkey).Tires__c) : '';
+                    maintTires = String.valueof(allContactList.get(mapkey).Maintenance_and_Tires__c) != null ? String.valueof(allContactList.get(mapkey).Maintenance_and_Tires__c): '';
+                    standardVehicle = allContactList.get(mapkey).Vehicle_Type__c != null ? allContactList.get(mapkey).Vehicle_Type__c : '';
+                    complianceMileage = String.valueOf(allContactList.get(mapkey).Compliance_Mileage__c) != null ? String.valueof(allContactList.get(mapkey).Compliance_Mileage__c) : '';
+                    vehicleURL = allContactList.get(mapkey).Car_Image__c != null ? allContactList.get(mapkey).Car_Image__c : '';
+                    
+                    if(allContactList.get(mapkey).Added_Date__c != null) {
+                        addedDate = allContactList.get(mapkey).Added_Date__c != null ? allContactList.get(mapkey).Added_Date__c.day() + '/' + allContactList.get(mapkey).Added_Date__c.month()+'/'+ allContactList.get(mapkey).Added_Date__c.year() : '';
+                    }
+                    if(allContactList.get(mapkey)?.Activation_Date__c != null) {
+                        activationDate = allContactList.get(mapkey).Activation_Date__c != null ? allContactList.get(mapkey).Activation_Date__c.day() + '/' + allContactList.get(mapkey).Activation_Date__c.month()+'/'+ allContactList.get(mapkey).Activation_Date__c.year() : '';
+                    
+                    String recordstring = '"'+allContactList.get(mapkey).Role__c+'","'+allContactList.get(mapkey).FirstName+'","'+allContactList.get(mapkey).LastName+'","'+allContactList.get(mapkey).Email+'","'+CellPhone+'","'+allContactList.get(mapkey).MailingCity+'","'+allContactList.get(mapkey).MailingState+'","'+allContactList.get(mapkey).MailingPostalCode+'","'+allContactList.get(mapkey).Department+'","'+allContactList.get(mapkey).Job_Title__c+'","'+allContactList.get(mapkey).Manager_First_Name__c+'","'+allContactList.get(mapkey).Manager_Last_Name__c+'","'+ManagersEmail+'","'+insuraceRate +'","'+LicenseandRegistration+'","'+PersonalPropertyTax+'","'+Depreciation+'","'+AnnualFixedCost+'","'+FixedAmount+'","'+FCA+'","'+TotalFixedAmount+'","'+Meeting+'","'+''+'","'+addedDate+'","'+activationDate+'","'+MPG+'","'+Maint+'","'+Tires+'","'+MaintTires+'","'+StandardVehicle+'","'+ComplianceMileage+'","'+VehicleURL+'","'+errorMap.get(mapkey)+'"    \n';
+                    
+                    finalstr = finalstr + recordstring;
+                    }   
             }          
             
             attach.setBody(blob.valueOf(finalstr));
@@ -297,10 +334,5 @@ global class ImportContactdatafromCSVController implements Database.Batchable<St
 
        
     } 
-     public static void fakeMethod(){
-    Integer i = 0;
-    i++; i++; i++; i++;
-    i++; i++; i++; i++;
-    i++; i++; i++; i++;
-    }
+     
 }
