@@ -736,7 +736,7 @@ global without sharing class RosterController
         apiToken = accountList[0].Triplog_API__c;
         
         String baseURL = !MLOGACCOUNT.Contains(apiToken) ? StaticValues.TRIPLOG_BASEURL : StaticValues.MLOG_BASEURL;
-        //String baseURL = StaticValues.Concer_Quick_Connect;
+        
         baseURL = (baseURL + '/api/sendEmail/concurConnect');
         body = '{"emails":'+ empEmail +'}';
         
