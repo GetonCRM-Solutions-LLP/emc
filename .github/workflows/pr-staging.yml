@@ -21,6 +21,10 @@ jobs:
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v3
+
+      - uses: sfdx-actions/setup-sfdx@v1
+        with:
+          sfdx-auth-url: ${{secrets.EMCPartialCopy}}
       
       # Install Salesforce CLI
       - name: 'Build and Deploy'
@@ -30,16 +34,11 @@ jobs:
       # Decrypt file
       - name: 'Decrypt file'
         run: openssl enc -nosalt -aes-256-cbc -d -in assets/server.key.enc -out server.key -base64 -K ${{secrets.DECRYPTION_KEY}} -iv ${{secrets.DECRYPTION_IV}}
-              
-      # Authorize devops
-      - name: 'Authorize devops'
-        if: ${{ github.base_ref == 'devops'}}
-        run: sfdx auth:jwt:grant --clientid=${{secrets.PRODUCTION_CONSUMER_KEY}} --username=${{secrets.PARTIALDEV_USERNAME}} --instanceurl=${{secrets.SFDC_LOGIN_SANDBOX_URL}} --jwtkeyfile server.key --setdefaultdevhubusername --setalias=hub-org
       
       # Authorize devops-new
-      - name: 'Authorize devops-new'
-        if: ${{ github.base_ref == 'devops-new'}}
-        run: sfdx auth:jwt:grant --clientid=${{secrets.PRODUCTION_CONSUMER_KEY}} --username=${{secrets.PARTIALDEV_USERNAME}} --instanceurl=${{secrets.SFDC_LOGIN_SANDBOX_URL}} --jwtkeyfile server.key --setdefaultdevhubusername --setalias=hub-org
+      #- name: 'Authorize devops-new'
+        #if: ${{ github.base_ref == 'devops-new'}}
+        #run: sfdx auth:jwt:grant --clientid=${{secrets.PRODUCTION_CONSUMER_KEY}} --username=${{secrets.PARTIALDEV_USERNAME}} --instanceurl=${{secrets.SFDC_LOGIN_SANDBOX_URL}} --jwtkeyfile server.key --setdefaultdevhubusername --setalias=hub-org
 
       # Authorize fullcopy
       - name: 'Authorize fullcopy'
