@@ -14,3 +14,5 @@ package.xml
 #staging file
 .github/workflows/*.yml
 **.yml
+.github/workflows/pr-staging.yml
+.github/workflows/staging.yml
