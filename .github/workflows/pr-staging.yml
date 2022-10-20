@@ -79,4 +79,4 @@ jobs:
 
       # Run Apex tests
       - name: 'Run Apex tests on metadata'
-        run:  sfdx force:mdapi:deploy --deploydir=convert --testlevel=RunSpecifiedTests --runtests=${{steps.testconfluence.outputs.content}} --checkonly -u hub-org -w30
+        run:  sfdx force:mdapi:deploy --deploydir=convert --testlevel=RunSpecifiedTests --runtests=${{steps.testconfluence.outputs.content}} --checkonly -w30
