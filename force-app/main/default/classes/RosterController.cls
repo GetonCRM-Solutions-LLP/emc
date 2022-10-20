@@ -739,24 +739,7 @@ global without sharing class RosterController
         //String baseURL = StaticValues.Concer_Quick_Connect;
         baseURL = (baseURL + '/api/sendEmail/concurConnect');
         body = '{"emails":'+ empEmail +'}';
-        System.debug('body'+body);
-        // HttpRequest putReq = new HttpRequest();
-        // Http putHTTP = new Http();
-        // HttpResponse putRes = new HttpResponse();
         
-        // putReq.setEndpoint(baseURL);
-        // putReq.setMethod('PUT');                 
-        // putReq.setBody(body);
-        // putReq.setTimeout(120000);
-        // putReq.setHeader('Authorization', 'apikey ' + apiToken);
-        // putReq.setHeader('Content-Type', 'application/json');
-        
-        // if(!Test.isRunningTest()){
-        //     if(objTriplog.TriplogPut__c == true){
-        //         putRes = putHTTP.send(putReq);
-        //         System.debug('putRes'+putRes);
-        //     }
-        // }
         TriplogPutCall__c objTriplog = TriplogPutCall__c.getValues('RosterControlllerputHTTPConcurConnect');
         try {
             if(!Test.isRunningTest() && objTriplog.TriplogPut__c == true) {
