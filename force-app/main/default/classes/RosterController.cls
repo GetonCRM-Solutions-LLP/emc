@@ -525,7 +525,6 @@ global without sharing class RosterController
         
         for(UserLogin ulogin : [SELECT Id, IsFrozen, UserId From UserLogin Where UserId =: UserIds]){
             if(freezeProperty == true){
-                system.debug('freezeProperty'+freezeProperty);
                 ulogin.IsFrozen = true;
             }
             else {
