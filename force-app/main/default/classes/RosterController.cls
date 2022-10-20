@@ -484,13 +484,10 @@ global without sharing class RosterController
     
     @RemoteAction
     public static Id readFromFile(String file,String accountId, String adminId) {
-        system.debug('file==' + file);
-        system.debug('accountId==' + accountId);
         Id batchId;
         ImportContactdatafromCSVController batch = new ImportContactdatafromCSVController(file, accountId, adminId);
        
         batchid = Database.executebatch(batch,101);
-        system.debug('batchid==' + batchid);
         return batchid;
     }
 
