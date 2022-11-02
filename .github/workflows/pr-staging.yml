@@ -31,28 +31,23 @@ jobs:
       - name: 'Decrypt file'
         run: openssl enc -nosalt -aes-256-cbc -d -in assets/server.key.enc -out server.key -base64 -K ${{secrets.DECRYPTION_KEY}} -iv ${{secrets.DECRYPTION_IV}}
               
-      # Authorize devops-new
-      - name: 'Authorize devops-new'
+      # Authorize
+      - name: 'Authorize'
         if: ${{ github.base_ref == 'devops-new'}}
-        - uses: sfdx-actions/setup-sfdx@v1
-          with:
+      - uses: sfdx-actions/setup-sfdx@v1
+        with: |
+         - if: ${{ github.base_ref == 'devops-new'}}:
             sfdx-auth-url: ${{secrets.EMCPartialCopy}}
+         - if: ${{ github.base_ref == 'fullcopy'}}
+            sfdx-auth-url: ${{secrets.FULLCOPY}}
+         - if: ${{ github.base_ref == 'preproduction'}}
+            sfdx-auth-url: ${{secrets.PREPRODUCTION}}
         #run: sfdx auth:jwt:grant --clientid=${{secrets.PRODUCTION_CONSUMER_KEY}} --username=${{secrets.PARTIALDEV_USERNAME}} --instanceurl=${{secrets.SFDC_LOGIN_SANDBOX_URL}} --jwtkeyfile server.key --setdefaultdevhubusername --setalias=hub-org
 
-      # Authorize fullcopy
-      - name: 'Authorize fullcopy'
-        if: ${{ github.base_ref == 'fullcopy'}}
-        - uses: sfdx-actions/setup-sfdx@v1
-          with:
-            sfdx-auth-url: ${{secrets.FULLCOPY}}
+      
         #run: sfdx auth:jwt:grant --clientid=${{secrets.PRODUCTION_CONSUMER_KEY}} --username=${{secrets.FULLCOPY_USERNAME}} --instanceurl=${{secrets.SFDC_LOGIN_SANDBOX_URL}} --jwtkeyfile server.key --setdefaultdevhubusername --setalias=hub-org
 
-      # Authorize preproduction
-      - name: 'Authorize preproduction'
-        if: ${{ github.base_ref == 'preproduction'}}
-        - uses: sfdx-actions/setup-sfdx@v1
-          with:
-            sfdx-auth-url: ${{secrets.PREPRODUCTION}}
+      
         #run: sfdx auth:jwt:grant --clientid=${{secrets.PRODUCTION_CONSUMER_KEY}} --username=${{secrets.PRODUCTION_USERNAME}} --instanceurl=${{secrets.SFDC_LOGIN_PRODUCTION_URL}} --jwtkeyfile server.key --setdefaultdevhubusername --setalias=hub-org
       
       # Create Delta
