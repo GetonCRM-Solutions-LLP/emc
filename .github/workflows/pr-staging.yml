@@ -5,7 +5,11 @@ name: 'pull request check'
 on:
   pull_request:
     #branches: [ $GITHUB_BASE_REF]
-    branches: [ preproduction, fullcopy, devops, devops-new ]
+    branches: 
+     - preproduction
+     - fullcopy
+     - devops
+     - devops-new
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
