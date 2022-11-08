@@ -1,0 +1,86 @@
+# This is a basic workflow to help you get started with Actions
+name: 'pull request check'
+
+# Controls when the workflow will run
+on:
+  pull_request:
+    #branches: [ $GITHUB_BASE_REF]
+    branches: 
+     - preproduction
+     - fullcopy
+     - devops
+     - devops-new
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  # This workflow contains a single job called "build"
+  build:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+    
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v3
+      
+      # Install Salesforce CLI
+      - name: 'Build and Deploy'
+        run: |
+            sudo npm install sfdx-cli --global
+                  
+      # Decrypt file
+      - name: 'Decrypt file'
+        run: openssl enc -nosalt -aes-256-cbc -d -in assets/server.key.enc -out server.key -base64 -K ${{secrets.DECRYPTION_KEY}} -iv ${{secrets.DECRYPTION_IV}}
+              
+      # Authorize
+      - name: 'Authorize'
+        if: ${{ github.base_ref == 'devops-new'}}
+      - uses: sfdx-actions/setup-sfdx@v1
+        with: |
+         - if: ${{ github.base_ref == 'devops-new'}}:
+            sfdx-auth-url: ${{secrets.EMCPartialCopy}}
+         - if: ${{ github.base_ref == 'fullcopy'}}
+            sfdx-auth-url: ${{secrets.FULLCOPY}}
+         - if: ${{ github.base_ref == 'preproduction'}}
+            sfdx-auth-url: ${{secrets.PREPRODUCTION}}
+        #run: sfdx auth:jwt:grant --clientid=${{secrets.PRODUCTION_CONSUMER_KEY}} --username=${{secrets.PARTIALDEV_USERNAME}} --instanceurl=${{secrets.SFDC_LOGIN_SANDBOX_URL}} --jwtkeyfile server.key --setdefaultdevhubusername --setalias=hub-org
+
+      
+        #run: sfdx auth:jwt:grant --clientid=${{secrets.PRODUCTION_CONSUMER_KEY}} --username=${{secrets.FULLCOPY_USERNAME}} --instanceurl=${{secrets.SFDC_LOGIN_SANDBOX_URL}} --jwtkeyfile server.key --setdefaultdevhubusername --setalias=hub-org
+
+      
+        #run: sfdx auth:jwt:grant --clientid=${{secrets.PRODUCTION_CONSUMER_KEY}} --username=${{secrets.PRODUCTION_USERNAME}} --instanceurl=${{secrets.SFDC_LOGIN_PRODUCTION_URL}} --jwtkeyfile server.key --setdefaultdevhubusername --setalias=hub-org
+      
+      # Create Delta
+      - name: 'Install App and Create Delta'
+        run: |
+          echo y | sfdx plugins:install sfdx-git-delta
+          git config remote.origin.fetch '+refs/heads/*:refs/remotes/origin/*'
+          git fetch --all
+          git checkout -b pr
+          git --no-pager diff --name-status pr origin/$GITHUB_BASE_REF
+          sfdx sgd:source:delta --to pr --from origin/$GITHUB_BASE_REF --repo . --output .
+          cat package/package.xml
+      
+      # convert
+      - name: 'Convert Metadata'
+        run: sfdx force:source:convert --manifest=package/package.xml --outputdir=convert
+      
+      # TestConfluence
+      - name: Read TestConfluence
+        id: testconfluence
+        uses: juliangruber/read-file-action@v1
+        with:
+          path: assets/TestConfluence.txt
+          trim: true
+      
+      # Print TestConfluence content
+      - name: Echo package.json
+        run: echo "${{steps.testconfluence.outputs.content}} $GITHUB_REF $GITHUB_BASE_REF"  
+
+      # Run Apex tests
+      - name: 'Run Apex tests on metadata'
+        run:  sfdx force:mdapi:deploy --deploydir=convert --testlevel=RunSpecifiedTests --runtests=${{steps.testconfluence.outputs.content}} --checkonly -w30
