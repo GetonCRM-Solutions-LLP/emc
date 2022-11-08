@@ -3,7 +3,7 @@
 Private class DemoClassTest {
     /* Testmethod */
     @isTest static void doValidate() { 
-        //tested demo
+        //tested demo dummy comments
         DemoClass a = new DemoClass();
         System.assertEquals(2, 2);
         
