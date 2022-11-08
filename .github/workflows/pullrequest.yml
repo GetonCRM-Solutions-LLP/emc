@@ -32,22 +32,22 @@ jobs:
         run: openssl enc -nosalt -aes-256-cbc -d -in assets/server.key.enc -out server.key -base64 -K ${{secrets.DECRYPTION_KEY}} -iv ${{secrets.DECRYPTION_IV}}
               
       # Authorize devops-new
-      - name: 'Authorize devops-new'
+      - name: 'Authorize EMCPartialCopy'
         if: ${{ github.base_ref == 'devops-new'}}
         uses: sfdx-actions/setup-sfdx@v1
         with: 
          sfdx-auth-url: ${{secrets.EMCPartialCopy}}
          
       # Authorize fullcopy
-      - name: 'Authorize fullcopy'
+      - name: 'Authorize FULLCOPY'
         if: ${{ github.base_ref == 'fullcopy'}}
         uses: sfdx-actions/setup-sfdx@v1
         with: 
          sfdx-auth-url: ${{secrets.FULLCOPY}}
          
        # Authorize PREPRODUCTION
-      - name: 'Authorize fullcopy'
-        if: ${{ github.base_ref == 'fullcopy'}}
+      - name: 'Authorize PREPRODUCTION'
+        if: ${{ github.base_ref == 'preproduction'}}
         uses: sfdx-actions/setup-sfdx@v1
         with: 
          sfdx-auth-url: ${{secrets.PREPRODUCTION}}
