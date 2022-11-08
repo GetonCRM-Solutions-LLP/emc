@@ -33,7 +33,6 @@ jobs:
               
       # Authorize
       - name: 'Authorize'
-        if: ${{ github.base_ref == 'devops-new'}}
         uses: sfdx-actions/setup-sfdx@v1
         with: |
          - if: ${{ github.base_ref == 'devops-new'}}:
