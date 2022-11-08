@@ -50,22 +50,30 @@ jobs:
       # Authorize devops
       - name: 'Authorize devops'
         if: ${{ env.BRANCH_NAME == 'devops' }}
-        run: sfdx auth:jwt:grant --clientid=${{secrets.PRODUCTION_CONSUMER_KEY}} --username=${{secrets.PARTIALDEV_USERNAME}} --instanceurl=${{secrets.SFDC_LOGIN_SANDBOX_URL}} --jwtkeyfile server.key --setdefaultdevhubusername --setalias=hub-org
+        uses: sfdx-actions/setup-sfdx@v1
+        with: 
+         sfdx-auth-url: ${{secrets.EMCPartialCopy}}
 
       # Authorize devops-new
       - name: 'Authorize devops-new'
         if: ${{ env.BRANCH_NAME == 'devops-new' }}
-        run: sfdx auth:jwt:grant --clientid=${{secrets.PRODUCTION_CONSUMER_KEY}} --username=${{secrets.PARTIALDEV_USERNAME}} --instanceurl=${{secrets.SFDC_LOGIN_SANDBOX_URL}} --jwtkeyfile server.key --setdefaultdevhubusername --setalias=hub-org
+        uses: sfdx-actions/setup-sfdx@v1
+        with: 
+         sfdx-auth-url: ${{secrets.EMCPartialCopy}}
 
       # Authorize fullcopy
       - name: 'Authorize fullcopy'
         if: ${{ env.BRANCH_NAME == 'fullcopy' }}
-        run: sfdx auth:jwt:grant --clientid=${{secrets.PRODUCTION_CONSUMER_KEY}} --username=${{secrets.FULLCOPY_USERNAME}} --instanceurl=${{secrets.SFDC_LOGIN_SANDBOX_URL}} --jwtkeyfile server.key --setdefaultdevhubusername --setalias=hub-org
+        uses: sfdx-actions/setup-sfdx@v1
+        with: 
+         sfdx-auth-url: ${{secrets.FULLCOPY}}
 
       # Authorize preproduction
       - name: 'Authorize preproduction'
         if: ${{ env.BRANCH_NAME == 'preproduction'}}
-        run: sfdx auth:jwt:grant --clientid=${{secrets.PRODUCTION_CONSUMER_KEY}} --username=${{secrets.PRODUCTION_USERNAME}} --instanceurl=${{secrets.SFDC_LOGIN_PRODUCTION_URL}} --jwtkeyfile server.key --setdefaultdevhubusername --setalias=hub-org
+        uses: sfdx-actions/setup-sfdx@v1
+        with: 
+         sfdx-auth-url: ${{secrets.PREPRODUCTION}}
       
       # Create Delta for devops branch
       - name: 'Install App and Create Delta for devops'
@@ -125,4 +133,4 @@ jobs:
 
       # Run Apex tests
       - name: 'Run Apex tests on metadata'
-        run:  sfdx force:mdapi:legacy:deploy --deploydir=convert --testlevel=RunSpecifiedTests --runtests=${{steps.testconfluence.outputs.content}} -u hub-org -w30
+        run:  sfdx force:mdapi:deploy --deploydir=convert --testlevel=RunSpecifiedTests --runtests=${{steps.testconfluence.outputs.content}} -w30
