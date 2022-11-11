@@ -1,18 +1,75 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <Package xmlns="http://soap.sforce.com/2006/04/metadata">
 	<types>
+		<members>BiWeeklyWrapperUtils</members>
+		<members>BiWeeklyWrapperUtilsTest</members>
+		<members>BiweeklyReimCreateForErmi</members>
+		<members>BiweeklyReimCreateForErmiTest</members>
+		<members>ChangeActivityInMlogEmail</members>
+		<members>ChangeTripStatusByAdmin</members>
+		<members>ChangeTripStatusByAdminTest</members>
+		<members>ChangeTripStatusinTripLogTest</members>
+		<members>ChangeTripStatusinTripLogTestMock</members>
+		<members>ChangeactivityinmlogemailTest</members>
+		<members>ConfirmTripTimeERMIController</members>
+		<members>ConfirmTripTimeERMIControllerTest</members>
+		<members>ContactTriggerHelper</members>
+		<members>ContactTriggerHelperTest</members>
+		<members>CreateBiweeklyReim</members>
+		<members>CreateBiweeklyReimTest</members>
+		<members>DeActivatedUserBatchFromTriplog</members>
+		<members>DeActivatedUserBatchFromTriplogTest</members>
 		<members>DeActivatedUserBatchMileage</members>
 		<members>DeActivatedUserBatchMileageTest</members>
+		<members>EmployeeDetailTest</members>
+		<members>EmployeeDetails</members>
+		<members>EmployeeMileages</members>
+		<members>EmployeeMileagestest</members>
+		<members>GetDailyTripsFromTriplog</members>
+		<members>GetDailyTripsFromTriplogTest</members>
+		<members>GetDriverData</members>
+		<members>GetDriverDataTest</members>
 		<members>GetTripCallout</members>
 		<members>GetTripCalloutTest</members>
 		<members>GetTripCalloutforCommmiteTripTest</members>
 		<members>GetTripCalloutforCommute</members>
+		<members>LoadMileageLocationBatch</members>
+		<members>LoadMileageLocationBatchTest</members>
+		<members>ManageNotificationController</members>
+		<members>ManageNotificationControllerTest</members>
+		<members>MileageTriggerHandler</members>
+		<members>RecordUtilityClass</members>
+		<members>RecordUtilityClass_Test</members>
+		<members>RosterController</members>
+		<members>RosterControllerTest</members>
+		<members>SendMileageReminderforDelta</members>
+		<members>SendMileageReminderforDelta_test</members>
+		<members>TriplogAppVersionUpdateBatch</members>
+		<members>TriplogAppVersionUpdateBatchTest</members>
+		<members>TriplogStateUpdateBatch</members>
+		<members>TriplogStateUpdateBatchTest</members>
+		<members>TriplogUserIdUpdateBatch</members>
+		<members>TriplogUserIdUpdateBatchTest</members>
+		<members>WrapperUtils</members>
+		<members>WrapperUtils_Test</members>
+		<members>checkPayPeriodValuesTest</members>
+		<members>mileageremoveapprovaldateTest</members>
 		<name>ApexClass</name>
 	</types>
 	<types>
-		<members>commonLib</members>
-		<members>dataTableComponent</members>
-		<name>LightningComponentBundle</name>
+		<members>admindriverdashboardfromadminmanager</members>
+		<members>admindrivermanagerdriver</members>
+		<members>adminmanagerdriverdashboard</members>
+		<members>driverDashboardClone</members>
+		<members>driveradminmanagermydetail</members>
+		<members>driverdashboardfromadminmanager</members>
+		<members>drivermanagerdriverdetails</members>
+		<members>managerdriverdashboard</members>
+		<name>ApexPage</name>
+	</types>
+	<types>
+		<members>mileageremoveapprovaldate</members>
+		<name>ApexTrigger</name>
 	</types>
 	<version>55.0</version>
 </Package>

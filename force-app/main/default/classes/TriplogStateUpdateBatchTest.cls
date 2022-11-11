@@ -1,6 +1,7 @@
 @isTest
 public class TriplogStateUpdateBatchTest {
     @isTest static void myUnitTest() {
+        TrueDialog_Keys__c trueDialogCustom = TestDataFactory.createTrueDialog(true);
         TriggerConfig__c customEmailSetting =  new TriggerConfig__c();
         customEmailSetting.Name = 'Defaulttrigger';
         customEmailSetting.ContactTriggersendEmailForNewContact__c = true;
@@ -23,6 +24,8 @@ public class TriplogStateUpdateBatchTest {
         acc.isUsingTriplog__c = True;
         acc.Triplog_API__c= 'abc';        
         acc.Enable_Email_For_Managers__c = True;
+        acc.Pay_Period_Start_Date__c = System.today().addDays(-100);
+        acc.Pay_Period_Days__c = 6;
         insert acc;
        
         //Insert Contact data 

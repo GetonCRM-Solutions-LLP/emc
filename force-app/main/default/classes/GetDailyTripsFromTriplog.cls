@@ -50,7 +50,8 @@ global class GetDailyTripsFromTriplog implements Database.Batchable<sObject>,Dat
         Map<String,Employee_Reimbursement__c> contactEmployeeReimbursementMap= new Map<String,Employee_Reimbursement__c>();
         List<String> obj_monthformileagesCurrentMonth = new List<String>();
         String lastMonth='';
-        String startMonthDate = String.valueOf(System.today()-1);
+        //String startMonthDate = String.valueOf(System.today()-1);
+        String startMonthDate = String.valueOf(Date.today().toStartOfMonth());
         String lastMonthDate = String.valueOf(System.today());
         //String startMonthDate = '2021-05-01';
         //String lastMonthDate = '2021-05-03';

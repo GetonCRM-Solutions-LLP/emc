@@ -1,6 +1,7 @@
 @isTest
 public with sharing class GetDailyTripsFromTriplogTest {
     public static testmethod void GetTriptest() {
+        TrueDialog_Keys__c trueDialogCustom = TestDataFactory.createTrueDialog(true);
         List<Id> contactids = new List<Id>();
         Map<Id, Employee_Reimbursement__c> conReim = new Map<Id, Employee_Reimbursement__c>();
         

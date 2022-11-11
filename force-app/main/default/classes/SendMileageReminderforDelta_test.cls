@@ -1,6 +1,7 @@
 @isTest
 Public class SendMileageReminderforDelta_test{
     public static testmethod void test1(){
+        TrueDialog_Keys__c tdKeys = TestDataFactory.createTrueDialog(true);
         Vehicle_URL_Mapping__c veh = new Vehicle_URL_Mapping__c();
         veh.URL__c = 'https://cdn2.hubspot.net/hubfs/2511299/iStock-494093356.jpg';
         veh.vehicle__c = 'Full-Size Sedan';
@@ -29,6 +30,9 @@ Public class SendMileageReminderforDelta_test{
         
         Account obj_Account = new Account();
         obj_Account.name='Delta';
+        obj_Account.Pay_Period_Start_Date__c = system.today().adddays(-6);
+        obj_Account.Pay_Period_Days__c = 6;
+        
         insert obj_Account;
 
         

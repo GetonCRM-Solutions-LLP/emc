@@ -3,6 +3,8 @@ public class TriplogUserIdUpdateBatchTest {
        @isTest static void myUnitTest() {
         
         //Insert Custom setting data
+        TriggerConfig__c triggerCustomSetting = TestDataFactory.triggerConfigCustomSetting(true);
+        TrueDialog_Keys__c trueDialogCustom = TestDataFactory.createTrueDialog(true);
         Vehicle_URL_Mapping__c veh = new Vehicle_URL_Mapping__c();
         veh.URL__c = 'https://cdn2.hubspot.net/hubfs/2511299/iStock-494093356.jpg';
         veh.vehicle__c =  'Full-Size Sedan';
@@ -26,6 +28,8 @@ public class TriplogUserIdUpdateBatchTest {
         acc.BillingStreet = 'Test Street';
         acc.BillingCity = 'Test City';
         acc.BillingState = 'ON';
+        acc.Pay_Period_Days__c = 4;
+        acc.Pay_Period_Start_Date__c = system.today().adddays(-10);
         acc.BillingPostalCode = '123';
         acc.BillingCountry = 'CA';
         acc.Type='Analyst';
