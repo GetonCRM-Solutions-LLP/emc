@@ -1,4 +1,5 @@
 @isTest
+
 public class TriplogUserIdUpdateBatchTest {
        @isTest static void myUnitTest() {
         
@@ -11,6 +12,9 @@ public class TriplogUserIdUpdateBatchTest {
         vehicleType.Name = '2019 Full-Size Sedan';
         vehicleType.vehicle__c = 'Full-Size Sedan';
         insert vehicleType;
+
+        //Insert Account data Using Utility class
+        //Account acc = new Account();
         
         Account acc = new Account();     
         List<Contact> conList = new List<Contact>();
@@ -21,10 +25,52 @@ public class TriplogUserIdUpdateBatchTest {
         User userObj;
         System.runAs(admin) {
             acc = TestDataFactory.createAccount(true,'Delta',true);
-            conList = TestDataFactory.createDriverContact(true, acc.Id, 'Driver', vehicleType.Name, 'test.email', 1);
-            userObj = TestDataFactory.createUser(true, profileObj.Id, conList[0].Id);
-        }
         
+        //Insert Contact data 
+        Contact con = new Contact();
+        con.FirstName = 'Test1';
+        con.LastName = 'Contact';
+        con.AccountId = acc.Id;
+        con.MailingStreet = 'Test Street';
+        con.MailingCity = 'Test City';
+        con.MailingState = 'ON';
+        con.MailingPostalCode = '123';
+        con.MailingCountry = 'USA';
+        con.Phone = '1232434445';
+        con.External_Email__c = 'test@gmail.com';
+        con.Deactivated_Date__c = null;
+        con.Triplog_UserID__c = null;
+        con.isCommunityUser__c = True;
+        con.Role__c = 'Driver';
+        con.Monthly_Mileage_Limit__c = 100;
+        con.IsCreatedFromCommunity__c = true; 
+        con.Vehicle_Type__c  = '2019 Full-Size Sedan';
+        insert con;
+
+        contact con2 = new contact();
+        con2.FirstName = 'Test';
+        con2.LastName = 'contact2';
+        con2.AccountId = acc.Id;
+        con2.MailingStreet = 'Test Street';
+        con2.MailingCity = 'Test City';
+        con2.MailingState = 'ON';
+        con2.MailingPostalCode = '123';
+        con2.MailingCountry = 'USA';
+        con2.Phone = '1232434445';
+        con2.External_Email__c = 'test2@gmail.com';
+        con2.Deactivated_Date__c = null;
+        con2.Triplog_UserID__c = null;
+        con2.isCommunityUser__c = True;
+        con2.Role__c = 'Driver';
+        con2.Monthly_Mileage_Limit__c = 100;
+        con2.IsCreatedFromCommunity__c = true; 
+        con2.Vehicle_Type__c  = '2019 Full-Size Sedan';
+        insert con2;
+
+        conList = TestDataFactory.createDriverContact(true, acc.Id, 'Driver', vehicleType.Name, 'test.email', 1);
+
+        userObj = TestDataFactory.createUser(true, profileObj.Id, conList[0].Id);
+        }
         Map<String,Contact> contactMap = new Map<String,Contact>();
         for(Contact currentContact : [Select id,Name,FirstName,Triplog_UserID__c,External_Email__c,Deactivated_Date__c From Contact Where Account.id =: acc.Id])
         {

@@ -28,58 +28,48 @@ Public class SendMileageReminderforDelta_test{
         customSetting.MappingGasPriceTrigger__c = true;
         insert customSetting;
         
-        Account obj_Account = new Account();
-        obj_Account.name='Delta';
-        obj_Account.Pay_Period_Start_Date__c = system.today().adddays(-6);
-        obj_Account.Pay_Period_Days__c = 6;
+        UserRole userRole = TestDataFactory.getUserRole();
+        Profile profileObj = TestDataFactory.getUserProfile();
+        User admin = TestDataFactory.getSystemAdminUser(userRole.Id);
+        User userObj;
         
-        insert obj_Account;
-
-        
-        
-        List<Contact> conList = new List<Contact>();
-
-        /*
-        Contact co = new Contact();
-        co.FirstName = 'Test';
-        co.LastName = 'Contact Admin';
-        co.AccountId = obj_Account.Id;
-        co.MailingStreet = 'Test Street';
-        co.MailingCity = 'Test City';
-        co.MailingState = 'ON';
-        co.MailingPostalCode = '123';
-        co.MailingCountry = 'CA';
-        co.Phone = '1232434445';
-        co.Vehicle_Type__c = '2019 Full-Size Sedan' ;
-        co.External_Email__c = 'minkesh.patelmanager01@gmail.com';
-        co.Deactivated_Date__c = null;
-        co.IsCommunityUser__c = true;        
-        co.Role__c = 'Admin';
-        co.Monthly_Mileage_Limit__c = 210;
-        //insert co;
-        conList.add(co); 
-        */
-
-        Contact co1 = new Contact();
-        co1.FirstName = 'Test1';
-        co1.LastName = 'Contact Admin1';
-        co1.AccountId = obj_Account.Id;
-        co1.MailingStreet = 'Test Street1';
-        co1.MailingCity = 'Test City';
-        co1.MailingState = 'ON';
-        co1.MailingPostalCode = '123';
-        co1.MailingCountry = 'CA';
-        co1.Phone = '1232434445';
-        co1.Vehicle_Type__c = '2019 Full-Size Sedan' ;
-        co1.External_Email__c = 'minkesh.patelmanager011@gmail.com';
-        co1.Deactivated_Date__c = null;
-        co1.IsCommunityUser__c = true;        
-        co1.Role__c = 'Driver';
-        co1.Monthly_Mileage_Limit__c = 210;
-        //insert co1;
-        conList.add(co1);
-        insert conList;
-
+         //Insert Account data Using Utility class
+         
+         Account acc = new Account();
+         List<Contact> conList = new List<Contact>(); 
+         System.runAs(admin) {
+            
+            acc = TestDataFactory.createAccount(false,'Test Accounts',true);
+            acc.Pay_Period_Start_Date__c = System.today().addDays(-100);
+            acc.Pay_Period_Days__c = 6;
+            insert acc;
+           
+            //Insert Contact data 
+            conList = TestDataFactory.createDriverContact(false, acc.Id, 'Driver', veh.Name, 'Paras.Patel', 2);
+            conList[0].Deactivated_Date__c = null;
+            conList[0].Vehicle_Type__c  = '2019 Full-Size Sedan';
+            Insert conList[0];
+             
+            /*contact con2 = new contact();
+            con2.FirstName = 'Test';
+            con2.LastName = 'contact2';
+            con2.AccountId = acc.Id;
+            con2.MailingStreet = 'Test Street';
+            con2.MailingCity = 'Test City';
+            con2.MailingState = 'ON';
+            con2.MailingPostalCode = '123';
+            con2.MailingCountry = 'USA';
+            con2.Phone = '1232434445';
+            con2.External_Email__c = 'test2@gmail.com';
+            con2.Deactivated_Date__c = null;
+            con2.Triplog_UserID__c = null;
+            con2.isCommunityUser__c = True;
+            con2.Role__c = 'Driver';
+            con2.Monthly_Mileage_Limit__c = 100;
+            con2.IsCreatedFromCommunity__c = true; 
+            con2.Vehicle_Type__c  = '2019 Full-Size Sedan';
+            insert con2;*/
+        }
         Test.startTest();
 
         SendMileageReminderforDelta objSendMileageReminderforDelta= new SendMileageReminderforDelta();
