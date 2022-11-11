@@ -3,6 +3,7 @@ public class TriplogAppVersionUpdateBatchTest {
        @isTest static void myUnitTest() {
         
         //Insert Custom setting data
+        TriggerConfig__c triggerCustomSetting = TestDataFactory.triggerConfigCustomSetting(true);
         TrueDialog_Keys__c trueDialogCustom = TestDataFactory.createTrueDialog(true);
         SendEmail__c customSetting2 = TestDataFactory.sendEmailCustomSetting(true, 'Send Email For Compliance');
         IRS_Mileage_Rate__c irsRateObj = TestDataFactory.createIRSRate(true,0);
