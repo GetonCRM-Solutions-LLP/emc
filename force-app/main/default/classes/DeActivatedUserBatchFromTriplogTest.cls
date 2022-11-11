@@ -1,7 +1,8 @@
 @isTest
 public class  DeActivatedUserBatchFromTriplogTest {
     public static testmethod void test() {
-    
+        TriggerConfig__c triggerCustomSetting = TestDataFactory.triggerConfigCustomSetting(true);
+    	TrueDialog_Keys__c trueDialogCustom = TestDataFactory.createTrueDialog(true);
         SendEmail__c setting = new SendEmail__c(Send_email_from_code__c = false, Name = 'Send Email For Compliance');
         insert setting;
         SendEmail__c setting1 = new SendEmail__c(Send_email_from_code__c = true, Name = 'DeActivatedUserBatchFromTriplog');

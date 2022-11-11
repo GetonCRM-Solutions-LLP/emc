@@ -10,7 +10,7 @@ global class ChangeTripStatusByAdmin implements Database.Batchable<sObject>, Dat
     public Map<String,List<String>> approveReimwithTripIdMap;
     public Map<String,List<String>> rejectReimwithTripIdMap;
     public Map<String,List<String>> pendingReimwithTripIdMap;
-    public static final String MLOGACCOUNT = System.Label.Triplog_New_URL;
+    public static final String MLOGACCOUNT = System.Label.Triplog_New_URL + ',' + System.Label.Triplog_New_URL2;
     public string accountId;
     public String lastMonth;
     TriplogPutCall__c emailConfig = TriplogPutCall__c.getValues('ChangeTripStatusByAdmin');
@@ -20,6 +20,14 @@ global class ChangeTripStatusByAdmin implements Database.Batchable<sObject>, Dat
     }
     global List<Employee_Reimbursement__c> start(Database.BatchableContext BC) {
         //String lastMonth = Utils.fetchMonths(1, 0)[0];
+        List<Employee_Reimbursement__c> erm = [SELECT ID, Status__c,                      
+                        Contact_Id__r.Account.Triplog_API__c,
+                        Month__c 
+                    FROM Employee_Reimbursement__c 
+                    WHERE Month__c =: lastMonth
+                        AND Contact_Id__r.Account.isUsingTriplog__c = true
+                        AND Contact_Id__r.AccountId =:accountId];
+        System.debug('erm list: '+erm);
         return [SELECT ID, Status__c,                      
                         Contact_Id__r.Account.Triplog_API__c,
                         Month__c 

@@ -41,7 +41,7 @@ public class GetTripCalloutTest {
             currentContact[0].Role__c = 'Driver';  
             insert currentContact[0];
             
-            Contact contact_1 = new Contact(AccountId = account.Id, LastName = 'xgeek',External_Email__c='newmail@gmail.com');
+            Contact contact_1 = new Contact(AccountId = account.Id, LastName = 'xgeek',External_Email__c='newmail@gmail.com',MobilePhone='3434566778');
             insert contact_1;
             user_1 = TestDataFactory.createUser(True, profile_1.Id, contact_1.Id);
         }       

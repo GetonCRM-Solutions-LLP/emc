@@ -7,7 +7,7 @@ global class TriplogUserIdUpdateBatch implements Database.Batchable<sObject>, Da
     global String responseOfAPICall = '';
     public Map<String,Contact> contactMap;       
     public Map<String,String> appUpdateMap ;
-    public static final String MLOGACCOUNT = System.Label.Triplog_New_URL;
+    public static final String MLOGACCOUNT = System.Label.Triplog_New_URL + ',' + System.Label.Triplog_New_URL2;
 
     global TriplogUserIdUpdateBatch(string passedId,String passedapiKey,Map<String,Contact> passedContactMap){
         accountID = passedId;        
@@ -29,13 +29,15 @@ global class TriplogUserIdUpdateBatch implements Database.Batchable<sObject>, Da
         
         if(contactMap!=null && contactMap.size()>0 && scope.size()>0)
         {
-            accName = scope[0].Name;            
+            accName = scope[0].Name;    
+           
             if (!Test.isRunningTest()) {
                 responseOfAPICall = getTripIds(apiKey);
             }
             
             String appVersionName = '';
             appVersionName = Label.Latest_App_Versions_In_Triplog;
+           
             if(!String.isBlank(appVersionName))
             {
                 if(appVersionName.contains(','))

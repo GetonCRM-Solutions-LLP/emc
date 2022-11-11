@@ -157,7 +157,12 @@ public with sharing class ConfirmTripTimeERMIController {
             sendConfirmEmail(conEmail,driverName,biweekName,mileage,driveTime,stayTime,totalTime,countError,driverType);
         }
     }
-
+    
+    @RemoteAction
+    public static String deleteTripsForErmi (String contactId,String startdate,String enddate){   
+        delete [select id from Employee_Mileage__c where Trip_Date__c >=: Date.parse(startdate) AND Trip_Date__c <=: Date.parse(enddate) AND Trip_Status__c = 'Not Approved Yet' AND EmployeeReimbursement__r.Contact_Id__c =: contactId ];
+        return 'success';
+    }
     //This method is use for sync trips for Ermi account.When driver has any issue on synced trips then this method is clicked.
     @RemoteAction
     public static String syncTripsForErmi (String contactId,String startdate,String enddate){

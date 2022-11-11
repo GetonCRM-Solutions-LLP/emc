@@ -4,7 +4,7 @@
  */
 global class DeActivatedUserBatchMileage implements Database.Batchable<sObject>,Database.AllowsCallouts, Database.Stateful {
     
-    private static final String MLOGACCOUNT = System.Label.Triplog_New_URL;
+    private static final String MLOGACCOUNT = System.Label.Triplog_New_URL + ',' + System.Label.Triplog_New_URL2;
     public Integer decider;
 
     // Added by sanjay
@@ -202,13 +202,16 @@ global class DeActivatedUserBatchMileage implements Database.Batchable<sObject>,
                             mil.FromLocationId__c = fromLocationOfTrip.id;                    
                             if(fromLocationOfTrip.name != null) {
                                 mil.Origin_Name__c = String.valueOf(fromLocationOfTrip.name);  
-                            } else if(fromLocationOfTrip.address != null && fromLocationOfTrip.address.contains(',')){
+                            } else {
+                                mil.Origin_Name__c =  null;
+                            }
+                            /*if(fromLocationOfTrip.address != null && fromLocationOfTrip.address.contains(',')){
                                 mil.Origin_Name__c = fromLocationOfTrip.address.split(',')[0];
                             } else if(fromLocationOfTrip.address != null && fromLocationOfTrip.address.contains(' ')){
                                 mil.Origin_Name__c = fromLocationOfTrip.address.split(' ')[0];
                             } else {
                                 mil.Origin_Name__c = fromLocationOfTrip.address;
-                            }
+                            }*/
                             if(fromLocationOfTrip.address != null) {
                                 mil.Trip_Origin__c = fromLocationOfTrip.address;
                             }
@@ -218,13 +221,16 @@ global class DeActivatedUserBatchMileage implements Database.Batchable<sObject>,
                             mil.ToLocationId__c = toLocationOfTrip.id;                    
                             if(toLocationOfTrip.name != null) {
                                 mil.Destination_Name__c = String.valueOf(toLocationOfTrip.name);  
-                            } else if(toLocationOfTrip.address != null && toLocationOfTrip.address.contains(',')){
+                            } else {
+                                mil.Destination_Name__c = null;
+                            }
+                            /*if(toLocationOfTrip.address != null && toLocationOfTrip.address.contains(',')){
                                 mil.Destination_Name__c = toLocationOfTrip.address.split(',')[0];
                             } else if(toLocationOfTrip.address != null && toLocationOfTrip.address.contains(' ')){
                                 mil.Destination_Name__c = toLocationOfTrip.address.split(' ')[0];
                             } else {
                                 mil.Destination_Name__c = toLocationOfTrip.address;
-                            }
+                            }*/
                             if(toLocationOfTrip.address != null) {
                                 mil.Trip_Destination__c = toLocationOfTrip.address;
                             }

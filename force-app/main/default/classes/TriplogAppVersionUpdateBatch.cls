@@ -9,7 +9,7 @@
  */
 global class TriplogAppVersionUpdateBatch implements Database.Batchable<sObject>, Database.AllowsCallouts, Database.stateful {
 
-    public static final String MLOGACCOUNT = System.Label.Triplog_New_URL;
+    public static final String MLOGACCOUNT = System.Label.Triplog_New_URL + ',' + System.Label.Triplog_New_URL2;
     global String responseOfAPICall = '';
     global TriplogAppVersionUpdateBatch() {}
 
@@ -73,11 +73,11 @@ global class TriplogAppVersionUpdateBatch implements Database.Batchable<sObject>
                 }
             }
         }
-
     }
 
     global void finish(Database.BatchableContext bc){}
 
+   
     public static String getTripIds(String passedApikey)
     {
         String baseURL = !MLOGACCOUNT.Contains(passedApikey) ? StaticValues.TRIPLOG_BASEURL : StaticValues.MLOG_BASEURL;

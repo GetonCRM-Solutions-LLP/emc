@@ -2,6 +2,7 @@
 private class ConfirmTripTimeERMIControllerTest {
     @isTest
     static void utilMethod1() {
+        TrueDialog_Keys__c trueDialogCustom = TestDataFactory.createTrueDialog(true);
         TriggerConfig__c triggerCustomSetting = TestDataFactory.triggerConfigCustomSetting(true);
         SendEmail__c sendEmailCustomSetting1 = TestDataFactory.sendEmailCustomSetting(true,'Send Email For Compliance');
         SendEmail__c sendEmailCustomSetting2 = TestDataFactory.sendEmailCustomSetting(true,'ConfirmTripTimeERMIController');

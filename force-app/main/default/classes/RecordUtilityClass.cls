@@ -103,7 +103,7 @@ public with sharing class RecordUtilityClass
             /*Account account_1 = new Account( Name = 'Community');
             insert account_1;*/
             
-            Contact contact_1 = new Contact(AccountId = account_1.Id, LastName = 'xgeek',External_Email__c= 'abc@gmail.com');
+            Contact contact_1 = new Contact(AccountId = account_1.Id, LastName = 'xgeek',External_Email__c= 'abc@gmail.com',MobilePhone = '9087654323');
             insert contact_1;
 
             obj_Account = RecordUtilityClass.buildAccount();
@@ -652,7 +652,7 @@ public with sharing class RecordUtilityClass
                     EmployeeReimbursement__r.Total_Pending__c,EmployeeReimbursement__r.Monthly_Variable_Amount__c,
                     EmployeeReimbursement__r.Contact_Id__r.External_Email__c,EmployeeReimbursement__r.Total_Rejected__c,
                     EmployeeReimbursement__r.Total_Mileage__c,Notes__c,ConvertedStartTime__c,Stay_Time__c,
-                    Driving_Time__c,Total_Time__c,Tag__c,Activity__c,Mileage_Lock_Date__c 
+                    Driving_Time__c,Total_Time__c,Tag__c,Activity__c,Mileage_Lock_Date__c,Fuel_Variable_Rate__c 
                 FROM Employee_Mileage__c];
     } 
     public static List<EmployeeMileages> getallEmployeeMileages(List<Employee_Mileage__c> obj_list_Employee_Mileage)

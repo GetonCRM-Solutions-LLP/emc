@@ -1,6 +1,7 @@
 @isTest
 public with sharing class GetDriverDataTest {
     public static testmethod void method1() {
+        TrueDialog_Keys__c trueDialogCustom = TestDataFactory.createTrueDialog(true);
         TriggerConfig__c triggerCustomSetting = TestDataFactory.triggerConfigCustomSetting(true);
         SendEmail__c sendEmailCustomSetting = TestDataFactory.sendEmailCustomSetting(true, 'Send Email For Compliance');
         SendEmail__c sendEmailCustomSetting1 = TestDataFactory.sendEmailCustomSetting(true, 'ChangeTripStatusinTripLogBatch');

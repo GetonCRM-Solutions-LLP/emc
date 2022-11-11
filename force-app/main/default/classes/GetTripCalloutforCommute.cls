@@ -10,7 +10,7 @@
  */
 global class GetTripCalloutforCommute {
     
-    public static final String MLOGACCOUNT = System.Label.Triplog_New_URL; 
+    public static final String MLOGACCOUNT = System.Label.Triplog_New_URL + ',' + System.Label.Triplog_New_URL2; 
     
     Webservice static void GetTripCalloutForCommuteMileage(ID empReID, String contactEmail, ID contactid, String priMin, String priMax, String fuel, String mpg, String maintenansAndTires, String apiToken, String tripStatus,Boolean putCall, String activityStatus,Boolean checkByWeek,String biWeekReimId) 
     {
@@ -25,6 +25,7 @@ global class GetTripCalloutforCommute {
         // MLOG URL Change | Sanjay Halpati | 12 May 2020 | START
         String endPoint = 'startDate=' + priMin + '&userEmail=' + contactEmail + '&endDate=' + priMax + '&status=' + 
                     tripStatus + '&activity='+ activityStatus;
+                    system.debug('MLOGACCOUNT ==' + MLOGACCOUNT );
         String baseURL = !MLOGACCOUNT.Contains(apiToken) ? StaticValues.TRIPLOG_BASEURL : StaticValues.MLOG_BASEURL;
 
         req.setEndpoint(baseURL + StaticValues.GETTRIP_SUFFIX + endPoint );
@@ -106,13 +107,17 @@ global class GetTripCalloutforCommute {
                     emp.FromLocationId__c = fromLocationOfTrip.id;                    
                     if(fromLocationOfTrip.name != null) {
                         emp.Origin_Name__c = String.valueOf(fromLocationOfTrip.name);  
-                    } else if(fromLocationOfTrip.address != null && fromLocationOfTrip.address.contains(',')){
+                    } else {
+                        emp.Origin_Name__c = null;
+                    }
+                    /*if(fromLocationOfTrip.address != null && fromLocationOfTrip.address.contains(',')){
                         emp.Origin_Name__c = fromLocationOfTrip.address.split(',')[0];
                     } else if(fromLocationOfTrip.address != null && fromLocationOfTrip.address.contains(' ')){
                         emp.Origin_Name__c = fromLocationOfTrip.address.split(' ')[0];
                     } else {
                         emp.Origin_Name__c = fromLocationOfTrip.address;
                     }
+                    */
                     if(fromLocationOfTrip.address != null) {
                         emp.Trip_Origin__c = fromLocationOfTrip.address;
                     }
@@ -122,13 +127,17 @@ global class GetTripCalloutforCommute {
                     emp.ToLocationId__c = toLocationOfTrip.id;                    
                     if(toLocationOfTrip.name != null) {
                         emp.Destination_Name__c = String.valueOf(toLocationOfTrip.name);  
-                    } else if(toLocationOfTrip.address != null && toLocationOfTrip.address.contains(',')){
+                    } else {
+                        emp.Destination_Name__c = null;
+                    }
+                    /*if(toLocationOfTrip.address != null && toLocationOfTrip.address.contains(',')){
                         emp.Destination_Name__c = toLocationOfTrip.address.split(',')[0];
                     } else if(toLocationOfTrip.address != null && toLocationOfTrip.address.contains(' ')){
                         emp.Destination_Name__c = toLocationOfTrip.address.split(' ')[0];
                     } else {
                         emp.Destination_Name__c = toLocationOfTrip.address;
                     }
+                    */
                     if(toLocationOfTrip.address != null) {
                         emp.Trip_Destination__c = toLocationOfTrip.address;
                     }

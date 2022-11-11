@@ -4,6 +4,7 @@ public class BiweeklyReimCreateForErmiTest {
     public static void reimburMethod1() {
             
         IRS_Mileage_Rate__c obj_IRS_Mileage_Rate_1 = new IRS_Mileage_Rate__c();
+        TrueDialog_Keys__c trueDialogCustom = TestDataFactory.createTrueDialog(true);
         obj_IRS_Mileage_Rate_1.year__c='2021';
         obj_IRS_Mileage_Rate_1.IRS_Rate__c =0.578;
         insert obj_IRS_Mileage_Rate_1;
@@ -98,6 +99,12 @@ public class BiweeklyReimCreateForErmiTest {
             insert user_1;
         }
         
+        Employee_Reimbursement__c er = new Employee_Reimbursement__c();
+        er.Contact_Id__c = con1.Id;
+        er.Name = 'Test Mileage';
+        er.Month__c = '11-2022';
+        insert er;
+        
         Bi_Weekly_Reimbursement__c br = new Bi_Weekly_Reimbursement__c();
             br.Name = system.today()-13 + ' to ' + system.today() ; 
             br.Contact__c = con1.Id;
@@ -108,6 +115,7 @@ public class BiweeklyReimCreateForErmiTest {
             br.Fixed_Amount__c = con1.Fixed_Amount__c;
             br.Status__c = 'Pending';
             br.Fuel_Price__c =  gasprice.Fuel_Price__c;
+        br.Employee_Reimbursement__c = er.Id;
         	 br.Count_Error_Check__c = 0;
         Insert br;
         
