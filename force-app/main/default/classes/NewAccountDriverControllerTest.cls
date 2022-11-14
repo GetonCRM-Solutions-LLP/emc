@@ -64,7 +64,7 @@ public class NewAccountDriverControllerTest {
         NewAccountDriverController.loginRedirection(string.valueOf(conList[0].Id));
         NewAccountDriverController.sendInsuranceEmail(string.valueOf(conList[0].Id),'Test', 'test.account@gmail.com' );
         NewAccountDriverController.sendEmailToDriver( JSON.serialize(conWrapList) , 'Test', string.valueOf(conList[0].Id));
-        NewAccountDriverController.sendSignatureRequestForDriver('Paras.dhanani@getoncrm.com', 'Test');
+        NewAccountDriverController.sendSignatureRequestForDriver('Paras.dhanani@getoncrm.com', 'Test',string.valueOf(conList[0].Hello_Sign_Request_Id__c));
         NewAccountDriverController.getCustomSettings();
         NewAccountDriverController.getCustomSettingsForMessage();
         NewAccountDriverController.sendWelcomeEmail(accData.Id, conList[0].External_Email__c);
