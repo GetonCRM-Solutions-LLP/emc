@@ -2,6 +2,7 @@
 public class BiWeeklyWrapperUtilsTest {
 
     @testSetup static void setupmethod() {
+        TrueDialog_Keys__c tdKeys = TestDataFactory.createTrueDialog(true);
         TriggerConfig__c customSetting =  new TriggerConfig__c();
         customSetting.Name = 'Defaulttrigger';
         customSetting.MappingGasPriceTrigger__c = true;
@@ -220,6 +221,7 @@ public class BiWeeklyWrapperUtilsTest {
     @istest 
     public static void testMethod1() {
     
+        TrueDialog_Keys__c tdKeys = TestDataFactory.createTrueDialog(true);
         List<Account> acc = [select id from Account limit 1];
         List<Contact> con = [select id from Contact where accountId =: acc[0].Id limit 1];
         List<Bi_Weekly_Reimbursement__c> bireim = [select id,Name,Month__c,Total_Rejected__c,Approved_Date__c,Contact__r.AccountId,Contact__r.Manager__r.Name,
@@ -249,6 +251,7 @@ public class BiWeeklyWrapperUtilsTest {
     @istest 
     public static void testMethod2() {
     
+        TrueDialog_Keys__c tdKeys = TestDataFactory.createTrueDialog(true);
         List<Account> acc = [select id from Account limit 1];
         List<Contact> con = [select id from Contact where accountId =: acc[0].Id and Deactivated_Date__c != null limit 1];
         List<Bi_Weekly_Reimbursement__c> bireim = [select id,Name,Month__c,Total_Approved_Pending_Mileage__c,Total_Rejected__c,Approved_Date__c,Contact__r.AccountId,Contact__r.Manager__r.Name,

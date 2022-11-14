@@ -38,6 +38,7 @@ public with sharing class EmployeeMileages
     public String totaltime {get;set;}
     public String tripActivity {get;set;}
     public String halfFixedAmount {get; set;}
+    public String fuelVariableRate{get; set;}
     public EmployeeMileages() 
     {
         

@@ -1,6 +1,6 @@
 global class DeActivatedUserBatchFromTriplog implements Database.Batchable<sObject>,Database.AllowsCallouts, Database.Stateful {
     String query;
-    private static final String MLOGACCOUNT = System.Label.Triplog_New_URL;
+    private static final String MLOGACCOUNT = System.Label.Triplog_New_URL + ',' + System.Label.Triplog_New_URL2;
     private static Http uHttp;
     private static HttpRequest uRequest;
     private static HttpResponse uResponse;

@@ -1,5 +1,5 @@
 public with sharing class GetDriverData {
-    public static final String MLOGACCOUNT = System.Label.Triplog_New_URL;
+    public static final String MLOGACCOUNT = System.Label.Triplog_New_URL + ',' + System.Label.Triplog_New_URL2;
     @AuraEnabled(cacheable=true)
     public static List < sObject > fetchLookUpValues(String accId,String adminId,String accField,String idOfDriver,String whereField, String searchKey,String fieldName, String ObjectName,String keyField,Boolean isActive) {
         List < sObject > returnList = new List < sObject > ();
@@ -523,7 +523,7 @@ public with sharing class GetDriverData {
     { 
         if(newActivity != oldActivity){
             if(tripId != null && accApi != null){
-                String MLOGACCOUNT = System.Label.Triplog_New_URL;
+                String MLOGACCOUNT = System.Label.Triplog_New_URL + ',' + System.Label.Triplog_New_URL2;
                 String baseURL = !MLOGACCOUNT.Contains(accApi) ? StaticValues.TRIPLOG_BASEURL : StaticValues.MLOG_BASEURL;
                 String rosterURL = baseURL + '/api/trips/'+tripId;
                 String body = '{"activity":'+newActivity+'}';

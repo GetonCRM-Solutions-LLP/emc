@@ -375,6 +375,9 @@ public with sharing class WrapperUtils
         if(employeeMileage.Variable_Rate__c != null){
             currentEmployeeMileage.variablerate = string.valueof(employeeMileage.Variable_Rate__c );
         }
+        if(employeeMileage.Fuel_Variable_Rate__c!= null){
+            currentEmployeeMileage.fuelVariableRate= string.valueof(employeeMileage.Fuel_Variable_Rate__c);
+        }
 
         currentEmployeeMileage.dayofweek='';
         currentEmployeeMileage.starttime='';
@@ -1926,7 +1929,7 @@ public with sharing class WrapperUtils
                                         WHERE id =: did  
                                             AND (Deactivated_Date__c = null 
                                                 AND ( Driver_Type__c != 'Driver - Full Time' 
-                                                    AND Driver_Type__c != 'Driver - Part Time' AND Account.Bi_Weekly_Pay_Period__c = false))];
+                                                    AND Driver_Type__c != 'Driver - Part Time' AND Driver_Type__c != 'Driver - Salary'  AND Account.Bi_Weekly_Pay_Period__c = false))];
             if((monthList.size() > 0 && conList.isEmpty()) || (monthList.size() > 0 && !conList.isEmpty() && System.today().Month() == 1) || (monthList.size() > 0 && !conList.isEmpty() && Integer.valueOf(year) != System.today().year()))
             {
                 editedquery = setQueryParameters(monthList);
@@ -2061,7 +2064,7 @@ public with sharing class WrapperUtils
                                                             EmployeeReimbursement__r.Contact_Id__r.External_Email__c,EmployeeReimbursement__r.Monthly_Variable_Amount__c,
                                                             Maintenance_and_Tires__c,Fuel_price__c,EmployeeReimbursement__r.Total_Mileage__c,ConvertedEndTime__c,
                                                             EmployeeReimbursement__r.Total_Rejected__c,Notes__c,ConvertedStartTime__c,Variable_Rate__c,
-                                                            TimeZone__c,EmployeeReimbursement__r.Mileage_Lock_Date__c,Activity__c,Mileage_Lock_Date__c
+                                                            TimeZone__c,EmployeeReimbursement__r.Mileage_Lock_Date__c,Activity__c,Mileage_Lock_Date__c,EmployeeReimbursement__r.Fuel_Variable_Rate__c,Fuel_Variable_Rate__c
                                                 FROM Employee_Mileage__c 
                                                 WHERE EmployeeReimbursement__r.Month__c =: month AND EmployeeReimbursement__r.Contact_Id__c =: did ])
         {
@@ -2084,7 +2087,7 @@ public with sharing class WrapperUtils
                                                             EmployeeReimbursement__r.Contact_Id__r.External_Email__c,EmployeeReimbursement__r.Monthly_Variable_Amount__c,
                                                             Maintenance_and_Tires__c,Fuel_price__c,EmployeeReimbursement__r.Total_Mileage__c,ConvertedEndTime__c,
                                                             EmployeeReimbursement__r.Total_Rejected__c,Notes__c,ConvertedStartTime__c,Variable_Rate__c,
-                                                            TimeZone__c,EmployeeReimbursement__r.Mileage_Lock_Date__c,Activity__c,Mileage_Lock_Date__c
+                                                            TimeZone__c,EmployeeReimbursement__r.Mileage_Lock_Date__c,Activity__c,Mileage_Lock_Date__c,EmployeeReimbursement__r.Fuel_Variable_Rate__c,Fuel_Variable_Rate__c
                                                 FROM Employee_Mileage__c 
                                                 WHERE Trip_Date__c >= : Date.valueOf(startDate)
                                                         AND Trip_Date__c <= : Date.valueOf(endDate) 
@@ -2103,7 +2106,7 @@ public with sharing class WrapperUtils
        
         String month = WrapperUtils.getMonthno(clickedMonth);      
         month = month +'-'+year;
-        String query = 'SELECT id,Name,Trip_Date__c,Mileage_Lock_Date__c,Variable_Rate__c,Trip_Origin__c,Stay_Time__c,Trip_Destination__c,Mileage__c,Variable__c,Trip_Status__c,Approved_Date__c,EmployeeReimbursement__c,EmployeeReimbursement__r.month__c, EmployeeReimbursement__r.Contact_Id__c,CreatedDate,Rejected__c,EmployeeReimbursement__r.Total_Variable_Rate__c,EmployeeReimbursement__r.Total_Pending__c,Origin_Name__c,Tracing_Style__c,StartTime__c,EndTime__c,Day_Of_Week__c,Destination_Name__c,EmployeeReimbursement__r.Contact_Id__r.External_Email__c,EmployeeReimbursement__r.Monthly_Variable_Amount__c,EmployeeReimbursement__r.Total_Monthly_Approved_Variable__c,Maintenance_and_Tires__c,Fuel_price__c,EmployeeReimbursement__r.Total_Mileage__c,EmployeeReimbursement__r.Total_Rejected__c,Notes__c,TimeZone__c,EmployeeReimbursement__r.Mileage_Lock_Date__c,ConvertedStartTime__c,ConvertedEndTime__c,Driving_Time__c,Total_Time__c,Tag__c,Activity__c FROM Employee_Mileage__c WHERE EmployeeReimbursement__r.Month__c = \''+month+'\' AND EmployeeReimbursement__r.Contact_Id__c =\''+did+'\'';      
+        String query = 'SELECT id,Name,Trip_Date__c,Mileage_Lock_Date__c,Variable_Rate__c,Trip_Origin__c,Stay_Time__c,Trip_Destination__c,Mileage__c,Variable__c,Trip_Status__c,Approved_Date__c,EmployeeReimbursement__c,EmployeeReimbursement__r.month__c, EmployeeReimbursement__r.Contact_Id__c,CreatedDate,Rejected__c,EmployeeReimbursement__r.Total_Variable_Rate__c,EmployeeReimbursement__r.Total_Pending__c,Origin_Name__c,Tracing_Style__c,StartTime__c,EndTime__c,Day_Of_Week__c,Destination_Name__c,EmployeeReimbursement__r.Contact_Id__r.External_Email__c,EmployeeReimbursement__r.Monthly_Variable_Amount__c,EmployeeReimbursement__r.Total_Monthly_Approved_Variable__c,Maintenance_and_Tires__c,Fuel_price__c,EmployeeReimbursement__r.Total_Mileage__c,EmployeeReimbursement__r.Total_Rejected__c,Notes__c,TimeZone__c,EmployeeReimbursement__r.Mileage_Lock_Date__c,ConvertedStartTime__c,ConvertedEndTime__c,Driving_Time__c,Total_Time__c,Tag__c,Activity__c,EmployeeReimbursement__r.Fuel_Variable_Rate__c,Fuel_Variable_Rate__c  FROM Employee_Mileage__c WHERE EmployeeReimbursement__r.Month__c = \''+month+'\' AND EmployeeReimbursement__r.Contact_Id__c =\''+did+'\'';      
         
         List<Employee_Mileage__c> employeeMileageList =  (List<Employee_Mileage__c>)ExecuteQueryUtil.getRecordListFromsObject(query);
         System.Debug(employeeMileageList);
@@ -2615,7 +2618,7 @@ public with sharing class WrapperUtils
                                                             CreatedDate,Rejected__c,Origin_Name__c,Tracing_Style__c,StartTime__c,EndTime__c,Mileage_Lock_Date__c,
                                                             Day_Of_Week__c,Destination_Name__c,EmployeeReimbursement__r.Contact_Id__r.External_Email__c,Variable_Rate__c,
                                                             Maintenance_and_Tires__c,Fuel_price__c,EmployeeReimbursement__r.Total_Variable_Rate__c,ConvertedStartTime__c,ConvertedEndTime__c, 
-                                                            EmployeeReimbursement__r.Total_Rejected__c,Notes__c,EmployeeReimbursement__r.Mileage_Lock_Date__c,Activity__c
+                                                            EmployeeReimbursement__r.Total_Rejected__c,Notes__c,EmployeeReimbursement__r.Mileage_Lock_Date__c,Activity__c,Fuel_Variable_Rate__c
                                                     FROM Employee_Mileage__c 
                                                     WHERE 
                                                     Trip_Status__c =: StaticValues.noApprovedYet AND Approved_Date__c = null AND 

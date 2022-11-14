@@ -525,7 +525,6 @@ global without sharing class RosterController
         
         for(UserLogin ulogin : [SELECT Id, IsFrozen, UserId From UserLogin Where UserId =: UserIds]){
             if(freezeProperty == true){
-                system.debug('freezeProperty'+freezeProperty);
                 ulogin.IsFrozen = true;
             }
             else {
@@ -935,7 +934,7 @@ global without sharing class RosterController
     @RemoteAction
     public static List<LOAWrapper> BiweekReimRecord(String startdate,String enddate,String accID)
     {
-        system.debug('startdate=='+ startdate);
+        system.debug('startdate line 937=='+ startdate);
         system.debug('enddate=='+ enddate);
         system.debug('accID=='+ accID);
         List<LOAWrapper> biWeekWrapList = new List<LOAWrapper>();

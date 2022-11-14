@@ -461,7 +461,7 @@ public without sharing class ManageNotificationController {
     
     @RemoteAction
     public static String UploadLocation(string location,string  accId) {   
-        String MLOGACCOUNT = System.Label.Triplog_New_URL;   
+        String MLOGACCOUNT = System.Label.Triplog_New_URL + ',' + System.Label.Triplog_New_URL2;   
         
         String body, apiToken;
         List<Account> accountList = [SELECT id,Triplog_API__c  
