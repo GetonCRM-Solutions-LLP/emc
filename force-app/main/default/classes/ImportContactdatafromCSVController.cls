@@ -201,6 +201,7 @@ global class ImportContactdatafromCSVController implements Database.Batchable<St
         if(csvRecordData[27] != '' && csvRecordData[27] != 'null' && csvRecordData[27] != null){conObj.Tires__c = Decimal.valueOf(csvRecordData[27]);}
         if(csvRecordData[28] != '' && csvRecordData[28] != 'null' && csvRecordData[28] != null){conObj.Maintenance_and_Tires__c = Decimal.valueOf(csvRecordData[28]) ; }            
         if(csvRecordData[29] != ''){conObj.Vehicle_Type__c = csvRecordData[29];}
+        if(csvRecordData[29] == ''){conObj.Vehicle_Type__c = '2022 Ford F-150';}
         if(csvRecordData[30] != '' && csvRecordData[30] != 'null' && csvRecordData[30] != null){conObj.Compliance_Mileage__c = Decimal.valueOf(csvRecordData[30]);}
         if(csvRecordData[31] != ''){conObj.Car_Image__c = csvRecordData[31];}
         System.debug('conObj :::' +conObj);
