@@ -72,7 +72,9 @@ const formatData = (data, pID, aID) => {
   
         rowData.TrackingMethod = row.Tracing_Style__c;
         rowData.FromLocation = row.Origin_Name__c;
+        rowData.OriginalFromLocation = row.Original_Origin_Name__c;
         rowData.ToLocation = row.Destination_Name__c;
+        rowData.OriginalToLocation = row.Original_Destination_Name__c;
         rowData.Day = dayOfWeek;
         rowData.userdate = userDate.toString();
         rowData.tripDate = (row.Trip_Date__c === undefined) ? '' : row.Trip_Date__c;
@@ -136,9 +138,9 @@ const excelData = (exlData) => {
     exportData.ActualMileage = exlData.ActualMileage
    }
    exportData.Mileage = exlData.Mileage,
-   exportData.FromLocationName = exlData.FromLocation,
+   exportData.FromLocationName = exlData.OriginalFromLocation,
    exportData.FromLocationAddress = exlData.TripOrigin,
-   exportData.ToLocationName = exlData.ToLocation,
+   exportData.ToLocationName = exlData.OriginalToLocation,
    exportData.ToLocationAddress = exlData.TripDestination,
    exportData.State = exlData.State,
    exportData.Tags = exlData.Tags,
@@ -162,9 +164,9 @@ const changeKeyObjects = (csvData) => {
   replaceKey["Total Time"] = excel.TotalTime;
   replaceKey["Activity"] = excel.Activity;
   replaceKey["Mileage (mi)"] = excel.Mileage;
-  replaceKey["From Location Name"] = excel.FromLocation;
+  replaceKey["From Location Name"] = excel.OriginalFromLocation;
   replaceKey["From Location Address"] = excel.TripOrigin;
-  replaceKey["To Location Name"] = excel.ToLocation;
+  replaceKey["To Location Name"] = excel.OriginalToLocation;
   replaceKey["To Location Address"] = excel.TripDestination;
   replaceKey["State"] = excel.State;
   replaceKey["Tags"] = excel.Tags;
