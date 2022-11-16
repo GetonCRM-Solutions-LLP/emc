@@ -24,7 +24,7 @@ global class ImportContactdatafromCSVController implements Database.Batchable<St
     
     global void execute(Database.BatchableContext info, List<String> scope){
         Savepoint spMain = Database.setSavepoint();
-        
+        Boolean checkValue;
         Map<String, String> vehicleNameUrlMap = new Map<String, String>();
         Set<String> existingVehiclelist = new Set<String>();
         List<Vehicle_URL_Mapping__c> allVehiclelist = new List<Vehicle_URL_Mapping__c>();
@@ -38,6 +38,11 @@ global class ImportContactdatafromCSVController implements Database.Batchable<St
                 }
                 for(String row : scope){
                     string[] csvRecordData = row.split(',');
+                    if(checkValue != true && String.isNotBlank(csvRecordData[29])){
+                    	vehicleName = csvRecordData[29];
+                        System.debug('vehicleName'+vehicleName);
+                        checkValue = true;
+                    }
                     if(csvRecordData[29] != '' && csvRecordData[31] != '' && existingVehiclelist.contains(csvRecordData[29]) == false){
                         VehicleNameUrlMap.put((csvRecordData[29]).trim(), csvRecordData[31]);
                     }
@@ -52,17 +57,18 @@ global class ImportContactdatafromCSVController implements Database.Batchable<St
                 vehicleObj.URL__c = VehicleNameUrlMap.get(vName);
                 allVehiclelist.add(vehicleObj);
             }
+           // System.debug('Vehicle name in parent first : '+allVehiclelist);
             Database.UpsertResult[] urVehicleList = Database.upsert(allVehiclelist, Vehicle_URL_Mapping__c.Name );
-            if(allVehiclelist.size() > 0 && allVehiclelist[0].Name != null){
-                vehicleName = allVehiclelist[0].Name;
-            }
             
+            System.debug('vehicle name: '+vehicleName);
+            //System.debug('Vehicle name in parent : '+allVehiclelist);
             for(String row : scope){
             System.debug('row=== '+row );
                 String[] csvRecordData = row.split(',');
                 System.debug('CSV Records'+csvRecordData);
                 //System.debug('preparecontactList==='+preparecontactList(csvRecordData, accId));
-                allContactList.add(preparecontactList(csvRecordData, accId, allVehiclelist[0].Name));
+                System.debug('Vehicle name in parent : '+vehicleName);
+                allContactList.add(preparecontactList(csvRecordData, accId, vehicleName));
             }
             system.debug('allContactList=='  + allContactList);
             if(!allContactList.isEmpty()){
@@ -154,6 +160,7 @@ global class ImportContactdatafromCSVController implements Database.Batchable<St
 
     public static Contact preparecontactList(String[] csvRecordData, string accId, String vehicleName){
         System.debug('csv record data'+csvRecordData);
+        //System.debug('vehicleName'+vehicleName);
         String invalidNumbers = '[^0-9]';
         Contact conObj = new Contact();
         conObj.Role__c = csvRecordData[0] ;
