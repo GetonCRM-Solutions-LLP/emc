@@ -30,6 +30,7 @@ public with sharing class NewAccountDriverController {
                                                 Document_Sent_Date__c,
                                                 Activation_Date__c,
                                                 Hello_Sign_Status__c,
+                                                Hello_Sign_Request_Id__c,
                                                 Account.Schedule_Goto_Meeting__c,
                                                 Account.Bodily_Injury__c, 
                                                 Account.Uninsured_Motorist__c, 
@@ -74,7 +75,7 @@ public with sharing class NewAccountDriverController {
                                                 } else {
                                                     contactWrapper.checkActivationDate = false;
                                                 }
-                                             
+                                                contactWrapper.helloSignId = contactobj.Hello_Sign_Request_Id__c != null ? contactobj.Hello_Sign_Request_Id__c : null;
                                                 contactWrapList.add(contactWrapper);
                                                 system.debug('inside contactWrapper'+contactWrapList);
                                             }
@@ -192,7 +193,10 @@ public with sharing class NewAccountDriverController {
     }
     /*This method is use for Hello sign integration.It will send driver packet to Driver */
     @AuraEnabled(cacheable = true) 
-    public static string sendSignatureRequestForDriver(String userEmail,String contactName){
+    public static string sendSignatureRequestForDriver(String userEmail,String contactName,String helloSignId){
+        if(helloSignId != null){
+            String statusCode = new HelloSign.SignatureRequestService(helloSignId).cancel();
+        }
         //sendEmailToDriver(userEmail,contactName,null);
         Set<String> newUserEmailSet = new Set<String>();
         newUserEmailSet.add(userEmail);
@@ -301,7 +305,8 @@ public with sharing class NewAccountDriverController {
         public Boolean planPreview {get; set;}
         public integer daysBetweenActivation {get; set;}
         public string helloSignDriverSign{get; set;}
-        public Date documentDate {get; set;}
-        public Date addedActivationDate {get; set;}
+        public string helloSignId {get; set;}
+        public Datetime documentDate {get; set;}
+        public Date addedActivationDate {get; set;}        
     }
 }
