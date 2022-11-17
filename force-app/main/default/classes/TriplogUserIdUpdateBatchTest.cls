@@ -25,7 +25,7 @@ public class TriplogUserIdUpdateBatchTest {
         User userObj;
         System.runAs(admin) {
             acc = TestDataFactory.createAccount(true,'Delta',true);
-        
+        Contact contactObj = TestDataFactory.createCICDContact(true,acc.Id);
         //Insert Contact data 
         Contact con = new Contact();
         con.FirstName = 'Test1';
@@ -66,7 +66,7 @@ public class TriplogUserIdUpdateBatchTest {
         con2.IsCreatedFromCommunity__c = true; 
         con2.Vehicle_Type__c  = '2019 Full-Size Sedan';
         insert con2;
-
+        
         conList = TestDataFactory.createDriverContact(true, acc.Id, 'Driver', vehicleType.Name, 'test.email', 1);
 
         userObj = TestDataFactory.createUser(true, profileObj.Id, conList[0].Id);

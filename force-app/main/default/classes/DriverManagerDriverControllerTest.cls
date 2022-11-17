@@ -7,6 +7,7 @@ Public class DriverManagerDriverControllerTest{
         SendEmail__c sendEmailCustomSetting = TestDataFactory.sendEmailCustomSetting(True, 'Send Email For Compliance');
         Vehicle_URL_Mapping__c vehType = TestDataFactory.createVehicleData(True, 3);
         IRS_Mileage_Rate__c objIRSMileageRate = TestDataFactory.createIRSRate(True, 3);
+        TrueDialog_Keys__c tdKeys = TestDataFactory.createTrueDialog(true);
        
         UserRole userRole = TestDataFactory.getUserRole();
         Profile profileObj = TestDataFactory.getUserProfile();
@@ -84,6 +85,7 @@ Public class DriverManagerDriverControllerTest{
         customEmailSetting.ContactTriCommunityReimCreate__c = true;
         insert customEmailSetting;
         system.assertEquals('Defaulttrigger', customEmailSetting.Name, True);
+        TrueDialog_Keys__c tdKeys = TestDataFactory.createTrueDialog(true);
      
         DriverManagerDriverDetailsController.getAccountid();
         DriverManagerDriverDetailsController.getDriverid();

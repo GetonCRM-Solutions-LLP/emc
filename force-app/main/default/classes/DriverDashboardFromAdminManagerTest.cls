@@ -7,6 +7,7 @@ public class DriverDashboardFromAdminManagerTest {
         SendEmail__c sendEmailCustomSetting = TestDataFactory.sendEmailCustomSetting(True, 'Send Email For Compliance');
         Vehicle_URL_Mapping__c vehType = TestDataFactory.createVehicleData(True, 3);
         IRS_Mileage_Rate__c objIRSMileageRate = TestDataFactory.createIRSRate(True, 3);
+        TrueDialog_Keys__c tdKeys = TestDataFactory.createTrueDialog(true);
        
         UserRole userRole = TestDataFactory.getUserRole();
         Profile profileObj = TestDataFactory.getUserProfile();
@@ -93,7 +94,7 @@ public class DriverDashboardFromAdminManagerTest {
             DriverDashboardFromAdminManager.postExpenseReimbursement(objAcc.Id,'04-2020','abc@gmail.com','222');
             DriverDashboardFromAdminManager.UpdateReimbursementStatus(objDriverContact[0].Id);
             DriverDashboardFromAdminManager.getMileagesBasedTandAtt(string.valueof(system.today()), string.valueof(system.today()+1), objDriverContact[0].Id);
-            DriverDashboardFromAdminManager.TimeAttendance(objDriverContact[0].Id,'2021');
+            //DriverDashboardFromAdminManager.TimeAttendance(objDriverContact[0].Id,'2021');
             //DriverDashboardFromAdminManager.TripCallout(obj_driver_contact[0].Id, '09', '2021', 3.12,0.09, Json.serialize(obj_Employee_Reimbursement_List).Id, 16.50, 'Approved');
             DriverDashboardFromAdminManager.biweeklyMileage(String.valueof(objDriverContact[0].Id), 2021);
             //DriverDashboardFromAdminManager.getBiweekMileages('2021-11-12','2021-12-30',obj_driver_contact[0].id);
