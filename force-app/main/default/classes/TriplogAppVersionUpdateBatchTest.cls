@@ -17,19 +17,20 @@ public class TriplogAppVersionUpdateBatchTest {
         Profile profileObj = TestDataFactory.getUserProfile();
         User admin = TestDataFactory.getSystemAdminUser(userRole.Id);
         User userObj;
-        System.runAs(admin) {
+        System.runAs(admin) {           
+           
             acc = TestDataFactory.createAccount(true,'Delta',true);
+             Contact contactObj = TestDataFactory.createCICDContact(true,acc.Id);
             conList = TestDataFactory.createDriverContact(true, acc.Id, 'Driver', vehicleType.Name, 'test.email', 1);
             userObj = TestDataFactory.createUser(true, profileObj.Id, conList[0].Id);
-        }
-
-        Test.StartTest();
-        Test.setMock(HttpCalloutMock.class, new TriplogUserIdUpdateBatchTestMock());
-        TriplogAppVersionUpdateBatch batchobj = new TriplogAppVersionUpdateBatch();
-        TriplogAppVersionUpdateBatch.getTripIds(acc.Triplog_API__c);  
-        batchobj.responseOfAPICall = TriplogAppVersionUpdateBatch.getTripIds(acc.Triplog_API__c);  
-         
-        Database.executeBatch(batchobj,1);
+        } 
+        
+        Test.startTest();
+            Test.setMock(HttpCalloutMock.class, new TriplogUserIdUpdateBatchTestMock());
+            TriplogAppVersionUpdateBatch batchobj = new TriplogAppVersionUpdateBatch();
+            TriplogAppVersionUpdateBatch.getTripIds(acc.Triplog_API__c);  
+            batchobj.responseOfAPICall = TriplogAppVersionUpdateBatch.getTripIds(acc.Triplog_API__c);           
+            Database.executeBatch(batchobj,1);
         Test.StopTest();
     }
 }
