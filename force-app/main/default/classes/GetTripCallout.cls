@@ -106,9 +106,11 @@ global class GetTripCallout {
                 if(fromLocationOfTrip != null && fromLocationOfTrip.id != null ) {
                     emp.FromLocationId__c = fromLocationOfTrip.id;                    
                     if(fromLocationOfTrip.name != null) {
-                        emp.Origin_Name__c = String.valueOf(fromLocationOfTrip.name);  
+                        emp.Origin_Name__c = String.valueOf(fromLocationOfTrip.name); 
+                        emp.Original_Origin_Name__c =  String.valueOf(fromLocationOfTrip.name); 
                     } else {
-                        emp.Origin_Name__c = null;
+                        emp.Origin_Name__c = fromLocationOfTrip.address;
+                        emp.Original_Origin_Name__c = null;
                     }
                     /*if(fromLocationOfTrip.address != null && fromLocationOfTrip.address.contains(',')){
                         emp.Origin_Name__c = fromLocationOfTrip.address.split(',')[0];
@@ -125,9 +127,11 @@ global class GetTripCallout {
                 if(toLocationOfTrip != null && toLocationOfTrip.id != null ) {
                     emp.ToLocationId__c = toLocationOfTrip.id;                    
                     if(toLocationOfTrip.name != null) {
-                        emp.Destination_Name__c = String.valueOf(toLocationOfTrip.name);  
+                        emp.Destination_Name__c = String.valueOf(toLocationOfTrip.name);
+                        emp.Original_Destination_Name__c =  String.valueOf(toLocationOfTrip.name);
                     } else {
-                        emp.Destination_Name__c = null;
+                        emp.Destination_Name__c = toLocationOfTrip.address;
+                        emp.Original_Destination_Name__c = null;
                     }
                     /*if(toLocationOfTrip.address != null && toLocationOfTrip.address.contains(',')){
                         emp.Destination_Name__c = toLocationOfTrip.address.split(',')[0];
