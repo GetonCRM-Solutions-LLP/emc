@@ -1,40 +1,45 @@
 @isTest
 public class DriverDashboardController_test {
     public static testmethod void DriverDashboardControllerTestMethod() {
-        TriggerConfig__c triggerConfigCustomSetting = TestDataFactory.triggerConfigCustomSetting(True);
-        SendEmail__c triggerCon = TestDataFactory.sendEmailCustomSetting(True,'Send Email For Compliance');
-        Vehicle_URL_Mapping__c vehType = TestDataFactory.createVehicleData(True, 3);  
-        
-        List<IRS_Mileage_Rate__c> obj_IRS_Mileage_Rate =  RecordUtilityClass.insertIrsRate();
-        
-        UserRole userRole_1 = [SELECT Id FROM UserRole WHERE DeveloperName = 'EMD' LIMIT 1];
-        Profile profile_1 = [SELECT Id FROM Profile WHERE Name = 'Customer Community Login User' LIMIT 1];
-        User admin = [SELECT Id, Username, UserRoleId FROM User WHERE Profile.Name = 'System Administrator' AND UserRoleId = :userRole_1.Id LIMIT 1];
+
+        NewDashboardVideoLink__C videoLinkCustomSetting = TestDataFactory.NewDashboardVideoLink(True);
+        TriggerConfig__c customEmailSetting = TestDataFactory.triggerConfigCustomSetting(true);
+        SendEmail__c customSetting = TestDataFactory.sendEmailCustomSetting(true, 'Send Email For Compliance');
+        TrueDialog_Keys__c tdKeys = TestDataFactory.createTrueDialog(true);
+        IRS_Mileage_Rate__c irsRateObj = TestDataFactory.createIRSRate(true,0);
+        Vehicle_URL_Mapping__c vehicleType = TestDataFactory.createVehicleData(false, 3);
+        vehicleType.Name = '2019 Full-Size Sedan';
+        vehicleType.vehicle__c = 'Full-Size Sedan';
+        Insert vehicleType;
+
+        UserRole userRole_1 = TestDataFactory.getUserRole();
+        Profile profile_1 = TestDataFactory.getUserProfile();
+        User admin = TestDataFactory.getSystemAdminUser(userRole_1.Id);
         User user_1;
-        Contact obj_admin_contact;
+      
+        List<Contact> obj_admin_contact;
         Account obj_acc;
         List<Contact> obj_Manager_list;
         List<Contact> obj_driver_contact;
+        
         System.runAs(admin) {
-            obj_acc= new Account( Name = 'PL Marketing');
+             obj_acc = TestDataFactory.createAccount(false,'Test Accounts',true);
             obj_acc.Bi_Weekly_Pay_Period__c = true;
             obj_acc.Pay_Period_Days__c = 13;
             obj_acc.Pay_Period_Start_Date__c = system.today().adddays(-130);
             insert obj_acc;
            
-            obj_admin_contact = RecordUtilityClass.buildAdminContact(obj_acc);
-            insert obj_admin_contact;   
-            
-            obj_Manager_list = RecordUtilityClass.buildManagerContact(obj_acc,obj_admin_contact);
-            insert obj_Manager_list;
-    
-            obj_driver_contact = RecordUtilityClass.buildDriverContact(obj_acc,obj_Manager_list[0]);
-            insert obj_driver_contact ;
-            
+            obj_admin_contact = TestDataFactory.createDriverContact(True, obj_acc.Id, 'Admin', '2019 Full-Size Sedan', 'Paras.dhanani', 1);
+            obj_Manager_list = TestDataFactory.createDriverContact(True, obj_acc.Id, 'Manager', '2019 Full-Size Sedan', 'Paras.dhanani1', 1);
+            obj_driver_contact = TestDataFactory.createDriverContact(False, obj_acc.Id, 'Driver', '2019 Full-Size Sedan', 'Paras.dhanani2', 1);
+            obj_driver_contact[0].Driver_Type__c = 'Driver - Part Time';
+            Insert obj_driver_contact[0];
+         
             Contact contact_2 = new Contact(AccountId = obj_acc.Id, LastName = 'xgeek',External_Email__c='abc@gmail.com');
             insert contact_2 ;
             
-            user_1 = new User( 
+            user_1 = TestDataFactory.createUser(true, profile_1.Id, contact_2.Id);
+           /* user_1 = new User( 
                 Email = 'yourusername@gmail.com',
                 ProfileId = profile_1.Id, 
                 UserName = 'yourusername@gmail.com', 
@@ -48,45 +53,20 @@ public class DriverDashboardController_test {
                 FirstName = 'Firstname',
                 LastName = 'Lastname'
             );
-            insert user_1;
+            insert user_1;*/
         }        
         Attachment att = new Attachment();
-        att.parentID = obj_admin_contact.Id;
+        att.parentID = obj_admin_contact[0].Id;
         att.name = 'test';
         att.body = blob.valueOf('Test');
         insert att;
         
-        Employee_Reimbursement__c er = new Employee_Reimbursement__c();
-        er.Contact_Id__c = obj_driver_contact[0].Id;
-        er.Name = 'Reimbersment Test';
-        er.Month__c = '03-2021';
-        er.Status__c = 'Pending';
-        er.Fuel_Price__c = 10.00; 
-        er.Fixed_Amount__c = obj_driver_contact[0].Fixed_Amount__c;
-        er.Status__c = 'Pending';
-        er.Maintenance_and_Tires__c = obj_driver_contact[0].Maintenance_and_Tires__c;
-        er.MPG__c = obj_driver_contact[0].MPG__c;
-        insert er;
-        
-        Bi_Weekly_Reimbursement__c br = new Bi_Weekly_Reimbursement__c();
-            br.Name = system.today()-13 + ' to ' + system.today() ; 
-            br.Contact__c = obj_driver_contact[0].Id;
-            br.Start_Date__c = system.today()-13;
-            br.End_Date__c = system.today() ;
-            br.MPG__c = obj_driver_contact[0].MPG__c;
-            br.Maintenance_and_Tires__c = obj_driver_contact[0].Maintenance_and_Tires__c;
-            br.Fixed_Amount__c = obj_driver_contact[0].Fixed_Amount__c;
-            br.Status__c = 'Pending';
-            br.Fuel_Price__c = 0;
-        Insert br;
-        
-        Attachment attach=new Attachment();     
-        attach.Name = 'Unit Test Attachment';
-        Blob bodyBlob = Blob.valueOf('Unit Test Attachment Body');
-        attach.body = bodyBlob;
-        attach.parentId = obj_driver_contact[0].id;
-        insert attach;
-        
+        List<Employee_Reimbursement__c> reimList = TestDataFactory.createPendingReimbursement(true, obj_driver_contact, 10, irsRateObj.id);
+        system.assertEquals(11, reimList.size(),true);
+        List<Bi_Weekly_Reimbursement__c> biWeeklyReimList = TestDataFactory.createBiweeklyReim(true, obj_driver_contact, system.today().adddays(-14), system.today().addDays(-2), 10, irsRateObj.id);
+        Attachment attach = TestDataFactory.createAttachment(true, obj_driver_contact[0].id);
+        List<Attachment> attachments = [select id, name from Attachment where parent.id =: obj_driver_contact[0].id];
+
         Test.startTest();
         System.runAs(user_1) {
             Test.setCurrentPage(Page.driverDashboardClone);
@@ -107,17 +87,17 @@ public class DriverDashboardController_test {
             DriverDashboardController.getMileages(monthName,String.valueOf(System.today().year()),obj_driver_contact[0].Id);
             DriverDashboardController.TimeAttendance(obj_driver_contact[0].Id,'2021');
             //DriverDashboardController.readFromFile(String.valueof(documentObj.Body),driList[0].Id,acc.Id,documentObj.Name);
-            //DriverDashboardController.readFromFileInchunk('test',att.Name,String.valueOf(att.Id),String.valueOf(obj_driver_contact[0].Id),String.valueOf(obj_acc.Id),null);
+            //DriverDashboardController.readFromFileInchunk('test',att.Name,String.valueOf(att.Id),String.valueOf(obj_driver_contact[0]),String.valueOf(obj_acc.Id), '3423p4923493258jfd32');
             DriverDashboardController.getCompliance(String.valueOf(obj_driver_contact[0].Id));
             DriverDashboardController.getPacketandMeeting(String.valueOf(obj_driver_contact[0].Id));
             DriverDashboardController.biweeklyMileage(obj_driver_contact[0].id,2021);
             DriverDashboardController.getAllMileages('2021-11-12','2021-12-30',obj_driver_contact[0].id);
-            DriverDashboardController.getBiweekMileages(string.valueOf(br));
+            DriverDashboardController.getBiweekMileages(string.valueOf(biWeeklyReimList[0]));
             DriverDashboardController.getdriverInsurance(attach.Id);
             DriverDashboardController.getDriverGasPrice('TN' , 'Atlanta');
             DriverDashboardController.sendInsuranceEmail(String.valueOf(obj_driver_contact[0].Id), 'Test', 'test@gmail.com');
             DriverDashboardController.getMileagesBasedTandAtt('2021-11-12','2021-12-30',obj_driver_contact[0].id);
-            NewDashboardVideoLink__c newcustom = DriverDashboardController.getCustomSettings();
+            DriverDashboardController.getCustomSettings();
         }
         Test.stopTest();
     }

@@ -38,7 +38,7 @@ public with sharing class drivermanagermydetailcontroller {
             obj_driver_insurance = [SELECT id, Body, Name FROM Attachment WHERE id =: obj_currect_contact[0].Insurance_Attachment_Id__c limit 1];    
         }
         obj_attachementsize = obj_driver_insurance.size();
-        obj_driver_driverpacket = [SELECT id, Body, Name FROM Attachment WHERE ParentId =: ApexPages.currentPage().getParameters().get('id') and Name LIKE '%Driver_Packet%' limit 1];
+        obj_driver_driverpacket = [SELECT id, Body, Name FROM Attachment WHERE ParentId =: ApexPages.currentPage().getParameters().get('id') and (Name LIKE '%Signed Document%' OR Name LIKE '%Driver_Packet%') limit 1];
         obj_driverpacket_attachementsize = obj_driver_driverpacket.size();
         obj_driver_driverMVR = [SELECT Id, Body, Name FROM Attachment WHERE ParentId=:ApexPages.currentPage().getParameters().get('id') and Name LIKE '%MVR%' limit 1];
         obj_driverpacket_attachMVRsize = obj_driver_driverMVR.size();

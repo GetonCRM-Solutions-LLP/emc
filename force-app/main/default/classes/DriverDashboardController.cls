@@ -27,6 +27,7 @@ public class DriverDashboardController
     public static Boolean checkErrorERMI {get;set;}
     public static Boolean ConfirmTimeERMI {get;set;}
     public static String managerrole {get;set;} 
+    public static NewDashboardVideoLink__c videoCustom {get;set;}
     /**
     @author Natavar Ghodasara
     @date 26th Feb 2019
@@ -51,7 +52,7 @@ public class DriverDashboardController
             driverInsuranceAttachmentList = [select id,Body,Name from Attachment where id=:currentDriverList[0].Insurance_Attachment_Id__c limit 1];    
         }        
         insuranceSize = driverInsuranceAttachmentList.size();
-        driverPacketAttachmentList = [select id,Body,Name from Attachment where ParentId=:ApexPages.currentPage().getParameters().get('id') and Name LIKE '%Driver_Packet%' limit 1];
+        driverPacketAttachmentList = [select id,Body,Name from Attachment where ParentId=:ApexPages.currentPage().getParameters().get('id') and (Name LIKE '%Signed Document%' OR Name LIKE '%Driver_Packet%') limit 1];
         packetSize = driverPacketAttachmentList.size();
 
         obj_driver_driverMVR = [SELECT Id, Body, Name FROM Attachment WHERE ParentId=:ApexPages.currentPage().getParameters().get('id') and Name LIKE '%MVR%' limit 1];
@@ -209,7 +210,8 @@ public class DriverDashboardController
     public static void sendInsuranceEmail (String id,String name,String email){
         BiWeeklyWrapperUtils.sendInsuranceEmail(id, name, email);
     }
-	 @RemoteAction    
+    
+    @RemoteAction
     public static NewDashboardVideoLink__c getCustomSettings(){
         return NewDashboardVideoLink__c.getOrgDefaults();
     }

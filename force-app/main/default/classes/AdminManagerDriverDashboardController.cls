@@ -33,16 +33,18 @@ public with sharing class AdminManagerDriverDashboardController
         obj_driver_driverpacket = new List<Attachment>();
         obj_driver_insurance = [SELECT Id, Body, Name FROM Attachment WHERE ParentId =: ApexPages.currentPage().getParameters().get('id') and Name LIKE '%Insurance%' limit 1];
         obj_attachementsize = obj_driver_insurance.size();
-        obj_driver_driverpacket = [SELECT Id, Body, Name FROM Attachment WHERE ParentId=:ApexPages.currentPage().getParameters().get('id') and Name LIKE '%Driver_Packet%' limit 1];
+        obj_driver_driverpacket = [SELECT Id, Body, Name FROM Attachment WHERE ParentId=:ApexPages.currentPage().getParameters().get('id') and (Name LIKE '%Signed Document%' OR Name LIKE '%Driver_Packet%') limit 1];
         obj_driverpacket_attachementsize = obj_driver_driverpacket.size();
         obj_driver_driverMVR = [SELECT Id, Body, Name FROM Attachment WHERE ParentId=:ApexPages.currentPage().getParameters().get('id') and Name LIKE '%MVR%' limit 1];
         obj_driverpacket_attachMVRsize = obj_driver_driverMVR.size();
         try{
+        system.debug('getDriverid()===' + getDriverid());
             List<ContentDocumentLink> contentDocLink = [SELECT ContentDocumentId,LinkedEntityId FROM ContentDocumentLink where LinkedEntityId  =: getDriverid()];
             Set<Id> ids = new Set<Id>();
             for(ContentDocumentLink obj:  contentDocLink){
                 ids.add(obj.ContentDocumentId);
             }
+            system.debug('ids ==' + ids );
             ContentDistribution contentDist = [SELECT id,ContentDownloadUrl from ContentDistribution where ContentDocumentId in : ids and Name=: Constants.signedDocument order by createddate desc limit 1];
             obj_content_version = contentDist.ContentDownloadUrl;
             System.debug('obj_content_version-->'+obj_content_version);

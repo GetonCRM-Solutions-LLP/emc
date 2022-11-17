@@ -7,6 +7,7 @@ Public class drivermanagermydetailcontrollerTest{
         customEmailSetting.ContactTriCommunityReimCreate__c = true;
         customEmailSetting.ContactTriBiReimCreate__c  = true;
         insert customEmailSetting;
+        TrueDialog_Keys__c tdKeys = TestDataFactory.createTrueDialog(true);
         
         SendEmail__c customSetting =  new SendEmail__c();
         customSetting.Name = 'Send Email For Compliance';
@@ -113,7 +114,7 @@ Public class drivermanagermydetailcontrollerTest{
         customEmailSetting.ContactTriCommunityReimCreate__c = true;
         customEmailSetting.ContactTriBiReimCreate__c  = true;
         insert customEmailSetting;
-        
+        TrueDialog_Keys__c tdKeys = TestDataFactory.createTrueDialog(true);
         SendEmail__c customSetting =  new SendEmail__c();
         customSetting.Name = 'Send Email For Compliance';
         customSetting.Send_email_from_code__c= true;
