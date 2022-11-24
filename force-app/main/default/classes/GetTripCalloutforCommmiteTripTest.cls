@@ -51,9 +51,9 @@ public class GetTripCalloutforCommmiteTripTest {
         
         List<Employee_Mileage__c> emp = TestDataFactory.getEmpMileage(true,1,er, bob);     
 
-        List<Employee_Mileage__c> emp1 = TestDataFactory.getEmpMileage(false,1,er, bob);     
-        emp1[0].Trip_Status__c = 'Approved';
-        insert emp1;
+        // List<Employee_Mileage__c> emp1 = TestDataFactory.getEmpMileage(false,1,er, bob);     
+        // emp1[0].Trip_Status__c = 'Approved';
+        // insert emp1;
 
         List<Employee_Mileage__c> emp2 = TestDataFactory.getEmpMileage(false,1,er, bob);       
         emp2[0].StartTime__c = null;
