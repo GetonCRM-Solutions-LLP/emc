@@ -645,7 +645,7 @@ public with sharing class RecordUtilityClass
     {
         return [SELECT id,Name,Trip_Date__c,ConvertedEndTime__c,EmployeeReimbursement__r.Mileage_Lock_Date__c,
                     Trip_Origin__c,Fuel_price__c,EmployeeReimbursement__r.Total_Variable_Rate__c,
-                    Maintenance_and_Tires__c,Origin_Name__c,Tracing_Style__c,StartTime__c,
+                    Maintenance_and_Tires__c,Origin_Name__c,Tracing_Style__c,StartTime__c,Approval_Name__c,
                     EndTime__c,Day_Of_Week__c,Destination_Name__c,Trip_Destination__c,Mileage__c,
                     Variable__c,Trip_Status__c,Approved_Date__c,EmployeeReimbursement__c,Variable_Rate__c,
                     EmployeeReimbursement__r.month__c,EmployeeReimbursement__r.Contact_Id__c,CreatedDate,Rejected__c,

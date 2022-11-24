@@ -1,7 +1,8 @@
 @isTest
 public class BiWeekEmployeeReimbTriggerHandlerTest {
     public static testmethod void test1(){
-        TriggerConfig__c triggerCustomSetting = TestDataFactory.triggerConfigCustomSetting(true);                
+        TriggerConfig__c triggerCustomSetting = TestDataFactory.triggerConfigCustomSetting(true);
+         TrueDialog_Keys__c tdKeys = TestDataFactory.createTrueDialog(true);                
         SendEmail__c sendEmailCustomSetting1 = TestDataFactory.sendEmailCustomSetting(true,'Send Email For Compliance');        
         Vehicle_URL_Mapping__c vehicleObj = TestDataFactory.createVehicleData(true,0);
         IRS_Mileage_Rate__c irsRateObj = TestDataFactory.createIRSRate(true,0);
