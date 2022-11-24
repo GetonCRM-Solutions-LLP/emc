@@ -450,7 +450,7 @@ public with sharing class TestDataFactory {
             empMileage.Approved_Date__c = null;
             empMileage.Tag__c = 'Admin';   
             empMileage.Rejected__c = false;
-            empMileage.Trip_Id__c  = 143576;
+            empMileage.Trip_Id__c  = 143576 + i;
            // empMileage.FromLocationId__c = 30.212761 -97.659064;
            // empMileage.ToLocationId__c = 30.161151 -97.794057;
             

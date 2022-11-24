@@ -22,16 +22,13 @@ public with sharing class GetDriverDataTest {
         Account acc;
         List<Contact> contact;
         System.runAs(admin) {
-            Account accountObj = TestDataFactory.createAccount(True,'Delta account',true);
-            Contact contactObj = TestDataFactory.createCICDContact(true,accountObj.Id);
-
             acc = TestDataFactory.createAccount(True,'Delta account',true);
             acc.Triplog_API__c = 'fde76cdde14449bea46b321225ac8fd1';
             acc.Pay_Period_Start_Date__c = System.today().addDays(-100);
             Acc.Triplog_Status__c = 'U';
             acc.Pay_Period_Days__c = 13;
             Update acc;
-
+            Contact contactObj = TestDataFactory.createCICDContact(true,acc.Id);
             contact = TestDataFactory.createDriverContact(true,acc.Id, 'Driver', vehicleType.Name, 'paras.patel',  1);
             userObj = TestDataFactory.createUser(True, profileObj.Id, contact[0].Id);
         }

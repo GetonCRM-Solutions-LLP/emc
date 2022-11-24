@@ -15,9 +15,8 @@ public class BiWeekEmployeeReimbTriggerHandlerTest {
         User admin = TestDataFactory.getSystemAdminUser(userRole.Id);
         User userObj;
         System.runAs(admin) {
-            Account accountObj = TestDataFactory.createAccount(true,'Test Account',true);
-            Contact contactObj = TestDataFactory.createCICDContact(true,accountObj.Id);
             acc = TestDataFactory.createAccount(true,'Test',true);
+            Contact contactObj = TestDataFactory.createCICDContact(true,acc.Id);
             conList = TestDataFactory.createDriverContact(true, acc.Id, 'Driver', vehicleObj.Name, 'test.email', 1);
             userObj = TestDataFactory.createUser(true, profileObj.Id, conList[0].Id);
         }

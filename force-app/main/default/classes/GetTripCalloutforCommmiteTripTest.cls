@@ -21,15 +21,12 @@ public class GetTripCalloutforCommmiteTripTest {
         Account account;
         List<Contact> currentContact;
         System.runAs(admin) {
-          
-            Account accountObj = TestDataFactory.createAccount(true,'Test',true);
-            Contact contactObj = TestDataFactory.createCICDContact(true,accountObj.Id);
             account = TestDataFactory.createAccount(true,'Test',true);
             account.Triplog_API__c = 'fde76cdde14449bea46b321225ac8fd1';
             account.Pay_Period_Start_Date__c = System.today().addDays(-100);
             account.Pay_Period_Days__c = 13;
             update account;
-            
+            Contact contactObj = TestDataFactory.createCICDContact(true,account.Id);
             currentContact = TestDataFactory.createDriverContact(true, account.Id, 'Manager',  null, 'minkesh.patel', 1);
             currentContact[0].Vehicle_Type__c  = '2019 Mileage Rate';  
             currentContact[0].Role__c = 'Driver';  
