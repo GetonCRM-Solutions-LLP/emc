@@ -651,8 +651,8 @@ public with sharing class RecordUtilityClass
                     EmployeeReimbursement__r.month__c,EmployeeReimbursement__r.Contact_Id__c,CreatedDate,Rejected__c,
                     EmployeeReimbursement__r.Total_Pending__c,EmployeeReimbursement__r.Monthly_Variable_Amount__c,
                     EmployeeReimbursement__r.Contact_Id__r.External_Email__c,EmployeeReimbursement__r.Total_Rejected__c,
-                    EmployeeReimbursement__r.Total_Mileage__c,Notes__c,ConvertedStartTime__c,Stay_Time__c,
-                    Driving_Time__c,Total_Time__c,Tag__c,Activity__c,Mileage_Lock_Date__c,Fuel_Variable_Rate__c 
+                    EmployeeReimbursement__r.Total_Mileage__c,Notes__c,ConvertedStartTime__c,Stay_Time__c,Original_Destination_Name__c,
+                    Driving_Time__c,Total_Time__c,Tag__c,Activity__c,Mileage_Lock_Date__c,Fuel_Variable_Rate__c,Original_Origin_Name__c 
                 FROM Employee_Mileage__c];
     } 
     public static List<EmployeeMileages> getallEmployeeMileages(List<Employee_Mileage__c> obj_list_Employee_Mileage)
