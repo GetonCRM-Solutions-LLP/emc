@@ -1,7 +1,8 @@
 @isTest
 public class BiWeekEmployeeReimbTriggerHandlerTest {
     public static testmethod void test1(){
-        TriggerConfig__c triggerCustomSetting = TestDataFactory.triggerConfigCustomSetting(true);                
+        TriggerConfig__c triggerCustomSetting = TestDataFactory.triggerConfigCustomSetting(true);
+         TrueDialog_Keys__c tdKeys = TestDataFactory.createTrueDialog(true);                
         SendEmail__c sendEmailCustomSetting1 = TestDataFactory.sendEmailCustomSetting(true,'Send Email For Compliance');        
         Vehicle_URL_Mapping__c vehicleObj = TestDataFactory.createVehicleData(true,0);
         IRS_Mileage_Rate__c irsRateObj = TestDataFactory.createIRSRate(true,0);
@@ -14,9 +15,8 @@ public class BiWeekEmployeeReimbTriggerHandlerTest {
         User admin = TestDataFactory.getSystemAdminUser(userRole.Id);
         User userObj;
         System.runAs(admin) {
-            Account accountObj = TestDataFactory.createAccount(true,'Test Account',true);
-            Contact contactObj = TestDataFactory.createCICDContact(true,accountObj.Id);
             acc = TestDataFactory.createAccount(true,'Test',true);
+            Contact contactObj = TestDataFactory.createCICDContact(true,acc.Id);
             conList = TestDataFactory.createDriverContact(true, acc.Id, 'Driver', vehicleObj.Name, 'test.email', 1);
             userObj = TestDataFactory.createUser(true, profileObj.Id, conList[0].Id);
         }

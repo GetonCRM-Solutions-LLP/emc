@@ -243,7 +243,7 @@ public with sharing class TestDataFactory {
         User userObj = new User( 
             Email = 'abc@gmail.com',
             ProfileId = profileId, 
-            UserName = 'abc@gmail.com', 
+            UserName = 'abctreywert@gmail.com', 
             Alias = 'Test',
             TimeZoneSidKey = 'America/New_York',
             EmailEncodingKey = 'ISO-8859-1',
@@ -252,7 +252,8 @@ public with sharing class TestDataFactory {
             ContactId = contactId,
             PortalRole = 'Manager',
             FirstName = 'Firstname',
-            LastName = 'Lastname'
+            LastName = 'Lastname',
+            IsActive = true
         );
         if(doInsert){
             insert userObj;
@@ -321,10 +322,12 @@ public with sharing class TestDataFactory {
             con.FirstName = 'Priyanka';
             con.LastName = 'Gajera';
             con.Employee_ID__c = '123456';
+            con.Activation_Date__c = system.today();
             con.AccountId = accountId;
             con.External_Email__c = emailName + i + '@gmail.com';
             con.Phone = '1234566787';
             con.MobilePhone = '123456678'+j;
+            con.Time_Zone__c = 'US/Mountain';
             con.Driver_Type__c = 'Driver - Full Time';
             con.Deactivated_Date__c = null;
             con.Insurance_Attachment_Id__c = Null;
@@ -336,7 +339,9 @@ public with sharing class TestDataFactory {
             con.Triplog_UserID__c = '23rcdsf';
             con.ReimbursementStatementBatch__c = true;            
             con.Manager__c = null;   
-            con.Monthly_Mileage_Limit__c = -1;             
+            con.Monthly_Mileage_Limit__c = -1;  
+            con.MailingState = 'AK';
+            con.MailingCity = 'Atlanta';            
             conList.add(con);          
             j=j+1;
         }       
@@ -373,6 +378,7 @@ public with sharing class TestDataFactory {
         }
         return reimbursementList;
     }
+
     /** 
     * ********************************************************
     * This method is use for creating string of reimbursement month.
@@ -417,6 +423,7 @@ public with sharing class TestDataFactory {
         }
         return biweeklyreimList;   
     }
+
     /**
      * **********************************************************
      * This Method is used for creating Employee Mileages
@@ -443,6 +450,11 @@ public with sharing class TestDataFactory {
             empMileage.Approved_Date__c = null;
             empMileage.Tag__c = 'Admin';   
             empMileage.Rejected__c = false;
+            empMileage.Trip_Id__c  = 143576 + i;
+           // empMileage.FromLocationId__c = 30.212761 -97.659064;
+           // empMileage.ToLocationId__c = 30.161151 -97.794057;
+            
+
             empMilageList.add(empMileage);
         }
         if(doInsert){

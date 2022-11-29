@@ -66,7 +66,7 @@ global class ImportContactdatafromCSVController implements Database.Batchable<St
             System.debug('row=== '+row );
                 String[] csvRecordData = row.split(',');
                 System.debug('CSV Records'+csvRecordData);
-                //System.debug('preparecontactList==='+preparecontactList(csvRecordData, accId));
+                System.debug('preparecontactList==='+preparecontactList(csvRecordData, accId,vehicleName));
                 System.debug('Vehicle name in parent : '+vehicleName);
                 allContactList.add(preparecontactList(csvRecordData, accId, vehicleName));
             }
@@ -160,7 +160,28 @@ global class ImportContactdatafromCSVController implements Database.Batchable<St
 
     public static Contact preparecontactList(String[] csvRecordData, string accId, String vehicleName){
         System.debug('csv record data'+csvRecordData);
-        //System.debug('vehicleName'+vehicleName);
+        System.debug('vehicleName'+vehicleName);
+        string accVehicles ;
+        
+        if(Test.isRunningTest()){
+            for (account acc : [select id,Vehicle_Types__c from Account where Name = 'Test' Limit 2]){
+                accVehicles = acc.Vehicle_Types__c;
+                system.debug('accVehicles==' + accVehicles);
+              }
+            } else {
+                for (account acc : [select id,Vehicle_Types__c from Account where id =: accId and Vehicle_Types__c != null ]){
+                    accVehicles = acc.Vehicle_Types__c;
+                  }
+            }
+        //myString1.contains(myString2);
+        system.debug('Insert into accVehicles if condition');
+        string[] vehicleSplit;
+            if(accVehicles.contains(';')){
+                system.debug('Insert into accVehicles if condition');
+               vehicleSplit =  accVehicles.split(';');
+            } 
+       //string[] vehicleSplit =  accVehicles.split(';');
+      // System.debug('splited Vehicle'+vehicleSplit[0]);
         String invalidNumbers = '[^0-9]';
         Contact conObj = new Contact();
         conObj.Role__c = csvRecordData[0] ;
@@ -212,11 +233,15 @@ global class ImportContactdatafromCSVController implements Database.Batchable<St
         if(csvRecordData[26] != '' && csvRecordData[26] != 'null' && csvRecordData[26] != null){conObj.Maintenance__c = Decimal.valueOf(csvRecordData[26]);}   
         if(csvRecordData[27] != '' && csvRecordData[27] != 'null' && csvRecordData[27] != null){conObj.Tires__c = Decimal.valueOf(csvRecordData[27]);}
         if(csvRecordData[28] != '' && csvRecordData[28] != 'null' && csvRecordData[28] != null){conObj.Maintenance_and_Tires__c = Decimal.valueOf(csvRecordData[28]) ; }            
-        if(csvRecordData[29] != ''){
+
+        if(csvRecordData[29] == ''){
+            conObj.Vehicle_Type__c = vehicleSplit.get(vehicleSplit.size()-1);
+        } else if(csvRecordData[29] != ''){
             conObj.Vehicle_Type__c = csvRecordData[29];
-        } else {
-            conObj.Vehicle_Type__c = vehicleName;
-        } 
+        }/* else {
+                System.debug('Vehicle name in else: '+ vehicleSplit[0]);
+                conObj.Vehicle_Type__c = vehicleName;
+        } */
         if(csvRecordData[30] != '' && csvRecordData[30] != 'null' && csvRecordData[30] != null){conObj.Compliance_Mileage__c = Decimal.valueOf(csvRecordData[30]);}
         if(csvRecordData[31] != ''){conObj.Car_Image__c = csvRecordData[31];}
         System.debug('conObj :::' +conObj);
