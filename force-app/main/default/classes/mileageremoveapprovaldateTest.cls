@@ -19,6 +19,7 @@ public class mileageremoveapprovaldateTest {
         
         System.runAs(admin) {
             acc = TestDataFactory.createAccount(True, 'Test Account', true);
+            Contact contactObj = TestDataFactory.createCICDContact(true,acc.Id);
             con = TestDataFactory.createDriverContact(true, acc.Id, 'Driver', vehicleType.Name, 'Paras.Patel', 2); 
             userObj = TestDataFactory.createUser(True, profileObj.Id, con[0].Id);
         }

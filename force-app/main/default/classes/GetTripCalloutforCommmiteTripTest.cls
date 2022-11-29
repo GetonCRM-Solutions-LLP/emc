@@ -21,15 +21,12 @@ public class GetTripCalloutforCommmiteTripTest {
         Account account;
         List<Contact> currentContact;
         System.runAs(admin) {
-          
-            Account accountObj = TestDataFactory.createAccount(true,'Test',true);
-            Contact contactObj = TestDataFactory.createCICDContact(true,accountObj.Id);
             account = TestDataFactory.createAccount(true,'Test',true);
             account.Triplog_API__c = 'fde76cdde14449bea46b321225ac8fd1';
             account.Pay_Period_Start_Date__c = System.today().addDays(-100);
             account.Pay_Period_Days__c = 13;
             update account;
-            
+            Contact contactObj = TestDataFactory.createCICDContact(true,account.Id);
             currentContact = TestDataFactory.createDriverContact(true, account.Id, 'Manager',  null, 'minkesh.patel', 1);
             currentContact[0].Vehicle_Type__c  = '2019 Mileage Rate';  
             currentContact[0].Role__c = 'Driver';  
@@ -54,17 +51,16 @@ public class GetTripCalloutforCommmiteTripTest {
         
         List<Employee_Mileage__c> emp = TestDataFactory.getEmpMileage(true,1,er, bob);     
 
-        List<Employee_Mileage__c> emp1 = TestDataFactory.getEmpMileage(false,1,er, bob);     
-        emp1[0].Trip_Status__c = 'Approved';
+        /*List<Employee_Mileage__c> emp1 = TestDataFactory.getEmpMileage(false,1,er, bob);     
+         emp1[0].Trip_Status__c = 'Approved';
         insert emp1;
-
         List<Employee_Mileage__c> emp2 = TestDataFactory.getEmpMileage(false,1,er, bob);       
         emp2[0].StartTime__c = null;
         insert emp2;
 
         List<Employee_Mileage__c> emp3 = TestDataFactory.getEmpMileage(false,1,er, bob);      
         emp3[0].EndTime__c = null;
-        insert emp3;
+        insert emp3;*/
         
         priMin = '2021-12-01';
         priMax = '2022-12-01';
