@@ -5,7 +5,8 @@ trigger ContactTrigger on Contact (after Update, after insert, before insert, be
     Public Static Set<String> conList = new Set<String>();
     Public Static Set<String> accList = new Set<String>();
     
-    if(Trigger.isUpdate && Trigger.isAfter && (Test.isrunningTest() ||  checkRecursive.runOnce())) {
+    //if(Trigger.isUpdate && Trigger.isAfter && (Test.isrunningTest() ||  checkRecursive.runOnce())) {
+        if(Trigger.isUpdate && Trigger.isAfter && (checkRecursive.runOnce())) {
         Map<String,String> managerNames = new Map<String,String>();
         set<String> contactOldIdList = new set<String>();
         Map<String,String> contactInfo = new Map<String,String>();
