@@ -45,30 +45,10 @@ Public class SendMileageReminderforDelta_test{
             insert acc;
            
             //Insert Contact data 
-            conList = TestDataFactory.createDriverContact(false, acc.Id, 'Driver', veh.Name, 'Paras.Patel', 2);
+            conList = TestDataFactory.createDriverContact(false, acc.Id, 'Driver', veh.Name, 'Paras.Patel', 1);
             conList[0].Deactivated_Date__c = null;
             conList[0].Vehicle_Type__c  = '2019 Full-Size Sedan';
             Insert conList[0];
-             
-            /*contact con2 = new contact();
-            con2.FirstName = 'Test';
-            con2.LastName = 'contact2';
-            con2.AccountId = acc.Id;
-            con2.MailingStreet = 'Test Street';
-            con2.MailingCity = 'Test City';
-            con2.MailingState = 'ON';
-            con2.MailingPostalCode = '123';
-            con2.MailingCountry = 'USA';
-            con2.Phone = '1232434445';
-            con2.External_Email__c = 'test2@gmail.com';
-            con2.Deactivated_Date__c = null;
-            con2.Triplog_UserID__c = null;
-            con2.isCommunityUser__c = True;
-            con2.Role__c = 'Driver';
-            con2.Monthly_Mileage_Limit__c = 100;
-            con2.IsCreatedFromCommunity__c = true; 
-            con2.Vehicle_Type__c  = '2019 Full-Size Sedan';
-            insert con2;*/
         }
         Test.startTest();
 
