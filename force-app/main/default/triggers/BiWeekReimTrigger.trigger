@@ -1,5 +1,5 @@
 trigger BiWeekReimTrigger  on Bi_Weekly_Reimbursement__c (after update, after insert,before insert, before update) {
-    if(Trigger.isUpdate && (checkRecursive.runOnce())) {
+    if(Trigger.isAfter && Trigger.isUpdate && (checkRecursive.runOnce())) {
         BiWeekEmployeeReimbTriggerHandler.mileagefieldupdate(Trigger.New, Trigger.oldMap, Trigger.newMap);
     }
     if(Trigger.isBefore) {
