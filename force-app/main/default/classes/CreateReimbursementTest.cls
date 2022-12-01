@@ -4,6 +4,7 @@ public with sharing class CreateReimbursementTest {
         TriggerConfig__c triggerCustomSetting = TestDataFactory.triggerConfigCustomSetting(true);
         SendEmail__c sendEmailCustomSetting = TestDataFactory.sendEmailCustomSetting(true, 'Send Email For Compliance');
         IRS_Mileage_Rate__c obj_IRS_Mileage_Rate_1 = TestDataFactory.createIRSRate(true,0);
+        TrueDialog_Keys__c tdKeys = TestDataFactory.createTrueDialog(true);
         List<Address__c> objAddress = TestDataFactory.createAddress(true, 10);
         Vehicle_URL_Mapping__c veh = TestDataFactory.createVehicleData(false, 3);
         veh.Name = '2019 Full-Size Sedan';
@@ -33,7 +34,7 @@ public with sharing class CreateReimbursementTest {
             system.assertEquals(1, conList.size(), true);
             userObj = TestDataFactory.createUser(True, profileObj.Id, contactObj.Id);
         }    
-        List<Gas_Prices__c>  gasPriceList = TestDataFactory.createGasPrice(true, 'Denver', Date.today().adddays(-1), 0);
+       // List<Gas_Prices__c>  gasPriceList = TestDataFactory.createGasPrice(true, 'Denver', Date.today().adddays(-1), 0);
         String lastMonth = Utils.fetchMonths(1, -1)[0];
         
         List<Employee_Reimbursement__c> reimList = TestDataFactory.createPendingReimbursement(true ,conList,1, obj_IRS_Mileage_Rate_1.Id);
