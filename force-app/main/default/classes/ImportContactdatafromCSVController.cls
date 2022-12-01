@@ -228,6 +228,8 @@ global class ImportContactdatafromCSVController implements Database.Batchable<St
 
         if(csvRecordData[24] != ''){
             conObj.Activation_Date__c = convertDateFormat(csvRecordData[24]);    
+        } else {
+            conObj.Activation_Date__c = system.today();
         }
         if(csvRecordData[25] != '' && csvRecordData[25] != 'null' && csvRecordData[25] != null){conObj.MPG__c = Decimal.valueOf(csvRecordData[25]);}   
         if(csvRecordData[26] != '' && csvRecordData[26] != 'null' && csvRecordData[26] != null){conObj.Maintenance__c = Decimal.valueOf(csvRecordData[26]);}   
