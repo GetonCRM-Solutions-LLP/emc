@@ -6,6 +6,8 @@ public with sharing class WeeklyTimeSheetNotConfirmControllerTest {
         customSetting2.Name = 'Send Email For Compliance';
         customSetting2.Send_email_from_code__c= true;
         insert customSetting2;
+        
+        TrueDialog_Keys__c tdKeys = TestDataFactory.createTrueDialog(true);
 
         SendEmailonDeactivation__c objSendEmail = new SendEmailonDeactivation__c();
         objSendEmail.Name ='YearToDateReimbursementStatement'; //YearToDateReimbursementStatement

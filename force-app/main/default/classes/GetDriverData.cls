@@ -1,5 +1,5 @@
 public with sharing class GetDriverData {
-    public static final String MLOGACCOUNT = System.Label.Triplog_New_URL;
+    public static final String MLOGACCOUNT = System.Label.Triplog_New_URL + ',' + System.Label.Triplog_New_URL2;
     @AuraEnabled(cacheable=true)
     public static List < sObject > fetchLookUpValues(String accId,String adminId,String accField,String idOfDriver,String whereField, String searchKey,String fieldName, String ObjectName,String keyField,Boolean isActive) {
         List < sObject > returnList = new List < sObject > ();
@@ -155,7 +155,7 @@ public with sharing class GetDriverData {
                         Tracing_Style__c,Trip_Id__c,Way_Points__c,Tag__c,Activity__c,
                         EmployeeReimbursement__r.Contact_Id__r.Account.Triplog_API__c,
                         TimeZone__c,EmployeeReimbursement__r.Month__c,Drive_Stay_Time__c,
-                        StartTime__c, EndTime__c,EMP_Mileage__c 
+                        StartTime__c, EndTime__c,EMP_Mileage__c,Original_Origin_Name__c,Original_Destination_Name__c 
                     FROM Employee_Mileage__c
                     WHERE EmployeeReimbursement__r.Contact_Id__r.AccountId =: accID 
                         AND EmployeeReimbursement__r.Month__c =: lastMonth AND 
@@ -177,7 +177,7 @@ public with sharing class GetDriverData {
                         Tracing_Style__c,Trip_Id__c,Way_Points__c,Tag__c,Activity__c,
                         EmployeeReimbursement__r.Contact_Id__r.Account.Triplog_API__c,
                         TimeZone__c,EmployeeReimbursement__r.Month__c,Drive_Stay_Time__c,
-                        StartTime__c,EndTime__c,EMP_Mileage__c 
+                        StartTime__c,EndTime__c,EMP_Mileage__c,Original_Origin_Name__c,Original_Destination_Name__c  
                     FROM Employee_Mileage__c
                     WHERE EmployeeReimbursement__r.Contact_Id__r.AccountId =: accID 
                         AND EmployeeReimbursement__r.Month__c =: lastMonth
@@ -291,13 +291,6 @@ public with sharing class GetDriverData {
 
     @AuraEnabled
     public static List <Employee_Mileage__c> getMilegesData(Id accountId,String AdminId,String idOfDriver, Date StartDate, Date EndDate, String OriginName, String DestinationName,Boolean ActiveDriver,String StartMileage,String EndMileage,String TripStatus,String TrackingMethod,String Tag,String Notes,String Activity,Integer limitSize, Integer offset) {
-        System.debug('limitSize'+limitSize);
-        System.debug('offset'+offset);
-         System.debug('accountId'+accountId);
-        System.debug('idOfDriver'+idOfDriver);
-        System.debug('StartDate'+StartDate);
-        System.debug('EndDate'+EndDate);
-        System.debug('AdminId'+AdminId);
         if(idOfDriver == 'All Drivers'){
             idOfDriver = '';
         }
@@ -317,7 +310,7 @@ public with sharing class GetDriverData {
         if(!String.isBlank(AdminId) || !String.isEmpty(AdminId)){
             conObj = [SELECT id,Role__c FROM Contact WHERE id =: AdminId LIMIT 1];
         }
-        String query = 'SELECT id,Trip_Date__c,Stay_Time__c,Tag__c,StartTime__c,EMP_Mileage__c,Activity__c, EndTime__c, Driving_Time__c,EmployeeReimbursement__r.Contact_Id_Name__c,ConvertedStartTime__c,ConvertedEndTime__c,EmployeeReimbursement__r.Contact_Id__r.Name,Mileage__c,Trip_Origin__c, Trip_Destination__c,Origin_Name__c, Destination_Name__c,EmployeeReimbursement__r.Contact_Id__c,Day_Of_Week__c,Trip_Status__c,EmployeeReimbursement__r.Contact_Id__r.External_Email__c,EmployeeReimbursement__r.Contact_Id__r.Deactivated_Date__c,Notes__c, Tracing_Style__c,From_Location__Latitude__s, From_Location__Longitude__s, To_Location__Latitude__s, To_Location__Longitude__s,Trip_Id__c,EmployeeReimbursement__r.Contact_Id__r.Account.Triplog_API__c,TimeZone__c,EmployeeReimbursement__r.Contact_Id__r.AccountId,Drive_Stay_Time__c FROM Employee_Mileage__c ';
+        String query = 'SELECT id,Trip_Date__c,Stay_Time__c,Tag__c,StartTime__c,EMP_Mileage__c,Activity__c, EndTime__c, Driving_Time__c,EmployeeReimbursement__r.Contact_Id_Name__c,ConvertedStartTime__c,ConvertedEndTime__c,EmployeeReimbursement__r.Contact_Id__r.Name,Mileage__c,Trip_Origin__c, Trip_Destination__c,Origin_Name__c, Destination_Name__c,EmployeeReimbursement__r.Contact_Id__c,Day_Of_Week__c,Trip_Status__c,EmployeeReimbursement__r.Contact_Id__r.External_Email__c,EmployeeReimbursement__r.Contact_Id__r.Deactivated_Date__c,Notes__c, Tracing_Style__c,From_Location__Latitude__s, From_Location__Longitude__s, To_Location__Latitude__s, To_Location__Longitude__s,Trip_Id__c,EmployeeReimbursement__r.Contact_Id__r.Account.Triplog_API__c,TimeZone__c,EmployeeReimbursement__r.Contact_Id__r.AccountId,Drive_Stay_Time__c,Original_Origin_Name__c,Original_Destination_Name__c FROM Employee_Mileage__c ';
       
         String whereClause = '';
         if(accountId != null || idOfDriver != null || StartDate != null || EndDate != null || OriginName != null || DestinationName != null || StartMileage != null || EndMileage != null || TripStatus != null || TrackingMethod != null || Tag != null || Notes != null ){
@@ -523,7 +516,7 @@ public with sharing class GetDriverData {
     { 
         if(newActivity != oldActivity){
             if(tripId != null && accApi != null){
-                String MLOGACCOUNT = System.Label.Triplog_New_URL;
+                String MLOGACCOUNT = System.Label.Triplog_New_URL + ',' + System.Label.Triplog_New_URL2;
                 String baseURL = !MLOGACCOUNT.Contains(accApi) ? StaticValues.TRIPLOG_BASEURL : StaticValues.MLOG_BASEURL;
                 String rosterURL = baseURL + '/api/trips/'+tripId;
                 String body = '{"activity":'+newActivity+'}';

@@ -28,6 +28,7 @@ export default class MBurseDriverPacket extends LightningElement {
     isAppDone = false;
     packetAlreadySent = false;
     packetIntial = false;
+    allowRedirect = false;
     @api days
     @api cellType;
     @api contactId;
@@ -114,12 +115,13 @@ export default class MBurseDriverPacket extends LightningElement {
             })
     }
     skipToPage() {
-        var contactData, beforeUpdate, toUpdate, listToContact, downloadApp;
+        var contactData, beforeUpdate, toUpdate, listToContact, downloadApp, meeting;
         if (this.driverDetails) {
             listToContact = this.driverDetails;
             contactData = this.proxyToObject(listToContact);
             beforeUpdate = contactData[0].driverPacketStatus;
             downloadApp = contactData[0].mlogApp;
+            meeting = contactData[0].driverMeeting;
             toUpdate = 'Skip';
             if (beforeUpdate !== toUpdate) {
                 contactData[0].driverPacketStatus = "Skip";
@@ -129,29 +131,34 @@ export default class MBurseDriverPacket extends LightningElement {
                     })
                     .then(() => {
                         if (downloadApp === true) {
-                            let list, d;
-                            contactInfo({
-                                    contactId: this.contactId
-                                })
-                                .then((data) => {
-                                    if (data) {
-                                        list = this.proxyToObject(data);
-                                        this.arrayList = list;
-                                        d = this.arrayList;
-                                        d[0].checkDriverMeeting = true;
-                                        updateContactDetail({
-                                            contactData: JSON.stringify(d),
-                                            driverPacket: true
-                                        })
-                                        events(this, 'Next mburse meeting');
-                                    }
-                                })
-                                .catch((error) => {
-                                    // If the promise rejects, we enter this code block
-                                    console.log(error);
-                                })
+                            if(meeting === 'Scheduled' || meeting ===  'Attended'){
+                                this.redirectToDashboard();
+                            }else{
+                                events(this, 'Next mburse meeting');
+                            }
+                            // let list, d;
+                            // contactInfo({
+                            //         contactId: this.contactId
+                            //     })
+                            //     .then((data) => {
+                            //         if (data) {
+                            //             list = this.proxyToObject(data);
+                            //             this.arrayList = list;
+                            //             d = this.arrayList;
+                            //             d[0].checkDriverMeeting = true;
+                            //             updateContactDetail({
+                            //                 contactData: JSON.stringify(d),
+                            //                 driverPacket: true
+                            //             })
+                            //         }
+                            //     })
+                            //     .catch((error) => {
+                            //         // If the promise rejects, we enter this code block
+                            //         console.log(error);
+                            //     })
                            // this.redirectToDashboard()
-                        } else {
+                        } 
+                        else {
                             skipEvents(this, 'Next mLog Preview');
                         }
                     }).catch(error => {
@@ -159,33 +166,38 @@ export default class MBurseDriverPacket extends LightningElement {
                     })
             } else {
                 if (downloadApp === true) {
-                    let list, d;
-                    contactInfo({
-                            contactId: this.contactId
-                        })
-                        .then((data) => {
-                            if (data) {
-                                list = this.proxyToObject(data);
-                                this.arrayList = list;
-                                d = this.arrayList;
-                                d[0].checkDriverMeeting = true;
-                                updateContactDetail({
-                                    contactData: JSON.stringify(d),
-                                    driverPacket: true
-                                })
-                                events(this, 'Next mburse meeting');
-                                // if (d[0].accountStatus === 'New Account') {
-                                //     window.open(this.schedule)
-                                // } else {
-                                //     window.open(this.meeting)
-                                // }
+                    if(meeting === 'Scheduled' || meeting ===  'Attended'){
+                        this.redirectToDashboard();
+                    }else{
+                        events(this, 'Next mburse meeting');
+                    }
+                    // let list, d;
+                    // contactInfo({
+                    //         contactId: this.contactId
+                    //     })
+                    //     .then((data) => {
+                    //         if (data) {
+                    //             list = this.proxyToObject(data);
+                    //             this.arrayList = list;
+                    //             d = this.arrayList;
+                    //             d[0].checkDriverMeeting = true;
+                    //             updateContactDetail({
+                    //                 contactData: JSON.stringify(d),
+                    //                 driverPacket: true
+                    //             })
+                    //             events(this, 'Next mburse meeting');
+                    //             // if (d[0].accountStatus === 'New Account') {
+                    //             //     window.open(this.schedule)
+                    //             // } else {
+                    //             //     window.open(this.meeting)
+                    //             // }
                                 
-                            }
-                        })
-                        .catch((error) => {
-                            // If the promise rejects, we enter this code block
-                            console.log(error);
-                        })
+                    //         }
+                    //     })
+                    //     .catch((error) => {
+                    //         // If the promise rejects, we enter this code block
+                    //         console.log(error);
+                    //     })
                    //this.redirectToDashboard()
                 } else {
                     skipEvents(this, 'Next mLog Preview');
@@ -249,6 +261,29 @@ export default class MBurseDriverPacket extends LightningElement {
         }
     }
 
+    renderButton(){
+        let contact;
+        contactInfo({contactId: this.contactId})
+        .then((data) => {
+          if (data) {
+            contact = this.proxyToObject(data);
+            if(this.days === true){
+                this.allowRedirect = true;
+            }else{
+                if(contact[0].driverPacketStatus === 'Uploaded' && contact[0].insuranceStatus === 'Uploaded'){
+                    this.allowRedirect = true;
+                }else{
+                    this.allowRedirect = false;
+                }
+            }
+          }
+        })
+        .catch((error)=>{
+            // If the promise rejects, we enter this code block
+            console.log(error);
+        })
+    }
+
     renderedCallback() {
         if (this.renderInitialized) {
             return;
@@ -256,7 +291,8 @@ export default class MBurseDriverPacket extends LightningElement {
         this.renderInitialized = true;
         this.toggleHide();
         this.renderText = (this.cellType === 'Company Provide') ? 'mLog Preview' : 'mLog Preview';
-        this.renderBtnText = (this.accountType === 'New Account') ? 'Register for your driver meeting' : 'Next watch your driver meeting';
+        this.renderBtnText = (this.accountType === 'New Account') ? 'Register for your driver meeting' : 'Watch your driver meeting';
+        this.renderButton();
         this.showWatchBtn = (this.accountType === 'New Account') ? false : true;
         this.afterRegister = (this.accountType === 'New Account' && this.driverMeeting === 'Scheduled') ? true : false;
     }

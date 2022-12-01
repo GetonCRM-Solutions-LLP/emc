@@ -48,8 +48,14 @@
             }
             .mburseLoader{
                 position: fixed;
-                top: 49%;
-                left: 49%;
+                top: 0;
+                left: 0;
+                height: 100%;
+                width: 100%;
+                display: flex;
+                flex-flow: column nowrap;
+                justify-content: center;
+                align-items: center;
                 z-index: 1000000;
             }
             .mbloader-text{
@@ -93,7 +99,7 @@
         <div class="spinner-background"></div>
         <div class="mburseLoader">
             <div class="mbloader"></div>
-            <div class="mbloader-text">Loading...</div>
+            <div class="mbloader-text">Welcome to mBurse! Your profile is loading, please wait momentarily.</div>
         </div>
     </div>
     <apex:includeLightning />

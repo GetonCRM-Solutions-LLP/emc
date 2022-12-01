@@ -57,9 +57,9 @@ global class NewdriverdashboardController {
         reimMap = new Map<string,string>();
         mileageMap = new Map<string,string>();
         ContactDetails contactObj = new ContactDetails();
-        String lastMonth = Utils.fetchMonths(1, 0)[0];
-        boolean checkReim = false;
+        String lastMonth = Utils.fetchMonths(1, 0)[0];       
         String contactFixedAmount ;
+        Boolean check = false;
         for(Employee_Reimbursement__c reim : [SELECT id,Total_Approved__c,Total_Monthly_Reimbursement__c,Variable_Rate__c,
                                                     Year__c,Contact_Id__r.MailingCity,Contact_Id__r.MailingState, 
                                                     Contact_Id__r.MailingPostalCode, Contact_Id__r.Fixed_Amount__c, 
@@ -109,10 +109,10 @@ global class NewdriverdashboardController {
              if(reim.Month__c != null && reim.Month__c == lastMonth){
                  contactObj.fixedAmount = String.valueof(reim.Fixed_Amount__c) != null ? String.valueof((reim.Fixed_Amount__c).setScale(2)) : null;
                  contactObj.variableRate = String.valueof(reim.Variable_Rate__c) != null ? String.valueof(reim.Variable_Rate__c) : null;
-             } else if(checkReim == false){                 
+                 check = true;
+             } else if(check == false){                 
                  contactObj.fixedAmount = String.valueof(reim.Fixed_Amount__c) != null ? String.valueof((reim.Fixed_Amount__c).setScale(2)) : null;
-                 contactObj.variableRate = String.valueof(reim.Variable_Rate__c) != null ? String.valueof(reim.Variable_Rate__c) : null;
-                 checkReim = true;
+                 contactObj.variableRate = String.valueof(reim.Variable_Rate__c) != null ? String.valueof(reim.Variable_Rate__c) : null;                
              }
              
         }

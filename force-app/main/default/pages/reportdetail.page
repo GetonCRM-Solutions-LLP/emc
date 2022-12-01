@@ -335,6 +335,8 @@
                 $scope.reportdatefields = [];
                 $scope.reportdatetimetotimefields = [];
                 $scope.reportbooleanfields = [];
+                $scope.reporttwodecimalfields = [];
+
                 if($scope.report.Boolean_Field__c != undefined)
                 {
                     if($scope.report.Boolean_Field__c.includes(','))
@@ -358,6 +360,18 @@
                         $scope.headerfields.push($scope.report.Numeric_Fields__c.trim());
                     }
                 }
+
+                if($scope.report.Two_Decimal_Places__c != undefined){
+                    if($scope.report.Two_Decimal_Places__c.includes(','))
+                    {
+                        $scope.reporttwodecimalfields = $scope.report.Two_Decimal_Places__c.split(',');
+                    }
+                    else
+                    {
+                        $scope.reporttwodecimalfields.push($scope.report.Numeric_Fields__c.trim());
+                    }
+                }
+
                 if($scope.report.Date_Time_Fields__c != undefined)
                 {
                     if($scope.report.Date_Time_Fields__c.includes(','))
@@ -463,7 +477,6 @@
                      {
                          numericheadertoapifields.set($scope.headerfields[j],apifieldstoheader.get($scope.headerfields[j]));
                          $scope.numericheaderarray.push(numericheadertoapifields.get($scope.headerfields[j]));
-                       
                      }
                 }
                
@@ -499,6 +512,15 @@
                     if(apifieldstoheader.has($scope.reportdatetimetotimefields[j]))
                     {
                         datetotimefields.set($scope.reportdatetimetotimefields[j],apifieldstoheader.get($scope.reportdatetimetotimefields[j]));
+                    }
+                }
+
+                var twodecimalfields = new Map();
+                for(var j = 0;j<$scope.reporttwodecimalfields.length;j++)
+                {
+                    if(apifieldstoheader.has($scope.reporttwodecimalfields[j]))
+                    {
+                        twodecimalfields.set($scope.reporttwodecimalfields[j],apifieldstoheader.get($scope.reporttwodecimalfields[j]));
                     }
                 }
 
@@ -576,6 +598,11 @@
                                         $scope.booleanValues = ($scope.getdataofmanager[i][key] === true) ? 'Yes' : 'No';
                                         $scope.valueofkey.push(apifieldstoheader.get(key),$scope.booleanValues);
                                     }
+                                    else if(twodecimalfields.has(key))
+                                    {
+                                        $scope.twodecimalValues = $scope.getdataofmanager[i][key].toFixed(2);
+                                        $scope.valueofkey.push(apifieldstoheader.get(key),$scope.twodecimalValues);
+                                    }
                                     else
                                     {
                                         $scope.valueofkey.push(apifieldstoheader.get(key),$scope.getdataofmanager[i][key]);
@@ -602,9 +629,8 @@
                                $scope.finnalData[keyData.replace(/\s/g, "")]=$scope.arrayvalues[index+1]
                              }
                             for(i = 0 ; i < $scope.numericheaderarray.length; i++){
-                                if(keyData == $scope.numericheaderarray[i]){
+                                if(keyData != 'Variable Rate'){
                                     $scope.finnalData[keyData.replace(/\s/g, "")]=($scope.arrayvalues[index+1]).toLocaleString();
-                                    
                                }
                             }
                            
@@ -745,10 +771,9 @@
                                             let keyData=item[index];
                                             $scope.finnalData[keyData.replace(/\s/g, "")]=$scope.arrayvalues[index+1]
                                             for(i = 0 ; i < $scope.numericheaderarray.length; i++){
-                                          
-                                            if(keyData == $scope.numericheaderarray[i]){
-                                            $scope.finnalData[keyData.replace(/\s/g, "")]=($scope.arrayvalues[index+1]).toLocaleString();
-                                             }
+                                                if(keyData != 'Variable Rate'){
+                                                    $scope.finnalData[keyData.replace(/\s/g, "")]=($scope.arrayvalues[index+1]).toLocaleString();
+                                                }
                                              }
                                             $scope.ind = index+1;
                                             }

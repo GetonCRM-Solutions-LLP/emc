@@ -2,6 +2,7 @@
 private class ConfirmTripTimeERMIControllerTest {
     @isTest
     static void utilMethod1() {
+        TrueDialog_Keys__c trueDialogCustom = TestDataFactory.createTrueDialog(true);
         TriggerConfig__c triggerCustomSetting = TestDataFactory.triggerConfigCustomSetting(true);
         SendEmail__c sendEmailCustomSetting1 = TestDataFactory.sendEmailCustomSetting(true,'Send Email For Compliance');
         SendEmail__c sendEmailCustomSetting2 = TestDataFactory.sendEmailCustomSetting(true,'ConfirmTripTimeERMIController');
@@ -16,10 +17,10 @@ private class ConfirmTripTimeERMIControllerTest {
         Profile profileObj = TestDataFactory.getUserProfile();
         User admin = TestDataFactory.getSystemAdminUser(userRole.Id);
         User userObj;
-        System.runAs(admin) {
-            Account accountObj = TestDataFactory.createAccount(true,'Test',true);
-            Contact contactObj = TestDataFactory.createCICDContact(true,accountObj.Id);
+        System.runAs(admin) {            
+            
             acc = TestDataFactory.createAccount(true,'Test',true);
+            Contact contactObj = TestDataFactory.createCICDContact(true,acc.Id);
             conList = TestDataFactory.createDriverContact(true, acc.Id, 'Driver', vehicleObj.Name, 'test.email', 1);
             userObj = TestDataFactory.createUser(true, profileObj.Id, conList[0].Id);
         }
@@ -31,12 +32,12 @@ private class ConfirmTripTimeERMIControllerTest {
         
         Test.startTest();
         System.runAs(userObj) {
-        string conId =  conList[0].id;
-        String json = '[{\"biWeekId\":\"'+biWeeklyReimList[0].id + '\",\"confirmCheck\":true,\"errorCheck\":false,\"countErrorCheck\":0,\"driverEmail\":\"meghac.mobio@gmail.com\",\"driverName\":\"Megha\",\"biWeekPayperiod\":\"03/09/2022 to 03/22/2022\",\"mileage\":0,\"driveTime\":\"0\",\"stayTime\":\"0\",\"totalTime\":\"0\"}]';
-        apexpages.currentpage().getparameters().put('id' , conId);
-        ConfirmTripTimeERMIController controller = new ConfirmTripTimeERMIController();  
-        ConfirmTripTimeERMIController.syncTripsForErmi (conId,'03/07/2022','03/12/2022'); 
-        ConfirmTripTimeERMIController.UpdateBiWeekData(json );      
+            string conId =  conList[0].id;
+            String json = '[{\"biWeekId\":\"'+biWeeklyReimList[0].id + '\",\"confirmCheck\":true,\"errorCheck\":false,\"countErrorCheck\":0,\"driverEmail\":\"meghac.mobio@gmail.com\",\"driverName\":\"Megha\",\"biWeekPayperiod\":\"03/09/2022 to 03/22/2022\",\"mileage\":0,\"driveTime\":\"0\",\"stayTime\":\"0\",\"totalTime\":\"0\"}]';
+            apexpages.currentpage().getparameters().put('id' , conId);
+            ConfirmTripTimeERMIController controller = new ConfirmTripTimeERMIController();  
+            ConfirmTripTimeERMIController.syncTripsForErmi (conId,'03/07/2022','03/12/2022'); 
+            ConfirmTripTimeERMIController.UpdateBiWeekData(json );      
         }
         Test.stopTest();
     }

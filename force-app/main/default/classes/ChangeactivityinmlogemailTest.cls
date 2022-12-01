@@ -1,7 +1,7 @@
 @isTest
 public class ChangeactivityinmlogemailTest {
     public static TESTMETHOD void Changeactivity(){
-        
+        TrueDialog_Keys__c trueDialogCustom = TestDataFactory.createTrueDialog(true);
         TriplogPutCall__c sendemailme = new TriplogPutCall__c();
         sendemailme.name = 'GetDriverData';
         sendemailme.TriplogPut__c = true;
@@ -49,8 +49,11 @@ public class ChangeactivityinmlogemailTest {
        Account acc = new Account();
         acc.Name = 'PL Marketing';
         acc.Triplog_API__c = 'asasadfdfsdfsdasaddf';
+        acc.Pay_Period_Start_Date__c = System.today().addDays(-100);
+        acc.Pay_Period_Days__c = 6;
         insert acc;
         
+        System.debug('Account id: '+acc.Id);
         Contact conadmin = new Contact();
         conadmin.LastName = 'TestContact';
         conadmin.AccountId = acc.Id;
@@ -60,6 +63,7 @@ public class ChangeactivityinmlogemailTest {
         conadmin.MailingCity = 'Abilene';
         conadmin.MailingState = 'TX';
         conadmin.Time_Zone__c = 'US/Mountain' ;
+        
         insert conadmin;
         
         Contact con = new Contact();
@@ -92,7 +96,12 @@ public class ChangeactivityinmlogemailTest {
         er5.Status__c = 'Pending';
         er5.Fuel_Price__c = 10.00;
         insert er5;
-
+		
+        Bi_Weekly_Reimbursement__c bob = new Bi_Weekly_Reimbursement__c();
+        bob.name = '9/19/2021 to 10/2/2021';
+        bob.Contact__c = con.id;
+        insert bob;		
+        
         Employee_Mileage__c emp = new Employee_Mileage__c();
         emp.EmployeeReimbursement__c = er5.id;
         emp.Contact_Email_Id__c = con.External_Email__c;
@@ -104,6 +113,7 @@ public class ChangeactivityinmlogemailTest {
         emp.StartTime__c = system.now();
         emp.EndTime__c =  system.now();
         emp.Trip_Date__c = date.today().adddays(-1);
+        emp.Bi_Weekly_Reimbursement__c = bob.Id;
         insert emp;
          
         String json = '[{\"id\":"'+emp.id+'",\"adminId\":"'+conadmin.Id+'",\"tripdate\":\"2021-08-17\",\"conName\":\"NIkita Patel\",\"conEmail\":\"nikita.patel@kiwiqa.com\",\"oldActivity\":\"Business\",\"mileage\":\"100\",\"actualMileage\":\"100\",\"tripId\":2000669507,\"accApi\":\"28beeea973f34daf89050a9b6a3b1a71\"},{\"id\":\"a0B4C000004DOjMUAW\",\"adminId\":"'+conadmin.Id+'",\"tripdate\":\"2021-08-09\",\"conName\":\"NIkita Patel\",\"conEmail\":\"nikita.patel@kiwiqa.com\",\"oldActivity\":\"Business\",\"mileage\":\"1.6\",\"actualMileage\":\"1.6\",\"tripId\":2000698284,\"accApi\":\"28beeea973f34daf89050a9b6a3b1a71\"}]';

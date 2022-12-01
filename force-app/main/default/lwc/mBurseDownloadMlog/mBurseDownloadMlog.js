@@ -6,7 +6,8 @@ import {
 import mBurseCss from '@salesforce/resourceUrl/mBurseCss';
 import getCustomSettings from '@salesforce/apex/NewAccountDriverController.getCustomSettings';
 import contactInfo from '@salesforce/apex/NewAccountDriverController.getContactDetail';
-import updateContactDetail from '@salesforce/apex/NewAccountDriverController.updateContactDetail';
+// import updateContactDetail from '@salesforce/apex/NewAccountDriverController.updateContactDetail';
+import redirectionURL from '@salesforce/apex/NewAccountDriverController.loginRedirection';
 import {
     events,
     backEvents
@@ -27,6 +28,8 @@ export default class MBurseDownloadMlog extends LightningElement {
     // Type of account (New or Existing)
     @api accountType;
 
+    @api driverMeeting;
+
     // Type of phone (Employee Provided or Company Provided)
     @api cellType;
 
@@ -35,6 +38,8 @@ export default class MBurseDownloadMlog extends LightningElement {
 
     // Schedule driver meeting 
     @api schedule;
+
+    @api dayLeft;
 
     // Android video link from custom settings
     androidVideoUrl;
@@ -105,6 +110,10 @@ export default class MBurseDownloadMlog extends LightningElement {
     typePopover = "slds-popover slds-nubbin_left-top  slds-popover_large c_popover"
 
     carousel = false;
+
+    showWatchBtn = false;
+
+    afterRegister = false;
 
     carouselLists;
 
@@ -194,20 +203,20 @@ export default class MBurseDownloadMlog extends LightningElement {
 
     // Event handler for watch driver meeting button click
     nextDriverMeeting() {
-        var list, d;
+        //var list, d;
         contactInfo({
                 contactId: this.contactId
             })
             .then((data) => {
                 if (data) {
-                    list = this.proxyToObject(data);
-                    this.arrayList = list;
-                    d = this.arrayList;
-                    d[0].checkDriverMeeting = true;
-                    updateContactDetail({
-                        contactData: JSON.stringify(d),
-                        driverPacket: true
-                    })
+                    // list = this.proxyToObject(data);
+                    // this.arrayList = list;
+                    // d = this.arrayList;
+                    // d[0].checkDriverMeeting = true;
+                    // updateContactDetail({
+                    //     contactData: JSON.stringify(d),
+                    //     driverPacket: true
+                    // })
                     events(this, 'Next mburse meeting');
                     // if (d[0].accountStatus === 'New Account') {
                     //     window.open(this.schedule)
@@ -215,6 +224,20 @@ export default class MBurseDownloadMlog extends LightningElement {
                     //     window.open(this.meeting)
                     // }
                 }
+            })
+            .catch((error) => {
+                // If the promise rejects, we enter this code block
+                console.log(error);
+            })
+    }
+
+    takeMeToDashboard() {
+        redirectionURL({
+                contactId: this.contactId
+            })
+            .then((result) => {
+                let url = window.location.origin + result;
+                window.open(url, '_self');
             })
             .catch((error) => {
                 // If the promise rejects, we enter this code block
@@ -285,6 +308,29 @@ export default class MBurseDownloadMlog extends LightningElement {
         );
     }
 
+    renderButton(){
+        let contact;
+        contactInfo({contactId: this.contactId})
+        .then((data) => {
+          if (data) {
+            contact = this.proxyToObject(data);
+            if(this.dayLeft === true){
+                this.allowRedirect = true;
+            }else{
+                if(contact[0].driverPacketStatus === 'Uploaded' && contact[0].insuranceStatus === 'Uploaded'){
+                    this.allowRedirect = true;
+                }else{
+                    this.allowRedirect = false;
+                }
+            }
+          }
+        })
+        .catch((error)=>{
+            // If the promise rejects, we enter this code block
+            console.log(error);
+        })
+    }
+
     // Life cycle hook to render UI
     renderedCallback() {
         if (this.renderInitialized) {
@@ -294,7 +340,10 @@ export default class MBurseDownloadMlog extends LightningElement {
         this.render = (this.cellType === 'Company Provide') ? true : false;
         this.isChatBot = (this.render) ? true : false;
         this.carouselLists = (this.cellType === 'Company Provide') ? this.carouselB : this.carouselA;
-        this.buttonRender = (this.accountType === 'New Account') ? 'Register for your driver meeting' : 'Next watch your driver meeting';
+        this.buttonRender = (this.accountType === 'New Account') ? 'Register for your driver meeting' : 'Watch your driver meeting';
+        this.renderButton();
+        this.showWatchBtn = (this.accountType === 'New Account') ? false : true;
+        this.afterRegister = (this.accountType === 'New Account' && this.driverMeeting === 'Scheduled') ? true : false;
     }
 
 }

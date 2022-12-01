@@ -301,7 +301,7 @@ global without sharing class RosterController
     @Future(callout = true)
     webservice static void postHTTPCreateNewUserTriplog(List<Id> newListContact) 
     {
-        String MLOGACCOUNT = System.Label.Triplog_New_URL;
+        String MLOGACCOUNT = System.Label.Triplog_New_URL  + ',' + System.Label.Triplog_New_URL2;
         //String url = 'https://triplogmileage.com/web/api/users';
         Http h;
         HttpRequest req;
@@ -484,13 +484,10 @@ global without sharing class RosterController
     
     @RemoteAction
     public static Id readFromFile(String file,String accountId, String adminId) {
-        system.debug('file==' + file);
-        system.debug('accountId==' + accountId);
         Id batchId;
         ImportContactdatafromCSVController batch = new ImportContactdatafromCSVController(file, accountId, adminId);
        
-        batchid = Database.executebatch(batch,1);
-        system.debug('batchid==' + batchid);
+        batchid = Database.executebatch(batch,101);
         return batchid;
     }
 
@@ -528,7 +525,6 @@ global without sharing class RosterController
         
         for(UserLogin ulogin : [SELECT Id, IsFrozen, UserId From UserLogin Where UserId =: UserIds]){
             if(freezeProperty == true){
-                system.debug('freezeProperty'+freezeProperty);
                 ulogin.IsFrozen = true;
             }
             else {
@@ -679,7 +675,7 @@ global without sharing class RosterController
         system.debug('accountID=='+accountID);
         system.debug('empEmail=='+empEmail);
         
-        String MLOGACCOUNT = System.Label.Triplog_New_URL;
+        String MLOGACCOUNT = System.Label.Triplog_New_URL + ',' + System.Label.Triplog_New_URL2;
         
         String body, apiToken;
         List<Account> accountList = [SELECT id,Triplog_API__c  
@@ -730,7 +726,7 @@ global without sharing class RosterController
     public static void putHTTPConcurConnect(String accountID,String empEmail) {
         system.debug('putHTTPConcurConnect accountID'+accountID);
         system.debug('putHTTPConcurConnect empEmail='+empEmail);
-        String MLOGACCOUNT = System.Label.Triplog_New_URL;
+        String MLOGACCOUNT = System.Label.Triplog_New_URL  + ',' + System.Label.Triplog_New_URL2;
         
         String body, apiToken;
         List<Account> accountList = [SELECT id,Triplog_API__c  
@@ -938,7 +934,7 @@ global without sharing class RosterController
     @RemoteAction
     public static List<LOAWrapper> BiweekReimRecord(String startdate,String enddate,String accID)
     {
-        system.debug('startdate=='+ startdate);
+        system.debug('startdate line 937=='+ startdate);
         system.debug('enddate=='+ enddate);
         system.debug('accID=='+ accID);
         List<LOAWrapper> biWeekWrapList = new List<LOAWrapper>();

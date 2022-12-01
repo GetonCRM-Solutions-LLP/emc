@@ -10,7 +10,6 @@ public with sharing class BiWeekEmployeeReimbTriggerHandler {
                                                 FROM Employee_Mileage__c 
                                                 WHERE Bi_Weekly_Reimbursement__c IN: empReimbursList
                                                 AND Bi_Weekly_Reimbursement__r.Contact__r.Account.Bi_Weekly_Pay_Period__c = true]) {
-              
             if(empmilege.Bi_Weekly_Reimbursement__r.Status__c == 'Approved'){
                 //this static value is used for bypass from here when MappingGasPriceTrigger is called. this is while 'Mileage update after the lock date' is updated  
                 StaticValues.isCalledFromReimTri = false;
@@ -25,8 +24,8 @@ public with sharing class BiWeekEmployeeReimbTriggerHandler {
                     empmilege.Trip_Status__c = 'Rejected';
                 }
                 mileageUpdatelist.add(empmilege);
-            }
-        }
+            } 
+        } 
         if(!mileageUpdatelist.isEmpty()) {
             update mileageUpdatelist;    
         }     

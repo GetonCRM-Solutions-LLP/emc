@@ -7,7 +7,7 @@
  * @description: 
  */
 global class ChangeActivityInMlogEmail implements Database.Batchable<sObject>,Database.AllowsCallouts, Database.Stateful{
-    public static final String MLOGACCOUNT = System.Label.Triplog_New_URL;
+    public static final String MLOGACCOUNT = System.Label.Triplog_New_URL + ',' + System.Label.Triplog_New_URL2;
     public string driverInfo;
     public string newActivity;
     String baseURL;

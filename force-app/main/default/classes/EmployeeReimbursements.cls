@@ -90,6 +90,7 @@ public with sharing class EmployeeReimbursements
     * @description contactdrivertype is Employee_Reimbursement__r.Contact_Id__r.Driver_Type__c.
     */
     public String contactdrivertype {get;set;}
+    public String fixedAmount {get;set;}
     /**
     @author Natavar Ghodasara
     @date 26th Feb 2019

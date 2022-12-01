@@ -97,19 +97,26 @@ public with sharing class ConfirmTripTimeERMIController {
         List<Messaging.SingleEmailMessage> emailist = new List<Messaging.SingleEmailMessage>();
         List<String> toAddress = new List<String>();
         List<String> bccAddress = new List<String>();
+        List<String> ccAddress = new List<String>();
         EmailTemplate templateId;
         String newemailBody;
         try {
             if(countError == 0 && driverType == 'Driver - Salary'){    
                 templateId = [SELECT Id, Subject,HtmlValue, body FROM EmailTemplate WHERE developerName = 'Ermi_Mileage_Correct' Limit 1];
+                ccAddress.add(System.Label.ErmiAdminAlexis); 
+                ccAddress.add(System.Label.ErmiAdminConnie); 
             } else if(countError == 0 && driverType != 'Driver - Salary'){
                 templateId = [SELECT Id, Subject,HtmlValue, body FROM EmailTemplate WHERE developerName = 'Ermi_Time_And_Mileage_Correct' Limit 1];
+                ccAddress.add(System.Label.ErmiAdminAlexis); 
+                ccAddress.add(System.Label.ErmiAdminConnie);
             } else if(countError == 1 ) {
                 templateId = [SELECT Id, Subject,HtmlValue, body FROM EmailTemplate WHERE developerName = 'Ermi_Error_Count_1' Limit 1];
                 bccAddress.add(System.Label.CountError1Ermi);            
             } else if(countError == 2 ) {
                 templateId = [SELECT Id, Subject,HtmlValue, body FROM EmailTemplate WHERE developerName = 'Ermi_Error_Count_2' Limit 1];
                 bccAddress.add(System.Label.DriverServicesEmail);
+                ccAddress.add(System.Label.ErmiAdminAlexis); 
+                ccAddress.add(System.Label.ErmiAdminConnie);
             }
         } catch(System.QueryException qe) {
             System.debug(qe.getMessage());
@@ -139,9 +146,9 @@ public with sharing class ConfirmTripTimeERMIController {
         List<Messaging.SingleEmailMessage> emails = new List<Messaging.SingleEmailMessage>();
         messaging.singleEmailMessage email;
         if(countError == 0){
-            email = Utils.CreateEmail(templateId.Subject,newemailBody,toAddress,null,null,null);
+            email = Utils.CreateEmail(templateId.Subject,newemailBody,toAddress,ccAddress,null,null);
         }  else if(countError == 1 || countError == 2 ){
-            email = Utils.CreateEmail(templateId.Subject,newemailBody,toAddress,null,bccAddress,null);
+            email = Utils.CreateEmail(templateId.Subject,newemailBody,toAddress,ccAddress,bccAddress,null);
         }        
         emailist.add(email);
         SendEmail__c  sendEmailObj = SendEmail__c.getValues('ConfirmTripTimeERMIController');
@@ -157,7 +164,12 @@ public with sharing class ConfirmTripTimeERMIController {
             sendConfirmEmail(conEmail,driverName,biweekName,mileage,driveTime,stayTime,totalTime,countError,driverType);
         }
     }
-
+    
+    @RemoteAction
+    public static String deleteTripsForErmi (String contactId,String startdate,String enddate){   
+        delete [select id from Employee_Mileage__c where Trip_Date__c >=: Date.parse(startdate) AND Trip_Date__c <=: Date.parse(enddate) AND Trip_Status__c = 'Not Approved Yet' AND EmployeeReimbursement__r.Contact_Id__c =: contactId ];
+        return 'success';
+    }
     //This method is use for sync trips for Ermi account.When driver has any issue on synced trips then this method is clicked.
     @RemoteAction
     public static String syncTripsForErmi (String contactId,String startdate,String enddate){

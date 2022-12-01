@@ -7,6 +7,7 @@ import mBurseCss from '@salesforce/resourceUrl/EmcCSS';
 import readFromFileInchunk from '@salesforce/apex/NewAccountDriverController.readFromFileInchunk';
 import contactInfo from '@salesforce/apex/NewAccountDriverController.getContactDetail';
 import sendInsuranceEmail from '@salesforce/apex/NewAccountDriverController.sendInsuranceEmail';
+import redirectionURL from '@salesforce/apex/NewAccountDriverController.loginRedirection';
 import updateContactDetail from '@salesforce/apex/NewAccountDriverController.updateContactDetail';
 import {
     events,
@@ -23,6 +24,7 @@ export default class MBurseUploadDeclaration extends LightningElement {
     @api contactEmail;
     @api dayLeft;
     @api accountType;
+    @api driverMeeting;
     // Watch driver meeting
     @api meeting;
     // Schedule driver meeting 
@@ -57,6 +59,9 @@ export default class MBurseUploadDeclaration extends LightningElement {
     isUploaded = false;
     renderInitialized = false;
     promiseError = false;
+    showWatchBtn = false;
+    afterRegister = false;
+    allowRedirect = false;
     uploaded = mBurseCss + '/emc-design/assets/images/file-uploaded.png';
     @api
     get client() {
@@ -262,7 +267,11 @@ export default class MBurseUploadDeclaration extends LightningElement {
         obj = this.proxyToObject(contactObject);
         if ((obj[0].driverPacketStatus === 'Uploaded')) {
             if((obj[0].mlogApp === true)){
-                this.redirectToDashboard()
+                if(obj[0].driverMeeting !== 'Scheduled' || obj[0].driverMeeting !== 'Attended'){
+                    events(this, 'Next mburse meeting');
+                }else{
+                    this.redirectToDashboard()
+                }
             }else{
                 events(this, 'Next mLog Preview');
             }
@@ -288,8 +297,10 @@ export default class MBurseUploadDeclaration extends LightningElement {
                     status = list[0].insuranceStatus;
                     this.nextPacketShow = (status === 'Uploaded' && list[0].driverPacketStatus !== 'Uploaded') ? true : false;
                     if (this.dayLeft === true) {
+                        this.allowRedirect = true;
                         this.nextShow = (status === 'Uploaded') ? true : false;
                     } else {
+                        this.allowRedirect =  (status === 'Uploaded') ? true : false;
                         this.nextShow = true;
                     }
                     this.dPacket = list[0].mlogApp;
@@ -331,22 +342,37 @@ export default class MBurseUploadDeclaration extends LightningElement {
     }
 
     redirectToDashboard() {
-        var list, d;
-        contactInfo({
+        events(this, 'Next mburse meeting');
+        // var list, d;
+        // contactInfo({
+        //         contactId: this.contactId
+        //     })
+        //     .then((data) => {
+        //         if (data) {
+        //             list = this.proxyToObject(data);
+        //             this.arrayList = list;
+        //             d = this.arrayList;
+        //             d[0].checkDriverMeeting = true;
+        //             updateContactDetail({
+        //                 contactData: JSON.stringify(d),
+        //                 driverPacket: true
+        //             })
+        //             events(this, 'Next mburse meeting');
+        //         }
+        //     })
+        //     .catch((error) => {
+        //         // If the promise rejects, we enter this code block
+        //         console.log(error);
+        //     })
+    }
+
+    takeMeToDashboard() {
+        redirectionURL({
                 contactId: this.contactId
             })
-            .then((data) => {
-                if (data) {
-                    list = this.proxyToObject(data);
-                    this.arrayList = list;
-                    d = this.arrayList;
-                    d[0].checkDriverMeeting = true;
-                    updateContactDetail({
-                        contactData: JSON.stringify(d),
-                        driverPacket: true
-                    })
-                    events(this, 'Next mburse meeting');
-                }
+            .then((result) => {
+                let url = window.location.origin + result;
+                window.open(url, '_self');
             })
             .catch((error) => {
                 // If the promise rejects, we enter this code block
@@ -359,7 +385,9 @@ export default class MBurseUploadDeclaration extends LightningElement {
             return;
         }
         this.renderInitialized = true;
-        this.renderText = (this.accountType === 'New Account') ? 'Register for your driver meeting' : 'Next watch your driver meeting';
+        this.renderText = (this.accountType === 'New Account') ? 'Register for your driver meeting' : 'Watch your driver meeting';
+        this.showWatchBtn = (this.accountType === 'New Account') ? false : true;
+        this.afterRegister = (this.accountType === 'New Account' && this.driverMeeting === 'Scheduled') ? true : false;
         this.toggleHide();
         if (this.template.querySelector('form') != null) {
             this.template.querySelector('form').addEventListener(

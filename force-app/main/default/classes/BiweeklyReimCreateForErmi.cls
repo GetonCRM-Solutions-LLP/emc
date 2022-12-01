@@ -16,12 +16,30 @@ Global class BiweeklyReimCreateForErmi Implements Database.Batchable<sObject> , 
     Public string accId;
     Public date fuelPriceDate ;
     List<IRS_Mileage_Rate__c> objIRSRate;
+    Map<String,String> employeereimMap = new Map<String,String>();
     
     global BiweeklyReimCreateForErmi(){
         myDate = system.today();
         accId = System.Label.ERMI_Account;
         tempYear = String.valueOf(date.today().Year());
+        date startdate = system.today().adddays(1);
+		String currentMonthDateStr = DateTime.newInstance(startdate.year(),startdate.month(),startdate.day()).format('MM-yyyy');
+        System.debug('Current month in Date: '+currentMonthDateStr);    
         objIRSRate = [SELECT id,year__c,IRS_Rate__c FROM IRS_Mileage_Rate__c Where year__c =: tempYear Limit 1];
+        
+        for(Employee_Reimbursement__c employeereimListObj : [Select id,Contact_Id__c,Month__c from Employee_Reimbursement__c where Contact_Id__r.AccountId =: accId and Month__c =:currentMonthDateStr]){
+            employeereimMap.put(employeereimListObj.Contact_Id__c, employeereimListObj.id);
+        }
+        System.debug('map:'+employeereimMap);
+        
+        /*for(Bi_Weekly_Reimbursement__c biweeklyreimList : [SELECT Id,Start_Date__c,Contact__c from Bi_Weekly_Reimbursement__c where Contact__r.AccountId =: accId]){
+            date startDateofBiWeekly = biweeklyreimList.Start_Date__c;
+            String currentMonthDateStr = DateTime.newInstance(startDateofBiWeekly.year(),startDateofBiWeekly.month(),startDateofBiWeekly.day()).format('MM-yyyy');
+            if(employeereimMap.containsKey(currentMonthDateStr)){
+                
+            }
+            //String dateEmployee_Reimbursement__c = employeereimMap.get(biweeklyreimList.Id);
+        }*/
     }
     
     Global List<Contact> start(Database.BatchableContext bc)	{
@@ -94,6 +112,9 @@ Global class BiweeklyReimCreateForErmi Implements Database.Batchable<sObject> , 
             br.Fixed_Amount__c = con.Fixed_Amount__c;
             br.Status__c = 'Pending';
             br.Count_Error_Check__c = 0;
+            if(employeereimMap.containsKey(con.Id)){
+                br.Employee_Reimbursement__c = employeereimMap.get(con.Id);
+            }
            	if(integer.valueOf(currentDate[1]) == 01){
                 if (monthStateCityVsFuelPriceMap.containsKey(con.MailingCity+ con.MailingState + '12' + string.valueOf(integer.valueOf(currentDate[0])-1)) ) {
                     br.Fuel_Price__c = monthStateCityVsFuelPriceMap.get(con.MailingCity+ con.MailingState + '12' + string.valueOf(integer.valueOf(currentDate[0])-1)) ;
