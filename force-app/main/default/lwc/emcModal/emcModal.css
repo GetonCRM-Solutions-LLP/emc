@@ -1,0 +1,82 @@
+.modal-width{
+    max-width:  94rem !important;
+    width: 94% !important
+}
+.m-width{
+    max-width:  28rem !important;
+    width: 94% !important
+}
+.z_index{
+    z-index: 1050 !important;
+}
+.popup-close-btn span {
+    background: #78bc42;
+    color: #ffffff;
+    position: absolute;
+    top: -20px;
+    right: -10px;
+    border-radius: 50%;
+    opacity: 1;
+    height: 35px;
+    width: 35px;
+    text-align: center;
+    line-height: 34px;
+    padding-left: 1px;
+}
+.close {
+    font-size: 1.5rem;
+    font-weight: 700;
+    text-shadow: 0 1px 0 #fff;
+}
+button.close{
+    appearance: none;
+    padding: 0;
+    background-color: transparent;
+    border: 0;
+}
+.header-string{
+    font-family: 'Proxima Nova SemiBold' !important;
+    font-size: 26px;
+    color: #78bc42;
+    text-align: left;
+}
+
+.header-string-modal{
+    font-family: 'Proxima Nova SemiBold' !important;
+    font-size: 18px;
+    color: #ffffff;
+}
+
+.bg-green{
+    background-color: #80c748 !important;
+}
+
+.footer_button{
+    font-size: 18px;
+    font-family: 'Proxima Nova Bold' !important;
+}
+
+.btn{
+    display: inline-block;
+    font-weight: 400;
+    text-align: center;
+    vertical-align: middle;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    background-color: transparent;
+    border: 1px solid transparent;
+    padding: .375rem .75rem;
+    line-height: 1.5;
+    margin: 1px;
+}
+
+.slds-button_success {
+    background-color: #78bc42 !important;
+    border-color: #78bc42 !important;
+    border-radius: 0%;
+    padding: .375rem .75rem;
+    font-weight: bold;
+    color: white;
+}

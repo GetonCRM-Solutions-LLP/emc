@@ -1,0 +1,974 @@
+<template>
+    <!--<div class="top-menu"></div> -->
+    <div class="slds-p-left_medium slds-p-right_large">
+        <div style="display: flex">
+            <div class="slds-p-around_x-small slds-m-right_medium" style="
+                        border: 1px solid #D7D7D7;
+                        flex: 30%;
+                        border-radius: 20px;">
+                        <div class="slds-p-vertical_small" style="display: flex;
+                        flex-direction: row;">
+                            <div
+                                class="slds-col slds-size_8-of-12 slds-p-left_small slds-p-right_small slds-p-bottom_small">
+                                <div style="
+                                font-weight: 700;
+                                font-size: 16px;
+                                line-height: 16px;
+                                color: #1D1D1D;">Your Reimbursement Vehicle:</div>
+                                <div class="slds-p-top_x-small" style="
+                                font-weight: 400;
+                                font-size: 14px;
+                                line-height: 14px;color: #6C6C6C;">{vehicleType}</div>
+                            </div>
+
+                            <div class="slds-col slds-size_4-of-12 slds-p-right_x-small slds-p-bottom_medium">
+                                <div style="
+                                font-weight: 700;
+                                font-size: 16px;
+                                line-height: 16px;
+                                color: #1D1D1D;">Home:</div>
+                                <div class="slds-p-top_x-small" style="font-family: 'Proxima Nova';
+                                font-style: normal;
+                                font-weight: 400;
+                                font-size: 14px;
+                                line-height: 14px;color: #6C6C6C;">{address}</div>
+                            </div>
+                        </div>
+
+                        <div class="carProfile slds-p-bottom_large slds-align_absolute-center">
+                            <!--height:170px-->
+                            <img style="
+                            width: 309px;" src={vehicleImage} />
+                        </div>
+
+            </div>
+
+            <div class="slds-m-right_medium slds-p-around_small" style="
+            border: 1px solid #D7D7D7;
+            flex: 30%;
+            border-radius: 20px;">
+                <div class="slds-size_12-of-12 slds-p-left_small" style="display: flex;flex-direction:column">
+                    <div style="font-size: 16px; font-weight: 700;color: #1D1D1D">Driving States</div>
+                    <div class="slds-p-top_x-small" style="font-weight: 400;
+                        font-size: 14px;
+                        line-height: 14px;
+                        color: #6C6C6C;">{subTitle}</div>
+                </div>
+                <div class="slds-size_12-of-12 slds-align_absolute-center slds-p-top_medium">
+                    <c-choropleth-map contact-id={contactId} background="#FFFFFF" border-color="#FFFFFF" width="290" height="200"></c-choropleth-map>
+                </div>     
+            </div>
+
+            <div class="slds-p-around_medium" style="
+                border: 1px solid #D7D7D7;
+                flex: 30%;
+                border-radius: 20px;">
+                    <div class="slds-col slds-size_1-of-1 slds-medium-size_6-of-12 slds-large-size_12-of-12">
+                        <div class="slds-p-left_medium slds-p-bottom_small" style="
+                            font-weight: 700;
+                            font-size: 16px;
+                            line-height: 16px;
+                            color: #1D1D1D;">Notifications</div>
+                    </div>
+                    <div class="slds-col slds-size_1-of-1 slds-medium-size_6-of-12 slds-large-size_12-of-12">
+                        <template if:true={notifyMessage}>
+                            <div class="notify-container overflow">
+                                <div class="slds-grid slds-wrap slds-align_absolute-center slds-m-around_small">
+                                    <!-- <div>{notifyList.length}</div> -->
+                                    <template if:true={isNotify}>
+                                        <template for:each={notifyMessageList} for:item="notify" for:index="index">                
+                                            <div data-id={notify.Id} key={notify.Id}
+                                                class="slds-col slds-size_1-of-1 slds-medium-size_6-of-12 slds-large-size_12-of-12  slds-m-around_xx-small slds-p-around_x-small notify-text"
+                                                style="
+                                            width: 100%;
+                                            height: auto;
+                                            border-radius: 10px;
+                                            background: #F6F6F6;
+                                            display: flex;
+                                            flex-direction: row;">
+                                                <div class="slds-p-top_xx-small
+                                                    slds-p-left_xx-small slds-p-right_x-small">
+                                                    <div style="width: 10px;
+                                                    height: 10px;
+                                                    border-radius: 50%;
+                                                    background: rgb(122, 187, 74);"></div>
+                                                    <!-- <img style="width: 12px;" src={circle} /> -->
+                                                </div>
+                                                <div class="slds-p-right_small" style="font-family: Proxima Nova;font-size: 14px;font-weight: 700;
+                                                    line-height: 17px;
+                                                    letter-spacing: 0em;
+                                                    text-align: left;
+                                                    ">{notify.message}
+                                                    <div style="font-weight: 700;
+                                                    font-size: 12px;
+                                                    line-height: 12px;
+                                                    color: #7ABB4A;
+                                                    " class="slds-p-top_x-small"> <lightning-formatted-date-time
+                                                    value={notify.date}
+                                                    year="numeric"
+                                                    day="2-digit"
+                                                    month="long"
+                                                    hour="2-digit"
+                                                    minute="2-digit"
+                                                    time-zone="UTC"
+                                                >
+                                                </lightning-formatted-date-time></div>
+                                                </div>
+                                                <div class="slds-p-top_small slds-p-right_small">
+                                                    <i class="fa-solid fa-lg fa-xmark" data-id={notify.Id} onclick={handleClose}></i>
+                                                </div>
+                                            </div>
+                                        </template>
+                                    </template>
+                                    <template if:false={isNotify}>
+                                        <div class="slds-align_absolute-center slds-p-top_medium slds-p-bottom_x-large no-data-message">You have no notifications right now.</div>
+                                    </template>
+                                   
+                                </div>
+                            </div>
+                            <div class="notify-toggle slds-p-right_medium" if:true={isNotify}>
+                                <button class="slds-button a-link" onclick={showAll}>View all</button>
+                            </div> 
+                        </template>
+                      
+                    </div>
+            </div>
+        </div>
+
+        <div class="slds-m-top_large slds-m-bottom_large middle-block" style="display: flex;">
+                <div class="slds-p-left_medium slds-p-vertical_medium" style="flex: 26%;">
+                        <div class="icon-holder" style="float: left;">
+                            <img class="middle-icon" src={milesIcon} />
+                        </div>
+                        <div class="slds-p-vertical_small slds-p-left_small" style="float: left;">
+                            <div
+                                style="font-weight: 700; font-size: 26px; line-height: 26px; color: rgb(29, 29, 29);">
+                                <template if:true={lastMilesZero}>
+                                    {lastMilesZero}
+                                </template>
+                                <template if:false={lastMilesZero}>
+                                    <lightning-formatted-number value={lastMonthMiles}></lightning-formatted-number>
+                                </template>
+                                <i class="fa-solid fa-arrow-right-from-bracket slds-p-left_x-small"
+                                    style="font-size: 16px; line-height: 20px; cursor:pointer" onclick={getLastMonthMileage}></i>
+                            </div>
+                            <div class="slds-p-top_x-small"
+                                style="font-family: Proxima Nova;font-style: normal;font-weight: 400;font-size: 14px;line-height: 18px;color: rgb(108, 108, 108);">
+                                Miles last month</div>
+                        </div>
+                        <div class="slds-m-vertical_x-small slds-p-right_small slds-p-left_small" style="float: left;">
+                            <div style="height: 58px; border: 1px solid rgb(122, 187, 74);"></div>
+                        </div>
+                        <div class="slds-p-vertical_small" style="float: left;">
+                            <div
+                                style="font-weight: 700;font-size: 26px;line-height: 26px;color: rgb(29, 29, 29);">
+                                <template if:true={thisMilesZero}>
+                                    {thisMilesZero}
+                                </template>
+                                <template if:false={thisMilesZero}>
+                                    <lightning-formatted-number value={thisMonthMiles}></lightning-formatted-number> 
+                                </template>
+                                <i class="fa-solid fa-arrow-right-from-bracket slds-p-left_x-small"
+                                    style="font-size: 16px; line-height: 20px;cursor:pointer" onclick={getThisMonthMileage}></i></div>
+                            <div class="slds-p-top_x-small"
+                                style="font-family: Proxima Nova;font-style: normal;font-weight: 400;font-size: 14px;line-height: 18px;color: rgb(108, 108, 108);">
+                                Miles this month </div>
+                        </div>
+                </div>
+                <div class="slds-p-vertical_medium"  style="flex: 15%;">
+                        <div class=" icon-holder" style="float: left;">
+                            <img class="middle-icon" src={moneyIcon} />
+                        </div>
+                            <template if:true={halfFixedAmount}>
+                                <div class="slds-p-vertical_small slds-p-left_small" style="float: left;">
+                                        <div
+                                        style="font-weight: 700; font-size: 26px; line-height: 26px; color: rgb(29, 29, 29);">
+                                        <template if:true={halfFixedZero}>
+                                            {halfFixedZero}
+                                        </template>
+                                        <template if:false={halfFixedZero}>
+                                            <lightning-formatted-number value={halfFixedAmount} format-style="currency" currency-code="USD"></lightning-formatted-number>
+                                        </template>
+                                        </div>
+                                        <div class="slds-p-top_x-small"
+                                            style="font-family: Proxima Nova; font-style: normal; font-weight: 400; font-size: 14px; line-height: 17px; color: rgb(108, 108, 108);">
+                                            /biweek
+                                        </div>
+                                </div>
+                                <div class="slds-p-vertical_medium slds-p-left_x-small" style="float: left;"><i
+                                    class="fa-solid fa-arrow-right-from-bracket"
+                                    style="font-size: 16px; line-height: 20px;cursor:pointer" onclick={getBiweekReimbursement}></i></div>
+                            </template>
+                            <template if:false={halfFixedAmount}>
+                                <div class="slds-p-vertical_small slds-p-left_small" style="float: left;">   
+                                    <div
+                                    style="font-weight: 700; font-size: 26px; line-height: 26px; color: rgb(29, 29, 29);">
+                                    <template if:true={fixedAmountZero}>
+                                        {fixedAmountZero}
+                                    </template>
+                                    <template if:false={fixedAmountZero}>
+                                         <lightning-formatted-number value={fixedAmount} format-style="currency" currency-code="USD"></lightning-formatted-number>
+                                    </template>
+                                    </div>
+                                    <div class="slds-p-top_x-small"
+                                        style="font-family: Proxima Nova; font-style: normal; font-weight: 400; font-size: 14px; line-height: 17px; color: rgb(108, 108, 108);">
+                                        /month
+                                    </div>
+                                </div>
+                                <div class="slds-p-vertical_medium slds-p-left_x-small" style="float: left;"><i
+                                    class="fa-solid fa-arrow-right-from-bracket"
+                                    style="font-size: 16px; line-height: 20px;cursor:pointer" onclick={getMonthReimbursement}></i></div> 
+                            </template>
+                </div>
+                <div class="slds-p-vertical_medium"  style="flex: 14%;">
+                        <div class="icon-holder" style="float: left;">
+                            <img class="middle-icon" src={variableRateIcon}>
+                        </div>
+                        <div class="slds-p-vertical_small slds-p-left_small" style="float: left;">
+                            <div
+                                style="font-weight: 700; font-size: 26px; line-height: 26px; color: rgb(29, 29, 29);">
+                                <template if:true={mileageRateZero}>
+                                    {mileageRateZero}
+                                </template>
+                                <template if:false={mileageRateZero}>
+                                    <lightning-formatted-number value={lastMonthMileageRate} format-style="currency" currency-code="USD"></lightning-formatted-number> 
+                                </template>
+                            </div>
+                            <div class="slds-p-top_x-small"
+                                style="font-family: Proxima Nova; font-style: normal; font-weight: 400; font-size: 14px; line-height: 17px; color: rgb(108, 108, 108);">
+                                /mile</div>
+                        </div>
+                        <div class="slds-p-vertical_medium slds-p-left_x-small" style="float: left;"><i
+                                class="fa-solid fa-arrow-right-from-bracket"
+                                style="font-size: 16px; line-height: 20px;cursor:pointer" onclick={getGasPrice}></i></div>
+                </div>
+                <div class="slds-p-vertical_medium"  style="flex: 10%;">
+                        <div class="icon-holder" style="float: left;">
+                            <img class="middle-icon" src={fuelIcon} />
+                        </div>
+                        <div class="slds-p-vertical_small slds-p-left_small" style="float: left;">
+                            <div
+                                style="font-weight: 700; font-size: 26px; line-height: 26px; color: rgb(29, 29, 29);">
+                                <template if:true={fuelPriceZero}>
+                                    {fuelPriceZero}
+                                </template>
+                                <template if:false={fuelPriceZero}>
+                                    <lightning-formatted-number value={monthfuelPrice} format-style="currency" currency-code="USD"></lightning-formatted-number>
+                                </template>
+                            </div>
+                            <div class="slds-p-top_x-small"
+                                style="font-family: Proxima Nova; font-style: normal; font-weight: 400; font-size: 14px; line-height: 17px; color: rgb(108, 108, 108);">
+                                /gallon</div>
+                        </div>
+                        <div class="slds-p-vertical_medium slds-p-left_x-small" style="float: left;"><i
+                                class="fa-solid fa-arrow-right-from-bracket"
+                                style="font-size: 16px; line-height: 20px;cursor:pointer" onclick={getGasPrice}></i>
+                        </div>
+                </div>
+                <div class="slds-p-vertical_medium" style="flex: 11%;">
+                    <div class="slds-p-vertical_small" style="float: left;">
+                        <button
+                            class="slds-btn slds-btn-primary slds-btn-sm waves-effect bc-green waves-light mleft-0"
+                            style="
+                            border-radius: 10px;
+                            display: flex;
+                            flex-direction: row;
+                            justify-content: flex-end;
+                            align-items: center;
+                            padding: 7px 25px 7px 15px;
+                            font-size: 16px;
+                            gap: 5px;"><img style="width: 35px;
+                                    height: 35px;" src={maginifyIcon} /> Resources</button>
+                    </div>
+                </div>
+        </div>
+        <!-- <lightning-layout-item size="12">
+            <lightning-layout>
+                <lightning-layout-item class="slds-p-left_x-large" size="4">
+                    <div class="slds-col slds-size_12-of-12  slds-p-around_x-small" style="
+                        border: 1px solid #D7D7D7;
+                        border-radius: 20px;">
+                        <div class="slds-p-vertical_small" style="display: flex;
+                        flex-direction: row;">
+                            <div
+                                class="slds-col slds-size_8-of-12 slds-p-left_small slds-p-right_small slds-p-bottom_small">
+                                <div style="
+                                font-weight: 700;
+                                font-size: 16px;
+                                line-height: 16px;
+                                color: #1D1D1D;">Your Reimbursement Vehicle:</div>
+                                <div class="slds-p-top_x-small" style="
+                                font-weight: 400;
+                                font-size: 14px;
+                                line-height: 14px;color: #6C6C6C;">{vehicleType}</div>
+                            </div>
+
+                            <div class="slds-col slds-size_4-of-12 slds-p-right_x-small slds-p-bottom_medium">
+                                <div style="
+                                font-weight: 700;
+                                font-size: 16px;
+                                line-height: 16px;
+                                color: #1D1D1D;">Home:</div>
+                                <div class="slds-p-top_x-small" style="font-family: 'Proxima Nova';
+                                font-style: normal;
+                                font-weight: 400;
+                                font-size: 14px;
+                                line-height: 14px;color: #6C6C6C;">{address}</div>
+                            </div>
+                        </div>
+
+                        <div class="carProfile slds-p-bottom_large slds-align_absolute-center">
+                            <img style="height: 170px;
+                            width: 309px;" src={vehicleImage} />
+                        </div>
+
+                    </div>
+                </lightning-layout-item>
+                <lightning-layout-item class="slds-p-left_x-large" size="4">
+                    <div class="slds-col slds-size_12-of-12  slds-p-around_small" style="
+                            border: 1px solid #D7D7D7;
+                            border-radius: 20px;">
+                            <div class="slds-size_12-of-12 slds-p-left_small" style="display: flex;flex-direction:column">
+                                <div style="font-size: 16px; font-weight: 700;color: #1D1D1D">Driving States</div>
+                                <div class="slds-p-top_x-small" style="font-weight: 400;
+                                    font-size: 14px;
+                                    line-height: 14px;
+                                    color: #6C6C6C;">CA, AZ, CO</div>
+                            </div>
+                            <div class="slds-size_12-of-12 slds-p-horizontal_medium slds-p-top_small">
+                                <c-choropleth-map contact-id={contactId} background="#FFFFFF" border-color="#FFFFFF" width="330" height="200"></c-choropleth-map>
+                            </div>     
+                    </div>
+                </lightning-layout-item>
+                <lightning-layout-item class="slds-p-left_x-large slds-p-right_medium" size="4">
+                    <div class="slds-col slds-size_11-of-12 slds-p-around_medium" style="
+                                border: 1px solid #D7D7D7;
+                                border-radius: 20px;">
+                        <div class="slds-col slds-size_1-of-1 slds-medium-size_6-of-12 slds-large-size_12-of-12">
+                            <div class="slds-p-left_x-small slds-p-bottom_small" style="
+                                font-weight: 700;
+                                font-size: 16px;
+                                line-height: 16px;
+                                color: #1D1D1D;">Notifications</div>
+                        </div>
+                        <div class="slds-col slds-size_1-of-1 slds-medium-size_6-of-12 slds-large-size_12-of-12">
+                           <c-notification-user></c-notification-user>
+                        </div>
+                    </div>
+                </lightning-layout-item>
+            </lightning-layout>
+        </lightning-layout-item> -->
+        <!-- <lightning-layout-item class="slds-p-left_large" size="12">
+            <lightning-layout>
+                <lightning-layout-item class="slds-p-left_x-large slds-p-right_medium slds-size_12-of-12">
+                    <div class="middle-block slds-col slds-size_12-of-12">
+                        <div class="slds-grid slds-wrap">
+                            <div class="slds-col slds-size_2-of-12 slds-p-left_x-large slds-p-vertical_medium">
+                                <div class="slds-grid slds-wrap">
+                                    <div class="slds-col slds-size_4-of-12 icon-holder">
+                                        <img class="middle-icon" src={milesIcon} />
+                                    </div>
+                                    <div class="slds-col slds-size_8-of-12 slds-p-vertical_small">
+                                        <div
+                                            style="font-weight: 700; font-size: 26px; line-height: 26px; color: rgb(29, 29, 29);">
+                                            3,034 <i class="fa-solid fa-arrow-right-from-bracket"
+                                                style="font-size: 16px; line-height: 20px; cursor:pointer" onclick={getLastMonthMileage}></i>
+                                        </div>
+                                        <div class="slds-p-top_x-small"
+                                            style="font-family: Proxima Nova;font-style: normal;font-weight: 400;font-size: 14px;line-height: 18px;color: rgb(108, 108, 108);">
+                                            Miles last month</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="slds-col slds-size_2-of-9 slds-p-vertical_medium">
+                                <div class="slds-grid slds-wrap">
+                                    <div class="slds-m-vertical_x-small slds-p-right_small">
+                                        <div style="height: 58px; border: 1.11803px solid rgb(122, 187, 74);"></div>
+                                    </div>
+                                    <div class="slds-col slds-size_7-of-9 slds-p-vertical_small">
+                                        <div
+                                            style="font-weight: 700;font-size: 26px;line-height: 26px;color: rgb(29, 29, 29);">
+                                            2,078 <i class="fa-solid fa-arrow-right-from-bracket"
+                                                style="font-size: 16px; line-height: 20px;cursor:pointer" onclick={getThisMonthMileage}></i></div>
+                                        <div class="slds-p-top_x-small"
+                                            style="font-family: Proxima Nova;font-style: normal;font-weight: 400;font-size: 14px;line-height: 18px;color: rgb(108, 108, 108);">
+                                            Miles this month </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="slds-col slds-size_2-of-12 slds-m-left_large slds-p-vertical_medium">
+                                <div class="slds-grid slds-wrap">
+                                    <div class="slds-col slds-size_4-of-12 icon-holder">
+                                        <img class="middle-icon" src={moneyIcon} />
+                                    </div>
+                                    <div class="slds-col slds-size_6-of-12 slds-p-vertical_small">
+                                        <div
+                                            style="font-weight: 700; font-size: 26px; line-height: 26px; color: rgb(29, 29, 29);">
+                                            $343.39
+                                        </div>
+                                        <div class="slds-p-top_x-small"
+                                            style="font-family: Proxima Nova; font-style: normal; font-weight: 400; font-size: 14px; line-height: 17px; color: rgb(108, 108, 108);">
+                                            /biweek </div>
+                                    </div>
+                                    <div class="slds-p-vertical_medium slds-p-left_xx-small"><i
+                                            class="fa-solid fa-arrow-right-from-bracket"
+                                            style="font-size: 16px; line-height: 20px;cursor:pointer" onclick={getBiweekReimbursement}></i></div>
+                                </div>
+                            </div>
+                            <div class="slds-col slds-size_2-of-12 slds-p-vertical_medium slds-m-left_large">
+                                <div class="slds-grid slds-wrap">
+                                    <div class="slds-col slds-size_5-of-12 icon-holder">
+                                        <img class="middle-icon" src={variableRateIcon}>
+                                    </div>
+                                    <div class="slds-col slds-size_5-of-12 slds-p-vertical_small">
+                                        <div
+                                            style="font-weight: 700; font-size: 26px; line-height: 26px; color: rgb(29, 29, 29);">
+                                            $.3343
+                                        </div>
+                                        <div class="slds-p-top_x-small"
+                                            style="font-family: Proxima Nova; font-style: normal; font-weight: 400; font-size: 14px; line-height: 17px; color: rgb(108, 108, 108);">
+                                            /mile</div>
+                                    </div>
+                                    <div class="slds-p-vertical_medium slds-p-left_xx-small"><i
+                                            class="fa-solid fa-arrow-right-from-bracket"
+                                            style="font-size: 16px; line-height: 20px;cursor:pointer" onclick={getGasPrice}></i></div>
+                                </div>
+                            </div>
+                            <div class="slds-col slds-size_4-of-12 slds-p-vertical_medium slds-m-left_x-large">
+                                <div class="slds-grid slds-wrap">
+                                    <div class="slds-col slds-size_2-of-12 icon-holder">
+                                        <img class="middle-icon" src={fuelIcon} />
+                                    </div>
+                                    <div class="slds-col slds-size_2-of-12 slds-p-vertical_small">
+                                        <div
+                                            style="font-weight: 700; font-size: 26px; line-height: 26px; color: rgb(29, 29, 29);">
+                                            $5.76
+                                        </div>
+                                        <div class="slds-p-top_x-small"
+                                            style="font-family: Proxima Nova; font-style: normal; font-weight: 400; font-size: 14px; line-height: 17px; color: rgb(108, 108, 108);">
+                                            /gallon</div>
+                                    </div>
+                                    <div class="slds-p-vertical_medium slds-p-left_x-small"><i
+                                            class="fa-solid fa-arrow-right-from-bracket"
+                                            style="font-size: 16px; line-height: 20px;cursor:pointer" onclick={getGasPrice}></i></div>
+                                    <div class="slds-col slds-size_5-of-12 slds-p-vertical_small slds-m-left_xx-large">
+                                        <button
+                                            class="slds-btn slds-btn-primary slds-btn-sm waves-effect bc-green waves-light mleft-0"
+                                            style="
+                                            border-radius: 10px;
+                                            display: flex;
+                                            flex-direction: row;
+                                            justify-content: flex-end;
+                                            align-items: center;
+                                            padding: 7px 29px 7px 20px;
+                                            font-size: 16px;
+                                            gap: 16px;
+                    "><img style="width: 35px;
+                    height: 35px;" src={maginifyIcon} /> Resources</button></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </lightning-layout-item>
+            </lightning-layout>
+        </lightning-layout-item> -->
+
+        <div style="display: flex">
+            <!-- height : 352px -->
+            <div class="slds-m-right_medium" style="
+                                            border: 1px solid #D7D7D7;
+                                            flex: 31%;
+                                            height: auto; 
+                                            border-radius: 20px;">
+                <div
+                    class="slds-col slds-p-left_large slds-p-top_small slds-p-bottom_medium">
+                    <h2 style="font-weight: 700;
+                    font-size: 20px;color: #7ABB4A;">Mileage</h2>
+                </div>
+                <div class="slds-grid slds-wrap slds-p-left_large slds-p-top_xx-small slds-p-bottom_medium">
+                    <div class="">
+                        <div style="font-size: 14px;font-weight: 700;line-height: 17px;padding-right: 6px;">YTD Mileage:</div>
+                    </div>
+                    <div class="">
+                        <div style="font-size: 20px;font-weight: 700;line-height: 18px;padding-right: 8px;"> <lightning-formatted-number value={annualMileage} maximum-fraction-digits="2"></lightning-formatted-number></div>
+                    </div>
+                    <template if:true={isValid}>
+                        <div class="slds-m-top_xx-small middle-div completed">
+                        </div>
+                    </template>
+                    <template  if:false={isValid}>
+                        <div class="slds-m-top_xx-small middle-div pending">
+                        </div>
+                    </template>
+                    
+                    <div class="">
+                        <div style="font-size: 20px;font-weight: 700;line-height: 18px;padding-right: 10px;"><lightning-formatted-number value={complianceMileage} maximum-fraction-digits="2"></lightning-formatted-number></div>
+                    </div>
+                    <div class="slds-col">
+                        <div class="slds-m-vertical_xx-small">
+                            <img src={flagIcon} />
+                        </div>
+                    </div>
+                </div>
+                <div class="slds-p-top_xx-small slds-p-bottom_small slds-p-horizontal_medium">
+                    <c-canvas-chart chart-data={chartList.Mileagechart} default-month={chartList.monthName}
+                        chart-component="Mileage">
+                    </c-canvas-chart>
+                </div>
+                <div class="notify-toggle slds-p-right_medium">
+                    <button class="slds-button a-link" onclick={redirectToReimbursement}>View all</button>
+                </div>
+                <!-- <div class="flex-row slds-p-bottom_medium" onclick={redirectToReimbursement}>
+                    <div class="slds-m-right_small icon-holder-navigate"><i class="fas fa-chevron-right navigate"></i></div>
+                </div> -->
+            </div>
+
+            <div class="slds-m-right_medium" style="
+                        border: 1px solid #D7D7D7;
+                        flex: 29%;
+                        height: auto;
+                        border-radius: 20px;">
+                <div
+                    class="slds-col slds-p-left_large slds-p-top_small slds-p-bottom_medium">
+                    <h2 style="font-weight: 700;
+                    font-size: 20px;color: #7ABB4A;">Reimbursement</h2>
+                </div>
+                <div class="slds-grid slds-wrap slds-p-left_large slds-p-top_xx-small slds-p-bottom_medium">
+                    <div class="slds-col">
+                        <div style="font-size: 14px;font-weight: 700;line-height: 17px;">YTD Reimbursement:
+                        </div>
+                    </div>
+                    <div class="slds-col">
+                        <div style="font-size: 20px;font-weight: 700;line-height: 18px;"> <lightning-formatted-number value={annualReimbursement}  format-style="currency" currency-code="USD" maximum-fraction-digits="2"></lightning-formatted-number></div>
+                    </div>
+                </div>
+                <div class="slds-p-top_xx-small slds-p-bottom_small slds-p-horizontal_medium">
+                    <c-canvas-chart chart-data={chartList.Reimbursementchart} default-month={chartList.monthName}
+                        chart-component="Reimbursement">
+                    </c-canvas-chart>
+                </div>
+                <div class="notify-toggle slds-p-right_medium">
+                    <button class="slds-button a-link" onclick={redirectToReimbursement}>View all</button>
+                </div>
+                <!-- <div class="flex-row slds-p-bottom_medium" onclick={redirectToReimbursement}>
+                    <div class="slds-m-right_small icon-holder-navigate"><i class="fas fa-chevron-right navigate"></i></div>
+                </div> -->
+            </div>
+
+            <div class="" style="
+                        border: 1px solid #D7D7D7;
+                        flex: 30%;
+                        height: auto;
+                        border-radius: 20px;">
+                <div
+                    class="slds-col slds-size_1-of-1 slds-medium-size_6-of-12 slds-large-size_12-of-12 slds-p-left_large slds-p-top_small">
+                    <h2 style="font-weight: 700;
+                    font-size: 20px;color: #7ABB4A;">Plan Parameters</h2>
+                </div>
+                <div class="slds-grid slds-wrap slds-align_absolute-center slds-p-top_large slds-p-bottom_xx-large">                 
+                    <template if:true={planInsurance}>
+                        <div class="slds-col slds-size_1-of-1 slds-medium-size_6-of-12 slds-large-size_12-of-12  slds-m-around_xx-small in-complete"
+                            style="
+                                        border: 1px solid #D7D7D7;width: 300px;
+                                        height: 40px;
+                                        border-radius: 10px;">
+                            <div class="slds-grid slds-wrap">
+                                <div
+                                    class="slds-col slds-size_2-of-12 slds-p-left_small slds-p-vertical_xx-small">
+                                    <img class="icon-size" src={umbrellaIcon} alt="icon" />
+                                </div>
+                                <div class="slds-col slds-size_8-of-12 slds-p-vertical_small icon-value">
+                                   {insurancePlan}
+                                </div>
+                                <div class="slds-col slds-size_2-of-12 slds-p-vertical_small  text-view">
+                                    <img src={checkMark} alt="icon" />
+                                </div>
+                            </div>
+                        </div>
+                    </template>
+                    <template if:false={planInsurance}>
+                        <div class="slds-col slds-size_1-of-1 slds-medium-size_6-of-12 slds-large-size_12-of-12  slds-m-around_xx-small not-in-complete"
+                            style="
+                                        border: 1px solid #D7D7D7;width: 300px;
+                                        height: 40px;
+                                        border-radius: 10px;">
+                            <div class="slds-grid slds-wrap">
+                                <div
+                                    class="slds-col slds-size_2-of-12 slds-p-left_small slds-p-vertical_xx-small">
+                                    <img class="icon-size" src={umbrellaIcon} alt="icon" />
+                                </div>
+                                <div class="slds-col slds-size_8-of-12 slds-p-vertical_small icon-value">
+                                    {insurancePlan}
+                                </div>
+                                <div class="slds-col slds-size_2-of-12 slds-p-vertical_xx-small text-view">
+                                    <img src={crossMark} alt="icon" />
+                                </div>
+                            </div>
+                        </div>
+                    </template>
+                    <template if:true={planMileage}>
+                        <div class="slds-col slds-size_1-of-1 slds-medium-size_6-of-12 slds-large-size_12-of-12  slds-m-around_xx-small in-complete"
+                            style="
+                                        border: 1px solid #D7D7D7;width: 300px;
+                                        height: 40px;
+                                        border-radius: 10px;">
+                            <div class="slds-grid slds-wrap">
+                                <div
+                                    class="slds-col slds-size_2-of-12 slds-p-left_small slds-p-vertical_xx-small">
+                                    <img class="icon-size" src={milesPlanIcon} alt="icon" />
+                                </div>
+                                <div class="slds-col slds-size_8-of-12 slds-p-vertical_small icon-value">
+                                    <lightning-formatted-number value={complianceMileage} maximum-fraction-digits="2"></lightning-formatted-number> miles
+                                </div>
+                                <div class="slds-col slds-size_2-of-12 slds-p-vertical_small  text-view">
+                                    <img src={checkMark} alt="icon" />
+                                </div>
+                            </div>
+                        </div>
+                    </template>
+                    <template if:false={planMileage}>
+                        <div class="slds-col slds-size_1-of-1 slds-medium-size_6-of-12 slds-large-size_12-of-12  slds-m-around_xx-small not-in-complete"
+                            style="
+                                        border: 1px solid #D7D7D7;width: 300px;
+                                        height: 40px;
+                                        border-radius: 10px;">
+                            <div class="slds-grid slds-wrap">
+                                <div
+                                    class="slds-col slds-size_2-of-12 slds-p-left_small slds-p-vertical_xx-small">
+                                    <img class="icon-size" src={milesPlanIcon} alt="icon" />
+                                </div>
+                                <div class="slds-col slds-size_8-of-12 slds-p-vertical_small icon-value">
+                                    <lightning-formatted-number value={complianceMileage} maximum-fraction-digits="2"></lightning-formatted-number> miles
+                                </div>
+                                <div class="slds-col slds-size_2-of-12 slds-p-vertical_xx-small text-view">
+                                    <img src={crossMark} alt="icon" />
+                                </div>
+                            </div>
+                        </div>
+                    </template>
+                    <template if:true={planVehicleAge}>
+                        <div class="slds-col slds-size_1-of-1 slds-medium-size_6-of-12 slds-large-size_12-of-12  slds-m-around_xx-small in-complete"
+                            style="
+                                        border: 1px solid #D7D7D7;width: 300px;
+                                        height: 40px;
+                                        border-radius: 10px;">
+                            <div class="slds-grid slds-wrap">
+                                <div
+                                    class="slds-col slds-size_2-of-12 slds-p-left_small slds-p-vertical_xx-small">
+                                    <img class="icon-size" src={calendarPlanIcon} alt="icon" />
+                                </div>
+                                <div class="slds-col slds-size_8-of-12 slds-p-vertical_small icon-value">
+                                    &lt; {planYear} years
+                                </div>
+                                <div class="slds-col slds-size_2-of-12 slds-p-vertical_small  text-view">
+                                    <img src={checkMark} alt="icon" />
+                                </div>
+                            </div>
+                        </div>
+                    </template>
+                    <template if:false={planVehicleAge}>
+                        <div class="slds-col slds-size_1-of-1 slds-medium-size_6-of-12 slds-large-size_12-of-12  slds-m-around_xx-small not-in-complete"
+                            style="
+                                        border: 1px solid #D7D7D7;width: 300px;
+                                        height: 40px;
+                                        border-radius: 10px;">
+                            <div class="slds-grid slds-wrap">
+                                <div
+                                    class="slds-col slds-size_2-of-12 slds-p-left_small slds-p-vertical_xx-small">
+                                    <img class="icon-size" src={calendarPlanIcon} alt="icon" />
+                                </div>
+                                <div class="slds-col slds-size_8-of-12 slds-p-vertical_small icon-value">
+                                    &lt; {planYear} years
+                                </div>
+                                <div class="slds-col slds-size_2-of-12 slds-p-vertical_xx-small text-view">
+                                    <img src={crossMark} alt="icon" />
+                                </div>
+                            </div>
+                        </div>
+                    </template>
+                    <template if:true={planVehicleValue}>
+                        <div class="slds-col slds-size_1-of-1 slds-medium-size_6-of-12 slds-large-size_12-of-12  slds-m-around_xx-small in-complete"
+                            style="
+                                        border: 1px solid #D7D7D7;width: 300px;
+                                        height: 40px;
+                                        border-radius: 10px;">
+                            <div class="slds-grid slds-wrap">
+                                <div
+                                    class="slds-col slds-size_2-of-12 slds-p-left_small slds-p-vertical_xx-small">
+                                    <img class="icon-size" src={carPlanIcon} alt="icon" />
+                                </div>
+                                <div class="slds-col slds-size_8-of-12 slds-p-vertical_small icon-value">
+                                    &lt;  <lightning-formatted-number value={vehicleValue} format-style="currency" currency-code="USD" maximum-fraction-digits="0"></lightning-formatted-number>
+                                </div>
+                                <div class="slds-col slds-size_2-of-12 slds-p-vertical_small  text-view">
+                                    <img src={checkMark} alt="icon" />
+                                </div>
+                            </div>
+                        </div>
+                    </template>
+                    <template if:false={planVehicleValue}>
+                        <div class="slds-col slds-size_1-of-1 slds-medium-size_6-of-12 slds-large-size_12-of-12  slds-m-around_xx-small not-in-complete"
+                            style="
+                                        border: 1px solid #D7D7D7;width: 300px;
+                                        height: 40px;
+                                        border-radius: 10px;">
+                            <div class="slds-grid slds-wrap">
+                                <div
+                                    class="slds-col slds-size_2-of-12 slds-p-left_small slds-p-vertical_xx-small">
+                                    <img class="icon-size" src={carPlanIcon} alt="icon" />
+                                </div>
+                                <div class="slds-col slds-size_8-of-12 slds-p-vertical_small icon-value">
+                                    &lt;<lightning-formatted-number value={vehicleValue} format-style="currency" currency-code="USD"  maximum-fraction-digits="0"></lightning-formatted-number>
+                                </div>
+                                <div class="slds-col slds-size_2-of-12 slds-p-vertical_xx-small text-view">
+                                    <img src={crossMark} alt="icon" />
+                                </div>
+                            </div>
+                        </div>
+                    </template>
+                    <template if:true={planCompliance}>
+                        <div class="slds-col slds-size_1-of-1 slds-medium-size_6-of-12 slds-large-size_12-of-12  slds-m-around_xx-small in-complete"
+                            style="
+                                    border: 1px solid #D7D7D7;width: 300px;
+                                    height: 40px;
+                                    border-radius: 10px;">
+                            <div class="slds-grid slds-wrap">
+                                <div
+                                    class="slds-col slds-size_2-of-12 slds-p-left_small slds-p-vertical_xx-small">
+                                    <img class="icon-size" src={insurancePlanIcon} alt="icon" />
+                                </div>
+                                <div class="slds-col slds-size_8-of-12 slds-p-vertical_small icon-value">
+                                    {complianceStatus}
+                                </div>
+                                <div class="slds-col slds-size_2-of-12 slds-p-vertical_small  text-view">
+                                    <img src={checkMark} alt="icon" />
+                                </div>
+                            </div>
+                        </div>
+                    </template>
+                    <template if:false={planCompliance}>
+                        <div class="slds-col slds-size_1-of-1 slds-medium-size_6-of-12 slds-large-size_12-of-12  slds-m-around_xx-small not-in-complete"
+                            style="
+                                    border: 1px solid #D7D7D7;width: 300px;
+                                    height: 40px;
+                                    border-radius: 10px;">
+                            <div class="slds-grid slds-wrap">
+                                <div
+                                    class="slds-col slds-size_2-of-12 slds-p-left_small slds-p-vertical_xx-small">
+                                    <img class="icon-size" src={insurancePlanIcon} alt="icon" />
+                                </div>
+                                <div class="slds-col slds-size_8-of-12 slds-p-vertical_small icon-value">
+                                    {complianceStatus}
+                                </div>
+                                <div class="slds-col slds-size_2-of-12 slds-p-vertical_xx-small text-view">
+                                    <img src={crossMark} alt="icon" />
+                                </div>
+                            </div>
+                        </div>
+                    </template>
+                </div>
+            </div>
+        </div>
+
+        <!-- <lightning-layout-item class="slds-p-left_large" size="12">
+            <lightning-layout>
+                <lightning-layout-item class="slds-p-left_x-large" size="4">
+                    <div class="slds-col slds-size_12-of-12" style="
+                                border: 1px solid #D7D7D7;
+                                border-radius: 20px;">
+                        <div
+                            class="slds-col slds-size_1-of-1 slds-medium-size_6-of-12 slds-large-size_12-of-12 slds-p-left_large slds-p-top_x-small slds-p-bottom_medium">
+                            <h2 style="font-size: 22px;">Mileage</h2>
+                        </div>
+                        <div class="slds-grid slds-wrap slds-p-left_large slds-p-top_xx-small slds-p-bottom_medium">
+                            <div class="slds-col slds-size_1-of-1 slds-medium-size_6-of-12 slds-large-size_3-of-12">
+                                <div style="font-size: 14px;font-weight: 700;line-height: 17px;">YTD Mileage:</div>
+                            </div>
+                            <div class="slds-col slds-size_1-of-1 slds-medium-size_6-of-12 slds-large-size_2-of-12">
+                                <div style="font-size: 22px;font-weight: 700;line-height: 22px;"> 2,194</div>
+                            </div>
+                            <div class="slds-col slds-size_1-of-1 slds-medium-size_6-of-12 slds-large-size_3-of-12 slds-m-top_x-small slds-m-right_small"
+                                style="height: 10px;
+                                    width: 106px;  border: 1px solid #D7D7D7;
+                                    border-radius: 56px;
+                                    ">
+                            </div>
+                            <div class="slds-col slds-size_1-of-1 slds-medium-size_6-of-12 slds-large-size_2-of-12">
+                                <div style="font-size: 22px;font-weight: 700;line-height: 22px;"> 5,000</div>
+                            </div>
+                            <div class="slds-col slds-size_1-of-1 slds-medium-size_6-of-12 slds-large-size_1-of-12">
+                                <div class="slds-m-horizontal_x-small slds-m-vertical_xx-small">
+                                    <img src={flagIcon} />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="slds-p-top_xx-small slds-p-bottom_small slds-p-horizontal_medium">
+                            <c-canvas-chart chart-data={chartList.Mileagechart} default-month={chartList.monthName}
+                                chart-component="Mileage">
+                            </c-canvas-chart>
+                        </div>
+                        <div class="flex-row slds-p-bottom_medium"  onclick={redirectToReimbursement}>
+                            <div  class="slds-m-right_small icon-holder-navigate"><i  class="fas fa-chevron-right navigate"></i></div>
+                        </div>
+                    </div>
+                </lightning-layout-item>
+                <lightning-layout-item class="slds-p-left_x-large" size="4">
+                    <div class="slds-col slds-size_12-of-12" style="
+                                border: 1px solid #D7D7D7;
+                                border-radius: 20px;">
+                        <div
+                            class="slds-col slds-size_1-of-1 slds-medium-size_6-of-12 slds-large-size_12-of-12 slds-p-left_large slds-p-top_x-small slds-p-bottom_medium">
+                            <h2 style="font-size: 22px;">Reimbursement</h2>
+                        </div>
+                        <div class="slds-grid slds-wrap slds-p-left_large slds-p-top_xx-small slds-p-bottom_medium">
+                            <div class="slds-col slds-size_1-of-1 slds-medium-size_6-of-12 slds-large-size_5-of-12">
+                                <div style="font-size: 14px;font-weight: 700;line-height: 17px;">YTD Reimbursement:
+                                </div>
+                            </div>
+                            <div class="slds-col slds-size_1-of-1 slds-medium-size_6-of-12 slds-large-size_4-of-12">
+                                <div style="font-size: 22px;font-weight: 700;line-height: 22px;"> $6,276.33</div>
+                            </div>
+                        </div>
+                        <div class="slds-p-top_xx-small slds-p-bottom_small slds-p-horizontal_medium">
+                            <c-canvas-chart chart-data={chartList.Reimbursementchart}
+                                default-month={chartList.monthName} chart-component="Reimbursement">
+                            </c-canvas-chart>
+                        </div>
+                        <div class="flex-row slds-p-bottom_medium" onclick={redirectToReimbursement}>
+                            <div  class="slds-m-right_small icon-holder-navigate"><i  class="fas fa-chevron-right navigate"></i></div>
+                        </div>
+                    </div>
+                </lightning-layout-item>
+                <lightning-layout-item class="slds-p-left_x-large slds-p-right_medium" size="4">
+                    <div class="slds-col slds-size_12-of-12" style="
+                                border: 1px solid #D7D7D7;
+                                border-radius: 20px;">
+                        <div
+                            class="slds-col slds-size_1-of-1 slds-medium-size_6-of-12 slds-large-size_12-of-12 slds-p-left_large slds-p-top_x-small">
+                            <h2 style="font-size: 22px;">Plan Parameters</h2>
+                        </div>
+                        <div
+                            class="slds-grid slds-wrap slds-align_absolute-center slds-p-top_large slds-p-bottom_xx-large">
+                            <div class="slds-col slds-size_1-of-1 slds-medium-size_6-of-12 slds-large-size_12-of-12  slds-m-around_xx-small"
+                                style="
+                                    border: 1px solid #D7D7D7;width: 300px;
+                                    height: 40px;
+                                    border-radius: 10px;">
+                                <div class="slds-grid slds-wrap">
+                                    <div class="slds-col slds-size_2-of-12 slds-p-left_small slds-p-vertical_xx-small">
+                                        <img class="icon-size" src={umbrellaIcon} alt="icon" />
+                                    </div>
+                                    <div class="slds-col slds-size_10-of-12 slds-p-vertical_small icon-value">
+                                        100/300/500
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div class="slds-col slds-size_1-of-1 slds-medium-size_6-of-12 slds-large-size_12-of-12  slds-m-around_xx-small"
+                                style="
+                                    border: 1px solid #D7D7D7;width: 300px;
+                                    height: 40px;
+                                    border-radius: 10px;">
+                                <div class="slds-grid slds-wrap">
+                                    <div class="slds-col slds-size_2-of-12 slds-p-left_small slds-p-vertical_xx-small">
+                                        <img class="icon-size" src={milesPlanIcon} alt="icon" />
+                                    </div>
+                                    <div class="slds-col slds-size_10-of-12 slds-p-vertical_small icon-value">
+                                        5,000 miles
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="slds-col slds-size_1-of-1 slds-medium-size_6-of-12 slds-large-size_12-of-12  slds-m-around_xx-small"
+                                style="
+                                    border: 1px solid #D7D7D7;width: 300px;
+                                    height: 40px;
+                                    border-radius: 10px;">
+                                <div class="slds-grid slds-wrap">
+                                    <div class="slds-col slds-size_2-of-12 slds-p-left_small slds-p-vertical_xx-small">
+                                        <img class="icon-size" src={calendarPlanIcon} alt="icon" />
+                                    </div>
+                                    <div class="slds-col slds-size_10-of-12 slds-p-vertical_small icon-value">
+                                        &lt; 6 years
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="slds-col slds-size_1-of-1 slds-medium-size_6-of-12 slds-large-size_12-of-12  slds-m-around_xx-small"
+                                style="
+                                      border: 1px solid #D7D7D7;width: 300px;
+                                      height: 40px;
+                                      border-radius: 10px;">
+                                <div class="slds-grid slds-wrap">
+                                    <div class="slds-col slds-size_2-of-12 slds-p-left_small slds-p-vertical_xx-small">
+                                        <img class="icon-size" src={carPlanIcon} alt="icon" />
+                                    </div>
+                                    <div class="slds-col slds-size_10-of-12 slds-p-vertical_small icon-value">
+                                        &lt; 29,475
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="slds-col slds-size_1-of-1 slds-medium-size_6-of-12 slds-large-size_12-of-12  slds-m-around_xx-small"
+                                style="
+                                      border: 1px solid #D7D7D7;width: 300px;
+                                      height: 40px;
+                                      border-radius: 10px;">
+                                <div class="slds-grid slds-wrap">
+                                    <div class="slds-col slds-size_2-of-12 slds-p-left_small slds-p-vertical_xx-small">
+                                        <img class="icon-size" src={insurancePlanIcon} alt="icon" />
+                                    </div>
+                                    <div class="slds-col slds-size_10-of-12 slds-p-vertical_small icon-value">
+                                        Resubmit - Expired Insurance
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </lightning-layout-item>
+            </lightning-layout>
+        </lightning-layout-item> -->
+    </div>
+    <template if:true={paginatedModal}>
+        <c-user-profile-modal header={headerText}  month={monthText} show-footer={isFalse} show-btn={isTrue}
+        modal-class="slds-modal slds-modal_large slds-is-fixed slds-fade-in-open animate__animated animate__fadeInTopLeft animate__faster"
+        header-class="slds-modal__header header-preview slds-p-horizontal_large slds-p-top_xx-large slds-p-bottom_xxx-small slds-clearfix"
+        modal-content-style="slds-modal__content slds-p-left_large slds-p-right_large slds-p-bottom_medium slds-p-top_small"
+        subheader-class="slds-text-heading_medium slds-hyphenate slds-float_left"
+        style-header="slds-modal__container slds-m-top_medium" close-btn-class="close-paginated">
+            <div slot="header">
+                <template if:true={modalLength}>
+                    <div class="slds-float_right slds-p-right_small">
+                        <div  class="slds-input-has-icon slds-input-has-icon_right search-holder">
+                            <img class="search-icon" src={searchIcon} />
+                            <input  class="slds-input filter-input" type="text" placeholder="Search"  onkeyup={handleChange}/>
+                        </div>
+                    </div>
+                </template>
+            </div>
+            <div>
+                <template if:true={lastModelList}>
+                    <c-user-data-table main-class="slds-table--header-fixed_container modal-height" is-default-sort={paginatedModal} scrollable={isScrollable} 
+                    is-paginate={paginatedModal}  model-data={lastModelList} search-key={_value} columns={modalListColumn} 
+                    options={modalKeyFields} is-sortable={isSortable} is-all-download={download} onview={downloadUserTrips} 
+                    is-variable={variable}></c-user-data-table>
+                </template>
+            </div>
+
+        </c-user-profile-modal>
+    </template>
+    <template if:false={paginatedModal}>
+        <c-user-profile-modal header={headerText}  month={monthText} show-footer={isFalse} show-btn={isTrue}
+        modal-class={modalStyle}
+        header-class=""
+        modal-content-style="slds-modal__content slds-p-left_large slds-p-right_large slds-p-bottom_x-large slds-p-top_large slds-modal__content_headless modal_header"
+        subheader-class=""
+        style-header="slds-modal__container slds-m-top_medium" close-btn-class="close-aligned">
+            <div>
+                <template if:true={lastModelList}>
+                    <c-user-data-table main-class="modal-height" scrollable={isScrollable} is-sortable={isSortable} is-paginate={paginatedModal} model-data={lastModelList}
+                    columns={modalListColumn} options={modalKeyFields} onrecord={downloadAllRecord} footer-list={reimbursementYtd} is-ytd-biweek={biweekYtd} is-ytd={ytd}></c-user-data-table>
+                </template>
+            </div>
+        </c-user-profile-modal>
+    </template>
+    <c-export-excel></c-export-excel>
+</template>

@@ -342,7 +342,7 @@
                         $scope.typeOfDriver = ($scope.mileageDetail[0] != null || $scope.mileageDetail[0] != undefined) ? $scope.mileageDetail[0].driverType : "";
                         $scope.errorMessage = ($scope.typeOfDriver != 'Driver - Salary') ? 'There are errors on my time/mileage' : 'There are errors with my mileage';
                         $scope.confirmMessage = ($scope.typeOfDriver != 'Driver - Salary') ? 'I confirm the hours are correct for this week' : 'I confirm the mileage is correct for this week';
-                        var url_locate = "/app/driverDashboardClone?accid="+$scope.accid+"&id="+$scope.id;
+                        var url_locate = "/app/driverProfileDashboard?accid="+$scope.accid+"&id="+$scope.id;
                         var driverManager_url = "/app/drivermanagerdashboard?accid="+$scope.accid+"&id="+$scope.id+"&showteam="+$scope.showteam;
                         var admindriver_url = "/app/admindriverdashboard?accid="+$scope.accid+"&id="+$scope.id+"&admindriver="+$scope.admindriver+"&showteam="+$scope.showteam;
                         var choosenfileType = '';
@@ -417,27 +417,38 @@
                             _splitList =   $scope.mileageDetail[0].biWeekPayperiod.split(" to ");
                             _stDate = _splitList[0];
                             _endDate = _splitList[1];
-                            Visualforce.remoting.Manager.invokeAction('{!$RemoteAction.ConfirmTripTimeERMIController.syncTripsForErmi}', $scope.id, _stDate, _endDate,
-                                            function(result, event) {
-                                                if(result === 'sucess'){
-                                                    $scope.errorCheck = false;
-                                                    $scope.submitRequestBtn = true;
-                                                    $("#spinner").hide();
-                                                    if ($scope.admindriver === "true") {
-                                                        window.location.href =  "/app/driverDashboardWeekly?accid="+$scope.accid+"&admindriver="+$scope.admindriver+"&id="+$scope.id+"&showteam="+$scope.showteam+"&sync="+$scope.mileageDetail[0].countErrorCheck;
-                                                    } else if ($scope.role === "managerdriver") {
-                                                        window.location.href =  "/app/driverDashboardWeekly?accid="+$scope.accid+"&id="+$scope.id+"&role="+$scope.role+"&showteam="+$scope.showteam+"&sync="+$scope.mileageDetail[0].countErrorCheck;
-                                                    } else {
-                                                        window.location.href =  "/app/driverDashboardWeekly?accid="+$scope.accid+"&id="+$scope.id+"&sync="+$scope.mileageDetail[0].countErrorCheck;
-                                                    }
-                                                  //  location.reload();
-                                                }else{
-                                                    $("#spinner").hide();
-                                                }
-                                                $scope.$apply();  
-                                            },
-                                            {escape: false}
+                            Visualforce.remoting.Manager.invokeAction('{!$RemoteAction.ConfirmTripTimeERMIController.deleteTripsForErmi}', $scope.id, _stDate, _endDate,
+                                    function(result, event) {
+                                            if(result === 'success') {
+                                                 Visualforce.remoting.Manager.invokeAction('{!$RemoteAction.ConfirmTripTimeERMIController.syncTripsForErmi}', $scope.id, _stDate, _endDate,
+                                                    function(result, event) {
+                                                        if(result === 'sucess'){
+                                                            $scope.errorCheck = false;
+                                                            $scope.submitRequestBtn = true;
+                                                            $("#spinner").hide();
+                                                            if ($scope.admindriver === "true") {
+                                                                window.location.href =  "/app/driverDashboardWeekly?accid="+$scope.accid+"&admindriver="+$scope.admindriver+"&id="+$scope.id+"&showteam="+$scope.showteam+"&sync="+$scope.mileageDetail[0].countErrorCheck;
+                                                            } else if ($scope.role === "managerdriver") {
+                                                                window.location.href =  "/app/driverDashboardWeekly?accid="+$scope.accid+"&id="+$scope.id+"&role="+$scope.role+"&showteam="+$scope.showteam+"&sync="+$scope.mileageDetail[0].countErrorCheck;
+                                                            } else {
+                                                                window.location.href =  "/app/driverDashboardWeekly?accid="+$scope.accid+"&id="+$scope.id+"&sync="+$scope.mileageDetail[0].countErrorCheck;
+                                                            }
+                                                        //  location.reload();
+                                                        }else{
+                                                            $("#spinner").hide();
+                                                        }
+                                                        $scope.$apply();  
+                                                    },
+                                                    {escape: false}
+                                                )
+                                            }else{
+                                                console.log("error", result)
+                                            }
+                                            $scope.$apply();  
+                                    },
+                                    {escape: false}
                             )
+                           
                         }
 
                         $scope.submitRequest = function(){
@@ -476,18 +487,18 @@
                                                             document.getElementById("weekly-time").style.pointerEvents = "none";
                                                             setTimeout(function() {
                                                                 if($scope.admindriver === "true") {
-                                                                    location.assign(admindriver_url);
+                                                                    location.assign(url_locate);
                                                                 }else if($scope.role === "managerdriver"){
-                                                                    location.assign(driverManager_url);
+                                                                    location.assign(url_locatel);
                                                                 }else{
                                                                     location.assign(url_locate);
                                                                 }
                                                             }, 3000)
                                                         }else{
                                                             if ($scope.admindriver === "true") {
-                                                                location.assign(admindriver_url);
+                                                                location.assign(url_locate);
                                                             } else if ($scope.role === "managerdriver") {
-                                                                location.assign(driverManager_url);
+                                                                location.assign(url_locate);
                                                             } else {
                                                                 location.assign(url_locate);
                                                             }

@@ -1,68 +1,210 @@
-<apex:component >
-<!-- Begin Default Content REMOVE THIS -->
-<div class="content">
-    <div class="slds-align_absolute-center">
-        <div class="">
-            <div class="slds-text-align_center">
-                <div class="format-head">
-                    Employee Data
-                </div>
-                <div class="slds-m-top_x-large pgraphins" >
-                    <p class="pgraph">Your employees data is used to generate their reimbursements
-                        as well as establish your organizational hierarchy.</p>
-                </div>
-            </div>
-            <div class="slds-m-top_xx-large"> 
-                <div class="slds-grid slds-wrap">
-                    <div class="slds-col slds-size_1-of-12 step">
-                        <b>STEP</b>
+<apex:component controller="IntakeController">
+    <!-- Begin Default Content REMOVE THIS -->
+    <div class="content">
+        <div class="slds-align_absolute-center">
+            <div class="">
+                <div class="slds-text-align_center">
+                    <div class="format-head">
+                        Employee Data
                     </div>
-                    <div class="slds-col slds-size_1-of-12">
-                        <div >
-                            <button class="slds-button slds-button_outline-brand btnCircle">1</button>
-                        </div>
-                    </div>
-                    <div class="slds-col slds-size_9-of-12 slds-m-left_large">
-                        <div >
-                            <button class="slds-button slds-button_outline-brand btnDown">DOWNLOAD THE TEMPLATE</button>
-                            <p class="slds-m-top_medium pgraph-emp">Need help defining the fields?<br/>
-                                Download the <a class="pdf-field-link">Field Definitions PDF </a></p>
-                        </div>
-                    </div>
-                    
-                </div>
-                <div class="slds-grid slds-wrap slds-m-top_xx-large">
-                    <div class="slds-col slds-size_1-of-12  step">
-                        <b>STEP</b>
-                    </div>
-                    <div class="slds-col slds-size_1-of-12">
-                        <div >
-                            <button class="slds-button slds-button_outline-brand btnCircle">2</button>
-                        </div>
-                    </div>
-                    <div class="slds-col slds-size_8-of-12 slds-m-left_large">
-                        <div >
-                            <button class="slds-button slds-button_outline-brand btnDown">UPLOAD YOUR COMPLETED FILE</button>
-                            <p class="slds-m-top_medium pgraph-emp">The required fields are mandatory for getting started.<br/>
-                                Optional fields can be renamed based on your naming rules.</p>
-                        </div>
+                    <div class="slds-m-top_x-large pgraphins">
+                        <p class="pgraph">Your employees data is used to generate their reimbursements as well as establish your organizational
+                            hierarchy.
+                        </p>
                     </div>
                 </div>
-            </div>
-            <div class="slds-m-top_xx-large">
-                <button class="slds-button slds-button_success" data-toggle="pageSlide" data-target="#vehicleNext" aria-expanded="false" aria-controls="vehicleNext" onclick="submitPlanEmployee()">SUBMIT</button>
+                <div class="slds-m-top_xx-large">
+                    <div class="slds-grid slds-wrap">
+                        <div class="slds-col slds-size_1-of-12 step">
+                            <b>STEP</b>
+                        </div>
+                        <div class="slds-col slds-size_1-of-12">
+                            <div>
+                                <button class="slds-button slds-button_outline-brand btnCircle">1</button>
+                            </div>
+                        </div>
+                        <div class="slds-col slds-size_9-of-12 slds-m-left_large">
+                            <div>
+                                <button class="slds-button slds-button_outline-brand btnDown" onclick="window.open('{!$Label.Sample_csv_url}')">DOWNLOAD THE TEMPLATE</button>
+                                <p class="slds-m-top_medium pgraph-emp">Need help defining the fields?
+                                    <br/> Download the
+                                    <a class="pdf-field-link">Field Definitions PDF </a>
+                                </p>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="slds-grid slds-wrap slds-m-top_xx-large">
+                        <div class="slds-col slds-size_1-of-12  step">
+                            <b>STEP</b>
+                        </div>
+                        <div class="slds-col slds-size_1-of-12">
+                            <div>
+                                <button class="slds-button slds-button_outline-brand btnCircle">2</button>
+                            </div>
+                        </div>
+                        <div class="slds-col slds-size_8-of-12 slds-m-left_large">
+                            <div id="initialUpload">
+                                <button class="slds-button slds-button_outline-brand btnDown">UPLOAD YOUR COMPLETED FILE
+                                    <input type="file" name="file" id="file" class="box__file" multiple="false" accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel,text/csv "
+                                        onchange="file_changed(this);" />
+                                </button>
+                                <p class="slds-m-top_medium pgraph-emp">The required fields are mandatory for getting started.
+                                    <br/> Optional fields can be renamed based on your naming rules.</p>
+                            </div>
+                            <div id="fileUploaded">
+                                <label id="file-message" class="w-100 text-center pd-10 file-message" for="file">
+                                </label>
+                                <span style="color: #8b8686; margin-left: 14px;">
+                                    <br/> Is Your Uploaded File</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="slds-m-top_xx-large">
+                    <button class="slds-button slds-button_success" data-toggle="pageSlide" data-target="#vehicleNext" aria-expanded="false" id="moveNext"
+                        aria-controls="vehicleNext" onclick="submitPlanEmployee()">SUBMIT</button>
+                </div>
             </div>
         </div>
+        <section id="modal" role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-id-1"
+            class="slds-modal slds-fade-in-open slds-show">
+            <div class="slds-modal__container">
+                <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">
+                    <h4 class="fileupload-title slds-align_absolute-center">
+                        <span>Importing is in process.</span>
+                    </h4>
+                    <br />
+                    <h3 class="fileupload-title slds-align_absolute-center">
+                        <span>It may take 10 - 20 seconds to complete the import.If any driver is not inserted than you can get
+                            error file on your registered email.</span>
+                    </h3>
+                    <div class="w-100" style="padding: 30px">
+                        <div class="progress">
+                            <div id="progressBar" class="progress-bar progress-bar-striped  bg-success active" role="progressbar"
+                                aria-valuemin="0" aria-valuemax="100" ></div>
+                        </div>
+                        <!-- <img src="{!URLFOR($Resource.EmcCSS,'emc-design/assets/images/adminroster-importfile-loader.svg')}" width="15%" class="img-fluid"
+                            alt="Admin roster import file loader" /> -->
+                    </div>
+                </div>
+            </div>
+        </section>
+        <div class="slds-backdrop slds-backdrop_open" id="slds-backdrop"></div>
     </div>
-    
-</div>
-<script type="text/javascript">
-    function submitPlanEmployee() {
-       var nextElement = document.getElementById("vehicleNext");
-       var employeePlanElement = document.getElementById("vehicleEmployee");
-       employeePlanElement.classList.toggle("active");
-       nextElement.classList.toggle("active");
-    }
-</script>
-<!-- End Default Content REMOVE THIS -->
+    <script type="text/javascript">
+        var url_string = $(location).attr("href");
+        var url = new URL(url_string);
+        let fileElement = document.getElementById('fileUploaded');
+        let fileDiv = document.getElementById('initialUpload');
+        let filedata;
+        let id = url.searchParams.get("id");
+        let accid = url.searchParams.get("accid");
+        let progressBar = document.getElementById('progressBar');
+        let modal = document.getElementById('modal');
+        modal.style.display = "none";
+        let backdrop = document.getElementById('slds-backdrop');
+        backdrop.style.display = "none";
+        let choosenfileType;
+        let enableBar = false;
+        let deProgressBarWidth = 20;
+        progressBar.ariaValuenow = deProgressBarWidth;
+        progressBar.style = "width: " + deProgressBarWidth + '%';
+        progressBar.innerHTML =  deProgressBarWidth;
+        let iCount = 10;
+        fileElement.style.display = "none";
+        let redirectBtn = document.getElementById('moveNext');
+        redirectBtn.disabled = true;
+        redirectBtn.style.cursor = "no-drop";
+        function CheckStatus(runTime) {
+            Visualforce.remoting.Manager.invokeAction(
+                '{!$RemoteAction.IntakeController.CheckStatus}', runTime,
+                function (result, event) {
+                    if (event.status) {
+                        console.log('Status Check', result);
+                        iCount = iCount + (iCount >= 70 ? 1 : 10);
+                        console.log("iCount======", iCount)
+                        if (result.enablePollar) {
+                            deProgressBarWidth = deProgressBarWidth == 20 ? 0 : deProgressBarWidth;
+                            deProgressBarWidth = (iCount != 0 ? (iCount > 95 ? 95 : iCount) / 100 * 100 : 0);
+                            progressBar.ariaValuenow = deProgressBarWidth;
+                            progressBar.style = "width: " + deProgressBarWidth + '%';
+                            progressBar.innerHTML =  deProgressBarWidth;
+                            console.log("deProgressBarWidth======", deProgressBarWidth)
+                            setTimeout(function () {
+                                CheckStatus(runTime);
+                            }, 100);
+                        } else {
+                            if (result.Message === 'Completed') {
+                                document.getElementById('file').value = '';
+                                toastr.success('Successfully Imported data.');
+                                modal.style.display = "none";
+                                backdrop.style.display = "none";
+                                var nextElement = document.getElementById("vehicleNext");
+                                var employeePlanElement = document.getElementById("vehicleEmployee");
+                                employeePlanElement.classList.toggle("active");
+                                nextElement.classList.toggle("active");
+                            } else {
+                                toastr.error(result.Message);
+                                modal.style.display = "none";
+                                backdrop.style.display = "none";
+                            }
+                        }
+                    }
+                    else {
+                        toastr.error('Some error has occur');
+                        modal.style.display = "none";
+                        backdrop.style.display = "none";
+                    }
+                }, { escape: false }
+            );
+        }
+
+        function submitPlanEmployee() {
+            let filetype = '.csv,text/csv';
+            if (filetype.indexOf(choosenfileType) == -1) {
+                fileDiv.style.display = "block";
+                fileElement.style.display = "none";
+                redirectBtn.disabled = true;
+                redirectBtn.style.cursor = "no-drop";
+                toastr.error('Please Choose Proper File Format.');
+                event.stopPropagation();
+                event.preventDefault();
+                return
+            }
+
+            modal.style.display = "block";
+            backdrop.style.display = "block";
+            Visualforce.remoting.Manager.invokeAction('{!$RemoteAction.IntakeController.readFromFile}', filedata, accid, id, 
+                function (result, event) {
+                    if (event.status) {
+                        CheckStatus(result);
+                    }
+                },
+                { escape: false }
+            );
+
+          
+        }
+        function file_changed(element) {
+            let IsVisiblebtn = true, IsVisibleText = true;
+            var file = element.files[0];
+            choosenfileType = file.type;
+            let fileUploadName = file.name;
+            let fileUploadSize = file.size;
+            var reader = new FileReader();
+            reader.onload = function (e) {
+                // handle onload
+                filedata = reader.result;
+                fileDiv.style.display = "none";
+                fileElement.style.display = "block";
+                document.getElementById('file-message').innerHTML = fileUploadName;
+                redirectBtn.disabled = false;
+                redirectBtn.style.cursor = "pointer";
+                console.log("fileUploadName=====", fileUploadName);
+            };
+            reader.readAsText(file);
+        }
+    </script>
+    <!-- End Default Content REMOVE THIS -->
 </apex:component>

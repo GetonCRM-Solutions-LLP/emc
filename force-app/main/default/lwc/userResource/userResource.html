@@ -1,0 +1,333 @@
+<template>
+    <div class="animate__animated animate__slideInLeft animate__delay-1s">
+        <div class="align-center">
+            <header>Gain valuable insights and answers with these <br/><strong>mBurse resource</strong></header>
+        </div>
+        <div class="slds-p-around_medium">
+            <div class="flex-layout">
+                <div class="middle-header">
+                    Onboarding
+                </div>
+                <div class="slds-p-around_x-large" style="display: flex">
+                    <div class="slds-p-around_x-small slds-m-right_medium container-preview">
+                        <div class="content-overview" onclick={OnPlanpreview}>
+                            <div class="slds-align_absolute-center"><img class="icon-view" src={welcome} /></div>
+                            <div class="align-center slds-p-top_large">
+                                <div class="info-header">Welcome</div>
+                                <div class="info-sub-header slds-p-top_xx-small">Your Plan preview</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="slds-p-around_x-small slds-m-right_medium container-preview" >
+                        <div class="content-overview" onclick={OnPlanparameter}>
+                            <div class="slds-align_absolute-center"><img class="icon-view" src={parameters} /></div>
+                            <div class="align-center slds-p-top_large">
+                                <div class="info-header">Parameters</div>
+                                <div class="info-sub-header slds-p-top_xx-small">Your Plan parameters</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="slds-p-around_x-small slds-m-right_medium container-preview">
+                        <div class="content-overview">
+                            <div class="slds-align_absolute-center"><img class="icon-view" src={mLog} /></div>
+                            <div class="align-center slds-p-top_large">
+                                    <div class="info-header">mLog Preview</div>
+                                    <div class="info-sub-header slds-p-top_xx-small">mLog App Overview</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="slds-p-around_x-small slds-m-right_medium container-preview">
+                        <div class="content-overview">
+                            <div class="slds-align_absolute-center"><img class="icon-view" src={downloadmLog} /></div>
+                            <div class="align-center slds-p-top_large">
+                                    <div class="info-header">Download</div>
+                                    <div class="info-sub-header slds-p-top_xx-small">Get the mLog app</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="slds-p-around_x-small slds-m-right_medium container-preview">
+                        <div class="content-overview">
+                            <div class="slds-align_absolute-center"><img class="icon-view" src={meeting} /></div>
+                            <div class="align-center slds-p-top_large">
+                                    <div class="info-header">Driver Meeting</div>
+                                    <div class="info-sub-header slds-p-top_xx-small">Your Company Plan</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="flex-layout">
+                <div class="middle-header">
+                    mLog (Mileage App)
+                </div>
+                <div class="slds-p-around_x-large" style="display: flex">
+                    <div class="slds-p-around_x-small slds-m-right_medium container-preview">
+                        <div class="content-overview">
+                            <div class="slds-align_absolute-center"><img class="icon-view" src={sync} /></div>
+                            <div class="align-center slds-p-top_large">
+                                <div class="info-header">Data Sync</div>
+                                <div class="info-sub-header slds-p-top_xx-small">Phone to dashboard</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="slds-p-around_x-small slds-m-right_medium container-preview" >
+                        <div class="content-overview">
+                            <div class="slds-align_absolute-center"><img class="icon-view" src={troubleShoot} /></div>
+                            <div class="align-center slds-p-top_large">
+                                <div class="info-header">Troubleshooting</div>
+                                <div class="info-sub-header slds-p-top_xx-small">Debugging mLog</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="slds-p-around_x-small slds-m-right_medium container-preview">
+                        <div class="content-overview">
+                            <div class="slds-align_absolute-center"><img class="icon-view" src={optimize} /></div>
+                            <div class="align-center slds-p-top_large">
+                                    <div class="info-header">Optimize</div>
+                                    <div class="info-sub-header slds-p-top_xx-small">mLog Settings</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="slds-p-around_x-small slds-m-right_medium container-preview">
+                        <div class="content-overview">
+                            <div class="slds-align_absolute-center"><img class="icon-view" src={faq} /></div>
+                            <div class="align-center slds-p-top_large">
+                                    <div class="info-header">mLog FAQ's</div>
+                                    <div class="info-sub-header slds-p-top_xx-small">What you need to know</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="slds-p-around_x-small slds-m-right_medium container-preview">
+                        <div class="content-overview">
+                            <div class="slds-align_absolute-center"><img class="icon-view" src={instructions} /></div>
+                            <div class="align-center slds-p-top_large">
+                                    <div class="info-header">mLog Instructions</div>
+                                    <div class="info-sub-header slds-p-top_xx-small">How to use mLog</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="flex-layout">
+                <div class="middle-header">
+                    mBurse Program
+                </div>
+                <div class="slds-p-around_x-large" style="display: flex">
+                    <div class="slds-p-around_x-small slds-m-right_medium container-preview">
+                        <div class="content-overview">
+                            <div class="slds-align_absolute-center"><img class="icon-view" src={compliance} /></div>
+                            <div class="align-center slds-p-top_large">
+                                <div class="info-header">Compliance</div>
+                                <div class="info-sub-header slds-p-top_xx-small">How it works</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="slds-p-around_x-small slds-m-right_medium container-preview" >
+                        <div class="content-overview">
+                            <div class="slds-align_absolute-center"><img class="icon-view" src={tax} /></div>
+                            <div class="align-center slds-p-top_large">
+                                <div class="info-header">Tax Liability</div>
+                                <div class="info-sub-header slds-p-top_xx-small">How it works</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="slds-p-around_x-small slds-m-right_medium container-preview">
+                        <div class="content-overview">
+                            <div class="slds-align_absolute-center"><img class="icon-view" src={insurance} /></div>
+                            <div class="align-center slds-p-top_large">
+                                    <div class="info-header">Auto Insurance</div>
+                                    <div class="info-sub-header slds-p-top_xx-small">What you need</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="slds-p-around_x-small slds-m-right_medium container-preview">
+                        <div class="content-overview">
+                            <div class="slds-align_absolute-center"><img class="icon-view" src={faq} /></div>
+                            <div class="align-center slds-p-top_large">
+                                    <div class="info-header">mBurse FAQ's</div>
+                                    <div class="info-sub-header slds-p-top_xx-small">What you need to know</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="slds-p-around_x-small slds-m-right_medium container-preview">
+                        <div class="content-overview">
+                            <div class="slds-align_absolute-center"><img class="icon-view" src={methodology} /></div>
+                            <div class="align-center slds-p-top_large">
+                                    <div class="info-header">Methodology</div>
+                                    <div class="info-sub-header slds-p-top_xx-small">Rate calculation</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="flex-layout">
+                <div class="middle-header">
+                    Micellaneous
+                </div>
+                <div class="slds-p-around_x-large" style="display: flex;margin-left: 300px;
+                margin-right: 300px;">
+                    <div class="slds-p-around_x-small slds-m-right_medium container-preview">
+                        <div class="content-overview">
+                            <div class="slds-align_absolute-center"><img class="icon-view" src={privacy} /></div>
+                            <div class="align-center slds-p-top_large">
+                                <div class="info-header">Your Privacy</div>
+                                <div class="info-sub-header slds-p-top_xx-small">Our Privacy policy</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="slds-p-around_x-small slds-m-right_medium container-preview" >
+                        <div class="content-overview">
+                            <div class="slds-align_absolute-center"><img class="icon-view" src={policy} /></div>
+                            <div class="align-center slds-p-top_large">
+                                <div class="info-header">Policy</div>
+                                <div class="info-sub-header slds-p-top_xx-small">Your Reimbursmeent Policy</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <c-user-profile-modal header={resourceText} modal-class="slds-modal slds-modal_x-small slds-is-fixed slds-fade-in-open animate__animated animate__slideInUp animate__fast"
+        modal-content-style={contentText}
+        header-class="slds-modal__header resource-header slds-clearfix"
+        style-header="slds-modal__container slds-m-top_medium"
+        close-btn-class="close-notify-video">
+        <template if:true={planPreview}>
+            <video id="video-source" width={videoWidth} height={videoHeight}  autoplay controls="controls" controlslist="noplaybackrate  nodownload" style="object-fit: cover;border-bottom-right-radius: 20px;
+            border-bottom-left-radius: 20px;
+            border-top-right-radius: 20px;
+            border-top-left-radius: 20px;">
+                <source  type="video/mp4" src="https://hubs.ly/Q01cz5Z_0"/>
+            </video>
+        </template>
+        <template if:true={planParameter}>
+            <div class="slds-p-horizontal_x-large slds-p-bottom_small slds-p-top_large">
+            <div style="font-family: 'Proxima Nova';
+            font-style: normal;
+            font-weight: 700;
+            font-size: 16px;
+            line-height: 19px;
+            color: #1D1D1D;">Insurance minimums:</div>
+            <div class="slds-m-top_medium">
+                <table
+                    class="slds-table slds-table_cell-buffer slds-table_header-hidden bordered-table">
+                    <tr>
+                        <td>Bodily Injury</td>
+                        <td>
+                         ${minimums.Account.Bodily_Injury__c}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Uninsured Motorist</td>
+                        <td>
+                            ${minimums.Account.Uninsured_Motorist__c}
+                            <!-- <lightning-formatted-number value={minimums.unInsuranceMotorist}
+                                format-style="currency" currency-code="USD">
+                            </lightning-formatted-number> -->
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Property Damage</td>
+                        <td>
+                            <lightning-formatted-number value={minimums.Account.Property_Damage__c}
+                                format-style="currency" currency-code="USD"
+                                minimum-fraction-digits="2">
+                            </lightning-formatted-number>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Comprehensive Deductible</td>
+                        <td>
+                            <lightning-formatted-number value={minimums.Account.Comprehensive__c}
+                                format-style="currency" currency-code="USD"
+                                minimum-fraction-digits="2">
+                            </lightning-formatted-number>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Collision Deductible</td>
+                        <td>
+                            <lightning-formatted-number value={minimums.Account.Collision__c}
+                                format-style="currency" currency-code="USD"
+                                minimum-fraction-digits="2">
+                            </lightning-formatted-number>
+                        </td>
+                    </tr>
+                    <tr if:true={minimums.Umbrella_Coverage__c}>
+                        <td>Umbrella Coverage</td>
+                        <td>
+                            <lightning-formatted-number value={minimums.Account.Umbrella_Coverage__c}
+                                format-style="currency" currency-code="USD"
+                                minimum-fraction-digits="2">
+                            </lightning-formatted-number>
+                        </td>
+                    </tr>
+                </table>
+                <div style="display: flex;">
+                    <div class="slds-p-vertical_large slds-p-right_large" if:true={minimums.Vehicle_Value__c}>
+                        <div style="font-family: Proxima Nova;
+                        font-size: 32px;
+                        font-weight: 700;
+                        line-height: 39px;
+                        letter-spacing: 0em;
+                        text-align: left;
+                        color: #1D1D1D;
+                        ">  <lightning-formatted-number value={minimums.Vehicle_Value__c}
+                        format-style="currency" currency-code="USD"
+                        minimum-fraction-digits="0">
+                        </lightning-formatted-number></div>
+                        <div style="font-family: Proxima Nova;
+                        font-size: 14px;
+                        font-weight: 400;
+                        line-height: 17px;
+                        letter-spacing: 0em;
+                        text-align: left;
+                        color: #6C6C6C;
+                        ">Vehicle Value</div>
+                    </div>
+                    <div class="slds-p-vertical_large slds-p-left_x-large slds-p-right_small" if:true={minimums.Plan_Years__c}>
+                        <div style="font-family: Proxima Nova;
+                        font-size: 32px;
+                        font-weight: 700;
+                        line-height: 39px;
+                        letter-spacing: 0em;
+                        text-align: left;
+                        color: #1D1D1D;
+                        ">{minimums.Plan_Years__c} Years </div>
+                        <div style="font-family: Proxima Nova;
+                        font-size: 14px;
+                        font-weight: 400;
+                        line-height: 17px;
+                        letter-spacing: 0em;
+                        text-align: left;
+                        color: #6C6C6C;
+                        ">Vehicle Age</div>
+                    </div>
+                    <div class="slds-p-vertical_large slds-p-left_xx-large" if:true={minimums.Compliance_Mileage__c}>
+                        <div style="font-family: Proxima Nova;
+                        font-size: 32px;
+                        font-weight: 700;
+                        line-height: 39px;
+                        letter-spacing: 0em;
+                        text-align: left;
+                        color: #1D1D1D;
+                        "><lightning-formatted-number value={minimums.Compliance_Mileage__c}
+                        minimum-fraction-digits="2">
+                        </lightning-formatted-number> Miles</div>
+                        <div style="font-family: Proxima Nova;
+                        font-size: 14px;
+                        font-weight: 400;
+                        line-height: 17px;
+                        letter-spacing: 0em;
+                        text-align: left;
+                        color: #6C6C6C;
+                        ">Annual Compliance Mileage</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        </template>
+    </c-user-profile-modal>
+    
+</template>

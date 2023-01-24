@@ -1400,7 +1400,7 @@
                                 $scope.exportManagerList = [];
                                 $scope.exportManagerList.push(["Contact Email", "Tracing Style", "Day Of Week", "Trip Date", "Start Time", "End Time", "Trip Origin", "Trip Destination", "Mileage", "Status", "Date Submitted", "Date Approved", "Maint/Tires", "Fuel Rate", "Variable Rate", "Variable Amount", "Drive Time", "Stay Time", "Total Time", "Notes", "Tags"]);
                                 angular.forEach(mileageList, function (item, key) {
-                                    $scope.exportManagerList.push([item.emailaddress, item.tracingstyle, item.dayofweek, item.tripdate, item.starttime, item.endtime, item.originname, item.destinationname, item.mileage, item.status, item.submitteddate, item.approveddate, item.maintTyre, item.fuelRate, item.variablerate, item.variableamount, item.drivingtime, item.staytime, item.totaltime, item.notes, item.tag]);
+                                    $scope.exportManagerList.push([item.emailaddress, item.tracingstyle, item.dayofweek, item.tripdate, item.starttime, item.endtime, item.originname, item.destinationname, item.mileage, item.status, item.submitteddate, item.approveddate, item.maintTyre, item.fuelVariableRate, item.variablerate, item.variableamount, item.drivingtime, item.staytime, item.totaltime, item.notes, item.tag]);
                                 });
                                 $scope.fileName = $scope.adminname + '\'s Mileage' + $scope.FromDate;
                                 $scope.reimbursementDialog.open($scope.fileName, clickedMonth, $scope.selectedYear, mileageList, $scope.totalMileage, $scope.totalVariableAmount, $scope.modalType);
@@ -1413,7 +1413,7 @@
                                 $scope.exportManagerList = [];
                                 $scope.exportManagerList.push(["Contact Email", "Tracing Style", "Day Of Week", "Trip Date", "Start Time", "End Time", "Trip Origin", "Trip Destination", "Mileage", "Status", "Date Submitted", "Date Approved", "Maint/Tires", "Fuel Rate", "Variable Rate", "Variable Amount", "Drive Time", "Stay Time", "Total Time", "Notes", "Tags"]);
                                 angular.forEach(mileageList, function (item, key) {
-                                    $scope.exportManagerList.push([item.emailaddress, item.tracingstyle, item.dayofweek, item.tripdate, item.starttime, item.endtime, item.originname, item.destinationname, item.mileage, item.status, item.submitteddate, item.approveddate, item.maintTyre, item.fuelRate, item.variablerate, item.variableamount, item.drivingtime, item.staytime, item.totaltime, item.notes, item.tag]);
+                                    $scope.exportManagerList.push([item.emailaddress, item.tracingstyle, item.dayofweek, item.tripdate, item.starttime, item.endtime, item.originname, item.destinationname, item.mileage, item.status, item.submitteddate, item.approveddate, item.maintTyre, item.fuelVariableRate, item.variablerate, item.variableamount, item.drivingtime, item.staytime, item.totaltime, item.notes, item.tag]);
                                 });
                                 $scope.fileName = $scope.adminname + '\'s Mileage' + $scope.FromDate;
                                 $scope.reimbursementDialog.open($scope.fileName, clickedMonth, $scope.selectedYear, mileageList, $scope.totalMileage, $scope.totalVariableAmount, $scope.modalType);
@@ -1452,7 +1452,7 @@
                                 $scope.exportManagerList = [];
                                 $scope.exportManagerList.push(["Contact Email", "Tracing Style", "Day Of Week", "Trip Date", "Start Time", "End Time", "Trip Origin", "Trip Destination", "Mileage", "Status", "Date Submitted", "Date Approved", "Maint/Tires", "Fuel Rate", "Variable Rate", "Variable", "Trip Type", "Drive Time", "Stay Time", "Total Time", "Notes", "Tags"]);
                                 angular.forEach(mileageList, function (item, key) {
-                                    $scope.exportManagerList.push([item.emailaddress, item.tracingstyle, item.dayofweek, item.tripdate, item.starttime, item.endtime, item.originname, item.destinationname, item.mileage, item.status, item.submitteddate, item.approveddate, item.maintTyre, item.fuelRate, item.variablerate, item.variableamount, item.tripActivity, item.drivingtime, item.staytime, item.totaltime, item.notes, item.tag]);
+                                    $scope.exportManagerList.push([item.emailaddress, item.tracingstyle, item.dayofweek, item.tripdate, item.starttime, item.endtime, item.originname, item.destinationname, item.mileage, item.status, item.submitteddate, item.approveddate, item.maintTyre, item.fuelVariableRate, item.variablerate, item.variableamount, item.tripActivity, item.drivingtime, item.staytime, item.totaltime, item.notes, item.tag]);
                                 });
                                 $scope.bFileName = $scope.adminname + '\'s Mileage' + ' ' + $scope.FromDate;
                                 $scope.reimbursementDialog.open($scope.bFileName, $scope.clickedPeriod, $scope.selectedYear, mileageList, $scope.totalMileage, $scope.totalVariableAmount, $scope.modalType);
@@ -1465,7 +1465,7 @@
                                 $scope.exportManagerList = [];
                                 $scope.exportManagerList.push(["Contact Email", "Tracing Style", "Day Of Week", "Trip Date", "Start Time", "End Time", "Trip Origin", "Trip Destination", "Mileage", "Status", "Date Submitted", "Date Approved", "Maint/Tires", "Fuel Rate", "Variable Rate", "Variable", "Trip Type", "Drive Time", "Stay Time", "Total Time", "Notes", "Tags"]);
                                 angular.forEach(mileageList, function (item, key) {
-                                    $scope.exportManagerList.push([item.emailaddress, item.tracingstyle, item.dayofweek, item.tripdate, item.starttime, item.endtime, item.originname, item.destinationname, item.mileage, item.status, item.submitteddate, item.approveddate, item.maintTyre, item.fuelRate, item.variablerate, item.variableamount, item.tripActivity, item.drivingtime, item.staytime, item.totaltime, item.notes, item.tag]);
+                                    $scope.exportManagerList.push([item.emailaddress, item.tracingstyle, item.dayofweek, item.tripdate, item.starttime, item.endtime, item.originname, item.destinationname, item.mileage, item.status, item.submitteddate, item.approveddate, item.maintTyre, item.fuelVariableRate, item.variablerate, item.variableamount, item.tripActivity, item.drivingtime, item.staytime, item.totaltime, item.notes, item.tag]);
                                 });
                                 $scope.fileName = $scope.adminname + '\'s Mileage' + ' ' + $scope.FromDate;
                                 $scope.reimbursementDialog.open($scope.bFileName, $scope.clickedPeriod, $scope.selectedYear, mileageList, $scope.totalMileage, $scope.totalVariableAmount, $scope.modalType);
@@ -1507,6 +1507,7 @@
             $scope.mileageList = '';
             $scope.gasrate = {!gasVariableRatePreviosMonth}
             $scope.gaspricedata = {!gaspriceforpreviosmonth};
+            console.log('gasrate ---',  $scope.gasrate)
             if ($scope.gasrate != null && $scope.gasrate != '') {
                 if ($scope.gasrate[0] != undefined) {
                     if ($scope.gasrate[0].Fuel_Price__c == null) {
@@ -1857,7 +1858,7 @@
                                 var biDetailList = JSON.parse(escapeChar);
                                 $scope.exportReimDetailList.push(["Contact Email", "Tracing Style", "Day Of Week", "Trip Date", "Start Time", "End Time", "Trip Origin", "Trip Destination", "Mileage", "Status", "Date Submitted", "Date Approved", "Maint/Tires", "Fuel Rate", "Variable Rate", "Variable", "Fixed Amount", "Trip Type", "Drive Time", "Stay Time", "Total Time", "Notes", "Tags"]);
                                 angular.forEach(biDetailList, function (item, key) {
-                                    $scope.exportReimDetailList.push([item.emailaddress, item.tracingstyle, item.dayofweek, item.tripdate, item.starttime, item.endtime, item.originname, item.destinationname, item.mileage, item.status, item.submitteddate, item.approveddate, item.maintTyre, item.fuelRate, item.variablerate, item.variableamount, item.halfFixedAmount, item.tripActivity, item.drivingtime, item.staytime, item.totaltime, item.notes, item.tag]);
+                                    $scope.exportReimDetailList.push([item.emailaddress, item.tracingstyle, item.dayofweek, item.tripdate, item.starttime, item.endtime, item.originname, item.destinationname, item.mileage, item.status, item.submitteddate, item.approveddate, item.maintTyre, item.fuelVariableRate, item.variablerate, item.variableamount, item.halfFixedAmount, item.tripActivity, item.drivingtime, item.staytime, item.totaltime, item.notes, item.tag]);
                                 });
                                 detailFileName = $scope.adminname + '\'s Detail Report';
                                 $scope.downloadToExcel($scope.exportReimDetailList, detailFileName);
@@ -1887,7 +1888,7 @@
                                 $scope.exportPeriodList = [];
                                 $scope.exportPeriodList.push(["Contact Email", "Tracing Style", "Day Of Week", "Trip Date", "Start Time", "End Time", "Trip Origin", "Trip Destination", "Mileage", "Status", "Date Submitted", "Date Approved", "Maint/Tires", "Fuel Rate", "Variable Rate", "Variable Amount", "Drive Time", "Stay Time", "Total Time", "Notes", "Tags"]);
                                 angular.forEach(detailedList, function (item, key) {
-                                    $scope.exportPeriodList.push([item.emailaddress, item.tracingstyle, item.dayofweek, item.tripdate, item.starttime, item.endtime, item.originname, item.destinationname, item.mileage, item.status, item.submitteddate, item.approveddate, item.maintTyre, item.fuelRate, item.variablerate, item.variableamount, item.drivingtime, item.staytime, item.totaltime, item.notes, item.tag]);
+                                    $scope.exportPeriodList.push([item.emailaddress, item.tracingstyle, item.dayofweek, item.tripdate, item.starttime, item.endtime, item.originname, item.destinationname, item.mileage, item.status, item.submitteddate, item.approveddate, item.maintTyre, item.fuelVariableRate, item.variablerate, item.variableamount, item.drivingtime, item.staytime, item.totaltime, item.notes, item.tag]);
                                 });
                                 $scope.downloadToExcel($scope.exportPeriodList, $scope.excelFileName);
                             } else {
@@ -1912,12 +1913,12 @@
                 function (result, event) {
                     if (event.status && result != null) {
                         if (result != '') {
-                            let escapeChar = escapeSpecialChars(result);
+                            let escapeChar = escapeSpecialChars(result[0]);
                             var mileageReimbList = JSON.parse(escapeChar);
                             if (mileageReimbList.length > 0) {
                                 $scope.exportReimbusList.push(["Contact Email", "Tracing Style", "Day Of Week", "Trip Date", "Start Time", "End Time", "Trip Origin", "Trip Destination", "Mileage", "Status", "Date Submitted", "Date Approved", "Maint/Tires", "Fuel Rate", "Variable Rate", "Variable Amount", "Total Time", "Notes", "Tags"]);
                                 angular.forEach(mileageReimbList, function (item, key) {
-                                    $scope.exportReimbusList.push([item.emailaddress, item.tracingstyle, item.dayofweek, item.tripdate, item.starttime, item.endtime, item.originname, item.destinationname, item.mileage, item.status, item.submitteddate, item.approveddate, item.maintTyre, item.fuelRate, item.variablerate, item.variableamount, item.totaltime, item.notes, item.tag]);
+                                    $scope.exportReimbusList.push([item.emailaddress, item.tracingstyle, item.dayofweek, item.tripdate, item.starttime, item.endtime, item.originname, item.destinationname, item.mileage, item.status, item.submitteddate, item.approveddate, item.maintTyre, item.fuelVariableRate, item.variablerate, item.variableamount, item.totaltime, item.notes, item.tag]);
                                 });
                                 $scope.downloadToExcel($scope.exportReimbusList, $scope.excelFileName);
                             } else {
@@ -1948,7 +1949,7 @@
                                 })
                                 $scope.exportReimbusList.push(["Contact Email", "Tracing Style", "Day Of Week", "Trip Date", "Start Time", "End Time", "Trip Origin", "Trip Destination", "Mileage", "Status", "Date Submitted", "Date Approved", "Maint/Tires", "Fuel Rate", "Variable Rate", "Variable", "Trip Type", "Drive Time", "Stay Time", "Total Time", "Notes", "Tags"]);
                                 angular.forEach(biweeklyList, function (item, key) {
-                                    $scope.exportReimbusList.push([item.emailaddress, item.tracingstyle, item.dayofweek, item.tripdate, item.starttime, item.endtime, item.originname, item.destinationname, item.mileage, item.status, item.submitteddate, item.approveddate, item.maintTyre, item.fuelRate, item.variablerate, item.variableamount, item.tripActivity, item.drivingtime, item.staytime, item.totaltime, item.notes, item.tag]);
+                                    $scope.exportReimbusList.push([item.emailaddress, item.tracingstyle, item.dayofweek, item.tripdate, item.starttime, item.endtime, item.originname, item.destinationname, item.mileage, item.status, item.submitteddate, item.approveddate, item.maintTyre, item.fuelVariableRate, item.variablerate, item.variableamount, item.tripActivity, item.drivingtime, item.staytime, item.totaltime, item.notes, item.tag]);
                                 });
                                 $scope.excelFileName = $scope.adminname + '\'s Mileage' + ' ' + $scope.FromDate;
                                 $scope.downloadToExcel($scope.exportReimbusList, $scope.excelFileName);

@@ -1,0 +1,172 @@
+<template>
+        <c-xlsx-mockup header-list={xlsHeader} filename={filename} worksheet-name-list={workSheetNameList}
+        sheet-data={xlsData}></c-xlsx-mockup>
+    <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open slds-modal_large slds-is-fixed">
+        <div class="slds-modal__container">
+            <!-- Modal/Popup Box LWC header here -->
+            <header class="slds-modal__header slds-clearfix">
+                <button type="button" class="close popup-close-btn" data-dismiss="modal" aria-label="Close" onclick={handleDialogClose}><span aria-hidden="true">×</span></button>
+                <h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate slds-float_left">{modelHeadName}</h2>
+                <div class="slds-col col-trip" if:false={nopagedata}><!--RECORDS PER PAGE-->
+                    <div class="slds-list_inline slds-p-bottom_xx-small">
+                        <label class="slds-text-color_weak slds-p-horizontal_x-small slds-p-top_xxx-small" for="recordsPerPage">Trips per page :</label> 
+                        <div>
+                            <select class="minimal perPageSelect" id="recordsPerPage" onchange={handleRecordsPerPage}>
+                                <template for:each={perPageOptions} for:item="pageValue">
+                                    <option key={pageValue} value={pageValue}>{pageValue}</option>
+                                </template>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <c-e-search-input if:false={searchVisible} onlookup={searchData} css-class="slds-float_right slds-is-absolute absolute-model-input"></c-e-search-input>
+            </header>
+            <!-- Modal/Popup Box LWC body starts here -->
+            <div class="slds-modal__content slds-p-around_medium slds-scrollable" id="modal-content-id-1">
+                <table class="slds-table slds-table_cell-buffer slds-table_striped" id="tableSel" >
+                    <thead class="slds-border_bottom">
+                        <tr class="slds-line-height_reset">
+                            <template if:true={theaddata}>
+                                <template for:each={theaddata} for:item="head">
+                                    <th class="" scope="col" key={head.id}>
+                                        <div  title={head.name}>
+                                            <a onclick={sort} name={head.colName}>
+                                                {head.name}
+                                            </a>
+                                            <span>
+                                                <lightning-icon icon-name="utility:chevronup" size="x-small" if:true={head.arrUp} class="slds-p-left_x-small sort_icon" ></lightning-icon>
+                                                <lightning-icon icon-name="utility:chevrondown" size="x-small" if:true={head.arrDown} class="slds-p-left_x-small sort_icon"></lightning-icon>
+                                            </span>
+                                        </div>
+                                        
+                                    </th>
+                                </template>
+                            </template>
+                            <th class="slds-clearfix" scope="col">
+                                <button class="slds-button slds-button_success slds-float_right">Approve 
+                                    <!-- <input type="checkbox"  class="slds-m-left_xx-small slds-m-right_xx-small slds-m-top_xxx-small approvechk" onchange={handleAppruve} checked={appBool} /> -->
+                                    <!-- <input class="slds-m-left_small " onchange={handleAppruve} type="checkbox" checked={appBool}>  -->
+                                    <lightning-input if:false={nopagedata} type="checkbox" onchange={handleAppruve} checked={appBool} class="chksize slds-p-left_xx-small" disabled={isAllEnable}>
+                                    </lightning-input>
+                                </button>
+                            </th>
+                            <th class="slds-clearfix" scope="col">
+                                <button class="slds-button slds-button_destructive slds-float_right">Flag 
+                                    <!-- <input  class="slds-m-left_xx-small slds-m-right_xx-small slds-m-top_xxx-small flagchk" onchange={handleFlag} type="checkbox" checked={flagBool} /> -->
+                                    <lightning-input if:false={nopagedata} type="checkbox" onchange={handleFlag} checked={flagBool} class="chksize slds-p-left_xx-small" disabled={isAllEnable}>
+                                    </lightning-input>
+                                </button>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <template if:true={pagedData}>
+                            <template for:each={pagedData} for:item="trip">
+                                <tr  key={trip.id}>
+                                    <template for:each={trip.keyFields} for:item="mapKey">
+                                        <template if:true={mapKey.isCurrency}>
+                                            <td key={mapKey.key}><lightning-formatted-number
+                                                value={mapKey.value}
+                                                format-style="currency"
+                                                currency-code="USD"
+                                                minimum-fraction-digits="4">
+                                              </lightning-formatted-number></td>
+                                        </template>
+                                        <template if:false={mapKey.isCurrency}>
+                                            <td key={mapKey.key}>{mapKey.value}</td>
+                                        </template>
+                                    </template>
+                                    <!-- <td>{trip.tripdate}</td>
+                                    <td>{trip.origin}</td>
+                                    <td>{trip.destination}</td>
+                                    <td>{trip.submitteddate}</td>
+                                    <td>{trip.approveddate}</td>
+                                    <td>{trip.mileage}</td>
+                                    <td>${trip.variableamount}</td>
+                                    <td>{trip.drivingtime}</td>
+                                    <td>{trip.staytime}</td> -->
+                                    <td class="slds-clearfix">
+                                       <div  class="slds-float_right">
+                                            <lightning-input  type="checkbox" onchange={handleAppruveForSingleRecord}  name="appruve" checked={trip.isSelected} data-id="checkbox" class="appruve" value={trip.id} disabled={trip.isLockDate}>
+                                            </lightning-input>
+                                        </div>
+                                    </td>
+                                    <td class="slds-clearfix">
+                                        <div class="slds-float_right"> 
+                                            <lightning-input type="checkbox" onchange={handleFlagForSingleRecord}  name="flag" checked={trip.isChecked} data-id="checkbox" class="flag" value={trip.id} disabled={trip.isLockDate}></lightning-input>
+                                        </div>
+                                     </td>
+                                 </tr>
+                            </template>
+                        </template>
+                        <template if:true={norecord}>
+                            <tr>
+                                <td colspan="100%"><div class="slds-align_absolute-center">No Trip Available</div></td>
+                            </tr>
+                        </template>
+                    </tbody>
+                    <tfoot class="slds-border_top">
+                        <tr>
+                            <th>Total</th>
+                            <th colspan="4"></th>
+                            <th>{perPageMileage} / {totalMileage}</th>
+                            <th>${perPageVariable} / ${totalVarAmount}</th>
+                            <th colspan="4"></th>
+                        </tr>
+                    </tfoot>
+                </table> 
+            </div>
+            <!-- Modal/Popup Box LWC footer starts here -->
+            <footer class="slds-modal__footer" if:false={nopagedata}>
+                <template if:true={pagedData}>
+                    <div class="slds-clearfix">
+                        <p class="slds-float_left">
+                            Page {currentPage} of {maxPages}
+                        </p>
+                        <span class="slds-float_right">
+                            <ul class="slds-list_horizontal slds-border_top slds-border_bottom slds-has-block-links_space border-radius">
+                                <li class="slds-item slds-border_left slds-border_right">
+                                    <a 
+                                    name="buttonBackwards" tripdata
+                                    label="Previous" 
+                                    title="" 
+                                    onclick={handleButtonPrevious}  
+                                    class={cssPreviousText}
+                                    disabled={disabledPreviousButton}>
+                                    Previous
+                                    </a>
+                                </li>
+                                <li class="slds-item slds-border_right">
+                                    <div class="cPadding">
+                                        {currentPage}
+                                    </div>
+                                </li>
+                                <li class="slds-item slds-border_right">
+                                    <a 
+                                    name="buttonForwards" 
+                                    label="Next" 
+                                    title="" 
+                                    onclick={handleButtonNext} 
+                                    class={cssText}
+                                    disabled={disabledNextButton}>
+                                    Next
+                                    </a>
+                                </li>
+                            </ul>
+                        </span>
+                        <div class="slds-float_right slds-m-right_small">
+                            <template if:true={submitBool}>
+                                <button class="slds-button slds-button_neutral  footer_button" onclick={handleSubmit}>Submit</button>
+                            </template>
+                            <button class="slds-button slds-button_success footer_button" onclick={tableToExcel}>Download
+                                <lightning-icon icon-name="utility:download" size="x-small" class="slds-p-left_x-small" variant="inverse"></lightning-icon>
+                            </button>
+                        </div>
+                    </div>
+                </template>
+                
+            </footer>
+        </div>
+    </section>
+    <div class="slds-backdrop slds-backdrop_open"></div>
+</template>

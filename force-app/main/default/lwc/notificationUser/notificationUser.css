@@ -1,0 +1,100 @@
+:host{
+    --grey-color: #D7D7D7;
+    --green-color: #7ABB4A;
+    --link-color: #1D1D1D;
+    --text-color: #6C6C6C;
+    --even-row-color: #FFFFFF;
+    --odd-row-color: #F7F7F7;
+    --scroll-color: #F6F6F6;
+    --active-color: #404B5B;
+    --red-color: #ff0000;
+}
+
+.fa,
+.fas,
+.fa-solid,
+.fa-light,
+.fa-regular {
+    font-family: "Font Awesome 6 Free" !important
+}
+
+.slds-scrollable_y::-webkit-scrollbar-track {
+    -webkit-box-shadow: inset 0 0 6px var(--scroll-color);
+    border-radius: 100px;
+    background-color: var(--scroll-color);
+}
+
+.slds-scrollable_y::-webkit-scrollbar {
+    width: 5px;
+    height: 50px;
+    background-color: var(--scroll-color);
+}
+
+.slds-scrollable_y::-webkit-scrollbar-thumb {
+    border-radius: 100px;
+    height: 50px;
+    background-color: var(--active-color)
+}
+
+.a-link{
+    font-weight: 700;
+    font-size: 12px;
+    line-height: 15px;
+    text-align: center;
+    text-decoration: underline;
+    color: #7ABB4A !important;
+    float: right;
+}
+
+.a-link:hover{
+    text-decoration: underline;
+}
+
+.a-link:focus{
+    box-shadow: none !important;
+}
+
+.a-link:focus-visible {
+    outline: none !important;
+}
+
+.a-link:active {
+    text-decoration: underline;
+    border-color: #fff !important;
+}
+
+.notify-toggle{
+    /* padding-left: 254px; */
+    /* padding-top: 20px; */
+}
+
+.notify-container{
+    height: 206px;
+    /* padding-left: 0.6em;
+    margin-right: 0.6em; */
+}
+
+.white-cross{
+    color: #FFFFFF !important;
+}
+
+.error-cross{
+    color: #fa7800 !important;
+}
+
+.fa-xmark{
+    cursor: pointer;
+}
+
+.no-data-message{
+    font-size: 24px;
+    line-height: 29px;
+    text-align: center;
+    font-weight: 600;
+    color: var( --link-color);
+}
+
+
+/* .overflow{
+    overflow-y: hidden !important;
+} */

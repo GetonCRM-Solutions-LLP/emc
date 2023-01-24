@@ -1,0 +1,303 @@
+* {
+    font-family: 'Proxima Nova' !important;
+    font-size: 1rem;
+}
+
+table thead th {
+    color: #78bc42;
+}
+
+table tfoot tr th {
+    color: #78bc42;
+    font-weight: bold;
+}
+
+.slds-text-color_weak{
+    color: #000 !important;
+}
+.footer_button {
+    font-size: 18px;
+    font-family: 'Proxima Nova Bold' !important;
+}
+
+.slds-button_success {
+    background-color: #78bc42 !important;
+    border-color: #78bc42 !important;
+    border-radius: 0%;
+    padding: .275rem .75rem;
+    font-weight: bold;
+    color: white;
+}
+
+.slds-button_destructive {
+    border-radius: 0%;
+    padding: .275rem .75rem;
+}
+
+.approvechk {
+    width: 16px;
+    height: 16px;
+}
+
+.chksize {
+    width: 22px;
+    height: 28px;
+}
+
+.flagchk {
+    width: 16px;
+    height: 16px;
+}
+
+table thead.slds-border_bottom {
+    border-color: var(--sds-c-thead-color-background, #78bc42);
+    border-radius: var(--sds-c-thead-radius-border, 50rem);
+}
+
+table tfoot.slds-border_top {
+    border-color: var(--sds-c-thead-color-background, #78bc42);
+    border-radius: var(--sds-c-thead-radius-border, 50rem);
+}
+
+select {
+
+    /* styling */
+    background-color: white;
+    border: thin solid #78bc42;
+    display: inline-block;
+    font: inherit;
+    line-height: 1.5em;
+    padding: 0.2em 3.5em 0.2em 1em;
+
+    /* reset */
+
+    margin: 0;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+}
+
+
+/* arrows */
+
+select.classic {
+    background-image:
+        linear-gradient(45deg, transparent 50%, blue 50%),
+        linear-gradient(135deg, blue 50%, transparent 50%),
+        linear-gradient(to right, skyblue, skyblue);
+    background-position:
+        calc(100% - 20px) calc(1em + 2px),
+        calc(100% - 15px) calc(1em + 2px),
+        100% 0;
+    background-size:
+        5px 5px,
+        5px 5px,
+        2.5em 2.5em;
+    background-repeat: no-repeat;
+}
+
+select.classic:focus {
+    background-image:
+        linear-gradient(45deg, white 50%, transparent 50%),
+        linear-gradient(135deg, transparent 50%, white 50%),
+        linear-gradient(to right, gray, gray);
+    background-position:
+        calc(100% - 15px) 1em,
+        calc(100% - 20px) 1em,
+        100% 0;
+    background-size:
+        5px 5px,
+        5px 5px,
+        2.5em 2.5em;
+    background-repeat: no-repeat;
+    border-color: grey;
+    outline: 0;
+}
+
+
+
+
+select.round {
+    background-image:
+        linear-gradient(45deg, transparent 50%, gray 50%),
+        linear-gradient(135deg, gray 50%, transparent 50%),
+        radial-gradient(#ddd 70%, transparent 72%);
+    background-position:
+        calc(100% - 20px) calc(1em + 2px),
+        calc(100% - 15px) calc(1em + 2px),
+        calc(100% - .5em) .5em;
+    background-size:
+        5px 5px,
+        5px 5px,
+        1.5em 1.5em;
+    background-repeat: no-repeat;
+}
+
+select.round:focus {
+    background-image:
+        linear-gradient(45deg, white 50%, transparent 50%),
+        linear-gradient(135deg, transparent 50%, white 50%),
+        radial-gradient(gray 70%, transparent 72%);
+    background-position:
+        calc(100% - 15px) 1em,
+        calc(100% - 20px) 1em,
+        calc(100% - .5em) .5em;
+    background-size:
+        5px 5px,
+        5px 5px,
+        1.5em 1.5em;
+    background-repeat: no-repeat;
+    border-color: green;
+    outline: 0;
+}
+
+
+
+
+
+select.minimal {
+    background-image:
+        linear-gradient(45deg, transparent 50%, gray 50%),
+        linear-gradient(135deg, gray 50%, transparent 50%),
+        linear-gradient(to right, #ccc, #ccc);
+    background-position:
+        calc(100% - 20px) calc(1em + -3px),
+        calc(100% - 15px) calc(1em + -3px),
+        calc(100% - 2.5em) 0.2em;
+    background-size:
+        5px 5px,
+        5px 5px,
+        1px 1.5em;
+    background-repeat: no-repeat;
+}
+
+select.minimal:focus {
+    background-image:
+        linear-gradient(45deg, #78bc42 50%, transparent 50%),
+        linear-gradient(135deg, transparent 50%, #78bc42 50%),
+        linear-gradient(to right, #ccc, #ccc);
+    background-position:
+        calc(100% - 15px) calc(1em + -3px),
+        calc(100% - 20px) calc(1em + -3px),
+        calc(100% - 2.5em) 0.2em;
+    background-size:
+        5px 5px,
+        5px 5px,
+        1px 1.5em;
+    background-repeat: no-repeat;
+    border-color: #78bc42;
+    outline: 0;
+}
+
+
+select:-moz-focusring {
+    color: transparent;
+    text-shadow: 0 0 0 #000;
+}
+
+.border-radius {
+    border-top-left-radius: 4px;
+    border-bottom-left-radius: 4px;
+    border-top-right-radius: 4px;
+    border-bottom-right-radius: 4px;
+}
+
+.cPadding {
+    padding: 4px 12px !important;
+}
+
+a {
+    color: #78bc42 !important;
+    text-decoration: none !important;
+}
+
+.disabled {
+    cursor: not-allowed;
+}
+
+.slds-button_neutral {
+    background-color: #545b62 !important;
+    color: white;
+    border-radius: 0;
+    padding: .275rem .75rem;
+}
+
+.slds-scope .slds-icon-action-close {
+    fill: var(--sds-c-icon-color-background, #78bc42);
+}
+
+.sort_icon {
+    --sds-c-icon-color-foreground-default: #78bc42;
+}
+
+.greenfill svg {
+    fill: #78bc42;
+}
+
+.green__icon {
+    --sds-c-icon-color-foreground: #FFFFFF;
+    --sds-c-icon-color-background: #78bc42;
+}
+
+.close {
+    font-weight: 700;
+    text-shadow: 0 1px 0 #fff;
+}
+
+.slds-text-heading_medium {
+    font-size: 1.5rem !important;
+}
+
+.col-trip {
+    margin-right: 203px;
+}
+/* 
+.customSelect select {
+    padding-right: 1.25rem;
+    min-height: inherit;
+    line-height: normal;
+    height: 1.7rem;
+    font-size: .875rem;
+} */
+
+button.close {
+    appearance: none;
+    padding: 0;
+    background-color: transparent;
+    border: 0;
+}
+
+.popup-close-btn span {
+    background: #78bc42;
+    font-size: 1.5rem;
+    color: #ffffff;
+    position: absolute;
+    top: -20px;
+    right: -10px;
+    border-radius: 50%;
+    opacity: 1;
+    height: 35px;
+    width: 35px;
+    text-align: center;
+    line-height: 34px;
+    padding-left: 1px;
+}
+
+.slds-button_neutral:hover {
+    color: #ffffff !important;
+}
+
+.blur {
+    z-index: 1050 !important;
+}
+
+.index-blur {
+    z-index: 1060 !important;
+}
+
+.btnIconOverlay {
+    /* pointer-events: var(--sds-c-icon-events-pointer, auto); */
+    --sds-c-icon-pointer-events: auto !important;
+}

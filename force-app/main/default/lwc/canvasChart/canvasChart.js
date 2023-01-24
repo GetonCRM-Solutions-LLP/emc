@@ -25,24 +25,25 @@ export default class CanvasChart extends LightningElement {
         }
         /* Load Static Resource For Script*/
         Promise.all([
-                loadScript(this, Chart + '/Chart.bundle.min.js'),
+                loadScript(this, Chart + '/Chart.min.js'),
                 loadStyle(this, Chart + '/Chart.min.css')
             ]).then(() => {
                 this.chartJsInitialized = true;
                 // disable Chart.js CSS injection
-                if (this.chartData !== undefined) {
-                    var monthData = ["January", "February", "March", "April", "May", "June",
+                if (_self.chartData !== undefined) {
+                    let monthData = ["January", "February", "March", "April", "May", "June",
                         "July", "August", "September", "October", "November", "December"
                     ];
-                    var monthList = this.defaultMonth;
-                    console.log(monthList);
+                    let monthList = this.defaultMonth;
+                    let listOfChart = this.chartData;
+                    console.log(monthList, listOfChart);
                     this.config = {
                         type: 'bar',
                         data: {
-                            labels: this.chartData.chartLabel,
+                            labels: listOfChart.chartLabel,
                             datasets: [{
-                                label: this.chartData.labelA,
-                                data: this.chartData.dataA,
+                                label: listOfChart.labelA,
+                                data: [...listOfChart.dataA],
                                 order: 2,
                                 backgroundColor: [
                                     'rgba(0,0,0,0.2)',
@@ -73,8 +74,8 @@ export default class CanvasChart extends LightningElement {
                                     'rgba(0,0,0,0.2)'
                                 ]
                             }, {
-                                label: this.chartData.labelB,
-                                data: this.chartData.dataB,
+                                label: listOfChart.labelB,
+                                data: [...listOfChart.dataB],
                                 backgroundColor: [
                                     'rgb(255,255,255, 0)'
                                 ],
@@ -95,17 +96,35 @@ export default class CanvasChart extends LightningElement {
                             }]
                         },
                         options: {
+                            // legend: false,
+                            // legendCallback: function(chart){
+                            //     var text = [];
+                            //     text.push('<div class="_legend' + chart.id + '">');
+                            //     for (var i = 0; i < chart.data.datasets.length; i++) {
+                            //       text.push(`<div><div class="legendValue"><span class='symbol-${chart.data.datasets[i].label}' style="background-color:${chart.data.datasets[i].backgroundColor[0]}">&nbsp;&nbsp;&nbsp;&nbsp;</span>`);
+                                  
+                            //       if (chart.data.datasets[i].label) {
+                            //         text.push('<span class="label">' + chart.data.datasets[i].label + '</span>');
+                            //       }
+                          
+                            //       text.push('</div></div><div class="clear"></div>');
+                            //     }
+                          
+                            //     text.push('</div>');
+                          
+                            //     return text.join('');
+                            // },
                             legend: {
                                 labels: {
                                     usePointStyle: true,
                                     padding: 15,
-                                    fontSize: 12,
-                                    fontColor: '#000',
-                                    fontFamily: 'Proxima Nova'
+                                    fontSize: 14,
+                                    fontColor: '#1D1D1D',
+                                    fontFamily: 'Proxima Nova',
+                                    fontWeight: '800'
                                 },
                                 position: 'right',
                                 align: 'end',
-
                             },
                             tooltips: {
                                 backgroundColor: 'rgba(0, 77, 0, 1)',
@@ -138,7 +157,7 @@ export default class CanvasChart extends LightningElement {
                                     label: function (tooltipItem, data) {
                                         //tooltipItem.yLabel = tooltipItem.yLabel.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
                                         if (_self.chartComponent === 'Reimbursement') {
-                                            return data.datasets[tooltipItem.datasetIndex].label + ': ' + "$" + tooltipItem.yLabel.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                                            return data.datasets[tooltipItem.datasetIndex].label + ': $' + tooltipItem.yLabel.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
                                         } else {
                                             return data.datasets[tooltipItem.datasetIndex].label + ': ' + tooltipItem.yLabel.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
                                         }
@@ -146,7 +165,7 @@ export default class CanvasChart extends LightningElement {
                                     }
                                 }
                             },
-                            maintainAspectRatio: true,
+                            maintainAspectRatio: false,
                             responsive: true,
                             scales: {
                                 xAxes: [{
@@ -156,12 +175,32 @@ export default class CanvasChart extends LightningElement {
                                     ticks: {
                                         autoSkip: false,
                                         maxRotation: 0,
-                                        minRotation: 0
+                                        minRotation: 0,
+                                        fontSize: 13,
+                                        fontFamily: 'Proxima Nova',
+                                        fontColor: '#1D1D1D'
                                     }
                                 }],
                                 yAxes: [{
                                     gridLines: {
                                         display: false
+                                    },
+                                    ticks: {
+                                        lineHeight: '1.6',
+                                        fontSize: 13,
+                                        fontFamily: 'Proxima Nova',
+                                        fontColor: '#1D1D1D',
+                                        userCallback: function(value) {
+                                            // Convert the number to a string and splite the string every 3 charaters from the end
+                                            value = value.toString();
+                                            value = value.split(/(?=(?:...)*$)/);
+                                            value = value.join(',');
+                                            if (_self.chartComponent === 'Reimbursement') {
+                                                return '$' + value;
+                                            }else{
+                                                return value;
+                                            }
+                                        }
                                     }
                                 }],
                                 y: {
@@ -170,13 +209,15 @@ export default class CanvasChart extends LightningElement {
                             }
                         }
                     }
-                }
-                window.Chart.platform.disableCSSInjection = true;
-
+                
+               // window.Chart.platform.disableCSSInjection = true;
                 const canvas = document.createElement('canvas');
-                this.template.querySelector('div.chart').appendChild(canvas);
                 const ctx = canvas.getContext('2d');
+                ctx.canvas.width = 246;
+                ctx.canvas.height = 200;
+                this.template.querySelector('div.chart').appendChild(canvas);
                 this.chart = new window.Chart(ctx, this.config);
+                }
                 //this.chart.canvas.parentNode.style.position = 'relative';
                 // this.chart.canvas.parentNode.style.margin = 'auto';
                 // this.chart.canvas.parentNode.style.height = '200px';

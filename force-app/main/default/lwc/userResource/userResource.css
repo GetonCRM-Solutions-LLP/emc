@@ -1,0 +1,116 @@
+*{
+    font-family: 'Proxima Nova' !important;
+}
+
+:host{
+    --grey-color: #D7D7D7;
+    --green-color: #7ABB4A;
+    --link-color: #1D1D1D;
+    --text-color: #6C6C6C;
+    --even-row-color: #FFFFFF;
+    --odd-row-color: #F7F7F7;
+    --scroll-color: #F6F6F6;
+    --active-color: #404b5b;
+    --white-color: #EDEDED;
+    --btn-grey-color: #A4A4A4;
+}
+
+
+@keyframes example {
+    0%   {border-left: 2px solid #ffffff;}
+    25%  {border-left: 3px solid #ffe6e6;}
+    50%  {border-left: 4px solid #81da55;}
+    100% {border-left: 5px solid #7ABB4A;}
+}
+
+header{
+    font-size: 16px;
+    font-weight: 400;
+}
+
+.middle-header{
+    font-size: 32px;
+    font-weight: 700;
+    color: #7abb4a;
+    text-align: center;
+}
+
+.flex-layout{
+    display: flex;
+    flex-flow: column;
+}
+
+.container-preview{
+    border: 1px solid #D7D7D7;
+    flex: 30%;
+    border-radius: 20px;
+}
+
+.align-center{
+    text-align: center;
+}
+
+.content-overview{
+    padding-top: 45px;
+    padding-bottom: 45px;
+    cursor: pointer;
+    border-radius: 20px;
+    transition: all 0.3s cubic-bezier(.25,.8,.25,1);
+    /* transition: all 200ms ease-in-out; */
+}
+
+.container-preview:hover{
+    /* transform: scale(0.8); */
+    animation-name: example;
+    animation-duration: 0.2s;
+    border-left: 8px solid #7ABB4A;
+    box-shadow: 0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22);
+}
+
+.icon-view{
+    width: 50px;
+    height: 50px;
+}
+
+.info-header{
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--link-color);
+}
+
+.info-sub-header{
+    font-size: 12px;
+    font-weight: 400;
+    color: var(--text-color);
+}
+
+.bordered-table tr>td:first-child{
+    font-weight: 400;
+    padding-left: 0 !important;
+  }
+  
+  .bordered-table tr>td:last-child{
+    font-weight: 700;
+    text-align: right;
+    padding-left: 4rem !important;
+    padding-right: 0 !important;
+  }
+  
+  .bordered-table tbody tr:last-child>td{
+    border-bottom: 0 !important;
+  }
+  
+  .bordered-table tbody tr:hover>td{
+    background-color: #FFFFFF !important;
+  }
+
+  .bordered-table tbody td{
+    border-bottom: 2px solid #D7D7D7;
+    /* padding-left: 0 !important;
+    padding-right: 0 !important; */
+    font-family: 'Proxima Nova';
+    font-style: normal;
+    font-size: 14px !important;
+    line-height: 200%;
+    color: #1D1D1D !important;
+  }

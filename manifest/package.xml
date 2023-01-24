@@ -1,13 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <Package xmlns="http://soap.sforce.com/2006/04/metadata">
 	<types>
-		<members>TripDetailReport</members>
-		<name>ApexPage</name>
-	</types>
-	<types>
-		<members>dashboardTable</members>
 		<members>emcDashboard</members>
+		<members>emcModal</members>
+		<members>modalPopup</members>
+		<members>modelDataTable</members>
+		<members>paginator</members>
 		<name>LightningComponentBundle</name>
 	</types>
-	<version>53.0</version>
+	<version>55.0</version>
 </Package>

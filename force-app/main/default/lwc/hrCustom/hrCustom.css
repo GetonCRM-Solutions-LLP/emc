@@ -1,0 +1,17 @@
+:host{
+    --color-white: #ffffff;
+    --color-light: #ededed;
+    --color-border: #D7D7D7;
+    --color-dark: #454545;
+    --color-blue: #1a9de1;
+    ---color-green: #7ABB4A;
+}
+
+.custom-hr{
+    position: absolute;
+    top: 77px;
+    width: 100%;
+    max-width: 80rem;
+    z-index: 1;
+    border-top: 1.5px solid var(--color-border, 10) !important;
+}

@@ -1,30 +1,46 @@
 <template>
     <div  class="transition">
         <div>
-            <c-m-burse-header-text head-text="Insurance Preview"></c-m-burse-header-text>
+            <template if:true={insuranceExpired}>
+                <div class="slds-text-heading_medium slds-p-top_medium slds-p-bottom_large slds-text-align_center slds-p-bottom_medium expiredError">YOUR INSURANCE HAS EXPIRED</div>
+                <div class="slds-text-heading_medium slds-text-align_center slds-p-bottom_large sub-header">Upload your Insurance to ensure you receive your reimbursement </div>
+            </template>
+            <template if:false={insuranceExpired}>
+                <div class="slds-text-heading_medium slds-text-align_center slds-p-bottom_medium font-bold main-header">Insurance Preview</div>
+            </template>
         </div>
-        <div class="slds-text-heading_small slds-text-align_center slds-p-bottom_x-large font-style emcFont p_bottom">
-            Watch this video to learn why we need your insurance.</div>
-        <div class="slds-align_absolute-center video-container">
+        <!-- <div class="slds-text-heading_small slds-text-align_center slds-p-bottom_x-large font-style emcFont p_bottom">
+            Watch this video to learn why we need your insurance.</div> -->
+        <div class={videoCss}> <!--Remove -->
             <video id="video-source" class="video-frame" width={videoWidth} height={videoHeight}  controls="controls" controlslist="noplaybackrate  nodownload" style="object-fit: cover;">
-                <source  type="video/mp4" src={videoLink}/>
+                <source  type="video/mp4" src={videoLink}/> <!--max-width: 33vw;
+                    border: 1px solid #D7D7D7;
+                    border-radius: 16px;-->
             </video>
         </div>
-        <div class="slds-clearfix slds-p-top_x-large m-left m-right p_top">
-            <div class="footer-text slds-float_left">
-                <div class="font-style"><strong>Make sure your declaration pages are in PDF format and contains your:</strong>
-                    <ul class="slds-list_dotted slds-p-top_x-small">
-                        <li>Name</li>
-                        <li>Level of Insurance</li>
-                        <li>Your vehicles make, model, and year</li>
-                        <li>Insurance term (coverage dates)</li>
-                    </ul>
+        <div class="slds-clearfix slds-p-top_x-large  p_top">
+            <div class="footer-text">
+                <div class="font-style">
+                    <div class={css}><!--padding: 0 65px 0 65px;-->
+                        <div class="slds-size_5-of-12 footer-text-content">
+                            <div><img src={exclaimIcon}/></div>
+                            <div class="slds-p-left_medium info-text">
+                                <strong>Make sure your declaration pages are in PDF format and contains your:</strong>
+                            </div>
+                        </div>
+                        <ul class="slds-list_dotted slds-size_4-of-12 slds-p-top_x-small">
+                            <li>Name</li>
+                            <li>Level of Insurance</li>
+                            <li>Your vehicles make, model, and year</li>
+                            <li>Insurance term (coverage dates)</li>
+                        </ul>
+                        <div class="footer-button slds-size_5-of-12 slds-p-left_x-large">
+                            <button class="slds-btn slds-btn-primary slds-btn-sm waves-effect bc-blue waves-light" onclick={nextDeclarationUpload}>
+                                Go to upload Insurance
+                            </button>
+                        </div>
+                    </div>
                 </div>
-            </div>
-            <div class="footer-button slds-float_right mright-0 mleft-0">
-                <button class="slds-btn slds-btn-primary slds-btn-sm waves-effect bc-blue waves-light" onclick={nextDeclarationUpload}>
-                    Next Upload Insurance
-                </button>
             </div>
         </div>
     </div>

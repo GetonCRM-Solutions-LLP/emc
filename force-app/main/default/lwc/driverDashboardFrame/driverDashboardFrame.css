@@ -1,0 +1,69 @@
+:host{
+  --grey-color: #D7D7D7;
+  --green-color: #7ABB4A;
+  --link-color: #1D1D1D;
+  --text-color: #6C6C6C;
+  --even-row-color: #FFFFFF;
+  --odd-row-color: #F7F7F7;
+  --scroll-color: #F6F6F6;
+  --active-color: #404B5B;
+  --step-bg: #F1F8EC;
+}
+
+.fa,
+.fas,
+.fa-solid,
+.fa-light,
+.fa-regular {
+    font-family: "Font Awesome 6 Free" !important
+}
+
+.fa-check{
+  color: var(--green-color);
+}
+
+.sidebar-open {
+    margin-left: 256px;
+		margin-top: 80px;
+}
+
+.message{
+  font-size: 16px;
+  width: 65%;
+  text-align: center;
+  font-weight: 700;
+  color: var(--link-color);
+}
+
+.sub-message{
+  font-size: 16px;
+  width: 65%;
+  text-align: center;
+  color: var(--link-color);
+}
+
+.main{
+  margin-left: 100px;
+  margin-top: 80px;
+  margin-right: 14px;
+}
+
+.white-cross{
+  color: #FFFFFF !important;
+}
+
+.error-cross{
+  color: #fa7800 !important;
+}
+
+.fa-xmark{
+  cursor: pointer;
+}
+
+.no-data-message{
+  font-size: 24px;
+  line-height: 29px;
+  text-align: center;
+  font-weight: 600;
+  color: var( --link-color);
+}

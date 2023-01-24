@@ -477,7 +477,6 @@
                      {
                          numericheadertoapifields.set($scope.headerfields[j],apifieldstoheader.get($scope.headerfields[j]));
                          $scope.numericheaderarray.push(numericheadertoapifields.get($scope.headerfields[j]));
-                       
                      }
                 }
                
@@ -630,9 +629,8 @@
                                $scope.finnalData[keyData.replace(/\s/g, "")]=$scope.arrayvalues[index+1]
                              }
                             for(i = 0 ; i < $scope.numericheaderarray.length; i++){
-                                if(keyData == $scope.numericheaderarray[i]){
+                                if(keyData != 'Variable Rate'){
                                     $scope.finnalData[keyData.replace(/\s/g, "")]=($scope.arrayvalues[index+1]).toLocaleString();
-                                    
                                }
                             }
                            
@@ -773,10 +771,9 @@
                                             let keyData=item[index];
                                             $scope.finnalData[keyData.replace(/\s/g, "")]=$scope.arrayvalues[index+1]
                                             for(i = 0 ; i < $scope.numericheaderarray.length; i++){
-                                          
-                                            if(keyData == $scope.numericheaderarray[i]){
-                                            $scope.finnalData[keyData.replace(/\s/g, "")]=($scope.arrayvalues[index+1]).toLocaleString();
-                                             }
+                                                if(keyData != 'Variable Rate'){
+                                                    $scope.finnalData[keyData.replace(/\s/g, "")]=($scope.arrayvalues[index+1]).toLocaleString();
+                                                }
                                              }
                                             $scope.ind = index+1;
                                             }
@@ -855,7 +852,7 @@
                                             }
                                         })
                     }
-                    if (keyname === 'TotalMileage' || keyname === 'StayTime'  || keyname === 'DriveTime' || keyname === 'Mileage' || keyname === 'MonthlyFixedAmount' || keyname === 'VariableAmount'  || keyname === 'VariableReimbursementRate' || keyname === 'TotalMonthlyReimbursement' || keyname === 'MonthlyVariableAmount' || keyname === 'MonthlyApprovedVariableAmount' || keyname === 'TotalApprovedMiles' || keyname === 'TotalApprovedVariable' || keyname === 'TotalReimbursement' || keyname === 'Division' || keyname === 'VariableRate' || keyname === 'ApprovedMileage' || keyname === 'ActualMileage' || keyname === 'NetMiles' || keyname === 'NetMileage' ||  keyname === 'TotalMileages' || keyname === 'Reimbursement') {
+                    if (keyname === 'TotalMileage' || keyname === 'StayTime'  || keyname === 'DriveTime' || keyname === 'Mileage' || keyname === 'MonthlyFixedAmount' || keyname === 'VariableAmount'  || keyname === 'VariableReimbursementRate' || keyname === 'TotalMonthlyReimbursement' || keyname === 'MonthlyVariableAmount' || keyname === 'MonthlyApprovedVariableAmount' || keyname === 'TotalApprovedMiles' || keyname === 'TotalApprovedVariable' || keyname === 'TotalReimbursement' || keyname === 'Division' || keyname === 'VariableRate' || keyname === 'ApprovedMileage' || keyname === 'ActualMileage' || keyname === 'NetMiles' || keyname === 'NetMileage' ||  keyname === 'TotalMileages' || keyname === 'Reimbursement' || keyname === 'ImputedIncome') {
 
                                 $scope.finnalArr.sort(function (a, b) {
                                             var nameA = (a[keyname] == null) ? '' : parseFloat(a[keyname]),

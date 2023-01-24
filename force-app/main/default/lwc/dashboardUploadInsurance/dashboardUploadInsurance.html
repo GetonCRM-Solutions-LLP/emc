@@ -1,5 +1,5 @@
 <template>
-    <c-m-burse-navbar margin="85px">
+    <!-- <c-m-burse-navbar margin="85px">
         <li class="nav-item" if:true={showDashBoard}>
             <a class="nav-link text-white" href={dashboardUrl}>
                 Dashboard
@@ -81,8 +81,25 @@
                 Logout
             </a>
         </li>
-    </c-m-burse-navbar>
-    <c-dashboard-insurance-view if:false={nextDeclationUpload} onnavigate={navigateToDeclaration} video-link={insuranceVideo}></c-dashboard-insurance-view>
-    <c-dashboard-insurance-upload if:true={nextDeclationUpload} is-upload-show={uploadVal} account-id={accountId} contact-id={contactId} attachmentid={attachmentid} contact-name={contactName}
-    contact-email={contactEmail} client={information} onnavigate={navigateToDashboard}  onback={backToInsurance}></c-dashboard-insurance-upload>
+    </c-m-burse-navbar> -->
+    <header>
+		<div class="header-inner">
+			<div class="company-logo" onclick={refreshPage}>
+				<img class="logo-img" src={companyLogoUrl} />
+			</div>
+			<div class="navigation-link">
+				<div class="logout-container">
+					<button
+						class="slds-btn slds-btn-primary slds-btn-sm waves-effect bc-green logout-btn waves-light mleft-0"
+						onclick={handleLogout}>Logout</button>
+				</div>
+			</div>
+
+		</div>
+	</header>
+    <template if:true={information}>
+        <c-dashboard-insurance-view if:false={nextDeclationUpload} onnavigate={navigateToDeclaration} expired={insuranceExpired}  account-id={accountId} contact-id={contactId} video-link={insuranceVideo} css="slds-align_absolute-center content-padding content-flex" video-css="slds-align_absolute-center video-container padding-container"></c-dashboard-insurance-view>
+        <c-dashboard-insurance-upload if:true={nextDeclationUpload} is-upload-show={uploadVal} account-id={accountId} contact-id={contactId} attachmentid={attachmentid} contact-name={contactName}
+        contact-email={contactEmail} client={information} onnavigate={navigateToDashboard}  onback={backToInsurance}></c-dashboard-insurance-upload>
+    </template>
 </template>

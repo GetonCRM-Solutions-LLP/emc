@@ -9,6 +9,7 @@
         <link rel="stylesheet" href="{!URLFOR($Resource.EMC_Header_Scripts,'EMC_Header_Scripts/css/select2.css')}" />
         <script src="{!URLFOR($Resource.modelJs)}"></script>
         <script src="{!URLFOR($Resource.dirPagination)}"></script>
+        
         <style>
             a {
                 cursor: pointer;
@@ -16,6 +17,35 @@
 
             table tr td {
                 border-top: none !important;
+            }
+
+            .select2 > .select2-choice.ui-select-match {
+                /* Because of the inclusion of Bootstrap */
+                height: 29px;
+            }
+
+            .selectize-control > .selectize-dropdown {
+                top: 36px;
+            }
+            /* Some additional styling to demonstrate that append-to-body helps achieve the proper z-index layering. */
+            .select-box {
+            background: #fff;
+            position: relative;
+            z-index: 1;
+            }
+
+            .alert-info.positioned {
+            margin-top: 1em;
+            position: relative;
+            z-index: 10000; /* The select2 dropdown has a z-index of 9999 */
+            }
+
+            .ui-select-search{
+            font-size:16px !important;
+            }            
+            .selectize-control.single .selectize-input:after {
+            display: contents !important;
+            content: ' ';
             }
 
             .loading-text{
@@ -837,6 +867,319 @@
                     };
             }]);
 
+
+            // Annual Tax Liability Report
+
+            var EditTaxLiabilityReportModel = function(){
+                this.visible = false;
+            }
+
+            EditTaxLiabilityReportModel.prototype.open = function () {
+                this.visible = true;
+            }
+
+            EditTaxLiabilityReportModel.prototype.close = function () {
+                this.visible = false;
+            }
+
+            app.directive('editTaxLiabilityReport', ['$filter', '$http',
+                function ($filter, $http) {
+                    return {
+                        restrict: 'E',
+                        scope: {
+                            model: '='
+                        },
+                        link: function (scope, element, attributes) {
+                            scope.$watch('model.visible', function (newValue) {
+                                var modalElement = element.find('.modal');
+                                modalElement.modal(newValue ? 'show' : 'hide');
+                                // if (newValue == true) {
+
+                                // }
+                            });
+
+                            var count = 0;
+                            var url_string = $(location).attr("href");
+                            var url = new URL(url_string);
+                            var host = url.host;
+                            scope.accid = url.searchParams.get("accid");
+                            scope.currentPage = 1;
+                            scope.maxRecord = 25;
+                            scope.maxPage = 0;
+                            scope.showData = [];
+                            scope.itemPerPage = 10;
+                            scope.showList = false;
+                            scope.taxDataList = []; 
+                            scope.checkboxobj = {}
+                            scope.totalRecords;
+                            scope.maxPage;
+                            scope.year = [];
+                            scope.defaultOption = {value: "Select Year"};
+                            scope.accountYear = {!AccountYear}
+                            console.log(scope.accountYear)
+                            var maxYear = new Date().getFullYear();
+                            var minYear = scope.accountYear;
+                            //var minYear = new Date().getFullYear() - 2;
+
+                            for(var i = minYear; i<=maxYear ; i++){
+                                scope.year.push(i);
+                            }
+                            let finalyear = scope.year;
+                            scope.year = [];
+                            finalyear.map(function(item){
+                                scope.year.push({
+                                    value:item
+                                })
+                            });
+
+                            scope.year.splice(0, 0, scope.defaultOption);
+                            scope.selectedYear = scope.year[0].value;
+                            function refreshModal() {
+                                location.reload();
+                            }
+
+                            scope.showBtn = function(yt){
+                                console.log(yt)
+                                scope.selectedYear = yt;
+                             }
+
+                            scope.backToFilter = function (){
+                                scope.showList = false;
+                                scope.checkboxobj.isCheckedAll = false;
+                                $('#taxDownloadReimBtn').prop('disabled', true);
+                            }
+
+                            scope.requestList = function(){
+                                    $('#spinner').show();
+                                    Visualforce.remoting.Manager.invokeAction(
+                                    '{!$RemoteAction.ReportListController.taxLiabilityReport}', scope.accid,
+                                    function (result, event) {
+                                        if(result){
+                                            console.log('Tax List', result)
+                                            scope.taxDataList = JSON.parse(result);
+                                            if(scope.taxDataList.length != 0){
+                                                scope.totalRecords = scope.taxDataList.length;
+                                                scope.maxPage = Math.ceil(scope.totalRecords / scope.itemPerPage)
+                                                angular.forEach(scope.taxDataList, function (obj) {
+                                                    obj["isReimbChecked"] = false;
+                                                });
+                                                scope.showList = true;
+                                                $('#spinner').hide();
+                                            }else{
+                                                $('#spinner').hide();
+                                            }
+                                        }else{
+                                            toastr.error("Please try again");
+                                            $('#spinner').hide();
+                                        }
+                                        scope.$apply();
+                                    }, { escape: false }
+                                );
+                            }
+                   
+                            scope.showRecord = function (list) {
+                                if (list) {
+                                    scope.showData.push(list)
+                                }
+                                if (scope.currentPage === scope.maxPage) {
+                                    count++;
+                                }
+                            }
+
+                            scope.onPageChange = function (pageNum) {
+                                if (scope.currentPage != scope.maxPage) {
+                                    scope.showData = scope.showData.slice(-10)
+                                }
+                                else {
+                                    scope.showData = scope.showData.slice(-count);
+                                }
+
+
+                                if (scope.checkboxobj != undefined) {
+                                    scope.checkboxobj.isCheckedAll = false;
+                                }
+
+                                angular.forEach(scope.taxDataList, function (list) {
+                                    list.isReimbChecked = false
+                                });
+                            }
+
+                            scope.downloadToExcel = function (sheetData, excelfile) {
+                                    function datenum(v, date1904) {
+                                        if (date1904) v += 1462;
+                                        var epoch = Date.parse(v);
+                                        return (epoch - new Date(Date.UTC(1899, 11, 30))) / (24 * 60 * 60 * 1000);
+                                    };
+
+                                    function getSheet(sheetData, opts) {
+                                        var ws = {};
+                                        var range = { s: { c: 10000000, r: 10000000 }, e: { c: 0, r: 0 } };
+                                        for (var R = 0; R != sheetData.length; ++R) {
+                                            for (var C = 0; C != sheetData[R].length; ++C) {
+                                                if (range.s.r > R) range.s.r = R;
+                                                if (range.s.c > C) range.s.c = C;
+                                                if (range.e.r < R) range.e.r = R;
+                                                if (range.e.c < C) range.e.c = C;
+                                                var cell = { v: sheetData[R][C] };
+                                                if (cell.v == null) continue;
+                                                var cell_ref = XLSX.utils.encode_cell({ c: C, r: R });
+
+                                                if (typeof cell.v === 'number') cell.t = 'n';
+                                                else if (typeof cell.v === 'boolean') cell.t = 'b';
+                                                else if (cell.v instanceof Date) {
+                                                    cell.t = 'n'; cell.z = XLSX.SSF._table[14];
+                                                    cell.v = datenum(cell.v);
+                                                }
+                                                else cell.t = 's';
+                                                ws[cell_ref] = cell;
+                                            }
+                                        }
+                                        if (range.s.c < 10000000) ws['!ref'] = XLSX.utils.encode_range(range);
+                                        return ws;
+                                    };
+
+                                    function Workbook() {
+                                        if (!(this instanceof Workbook)) return new Workbook();
+                                        this.SheetNames = [];
+                                        this.Sheets = {};
+                                    }
+                                    var wb = new Workbook(), ws = getSheet(sheetData);
+                                    /* add worksheet to workbook */
+                                    wb.SheetNames.push(excelfile);
+                                    wb.Sheets[excelfile] = ws;
+                                    var wbout = XLSX.write(wb, { bookType: 'xlsx', bookSST: true, type: 'binary' });
+                                    function s2ab(s) {
+                                        var buf = new ArrayBuffer(s.length);
+                                        var view = new Uint8Array(buf);
+                                        for (var i = 0; i != s.length; ++i) view[i] = s.charCodeAt(i) & 0xFF;
+                                        return buf;
+                                    }
+                                    saveAs(new Blob([s2ab(wbout)], { type: "application/octet-stream" }), excelfile + '.xlsx');
+                            }
+
+                            scope.CheckUncheckForAllListReimbursement = function (CheckUncheckForAllListReimbursement) {
+                                var allcount = 0;
+                                scope.checkboxobj.isCheckedAll = CheckUncheckForAllListReimbursement;
+                                scope.taxDataList.forEach(arr1 => {
+                                    scope.showData.forEach(arr2 => {
+                                        if (arr1.reimbId == arr2.reimbId) {
+                                            arr1.isReimbChecked = scope.checkboxobj.isCheckedAll;
+                                            if (arr1.isReimbChecked) {
+                                                allcount++
+                                            }
+                                        } else {
+                                            return;
+                                        }
+                                    });
+                                });
+                            
+                                if (allcount != 0) {
+                                    $('#taxDownloadReimBtn').prop('disabled', false);
+                                }
+                                else {
+                                    $('#taxDownloadReimBtn').prop('disabled', true);
+                                }
+                            }
+
+                            scope.CheckUncheckForAllReimbursement = function (CheckUncheckForAllReimbursement, reimblist) {
+                                var chkcount = 0;
+                                var total = scope.taxDataList.length;
+                                angular.forEach(scope.taxDataList, function (list) {
+                                    if (list.isReimbChecked) {
+                                        chkcount++;
+                                    }
+                                })
+
+                                // let startDateReport = $('#report-startdatepicker').val().trim();
+                                // let endDateReport = $('#report-enddatepicker').val().trim();
+                                var btnVal = scope.selectedYear === 'Select Year' ? false : true;
+                                if (total == chkcount) {
+                                    scope.checkboxobj.isCheckedAll = true;
+                                } else {
+                                    scope.checkboxobj.isCheckedAll = false;
+                                }
+                                console.log("chkcount", chkcount, btnVal)
+                                if (chkcount != 0) {
+                                    if (btnVal) {
+                                        $('#taxDownloadReimBtn').prop('disabled', false);
+                                    }
+                                    else {
+                                        $('#taxDownloadReimBtn').prop('disabled', true);
+                                    }
+                                } else {
+                                    $('#taxDownloadReimBtn').prop('disabled', true);
+                                }
+                            }
+
+                            scope.downloadReimbursement = function () {
+                                $('#spinner').show();
+                                $('#custom-loading').text("The report is being generated now. please wait just a moment.");
+                                var listOfTax = [];
+                                // scope.stDate = $('#report-startdatepicker').val();
+                                // scope.enDate = $('#report-enddatepicker').val();
+                                angular.forEach(scope.taxDataList, function (reimObj) {
+                                    if (reimObj.isReimbChecked === true) {
+                                        listOfTax.push(reimObj.reimbId);
+                                    }
+                                });
+                                scope.fileExName = "Annual Tax Liability Report";
+                                scope.summarytaxdownload = [];
+                                scope.exportTaxDataList = [];
+                                Visualforce.remoting.Manager.invokeAction(
+                                    '{!$RemoteAction.ReportListController.downLoadComplianceReport}', JSON.stringify(listOfTax), scope.selectedYear,
+                                    function (result, event) {
+                                        if(result){
+                                            console.log('Tax List downloaded', result)
+                                            scope.exportTaxDataList = JSON.parse(result);
+                                            if(scope.exportTaxDataList.length > 0){
+                                                scope.summarytaxdownload.push(["Employee Name",  "Employee ID", "Employee Email", "Imputed Income"]);
+                                                angular.forEach(scope.exportTaxDataList, function (item) {
+                                                            scope.summarytaxdownload.push([item.drivername, item.employeeid, item.emailid, item.imputedincome]);
+                                                });
+                                                scope.downloadToExcel(scope.summarytaxdownload, scope.fileExName);
+                                                $('#spinner').hide();
+                                                $('#custom-loading').text("");
+                                                refreshModal();
+                                            }else{
+                                                $('#spinner').hide();
+                                                toastr.error("No report available for these driver's.Please try again");
+                                                setTimeout(()=>{
+                                                    refreshModal();
+                                               }, 2000)
+                                            }
+                                        }else{
+                                            toastr.error("Please try again");
+                                            $('#spinner').hide();
+                                            setTimeout(()=>{
+                                                    refreshModal();
+                                            }, 2000)
+                                        }
+                                        scope.$apply();
+                                    }, { escape: false }
+                                );
+                            }
+
+                            scope.closeModal = function(){
+                                refreshModal();
+                            }
+
+                            element.on('shown.bs.modal', function () {
+                                scope.$apply(function () {
+                                    scope.model.visible = true;
+                                    scope.requestList();
+                                });
+                            });
+
+                            element.on('hidden.bs.modal', function () {
+                                scope.$apply(function () {
+                                    scope.model.visible = false;
+                                });
+                            });
+
+                        },
+                        template: '<div class="modal fade driver-dashboard-monthrecord show in" tabindex="-1" role="dialog" aria-labelledby="driver-dashboard-monthrecord" id="driver-dashboard-monthrecord"><div class="fade modal-backdrop"></div><div class="modal-dialog modal-lg modal-dialog-centered"><div class="modal-content rounded-0"><button type="button" class="close popup-close-btn" data-dismiss="modal" aria-label="Close" ng-click="closeModal()"><span aria-hidden="true">×</span></button><div class="modal-body"><h4>Contact List</h4><div class="modal-divider"></div><div class="form-row"><div class="form-group-theme row-inline"><label for="Filter" class="col-xl-1 col-lg-2 col-md-2 col-sm-2 col-form-label form-lable">Year:</label><div class="col-12 col-sm-3 col-md-3 col-lg-3 col-xl-3 validate-div" style="font-size:16px!important"><select ng-model="selectedYear" ng-change="showBtn(selectedYear)" class="browser-default custom-select custom-select-xl width-dp"><option ng-repeat="yr in year" ng-selected="{{selectedYear == yr.value}}" value="{{yr.value}}">{{yr.value}}</option></select></div></div></div><div class="table-responsive" ng-show="showList"><table id="driver-dashbord-month-model" class="table dt-responsive nowrap no-footer dataTable" cellspacing="0" width="100%"><tbody class="table-a-link"><tr><td ng-model="allList"><div class="input-group main-input"><div class="input-group-prepend"><div class="input-group-text"><input id="allreimbchecked" type="checkbox" ng-model="checkboxobj.isCheckedAll" class="attendanceCheck" ng-click="CheckUncheckForAllListReimbursement(checkboxobj.isCheckedAll)"></div></div><span class="form-control" ng-model="alllist">Select All</span></div></td></tr><tr dir-paginate="list in taxDataList|itemsPerPage:itemPerPage" current-page="currentPage" ng-model="list" ng-init="showRecord(list)"><td ng-model="list.name"><div class="input-group main-input"><div class="input-group-prepend"><div class="input-group-text"><input id="reimbchecked" type="checkbox" ng-model="list.isReimbChecked" class="attendanceCheck" ng-click="CheckUncheckForAllReimbursement(list.isReimbChecked,list)"></div></div><span class="form-control" ng-model="list.name">{{list.name}}</span></div></td></tr></tbody><tfoot><tr></tr></tfoot></table></div></div><div class="modal-footer" ng-show="showList"><div class="col-md-6"><dir-pagination-controls max-size="1" direction-links="true" boundary-links="true" responsive="true" auto-hide="false" class="pull-left" on-page-change="onPageChange(newPageNumber)"></dir-pagination-controls></div><div class="col-md-6"><button id="taxDownloadReimBtn" class="btn btn-primary float-right mr-12" ng-click="downloadReimbursement()" disabled>Download <i class="fa fa-download"></i></button></div></div></div></div></div>'
+                    };
+            }]);
 
             //EMC - 393 ERMI Report
 
@@ -2187,6 +2530,7 @@
             $scope.editMonthlyTaxReportModel = new EditMonthlyTaxReportModel();
             $scope.editTimeCustomReportModel = new EditTimeCustomReportModel();
             $scope.editNetchexReportModel = new EditNetchexReportModel();
+            $scope.editTaxLiabilityReportModel = new EditTaxLiabilityReportModel();
             $scope.editTripDetailReportModel = new EditTripDetailReportModel();
             // $scope.editTripReportModel = new EditTripReportModel();
             $scope.editMonthlyNetchexReportModel = new EditMonthlyNetchexReportModel();
@@ -2341,7 +2685,7 @@
                                     <a ng-show="admindriver  && !manVisible" href="/app/ReportofDriverCompliance?accid={{accid}}&showteam={{showteam}}&id={{id}}&reportid ='compliancecalculationreport'&admindriver=true">Tax Liability</a>
                                     <a ng-show="admindriver  && manVisible" href="/app/ReportofDriverCompliance?managerid={{manId}}&accid={{accid}}&showteam={{showteam}}&id={{id}}&reportid ='compliancecalculationreport'&admindriver=true">Tax Liability</a>
                                 </p>
-                                <p ng-if="accid === spbsId || accid === deltaId || accid === antonpaarId">
+                                <p>
                                     <a href="/app/AnnualComplianceReport?accid={{accid}}&showteam={{showteam}}&id={{id}}" title="This report includes details about drivers who's compliance status is yes">Annual Tax Liability Report </a>
                                 </p>
                             </div>
@@ -2421,18 +2765,22 @@
                                 <a ng-show="admindriver && !manVisible" href="/app/ReportofDriverCompliance?accid={{accid}}&showteam={{showteam}}&id={{id}}&reportid ='compliancecalculationreport'&admindriver=true">Tax Liability</a>
                                 <a ng-show="admindriver && manVisible" href="/app/ReportofDriverCompliance?managerid={{manId}}&accid={{accid}}&showteam={{showteam}}&id={{id}}&reportid ='compliancecalculationreport'&admindriver=true">Tax Liability</a>
                             </p>
-                            <p ng-if="accid === spbsId || accid === deltaId || accid === antonpaarId">
+                            <p>
+                                <a ng-click="editTaxLiabilityReportModel.open()">Annual Tax Liability Report </a>
+                            </p>
+                            <!-- <p ng-if="accid === spbsId || accid === deltaId || accid === antonpaarId">
                                 <a href="/app/AnnualComplianceReport?accid={{accid}}&showteam={{showteam}}&id={{id}}" title="This report includes details about drivers who's compliance status is yes">Annual Tax Liability Report </a>
                             </p>
                             <p ng-if="accid === plMAcc">
                                 <a href="/app/AnnualComplianceReportPLM?accid={{accid}}">Annual Tax Liability Report </a>
-                            </p>
+                            </p> -->
                         </div>
                     </div>
                 </div>
             </div>
             <edit-lock-Date model="editDateModel"></edit-lock-Date>
             <edit-time-attendance-Report model="editTimeReportModel"></edit-time-attendance-Report>
+            <edit-tax-liability-Report model="editTaxLiabilityReportModel"></edit-tax-liability-Report>
             <edit-trip-detail-Report model="editTripDetailReportModel"></edit-trip-detail-Report>
             <edit-time-summary-Report model="editTimeReportSummaryModel"></edit-time-summary-Report>
             <edit-monthly-tax-Report model="editMonthlyTaxReportModel"></edit-monthly-tax-Report>

@@ -1,0 +1,58 @@
+<template>
+    <nav class="sidebar close">
+        <header>
+            <div class="image-text">
+                <span class="image">
+                    <div class="mburse-large" onclick={redirectToHomePage}>
+                        <img src={company}/>
+                    </div>
+                    <div class="logo-mburse" onclick={redirectToHomePage}>
+                        <img src={companyShort} />
+                    </div>
+                 </span>
+
+                <div class="logo-icon">
+                    <div class="icon user-icon">
+                        <img class="user-icon-img" src={user} />
+                    </div>
+                    <div class="text logo-text">
+                        <span class="name">{driverName}</span>
+                        <span class="profession">{driverEmail}</span>
+                    </div>
+                </div>
+            </div>
+
+            <i class='fas fa-chevron-right toggle' onclick={toggleSideBar}></i>
+        </header>
+
+        <div class="menu-bar">
+            <div class="menu">
+                <template  for:each={driverMenuItem} for:item="menu">
+                    <div class="grey-border" key={menu.Id}></div>
+                    <dl class="menu-links" key={menu.Id}>
+                        <dt class="text-head">{menu.label}</dt>
+                        <template for:each={menu.menuItem} for:item="item">
+                            <dd class="nav-link"  key={item.menuId}>
+                                <a class="tooltipText" href="#" onclick={handleRedirect} data-name={item.menu} oncontextmenu={handleContextMenu}>
+                                    <span class="icon" data-name={item.menu}>
+                                        <img class="icon-initial" src={item.logo}  data-name={item.menu}/>
+                                        <img class="icon-hover" src={item.logoHov}  data-name={item.menu}/>
+                                    </span>
+                                    <span class="text nav-text" data-name={item.menu}>{item.menuLabel}</span>
+                                    <span key={item.menuId} class="tooltipValue">{item.menuLabel}</span>
+                                </a>
+                            </dd>
+                        </template>
+                       
+                    </dl>
+                </template>
+              
+            </div>
+            <!-- <div class="logout-container">
+                <button
+                class="slds-btn slds-btn-primary slds-btn-sm waves-effect bc-green logout-btn waves-light mleft-0" onclick={logOut}>Logout</button>
+            </div> -->
+        </div>
+
+    </nav>
+</template>

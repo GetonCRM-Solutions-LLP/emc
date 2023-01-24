@@ -1,0 +1,46 @@
+<template>
+    <div class="slds-p-horizontal_x-large animate__animated animate__slideInLeft animate__delay-1s">
+        <div class="row">
+            <div class="container">
+                <template if:true={modelList}>
+                    <c-user-preview-table  header-download="true" header-name="true" trip-month={tripMonth}  biweek-value={biweekValue} start-date={startDate} end-date={endDate} main-class={classToTable} scrollable={isScrollable} is-paginate={paginatedModal} model-data={modelList}
+                    columns={modalListColumn} options={modalKeyFields} is-sortable={sortable} onview={downloadAllTrips} is-default-sort={isSort} >
+                    <div slot="header">
+                        <div class="slds-float_right">
+                            <div  class="slds-input-has-icon slds-input-has-icon_right search-holder">
+                                <div class="search-icon-block">
+                                    <img class="search-icon" src={searchIcon} />
+                                </div>
+                                <input  class="slds-input filter-input" type="text" placeholder="Search"  onkeyup={handleChange}/>
+                            </div>
+                        </div>
+                    </div>
+                    </c-user-preview-table>
+                </template>
+                <!-- <div class="preview slds-m-top_medium">
+                    <div class="slds-p-left_medium slds-p-bottom_small slds-p-top_xx-small">
+                        <h2 class="slds-text-heading_medium slds-hyphenate month-header" if:false={biweekValue}>
+                            {tripMonth}
+                        </h2>
+                        <h2 class="slds-text-heading_medium slds-hyphenate month-header" if:true={biweekValue}>
+                            Pay Period <lightning-formatted-date-time value={startDate} year="2-digit" month="numeric" day="numeric">
+                            </lightning-formatted-date-time> - <lightning-formatted-date-time value={endDate} year="2-digit" month="numeric"
+                                day="numeric">
+                            </lightning-formatted-date-time>
+                        </h2>
+                    </div>
+                    <div  class="slds-p-left_medium slds-p-right_medium">
+                        <template if:true={modelList}>
+                            <c-user-data-table main-class={classToTable} scrollable={isScrollable} is-paginate={paginatedModal} model-data={modelList}
+                            columns={modalListColumn} options={modalKeyFields} ></c-user-data-table>
+                        </template>
+                    </div>
+                </div> -->
+                <div class="slds-m-top_medium">
+                    <button class="slds-btn waves-effect btn-grey slds-btn-sm" onclick={backToDashboard}><i class="fas fa-arrow-left"></i></button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <c-export-excel></c-export-excel>
+</template>

@@ -19,4 +19,19 @@ const nextSkipEvents  = (component, param) => {
     component.dispatchEvent(e);
 }
 
-export {events, skipEvents, backEvents, nextSkipEvents}
+const openEvents  = (component, param) => {
+    const e = new CustomEvent('open', {detail: param});
+    component.dispatchEvent(e);
+}
+
+const toastEvents  = (component, param) => {
+    const e = new CustomEvent('toast', {detail: param});
+    component.dispatchEvent(e);
+}
+
+const modalEvents  = (component, param) => {
+    const e = new CustomEvent('modal', {detail: param});
+    component.dispatchEvent(e);
+}
+
+export {events, skipEvents, backEvents, nextSkipEvents, openEvents, toastEvents, modalEvents}

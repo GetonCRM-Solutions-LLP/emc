@@ -1,0 +1,188 @@
+<apex:page showHeader="false" lightningStylesheets="true" standardStylesheets="false" sidebar="false" applyHtmlTag="false"
+    applyBodyTag="false" docType="html-5.0">
+     <head>
+        <style>
+            #container{
+                margin: 0 auto;
+            }
+            .chart {
+                margin: 0 auto;
+            }
+            .highcharts-title {
+                fill: #434348;
+                font-weight: 700;
+                font-size: 16px !important;
+                font-family: 'Proxima Nova'
+            }
+            .highcharts-subtitle{
+                 font-weight: 400;
+                 font-size: 14px;
+                 font-family: 'Proxima Nova'
+            }
+        </style>
+        <link rel="stylesheet" href="{!URLFOR($Resource.EmcCSS,'emc-design/assets/css/main.css')}"/>
+        <script src="{!URLFOR($Resource.HighChart,'/highmaps.js')}"></script>
+        <script src="{!URLFOR($Resource.HighChart,'/data.js')}"></script>
+        <script src="{!URLFOR($Resource.HighChart,'/exporting.js')}"></script>
+        <script src="{!URLFOR($Resource.HighChart,'/offline-exporting.js')}"></script>
+        <script>
+             var lexOrigin = location.origin;
+             var postData, chartData, states, chartstates = [], chloChart;
+            window.addEventListener("message", function (event) {
+                console.log('Origin ' + event.origin);
+                console.log('data ' + event.data);
+                if (event.origin !== lexOrigin) {
+                    return;
+                }
+                postData = JSON.parse(event.data)
+                chartData = JSON.parse(postData.modal);
+                if(chartData.length > 0){
+                    if(chartData[0].Driving_States__c !== undefined){
+                        states = chartData[0].Driving_States__c.split(';');
+                        subtitle = states.join(', ')
+                        states.forEach((item, index) =>{
+                            let object = {}
+                            let val = index + 1
+                            object.value = val
+                            object.code = item
+                            chartstates.push(object)
+                        })
+                    }
+                }
+              
+               
+                console.log(chartData, chartstates)
+                let containerChart = document.getElementById('container');
+               //https://code.highcharts.com/mapdata/countries/us/custom/us-small.topo.json
+                Highcharts.getJSON('https://code.highcharts.com/mapdata/countries/us/us-all.topo.json', function (topology) {
+                  chloChart =  Highcharts.mapChart(containerChart, {
+                        chart: {
+                            map: topology,
+                            borderColor:postData.border,
+                            backgroundColor: postData.background,
+                            height: postData.height, //250
+                            width: postData.width, // 360
+                            margin: [0,0,0,0],
+                            spacingTop: 0,
+                            spacingBottom: 0,
+                            spacingLeft: 0,
+                            spacingRight: 0
+                            //styledMode: true
+                        },
+                        
+                        responsive:{
+                            rules:[{
+                              condition:{
+                               maxWidth: 1000
+                              }
+                             }]
+                        },
+
+                        title: {
+                            text: ''
+                            // align: 'left',
+                            // fontSize: '16px',
+                            // color: '#1D1D1D'
+                        },
+
+                        //  subtitle: {
+                        //     text: subtitle,
+                        //     align: 'left',
+                        //     fontSize: '14px',
+                        //     color: '#6C6C6C'
+                        // },
+
+                        exporting: {
+                            enabled: false,
+                            sourceWidth: 600,
+                            sourceHeight: 500
+                        },
+
+                        legend: {
+                            enabled: false,
+                            layout: 'horizontal',
+                            borderWidth: 0,
+                            backgroundColor: 'rgba(255,255,255,0.85)',
+                            floating: true,
+                            verticalAlign: 'top',
+                            y: 25
+                        },
+
+                        mapNavigation: {
+                            enabled: false
+                        },
+
+                        colorAxis: {
+                            min: 1,
+                            type: 'logarithmic',
+                            minColor: '#7abb4a',
+                            maxColor: '#7abb4a',
+                            stops: [
+                                [0, '#7abb4a'],
+                                [0.67, '#7abb4a'],
+                                [1, '#7abb4a']
+                            ]
+                        },
+
+                        credits: {
+                            enabled: false
+                        },
+
+                        series: [{
+                            accessibility: {
+                                point: {
+                                    valueDescriptionFormat: '{xDescription}, {point.value} people per square kilometer.'
+                                }
+                            },
+                            borderColor: '#FFFFFF',
+                            nullColor: '#d9d9d9',
+                            borderWidth: 0.2,
+                            animation: {
+                                duration: 1000
+                            },
+                            data: chartstates,
+                            joinBy: ['postal-code', 'code'],
+                            dataLabels: {
+                                enabled: false,
+                                color: '#FFFFFF',
+                                format: '{point.code}'
+                            },
+                            name:  'Driving State', //  'Population density'
+                            states: {
+                                hover: {
+                                    borderWidth: 1
+                                }
+                            },
+                            tooltip: {
+                                pointFormat: '{point.code}: {point.name}' // : {point.value}/km²
+                            }
+                        }],
+
+                        navigation: {
+                            menuItemStyle:{
+                                fontFamily: 'Proxima Nova',
+                                fontSize: 15,
+                                padding: '10px',
+                            },
+                            menuItemHoverStyle: {
+                                background: '#7abb4a',
+                                color: '#FFFFFF'
+                            }
+                        }
+                    });
+                })
+            })
+            
+            // function reportWindowSize() {
+            //     console.log(document.getElementById('container').style)
+            // }
+
+            // window.onresize = reportWindowSize;
+        </script>
+        </head>
+        <div id="container" class="chart"></div>
+        <!-- <div style="width: 100%;" id="mapDiv">
+          
+             <button id="large">Large</button> 
+        </div> -->
+</apex:page>

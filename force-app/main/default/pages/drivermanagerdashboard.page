@@ -1468,9 +1468,9 @@
                 var countforUnapprove = 0;
                 var countforbtn = 0;
                 $scope.exportData = [];
-                $scope.exportData.push(["Month", "Name", "Status", "Approved Mileages",  "Submited Mileage", "Rejected Mileage", "Mileage Approved By", "Managers Name", "Managers Email"]);
+                $scope.exportData.push(["Month", "Name", "Status", "Approved Mileages",  "Submited Mileage", "Rejected Mileage", "Approved By", "Approval Date", "Lock Date/Report Run", "Managers Name", "Managers Email"]);
                 angular.forEach($scope.AllDriversLastMonthReimbursements, function (item) {
-                    $scope.exportData.push([item.month, item.name.replace(/\\'/g, "\'"), item.status, item.approvedMileages, item.totalMileages, item.rejectedMileages, item.mileageApproval, item.managerName, item.managerEmail]);
+                    $scope.exportData.push([item.month, item.name.replace(/\\'/g, "\'"), item.status, item.approvedMileages, item.totalMileages, item.rejectedMileages, item.mileageApproval, item.approvedDate, item.lockDate, item.managerName, item.managerEmail]);
                     if (item.totalMileages > '0.00' && item.status === 'Pending') { /* EMC - 168 : Approve checkbox still present on dashboard */
                         $scope.displayApprovebtn = true; 
                         count++;

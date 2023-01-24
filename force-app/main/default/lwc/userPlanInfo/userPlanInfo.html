@@ -1,0 +1,655 @@
+<template>
+    <div class="slds-tabs_default">
+        <ul class="slds-tabs_default__nav" role="tablist">
+            <li class="slds-m-right_small slds-tabs_default__item slds-is-active" role="presentation">
+                <a class="slds-tabs_default__link" onclick={driverPacketView} href="#" role="tab" tabindex="0"
+                    aria-selected="true" aria-controls="tab-default-1" id="tab-default-1__item">Driver Packet</a>
+            </li>
+            <li class="slds-m-right_small slds-tabs_default__item" role="presentation">
+                <a class="slds-tabs_default__link" href="#" onclick={driverMeetingView} role="tab" tabindex="-1"
+                    aria-selected="false" aria-controls="tab-default-2" id="tab-default-2__item">Driver Meeting</a>
+            </li>
+            <li class="slds-m-right_small slds-tabs_default__item" role="presentation">
+                <a class="slds-tabs_default__link" href="#" onclick={driverInsuranceView} role="tab" tabindex="-1"
+                    aria-selected="false" aria-controls="tab-default-3" id="tab-default-3__item">Insurance</a>
+            </li>
+            <li class="slds-m-right_small slds-tabs_default__item" role="presentation">
+                <a class="slds-tabs_default__link" href="#" onclick={driverComplianceView} role="tab" tabindex="-1"
+                    aria-selected="false" aria-controls="tab-default-4" id="tab-default-4__item">Compliance</a>
+            </li>
+            <li class="slds-m-right_small slds-tabs_default__item" role="presentation">
+                <a class="slds-tabs_default__link" href="#" onclick={driverReimbursementView} role="tab" tabindex="-1"
+                    aria-selected="false" aria-controls="tab-default-5" id="tab-default-5__item">My Reimbursement</a>
+            </li>
+            <!-- <li class="slds-m-right_small slds-tabs_default__item" role="presentation">
+                <a class="slds-tabs_default__link" href="#" onclick={driverMVRView} role="tab" tabindex="-1"
+                    aria-selected="false" aria-controls="tab-default-6" id="tab-default-6__item">MVR Check</a>
+            </li> -->
+        </ul>
+        <div if:true={driverPacket} id="tab-default-1" class="slds-tabs_default__content" role="tabpanel"
+            aria-labelledby="tab-default-1__item">
+            <div class="slds-grid">
+                <div class="slds-col slds-size_2-of-1">
+                    <template if:true={packetStatus1}>
+                        <div class="plan-info-main">
+                            <svg width="171" height="184" viewBox="0 0 171 184" fill="none"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <path
+                                    d="M1 21C1 9.9543 9.9543 1 21 1H135.213C144.728 1 152.926 7.70381 154.815 17.0296L169.196 88.0296C169.727 90.6499 169.727 93.3501 169.196 95.9704L154.815 166.97C152.926 176.296 144.728 183 135.213 183H21C9.95431 183 1 174.046 1 163V21Z"
+                                    fill="#F1F8EC" stroke="#D7D7D7" stroke-linecap="round" />
+                            </svg>
+                            <div class="plan-info-detail">
+                                <div class="plan-info-top">
+                                    <h2 class="step-count-active">1</h2>
+                                    <h2 class="step-complete">Complete<span class="info-check"><i
+                                                class="fa-solid fa-lg fa-check"></i></span></h2>
+                                </div>
+                                <div class="plan-info-inner">
+                                    <img class="plan-info-icon" src={driverPacketSentIcon}>
+                                    <div class="step-content slds-m-horizontal_x-large">Sent to Driver</div>
+                                </div>
+                            </div>
+                        </div>
+                    </template>
+                    <template if:false={packetStatus1}>
+                        <div class="plan-info-main">
+                            <svg width="171" height="184" viewBox="0 0 171 184" fill="none"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <path
+                                    d="M1 21C1 9.9543 9.9543 1 21 1H135.213C144.728 1 152.926 7.70381 154.815 17.0296L169.196 88.0296C169.727 90.6499 169.727 93.3501 169.196 95.9704L154.815 166.97C152.926 176.296 144.728 183 135.213 183H21C9.95431 183 1 174.046 1 163V21Z"
+                                    fill="white" stroke="#D7D7D7" stroke-linecap="round" />
+                            </svg>
+                            <div class="plan-info-detail">
+                                <h2 class="step-count">1</h2>
+                                <div class="plan-info-inner">
+                                    <img class="plan-info-icon" src={driverPacketSentIcon}>
+                                    <div class="step-content slds-m-horizontal_x-large">Sent to Driver</div>
+                                </div>
+                            </div>
+                        </div>
+                    </template>
+                </div>
+                <div class="slds-col slds-size_2-of-1 slds-p-horizontal_small">
+                    <template if:true={packetStatus2}>
+                        <div class="plan-info-main">
+                            <svg width="171" height="184" viewBox="0 0 171 184" fill="none"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <path
+                                    d="M1 21C1 9.9543 9.9543 1 21 1H135.213C144.728 1 152.926 7.70381 154.815 17.0296L169.196 88.0296C169.727 90.6499 169.727 93.3501 169.196 95.9704L154.815 166.97C152.926 176.296 144.728 183 135.213 183H21C9.95431 183 1 174.046 1 163V21Z"
+                                    fill="#F1F8EC" stroke="#D7D7D7" stroke-linecap="round" />
+                            </svg>
+                            <div class="plan-info-detail">
+                                <div class="plan-info-top">
+                                    <h2 class="step-count-active">2</h2>
+                                    <h2 class="step-complete">Complete<span class="info-check"><i
+                                                class="fa-solid fa-lg fa-check"></i></span></h2>
+                                </div>
+                                <div class="plan-info-inner">
+                                    <img class="plan-info-icon" src={driverSignedIcon}>
+                                    <div class="step-content slds-m-horizontal_x-large">Driver Signed</div>
+                                </div>
+                            </div>
+                        </div>
+                    </template>
+                    <template if:false={packetStatus2}>
+                        <div class="plan-info-main">
+                            <svg width="171" height="184" viewBox="0 0 171 184" fill="none"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <path
+                                    d="M1 21C1 9.9543 9.9543 1 21 1H135.213C144.728 1 152.926 7.70381 154.815 17.0296L169.196 88.0296C169.727 90.6499 169.727 93.3501 169.196 95.9704L154.815 166.97C152.926 176.296 144.728 183 135.213 183H21C9.95431 183 1 174.046 1 163V21Z"
+                                    fill="white" stroke="#D7D7D7" stroke-linecap="round" />
+                            </svg>
+                            <div class="plan-info-detail">
+                                <h2 class="step-count">2</h2>
+                                <div class="plan-info-inner">
+                                    <img class="plan-info-icon" src={driverSignedIcon}>
+                                    <div class="step-content slds-m-horizontal_x-large">Driver Signed</div>
+                                </div>
+                            </div>
+                        </div>
+                    </template>
+                </div>
+                <div class="slds-col slds-size_2-of-1">
+                    <template if:true={packetStatus3}>
+                        <div class="plan-info-main">
+                            <svg width="171" height="184" viewBox="0 0 171 184" fill="none"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <path
+                                    d="M1 21C1 9.9543 9.9543 1 21 1H135.213C144.728 1 152.926 7.70381 154.815 17.0296L169.196 88.0296C169.727 90.6499 169.727 93.3501 169.196 95.9704L154.815 166.97C152.926 176.296 144.728 183 135.213 183H21C9.95431 183 1 174.046 1 163V21Z"
+                                    fill="#F1F8EC" stroke="#D7D7D7" stroke-linecap="round" />
+                            </svg>
+                            <div class="plan-info-detail">
+                                <div class="plan-info-top">
+                                    <h2 class="step-count-active">3</h2>
+                                    <h2 class="step-complete">Complete<span class="info-check"><i
+                                                class="fa-solid fa-lg fa-check"></i></span></h2>
+                                </div>
+                                <div class="plan-info-inner">
+                                    <img class="plan-info-icon" src={adminSignedIcon}>
+                                    <div class="step-content slds-m-horizontal_x-large">Admin Signed</div>
+                                </div>
+                            </div>
+                        </div>
+                    </template>
+                    <template if:false={packetStatus3}>
+                        <div class="plan-info-main">
+                            <svg width="171" height="184" viewBox="0 0 171 184" fill="none"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <path
+                                    d="M1 21C1 9.9543 9.9543 1 21 1H135.213C144.728 1 152.926 7.70381 154.815 17.0296L169.196 88.0296C169.727 90.6499 169.727 93.3501 169.196 95.9704L154.815 166.97C152.926 176.296 144.728 183 135.213 183H21C9.95431 183 1 174.046 1 163V21Z"
+                                    fill="white" stroke="#D7D7D7" stroke-linecap="round" />
+                            </svg>
+                            <div class="plan-info-detail">
+                                <h2 class="step-count">3</h2>
+                                <div class="plan-info-inner">
+                                    <img class="plan-info-icon" src={adminSignedIcon}>
+                                    <div class="step-content slds-m-horizontal_x-large">Admin Signed</div>
+                                </div>
+                            </div>
+                        </div>
+                    </template>
+                </div>
+                <div class="slds-col slds-size_2-of-1 slds-p-horizontal_small">
+                    <template if:true={packetStatus4}>
+                        <div class="plan-info-main">
+                            <svg width="171" height="184" viewBox="0 0 171 184" fill="none"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <path
+                                    d="M1 21C1 9.9543 9.9543 1 21 1H135.213C144.728 1 152.926 7.70381 154.815 17.0296L169.196 88.0296C169.727 90.6499 169.727 93.3501 169.196 95.9704L154.815 166.97C152.926 176.296 144.728 183 135.213 183H21C9.95431 183 1 174.046 1 163V21Z"
+                                    fill="#F1F8EC" stroke="#D7D7D7" stroke-linecap="round" />
+                            </svg>
+                            <div class="plan-info-detail">
+                                <div class="plan-info-top">
+                                    <h2 class="step-count-active">4</h2>
+                                    <h2 class="step-complete">Complete<span class="info-check"><i
+                                                class="fa-solid fa-lg fa-check"></i></span></h2>
+                                </div>
+                                <div class="plan-info-inner">
+                                    <img class="plan-info-icon" src={packetCompletedIcon}>
+                                    <div class="step-content slds-m-horizontal_x-large">Packet Completed</div>
+                                </div>
+                            </div>
+                        </div>
+                    </template>
+                    <template if:false={packetStatus4}>
+                        <div class="plan-info-main">
+                            <svg width="171" height="184" viewBox="0 0 171 184" fill="none"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <path
+                                    d="M1 21C1 9.9543 9.9543 1 21 1H135.213C144.728 1 152.926 7.70381 154.815 17.0296L169.196 88.0296C169.727 90.6499 169.727 93.3501 169.196 95.9704L154.815 166.97C152.926 176.296 144.728 183 135.213 183H21C9.95431 183 1 174.046 1 163V21Z"
+                                    fill="white" stroke="#D7D7D7" stroke-linecap="round" />
+                            </svg>
+                            <div class="plan-info-detail">
+                                <h2 class="step-count">4</h2>
+                                <div class="plan-info-inner">
+                                    <img class="plan-info-icon" src={packetCompletedIcon}>
+                                    <div class="step-content slds-m-horizontal_x-large">Packet Completed</div>
+                                </div>
+                            </div>
+                        </div>
+                    </template>
+                </div>
+                <div class="insurance-download" if:true={isPacketDownload}>
+                    <a class="slds-btn slds-btn-primary slds-btn-sm waves-effect bc-green waves-light mleft-0 btn-trip" target="_blank" href={urlToPacket}><img src={btnIcon} /> Download</a>
+                </div>
+            </div>
+        </div>
+
+        <div if:true={driverMeeting} id="tab-default-2" class="slds-tabs_default__content" role="tabpanel"
+            aria-labelledby="tab-default-2__item">
+            <div class="slds-grid">
+                <div class="slds-col slds-size_2-of-1">
+                    <template if:true={meetingStatus1}>
+                        <div class="plan-info-main">
+                            <svg width="171" height="184" viewBox="0 0 171 184" fill="none"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <path
+                                    d="M1 21C1 9.9543 9.9543 1 21 1H135.213C144.728 1 152.926 7.70381 154.815 17.0296L169.196 88.0296C169.727 90.6499 169.727 93.3501 169.196 95.9704L154.815 166.97C152.926 176.296 144.728 183 135.213 183H21C9.95431 183 1 174.046 1 163V21Z"
+                                    fill="#F1F8EC" stroke="#D7D7D7" stroke-linecap="round" />
+                            </svg>
+                            <div class="plan-info-detail">
+                                <div class="plan-info-top">
+                                    <h2 class="step-count-active">1</h2>
+                                    <h2 class="step-complete">Complete<span class="info-check"><i
+                                                class="fa-solid fa-lg fa-check"></i></span></h2>
+                                </div>
+                                <div class="plan-info-inner">
+                                    <img class="plan-info-icon" src={driverPacketSentIcon}>
+                                    <div class="step-content slds-m-horizontal_x-large">Sent</div>
+                                </div>
+                            </div>
+                        </div>
+                    </template>
+                    <template if:false={meetingStatus1}>
+                        <div class="plan-info-main">
+                            <svg width="171" height="184" viewBox="0 0 171 184" fill="none"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <path
+                                    d="M1 21C1 9.9543 9.9543 1 21 1H135.213C144.728 1 152.926 7.70381 154.815 17.0296L169.196 88.0296C169.727 90.6499 169.727 93.3501 169.196 95.9704L154.815 166.97C152.926 176.296 144.728 183 135.213 183H21C9.95431 183 1 174.046 1 163V21Z"
+                                    fill="white" stroke="#D7D7D7" stroke-linecap="round" />
+                            </svg>
+                            <div class="plan-info-detail">
+                                <h2 class="step-count">1</h2>
+                                <div class="plan-info-inner">
+                                    <img class="plan-info-icon" src={driverPacketSentIcon}>
+                                    <div class="step-content slds-m-horizontal_x-large">Sent</div>
+                                </div>
+                            </div>
+                        </div>
+                    </template>
+                </div>
+                <div class="slds-col slds-size_2-of-1 slds-p-horizontal_small">
+                    <template if:true={meetingStatus2}>
+                        <div class="plan-info-main">
+                            <svg width="171" height="184" viewBox="0 0 171 184" fill="none"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <path
+                                    d="M1 21C1 9.9543 9.9543 1 21 1H135.213C144.728 1 152.926 7.70381 154.815 17.0296L169.196 88.0296C169.727 90.6499 169.727 93.3501 169.196 95.9704L154.815 166.97C152.926 176.296 144.728 183 135.213 183H21C9.95431 183 1 174.046 1 163V21Z"
+                                    fill="#F1F8EC" stroke="#D7D7D7" stroke-linecap="round" />
+                            </svg>
+                            <div class="plan-info-detail">
+                                <div class="plan-info-top">
+                                    <h2 class="step-count-active">2</h2>
+                                    <h2 class="step-complete">Complete<span class="info-check"><i
+                                                class="fa-solid fa-lg fa-check"></i></span></h2>
+                                </div>
+                                <div class="plan-info-inner">
+                                    <img class="plan-info-icon" src={driverSignedIcon}>
+                                    <div class="step-content slds-m-horizontal_x-large">Scheduled</div>
+                                </div>
+                            </div>
+                        </div>
+                    </template>
+                    <template if:false={meetingStatus2}>
+                        <div class="plan-info-main">
+                            <svg width="171" height="184" viewBox="0 0 171 184" fill="none"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <path
+                                    d="M1 21C1 9.9543 9.9543 1 21 1H135.213C144.728 1 152.926 7.70381 154.815 17.0296L169.196 88.0296C169.727 90.6499 169.727 93.3501 169.196 95.9704L154.815 166.97C152.926 176.296 144.728 183 135.213 183H21C9.95431 183 1 174.046 1 163V21Z"
+                                    fill="white" stroke="#D7D7D7" stroke-linecap="round" />
+                            </svg>
+                            <div class="plan-info-detail">
+                                <h2 class="step-count">2</h2>
+                                <div class="plan-info-inner">
+                                    <img class="plan-info-icon" src={driverSignedIcon}>
+                                    <div class="step-content slds-m-horizontal_x-large">Scheduled</div>
+                                </div>
+                            </div>
+                        </div>
+                    </template>
+                </div>
+                <div class="slds-col slds-size_2-of-1">
+                    <template if:true={meetingStatus3}>
+                        <div class="plan-info-main">
+                            <svg width="171" height="184" viewBox="0 0 171 184" fill="none"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <path
+                                    d="M1 21C1 9.9543 9.9543 1 21 1H135.213C144.728 1 152.926 7.70381 154.815 17.0296L169.196 88.0296C169.727 90.6499 169.727 93.3501 169.196 95.9704L154.815 166.97C152.926 176.296 144.728 183 135.213 183H21C9.95431 183 1 174.046 1 163V21Z"
+                                    fill="#F1F8EC" stroke="#D7D7D7" stroke-linecap="round" />
+                            </svg>
+                            <div class="plan-info-detail">
+                                <div class="plan-info-top">
+                                    <h2 class="step-count-active">3</h2>
+                                    <h2 class="step-complete">Complete<span class="info-check"><i
+                                                class="fa-solid fa-lg fa-check"></i></span></h2>
+                                </div>
+                                <div class="plan-info-inner">
+                                    <img class="plan-info-icon" src={meetingAttendedIcon}>
+                                    <div class="step-content slds-m-horizontal_x-large">Attended</div>
+                                </div>
+                            </div>
+                        </div>
+                    </template>
+                    <template if:false={meetingStatus3}>
+                        <div class="plan-info-main">
+                            <svg width="171" height="184" viewBox="0 0 171 184" fill="none"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <path
+                                    d="M1 21C1 9.9543 9.9543 1 21 1H135.213C144.728 1 152.926 7.70381 154.815 17.0296L169.196 88.0296C169.727 90.6499 169.727 93.3501 169.196 95.9704L154.815 166.97C152.926 176.296 144.728 183 135.213 183H21C9.95431 183 1 174.046 1 163V21Z"
+                                    fill="white" stroke="#D7D7D7" stroke-linecap="round" />
+                            </svg>
+                            <div class="plan-info-detail">
+                                <h2 class="step-count">3</h2>
+                                <div class="plan-info-inner">
+                                    <img class="plan-info-icon" src={meetingAttendedIcon}>
+                                    <div class="step-content slds-m-horizontal_x-large">Attended</div>
+                                </div>
+                            </div>
+                        </div>
+                    </template>
+                </div>
+            </div>
+        </div>
+
+        <div if:true={driverInsurance} id="tab-default-3" class="slds-tabs_default__content" role="tabpanel"
+            aria-labelledby="tab-default-3__item">
+            <div class="slds-grid">
+                <div class="slds-col slds-size_2-of-1">
+                    <div class="plan-info-main">
+                        <svg width="171" height="184" viewBox="0 0 171 184" fill="none"
+                            xmlns="http://www.w3.org/2000/svg">
+                            <path
+                                d="M1 21C1 9.9543 9.9543 1 21 1H135.213C144.728 1 152.926 7.70381 154.815 17.0296L169.196 88.0296C169.727 90.6499 169.727 93.3501 169.196 95.9704L154.815 166.97C152.926 176.296 144.728 183 135.213 183H21C9.95431 183 1 174.046 1 163V21Z"
+                                fill="#F1F8EC" stroke="#D7D7D7" stroke-linecap="round" />
+                        </svg>
+                        <div class="plan-info-detail">
+                            <div class="plan-info-top">
+                                <h2 class="step-count-active">1</h2>
+                                <h2 class="step-complete">Complete<span class="info-check"><i
+                                            class="fa-solid fa-lg fa-check"></i></span></h2>
+                            </div>
+                            <div class="plan-info-inner">
+                                <img class="plan-info-icon" src={requestedIcon}>
+                                <div class="step-content slds-m-horizontal_x-large">Requested</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="slds-col slds-size_2-of-1 slds-p-horizontal_small">
+                    <template if:true={insuranceAttachmentId}>
+                        <div class="plan-info-main">
+                            <svg width="171" height="184" viewBox="0 0 171 184" fill="none"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <path
+                                    d="M1 21C1 9.9543 9.9543 1 21 1H135.213C144.728 1 152.926 7.70381 154.815 17.0296L169.196 88.0296C169.727 90.6499 169.727 93.3501 169.196 95.9704L154.815 166.97C152.926 176.296 144.728 183 135.213 183H21C9.95431 183 1 174.046 1 163V21Z"
+                                    fill="#F1F8EC" stroke="#D7D7D7" stroke-linecap="round" />
+                            </svg>
+                            <div class="plan-info-detail">
+                                <div class="plan-info-top">
+                                    <h2 class="step-count-active">2</h2>
+                                    <h2 class="step-complete">Complete<span class="info-check"><i
+                                                class="fa-solid fa-lg fa-check"></i></span></h2>
+                                </div>
+                                <div class="plan-info-inner">
+                                    <img class="plan-info-icon" src={uploadedIcon}>
+                                    <div class="step-content slds-m-horizontal_x-large">Uploaded</div>
+                                </div>
+                            </div>
+                        </div>
+                    </template>
+                    <template if:false={insuranceAttachmentId}>
+                        <div class="plan-info-main">
+                            <svg width="171" height="184" viewBox="0 0 171 184" fill="none"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <path
+                                    d="M1 21C1 9.9543 9.9543 1 21 1H135.213C144.728 1 152.926 7.70381 154.815 17.0296L169.196 88.0296C169.727 90.6499 169.727 93.3501 169.196 95.9704L154.815 166.97C152.926 176.296 144.728 183 135.213 183H21C9.95431 183 1 174.046 1 163V21Z"
+                                    fill="#fa780014" stroke="#D7D7D7" stroke-linecap="round" />
+                            </svg>
+                            <div class="plan-info-detail">
+                                <h2 class="step-count-not-uploaded">2</h2>
+                                <div class="plan-info-inner">
+                                    <img class="plan-info-icon" src={notUploadedIcon}>
+                                    <div class="step-content slds-m-horizontal_x-large">Not Uploaded</div>
+                                </div>
+                            </div>
+                        </div>
+                    </template>
+                </div>
+                <div class="insurance-download" if:true={insuranceAttachmentId}>
+                    <a class="slds-btn slds-btn-primary slds-btn-sm waves-effect bc-green waves-light mleft-0 btn-trip" target="_blank" href={urlToInsurance}><img src={btnIcon} /> Download</a>
+                </div>
+            </div>
+        </div>
+
+        <div if:true={driverCompliance} id="tab-default-4" class="slds-tabs_default__content" role="tabpanel"
+            aria-labelledby="tab-default-4__item">
+            <div class="compliance-text">
+                <div class="status-holder slds-p-horizontal_large slds-p-vertical_medium">
+                    <div class="compliance-message">{messageOfCompliance}</div>
+                </div>
+            </div>
+            <div class="complaince-detail slds-p-top_x-large">
+                <div class="slds-grid">
+                    <template for:each={complianceData} for:item="compliance">
+                        <div class="slds-col slds-size_1-of-4 slds-m-right_small" key={compliance.quarterno}>
+                            <div class="plan-info-compliance slds-p-around_large">
+                                <div class="compliance-header">{compliance.quarterno}{compliance.ordinal} Quarter Tax
+                                    Analysis</div>
+                                <div class="slds-m-top_medium">
+                                    <table
+                                        class="slds-table slds-table_cell-buffer slds-table_header-hidden bordered-table">
+                                        <tr>
+                                            <td>Mileage</td>
+                                            <td>
+                                                <lightning-formatted-number value={compliance.Mileages}
+                                                    minimum-fraction-digits="2">
+                                                </lightning-formatted-number>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>Total Reimbursement</td>
+                                            <td>
+                                                <lightning-formatted-number value={compliance.Reimbursements}
+                                                    format-style="currency" currency-code="USD"
+                                                    minimum-fraction-digits="2">
+                                                </lightning-formatted-number>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>Max IRS Amount</td>
+                                            <td>
+                                                <lightning-formatted-number value={compliance.MaxIRSrate}
+                                                    format-style="currency" currency-code="USD"
+                                                    minimum-fraction-digits="2">
+                                                </lightning-formatted-number>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>Q{compliance.quarterno} Tax Liability</td>
+                                            <td>
+                                                <lightning-formatted-number value={compliance.ImputedAmount}
+                                                    format-style="currency" currency-code="USD"
+                                                    minimum-fraction-digits="2">
+                                                </lightning-formatted-number>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </template>
+                </div>
+
+                <template if:true={lengthS}>
+                    <div class="slds-grid slds-p-top_x-large">
+                        <div class="slds-col slds-size_1-of-4 slds-m-right_small">
+                            <div class="plan-info-compliance slds-p-around_large">
+                                <div class="compliance-header">Annual Tax Analysis</div>
+                                <div class="slds-m-top_medium">
+                                    <table
+                                        class="slds-table slds-table_cell-buffer slds-table_header-hidden bordered-table">
+                                        <tr>
+                                            <td>Total Reimbursement</td>
+                                            <td>
+                                                <lightning-formatted-number value={reimbursements}
+                                                    format-style="currency" currency-code="USD"
+                                                    minimum-fraction-digits="2">
+                                                </lightning-formatted-number>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>Maximum Allowable</td>
+                                            <td>
+                                                <lightning-formatted-number value={maxAllow} format-style="currency"
+                                                    currency-code="USD" minimum-fraction-digits="2">
+                                                </lightning-formatted-number>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>Annual Tax Liability</td>
+                                            <td>
+                                                <lightning-formatted-number value={taxLiablity} format-style="currency"
+                                                    currency-code="USD" minimum-fraction-digits="2">
+                                                </lightning-formatted-number>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="slds-col slds-size_1-of-4">
+                            <div class="plan-info-compliance slds-p-around_x-large">
+                                <div class="slds-grid">
+                                    <div class="slds-m-right_small download-report" onclick={taxLiabilityDetailReport}><img src={downloadIcon} /></div>
+                                    <div class="annual-liability">Annual Tax Liability Detail</div>
+                                </div>
+                            </div>
+                            <div class="plan-info-compliance slds-p-around_x-large annual-margin">
+                                <div class="slds-grid">
+                                    <div class="slds-m-right_small download-report" onclick={taxLiabilitySummaryReport}><img src={downloadIcon} /></div>
+                                    <div class="annual-liability">Annual Tax Liability Summary</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </template>
+
+            </div>
+
+        </div>
+
+        <div if:true={driverReimbursement} id="tab-default-5" class="slds-tabs_default__content" role="tabpanel"
+            aria-labelledby="tab-default-5__item">
+            <div class="complaince-detail">
+                <div class="slds-grid">
+                    <div class="slds-col slds-size_1-of-4 slds-m-right_small">
+                        <div class="plan-info-compliance slds-p-around_large">
+                            <div class="compliance-header">My Annual Fixed Costs Rates</div>
+                            <div class="slds-m-top_medium">
+                                <table
+                                    class="slds-table slds-table_cell-buffer slds-table_header-hidden bordered-table">
+                                    <tr>
+                                        <td>Insurance</td>
+                                        <td>
+                                            <lightning-formatted-number value={insuranceRate} format-style="currency"
+                                                currency-code="USD" minimum-fraction-digits="2">
+                                            </lightning-formatted-number>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>License/Registration</td>
+                                        <td>
+                                            <lightning-formatted-number value={license} format-style="currency"
+                                                currency-code="USD" minimum-fraction-digits="2">
+                                            </lightning-formatted-number>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Taxes</td>
+                                        <td>
+                                            <lightning-formatted-number value={taxes} format-style="currency"
+                                                currency-code="USD" minimum-fraction-digits="2">
+                                            </lightning-formatted-number>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Depreciation</td>
+                                        <td>
+                                            <lightning-formatted-number value={depreciation} format-style="currency"
+                                                currency-code="USD" minimum-fraction-digits="2">
+                                            </lightning-formatted-number>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Annual Fixed Costs</td>
+                                        <td>
+                                            <lightning-formatted-number value={monthlyCost} format-style="currency"
+                                                currency-code="USD" minimum-fraction-digits="2">
+                                            </lightning-formatted-number>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>{businessPercent}% of Business Use</td>
+                                        <td>
+                                            <lightning-formatted-number value={businessUse} format-style="currency"
+                                                currency-code="USD" minimum-fraction-digits="2">
+                                            </lightning-formatted-number>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                            <div class="slds-m-top_large">
+                                <div class="slds-grid slds-grid_vertical">
+                                    <div class="total-amount">
+                                        <lightning-formatted-number value={totalMonthlyAmount} format-style="currency"
+                                            currency-code="USD" minimum-fraction-digits="2">
+                                        </lightning-formatted-number>
+                                    </div>
+                                    <div class="amount-label slds-p-top_x-small">Monthly Fixed Amount</div>
+                                </div>
+                            </div>
+
+                            <div class="slds-m-top_large" if:true={fixedcostadjustment}>
+                                <div class="slds-grid slds-grid_vertical">
+                                        <div class="total-amount">
+                                            <lightning-formatted-number value={fixedcostadjustment} format-style="currency"
+                                                currency-code="USD" minimum-fraction-digits="2">
+                                            </lightning-formatted-number>
+                                        </div>
+                                        <div class="amount-label slds-p-top_x-small">Fixed Cost Adjustment</div>
+                                </div>
+                            </div>
+                             
+                            <div class="slds-m-top_large" if:true={totalMonthlyFixedCost}>
+                                <div class="slds-grid slds-grid_vertical">
+                                    <div class="total-amount">
+                                        <lightning-formatted-number value={totalMonthlyFixedCost}
+                                            format-style="currency" currency-code="USD" minimum-fraction-digits="2">
+                                        </lightning-formatted-number>
+                                    </div>
+                                    <div class="amount-label slds-p-top_x-small">Total Monthly Fixed Amount</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="slds-col slds-size_1-of-4 slds-m-left_large slds-m-right_small">
+                        <div class="plan-info-compliance slds-p-around_large">
+                            <div class="compliance-header">My Monthly Variable Costs Rates</div>
+                            <div class="slds-m-top_medium">
+                                <table
+                                    class="slds-table slds-table_cell-buffer slds-table_header-hidden bordered-table">
+                                    <tr if:true={variablefuelprice}>
+                                        <td>Gas Rate</td>
+                                        <td>
+                                            <lightning-formatted-number value={variablefuelprice}
+                                                format-style="currency" currency-code="USD" minimum-fraction-digits="4">
+                                            </lightning-formatted-number>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Oil/Maintenance</td>
+                                        <td>
+                                            <lightning-formatted-number value={maintenance} format-style="currency"
+                                                currency-code="USD" minimum-fraction-digits="4">
+                                            </lightning-formatted-number>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Tires</td>
+                                        <td>
+                                            <lightning-formatted-number value={tires} format-style="currency"
+                                                currency-code="USD" minimum-fraction-digits="4">
+                                            </lightning-formatted-number>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                            <div class="slds-m-top_large">
+                                <div class="slds-grid slds-grid_vertical">
+                                    <div class="total-amount">
+                                        <lightning-formatted-number value={miles} format-style="currency"
+                                            currency-code="USD" minimum-fraction-digits="4">
+                                        </lightning-formatted-number>
+                                    </div>
+                                    <div class="amount-label slds-p-top_x-small">Per Mile</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <c-export-excel></c-export-excel>
+</template>

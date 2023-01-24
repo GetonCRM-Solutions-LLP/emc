@@ -1,0 +1,118 @@
+<template>
+	<c-navigation-menu driver-menu-item={driverProfileMenu} onsidebar={handleSidebarToggle} driver-name={userName} driver-email={userEmail} onlogout={handleLogout}></c-navigation-menu><!-- onopen={takeMeToMenu} -->
+	<c-dashboard-profile-header user-name={firstName} full-name={userName} page-source={isHomePage} onredirect={navigateToInsurance}  onresourcenavigate={navigateToResource} onnotify={viewAllNotification} company-logo={companyLogoUrl} expiration-date={dateOfExpiration} 
+	onlogout={handleLogout} is-navigate="true"></c-dashboard-profile-header>
+	<section class={section} id="default">
+		<template if:true={reimbursementView}>
+			<template if:true={tripView}>
+				<c-preview-trips contact-id={_contactId} contact-info={userName} trip-month={monthOfTrip} trip-year={yearOfTrip} onnavigate={revertToReimbursement} start-date={startDt} end-date={endDt} 
+				biweek-id={biweekId} biweek-value={biweek}></c-preview-trips>
+			</template>
+			<template if:false={tripView}>
+				<c-driver-reimbursement-profile contact-id={_contactId}  account-id={_accountId} my-trip={isTrip} time-attendance={isAttendance} reimbursement-ytd={ytdList} excel-ytd={excelYtdList} onnavigate={reimbursementArchived} onopen={myTripDetail} ontoast={handleToast} onshow={showSpinner}></c-driver-reimbursement-profile>
+			</template>
+		</template> 
+		<template if:false={reimbursementView}>
+			<template if:true={reimbursementArchive}>
+				<template if:true={tripView}>
+					<c-preview-trips contact-id={_contactId} contact-info={userName} trip-month={monthOfTrip} trip-year={yearOfTrip} onnavigate={revertToReimbursement}
+					start-date={startDt} end-date={endDt} biweek-id={biweekId} biweek-value={biweek}></c-preview-trips>
+				</template>
+				<template if:false={tripView}>
+					<c-archive-reimbursement-profile trip={isTripType} contact-id={_contactId}  account-id={_accountId} onnavigate={navigateToReimbursement} onopen={myTripDetail} ontoast={handleToast} onshow={showSpinner}></c-archive-reimbursement-profile>
+			    </template>
+			</template>
+		</template>
+	  
+		<template if:true={myProfile}>
+			<c-driver-user-profile contact-id={_contactId} chart-info={chartData} account-id={_accountId} onnavigate={navigateToPage} reimbursement-ytd={ytdList} excel-ytd={excelYtdList} notify-message-list={notificationList} notify-message={notifyList} is-notify={isNotify} onclose={handleNotification} onmodal={viewAllNotification}></c-driver-user-profile>
+		</template>
+		<template if:true={complianceView}>
+			<c-user-compliance contact-id={_contactId} onredirect={switchToLiability}></c-user-compliance>
+		</template>
+		<template if:true={liabilityView}>
+			<c-user-tax-liability contact-id={_contactId} onredirect={switchToCompliance}></c-user-tax-liability>
+		</template>
+		<template if:true={insuranceView}>
+			<c-user-upload-insurance onrevert={viewDashboardProfile} insurance-video={insuranceVideo} video-style={videoCss} content-style={contentCss}></c-user-upload-insurance>
+		</template>
+		<template if:true={locationUploadView}>
+			<c-user-location contact-id={_contactId} account-id={_accountId} user-triplog-id={userTriplogId} ontoast={showToastEvent} onmodal={showModalEvent} onlistmodal={showModalListEvent} onerror={throwError}></c-user-location>
+		</template>
+		<template if:true={resources}>
+			<c-user-resource minimums={contactInformation}></c-user-resource>
+		</template>
+		<template if:true={manualEntryView}>
+			<c-manual-entry contact-id={_contactId} account-id={_accountId}></c-manual-entry>
+		</template>
+		<c-user-profile-modal header={headerModalText} month='' show-footer={isFalse} show-btn={isFalse}
+			modal-class={modalClass}
+			header-class={headerClass}
+			subheader-class={subheaderClass}
+			modal-content-style={modalContent}
+			style-header={styleHeader}
+			close-btn-class={styleClosebtn} onclosedialog={handleCloseModal}>
+			<template if:true={notificationModal}>
+				<div class="slds-p-left_x-large slds-p-right_x-large">
+					<!-- <template if:true={isNotify}> -->
+						<template for:each={notifyList} for:item="notify" for:index="index">
+							<div data-id={notify.Id} key={notify.Id}
+								class="slds-col slds-size_1-of-1 slds-medium-size_6-of-12 slds-large-size_12-of-12  slds-m-vertical_medium slds-m-horizontal_x-small slds-p-around_small"
+								style="
+								width: 100%;
+								height: auto;
+								border-radius: 10px;
+								background: #404B5A;
+								display: flex;
+								flex-direction: row;">
+								<div class="slds-p-top_xx-small
+										slds-p-left_xx-small slds-p-right_x-small">
+									<div><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 30 30" fill="none">
+										<circle cx="15" cy="15" r="12.2828" stroke="#FA7800" stroke-width="1.43448"/>
+										<path d="M16.5016 16.6054C16.4736 17.2346 15.9554 17.7302 15.3257 17.7302V17.7302C14.697 17.7302 14.1793 17.2361 14.15 16.608L13.8506 10.1943C13.8125 9.37672 14.4651 8.69297 15.2836 8.69297H15.3536C16.1708 8.69297 16.8229 9.37471 16.7867 10.1911L16.5016 16.6054ZM16.4717 21.807C16.1504 22.1283 15.7688 22.289 15.327 22.289C14.8851 22.289 14.5036 22.1283 14.1822 21.807C13.8743 21.4857 13.7203 21.1108 13.7203 20.6824C13.7203 20.2406 13.8743 19.859 14.1822 19.5377C14.5036 19.2163 14.8851 19.0557 15.327 19.0557C15.7688 19.0557 16.1504 19.2163 16.4717 19.5377C16.793 19.859 16.9537 20.2406 16.9537 20.6824C16.9537 21.1108 16.793 21.4857 16.4717 21.807Z" fill="#FA7800"/>
+										</svg></div>
+								</div>
+								<div class="slds-p-right_small slds-p-top_xx-small" style="font-family: Proxima Nova;font-size: 14px;font-weight: 500;
+									width: 100%;
+									line-height: 17px;
+									letter-spacing: 0em;
+									color: #FFFFFF;
+									text-align: left;
+									">{notify.message}
+									<div style="font-weight: 700;
+									font-size: 12px;
+									line-height: 12px;
+									color: #7ABB4A;
+									" class="slds-p-top_x-small"><lightning-formatted-date-time
+									value={notify.date}
+									year="numeric"
+									day="2-digit"
+									month="long"
+									hour="2-digit"
+									minute="2-digit"
+									time-zone="UTC"
+								>
+								</lightning-formatted-date-time></div>
+								</div>
+								<div class="white-cross slds-align_absolute-center">
+									<i data-id={notify.Id} class="fa-solid fa-lg fa-xmark" onclick={handleClose}></i>
+								</div>
+							</div>
+						</template>
+					<!-- </template> -->
+				   
+					<template if:false={isNotify}>
+						<div class="slds-align_absolute-center slds-p-top_medium slds-p-bottom_x-large no-data-message">You have no notifications right now.</div>
+					</template>
+				</div>
+			</template>
+			<template  if:false={notificationModal}>
+				<div class="slds-p-around_large" style="display: flex;flex-flow: column;">
+					<div class="slds-align_absolute-center"><i class="fa-solid fa-3x fa-check"></i></div>
+					<div class="slds-align_absolute-center slds-p-around_medium message">{contentMessage}</div>
+					<div class="slds-align_absolute-center sub-message">{subMessage}</div>
+				</div>
+			</template>
+		</c-user-profile-modal>
+	</section>
+</template>

@@ -122,8 +122,10 @@ export default class DriverProfile extends LightningElement {
 
     checkForComplianceMileage() {
         if (this.isInformation) {
-            let cMileage = this.contactDetails.mileagemeet;
-            if (cMileage === 'Yes') {
+            //let cMileage = this.contactDetails.mileagemeet;
+            let annual = parseFloat(this.contactDetails.annualMileages);
+            let compliance = parseFloat(this.contactDetails.complianceMileage);
+            if (annual >= compliance) {
                 this.template.querySelector('.annualMileage').classList.add('Incompliance');
                 this.template.querySelector('.annualMileage').lastChild.children[1].style.display = 'none';
             } else {
@@ -414,11 +416,11 @@ export default class DriverProfile extends LightningElement {
                     this.template.querySelector('.compliance').lastChild.children[1].style.display = 'none';
                 }
             } else {
-                if (this.contactDetails.mileagemeet != null) {
+               // if (this.contactDetails.mileagemeet != null) {
                     this.checkForComplianceMileage();
-                } else {
-                    this.template.querySelector('.annualMileage').lastChild.children[0].style.display = 'none';
-                }
+              //  } else {
+                //    this.template.querySelector('.annualMileage').lastChild.children[0].style.display = 'none';
+              //  }
 
                 if (this.contactDetails.vehicleage != null) {
                     this.checkForVehicleAge();

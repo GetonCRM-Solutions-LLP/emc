@@ -85,6 +85,18 @@
                 }
             } 
         });
+
+
+        app.filter('currencyFormat', ["$filter",  function($filter){
+            return function(amount, currencySymbol){
+                var currency = $filter('currency');
+                if(amount < 0){
+                    return currency(amount, currencySymbol).replace("(", "-").replace(")", "");
+                }
+
+                return currency(amount, currencySymbol);
+            }
+        }]);
         
         app.directive('excelExportFile',function () {
             return {
@@ -201,7 +213,7 @@
                         </tr>
                         <tr>
                             <td class="font-weight-bold">Q{{compliance.quarterno}} Tax Liability</td>
-                            <td>{{compliance.ImputedAmount| currency:"$":2}}</td>
+                            <td>{{compliance.ImputedAmount | currencyFormat: "$":2}}</td>
                         </tr>
                     </tbody>
                 </table>
@@ -228,7 +240,7 @@
                         </tr>
                         <tr>
                             <td class="font-weight-bold">Annual Tax Liability</td>
-                            <td>{{taxliablity| currency:"$":2}}</td>
+                            <td>{{taxliablity| currencyFormat:"$":2}}</td>
                         </tr>
                     </tbody>
                 </table>
