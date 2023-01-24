@@ -34,6 +34,7 @@
                documentUrl = "{!obj_content_version}",
                emailAddress = information[0].contactEmail,
                contactPhone = information[0].phone
+               console.log("video wrapper", information)
         /* Toaster Option */
         this.setOptions = function () {
             toastr.options.positionClass = "toast-top-right";

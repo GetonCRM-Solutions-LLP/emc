@@ -38,13 +38,13 @@
             }
         </style>
         <script type="text/javascript">
-            var lexOrigin = location.origin;
+            var lexOrigin = location.originname;
             /* var lexOrigin ="https://mburse.force.com"; 
               var resultActive = false; */
 
             // Listening from iframe ! mapComponent - LWC component
             window.addEventListener("message", function (event) {
-                if (event.origin !== lexOrigin) {
+                if (event.originname !== lexOrigin) {
                     // Not the expected origin: reject message!
                     return;
                 }

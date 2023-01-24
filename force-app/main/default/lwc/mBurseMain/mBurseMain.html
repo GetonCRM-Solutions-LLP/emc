@@ -5,17 +5,17 @@
         insurance-declaration={isDeclaration} if:true={nextInsurance} onnextskip={renderView} onnavigate={navigateToDeclaration}
         day-left={leftDays} onskip={skipToDriverPacket} onback={backToWelcome} custom-setting={settings}></c-m-burse-welcome-insurance>
     <c-m-burse-upload-declaration if:true={nextDeclationUpload} is-upload-show={uploadVal} is-upload-skip={skipUpload}
-        account-id={accountId} contact-id={contactId} attachmentid={attachmentid} contact-name={contactName}
+        account-id={accountId} contact-id={contactId} attachmentid={attachmentid} contact-name={contactName} driver-meeting={meetingType}
         contact-email={contactEmail} meeting={registerMeeting} schedule={scheduleMeeting} account-type={accountType} client={information} onnavigate={navigateToDriverPacket}
         onskip={skipToDriverPacket} day-left={leftDays} onback={backToInsurance}></c-m-burse-upload-declaration>
-    <c-m-burse-driver-packet if:true={nextDriverPacket} onnavigate={navigateTomLog} contact-id={contactId}
+    <c-m-burse-driver-packet if:true={nextDriverPacket} onnavigate={navigateTomLog} contact-id={contactId} driver-meeting={meetingType}
         days={leftDays} email-of-driver={contactEmail} cell-type={cellphoneType}  account-type={accountType} contact-of-driver={contactName}
         meeting={registerMeeting} schedule={scheduleMeeting} onskip={skipTomLogPreview} onback={backToDeclaration}></c-m-burse-driver-packet>
     <c-m-burse-mlog if:true={nextmLogPreview} onnavigate={navigateTomLogDownload} onback={backToDriverPacket}
         contact-id={contactId} cell-type={cellphoneType} custom-setting={settings}></c-m-burse-mlog>
     <c-m-burse-download-mlog if:true={nextmLogDownload}  onback={backTomLog}
-        account-id={accountId} contact-id={contactId} contact-email={contactEmail} meeting={registerMeeting} mobile-phone={mobilePhone}
-        schedule={scheduleMeeting} account-type={accountType} cell-type={cellphoneType} onsend={handleLink} onnavigate={navigateToMeeting}></c-m-burse-download-mlog>
+        account-id={accountId} contact-id={contactId} contact-email={contactEmail} meeting={registerMeeting} mobile-phone={mobilePhone} driver-meeting={meetingType}
+        day-left={leftDays} schedule={scheduleMeeting} account-type={accountType} cell-type={cellphoneType} onsend={handleLink} onnavigate={navigateToMeeting}></c-m-burse-download-mlog>
     <!-- <c-m-burse-final if:true={nextBurseFinal} contact-id={contactId} day-left={leftDays} custom-setting={settings}>
     </c-m-burse-final> -->
     <c-m-burse-meeting if:true={nextBurseMeeting} contact-id={contactId} day-left={leftDays} meeting={registerMeeting} account-type={accountType}  schedule={scheduleMeeting}></c-m-burse-meeting>

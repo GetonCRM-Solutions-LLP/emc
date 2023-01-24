@@ -27,6 +27,7 @@ export default class MBurseMain extends LightningElement {
   @track information;
   registerMeeting;
   accountType;
+  meetingType;
   cellphoneType;
   _handler;
   @api settings;
@@ -61,13 +62,14 @@ export default class MBurseMain extends LightningElement {
         if (data) {
           this.information = data;
           driverDetailList = this.proxyToObject(data);
-          this.registerMeeting = driverDetailList[0].meetingVideoLink;
+          this.registerMeeting = driverDetailList[0].scheduleLink;
           this.scheduleMeeting = driverDetailList[0].scheduleLink;
           this.attachmentid = driverDetailList[0].insuranceId;
           this.contactName = driverDetailList[0].contactName;
           this.contactEmail = driverDetailList[0].contactEmail;
           this.mobilePhone = driverDetailList[0].mobilePhone;
           this.accountType = driverDetailList[0].accountStatus;
+          this.meetingType = driverDetailList[0].driverMeeting;
           this.cellphoneType = driverDetailList[0].cellPhone;
           this.leftDays = driverDetailList[0].checkActivationDate;
           // eslint-disable-next-line @lwc/lwc/no-async-operation

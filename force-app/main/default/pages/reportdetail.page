@@ -335,6 +335,8 @@
                 $scope.reportdatefields = [];
                 $scope.reportdatetimetotimefields = [];
                 $scope.reportbooleanfields = [];
+                $scope.reporttwodecimalfields = [];
+
                 if($scope.report.Boolean_Field__c != undefined)
                 {
                     if($scope.report.Boolean_Field__c.includes(','))
@@ -358,6 +360,18 @@
                         $scope.headerfields.push($scope.report.Numeric_Fields__c.trim());
                     }
                 }
+
+                if($scope.report.Two_Decimal_Places__c != undefined){
+                    if($scope.report.Two_Decimal_Places__c.includes(','))
+                    {
+                        $scope.reporttwodecimalfields = $scope.report.Two_Decimal_Places__c.split(',');
+                    }
+                    else
+                    {
+                        $scope.reporttwodecimalfields.push($scope.report.Numeric_Fields__c.trim());
+                    }
+                }
+
                 if($scope.report.Date_Time_Fields__c != undefined)
                 {
                     if($scope.report.Date_Time_Fields__c.includes(','))
@@ -502,6 +516,15 @@
                     }
                 }
 
+                var twodecimalfields = new Map();
+                for(var j = 0;j<$scope.reporttwodecimalfields.length;j++)
+                {
+                    if(apifieldstoheader.has($scope.reporttwodecimalfields[j]))
+                    {
+                        twodecimalfields.set($scope.reporttwodecimalfields[j],apifieldstoheader.get($scope.reporttwodecimalfields[j]));
+                    }
+                }
+
                 var temp = true;
                 if($scope.reporttype != 'Without Date Range')
                 {
@@ -575,6 +598,11 @@
                                     {
                                         $scope.booleanValues = ($scope.getdataofmanager[i][key] === true) ? 'Yes' : 'No';
                                         $scope.valueofkey.push(apifieldstoheader.get(key),$scope.booleanValues);
+                                    }
+                                    else if(twodecimalfields.has(key))
+                                    {
+                                        $scope.twodecimalValues = $scope.getdataofmanager[i][key].toFixed(2);
+                                        $scope.valueofkey.push(apifieldstoheader.get(key),$scope.twodecimalValues);
                                     }
                                     else
                                     {
@@ -782,12 +810,12 @@
                 $scope.reverse = false;
                 let previousSortKey = "";
                 $scope.sort = function(keyname) {
-                    if(keyname !== previousSortKey){
+                    if(keyname != previousSortKey){
                         $scope.reverse = false;
                         previousSortKey=keyname;
                     }
                      /* AI - 000616 : added column name ComplianceStatus InsuranceDeclarationPage and ActiveDriver */
-                    if(keyname === 'Name' || keyname === 'Email' || keyname === 'DriverName' || keyname === 'CoCode' || keyname === 'Manager' || keyname === 'ContactName'|| keyname === 'E-mail' || keyname === 'MileageApprover' || keyname === 'Status' || keyname === 'ComplianceStatus' || keyname === 'InsuranceDeclarationPage' || keyname === 'ActiveDriver'){
+                    if(keyname === 'Name' || keyname === 'Email' || keyname === 'CompletedOnboarding' || keyname === 'Insurance' || keyname === 'DriverName' || keyname === 'CoCode' || keyname === 'Manager' || keyname === 'ContactName'|| keyname === 'E-mail' || keyname === 'MileageApprover' || keyname === 'Status' || keyname === 'ComplianceStatus' || keyname === 'InsuranceDeclarationPage' || keyname === 'ActiveDriver' || keyname === 'WatchedDriverMeeting' || keyname === 'DriverSigned' || keyname === 'AdminSigned' || keyname === 'StartTime' || keyname === 'EndTime' || keyname === 'FromLocation' || keyname === 'ToLocation' || keyname === 'Notes' || keyname === 'Origin' || keyname === 'Destination' || keyname === 'FromLocationName' || keyname === 'FromLocationAddress' || keyname === 'ToLocationName'	|| keyname === 'ToLocationAddress' || keyname === 'TripType' || keyname === 'Tag' || keyname ==='DeactivatedBy' || keyname === 'Driver' || keyname === 'GLCode' || keyname === 'Sage100'){
                         $scope.finnalArr.sort(function (a, b) {
 
                                             var nameA = (a[keyname] == null) ? '' : (a[keyname].toLowerCase()),
@@ -807,7 +835,7 @@
                                             }
                                         })
                     }
-                    if (keyname === 'Month' || keyname === 'FixedAmount' || keyname === 'EmployeeID' || keyname === 'VariableReimbursement') {
+                    if (keyname === 'Month' || keyname === 'FixedAmount'  || keyname === 'EmployeeID' || keyname === 'VariableReimbursement') {
                                        $scope.finnalArr.sort(function (a, b) {
                                             
                                             var dateA = (a[keyname] == null) ? '' : (a[keyname]),
@@ -827,7 +855,7 @@
                                             }
                                         })
                     }
-                    if (keyname === 'TotalMileage' || keyname === 'Mileage' || keyname === 'MonthlyFixedAmount' || keyname === 'VariableAmount'  || keyname === 'VariableReimbursementRate' || keyname === 'TotalMonthlyReimbursement' || keyname === 'MonthlyVariableAmount' || keyname === 'MonthlyApprovedVariableAmount' || keyname === 'TotalApprovedMiles' || keyname === 'TotalApprovedVariable' || keyname === 'TotalReimbursement' || keyname === 'Division') {
+                    if (keyname === 'TotalMileage' || keyname === 'StayTime'  || keyname === 'DriveTime' || keyname === 'Mileage' || keyname === 'MonthlyFixedAmount' || keyname === 'VariableAmount'  || keyname === 'VariableReimbursementRate' || keyname === 'TotalMonthlyReimbursement' || keyname === 'MonthlyVariableAmount' || keyname === 'MonthlyApprovedVariableAmount' || keyname === 'TotalApprovedMiles' || keyname === 'TotalApprovedVariable' || keyname === 'TotalReimbursement' || keyname === 'Division' || keyname === 'VariableRate' || keyname === 'ApprovedMileage' || keyname === 'ActualMileage' || keyname === 'NetMiles' || keyname === 'NetMileage' ||  keyname === 'TotalMileages' || keyname === 'Reimbursement') {
 
                                 $scope.finnalArr.sort(function (a, b) {
                                             var nameA = (a[keyname] == null) ? '' : parseFloat(a[keyname]),
@@ -847,7 +875,7 @@
                                             }
                                         })
                     }
-                    if (keyname === 'ActivationDate' || keyname === 'DeactivatedDate') {
+                    if (keyname === 'ActivationDate' || keyname === 'DeactivatedDate' || keyname === 'DeactivationDate' || keyname === 'TripDate' || keyname === 'ApprovalDate' || keyname === 'LockDate') {
                                        $scope.finnalArr.sort(function (a, b) {
 
                                             var dateA = (a[keyname] == null) ? '' : new Date(a[keyname].toLowerCase()),
@@ -885,6 +913,12 @@
                     loaddatepicker(selectedDate);
                 }
 
+                if($scope.report.Date_Fields__c){
+                    if ($scope.report.Date_Fields__c.includes("Activation_Date__c")) {
+                        $scope.sort("ActivationDate");
+                    } 
+                }
+               
                 // Concur Sync -->
                 $scope.submitExpense = function(){
                     $('#spinner').show();
