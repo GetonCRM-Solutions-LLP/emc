@@ -11,7 +11,7 @@
        href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"
      />
      <!--Toaster -->
-    <script src="{!URLFOR($Resource.EMC_Header_Scripts,'EMC_Header_Scripts/js/toastr.min.js')}"></script>
+    <script  src="{!URLFOR($Resource.EMC_Header_Scripts,'EMC_Header_Scripts/js/toastr.min.js')}"></script>
     <link href="{!URLFOR($Resource.EMC_Header_Scripts,'EMC_Header_Scripts/css/toastr.min.css')}" rel="stylesheet" />
    <apex:includeLightning /> 
    <div id="locationSpinner">
@@ -392,6 +392,21 @@
 
     </style>
     <script>
+            fetch("/app/c/LWCLightningApp.app?aura.format=JSON&aura.formatAdapter=LIGHTNING_OUT")
+            .then(function (response) {
+                if (response.status !== 200) {
+                    var url , path;
+                    url = location;
+                    path = url.origin + "/app/secur/logout.jsp";
+                    $("#mLoader").hide();
+                    $("#locationSpinner").hide();
+                    $("#mSpinner").hide();
+                    location.replace(path);
+                }
+            })
+            .catch(function (error) {
+                ///if status code 401...
+            });
             /* Toaster Option */
             this.setOptions = function () {
                 toastr.options.positionClass = "toast-top-right";

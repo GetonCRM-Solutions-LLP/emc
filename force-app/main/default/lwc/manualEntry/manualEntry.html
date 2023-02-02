@@ -15,7 +15,7 @@
                 <template if:true={modelList}>
                     <c-advance-user-table main-class="slds-table--header-fixed_container preview-height"
                     scrollable={isScrollable} select-view-list={dropdownList} is-paginate={paginatedModal} norecord-message={noMessage}
-                    model-data={modelList} columns={modalColumn} options={modalKeyFields} is-sortable={isSortable} ondisable={closeAddTrip}>
+                    model-data={modelList} columns={modalColumn} options={modalKeyFields} is-sortable={isSortable} ondisable={closeAddTrip} oneditlocation={handleEventFromEdit}>
                     <div slot="corner">
                         <div class="slds-p-left_medium slds-p-bottom_small slds-p-top_xx-small">
                             <button
@@ -44,4 +44,43 @@
             </div>
         </div>
     </div>
+    <c-user-profile-modal header={headerText}  month='' show-footer={isFalse} show-btn={isTrue}
+        modal-class="slds-modal slds-modal_figma-small slds-is-fixed slds-fade-in-open animate__animated animate__fadeInTopLeft  animate__faster"
+        header-class="slds-modal__header header-preview slds-p-horizontal_x-large slds-p-top_large slds-p-bottom_xxx-small slds-clearfix"
+        modal-content-style="slds-modal__content slds-p-horizontal_medium  slds-p-bottom_medium slds-p-top_small"
+        subheader-class="slds-heading_small slds-hyphenate slds-float_left"
+        style-header="slds-modal__container slds-m-top_medium" close-btn-class="close-notify">
+        <template if:true={editModal}>
+            <div class="">
+                <div class="information slds-p-horizontal_medium slds-p-top_small slds-p-bottom_large">* This is only for used to name the location or adjust the address. Do not change the location entirely.</div>
+                <table class="slds-table slds-table_cell-buffer slds-table_header-hidden modal-table">
+                    <tbody>
+                        <tr>
+                            <td>Name:</td>
+                            <td class="input-td"><input  class="content-input" value={locationName} placeholder="optional"></td>
+                            <td>Phone:</td>
+                            <td><input  class="content-input" placeholder="optional"></td>
+                        </tr>
+                        <tr>
+                            <td>Address:</td>
+                            <td class="input-td"> <textarea cols="35" name="address">{locationAddress}</textarea></td>
+                            <td>Range:</td>
+                            <td><input  class="content-input" value={_range} oninput={validateField}>&nbsp; &nbsp;ft</td>
+                        </tr>
+                        <tr>
+                            <td colspan="4">
+                                <div style="display: flex;">
+                                    <button class="slds-btn slds-btn-primary slds-btn-sm waves-effect bc-green waves-light mleft-0 btn-trip action-btn">
+                                        Save</button> <button
+                                        class="slds-btn slds-btn-primary slds-btn-sm waves-effect bc-black waves-light mleft-0 btn-trip action-btn">
+                                        Close</button>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </template>
+
+        </c-user-profile-modal>
 </template>

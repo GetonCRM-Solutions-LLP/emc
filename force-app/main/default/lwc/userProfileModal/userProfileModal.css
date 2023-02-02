@@ -146,3 +146,13 @@ sub {
     min-width: 24rem !important;
 }
 
+.slds-heading_small{
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--mburse-color);
+}
+
+.slds-modal-figma_small{
+    width: 628px !important;
+}
+

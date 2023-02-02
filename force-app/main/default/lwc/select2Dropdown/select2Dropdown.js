@@ -61,6 +61,7 @@ export default class Select2Dropdown extends LightningElement {
 	}
 
 	set selectedValue(val) {
+		console.log('inside selected')
 		this._selected = val;
 	}
 
@@ -118,15 +119,33 @@ export default class Select2Dropdown extends LightningElement {
                 }
             }
         }
+
+	//	this.applyChange();
+		
 		//this.fireChange();
+	}
+
+	applyChange(){
+		let compare = (this._element !== undefined) ? this._element.dataset.label : this._selected;
+		
+		let highlightedList = this.template.querySelectorAll('.slds-listbox__option');
+		highlightedList.forEach((option) => {
+			if(option.dataset.label === compare){
+				console.log("apply---", compare)
+				//if(this._element === undefined){
+					option.classList.add('active');
+				//}
+			}
+		})
 	}
 
 	handleInput() {
 		this.isOpen = true;
 	}
 
-	fireChange() {
-		this.dispatchEvent(new CustomEvent("change", {detail: {value: this._value}}));
+	fireChange(val) {
+		this.dispatchEvent(new CustomEvent("change", {detail: {value: val}}));
+		//this._value = ""
 	}
 
 	get classes() {
@@ -159,19 +178,23 @@ export default class Select2Dropdown extends LightningElement {
 
 	handleDropdownMouseUp() {
 		console.log('DropdownMouseUp')
+	  //  this.isOpen = false;
 		//this.allowBlur();
 	}
 
 	handleMouseUp(){
 		console.log("LEave Div")
-		this.isOpen = false;
+		// if (!this._inputHasFocus) {
+			this.isOpen = false;
+		// }
 		//this.allowBlur();
 	}
 
 	handleDropdownMouseLeave() {
 		console.log('DropdownMouseLeave')
+		this.isOpen = false;
 		// if (!this._inputHasFocus) {
-		// 	this.showList = false;
+		// 	this.isOpen = false;
 		// }
 	}
 
@@ -181,26 +204,29 @@ export default class Select2Dropdown extends LightningElement {
 		if (this._cancelBlur) {
 			return;
 		}
-		//this.isOpen = false;
+	//	this.isOpen = false;
 
 		this.highlightCounter = null;
 		this.dispatchEvent(new CustomEvent("blur"));
 	}
 
 	removeHighlighted(){
+		console.log('inside remove', this._selected)
 		let highlightedList = this.template.querySelectorAll('.slds-listbox__option');
 		highlightedList.forEach((option) => {
-			if(option.className.includes('active')){
+		//	if(option.dataset.label=== this._selected){
 				option.classList.remove('active');
-			}
+		//	}
 		})
 	}
 
 	addHighlighted(selectedVal){
 		let highlightedList = this.template.querySelectorAll('.slds-listbox__option');
 		highlightedList.forEach((option) => {
-			if(option.dataset.label=== selectedVal){
-				option.classList.add('active');
+			if(option.dataset.label === selectedVal){
+				if(this._element === undefined){
+					option.classList.add('active');
+				}
 			}
 		})
 	}
@@ -218,12 +244,12 @@ export default class Select2Dropdown extends LightningElement {
 		this._inputHasFocus = true;
 		this.isOpen = !this.isOpen;
 		this.highlightCounter = null;
-		this.removeHighlighted();
-		//console.log(this.template.querySelectorAll('.slds-listbox__option'))
+		//this.removeHighlighted();
+	//	console.log(this._element.dataset.label)
 		if(this._element !== undefined){
 			this.options.forEach((option) => {
 				if (option.label === this._element.dataset.label) {
-				//	console.log('handleFocus', this._previousElement.dataset.label, this._element.dataset.label)
+				//console.log('handleFocus', this._previousElement.dataset.label, this._element.dataset.label)
 					this._element.classList.add('active');
 				}
 			});
@@ -239,8 +265,11 @@ export default class Select2Dropdown extends LightningElement {
 		//this._value = event.currentTarget.dataset.label;
 		this._value = "";
 		this.template.querySelector('.selection__rendered').innerText = event.currentTarget.dataset.label;
+		this._selected = event.currentTarget.dataset.label;
+		//this.addHighlighted(event.currentTarget.dataset.label);
+		this.fireChange(event.currentTarget.dataset.label);
 		this.isOpen = false;
-		//this.fireChange();
+		
 	}
 
 	handleKeyDown(event) {
@@ -251,7 +280,7 @@ export default class Select2Dropdown extends LightningElement {
 			if (this.highlightCounter !== null) {
 				this.isOpen = false;
 				this.allowBlur();
-				this._value = this.tempOptions[this.highlightCounter].value;
+				//this._value = this.tempOptions[this.highlightCounter].value;
 				//this.fireChange();
 			}
 		} else if (event.key === "Enter") {

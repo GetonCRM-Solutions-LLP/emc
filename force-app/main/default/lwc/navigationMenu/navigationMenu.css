@@ -638,31 +638,47 @@ body.dark .home .text {
     position:relative;
   }
   
+  .tooltipSpan{
+    position: absolute;
+    text-align: center;
+    font-size: 12px;
+    color: #fff;
+    font-family: 'Proxima Nova';
+    font-weight: 400;
+    top: 0;
+    width: 100%;
+    left: 3px;
+    text-align: center;
+    margin-top: 8px;
+    display: flex;
+    justify-content: center;
+  }
+
   .sidebar a  .tooltipValue{
     display: inline-block;
     visibility: hidden;
     position:absolute; 
     z-index:100;
-    background-color:#F6F6F6;
+    /* background-color:#F6F6F6;
     height: auto;
-    width: 116px;
-    box-shadow: 0 0px 10px rgba(0, 0, 0, 0.21);
-    border-bottom-left-radius: 10px;
+    width: 116px; */
+    /* box-shadow: 0 0px 10px rgba(0, 0, 0, 0.21); */
+    /* border-bottom-left-radius: 10px;
     border-bottom-right-radius: 10px;
     border-top-right-radius: 10px;
     padding:10px 18px;
-    top: 2em;
-    left: 50%;
+    top: 2em; */
+    left: 70px;
     opacity: 0;
     /* top: auto;
     left: 34px; */
-    white-space: pre-wrap;
-    font-family: 'Proxima Nova';
+    /* white-space: pre-wrap; */
+    /* font-family: 'Proxima Nova';
     font-weight: 400;
-    font-size: 14px;
+    font-size: 14px; */
     line-height: 168.3%;
     /* identical to box height, or 20px */
-    color: #404B5A;
+    /* color: #404B5A; */
   }
   
   .sidebar.close a:hover .tooltipValue{

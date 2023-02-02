@@ -1,18 +1,23 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable no-undef */
 /* eslint-disable @lwc/lwc/no-api-reassignments */
 import { LightningElement, api, track } from 'lwc';
 import resourceImage from '@salesforce/resourceUrl/mBurseCss';
-// import datepicker from "@salesforce/resourceUrl/EmcCSS";
+import datepicker from "@salesforce/resourceUrl/calendar";
 import { loadScript, loadStyle } from "lightning/platformResourceLoader";
 import {
   openEvents
 } from 'c/utils';
+import {validateDate} from 'c/commonLib';
 // eslint-disable-next-line no-unused-vars
 var flatpickdp = {};
 var timepickdp = {};
 export default class AdvanceUserTable extends LightningElement {
   @api selectViewList;
   @track _count = 0;
+  currentDate;
+  changeValue;
+  currentTime;
   className;
   dropdownList;
   sortedColumn = 'tripdate';
@@ -550,8 +555,16 @@ export default class AdvanceUserTable extends LightningElement {
     this.gotoPage(this.currentPage, this.pagedData)
   }
 
-  @api openForm(){
+  @api  openForm(){
      this.singleTrip = true;
+  }
+
+  validateField(event){
+    event.target.value = event.target.value
+    .replace(/[^\d.]/g, '')             // numbers and decimals only
+    .replace(/(^\.*)\./g, '$1')          // single dot retricted
+    .replace(/(\..*)\./g, '$1')          // decimal can't exist more than once
+    .replace(/(\.[\d]{2})./g, '$1');    // not more than 2 digits after decimal
   }
   
   gotoPage(pageNumber, source) {
@@ -744,8 +757,15 @@ export default class AdvanceUserTable extends LightningElement {
   }
 
   editLocation(event){
+    console.log(this.changeValue)
     let locate = event.currentTarget ? event.currentTarget.dataset.label : '';
+    locate = (this.changeValue === undefined) ? locate : this.changeValue;
     let locationValue = this.template.querySelector('c-select2-dropdown').getLocationId(locate);
+    this.dispatchEvent(
+      new CustomEvent("editlocation", {
+        detail: JSON.stringify(locationValue)
+      })
+    );
     console.log("Val----", JSON.stringify(locationValue),  event.currentTarget.dataset.label)
     console.log("location name----", locationValue.name)
     console.log("location address----", locationValue.address)
@@ -934,9 +954,12 @@ export default class AdvanceUserTable extends LightningElement {
   }
 
 
-  connectedCallback() {
+ async connectedCallback() {
     // Initialize data table to the specified current page (should be 1)
   //  console.log("Trip", JSON.stringify(this.modelData))
+    this.currentDate = validateDate(new Date());
+    let time = new Date();
+    this.currentTime = time.toLocaleString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true });
     this.contentLen = this.modelData.length;
     this.className = (this.scrollable) ? 'slds-scrollable_y slds-p-right_small slds-p-left_small' : 'slds-p-right_small slds-p-left_small';
     // this.dropdownList  = this.proxyToObject(this.selectViewList);
@@ -963,27 +986,158 @@ export default class AdvanceUserTable extends LightningElement {
     }
   }
 
-  @api intializeDatepicker() {
-    const dpDiv = this.template.querySelectorAll('.date-flatpickr');
-    dpDiv.forEach((element) => {
-      // if(element.value === ""){
-      flatpickdp = flatpickr(element, {
-        minDate: "today",
-        dateFormat: "m/d/y",
-       // dateFormat: "m/d/y h:i K",
-        enableTime: false,
-        onChange: function (selectedDates, dateStr, instance) {
-          instance.close(); //Close datepicker on date select
-        }
-        // locale: {
-        //   firstDayOfWeek: 1 // start week on Monday
-        // }
-      });
-      //}
-    })
-    //  console.log(dpDiv, dpDiv.length)
+  intializeDatepickup(){
+      let $input = $(this.template.querySelectorAll('.date-selector'))
+      console.log($input.length)
+      $input.each(function() {
+            let _self2 = $(this)
+            let $btn = $(this).next()
+            $(this).datepicker({
 
-  }
+              // inline mode
+              inline: false,
+
+              // additional CSS class
+              classes: 'flatpickr-cal',
+
+              // language
+              language: 'en',
+
+              // start date
+              startDate: new Date(),
+              // array of day's indexes
+              weekends: [6, 0],
+
+              // custom date format
+              dateFormat:'mm/dd/yy',
+
+              // Alternative text input. Use altFieldDateFormat for date formatting.
+              altField: '',
+
+              // Date format for alternative field.
+              altFieldDateFormat: '@',
+
+              // remove selection when clicking on selected cell
+              toggleSelected: false,
+
+              // keyboard navigation
+              keyboardNav: true,
+
+              // position
+              position: 'bottom left',
+              offset: 12,
+
+              // days, months or years
+              view: 'days',
+              minView: 'days',
+              showOtherMonths: true,
+              selectOtherMonths: true,
+              moveToOtherMonthsOnSelect: true,
+
+              showOtherYears: true,
+              selectOtherYears: true,
+              moveToOtherYearsOnSelect: true,
+
+              minDate: '',
+              maxDate: '',
+              disableNavWhenOutOfRange: true,
+
+              multipleDates: false, // Boolean or Number
+              multipleDatesSeparator: ',',
+              range: false,
+              isMobile: false,
+              // display today button
+              todayButton: new Date(),
+
+              // display clear button
+              clearButton: false,
+
+              // Event type
+              showEvent: 'focus',
+
+              // auto close after date selection
+              autoClose: true,
+
+              // navigation
+              monthsFiled: 'monthsShort',
+              prevHtml: '<svg><path d="M 17,12 l -5,5 l 5,5"></path></svg>',
+              nextHtml: '<svg><path d="M 14,12 l 5,5 l -5,5"></path></svg>',
+              navTitles: {
+                  days: 'M <i>yyyy</i>',
+                  months: 'yyyy',
+                  years: 'yyyy1 - yyyy2'
+              },
+
+              // timepicker
+              timepicker: false,
+              onlyTimepicker: false,
+              dateTimeSeparator: ' ',
+              timeFormat: '',
+              minHours: 0,
+              maxHours: 24,
+              minMinutes: 0,
+              maxMinutes: 59,
+              hoursStep: 1,
+              minutesStep: 1,
+
+              // callback events
+              onSelect: function(date, formattedDate, dpicker){
+                  //datepicker.$el.val(_self2.val())
+                  // console.log('explain:', date, formattedDate, dpicker, _self2.val());
+                  // console.log('selected date', date);
+              },
+              
+              onShow: function (dp, animationCompleted) {
+              //_self.value = dp.$el.val()
+              if (!animationCompleted) {
+                if (dp.$datepicker.find('span.datepicker--close--button').html()===undefined) { /*ONLY when button don't existis*/
+                    dp.$datepicker.find('div.datepicker--buttons').append('<span  class="datepicker--close--button">Close</span>');
+                    dp.$datepicker.find('span.datepicker--close--button').click(function() {
+                      dp.hide();
+                    });
+                    //_self.value = dp.$el.val();
+                  //dp.show();
+                  // dp.selectDate(new Date(_self2.val()));
+                  //console.log("flat date---",dp.$el, dp, dp.$el.val());
+                }
+              }
+            },
+              //onShow: '',
+              onHide: '',
+              onChangeMonth: '',
+              onChangeYear: '',
+              onChangeDecade: '',
+              onChangeView: '',
+              // eslint-disable-next-line consistent-return
+              onRenderCell: function(date){
+                  if (date.getDay() === 0) {
+                        return {
+                            classes: 'color-weekend-sunday'
+                        }
+                  }
+                    if (date.getDay() === 6) {
+                        return {
+                            classes: 'color-weekend-saturday'
+                        }
+                  }
+              }
+            }).data('datepicker').selectDate(new Date(_self2.val()))
+            $btn.on('click', function(){
+              _self2.focus();
+            });
+      })
+      // eslint-disable-next-line @lwc/lwc/no-async-operation
+      //setTimeout(()=>{this.singleTrip = false}, 1000);
+			//})
+      // let $btn = $(this.template.querySelector('.input-button')),
+      // $calInput = $(this.template.querySelectorAll('.date-selector')),
+		  // dp = $calInput.datepicker({showEvent: 'none'}).data('datepicker');
+
+			// $btn.on('click', function(){
+			// 	dp.show();
+			// 	$calInput.focus();
+			// });
+	}
 
   intializeTimepicker(){
     const timeDiv = this.template.querySelectorAll('.time-flatpickr');
@@ -993,10 +1147,16 @@ export default class AdvanceUserTable extends LightningElement {
         enableTime: true,
         noCalendar: true,
         dateFormat: "h:i K",
-        onChange: function (selectedDates, dateStr, instance) {
-         // console.log(selectedDates, dateStr, instance);
-          instance.close(); //Close datepicker on date select
+        onChange: function(dateStr){
+        //  instance.close();
+          if(dateStr === null || dateStr === ''){
+            element.value = dateStr
+          }
         }
+        // onChange: function (selectedDates, dateStr, instance) {
+        //  // console.log(selectedDates, dateStr, instance);
+        //   instance.close(); //Close datepicker on date select
+        // }
         // locale: {
         //   firstDayOfWeek: 1 // start week on Monday
         // }
@@ -1015,9 +1175,15 @@ export default class AdvanceUserTable extends LightningElement {
     evt.preventDefault();
   }
 
+  handleChange(evt) {
+    this.changeValue = evt.detail.value;
+    console.log("changed---", evt.detail.value)
+  }
+
   handleIncrement(){
    // if(this._count !== 0){
-      this._count += 1;
+      //this._count += 1;
+      this._count = Number((this._count + 1).toFixed(2))
       console.log("increment", this._count)
    // }
   }
@@ -1027,7 +1193,7 @@ export default class AdvanceUserTable extends LightningElement {
       let x = this._count
       let int_part = Math.trunc(x); // returns 3
       let float_part = Number((x-int_part).toFixed(2))
-      this._count = (int_part <= 0) ? int_part : (int_part - 1) + float_part;
+      this._count = (int_part <= 0) ? int_part : Number(((int_part - 1) + float_part).toFixed(2));
       console.log("decrement", this._count)
     }
   }
@@ -1052,7 +1218,11 @@ export default class AdvanceUserTable extends LightningElement {
  
 
   renderedCallback() {
-    var pageBlock = this.template.querySelectorAll('.page-num-block');
+    let pageBlock
+    if(this.datepickerInitialized){
+      return;
+    }
+    pageBlock = this.template.querySelectorAll('.page-num-block');
     if (pageBlock) {
       pageBlock.forEach(item => {
         if (item.dataset.id) {
@@ -1068,12 +1238,19 @@ export default class AdvanceUserTable extends LightningElement {
     Promise.all([
       loadScript(this, resourceImage + '/mburse/assets/datepicker/flatpickr.js'),
       loadStyle(this, resourceImage + '/mburse/assets/datepicker/customMinifiedDatePicker.css'),
-      loadStyle(this, resourceImage + '/mburse/assets/datepicker/flatpickr.min.css')
+      loadStyle(this, resourceImage + '/mburse/assets/datepicker/flatpickr.min.css'),
+      loadScript(this, datepicker + '/jquery3v.min.js'),
+      loadScript(this, datepicker + '/popper.min.js'),
+      loadScript(this, datepicker + '/datepicker.js'),
+      loadScript(this, datepicker + '/datepicker.en.min.js'),
+      loadStyle(this, datepicker + '/minifiedCustomDP.css'),
+      loadStyle(this, datepicker + '/datepicker.css')
     ])
       .then(() => {
-        this.intializeDatepicker();
+        this.datepickerInitialized = true;
         this.intializeTimepicker();
-        console.log("script loaded", this.contentLen)
+        this.intializeDatepickup();
+        console.log("script loaded")
       }).catch(error => {
         console.log(JSON.stringify(error.message), error);
       })
@@ -1091,6 +1268,7 @@ export default class AdvanceUserTable extends LightningElement {
     // data-id of row <tr> -- >
     event.stopPropagation();
     this.singleTrip = false;
+    this.changeValue = undefined;
     let count = 0;
     let targetId = event.currentTarget.dataset.id;
    // if(this.rowElementId !== targetId){

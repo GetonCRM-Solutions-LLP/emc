@@ -592,7 +592,7 @@ a:hover,  a:focus {
     font-size: 12px;
     font-weight: 600;
     color: var(--link-color) !important;
-    width: 4rem !important;
+    width: 6.5rem !important;
   }
 
   .icon-action{

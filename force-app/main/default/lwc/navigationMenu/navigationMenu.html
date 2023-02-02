@@ -4,16 +4,16 @@
             <div class="image-text">
                 <span class="image">
                     <div class="mburse-large" onclick={redirectToHomePage}>
-                        <img src={company}/>
+                        <img src={company}  loading="eager"/>
                     </div>
                     <div class="logo-mburse" onclick={redirectToHomePage}>
-                        <img src={companyShort} />
+                        <img src={companyShort}  loading="eager" />
                     </div>
                  </span>
 
                 <div class="logo-icon">
                     <div class="icon user-icon">
-                        <img class="user-icon-img" src={user} />
+                        <img class="user-icon-img" src={user}  loading="eager"/>
                     </div>
                     <div class="text logo-text">
                         <span class="name">{driverName}</span>
@@ -35,11 +35,20 @@
                             <dd class="nav-link"  key={item.menuId}>
                                 <a class="tooltipText" href="#" onclick={handleRedirect} data-name={item.menu} oncontextmenu={handleContextMenu}>
                                     <span class="icon" data-name={item.menu}>
-                                        <img class="icon-initial" src={item.logo}  data-name={item.menu}/>
-                                        <img class="icon-hover" src={item.logoHov}  data-name={item.menu}/>
+                                        <img class="icon-initial" src={item.logo}  data-name={item.menu}  loading="eager"/>
+                                        <img class="icon-hover" src={item.logoHov}  data-name={item.menu}  loading="eager"/>
                                     </span>
                                     <span class="text nav-text" data-name={item.menu}>{item.menuLabel}</span>
-                                    <span key={item.menuId} class="tooltipValue">{item.menuLabel}</span>
+                                    <span key={item.menuId} class="tooltipValue">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="120" height="38.182" viewBox="0 0 120 38.182" fill="none">
+                                            <path
+                                                d="M8.761 4.858C10.785 1.823 14.191 0 17.838 0H109.091C115.116 0 120 4.884 120 10.909V27.273C120 33.298 115.116 38.182 109.091 38.182H18.205C14.358 38.182 10.795 36.155 8.829 32.848L1.405 20.363C0.546 18.919 0.593 17.11 1.525 15.712L8.761 4.858Z"
+                                                fill="#BDC0C6"></path>
+                                            <path
+                                                d="M8.761 4.858C10.785 1.823 14.191 0 17.838 0H109.091C115.116 0 120 4.884 120 10.909V27.273C120 33.298 115.116 38.182 109.091 38.182H18.205C14.358 38.182 10.795 36.155 8.829 32.848L1.405 20.363C0.546 18.919 0.593 17.11 1.525 15.712L8.761 4.858Z"
+                                                fill="#404B5A"></path>
+                                        </svg><span class="tooltipSpan">{item.menuLabel}</span>
+                                    </span>
                                 </a>
                             </dd>
                         </template>

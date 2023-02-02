@@ -2,31 +2,31 @@
     <div class="slds-tabs_default">
         <ul class="slds-tabs_default__nav" role="tablist">
             <li class="slds-m-right_small slds-tabs_default__item slds-is-active" role="presentation">
-                <a class="slds-tabs_default__link" onclick={driverPacketView} href="#" role="tab" tabindex="0"
-                    aria-selected="true" aria-controls="tab-default-1" id="tab-default-1__item">Driver Packet</a>
+                <a class="slds-tabs_default__link" onclick={driverPacketView} href="#Mileage" role="tab" tabindex="0"
+                    aria-selected="true" aria-controls="tab-default-1">Driver Packet</a>
             </li>
             <li class="slds-m-right_small slds-tabs_default__item" role="presentation">
-                <a class="slds-tabs_default__link" href="#" onclick={driverMeetingView} role="tab" tabindex="-1"
-                    aria-selected="false" aria-controls="tab-default-2" id="tab-default-2__item">Driver Meeting</a>
+                <a class="slds-tabs_default__link" href="#Mileage" onclick={driverMeetingView} role="tab" tabindex="-1"
+                    aria-selected="false" aria-controls="tab-default-2">Driver Meeting</a>
             </li>
             <li class="slds-m-right_small slds-tabs_default__item" role="presentation">
-                <a class="slds-tabs_default__link" href="#" onclick={driverInsuranceView} role="tab" tabindex="-1"
-                    aria-selected="false" aria-controls="tab-default-3" id="tab-default-3__item">Insurance</a>
+                <a class="slds-tabs_default__link" href="#Mileage" onclick={driverInsuranceView} role="tab" tabindex="-1"
+                    aria-selected="false" aria-controls="tab-default-3">Insurance</a>
             </li>
             <li class="slds-m-right_small slds-tabs_default__item" role="presentation">
-                <a class="slds-tabs_default__link" href="#" onclick={driverComplianceView} role="tab" tabindex="-1"
-                    aria-selected="false" aria-controls="tab-default-4" id="tab-default-4__item">Compliance</a>
+                <a class="slds-tabs_default__link" href="#Mileage" onclick={driverComplianceView} role="tab" tabindex="-1"
+                    aria-selected="false" aria-controls="tab-default-4">Compliance</a>
             </li>
             <li class="slds-m-right_small slds-tabs_default__item" role="presentation">
-                <a class="slds-tabs_default__link" href="#" onclick={driverReimbursementView} role="tab" tabindex="-1"
-                    aria-selected="false" aria-controls="tab-default-5" id="tab-default-5__item">My Reimbursement</a>
+                <a class="slds-tabs_default__link" href="#Mileage" onclick={driverReimbursementView} role="tab" tabindex="-1"
+                    aria-selected="false" aria-controls="tab-default-5">My Reimbursement</a>
             </li>
             <!-- <li class="slds-m-right_small slds-tabs_default__item" role="presentation">
                 <a class="slds-tabs_default__link" href="#" onclick={driverMVRView} role="tab" tabindex="-1"
                     aria-selected="false" aria-controls="tab-default-6" id="tab-default-6__item">MVR Check</a>
             </li> -->
         </ul>
-        <div if:true={driverPacket} id="tab-default-1" class="slds-tabs_default__content" role="tabpanel"
+        <div if:true={driverPacket} class="slds-tabs_default__content" role="tabpanel"
             aria-labelledby="tab-default-1__item">
             <div class="slds-grid">
                 <div class="slds-col slds-size_2-of-1">
@@ -45,7 +45,7 @@
                                                 class="fa-solid fa-lg fa-check"></i></span></h2>
                                 </div>
                                 <div class="plan-info-inner">
-                                    <img class="plan-info-icon" src={driverPacketSentIcon}>
+                                    <img class="plan-info-icon" src={driverPacketSentIcon}  loading="eager">
                                     <div class="step-content slds-m-horizontal_x-large">Sent to Driver</div>
                                 </div>
                             </div>
@@ -62,7 +62,7 @@
                             <div class="plan-info-detail">
                                 <h2 class="step-count">1</h2>
                                 <div class="plan-info-inner">
-                                    <img class="plan-info-icon" src={driverPacketSentIcon}>
+                                    <img class="plan-info-icon" src={driverPacketSentIcon}  loading="eager">
                                     <div class="step-content slds-m-horizontal_x-large">Sent to Driver</div>
                                 </div>
                             </div>
@@ -85,7 +85,7 @@
                                                 class="fa-solid fa-lg fa-check"></i></span></h2>
                                 </div>
                                 <div class="plan-info-inner">
-                                    <img class="plan-info-icon" src={driverSignedIcon}>
+                                    <img class="plan-info-icon" src={driverSignedIcon}  loading="eager">
                                     <div class="step-content slds-m-horizontal_x-large">Driver Signed</div>
                                 </div>
                             </div>
@@ -102,7 +102,7 @@
                             <div class="plan-info-detail">
                                 <h2 class="step-count">2</h2>
                                 <div class="plan-info-inner">
-                                    <img class="plan-info-icon" src={driverSignedIcon}>
+                                    <img class="plan-info-icon" src={driverSignedIcon}  loading="eager">
                                     <div class="step-content slds-m-horizontal_x-large">Driver Signed</div>
                                 </div>
                             </div>
@@ -125,7 +125,7 @@
                                                 class="fa-solid fa-lg fa-check"></i></span></h2>
                                 </div>
                                 <div class="plan-info-inner">
-                                    <img class="plan-info-icon" src={adminSignedIcon}>
+                                    <img class="plan-info-icon" src={adminSignedIcon}  loading="eager">
                                     <div class="step-content slds-m-horizontal_x-large">Admin Signed</div>
                                 </div>
                             </div>
@@ -142,7 +142,7 @@
                             <div class="plan-info-detail">
                                 <h2 class="step-count">3</h2>
                                 <div class="plan-info-inner">
-                                    <img class="plan-info-icon" src={adminSignedIcon}>
+                                    <img class="plan-info-icon" src={adminSignedIcon}  loading="eager">
                                     <div class="step-content slds-m-horizontal_x-large">Admin Signed</div>
                                 </div>
                             </div>
@@ -165,7 +165,7 @@
                                                 class="fa-solid fa-lg fa-check"></i></span></h2>
                                 </div>
                                 <div class="plan-info-inner">
-                                    <img class="plan-info-icon" src={packetCompletedIcon}>
+                                    <img class="plan-info-icon" src={packetCompletedIcon}  loading="eager">
                                     <div class="step-content slds-m-horizontal_x-large">Packet Completed</div>
                                 </div>
                             </div>
@@ -182,7 +182,7 @@
                             <div class="plan-info-detail">
                                 <h2 class="step-count">4</h2>
                                 <div class="plan-info-inner">
-                                    <img class="plan-info-icon" src={packetCompletedIcon}>
+                                    <img class="plan-info-icon" src={packetCompletedIcon}  loading="eager">
                                     <div class="step-content slds-m-horizontal_x-large">Packet Completed</div>
                                 </div>
                             </div>
@@ -195,7 +195,7 @@
             </div>
         </div>
 
-        <div if:true={driverMeeting} id="tab-default-2" class="slds-tabs_default__content" role="tabpanel"
+        <div if:true={driverMeeting} class="slds-tabs_default__content" role="tabpanel"
             aria-labelledby="tab-default-2__item">
             <div class="slds-grid">
                 <div class="slds-col slds-size_2-of-1">
@@ -214,7 +214,7 @@
                                                 class="fa-solid fa-lg fa-check"></i></span></h2>
                                 </div>
                                 <div class="plan-info-inner">
-                                    <img class="plan-info-icon" src={driverPacketSentIcon}>
+                                    <img class="plan-info-icon" src={driverPacketSentIcon}  loading="eager">
                                     <div class="step-content slds-m-horizontal_x-large">Sent</div>
                                 </div>
                             </div>
@@ -231,7 +231,7 @@
                             <div class="plan-info-detail">
                                 <h2 class="step-count">1</h2>
                                 <div class="plan-info-inner">
-                                    <img class="plan-info-icon" src={driverPacketSentIcon}>
+                                    <img class="plan-info-icon" src={driverPacketSentIcon}  loading="eager">
                                     <div class="step-content slds-m-horizontal_x-large">Sent</div>
                                 </div>
                             </div>
@@ -254,7 +254,7 @@
                                                 class="fa-solid fa-lg fa-check"></i></span></h2>
                                 </div>
                                 <div class="plan-info-inner">
-                                    <img class="plan-info-icon" src={driverSignedIcon}>
+                                    <img class="plan-info-icon" src={driverSignedIcon}  loading="eager">
                                     <div class="step-content slds-m-horizontal_x-large">Scheduled</div>
                                 </div>
                             </div>
@@ -271,7 +271,7 @@
                             <div class="plan-info-detail">
                                 <h2 class="step-count">2</h2>
                                 <div class="plan-info-inner">
-                                    <img class="plan-info-icon" src={driverSignedIcon}>
+                                    <img class="plan-info-icon" src={driverSignedIcon}  loading="eager">
                                     <div class="step-content slds-m-horizontal_x-large">Scheduled</div>
                                 </div>
                             </div>
@@ -294,7 +294,7 @@
                                                 class="fa-solid fa-lg fa-check"></i></span></h2>
                                 </div>
                                 <div class="plan-info-inner">
-                                    <img class="plan-info-icon" src={meetingAttendedIcon}>
+                                    <img class="plan-info-icon" src={meetingAttendedIcon}  loading="eager">
                                     <div class="step-content slds-m-horizontal_x-large">Attended</div>
                                 </div>
                             </div>
@@ -311,7 +311,7 @@
                             <div class="plan-info-detail">
                                 <h2 class="step-count">3</h2>
                                 <div class="plan-info-inner">
-                                    <img class="plan-info-icon" src={meetingAttendedIcon}>
+                                    <img class="plan-info-icon" src={meetingAttendedIcon}  loading="eager">
                                     <div class="step-content slds-m-horizontal_x-large">Attended</div>
                                 </div>
                             </div>
@@ -321,7 +321,7 @@
             </div>
         </div>
 
-        <div if:true={driverInsurance} id="tab-default-3" class="slds-tabs_default__content" role="tabpanel"
+        <div if:true={driverInsurance}  class="slds-tabs_default__content" role="tabpanel"
             aria-labelledby="tab-default-3__item">
             <div class="slds-grid">
                 <div class="slds-col slds-size_2-of-1">
@@ -339,7 +339,7 @@
                                             class="fa-solid fa-lg fa-check"></i></span></h2>
                             </div>
                             <div class="plan-info-inner">
-                                <img class="plan-info-icon" src={requestedIcon}>
+                                <img class="plan-info-icon" src={requestedIcon}  loading="eager">
                                 <div class="step-content slds-m-horizontal_x-large">Requested</div>
                             </div>
                         </div>
@@ -361,7 +361,7 @@
                                                 class="fa-solid fa-lg fa-check"></i></span></h2>
                                 </div>
                                 <div class="plan-info-inner">
-                                    <img class="plan-info-icon" src={uploadedIcon}>
+                                    <img class="plan-info-icon" src={uploadedIcon}  loading="eager">
                                     <div class="step-content slds-m-horizontal_x-large">Uploaded</div>
                                 </div>
                             </div>
@@ -378,7 +378,7 @@
                             <div class="plan-info-detail">
                                 <h2 class="step-count-not-uploaded">2</h2>
                                 <div class="plan-info-inner">
-                                    <img class="plan-info-icon" src={notUploadedIcon}>
+                                    <img class="plan-info-icon" src={notUploadedIcon}  loading="eager">
                                     <div class="step-content slds-m-horizontal_x-large">Not Uploaded</div>
                                 </div>
                             </div>
@@ -391,7 +391,7 @@
             </div>
         </div>
 
-        <div if:true={driverCompliance} id="tab-default-4" class="slds-tabs_default__content" role="tabpanel"
+        <div if:true={driverCompliance}  class="slds-tabs_default__content" role="tabpanel"
             aria-labelledby="tab-default-4__item">
             <div class="compliance-text">
                 <div class="status-holder slds-p-horizontal_large slds-p-vertical_medium">
@@ -508,7 +508,7 @@
 
         </div>
 
-        <div if:true={driverReimbursement} id="tab-default-5" class="slds-tabs_default__content" role="tabpanel"
+        <div if:true={driverReimbursement}  class="slds-tabs_default__content" role="tabpanel"
             aria-labelledby="tab-default-5__item">
             <div class="complaince-detail">
                 <div class="slds-grid">

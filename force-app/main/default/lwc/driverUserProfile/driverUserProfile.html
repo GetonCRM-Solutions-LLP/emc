@@ -38,7 +38,7 @@
                         <div class="carProfile slds-p-bottom_large slds-align_absolute-center">
                             <!--height:170px-->
                             <img style="
-                            width: 309px;" src={vehicleImage} />
+                            width: 309px;" src={vehicleImage}  loading="eager"/>
                         </div>
 
             </div>
@@ -138,7 +138,7 @@
         <div class="slds-m-top_large slds-m-bottom_large middle-block" style="display: flex;">
                 <div class="slds-p-left_medium slds-p-vertical_medium" style="flex: 26%;">
                         <div class="icon-holder" style="float: left;">
-                            <img class="middle-icon" src={milesIcon} />
+                            <img class="middle-icon" src={milesIcon}   loading="eager"/>
                         </div>
                         <div class="slds-p-vertical_small slds-p-left_small" style="float: left;">
                             <div
@@ -177,7 +177,7 @@
                 </div>
                 <div class="slds-p-vertical_medium"  style="flex: 15%;">
                         <div class=" icon-holder" style="float: left;">
-                            <img class="middle-icon" src={moneyIcon} />
+                            <img class="middle-icon" src={moneyIcon}  loading="eager" />
                         </div>
                             <template if:true={halfFixedAmount}>
                                 <div class="slds-p-vertical_small slds-p-left_small" style="float: left;">
@@ -222,7 +222,7 @@
                 </div>
                 <div class="slds-p-vertical_medium"  style="flex: 14%;">
                         <div class="icon-holder" style="float: left;">
-                            <img class="middle-icon" src={variableRateIcon}>
+                            <img class="middle-icon" src={variableRateIcon}  loading="eager">
                         </div>
                         <div class="slds-p-vertical_small slds-p-left_small" style="float: left;">
                             <div
@@ -244,7 +244,7 @@
                 </div>
                 <div class="slds-p-vertical_medium"  style="flex: 10%;">
                         <div class="icon-holder" style="float: left;">
-                            <img class="middle-icon" src={fuelIcon} />
+                            <img class="middle-icon" src={fuelIcon}  loading="eager"/>
                         </div>
                         <div class="slds-p-vertical_small slds-p-left_small" style="float: left;">
                             <div
@@ -278,7 +278,7 @@
                             padding: 7px 25px 7px 15px;
                             font-size: 16px;
                             gap: 5px;"><img style="width: 35px;
-                                    height: 35px;" src={maginifyIcon} /> Resources</button>
+                                    height: 35px;" src={maginifyIcon}  loading="eager"/> Resources</button>
                     </div>
                 </div>
         </div>
@@ -507,7 +507,7 @@
                     </div>
                     <div class="slds-col">
                         <div class="slds-m-vertical_xx-small">
-                            <img src={flagIcon} />
+                            <img src={flagIcon} loading="eager" />
                         </div>
                     </div>
                 </div>
@@ -576,13 +576,13 @@
                             <div class="slds-grid slds-wrap">
                                 <div
                                     class="slds-col slds-size_2-of-12 slds-p-left_small slds-p-vertical_xx-small">
-                                    <img class="icon-size" src={umbrellaIcon} alt="icon" />
+                                    <img class="icon-size" src={umbrellaIcon} alt="icon"  loading="eager" />
                                 </div>
                                 <div class="slds-col slds-size_8-of-12 slds-p-vertical_small icon-value">
                                    {insurancePlan}
                                 </div>
                                 <div class="slds-col slds-size_2-of-12 slds-p-vertical_small  text-view">
-                                    <img src={checkMark} alt="icon" />
+                                    <img src={checkMark}  loading="eager" alt="icon" />
                                 </div>
                             </div>
                         </div>
@@ -602,7 +602,7 @@
                                     {insurancePlan}
                                 </div>
                                 <div class="slds-col slds-size_2-of-12 slds-p-vertical_xx-small text-view">
-                                    <img src={crossMark} alt="icon" />
+                                    <img src={crossMark}  loading="eager" alt="icon" />
                                 </div>
                             </div>
                         </div>
@@ -616,13 +616,13 @@
                             <div class="slds-grid slds-wrap">
                                 <div
                                     class="slds-col slds-size_2-of-12 slds-p-left_small slds-p-vertical_xx-small">
-                                    <img class="icon-size" src={milesPlanIcon} alt="icon" />
+                                    <img class="icon-size" src={milesPlanIcon} alt="icon"  loading="eager"/>
                                 </div>
                                 <div class="slds-col slds-size_8-of-12 slds-p-vertical_small icon-value">
                                     <lightning-formatted-number value={complianceMileage} maximum-fraction-digits="2"></lightning-formatted-number> miles
                                 </div>
                                 <div class="slds-col slds-size_2-of-12 slds-p-vertical_small  text-view">
-                                    <img src={checkMark} alt="icon" />
+                                    <img src={checkMark}  loading="eager" alt="icon" />
                                 </div>
                             </div>
                         </div>
@@ -636,13 +636,13 @@
                             <div class="slds-grid slds-wrap">
                                 <div
                                     class="slds-col slds-size_2-of-12 slds-p-left_small slds-p-vertical_xx-small">
-                                    <img class="icon-size" src={milesPlanIcon} alt="icon" />
+                                    <img class="icon-size" src={milesPlanIcon} alt="icon"  loading="eager"/>
                                 </div>
                                 <div class="slds-col slds-size_8-of-12 slds-p-vertical_small icon-value">
                                     <lightning-formatted-number value={complianceMileage} maximum-fraction-digits="2"></lightning-formatted-number> miles
                                 </div>
                                 <div class="slds-col slds-size_2-of-12 slds-p-vertical_xx-small text-view">
-                                    <img src={crossMark} alt="icon" />
+                                    <img src={crossMark}  loading="eager" alt="icon" />
                                 </div>
                             </div>
                         </div>
@@ -656,13 +656,13 @@
                             <div class="slds-grid slds-wrap">
                                 <div
                                     class="slds-col slds-size_2-of-12 slds-p-left_small slds-p-vertical_xx-small">
-                                    <img class="icon-size" src={calendarPlanIcon} alt="icon" />
+                                    <img class="icon-size" src={calendarPlanIcon} alt="icon"  loading="eager"/>
                                 </div>
                                 <div class="slds-col slds-size_8-of-12 slds-p-vertical_small icon-value">
                                     &lt; {planYear} years
                                 </div>
                                 <div class="slds-col slds-size_2-of-12 slds-p-vertical_small  text-view">
-                                    <img src={checkMark} alt="icon" />
+                                    <img src={checkMark}  loading="eager" alt="icon" />
                                 </div>
                             </div>
                         </div>
@@ -676,13 +676,13 @@
                             <div class="slds-grid slds-wrap">
                                 <div
                                     class="slds-col slds-size_2-of-12 slds-p-left_small slds-p-vertical_xx-small">
-                                    <img class="icon-size" src={calendarPlanIcon} alt="icon" />
+                                    <img class="icon-size" src={calendarPlanIcon} alt="icon"  loading="eager"/>
                                 </div>
                                 <div class="slds-col slds-size_8-of-12 slds-p-vertical_small icon-value">
                                     &lt; {planYear} years
                                 </div>
                                 <div class="slds-col slds-size_2-of-12 slds-p-vertical_xx-small text-view">
-                                    <img src={crossMark} alt="icon" />
+                                    <img src={crossMark}  loading="eager" alt="icon" />
                                 </div>
                             </div>
                         </div>
@@ -696,13 +696,13 @@
                             <div class="slds-grid slds-wrap">
                                 <div
                                     class="slds-col slds-size_2-of-12 slds-p-left_small slds-p-vertical_xx-small">
-                                    <img class="icon-size" src={carPlanIcon} alt="icon" />
+                                    <img class="icon-size" src={carPlanIcon} alt="icon"  loading="eager"/>
                                 </div>
                                 <div class="slds-col slds-size_8-of-12 slds-p-vertical_small icon-value">
                                     &lt;  <lightning-formatted-number value={vehicleValue} format-style="currency" currency-code="USD" maximum-fraction-digits="0"></lightning-formatted-number>
                                 </div>
                                 <div class="slds-col slds-size_2-of-12 slds-p-vertical_small  text-view">
-                                    <img src={checkMark} alt="icon" />
+                                    <img src={checkMark}  loading="eager" alt="icon" />
                                 </div>
                             </div>
                         </div>
@@ -716,13 +716,13 @@
                             <div class="slds-grid slds-wrap">
                                 <div
                                     class="slds-col slds-size_2-of-12 slds-p-left_small slds-p-vertical_xx-small">
-                                    <img class="icon-size" src={carPlanIcon} alt="icon" />
+                                    <img class="icon-size" src={carPlanIcon} alt="icon"  loading="eager" />
                                 </div>
                                 <div class="slds-col slds-size_8-of-12 slds-p-vertical_small icon-value">
                                     &lt;<lightning-formatted-number value={vehicleValue} format-style="currency" currency-code="USD"  maximum-fraction-digits="0"></lightning-formatted-number>
                                 </div>
                                 <div class="slds-col slds-size_2-of-12 slds-p-vertical_xx-small text-view">
-                                    <img src={crossMark} alt="icon" />
+                                    <img src={crossMark}  loading="eager" alt="icon" />
                                 </div>
                             </div>
                         </div>
@@ -736,13 +736,13 @@
                             <div class="slds-grid slds-wrap">
                                 <div
                                     class="slds-col slds-size_2-of-12 slds-p-left_small slds-p-vertical_xx-small">
-                                    <img class="icon-size" src={insurancePlanIcon} alt="icon" />
+                                    <img class="icon-size" src={insurancePlanIcon} alt="icon"  loading="eager"/>
                                 </div>
                                 <div class="slds-col slds-size_8-of-12 slds-p-vertical_small icon-value">
                                     {complianceStatus}
                                 </div>
                                 <div class="slds-col slds-size_2-of-12 slds-p-vertical_small  text-view">
-                                    <img src={checkMark} alt="icon" />
+                                    <img src={checkMark}  loading="eager" alt="icon" />
                                 </div>
                             </div>
                         </div>
@@ -756,13 +756,13 @@
                             <div class="slds-grid slds-wrap">
                                 <div
                                     class="slds-col slds-size_2-of-12 slds-p-left_small slds-p-vertical_xx-small">
-                                    <img class="icon-size" src={insurancePlanIcon} alt="icon" />
+                                    <img class="icon-size" src={insurancePlanIcon} alt="icon"  loading="eager"/>
                                 </div>
                                 <div class="slds-col slds-size_8-of-12 slds-p-vertical_small icon-value">
                                     {complianceStatus}
                                 </div>
                                 <div class="slds-col slds-size_2-of-12 slds-p-vertical_xx-small text-view">
-                                    <img src={crossMark} alt="icon" />
+                                    <img src={crossMark}  loading="eager" alt="icon" />
                                 </div>
                             </div>
                         </div>
@@ -938,7 +938,7 @@
                 <template if:true={modalLength}>
                     <div class="slds-float_right slds-p-right_small">
                         <div  class="slds-input-has-icon slds-input-has-icon_right search-holder">
-                            <img class="search-icon" src={searchIcon} />
+                            <img class="search-icon" src={searchIcon}  loading="eager"/>
                             <input  class="slds-input filter-input" type="text" placeholder="Search"  onkeyup={handleChange}/>
                         </div>
                     </div>

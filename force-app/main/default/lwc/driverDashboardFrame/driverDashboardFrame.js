@@ -403,6 +403,21 @@ export default class DriverDashboardFrame extends LightningElement {
         }
     }
 
+    editEntryTripLocation(){
+        this.headerModalText = 'Edit Location';
+        this.modalClass = "slds-modal slds-modal_medium slds-is-fixed slds-fade-in-open animate__animated animate__fadeInTopLeft animate__delay-1s"
+        this.headerClass = "slds-modal__header header-preview slds-p-left_xx-large slds-clearfix"
+        this.subheaderClass = "slds-text-heading slds-hyphenate slds-float_left"
+        this.modalContent = "slds-modal__content slds-p-left_medium slds-p-right_medium slds-p-bottom_medium slds-p-top_small"
+        this.styleHeader = "slds-modal__container slds-m-top_medium"
+        this.styleClosebtn = "close-notify"
+        // eslint-disable-next-line no-restricted-globals
+        this.notificationModal = false;
+        if (this.template.querySelector('c-user-profile-modal')) {
+            this.template.querySelector('c-user-profile-modal').show();
+        }
+    }
+
     handleSidebarToggle(event) {
         console.log("From navigation", event.detail)
         this.section = (event.detail === 'sidebar close') ? 'sidebar-open' : 'main';
@@ -714,9 +729,7 @@ export default class DriverDashboardFrame extends LightningElement {
                 this.template.querySelector('c-dashboard-profile-header').styleLink('');
             }, 10)
         } else if (address === '#Notifications') {
-            this.myProfile = true;
             this.myProfile = (this.myProfile) ? true : false;
-            console.log("this.myProfile", this.myProfile)
             this.notificationModal = true;
             this.isHomePage = (this.isHomePage) ? true : false;
             this.reimbursementView = (this.reimbursementView) ? true : false;

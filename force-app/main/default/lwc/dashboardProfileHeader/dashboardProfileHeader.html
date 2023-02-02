@@ -5,7 +5,7 @@
 				<div class="welcome-text" if:false={pageSource}>Hi {userName}, where do you want to go today?</div>
 				<div class="welcome-text" if:true={pageSource}>{fullName}</div>
 				<div class="welcome-picture" if:true={companyLogo}>
-					<img src={companyLogo} />
+					<img src={companyLogo} loading="lazy"/>
 				</div>
 			</div>
 			<div class="navigation-link"> 

@@ -125,7 +125,7 @@
   .search-icon{
     width: 15px;
     height: 15px;
-    margin: 8px 22px 8px 10px;
+    margin: 11px 14px 11px 14px;
   }
   
   .search-holder{
@@ -133,7 +133,7 @@
     border: 1px solid #e4e4e4;
     border-radius: 10px;
     /* width: 221px; */
-    height: 34px;
+    height: 38px;
   }
   
   .slds-input:focus{

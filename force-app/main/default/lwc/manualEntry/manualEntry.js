@@ -8,9 +8,15 @@ export default class ManualEntry extends LightningElement {
   dropdownList;
   modalColumn;
   modalKeyFields;
+  locationName = '';
+  locationAddress = '';
+  locationId = '';
+  _range = '';
   keyFields = ["id", "name", "address"];
   placeholder;
+  headerText = '';
  @track directionList;
+  editModal = false;
   isSortable = false;
   isScrollable = false;
   paginatedModal = false;
@@ -36,7 +42,7 @@ export default class ManualEntry extends LightningElement {
     },
     {
       id: 2,
-      name: "Origin",
+      name: "From",
       colName: "fromLocation",
       colType: "String",
       arrUp: false,
@@ -44,7 +50,7 @@ export default class ManualEntry extends LightningElement {
     },
     {
       id: 3,
-      name: "Destination",
+      name: "To",
       colName: "toLocation",
       colType: "String",
       arrUp: false,
@@ -1854,6 +1860,13 @@ export default class ManualEntry extends LightningElement {
     return array;
   }
 
+  validateField(event){
+    event.target.value = event.target.value
+    .replace(/[^\d]/g, '')             // numbers only
+    .replace(/(^\.*)\./g, '$1')          // single dot retricted
+    .replace(/(^[\d]{5})[\d]/g, '$1')   // not more than 4 digits at the beginning
+  }
+
   dynamicBinding(data, keyFields) {
     data.forEach((element) => {
       element.fromLocation = (element.originalOriginName === null || element.originalOriginName === 'null' || element.originalOriginName === '') ? element.origin : element.originalOriginName;
@@ -1925,6 +1938,7 @@ export default class ManualEntry extends LightningElement {
             singleValue.value =  element.id;
             singleValue.name = element.name != null ? element.name : '';
             singleValue.address = element.address != null ? element.address : '';
+            singleValue.range = element.range != null ? element.range : '';
             singleValue.listclass = "slds-listbox__item";
             model.push(singleValue);
         }
@@ -1940,10 +1954,25 @@ export default class ManualEntry extends LightningElement {
     console.log("dropdownList", JSON.stringify(unique2))
   }
 
+  handleEventFromEdit(event){
+    let location = this.proxyToObject(event.detail);
+    if(location !== ''){
+      this.locationName = location.name === undefined ? '' : location.name;
+      this.locationAddress = location.address === undefined ? '' : location.address;
+      this._range = (location.range === undefined || location.range === 0 || location.range === '') ? 300 : location.range;
+      this.locationId = location.id;
+    }
+    console.log(location.name, location)
+    this.headerText = 'Edit Location';
+    this.editModal = true;
+    if (this.template.querySelector('c-user-profile-modal')) {
+      this.template.querySelector('c-user-profile-modal').show();
+   }
+  }
+
   async connectedCallback() {
     this.directionList = await directions(this.contactId);
     this.manualMileage = await manualMileage(this.contactId);
-    //console.log('Mileage list----', this.manualMileage)
     console.log('location list', this.directionList);
     if(this.directionList){
       this.dropdownList  = this.proxyToObject(this.directionList);

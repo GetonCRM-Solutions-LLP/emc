@@ -2,6 +2,7 @@ import getLocation from '@salesforce/apex/ImportLocationController.getLocation';
 import updateLocationMlog from '@salesforce/apex/ImportLocationController.updateLocationMlog';
 import updateLocation from '@salesforce/apex/ImportLocationController.updateLocation';
 import currentMonthMileages  from '@salesforce/apex/ManualEntryMileageController.currentMonthMileages';
+import fetchMileages  from '@salesforce/apex/ManualEntryMileageController.fetchMileages';
 import locationList from '@salesforce/apex/ManualEntryMileageController.fromAndToVal';
 const getLocations = (param1) => {
     return getLocation({conId: param1}).then((result) => {
@@ -43,4 +44,12 @@ const directions = (param1) => {
     })
 }
 
-export { getLocations, uploadLocations, toLocation, manualMileage, directions };
+const getMileages = () => {
+    return fetchMileages().then((result)=>{
+        return result;
+    }).catch((error)=>{
+        console.log(error);
+    })
+}
+
+export { getLocations, uploadLocations, toLocation, manualMileage, directions, getMileages };

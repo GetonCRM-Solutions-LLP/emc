@@ -118,7 +118,7 @@ export default class UserPlanInfo extends LightningElement {
   }
 
   renderedCallback() {
-    const tabItem = this.template.querySelectorAll(".slds-tabs_default__item");
+    const tabItem = this.template.querySelectorAll('.slds-tabs_default__item');
 
     tabItem.forEach((el) =>
       el.addEventListener("click", () => {
