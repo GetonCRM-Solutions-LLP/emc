@@ -559,6 +559,10 @@ export default class AdvanceUserTable extends LightningElement {
      this.singleTrip = true;
   }
 
+  calculateDistance(){
+    this.template.querySelector('c-distance-query').getDistance();
+  }
+
   validateField(event){
     event.target.value = event.target.value
     .replace(/[^\d.]/g, '')             // numbers and decimals only
@@ -660,7 +664,7 @@ export default class AdvanceUserTable extends LightningElement {
   }
 
   // On next click
-  handleButtonNext() {
+ handleButtonNext() {
     var nextPage = this.currentPage + 1;
     var maxPages = this.getMaxPages(this.getSource());
     var pageBlock = this.template.querySelectorAll('.page-num-block');
@@ -987,12 +991,13 @@ export default class AdvanceUserTable extends LightningElement {
   }
 
   intializeDatepickup(){
-      let $input = $(this.template.querySelectorAll('.date-selector'))
+      let $jq = jQuery.noConflict();
+      let $input = $jq(this.template.querySelectorAll('.date-selector'))
       console.log($input.length)
       $input.each(function() {
-            let _self2 = $(this)
-            let $btn = $(this).next()
-            $(this).datepicker({
+            let _self2 = $jq(this)
+            let $btn = $jq(this).next()
+            $jq(this).datepicker({
 
               // inline mode
               inline: false,
@@ -1182,8 +1187,8 @@ export default class AdvanceUserTable extends LightningElement {
 
   handleIncrement(){
    // if(this._count !== 0){
-      //this._count += 1;
-      this._count = Number((this._count + 1).toFixed(2))
+     // this._count += 1;
+     this._count = Number((this._count + 1).toFixed(2))
       console.log("increment", this._count)
    // }
   }
@@ -1236,10 +1241,10 @@ export default class AdvanceUserTable extends LightningElement {
       })
     }
     Promise.all([
+      loadScript(this, datepicker + '/jquery3v.min.js'),
       loadScript(this, resourceImage + '/mburse/assets/datepicker/flatpickr.js'),
       loadStyle(this, resourceImage + '/mburse/assets/datepicker/customMinifiedDatePicker.css'),
       loadStyle(this, resourceImage + '/mburse/assets/datepicker/flatpickr.min.css'),
-      loadScript(this, datepicker + '/jquery3v.min.js'),
       loadScript(this, datepicker + '/popper.min.js'),
       loadScript(this, datepicker + '/datepicker.js'),
       loadScript(this, datepicker + '/datepicker.en.min.js'),

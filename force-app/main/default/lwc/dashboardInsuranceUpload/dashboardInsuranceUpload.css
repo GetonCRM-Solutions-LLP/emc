@@ -533,3 +533,7 @@ table tr td {
 .fa-angle-left{
   padding-right: 4px;
 }
+
+.fa-lg{
+  line-height: 1.05em !important;
+}

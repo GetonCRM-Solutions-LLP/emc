@@ -13,7 +13,7 @@ import {
     backEvents
 } from 'c/utils';
 export default class MBurseDriverPacket extends LightningElement {
-    packetCss = mBurseCss + '/mburse/assets/Sign.png';
+    packetCss = mBurseCss + '/mburse/assets/Sign_cover.png';
     packetHeaderText = '';
     packetSignDate = '';
     showWatchBtn = false;
@@ -290,7 +290,7 @@ export default class MBurseDriverPacket extends LightningElement {
         }
         this.renderInitialized = true;
         this.toggleHide();
-        this.renderText = (this.cellType === 'Company Provide') ? 'mLog Preview' : 'mLog Preview';
+        this.renderText = (this.cellType === 'Company Provide') ? 'Go to mLog Preview' : 'Go to mLog Preview';
         this.renderBtnText = (this.accountType === 'New Account') ? 'Register for your driver meeting' : 'Watch your driver meeting';
         this.renderButton();
         this.showWatchBtn = (this.accountType === 'New Account') ? false : true;

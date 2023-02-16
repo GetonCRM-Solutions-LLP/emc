@@ -88,6 +88,7 @@ export default class MapCreationComponent extends LightningElement {
       this.vfHost = '';
     }
   }
+  
   async handleCallout() {
     try {
       // console.log('inside-api calls-->', this.wpt);

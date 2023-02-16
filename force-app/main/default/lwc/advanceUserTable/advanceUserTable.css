@@ -595,6 +595,14 @@ a:hover,  a:focus {
     width: 6.5rem !important;
   }
 
+  .distance-text{
+    font-family: 'Proxima Nova' !important;
+    font-size: 12px;
+    font-weight: 700;
+    line-height: 15px;
+    color: var(--green-color) !important;
+  }
+
   .icon-action{
     display: flex;
     width: 100%;

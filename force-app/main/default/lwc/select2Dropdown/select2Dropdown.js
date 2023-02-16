@@ -106,6 +106,7 @@ export default class Select2Dropdown extends LightningElement {
 		console.log('change', event.target.value)
 		this._value = event.target.value;
 		if(this._value && this._value.length > 0 ) {
+			//this._selected = "";
             this.message = '';
             if(this._value.length >= this.minChar) {
                 let flag = true;
@@ -115,28 +116,13 @@ export default class Select2Dropdown extends LightningElement {
                     } 
                 }
                 if(flag) {
-                    this.message = "No results found for '" + this._value + "'";
-                }
+                   this.message = "No results found for '" + this._value + "'";
+               }
             }
+			//this._element.classList.add('active');
         }
-
-	//	this.applyChange();
-		
+		//this._element.classList.add('active');
 		//this.fireChange();
-	}
-
-	applyChange(){
-		let compare = (this._element !== undefined) ? this._element.dataset.label : this._selected;
-		
-		let highlightedList = this.template.querySelectorAll('.slds-listbox__option');
-		highlightedList.forEach((option) => {
-			if(option.dataset.label === compare){
-				console.log("apply---", compare)
-				//if(this._element === undefined){
-					option.classList.add('active');
-				//}
-			}
-		})
 	}
 
 	handleInput() {
@@ -211,12 +197,12 @@ export default class Select2Dropdown extends LightningElement {
 	}
 
 	removeHighlighted(){
-		console.log('inside remove', this._selected)
 		let highlightedList = this.template.querySelectorAll('.slds-listbox__option');
 		highlightedList.forEach((option) => {
-		//	if(option.dataset.label=== this._selected){
+		//if(option.dataset.label=== this._selected){
+			console.log('inside remove', this._selected)
 				option.classList.remove('active');
-		//	}
+		//}
 		})
 	}
 
@@ -250,6 +236,7 @@ export default class Select2Dropdown extends LightningElement {
 			this.options.forEach((option) => {
 				if (option.label === this._element.dataset.label) {
 				//console.log('handleFocus', this._previousElement.dataset.label, this._element.dataset.label)
+				    this.removeHighlighted();
 					this._element.classList.add('active');
 				}
 			});

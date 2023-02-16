@@ -99,7 +99,7 @@ span.flatpickr-weekday {
 
 .flatpickr-calendar.hasTime.noCalendar{
     width: 155.875px !important;
-    border-radius: 10px !important;
+    border-radius: 0px !important;
 }
 
 .flatpickr-time .numInputWrapper {

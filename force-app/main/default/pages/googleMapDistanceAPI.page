@@ -1,0 +1,93 @@
+<apex:page showHeader="false" standardStylesheets="false" sidebar="false" applyHtmlTag="false" applyBodyTag="false" docType="html-5.0">
+
+    <head>
+        <script type="text/javascript">
+            var lexOrigin = location.origin;
+            /* var lexOrigin ="https://mburse.force.com"; 
+              var resultActive = false; */
+
+            // Listening from iframe !
+            console.log("listening---", lexOrigin)
+            window.addEventListener("message", function (event) {
+                console.log("listening---", event)
+                // if (event.originname !== lexOrigin) {
+                //     // Not the expected origin: reject message!
+                //     return;
+                // }else{
+                //     console.log(event)
+                // }
+
+                // var map;
+                // // initialize services
+                const geocoder = new google.maps.Geocoder();
+                const service = new google.maps.DistanceMatrixService();
+                // build request
+                const origin1 = { lat: 55.93, lng: -3.118 };
+                const origin2 = "Greenwich, England";
+                const destinationA = "Stockholm, Sweden";
+                const destinationB = { lat: 50.087, lng: 14.421 };
+                const request = {
+                    origins: [origin1, origin2],
+                    destinations: [destinationA, destinationB],
+                    travelMode: google.maps.TravelMode.DRIVING,
+                    unitSystem: google.maps.UnitSystem.METRIC,
+                    avoidHighways: false,
+                    avoidTolls: false,
+                };
+
+                // get distance matrix response
+                service.getDistanceMatrix(request, callback).then((response) => {
+                    // put response
+                    console.log(JSON.stringify(
+                        response,
+                        null,
+                        2
+                    ));
+                });
+
+                function callback(response, status) {
+                    if (status != google.maps.DistanceMatrixStatus.OK) {
+                      console.log('error');
+                    } else {
+                        var origin = response.originAddresses[0];
+                        console.log(origin);
+                        var destination = response.destinationAddresses[0];
+                        console.log(destination);
+                        if (response.rows[0].elements[0].status === "ZERO_RESULTS") {
+                         console.log(
+                                "Better get on a plane. There are no roads between " +
+                                origin +
+                                " and " +
+                                destination
+                            );
+                        } else {
+                            var distance = response.rows[0].elements[0].distance;
+                            console.log(distance);
+                            var duration = response.rows[0].elements[0].duration;
+                            console.log(duration);
+                            console.log(response.rows[0].elements[0].distance);
+                            var distance_in_kilo = distance.value / 1000; // the kilom
+                            var distance_in_mile = distance.value / 1609.34; // the mile
+                            console.log(distance_in_kilo);
+                            console.log(distance_in_mile);
+                        }
+                    }
+                }
+            });
+
+            function initMap(){
+                var map, geocoder;
+                /* Intialize google map */
+               console.log('map initialize')
+            }
+        </script>
+        <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js" async="true" defer="true"></script>
+    </head>
+    <body>
+        <!-- <div style="width: 100%;" id="mapDiv">
+            <div id="map" style="width: 100%; height: 230px;overflow:hidden"></div>
+        </div> -->
+        <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDnaP6tZBTFOCUpfNbCXMZwnLDTQ3aOrug&callback=initMap" async="true" defer="true"></script>
+    </body>
+   
+</apex:page>

@@ -3474,6 +3474,7 @@
                                     angular.forEach(address, function (item) {
                                         $scope.relatedcitylist.push(item.City__c);
                                         $scope.contactData.state = item.Abbreviation__c;
+                                        $scope.contactData.city = $scope.relatedcitylist[0];
                                     });
                                 })
                                 if ($scope.stateabrivationObj.drivingstatefordriver == true) {
@@ -3508,7 +3509,6 @@
             }
 
             $scope.showcitycountryedit = function (zipcode, role) {
-
                 if (Array.isArray($scope.contactData)) {
                     if (!$scope.contactData[0].zipCode || $scope.contactData[0].zipCode.length < 5) {
                         return;
@@ -3549,6 +3549,7 @@
                                     angular.forEach(address, function (item) {
                                         $scope.relatedcitylist.push(item.City__c);
                                         $scope.contactData[0].state = item.Abbreviation__c;
+                                        $scope.contactData[0].city =  $scope.relatedcitylist[0];
                                     });
                                 })
                                 if ($scope.stateabrivationObj.drivingstatefordriver == true) {
@@ -3957,6 +3958,7 @@
                         $scope.addfilds = '';
                         document.getElementById(elementId).value = $("#" + sourceId).tagsinput('items');
                         $scope.cont = con;
+                        console.log($scope.contactData[0].city, $scope.contactData.city);
                         con.drivingStates = $("#" + sourceId).tagsinput('items');
                         let inputtovalidate;
                         if ($scope.accid === $scope.designAIR) {
@@ -4085,7 +4087,7 @@
                                         $scope.editUserEmail = con.email;
                                         $scope.conForUpdateInsertfordateformate = [];
                                         $scope.conForUpdateInsertfordateformate.push(con);
-
+                                        
                                         $scope.contactListForUpdateInsert = '';
                                         $scope.contactListForUpdateInsert = formatFulllDateForEmployeeList(angular.copy($scope.conForUpdateInsertfordateformate));
 
@@ -4304,7 +4306,7 @@
                             if (event.status) {
                                 if (result === "\"OK\"") {
                                     $('#spinner').hide();
-                                    toastr.success('Email Has Been Send To ' + con.firstName + ' ' + con.lastName + ' Successfully .');
+                                    toastr.success('Email has been successfully send to ' + con.firstName + ' ' + con.lastName);
                                 } else {
                                     $('#spinner').hide();
                                     toastr.success(result);
@@ -4926,12 +4928,16 @@
                                             </td>
                                             <td ng-if="accid != accountERMI" ng-model="emp.zipCode" ng-show="!emp.iseditable" ng-click="edit(emp,emp.userid);emp.iseditable = !emp.iseditable"
                                                 class="a-hover-pointer zipcode_td">{{emp.zipCode}}
-
                                             </td>
                                             <td ng-if="accid != accountERMI" ng-model="emp.zipCode" ng-show="emp.iseditable" class="zipcode_td">
                                                 <input ng-model="emp.zipCode" size="5" maxlength="5" pattern="^[0-9]{5}$" ng-required="emp.role!=='Manager' && emp.role!=='Admin'"
                                                     name="zip_{{emp.userid}}" class="form-control rounded-0 a-hover-pointer"
                                                     type="text" />
+                                                <select id="city" ng-model="emp.city" ng-show="emp.iseditable" class="form-control rounded-0" ng-required="emp.role!=='Manager' && emp.role!=='Admin'"
+                                                        name="city_{{emp.userid}}"  ng-options="city for city in relatedcitylist">
+                                                    <!-- <option value=""></option>
+                                                    <option ng-selected="{{city == contactData[0].city}}" ng-repeat="city in relatedcitylist" value="{{city}}" >{{city}}</option> -->
+                                                </select>
                                             </td>
                                             <td ng-if="accid === accountERMI" ng-model="emp.employeeId" ng-show="!emp.iseditable" ng-click="edit(emp,emp.userid);emp.iseditable = !emp.iseditable"
                                                 class="a-hover-pointer employeeId_td">
@@ -5448,22 +5454,23 @@
                                                 <div class="col-xl-8 col-lg-8 col-md-8 col-sm-8 validate-div">
                                                     <span class="span-validation" data-toggle="tooltip" data-placement="top" title="Required field" ng-if="showvalidation">*</span>
                                                     <select id="city" ng-model="contactData[0].city" ng-show="IsShow" class="form-control rounded-0" required="true" name="city_0"
-                                                        ng-if="showrequiredfield">
-                                                        <option value=""></option>
-                                                        <option ng-selected="{{city == contactData[0].city}}" ng-repeat="city in relatedcitylist track by $index" value="{{city}}">{{city}}</option>
+                                                        ng-if="showrequiredfield" ng-change="showcityedit(contactData[0].zipCode,contactData[0].city)" ng-options="city for city in relatedcitylist">
+                                                        <!-- <option value=""></option>
+                                                        <option ng-selected="{{city == contactData[0].city}}" ng-repeat="city in relatedcitylist" value="{{city}}" >{{city}}</option> -->
                                                     </select>
-                                                    <select id="city" ng-model="contactData[0].city" ng-show="IsShow" class="form-control rounded-0" name="city_0" ng-if="!showrequiredfield">
-                                                        <option value=""></option>
-                                                        <option ng-selected="{{city == contactData[0].city}}" ng-repeat="city in relatedcitylist track by $index" value="{{city}}">{{city}}</option>
+                                                    <select id="city" ng-model="contactData[0].city" ng-show="IsShow" class="form-control rounded-0" name="city_0" ng-if="!showrequiredfield" 
+                                                        ng-options="city for city in relatedcitylist" ng-change="showcityedit(contactData[0].zipCode,contactData[0].city)">
+                                                        <!-- <option value=""></option>
+                                                        <option ng-selected="{{city == contactData[0].city}}" ng-repeat="city in relatedcitylist" value="{{city}}">{{city}}</option> -->
                                                     </select>
                                                     <select id="city" ng-model="contactData.city" ng-show="!IsShow" class="form-control rounded-0" required="true" name="city_1"
-                                                        ng-if="showrequiredfield">
-                                                        <option value=""></option>
-                                                        <option ng-selected="{{city == contactData.city}}" ng-repeat="city in relatedcitylist track by $index" value="{{city}}">{{city}}</option>
+                                                        ng-if="showrequiredfield" ng-options="city for city in relatedcitylist" ng-change="showcityedit(contactData.zipCode,contactData.city)">
+                                                        <!-- <option value=""></option>
+                                                        <option ng-selected="{{city == contactData.city}}" ng-repeat="city in relatedcitylist" value="{{city}}">{{city}}</option> -->
                                                     </select>
-                                                    <select id="city" ng-model="contactData.city" ng-show="!IsShow" class="form-control rounded-0" name="city_1" ng-if="!showrequiredfield">
-                                                        <option value=""></option>
-                                                        <option ng-selected="{{city == contactData.city}}" ng-repeat="city in relatedcitylist track by $index" value="{{city}}">{{city}}</option>
+                                                    <select id="city" ng-model="contactData.city" ng-show="!IsShow" class="form-control rounded-0" name="city_1" ng-if="!showrequiredfield" ng-options="city for city in relatedcitylist" ng-change="showcityedit(contactData.zipCode,contactData.city)">
+                                                        <!-- <option value=""></option>
+                                                        <option ng-selected="{{city == contactData.city}}" ng-repeat="city in relatedcitylist" value="{{city}}">{{city}}</option> -->
                                                     </select>
                                                 </div>
                                             </div>

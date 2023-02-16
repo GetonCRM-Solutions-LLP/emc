@@ -149,11 +149,15 @@
                                         </td> -->
                                     </tr>
                                     <tr>
+                                        <td colspan="5" class="distance-text"><a onclick={calculateDistance}>Query Driving Distance</a></td>
+                                        <td><c-distance-query></c-distance-query></td>
+                                    </tr>
+                                    <tr>
                                         <td class="view-text">Mileage: </td>
                                         <td colspan="2">
                                             <div style="display:flex">
                                                 <div class="flat-container" style="width: 120px !important;">
-                                                    <input class="increment-input full-width" type="text" value={_count} oninput={validateField} onchange={handleInputIncrement}/>
+                                                    <input class="increment-input full-width" type="text" value={_count}  onchange={handleInputIncrement}/>
                                                     <div class="increment-button" >
                                                         <a onclick={handleIncrement}>
                                                             <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 6 4" fill="none">

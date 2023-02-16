@@ -1,0 +1,69 @@
+<template>
+    <div class="main">
+        <div class="steps">
+            <p class="green_clr">Step 5</p>
+            <p class="desc">Watch your Driver Meeting</p>
+        </div>
+        <div class="details">
+            <p class="green_clr details_desc">Acme Corporation Driver Meeting</p>
+            <p>Learn About your new vechicle reimbursement plan, the mBurse Plan of Vehicle Reimbursements.</p>
+            <p>The Training session will Cover the Following topics:</p>
+            <div class="details_main">
+                <ol class="slds-list_ordered">
+                    <li>How the mBursement program works</li>
+                    <li>What you need to do</li>
+                    <li>What you need to do</li>
+                </ol>
+            </div>
+            <p>We Look Forward to sharing more information about your reimbursement program.</p>
+            <div class="fill_field">
+                <p>*Required field</p>
+                <div class="field_details">
+                    <c-toast></c-toast>
+                    <div class="slds-grid slds-wrap slds-gutters">
+                        <div class="slds-col slds-size_1-of-2">
+                          <span><lightning-input type="text" label="First Name" required name="First Name" class="field_label" onchange={handleFNameChange}></lightning-input></span>
+                        </div>
+                        <div class="slds-col slds-size_1-of-2">
+                          <span><lightning-input type="text" label="Last Name" required name="Last Name" class="field_label" onchange={handleLNameChange}></lightning-input></span>
+                        </div>
+                        <div class="slds-col slds-size_1-of-2">
+                            <span><lightning-input type="email" label="Email Address" required name="Email Address" class="field_label" onchange={handleEmailChange}></lightning-input></span>
+                          </div>
+                    </div>
+                </div>
+            </div>
+            <p class="desc_clr">By Clicking this button, you submit your information to the webinar organizer, who will use it to communicate with you regarding this event and their other services.</p>
+        </div>
+        <div>
+            <div>
+                <!-- Brand variant: Identifies the primary action in a group of buttons -->
+                <lightning-button variant="brand" label="Register" title="Primary action" onclick={handleRegister} class="button1 slds-align_absolute-center"></lightning-button>
+
+            </div>
+            <div>
+                <!-- Brand outline variant: Identifies the primary action in a group of buttons, but has a lighter look -->
+                <lightning-button variant="brand-outline" label="Go to my Account" title="Primary action with lighter look" onclick={handleClick} class="button2 slds-align_absolute-center"></lightning-button>
+            </div>
+            <div>
+                <a class="slds-button slds-align_absolute-center button3" href="#">Don't show this page again</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="timepick">
+        
+        <lightning-input class="picker" type="time" name="input1" label="Enter a time"></lightning-input>
+        <input type="text" id="example" class="form-control" name="example" autocomplete="off" onchange={handleTextChange}/>
+    </div>
+    <lightning-card title="Include JQuery in LWC (Lightning Web Component) ">
+        <div class="slds-m-around_medium">
+            <div class="flip" onclick={slideIt}>Click Here to Slide Down or Up</div>
+            <div class="panel">
+                <p class="innerDiv" onclick={slideRight}>
+                    JQuery in LWC
+                </p>
+            </div>
+        </div>
+    </lightning-card>
+</template>

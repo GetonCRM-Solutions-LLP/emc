@@ -1,3 +1,16 @@
+:host {
+    --grey-color: #D7D7D7;
+    --green-color: #7ABB4A;
+    --link-color: #1D1D1D;
+    --text-color: #6C6C6C;
+    --even-row-color: #FFFFFF;
+    --odd-row-color: #F7F7F7;
+    --scroll-color: #F6F6F6;
+    --active-color: #404B5B;
+    --step-bg: #F1F8EC;
+    --step-error-bg: #FA7800;
+}
+
 @keyframes spin {
     to {
       transform: rotate(360deg);
@@ -127,27 +140,50 @@
     animation: 1.5s spin infinite linear;
 }
 .step{
-    background: content-box #f7f7f7;
-    border-width: 1px;
-    border-style: solid;
-    border-color: #f7f7f7;
+    background: #FFFFFF;
+    border: 1px solid #D7D7D7;
+    border-radius: 20px;
     position: relative;
 }
+.step-info-detail{
+    position: absolute;
+    top: 0;
+    width: 100%;
+}
 .m-left{
-    margin-left: 176px;
+    margin-left: 95px;
 }
 .m-right{
-    margin-right: 176px;
+    margin-right: 95px;
 }
+
 .p-step{
     padding: 2rem 1rem 1rem 1rem;
 }
+
+.step-margin-1{
+    margin: 23px 10px 10px 10px;
+}
+
+.step-margin-2{
+    margin: 11px 10px 10px 10px;
+}
+
+.step-margin-3{
+    margin: 0px 10px 10px 10px;
+}
+
 .step-info{
     padding: 0 1rem 2rem 1rem;
     text-align: center;
     font-size: 15px;
     color: #000;
 }
+
+.step-padding{
+    padding-top: 0.4rem;
+}
+
 .step-num{
     height: 42px;
     position: absolute;
@@ -157,12 +193,65 @@
     left: 183px;
     right: 183px; */
 }
+
 .step-check{
     height: 50px;
     position: absolute;
     left: 50%;
     transform: translate(-32%,-70%);
 }
+
+.step-count{
+    background: var(--step-bg);
+    width: 34px;
+    height: 34px;
+    font-size: 16px;
+    font-weight: 600;
+    border-radius: 100px;
+    text-align: center;
+    justify-content: center;
+    padding-top: 4px;
+    margin-left: 9px;
+    margin-top: 10px;
+    color: var(--green-color);
+    font-family: 'Proxima Nova' !important;
+}
+
+.opaque{
+    background: #FFFFFF !important;
+}
+
+.plan-info-top{
+    display: flex;
+}
+
+.background-blurry{
+    background: #F1F8EC !important;
+}
+
+.step-complete{
+    color: var(--green-color);
+    font-weight: 700;
+    font-size: 12px;
+    padding-top: 16px;
+    margin-left: 82px;
+    font-family: 'Proxima Nova' !important;
+}
+
+.step-inner{
+    justify-self: center;
+    text-align: center;
+}
+
+.info-check{
+    padding-left: 5px;
+    padding-top: 10px;
+}
+/* .i-size{
+    width: 3088px;
+    height: 148px;
+} */
+
 .opacity{
     opacity: 0.2;
 }

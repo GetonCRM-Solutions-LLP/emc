@@ -1,0 +1,66 @@
+.main{
+    margin:0 auto; 
+    width: 60%;
+}
+.green_clr{
+    color: #7ABB4A;
+    font-weight: bold;
+}
+/* .step_no{
+    font-weight: bold;
+} */
+.details_desc{
+    margin-bottom: 12px;
+}
+
+.desc{
+    font-size: 16px;
+    font-weight: bold;
+}
+.steps{
+    text-align: center;
+    margin-bottom: 40px;
+    margin-top: 10px;
+}
+.desc_clr{
+    color: #909090;
+    margin-bottom: 55px;
+}
+.details_main{
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+.button1{
+    --sds-c-button-brand-color-background: #7ABB4A;
+    --sds-c-button-text-color: white;
+    --slds-c-button-brand-color-border : #7ABB4A !important;
+    --slds-c-button-radius-border : 10px;
+}
+.button2{
+    --sds-c-button-text-color: #7ABB4A;
+    --slds-c-button-outline-brand-color-border : #7ABB4A !important;
+    margin-top: 8px;
+    margin-bottom: 8px;
+    --slds-c-button-radius-border : 10px;
+}
+.button3{
+    --sds-c-button-text-color: #7ABB4A;
+}
+.fill_field{
+    margin-top: 30px;
+}
+.field_details{
+    margin-top: 8px;
+    margin-bottom: 40px;
+    color: black;
+}
+.field_label{
+    -webkit-text-fill-color: black;
+}
+.timepick{
+    margin-top: 8px;
+    margin-bottom: 40px;
+}
+.picker{
+    width: 20%;
+}
