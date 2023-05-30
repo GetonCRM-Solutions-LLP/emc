@@ -1,3 +1,4 @@
 {
-  "target-org": "sandbox"
+  "target-org": "sandboxPartial",
+  "org-metadata-rest-deploy": "false"
 }

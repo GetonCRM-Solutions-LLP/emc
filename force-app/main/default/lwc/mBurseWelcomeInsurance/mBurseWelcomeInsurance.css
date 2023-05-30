@@ -139,6 +139,17 @@
     font-size: 1.20vw;
 }
 
+.dont-font{
+    font-size: 12px;
+    color: #7ABB4A;
+    font-weight: 600;
+    text-decoration: underline;
+}
+
+.align_message{
+    text-align: center;
+}
+
 .emc-font{
     font-size: 1.8vw;
     font-weight: 700;
@@ -188,13 +199,13 @@
 }
 
 .slds-btn-sm {
-    padding: 12px 22px;
+    padding: 11px 22px;
     font-size: 16px;
     font-family: 'Proxima Nova Bold' !important;
 }
 
 .slds-btn {
-    margin: .375rem;
+    margin: 0.75rem 0.375rem 0.375rem 0.375rem;
     word-wrap: break-word;
     white-space: normal;
     cursor: pointer;

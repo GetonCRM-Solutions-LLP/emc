@@ -10,16 +10,16 @@
                     aria-selected="false" aria-controls="tab-default-2">Driver Meeting</a>
             </li>
             <li class="slds-m-right_small slds-tabs_default__item" role="presentation">
-                <a class="slds-tabs_default__link" href="#Mileage" onclick={driverInsuranceView} role="tab" tabindex="-1"
-                    aria-selected="false" aria-controls="tab-default-3">Insurance</a>
+                <a class="slds-tabs_default__link" href="#Mileage" onclick={driverInsuranceView} role="tab"
+                    tabindex="-1" aria-selected="false" aria-controls="tab-default-3">Insurance</a>
             </li>
             <li class="slds-m-right_small slds-tabs_default__item" role="presentation">
-                <a class="slds-tabs_default__link" href="#Mileage" onclick={driverComplianceView} role="tab" tabindex="-1"
-                    aria-selected="false" aria-controls="tab-default-4">Compliance</a>
+                <a class="slds-tabs_default__link" href="#Mileage" onclick={driverComplianceView} role="tab"
+                    tabindex="-1" aria-selected="false" aria-controls="tab-default-4">Compliance</a>
             </li>
             <li class="slds-m-right_small slds-tabs_default__item" role="presentation">
-                <a class="slds-tabs_default__link" href="#Mileage" onclick={driverReimbursementView} role="tab" tabindex="-1"
-                    aria-selected="false" aria-controls="tab-default-5">My Reimbursement</a>
+                <a class="slds-tabs_default__link" href="#Mileage" onclick={driverReimbursementView} role="tab"
+                    tabindex="-1" aria-selected="false" aria-controls="tab-default-5">My Reimbursement</a>
             </li>
             <!-- <li class="slds-m-right_small slds-tabs_default__item" role="presentation">
                 <a class="slds-tabs_default__link" href="#" onclick={driverMVRView} role="tab" tabindex="-1"
@@ -29,7 +29,7 @@
         <div if:true={driverPacket} class="slds-tabs_default__content" role="tabpanel"
             aria-labelledby="tab-default-1__item">
             <div class="slds-grid">
-                <div class="slds-col slds-size_2-of-1">
+                <div class="">
                     <template if:true={packetStatus1}>
                         <div class="plan-info-main">
                             <svg width="171" height="184" viewBox="0 0 171 184" fill="none"
@@ -45,7 +45,7 @@
                                                 class="fa-solid fa-lg fa-check"></i></span></h2>
                                 </div>
                                 <div class="plan-info-inner">
-                                    <img class="plan-info-icon" src={driverPacketSentIcon}  loading="eager">
+                                    <img class="plan-info-icon" src={driverPacketSentIcon} loading="eager">
                                     <div class="step-content slds-m-horizontal_x-large">Sent to Driver</div>
                                 </div>
                             </div>
@@ -62,14 +62,14 @@
                             <div class="plan-info-detail">
                                 <h2 class="step-count">1</h2>
                                 <div class="plan-info-inner">
-                                    <img class="plan-info-icon" src={driverPacketSentIcon}  loading="eager">
+                                    <img class="plan-info-icon" src={driverPacketSentIcon} loading="eager">
                                     <div class="step-content slds-m-horizontal_x-large">Sent to Driver</div>
                                 </div>
                             </div>
                         </div>
                     </template>
                 </div>
-                <div class="slds-col slds-size_2-of-1 slds-p-horizontal_small">
+                <div class="slds-p-horizontal_small">
                     <template if:true={packetStatus2}>
                         <div class="plan-info-main">
                             <svg width="171" height="184" viewBox="0 0 171 184" fill="none"
@@ -85,7 +85,7 @@
                                                 class="fa-solid fa-lg fa-check"></i></span></h2>
                                 </div>
                                 <div class="plan-info-inner">
-                                    <img class="plan-info-icon" src={driverSignedIcon}  loading="eager">
+                                    <img class="plan-info-icon" src={driverSignedIcon} loading="eager">
                                     <div class="step-content slds-m-horizontal_x-large">Driver Signed</div>
                                 </div>
                             </div>
@@ -102,14 +102,14 @@
                             <div class="plan-info-detail">
                                 <h2 class="step-count">2</h2>
                                 <div class="plan-info-inner">
-                                    <img class="plan-info-icon" src={driverSignedIcon}  loading="eager">
+                                    <img class="plan-info-icon" src={driverSignedIcon} loading="eager">
                                     <div class="step-content slds-m-horizontal_x-large">Driver Signed</div>
                                 </div>
                             </div>
                         </div>
                     </template>
                 </div>
-                <div class="slds-col slds-size_2-of-1">
+                <div class="">
                     <template if:true={packetStatus3}>
                         <div class="plan-info-main">
                             <svg width="171" height="184" viewBox="0 0 171 184" fill="none"
@@ -125,7 +125,7 @@
                                                 class="fa-solid fa-lg fa-check"></i></span></h2>
                                 </div>
                                 <div class="plan-info-inner">
-                                    <img class="plan-info-icon" src={adminSignedIcon}  loading="eager">
+                                    <img class="plan-info-icon" src={adminSignedIcon} loading="eager">
                                     <div class="step-content slds-m-horizontal_x-large">Admin Signed</div>
                                 </div>
                             </div>
@@ -142,22 +142,29 @@
                             <div class="plan-info-detail">
                                 <h2 class="step-count">3</h2>
                                 <div class="plan-info-inner">
-                                    <img class="plan-info-icon" src={adminSignedIcon}  loading="eager">
+                                    <img class="plan-info-icon" src={adminSignedIcon} loading="eager">
                                     <div class="step-content slds-m-horizontal_x-large">Admin Signed</div>
                                 </div>
                             </div>
                         </div>
                     </template>
                 </div>
-                <div class="slds-col slds-size_2-of-1 slds-p-horizontal_small">
+                <div class="slds-p-horizontal_small">
                     <template if:true={packetStatus4}>
                         <div class="plan-info-main">
-                            <svg width="171" height="184" viewBox="0 0 171 184" fill="none"
+                            <svg xmlns="http://www.w3.org/2000/svg" width="171.506" height="184"
+                                viewBox="0 0 171.506 184" fill="none">
+                                <path
+                                    d="M1.136 21.165C1.136 10.102 10.103 1.136 21.165 1.136h129.184c11.062 0 20.029 8.967 20.029 20.029v142.202c0 11.062 -8.967 20.029 -20.029 20.029H21.165C10.102 183.396 1.136 174.428 1.136 163.367v-142.202Z"
+                                    fill="white" stroke="#D7D7D7" stroke-width="1.0014246698013245"
+                                    stroke-linecap="round" />
+                            </svg>
+                            <!-- <svg width="171" height="184" viewBox="0 0 171 184" fill="none"
                                 xmlns="http://www.w3.org/2000/svg">
                                 <path
                                     d="M1 21C1 9.9543 9.9543 1 21 1H135.213C144.728 1 152.926 7.70381 154.815 17.0296L169.196 88.0296C169.727 90.6499 169.727 93.3501 169.196 95.9704L154.815 166.97C152.926 176.296 144.728 183 135.213 183H21C9.95431 183 1 174.046 1 163V21Z"
                                     fill="#F1F8EC" stroke="#D7D7D7" stroke-linecap="round" />
-                            </svg>
+                            </svg> -->
                             <div class="plan-info-detail">
                                 <div class="plan-info-top">
                                     <h2 class="step-count-active">4</h2>
@@ -165,7 +172,7 @@
                                                 class="fa-solid fa-lg fa-check"></i></span></h2>
                                 </div>
                                 <div class="plan-info-inner">
-                                    <img class="plan-info-icon" src={packetCompletedIcon}  loading="eager">
+                                    <img class="plan-info-icon" src={packetCompletedIcon} loading="eager">
                                     <div class="step-content slds-m-horizontal_x-large">Packet Completed</div>
                                 </div>
                             </div>
@@ -173,16 +180,23 @@
                     </template>
                     <template if:false={packetStatus4}>
                         <div class="plan-info-main">
-                            <svg width="171" height="184" viewBox="0 0 171 184" fill="none"
+                            <svg xmlns="http://www.w3.org/2000/svg" width="171.506" height="184"
+                                viewBox="0 0 171.506 184" fill="none">
+                                <path
+                                    d="M1.136 21.165C1.136 10.102 10.103 1.136 21.165 1.136h129.184c11.062 0 20.029 8.967 20.029 20.029v142.202c0 11.062 -8.967 20.029 -20.029 20.029H21.165C10.102 183.396 1.136 174.428 1.136 163.367v-142.202Z"
+                                    fill="white" stroke="#D7D7D7" stroke-width="1.0014246698013245"
+                                    stroke-linecap="round" />
+                            </svg>
+                            <!-- <svg width="171" height="184" viewBox="0 0 171 184" fill="none"
                                 xmlns="http://www.w3.org/2000/svg">
                                 <path
                                     d="M1 21C1 9.9543 9.9543 1 21 1H135.213C144.728 1 152.926 7.70381 154.815 17.0296L169.196 88.0296C169.727 90.6499 169.727 93.3501 169.196 95.9704L154.815 166.97C152.926 176.296 144.728 183 135.213 183H21C9.95431 183 1 174.046 1 163V21Z"
                                     fill="white" stroke="#D7D7D7" stroke-linecap="round" />
-                            </svg>
+                            </svg> -->
                             <div class="plan-info-detail">
                                 <h2 class="step-count">4</h2>
                                 <div class="plan-info-inner">
-                                    <img class="plan-info-icon" src={packetCompletedIcon}  loading="eager">
+                                    <img class="plan-info-icon" src={packetCompletedIcon} loading="eager">
                                     <div class="step-content slds-m-horizontal_x-large">Packet Completed</div>
                                 </div>
                             </div>
@@ -190,7 +204,13 @@
                     </template>
                 </div>
                 <div class="insurance-download" if:true={isPacketDownload}>
-                    <a class="slds-btn slds-btn-primary slds-btn-sm waves-effect bc-green waves-light mleft-0 btn-trip" target="_blank" href={urlToPacket}><img src={btnIcon} /> Download</a>
+                    <a class="slds-btn slds-btn-primary slds-btn-sm waves-effect bc-green waves-light mleft-0 btn-trip"
+                        target="_blank" href={urlToPacket}><svg xmlns="http://www.w3.org/2000/svg" width="25"
+                            height="25" viewBox="0 0 25 25" fill="none" style="margin-right: 3px;">
+                            <path
+                                d="m7.561 11.627 0.032 -0.032 -0.032 0.032 4.273 4.273a0.936 0.936 0 0 0 0.143 0.118 0.625 0.625 0 0 0 0.068 0.036h0.001l0.032 0.018 0.009 0.006 0.048 0.025a0.357 0.357 0 0 0 0.089 0.028l0.007 0.002a0.557 0.557 0 0 0 0.082 0.025l0.002 0.001a0.941 0.941 0 0 0 0.368 0h0.002a0.502 0.502 0 0 0 0.052 -0.018 0.522 0.522 0 0 1 0.027 -0.007l0.002 -0.002 0.032 -0.009 0.057 -0.018a0.527 0.527 0 0 0 0.098 -0.05l0.001 -0.001 0.002 -0.001a0.232 0.232 0 0 1 0.027 -0.016l0.036 -0.022a0.952 0.952 0 0 0 0.143 -0.118l4.273 -4.273a0.941 0.941 0 0 0 0 -1.332 0.941 0.941 0 0 0 -1.332 0l-2.668 2.668V4.843a0.943 0.943 0 0 0 -1.882 0v8.122L8.891 10.297a0.941 0.941 0 0 0 -1.331 0 0.941 0.941 0 0 0 0 1.332Zm13.323 7.718a0.942 0.942 0 0 0 -0.943 -0.941H5.057a0.943 0.943 0 0 0 0 1.881h14.886a0.943 0.943 0 0 0 0.942 -0.942Z"
+                                fill="white" stroke="white" stroke-width="0.10081333333333335"></path>
+                        </svg> Download</a>
                 </div>
             </div>
         </div>
@@ -198,7 +218,7 @@
         <div if:true={driverMeeting} class="slds-tabs_default__content" role="tabpanel"
             aria-labelledby="tab-default-2__item">
             <div class="slds-grid">
-                <div class="slds-col slds-size_2-of-1">
+                <div class="">
                     <template if:true={meetingStatus1}>
                         <div class="plan-info-main">
                             <svg width="171" height="184" viewBox="0 0 171 184" fill="none"
@@ -214,7 +234,7 @@
                                                 class="fa-solid fa-lg fa-check"></i></span></h2>
                                 </div>
                                 <div class="plan-info-inner">
-                                    <img class="plan-info-icon" src={driverPacketSentIcon}  loading="eager">
+                                    <img class="plan-info-icon" src={driverPacketSentIcon} loading="eager">
                                     <div class="step-content slds-m-horizontal_x-large">Sent</div>
                                 </div>
                             </div>
@@ -231,14 +251,14 @@
                             <div class="plan-info-detail">
                                 <h2 class="step-count">1</h2>
                                 <div class="plan-info-inner">
-                                    <img class="plan-info-icon" src={driverPacketSentIcon}  loading="eager">
+                                    <img class="plan-info-icon" src={driverPacketSentIcon} loading="eager">
                                     <div class="step-content slds-m-horizontal_x-large">Sent</div>
                                 </div>
                             </div>
                         </div>
                     </template>
                 </div>
-                <div class="slds-col slds-size_2-of-1 slds-p-horizontal_small">
+                <div class="slds-p-horizontal_small">
                     <template if:true={meetingStatus2}>
                         <div class="plan-info-main">
                             <svg width="171" height="184" viewBox="0 0 171 184" fill="none"
@@ -254,7 +274,7 @@
                                                 class="fa-solid fa-lg fa-check"></i></span></h2>
                                 </div>
                                 <div class="plan-info-inner">
-                                    <img class="plan-info-icon" src={driverSignedIcon}  loading="eager">
+                                    <img class="plan-info-icon" src={driverSignedIcon} loading="eager">
                                     <div class="step-content slds-m-horizontal_x-large">Scheduled</div>
                                 </div>
                             </div>
@@ -271,22 +291,29 @@
                             <div class="plan-info-detail">
                                 <h2 class="step-count">2</h2>
                                 <div class="plan-info-inner">
-                                    <img class="plan-info-icon" src={driverSignedIcon}  loading="eager">
+                                    <img class="plan-info-icon" src={driverSignedIcon} loading="eager">
                                     <div class="step-content slds-m-horizontal_x-large">Scheduled</div>
                                 </div>
                             </div>
                         </div>
                     </template>
                 </div>
-                <div class="slds-col slds-size_2-of-1">
+                <div class="">
                     <template if:true={meetingStatus3}>
                         <div class="plan-info-main">
-                            <svg width="171" height="184" viewBox="0 0 171 184" fill="none"
+                            <svg xmlns="http://www.w3.org/2000/svg" width="171.506" height="184"
+                                viewBox="0 0 171.506 184" fill="none">
+                                <path
+                                    d="M1.136 21.165C1.136 10.102 10.103 1.136 21.165 1.136h129.184c11.062 0 20.029 8.967 20.029 20.029v142.202c0 11.062 -8.967 20.029 -20.029 20.029H21.165C10.102 183.396 1.136 174.428 1.136 163.367v-142.202Z"
+                                    fill="white" stroke="#D7D7D7" stroke-width="1.0014246698013245"
+                                    stroke-linecap="round" />
+                            </svg>
+                            <!-- <svg width="171" height="184" viewBox="0 0 171 184" fill="none"
                                 xmlns="http://www.w3.org/2000/svg">
                                 <path
                                     d="M1 21C1 9.9543 9.9543 1 21 1H135.213C144.728 1 152.926 7.70381 154.815 17.0296L169.196 88.0296C169.727 90.6499 169.727 93.3501 169.196 95.9704L154.815 166.97C152.926 176.296 144.728 183 135.213 183H21C9.95431 183 1 174.046 1 163V21Z"
                                     fill="#F1F8EC" stroke="#D7D7D7" stroke-linecap="round" />
-                            </svg>
+                            </svg> -->
                             <div class="plan-info-detail">
                                 <div class="plan-info-top">
                                     <h2 class="step-count-active">3</h2>
@@ -294,7 +321,7 @@
                                                 class="fa-solid fa-lg fa-check"></i></span></h2>
                                 </div>
                                 <div class="plan-info-inner">
-                                    <img class="plan-info-icon" src={meetingAttendedIcon}  loading="eager">
+                                    <img class="plan-info-icon" src={meetingAttendedIcon} loading="eager">
                                     <div class="step-content slds-m-horizontal_x-large">Attended</div>
                                 </div>
                             </div>
@@ -302,16 +329,23 @@
                     </template>
                     <template if:false={meetingStatus3}>
                         <div class="plan-info-main">
-                            <svg width="171" height="184" viewBox="0 0 171 184" fill="none"
+                            <svg xmlns="http://www.w3.org/2000/svg" width="171.506" height="184"
+                                viewBox="0 0 171.506 184" fill="none">
+                                <path
+                                    d="M1.136 21.165C1.136 10.102 10.103 1.136 21.165 1.136h129.184c11.062 0 20.029 8.967 20.029 20.029v142.202c0 11.062 -8.967 20.029 -20.029 20.029H21.165C10.102 183.396 1.136 174.428 1.136 163.367v-142.202Z"
+                                    fill="white" stroke="#D7D7D7" stroke-width="1.0014246698013245"
+                                    stroke-linecap="round" />
+                            </svg>
+                            <!-- <svg width="171" height="184" viewBox="0 0 171 184" fill="none"
                                 xmlns="http://www.w3.org/2000/svg">
                                 <path
                                     d="M1 21C1 9.9543 9.9543 1 21 1H135.213C144.728 1 152.926 7.70381 154.815 17.0296L169.196 88.0296C169.727 90.6499 169.727 93.3501 169.196 95.9704L154.815 166.97C152.926 176.296 144.728 183 135.213 183H21C9.95431 183 1 174.046 1 163V21Z"
                                     fill="white" stroke="#D7D7D7" stroke-linecap="round" />
-                            </svg>
+                            </svg> -->
                             <div class="plan-info-detail">
                                 <h2 class="step-count">3</h2>
                                 <div class="plan-info-inner">
-                                    <img class="plan-info-icon" src={meetingAttendedIcon}  loading="eager">
+                                    <img class="plan-info-icon" src={meetingAttendedIcon} loading="eager">
                                     <div class="step-content slds-m-horizontal_x-large">Attended</div>
                                 </div>
                             </div>
@@ -321,10 +355,10 @@
             </div>
         </div>
 
-        <div if:true={driverInsurance}  class="slds-tabs_default__content" role="tabpanel"
+        <div if:true={driverInsurance} class="slds-tabs_default__content" role="tabpanel"
             aria-labelledby="tab-default-3__item">
             <div class="slds-grid">
-                <div class="slds-col slds-size_2-of-1">
+                <div class="">
                     <div class="plan-info-main">
                         <svg width="171" height="184" viewBox="0 0 171 184" fill="none"
                             xmlns="http://www.w3.org/2000/svg">
@@ -339,59 +373,77 @@
                                             class="fa-solid fa-lg fa-check"></i></span></h2>
                             </div>
                             <div class="plan-info-inner">
-                                <img class="plan-info-icon" src={requestedIcon}  loading="eager">
+                                <img class="plan-info-icon" src={requestedIcon} loading="eager">
                                 <div class="step-content slds-m-horizontal_x-large">Requested</div>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="slds-col slds-size_2-of-1 slds-p-horizontal_small">
-                    <template if:true={insuranceAttachmentId}>
-                        <div class="plan-info-main">
-                            <svg width="171" height="184" viewBox="0 0 171 184" fill="none"
-                                xmlns="http://www.w3.org/2000/svg">
-                                <path
-                                    d="M1 21C1 9.9543 9.9543 1 21 1H135.213C144.728 1 152.926 7.70381 154.815 17.0296L169.196 88.0296C169.727 90.6499 169.727 93.3501 169.196 95.9704L154.815 166.97C152.926 176.296 144.728 183 135.213 183H21C9.95431 183 1 174.046 1 163V21Z"
-                                    fill="#F1F8EC" stroke="#D7D7D7" stroke-linecap="round" />
-                            </svg>
-                            <div class="plan-info-detail">
-                                <div class="plan-info-top">
-                                    <h2 class="step-count-active">2</h2>
-                                    <h2 class="step-complete">Complete<span class="info-check"><i
-                                                class="fa-solid fa-lg fa-check"></i></span></h2>
-                                </div>
-                                <div class="plan-info-inner">
-                                    <img class="plan-info-icon" src={uploadedIcon}  loading="eager">
-                                    <div class="step-content slds-m-horizontal_x-large">Uploaded</div>
-                                </div>
-                            </div>
-                        </div>
-                    </template>
-                    <template if:false={insuranceAttachmentId}>
-                        <div class="plan-info-main">
-                            <svg width="171" height="184" viewBox="0 0 171 184" fill="none"
-                                xmlns="http://www.w3.org/2000/svg">
-                                <path
-                                    d="M1 21C1 9.9543 9.9543 1 21 1H135.213C144.728 1 152.926 7.70381 154.815 17.0296L169.196 88.0296C169.727 90.6499 169.727 93.3501 169.196 95.9704L154.815 166.97C152.926 176.296 144.728 183 135.213 183H21C9.95431 183 1 174.046 1 163V21Z"
-                                    fill="#fa780014" stroke="#D7D7D7" stroke-linecap="round" />
-                            </svg>
-                            <div class="plan-info-detail">
-                                <h2 class="step-count-not-uploaded">2</h2>
-                                <div class="plan-info-inner">
-                                    <img class="plan-info-icon" src={notUploadedIcon}  loading="eager">
-                                    <div class="step-content slds-m-horizontal_x-large">Not Uploaded</div>
+                <div>
+                    <div class="slds-p-horizontal_small">
+                        <template if:true={insuranceAttachmentId}>
+                            <div class="plan-info-main">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="171.506" height="184"
+                                    viewBox="0 0 171.506 184" fill="none">
+                                    <path
+                                        d="M1.136 21.165C1.136 10.102 10.103 1.136 21.165 1.136h129.184c11.062 0 20.029 8.967 20.029 20.029v142.202c0 11.062 -8.967 20.029 -20.029 20.029H21.165C10.102 183.396 1.136 174.428 1.136 163.367v-142.202Z"
+                                        fill="#F1F8EC" stroke="#D7D7D7" stroke-width="1.0014246698013245"
+                                        stroke-linecap="round" />
+                                </svg>
+                                <!-- <svg width="171" height="184" viewBox="0 0 171 184" fill="none"
+                                    xmlns="http://www.w3.org/2000/svg">
+                                    <path
+                                        d="M1 21C1 9.9543 9.9543 1 21 1H135.213C144.728 1 152.926 7.70381 154.815 17.0296L169.196 88.0296C169.727 90.6499 169.727 93.3501 169.196 95.9704L154.815 166.97C152.926 176.296 144.728 183 135.213 183H21C9.95431 183 1 174.046 1 163V21Z"
+                                        fill="#F1F8EC" stroke="#D7D7D7" stroke-linecap="round" />
+                                </svg> -->
+                                <div class="plan-info-detail">
+                                    <div class="plan-info-top">
+                                        <h2 class="step-count-active">2</h2>
+                                        <h2 class="step-complete">Complete<span class="info-check"><i
+                                                    class="fa-solid fa-lg fa-check"></i></span></h2>
+                                    </div>
+                                    <div class="plan-info-inner">
+                                        <img class="plan-info-icon" src={uploadedIcon} loading="eager">
+                                        <div class="step-content slds-m-horizontal_x-large">Uploaded</div>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    </template>
+                        </template>
+                        <template if:false={insuranceAttachmentId}>
+                            <div class="plan-info-main">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="171.506" height="184"
+                                    viewBox="0 0 171.506 184" fill="none">
+                                    <path
+                                        d="M1.136 21.165C1.136 10.102 10.103 1.136 21.165 1.136h129.184c11.062 0 20.029 8.967 20.029 20.029v142.202c0 11.062 -8.967 20.029 -20.029 20.029H21.165C10.102 183.396 1.136 174.428 1.136 163.367v-142.202Z"
+                                        fill="#fa780014" stroke="#D7D7D7" stroke-width="1.0014246698013245"
+                                        stroke-linecap="round" />
+                                </svg>
+                                <!-- <svg width="171" height="184" viewBox="0 0 171 184" fill="none"
+                                    xmlns="http://www.w3.org/2000/svg">
+                                    <path
+                                        d="M1 21C1 9.9543 9.9543 1 21 1H135.213C144.728 1 152.926 7.70381 154.815 17.0296L169.196 88.0296C169.727 90.6499 169.727 93.3501 169.196 95.9704L154.815 166.97C152.926 176.296 144.728 183 135.213 183H21C9.95431 183 1 174.046 1 163V21Z"
+                                        fill="#fa780014" stroke="#D7D7D7" stroke-linecap="round" />
+                                </svg> -->
+                                <div class="plan-info-detail">
+                                    <h2 class="step-count-not-uploaded">2</h2>
+                                    <div class="plan-info-inner">
+                                        <img class="plan-info-icon" src={notUploadedIcon} loading="eager">
+                                        <div class="step-content slds-m-horizontal_x-large">Not Uploaded</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </template>
+                    </div>
+                    <div class="insurance-download" if:true={insuranceAttachmentId}>
+                        <a class="slds-btn slds-btn-primary slds-btn-sm waves-effect bc-green waves-light mleft-0 btn-trip"
+                            target="_blank" href={urlToInsurance}><img src={btnIcon} /> Download</a>
+                    </div>
                 </div>
-                <div class="insurance-download" if:true={insuranceAttachmentId}>
-                    <a class="slds-btn slds-btn-primary slds-btn-sm waves-effect bc-green waves-light mleft-0 btn-trip" target="_blank" href={urlToInsurance}><img src={btnIcon} /> Download</a>
-                </div>
+
             </div>
         </div>
 
-        <div if:true={driverCompliance}  class="slds-tabs_default__content" role="tabpanel"
+        <div if:true={driverCompliance} class="slds-tabs_default__content" role="tabpanel"
             aria-labelledby="tab-default-4__item">
             <div class="compliance-text">
                 <div class="status-holder slds-p-horizontal_large slds-p-vertical_medium">
@@ -399,9 +451,9 @@
                 </div>
             </div>
             <div class="complaince-detail slds-p-top_x-large">
-                <div class="slds-grid">
+                <div class="slds-grid slds-wrap slds-grid_vertical-stretch">
                     <template for:each={complianceData} for:item="compliance">
-                        <div class="slds-col slds-size_1-of-4 slds-m-right_small" key={compliance.quarterno}>
+                        <div class="slds-col slds-m-vertical_small slds-m-right_small" key={compliance.quarterno}>
                             <div class="plan-info-compliance slds-p-around_large">
                                 <div class="compliance-header">{compliance.quarterno}{compliance.ordinal} Quarter Tax
                                     Analysis</div>
@@ -448,10 +500,107 @@
                             </div>
                         </div>
                     </template>
+                    <template if:true={lengthS}>
+                        <div class="slds-col slds-m-vertical_small slds-m-right_small">
+                            <div class="plan-info-compliance slds-p-around_large" style="height: 100%">
+                                <div class="compliance-header">Annual Tax Analysis</div>
+                                <div class="slds-m-top_medium">
+                                    <table
+                                        class="slds-table slds-table_cell-buffer slds-table_header-hidden bordered-table">
+                                        <tr>
+                                            <td>Total Reimbursement</td>
+                                            <td>
+                                                <lightning-formatted-number value={reimbursements}
+                                                    format-style="currency" currency-code="USD"
+                                                    minimum-fraction-digits="2">
+                                                </lightning-formatted-number>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>Maximum Allowable</td>
+                                            <td>
+                                                <lightning-formatted-number value={maxAllow} format-style="currency"
+                                                    currency-code="USD" minimum-fraction-digits="2">
+                                                </lightning-formatted-number>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>Annual Tax Liability</td>
+                                            <td>
+                                                <lightning-formatted-number value={taxLiablity} format-style="currency"
+                                                    currency-code="USD" minimum-fraction-digits="2">
+                                                </lightning-formatted-number>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="slds-col slds-m-vertical_small slds-m-right_small">
+                            <div class="plan-info-compliance" style="height: 100%">
+                                <div style="padding: 1rem;display:block;margin:45px 0;">
+                                    <table class="slds-table slds-table_cell-buffer slds-table_header-hidden no-border">
+                                        <tbody>
+                                            <tr>
+                                                <td>
+                                                    <div class="annual-liability">Annual Tax Liability Detail</div>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <div class="download-report" style="padding-top: 18px;"><button
+                                                            class="slds-btn slds-btn-primary slds-btn-sm waves-effect bc-green waves-light mleft-0 btn-trip-download"
+                                                            onclick={taxLiabilityDetailReport}><svg
+                                                                xmlns="http://www.w3.org/2000/svg" width="25"
+                                                                height="25" viewBox="0 0 25 25" fill="none"
+                                                                style="margin-right: 3px;">
+                                                                <path
+                                                                    d="m7.561 11.627 0.032 -0.032 -0.032 0.032 4.273 4.273a0.936 0.936 0 0 0 0.143 0.118 0.625 0.625 0 0 0 0.068 0.036h0.001l0.032 0.018 0.009 0.006 0.048 0.025a0.357 0.357 0 0 0 0.089 0.028l0.007 0.002a0.557 0.557 0 0 0 0.082 0.025l0.002 0.001a0.941 0.941 0 0 0 0.368 0h0.002a0.502 0.502 0 0 0 0.052 -0.018 0.522 0.522 0 0 1 0.027 -0.007l0.002 -0.002 0.032 -0.009 0.057 -0.018a0.527 0.527 0 0 0 0.098 -0.05l0.001 -0.001 0.002 -0.001a0.232 0.232 0 0 1 0.027 -0.016l0.036 -0.022a0.952 0.952 0 0 0 0.143 -0.118l4.273 -4.273a0.941 0.941 0 0 0 0 -1.332 0.941 0.941 0 0 0 -1.332 0l-2.668 2.668V4.843a0.943 0.943 0 0 0 -1.882 0v8.122L8.891 10.297a0.941 0.941 0 0 0 -1.331 0 0.941 0.941 0 0 0 0 1.332Zm13.323 7.718a0.942 0.942 0 0 0 -0.943 -0.941H5.057a0.943 0.943 0 0 0 0 1.881h14.886a0.943 0.943 0 0 0 0.942 -0.942Z"
+                                                                    fill="white" stroke="white"
+                                                                    stroke-width="0.10081333333333335"></path>
+                                                            </svg>Download</button></div>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="slds-col slds-m-vertical_small slds-m-right_small">
+                            <div class="plan-info-compliance" style="height: 100%">
+                                <div style="padding: 1rem;display:block;margin:45px 0;">
+                                    <table class="slds-table slds-table_cell-buffer slds-table_header-hidden no-border">
+                                        <tbody>
+                                            <tr>
+                                                <td>
+                                                    <div class="annual-liability">Annual Tax Liability Summary</div>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <div class="download-report" style="padding-top: 18px;"><button
+                                                            class="slds-btn slds-btn-primary slds-btn-sm waves-effect bc-green waves-light mleft-0 btn-trip-download"
+                                                            onclick={taxLiabilitySummaryReport}><svg
+                                                                xmlns="http://www.w3.org/2000/svg" width="25"
+                                                                height="25" viewBox="0 0 25 25" fill="none"
+                                                                style="margin-right: 3px;">
+                                                                <path
+                                                                    d="m7.561 11.627 0.032 -0.032 -0.032 0.032 4.273 4.273a0.936 0.936 0 0 0 0.143 0.118 0.625 0.625 0 0 0 0.068 0.036h0.001l0.032 0.018 0.009 0.006 0.048 0.025a0.357 0.357 0 0 0 0.089 0.028l0.007 0.002a0.557 0.557 0 0 0 0.082 0.025l0.002 0.001a0.941 0.941 0 0 0 0.368 0h0.002a0.502 0.502 0 0 0 0.052 -0.018 0.522 0.522 0 0 1 0.027 -0.007l0.002 -0.002 0.032 -0.009 0.057 -0.018a0.527 0.527 0 0 0 0.098 -0.05l0.001 -0.001 0.002 -0.001a0.232 0.232 0 0 1 0.027 -0.016l0.036 -0.022a0.952 0.952 0 0 0 0.143 -0.118l4.273 -4.273a0.941 0.941 0 0 0 0 -1.332 0.941 0.941 0 0 0 -1.332 0l-2.668 2.668V4.843a0.943 0.943 0 0 0 -1.882 0v8.122L8.891 10.297a0.941 0.941 0 0 0 -1.331 0 0.941 0.941 0 0 0 0 1.332Zm13.323 7.718a0.942 0.942 0 0 0 -0.943 -0.941H5.057a0.943 0.943 0 0 0 0 1.881h14.886a0.943 0.943 0 0 0 0.942 -0.942Z"
+                                                                    fill="white" stroke="white"
+                                                                    stroke-width="0.10081333333333335"></path>
+                                                            </svg>Download</button></div>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </template>
                 </div>
 
-                <template if:true={lengthS}>
-                    <div class="slds-grid slds-p-top_x-large">
+                <!--<template if:true={lengthS}>
+                     <div class="slds-grid slds-p-top_x-large">
                         <div class="slds-col slds-size_1-of-4 slds-m-right_small">
                             <div class="plan-info-compliance slds-p-around_large">
                                 <div class="compliance-header">Annual Tax Analysis</div>
@@ -490,25 +639,44 @@
                         <div class="slds-col slds-size_1-of-4">
                             <div class="plan-info-compliance slds-p-around_x-large">
                                 <div class="slds-grid">
-                                    <div class="slds-m-right_small download-report" onclick={taxLiabilityDetailReport}><img src={downloadIcon} /></div>
                                     <div class="annual-liability">Annual Tax Liability Detail</div>
+                                    <div class="slds-m-right_small download-report"><button class="slds-btn slds-btn-primary slds-btn-sm waves-effect bc-green waves-light mleft-0 btn-trip"
+                                        onclick={taxLiabilityDetailReport}><svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" viewBox="0 0 25 25"
+                                            fill="none" style="
+                                                                margin-right: 3px;
+                                                            ">
+                                            <path
+                                                d="m7.561 11.627 0.032 -0.032 -0.032 0.032 4.273 4.273a0.936 0.936 0 0 0 0.143 0.118 0.625 0.625 0 0 0 0.068 0.036h0.001l0.032 0.018 0.009 0.006 0.048 0.025a0.357 0.357 0 0 0 0.089 0.028l0.007 0.002a0.557 0.557 0 0 0 0.082 0.025l0.002 0.001a0.941 0.941 0 0 0 0.368 0h0.002a0.502 0.502 0 0 0 0.052 -0.018 0.522 0.522 0 0 1 0.027 -0.007l0.002 -0.002 0.032 -0.009 0.057 -0.018a0.527 0.527 0 0 0 0.098 -0.05l0.001 -0.001 0.002 -0.001a0.232 0.232 0 0 1 0.027 -0.016l0.036 -0.022a0.952 0.952 0 0 0 0.143 -0.118l4.273 -4.273a0.941 0.941 0 0 0 0 -1.332 0.941 0.941 0 0 0 -1.332 0l-2.668 2.668V4.843a0.943 0.943 0 0 0 -1.882 0v8.122L8.891 10.297a0.941 0.941 0 0 0 -1.331 0 0.941 0.941 0 0 0 0 1.332Zm13.323 7.718a0.942 0.942 0 0 0 -0.943 -0.941H5.057a0.943 0.943 0 0 0 0 1.881h14.886a0.943 0.943 0 0 0 0.942 -0.942Z"
+                                                fill="white" stroke="white" stroke-width="0.10081333333333335"></path>
+                                        </svg>Download</button></div>
                                 </div>
                             </div>
+                        </div>
+                        <div class="slds-col slds-size_1-of-4">
                             <div class="plan-info-compliance slds-p-around_x-large annual-margin">
                                 <div class="slds-grid">
-                                    <div class="slds-m-right_small download-report" onclick={taxLiabilitySummaryReport}><img src={downloadIcon} /></div>
                                     <div class="annual-liability">Annual Tax Liability Summary</div>
+                                    <div class="slds-m-right_small download-report"><button class="slds-btn slds-btn-primary slds-btn-sm waves-effect bc-green waves-light mleft-0 btn-trip"
+                                        onclick={taxLiabilitySummaryReport}><svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" viewBox="0 0 25 25"
+                                            fill="none" style="
+                                                                margin-right: 3px;
+                                                            ">
+                                            <path
+                                                d="m7.561 11.627 0.032 -0.032 -0.032 0.032 4.273 4.273a0.936 0.936 0 0 0 0.143 0.118 0.625 0.625 0 0 0 0.068 0.036h0.001l0.032 0.018 0.009 0.006 0.048 0.025a0.357 0.357 0 0 0 0.089 0.028l0.007 0.002a0.557 0.557 0 0 0 0.082 0.025l0.002 0.001a0.941 0.941 0 0 0 0.368 0h0.002a0.502 0.502 0 0 0 0.052 -0.018 0.522 0.522 0 0 1 0.027 -0.007l0.002 -0.002 0.032 -0.009 0.057 -0.018a0.527 0.527 0 0 0 0.098 -0.05l0.001 -0.001 0.002 -0.001a0.232 0.232 0 0 1 0.027 -0.016l0.036 -0.022a0.952 0.952 0 0 0 0.143 -0.118l4.273 -4.273a0.941 0.941 0 0 0 0 -1.332 0.941 0.941 0 0 0 -1.332 0l-2.668 2.668V4.843a0.943 0.943 0 0 0 -1.882 0v8.122L8.891 10.297a0.941 0.941 0 0 0 -1.331 0 0.941 0.941 0 0 0 0 1.332Zm13.323 7.718a0.942 0.942 0 0 0 -0.943 -0.941H5.057a0.943 0.943 0 0 0 0 1.881h14.886a0.943 0.943 0 0 0 0.942 -0.942Z"
+                                                fill="white" stroke="white" stroke-width="0.10081333333333335"></path>
+                                        </svg>Download</button></div>
+                                    
                                 </div>
                             </div>
                         </div>
                     </div>
-                </template>
+                </template>-->
 
             </div>
 
         </div>
 
-        <div if:true={driverReimbursement}  class="slds-tabs_default__content" role="tabpanel"
+        <div if:true={driverReimbursement} class="slds-tabs_default__content" role="tabpanel"
             aria-labelledby="tab-default-5__item">
             <div class="complaince-detail">
                 <div class="slds-grid">
@@ -581,15 +749,15 @@
 
                             <div class="slds-m-top_large" if:true={fixedcostadjustment}>
                                 <div class="slds-grid slds-grid_vertical">
-                                        <div class="total-amount">
-                                            <lightning-formatted-number value={fixedcostadjustment} format-style="currency"
-                                                currency-code="USD" minimum-fraction-digits="2">
-                                            </lightning-formatted-number>
-                                        </div>
-                                        <div class="amount-label slds-p-top_x-small">Fixed Cost Adjustment</div>
+                                    <div class="total-amount">
+                                        <lightning-formatted-number value={fixedcostadjustment} format-style="currency"
+                                            currency-code="USD" minimum-fraction-digits="2">
+                                        </lightning-formatted-number>
+                                    </div>
+                                    <div class="amount-label slds-p-top_x-small">Fixed Cost Adjustment</div>
                                 </div>
                             </div>
-                             
+
                             <div class="slds-m-top_large" if:true={totalMonthlyFixedCost}>
                                 <div class="slds-grid slds-grid_vertical">
                                     <div class="total-amount">
@@ -603,7 +771,7 @@
                         </div>
                     </div>
                     <div class="slds-col slds-size_1-of-4 slds-m-left_large slds-m-right_small">
-                        <div class="plan-info-compliance slds-p-around_large">
+                        <div class="plan-info-compliance slds-p-around_large" style="height: 100%">
                             <div class="compliance-header">My Monthly Variable Costs Rates</div>
                             <div class="slds-m-top_medium">
                                 <table

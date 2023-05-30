@@ -1,0 +1,10 @@
+<template>
+    <div class="slds-p_around-medium">
+        <lightning-card variant="Narrow" title="Refs Demo">
+            <lightning-input label="Title" lwc:ref="titleRef"></lightning-input>
+            <lightning-input label="Branch" lwc:ref="branchRef" class="divinput"></lightning-input>
+            <lightning-input label="New Branch" lwc:ref="branchRef" class="divinput"></lightning-input>
+            <lightning-button label="Submit" class="slds-p-around_small slds-align_absolute-center" onclick={submitHandler}></lightning-button>
+        </lightning-card>
+    </div>
+</template>

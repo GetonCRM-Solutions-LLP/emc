@@ -618,7 +618,7 @@
                                 angular.element(document.querySelector("#didnotattendsignature")).removeClass("active");
                                 angular.element(document.querySelector("#span-didnotattend")).removeClass("span-did-not-attend"); //mobio : make span colored green
                             }
-                            else if ($scope.meeting == 'Completed') {
+                            else if ($scope.meeting == 'Attended') {
                                 angular.element(document.querySelector("#scheduledsignature")).removeClass("active");
                                 angular.element(document.querySelector("#sentsignature")).removeClass("active");
                                 angular.element(document.querySelector("#completedsignature")).addClass(" active");

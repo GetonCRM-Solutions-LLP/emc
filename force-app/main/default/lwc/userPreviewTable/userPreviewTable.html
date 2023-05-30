@@ -115,13 +115,14 @@
                                                 <template if:true={mapKey.isDate}>
                                                     <td class="modal-content" key={mapKey.key}>
                                                         <div if:true={mapKey.icon} class="flex-row">
-                                                            <div
+                                                            <!-- <div
                                                                 class="slds-m-top_xx-small slds-m-right_small icon-holder">
                                                                 <i class="fas fa-xs fa-chevron-right navigate"
                                                                     data-id={mapKey.id} data-st={mapKey.sDate}
                                                                     data-ed={mapKey.eDate} data-name={mapKey.value}></i>
-                                                            </div>
-                                                            <div>
+                                                            </div> -->
+                                                            <div class="navigate-text navigate" data-id={mapKey.id} data-st={mapKey.sDate}
+                                                                data-ed={mapKey.eDate} data-name={mapKey.value}>
                                                                 <lightning-formatted-date-time value={mapKey.value}
                                                                     year="2-digit" month="2-digit" day="2-digit">
                                                                 </lightning-formatted-date-time>
@@ -138,10 +139,10 @@
                                                     <template if:true={mapKey.icon}>
                                                         <td class="modal-content flex-row" key={mapKey.key}>
                                                             <div if:true={mapKey.icon}
-                                                                class="slds-m-top_xx-small slds-m-right_small icon-holder">
-                                                                <i class="fas fa-xs fa-chevron-right navigate"
-                                                                    data-name={mapKey.value}></i></div>
-                                                            {mapKey.value}
+                                                                class="navigate-text navigate" data-name={mapKey.value}>
+                                                                {mapKey.value}
+                                                            </div><!-- <i class="fas fa-xs fa-chevron-right navigate"
+                                                                data-name={mapKey.value}></i>-->
                                                         </td>
                                                     </template>
                                                     <template if:false={mapKey.icon}>
@@ -208,22 +209,32 @@
 
         <template if:true={scrollable}>
             <div class="preview">
-                <div style="position: absolute;
-                top: 113px;
-                border-bottom: 1px solid #d9d9d9;
-                z-index: 1;
-                width: 100%;"></div>
+                <div class={dividerClass}></div>
                 <div class="preview-header">
-                    <div class="flex-block">
-                        <template if:false={norecord}>
-                            <div class="slds-p-left_small slds-p-bottom_small slds-p-top_xx-small"
+                    <div class={dFlex}>
+                        <!-- <template if:false={norecord}> -->
+                            <template lwc:if={flagPreview}>
+                                <div class="slds-p-left_medium slds-p-right_small slds-p-bottom_small head-sort">
+                                    <h2 class="slds-text-heading_medium slds-hyphenate month-header slds-p-top_xx-small">
+                                        {tripMonth}
+                                    </h2>
+                                    <slot name="filter"></slot>
+                                </div>
+                            </template>
+                            <template lwc:else>
+                                <slot name="filter"></slot>
+                            </template>
+                          
+                            <!-- <div class="slds-p-left_small slds-p-bottom_small head-sort"
                                 if:true={headerDownload}>
                                 <button
                                     class="slds-btn slds-btn-primary slds-btn-sm waves-effect bc-green waves-light mleft-0 btn-trip"
-                                    onclick={downloadAllTrips}><img class="download-icon"
-                                        src={downloadAllIcon} />Download</button>
-                            </div>
-                        </template>
+                                    onclick={downloadAllTrips}><svg xmlns="http://www.w3.org/2000/svg" width="18" height="16" viewBox="0 0 13 12" fill="none">
+                                        <path d="M2.96945 5.66712L2.96945 5.66711C2.7059 5.40357 2.7059 4.97858 2.96945 4.71504C3.23299 4.4515 3.65798 4.4515 3.92151 4.71505L5.82771 6.62125V0.816001C5.82771 0.444884 6.12901 0.143591 6.50012 0.143591C6.87124 0.143591 7.17253 0.444884 7.17253 0.816001V6.62125L9.07873 4.71505C9.34228 4.4515 9.76727 4.4515 10.0308 4.71505C10.2943 4.97859 10.2943 5.40358 10.0308 5.66711L6.97625 8.72167C6.94361 8.7543 6.90867 8.78108 6.87446 8.80468L6.87391 8.80506C6.86443 8.81134 6.85513 8.81599 6.8478 8.81965L6.84721 8.81995C6.83935 8.82388 6.83363 8.82678 6.8281 8.83045L6.82732 8.83097L6.82731 8.83096L6.82643 8.8315C6.80688 8.84375 6.7836 8.85833 6.75664 8.86742C6.75643 8.86749 6.75623 8.86756 6.75602 8.86762L6.74462 8.83344C6.73254 8.83796 6.72052 8.84161 6.70797 8.84541C6.69931 8.84804 6.69041 8.85074 6.68106 8.85386L2.96945 5.66712ZM2.96945 5.66712L6.02471 8.72167L6.02479 8.72175C6.05414 8.75091 6.08905 8.78065 6.12727 8.80521M2.96945 5.66712L6.12727 8.80521M6.12727 8.80521C6.1272 8.80516 6.12712 8.80511 6.12705 8.80506L6.14696 8.77502M6.12727 8.80521C6.12735 8.80525 6.12742 8.8053 6.12749 8.80535L6.14696 8.77502M6.14696 8.77502C6.11127 8.75212 6.07824 8.72406 6.05019 8.69619L6.24089 8.86601C6.24059 8.86586 6.24029 8.86571 6.23999 8.86556L6.25633 8.83344C6.24234 8.82726 6.22927 8.82008 6.21661 8.81312C6.20855 8.80869 6.20064 8.80435 6.19277 8.80041C6.17749 8.79277 6.16222 8.78514 6.14696 8.77502ZM6.83109 8.78772C6.83873 8.7839 6.84636 8.78008 6.854 8.77502L6.83109 8.78772ZM6.83109 8.78772C6.82346 8.79154 6.81582 8.79535 6.80819 8.80041L6.83109 8.78772ZM12.4934 11.184V11.184C12.4932 10.8127 12.1923 10.5116 11.821 10.5116H1.17898C0.80786 10.5116 0.506567 10.8129 0.506567 11.184C0.506567 11.5551 0.80786 11.8564 1.17898 11.8564H11.821C12.1921 11.8564 12.4934 11.5551 12.4934 11.184Z" fill="white" stroke="#7ABB4A" stroke-width="0.0720703"/>
+                                    </svg>Download</button>
+                                    <button  class="slds-btn slds-btn-primary slds-btn-sm slds-m-left_small waves-effect bc-green waves-light mleft-0 btn-trip" if:true={syncVisible}><i class="fa-solid fa-arrows-rotate"></i> {buttonLabel}</button> 
+                            </div> -->
+                        <!-- </template> -->
                         <div class="slds-p-left_medium slds-p-bottom_small slds-p-top_xx-small" if:true={headerName}>
                             <h2 class="slds-text-heading_medium slds-hyphenate month-header" if:false={biweekValue}>
                                 {tripMonth} Preview
@@ -237,12 +248,12 @@
                             </h2>
                         </div>
                         <template if:true={pagedData}>
-                            <div class="paginate-block">
+                            <div class="paginate-block slds-p-top_xxx-small">
                                 <template if:false={norecord}>
-                                    <span class="slds-p-top_small">
+                                    <!-- <span class="slds-p-top_small">
                                         <ul class="slds-list_horizontal  slds-has-block-links_space border-radius">
                                             <li class="slds-item navigate">
-                                                <a name="buttonBackwards" tripdata label="Previous" title=""
+                                                <a name="buttonBackwards"  label="Previous" title=""
                                                     onclick={handleButtonPrevious} class={cssPreviousText}
                                                     disabled={disabledPreviousButton}>
                                                     <i class="fa-solid fa-arrow-left fa-lg navigate-icon"></i>
@@ -252,7 +263,7 @@
                                                 <div class="slds-p-horizontal_x-small slds-p-vertical_x-small pageEdit">
                                                     <template for:each={totalPage} for:item="page">
                                                         <div key={page} class="flow-block">
-                                                            <h2 class="page-num-block" data-id={page}> {page}</h2>
+                                                            <h2 class="page-num-block" data-id={page} onclick={handlePageChanged}> {page}</h2>
                                                         </div>
                                                     </template>
                                                 </div>
@@ -265,25 +276,60 @@
                                                 </a>
                                             </li>
                                         </ul>
+                                    </span> -->
+                                    <span class="slds-p-top_small">
+                                        <ul class="slds-list_horizontal  slds-has-block-links_space border-radius">
+                                            <li class="slds-item">
+                                                <a name="buttonBackwards"  label="Previous" title=""
+                                                    onclick={onPrev} class={cssPreviousText}
+                                                    disabled={disabledPreviousButton}>
+                                                    <i class="fa-solid fa-chevron-left fa-lg slds-p-horizontal_x-small slds-p-vertical_x-small navigate-icon"></i>
+                                                </a>
+                                            </li>
+                                            <li class="slds-item">
+                                                <div class="slds-p-horizontal_xx-small slds-p-vertical_xx-small pageEdit">
+                                                    <template for:each={pages} for:item="page">
+                                                        <div class="flow-block" key={page}>
+                                                            <a data-id={page} class="page-num-block" onclick={onPageClick}>{page}</a>
+                                                        </div>
+                                                    </template>
+                                                </div>
+                                            </li>
+                                            <li class="slds-item">
+                                                <a name="buttonForwards" label="Next" title=""
+                                                    onclick={onNext} class={cssText}
+                                                    disabled={disabledNextButton}>
+                                                    <i class="fa-solid fa-chevron-right fa-lg slds-p-horizontal_x-small slds-p-vertical_x-small navigate-icon"></i>
+                                                </a>
+                                            </li>
+                                         </ul>
                                     </span>
                                 </template>
                             </div>
                         </template>
-                        <template if:true={searchVisible}>
-                            <slot name="header"></slot>
-                        </template>
+                        <!-- <template lwc:if={flagPreview}> -->
+                            <template if:true={searchVisible}>
+                                <slot name="header"></slot>
+                            </template>
+                            <!-- <slot name="header-button"></slot> -->
+                        <!-- </template> -->
+                        <!-- <template lwc:else>
+                            <template if:true={searchVisible}>
+                                <slot name="header"></slot>
+                            </template>
+                        </template> -->
                     </div>
                 </div>
-                <div class="slds-p-left_large slds-p-right_large">
+                <div class="slds-p-left_medium slds-p-right_medium">
                     <div class={mainClass}> <!-- height: calc(100vh - 244px); -->
-                        <div class="slds-scrollable_y slds-p-right_small">
-                            <table class="slds-table slds-table--header-fixed slds-table_cell-buffer slds-table_striped"
+                        <div class={className}>
+                            <table class={tableClass}
                                 id="tableSel">
                                 <thead class="">
                                     <tr class="slds-line-height_reset">
                                         <template if:true={columns}>
                                             <template for:each={columns} for:item="head">
-                                                <th class="header-title" scope="col" key={head.id}>
+                                                <th class={headTh} scope="col" key={head.id}>
                                                     <template if:true={isSortable}>
                                                         <div class="slds-cell-fixed" onclick={sort} title={head.name}
                                                             data-name={head.colName} data-type={head.colType}>
@@ -291,7 +337,7 @@
                                                                 class="head-sort">
                                                                 {head.name}
                                                                 <template if:false={norecord}>
-                                                                    <span class="sort-container">
+                                                                    <span class={sortTh}>
                                                                         <i class="fa-solid fa-sort-up green_icon"
                                                                             data-name={head.colName}
                                                                             data-type={head.colType}></i>
@@ -321,6 +367,11 @@
                                                     </template>
                                                 </th>
                                             </template>
+                                            <template if:false={norecord}>
+                                                <template lwc:if={inlineCheckbox}>
+                                                    <th class={headTh}><slot name="checkbox"></slot></th>
+                                                </template>
+                                            </template>
                                         </template>
                                     </tr>
                                 </thead>
@@ -329,112 +380,171 @@
                                         <template for:each={pagedData} for:item="trip">
                                             <tr key={trip.id} class={trip.rejectedClass}>
                                                 <template for:each={trip.keyFields} for:item="mapKey">
-                                                    <template if:true={mapKey.istwoDecimalCurrency}>
-                                                        <template if:true={mapKey.hasLeadingZero}>
-                                                            <td class="modal-content" key={mapKey.key}
-                                                                if:false={mapKey.bold}>
-                                                                ${mapKey.hasLeadingZero}
-                                                            </td>
-                                                            <td class="modal-content bold-text" key={mapKey.key}
-                                                                if:true={mapKey.bold}>
-                                                                ${mapKey.hasLeadingZero}
-                                                            </td>
-                                                        </template>
-                                                        <template if:false={mapKey.hasLeadingZero}>
+                                                    <template if:true={mapKey.onlyLink}>
+                                                        <template if:true={mapKey.isLink}>
                                                             <td class="modal-content" key={mapKey.key}>
-                                                                <lightning-formatted-number value={mapKey.value}
-                                                                    format-style="currency" currency-code="USD"
-                                                                    minimum-fraction-digits="2">
-                                                                </lightning-formatted-number></td>
+                                                                <a class="linked" onclick={linkHandler} data-id={mapKey.uId}>{mapKey.value}</a>
+                                                            </td>
                                                         </template>
                                                     </template>
-                                                    <template if:false={mapKey.istwoDecimalCurrency}>
-                                                        <template if:true={mapKey.isfourDecimalCurrency}>
-                                                            <template if:true={mapKey.hasLeadingZero}>
-                                                                <td class="modal-content" key={mapKey.key}
-                                                                    if:false={mapKey.bold}>
-                                                                    ${mapKey.hasLeadingZero}
-                                                                </td>
-                                                                <td class="modal-content bold-text" key={mapKey.key}
-                                                                    if:true={mapKey.bold}>
-                                                                    ${mapKey.hasLeadingZero}
-                                                                </td>
-                                                            </template>
-                                                            <template if:false={mapKey.hasLeadingZero}>
-                                                                <td class="modal-content" key={mapKey.key}>
-                                                                    <lightning-formatted-number value={mapKey.value}
-                                                                        format-style="currency" currency-code="USD"
-                                                                        minimum-fraction-digits="4">
-                                                                    </lightning-formatted-number></td>
-                                                            </template>
+                                                    <template if:false={mapKey.onlyLink}>
+                                                        <template if:true={mapKey.isLink}>
+                                                            <td class="modal-content" key={mapKey.key}>
+                                                                <template lwc:if={mapKey.isProcess}>
+                                                                    <a  class="linked" onclick={modalHandler} data-id={mapKey.uId}>{mapKey.value}</a>
+                                                                </template>
+                                                                <template lwc:else>
+                                                                    <a  class="linked" onclick={linkHandler} data-id={mapKey.uId}>{mapKey.value}</a>
+                                                                </template>
+                                                            </td>
                                                         </template>
-                                                        <template if:false={mapKey.isfourDecimalCurrency}>
-                                                            <template if:true={mapKey.twoDecimal}>
+                                                        <template if:false={mapKey.isLink}>
+                                                            <template if:true={mapKey.istwoDecimalCurrency}>
                                                                 <template if:true={mapKey.hasLeadingZero}>
                                                                     <td class="modal-content" key={mapKey.key}
                                                                         if:false={mapKey.bold}>
-                                                                        {mapKey.hasLeadingZero}
+                                                                        ${mapKey.hasLeadingZero}
                                                                     </td>
                                                                     <td class="modal-content bold-text" key={mapKey.key}
                                                                         if:true={mapKey.bold}>
-                                                                        {mapKey.hasLeadingZero}
+                                                                        ${mapKey.hasLeadingZero}
                                                                     </td>
                                                                 </template>
                                                                 <template if:false={mapKey.hasLeadingZero}>
                                                                     <td class="modal-content" key={mapKey.key}>
                                                                         <lightning-formatted-number value={mapKey.value}
+                                                                            format-style="currency" currency-code="USD"
                                                                             minimum-fraction-digits="2">
                                                                         </lightning-formatted-number></td>
                                                                 </template>
                                                             </template>
-                                                            <template if:false={mapKey.twoDecimal}>
-                                                                <template if:true={mapKey.icon}>
-                                                                    <td class="modal-content flex-row" key={mapKey.key}
-                                                                        data-name={mapKey.value}>
-                                                                        <div if:true={mapKey.icon}
-                                                                            class="slds-m-top_xx-small slds-m-right_small icon-holder">
-                                                                            <i
-                                                                                class="fas fa-xs fa-chevron-right navigate"></i>
-                                                                        </div>{mapKey.value}
-                                                                    </td>
+                                                            <template if:false={mapKey.istwoDecimalCurrency}>
+                                                                <template if:true={mapKey.isfourDecimalCurrency}>
+                                                                    <template if:true={mapKey.hasLeadingZero}>
+                                                                        <td class="modal-content" key={mapKey.key}
+                                                                            if:false={mapKey.bold}>
+                                                                            ${mapKey.hasLeadingZero}
+                                                                        </td>
+                                                                        <td class="modal-content bold-text" key={mapKey.key}
+                                                                            if:true={mapKey.bold}>
+                                                                            ${mapKey.hasLeadingZero}
+                                                                        </td>
+                                                                    </template>
+                                                                    <template if:false={mapKey.hasLeadingZero}>
+                                                                        <td class="modal-content" key={mapKey.key}>
+                                                                            <lightning-formatted-number value={mapKey.value}
+                                                                                format-style="currency" currency-code="USD"
+                                                                                minimum-fraction-digits="4">
+                                                                            </lightning-formatted-number></td>
+                                                                    </template>
                                                                 </template>
-                                                                <template if:false={mapKey.icon}>
-                                                                    <template if:true={mapKey.tooltip}>
-                                                                        <template if:true={mapKey.truncate}>
-                                                                            <td class="modal-content tooltipText"
-                                                                                key={mapKey.key}>
-                                                                                <div class="slds-truncate"
-                                                                                    style="width: 10rem;">{mapKey.value}
-                                                                                </div><span class="tooltipValue">
-                                                                                    <div if:true={mapKey.tIcon}><img
-                                                                                            src={mapKey.tooltipIcon} />
-                                                                                    </div>{mapKey.tooltipText}
-                                                                                </span>
+                                                                <template if:false={mapKey.isfourDecimalCurrency}>
+                                                                    <template if:true={mapKey.twoDecimal}>
+                                                                        <template if:true={mapKey.hasLeadingZero}>
+                                                                            <td class="modal-content" key={mapKey.key}
+                                                                                if:false={mapKey.bold}>
+                                                                                {mapKey.hasLeadingZero}
+                                                                            </td>
+                                                                            <td class="modal-content bold-text" key={mapKey.key}
+                                                                                if:true={mapKey.bold}>
+                                                                                {mapKey.hasLeadingZero}
                                                                             </td>
                                                                         </template>
-                                                                        <template if:false={mapKey.truncate}>
-                                                                            <td class="modal-content tooltipText"
-                                                                                key={mapKey.key}>{mapKey.value}<span
-                                                                                    class="tooltipValue">
-                                                                                    <div style="display: flex;">
-                                                                                        <div class="icon-tooltip"
-                                                                                            if:true={mapKey.tIcon}><img
-                                                                                                style="max-width: 12px;"
-                                                                                                src={mapKey.tooltipIcon} />
-                                                                                        </div>
-                                                                                        <div>{mapKey.tooltipText}</div>
-                                                                                    </div>
-                                                                                </span></td>
+                                                                        <template if:false={mapKey.hasLeadingZero}>
+                                                                            <td class="modal-content" key={mapKey.key}>
+                                                                                <lightning-formatted-number value={mapKey.value}
+                                                                                    minimum-fraction-digits="2">
+                                                                                </lightning-formatted-number></td>
                                                                         </template>
                                                                     </template>
-                                                                    <template if:false={mapKey.tooltip}>
-                                                                        <td class="modal-content" key={mapKey.key}>
-                                                                            {mapKey.value}</td>
+                                                                    <template if:false={mapKey.twoDecimal}>
+                                                                        <template if:true={mapKey.icon}>
+                                                                            <td class="modal-content flex-row" key={mapKey.key}
+                                                                                data-name={mapKey.value}>
+                                                                                <div if:true={mapKey.icon} class="navigate-text navigate">
+                                                                                    {mapKey.value}
+                                                                                </div>
+                                                                                <!-- <div if:true={mapKey.icon}
+                                                                                    class="slds-m-top_xx-small slds-m-right_small icon-holder">
+                                                                                    <i
+                                                                                        class="fas fa-xs fa-chevron-right navigate"></i>
+                                                                                </div>{mapKey.value} -->
+                                                                            </td>
+                                                                        </template>
+                                                                        <template if:false={mapKey.icon}>
+                                                                            <template if:true={mapKey.tooltip}>
+                                                                                <template if:true={mapKey.truncate}>
+                                                                                    <td class="modal-content tooltipText"
+                                                                                        key={mapKey.key}>
+                                                                                        <div class="slds-truncate"
+                                                                                            style="width: 10rem;">{mapKey.value}
+                                                                                        </div><span class="tooltipValue">
+                                                                                            <div if:true={mapKey.tIcon}><img
+                                                                                                    src={mapKey.tooltipIcon} />
+                                                                                            </div>{mapKey.tooltipText}
+                                                                                        </span>
+                                                                                    </td>
+                                                                                </template>
+                                                                                <template if:false={mapKey.truncate}>
+                                                                                    <td class="modal-content tooltipText"
+                                                                                        key={mapKey.key}>{mapKey.value}<span
+                                                                                            class="tooltipValue">
+                                                                                            <div style="display: grid;
+                                                                                            grid-column: 2;
+                                                                                            grid-template-columns: 1fr 8fr;">
+                                                                                                <div class="icon-tooltip"
+                                                                                                    if:true={mapKey.tIcon}><img
+                                                                                                        src={mapKey.tooltipIcon} />
+                                                                                                </div>
+                                                                                                <div>{mapKey.tooltipText}</div>
+                                                                                            </div>
+                                                                                        </span></td>
+                                                                                </template>
+                                                                            </template>
+                                                                            <template if:false={mapKey.tooltip}>
+                                                                                <td class="modal-content" key={mapKey.key}>
+                                                                                    {mapKey.value}</td>
+                                                                            </template>
+                                                                        </template>
                                                                     </template>
                                                                 </template>
                                                             </template>
                                                         </template>
                                                     </template>
+                                                </template>
+                                                <template lwc:if={inlineCheckbox}>
+                                                    <td class="model-content">
+                                                        <template lwc:if={trip.showCheckbox}>
+                                                            <template lwc:if={trip.reimbursementApproval}>
+                                                                <div class="processing-container">
+                                                                    Processing Approval
+                                                                </div>
+                                                            </template>
+                                                            <template lwc:else>
+                                                                <template lwc:if={trip.isApproval}>
+                                                                    <div class="checkbox-container">
+                                                                        <div class="slds-checkbox">
+                                                                            <input type="checkbox" class="checkbox-input" id={trip.id}  data-id={trip.id} checked={trip.isSelected} onchange={checkboxHandler} />
+                                                                            <label class="slds-checkbox__label" for={trip.id}>
+                                                                                <span class="slds-checkbox_faux"></span>
+                                                                            </label> 
+                                                                        </div>
+                                                                    </div>
+                                                                </template>
+                                                                <template lwc:else>
+                                                                    <div class="checkbox-container">
+                                                                        <div class="slds-checkbox">
+                                                                            <input type="checkbox" class="checkbox-input" id={trip.id}  data-id={trip.id} checked={trip.isChecked} onchange={checkboxHandler} />
+                                                                            <label class="slds-checkbox__label" for={trip.id}>
+                                                                                <span class="slds-checkbox_faux"></span>
+                                                                            </label> 
+                                                                        </div>
+                                                                    </div>
+                                                                </template>
+                                                             
+                                                            </template>
+                                                        </template>
+                                                    </td>
                                                 </template>
                                             </tr>
                                         </template>
@@ -487,29 +597,34 @@
                         </div>
                     </div>
                 </div>
-                <template if:true={isPaginate}>
-                    <template if:false={norecord}>
-                        <div class="slds-p-top_large slds-p-bottom_medium">
-                            <div class="slds-p-top_x-small bottom-border">
-                                <table>
-                                    <tr>
-                                        <td class="footer-heading slds-p-left_large slds-p-top_small">Total: </td>
-                                        <td></td>
-                                        <td class="sub-value"><span class="sub-value-1">{perPageMileage}</span><span
-                                                class="sub-value-2">/{totalMileage}</span></td>
-                                        <td class="sub-value"><span class="sub-value-1">${perPageVariable}</span><span
-                                                class="sub-value-2">/${totalVarAmount}</span></td>
-                                    </tr>
-                                    <tr>
-                                        <td></td>
-                                        <td></td>
-                                        <td class="sub-text">Mileage</td>
-                                        <td class="sub-text">Variable Amount</td>
-                                    </tr>
-                                </table>
+                <template if:true={showFooter}>
+                    <template if:true={isPaginate}>
+                        <template if:false={norecord}>
+                            <div class="slds-p-top_large slds-p-bottom_medium">
+                                <div class="slds-p-top_x-small bottom-border">
+                                    <table>
+                                        <tr>
+                                            <td class="footer-heading slds-p-left_large slds-p-top_small">Total: </td>
+                                            <td></td>
+                                            <td class="sub-value"><span class="sub-value-1">{perPageMileage}</span><span
+                                                    class="sub-value-2">/{totalMileage}</span></td>
+                                            <td class="sub-value"><span class="sub-value-1">${perPageVariable}</span><span
+                                                    class="sub-value-2">/${totalVarAmount}</span></td>
+                                        </tr>
+                                        <tr>
+                                            <td></td>
+                                            <td></td>
+                                            <td class="sub-text">Mileage</td>
+                                            <td class="sub-text">Variable Amount</td>
+                                        </tr>
+                                    </table>
+                                </div>
                             </div>
-                        </div>
+                        </template>
                     </template>
+                </template>
+                <template if:false={showFooter}>
+                    <div class="slds-p-top_large slds-p-bottom_medium"></div>
                 </template>
             </div>
         </template>
@@ -518,11 +633,7 @@
 
     <template if:true={editableView}>
         <div class="preview">
-            <div style="position: absolute;
-            top: 113px;
-            border-bottom: 1px solid #d9d9d9;
-            z-index: 1;
-            width: 100%;"></div>
+            <div class={dividerClass}></div>
             <div class="preview-header">
                 <div class="flex-block">
                     <template if:false={norecord}>
@@ -543,29 +654,30 @@
                             <template if:false={norecord}>
                                 <span class="slds-p-top_small">
                                     <ul class="slds-list_horizontal  slds-has-block-links_space border-radius">
-                                        <li class="slds-item navigate">
-                                            <a name="buttonBackwards" tripdata label="Previous" title=""
-                                                onclick={handleButtonPrevious} class={cssPreviousText}
+                                        <li class="slds-item">
+                                            <a name="buttonBackwards"  label="Previous" title=""
+                                                onclick={onPrev} class={cssPreviousText}
                                                 disabled={disabledPreviousButton}>
-                                                <i class="fa-solid fa-arrow-left fa-lg navigate-icon"></i>
+                                                <i class="fa-solid fa-chevron-left fa-lg slds-p-horizontal_x-small slds-p-vertical_x-small navigate-icon"></i>
                                             </a>
                                         </li>
                                         <li class="slds-item">
-                                            <div class="slds-p-horizontal_x-small slds-p-vertical_x-small pageEdit">
-                                                <template for:each={totalPage} for:item="page">
-                                                    <div key={page} class="flow-block">
-                                                        <h2 class="page-num-block" data-id={page}> {page}</h2>
+                                            <div class="slds-p-horizontal_xx-small slds-p-vertical_xx-small pageEdit">
+                                                <template for:each={pages} for:item="page">
+                                                    <div class="flow-block" key={page}>
+                                                        <a data-id={page} class="page-num-block" onclick={onPageClick}>{page}</a>
                                                     </div>
                                                 </template>
                                             </div>
                                         </li>
-                                        <li class="slds-item navigate">
-                                            <a name="buttonForwards" label="Next" title="" onclick={handleButtonNext}
-                                                class={cssText} disabled={disabledNextButton}>
-                                                <i class="fa-solid fa-arrow-right fa-lg navigate-icon"></i>
+                                        <li class="slds-item">
+                                            <a name="buttonForwards" label="Next" title=""
+                                                onclick={onNext} class={cssText}
+                                                disabled={disabledNextButton}>
+                                                <i class="fa-solid fa-chevron-right fa-lg slds-p-horizontal_x-small slds-p-vertical_x-small navigate-icon"></i>
                                             </a>
                                         </li>
-                                    </ul>
+                                     </ul>
                                 </span>
                             </template>
                         </div>
@@ -575,16 +687,16 @@
                     </template>
                 </div>
             </div>
-            <div class="slds-p-left_large slds-p-right_large">
+            <div class="slds-p-left_medium slds-p-right_medium">
                 <div class={mainClass}> <!-- height: calc(100vh - 244px); -->
                     <div class={className} ><!--style="overflow:overlay"-->
-                        <table class="slds-table slds-table--header-fixed slds-table_cell-buffer slds-table_striped"
+                        <table class={tableClass}
                             id="tableEditSel">
                             <thead class="">
                                 <tr class="slds-line-height_reset">
                                     <template if:true={columns}>
                                         <template for:each={columns} for:item="head">
-                                            <th class="header-title" scope="col" key={head.id}>
+                                            <th class={headTh} scope="col" key={head.id}>
                                                 <template if:true={isSortable}>
                                                     <div class="slds-cell-fixed" onclick={sort} title={head.name}
                                                         data-name={head.colName} data-type={head.colType}>
@@ -592,7 +704,7 @@
                                                             class="head-sort">
                                                             {head.name}
                                                             <template if:false={norecord}>
-                                                                <span class="sort-container">
+                                                                <span class={sortTh}>
                                                                     <i class="fa-solid fa-sort-up green_icon"
                                                                         data-name={head.colName}
                                                                         data-type={head.colType}></i>
@@ -692,11 +804,14 @@
                                                             <template if:true={mapKey.icon}>
                                                                 <td class="modal-content flex-row" key={mapKey.key}
                                                                     data-name={mapKey.value}>
-                                                                    <div if:true={mapKey.icon}
+                                                                    <div if:true={mapKey.icon} class="navigate-text navigate">
+                                                                        {mapKey.value}
+                                                                    </div>
+                                                                    <!-- <div if:true={mapKey.icon}
                                                                         class="slds-m-top_xx-small slds-m-right_small icon-holder">
                                                                         <i
                                                                             class="fas fa-xs fa-chevron-right navigate"></i>
-                                                                    </div>{mapKey.value}
+                                                                    </div>{mapKey.value} -->
                                                                 </td>
                                                             </template>
                                                             <template if:false={mapKey.icon}>
@@ -718,10 +833,11 @@
                                                                         <td class="modal-content tooltipText"
                                                                             key={mapKey.key}>{mapKey.value}<span
                                                                                 class="tooltipValue">
-                                                                                <div style="display: flex;">
+                                                                                <div style="display: grid;
+                                                                                grid-column: 2;
+                                                                                grid-template-columns: 1fr 8fr;">
                                                                                     <div class="icon-tooltip"
                                                                                         if:true={mapKey.tIcon}><img
-                                                                                            style="max-width: 12px;"
                                                                                             src={mapKey.tooltipIcon} />
                                                                                     </div>
                                                                                     <div>{mapKey.tooltipText}</div>
@@ -790,10 +906,10 @@
                 </div>
             </div>
             <template if:true={isPaginate}>
-                <template if:false={norecord}>
-                    <div class="slds-p-top_large slds-p-bottom_medium">
-                    </div>
-                </template>
+                    <template if:false={norecord}>
+                        <div class="slds-p-top_large slds-p-bottom_medium">
+                        </div>
+                    </template>
             </template>
         </div>
     </template>

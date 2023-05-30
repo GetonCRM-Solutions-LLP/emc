@@ -118,6 +118,7 @@ export default class UserPlanInfo extends LightningElement {
   }
 
   renderedCallback() {
+    console.log('Synthetic?', !!this.template.synthetic)
     const tabItem = this.template.querySelectorAll('.slds-tabs_default__item');
 
     tabItem.forEach((el) =>
@@ -201,15 +202,37 @@ export default class UserPlanInfo extends LightningElement {
         contactId: this.contactId
         })
         .then((data) => {
-            this.messageOfCompliance = this.proxyToObject(data[1]);
-            this.complianceData = this.getCompliancedata(this.proxyToObject(data[2]));
-            this.detailReport = this.proxyToObject(data[3]);
-            this.summaryR = this.proxyToObject(data[4]);
-            this.lengthS = this.summaryR.length > 0 ? true : false;
-            this.reimbursements = this.proxyToObject(data[5]);
-            this.maxAllow = this.proxyToObject(data[6]);
-            this.taxLiablity = this.proxyToObject(data[7]);
-            console.log("getCompliance", data, this.complianceData[0].quarterno, this.complianceData[0].ordinal);
+            console.log("getCompliance", data)
+            if(data[1]){
+              this.messageOfCompliance = this.proxyToObject(data[1]);
+            }
+
+            if(data[2]){
+              this.complianceData = this.getCompliancedata(this.proxyToObject(data[2]));
+            }
+
+            if(data[3]){
+              this.detailReport = this.proxyToObject(data[3]);
+            }
+
+            if(data[4]){
+              this.summaryR = this.proxyToObject(data[4]);
+              this.lengthS = this.summaryR.length > 0 ? true : false;
+            }
+           
+            if(data[5]){
+              this.reimbursements = this.proxyToObject(data[5]);
+            }
+
+            if(data[6]){
+             this.maxAllow = this.proxyToObject(data[6]);
+            }
+
+            if(data[7]){
+              this.taxLiablity = this.proxyToObject(data[7]);
+            }
+          
+            console.log("getCompliance", data);
         })
         .catch((error) => {
             console.log("getCompliance error", error);

@@ -37,6 +37,7 @@ export default class HomePageComponent extends LightningElement {
     @track isSelectedChecked = false;
     @track optionSelected = false;
     @track isActive = false;
+    isRisk = false;
     @track fromlocation;
     @track tolocation;
     @track field;
@@ -137,6 +138,7 @@ export default class HomePageComponent extends LightningElement {
         this.template.querySelector('.tagList').clearAll();
         this.template.querySelector('.statusList').clearAll();
         this.template.querySelector('.tracingList').clearAll();
+				this.template.querySelector('.activityList').clearAll();
         this.template.querySelector('.lwcstartenddatecomponent').clearAll();
         this.template.querySelector('c-l-w-c-mileages-component').clearAll();
         this.driverId = undefined;
@@ -208,12 +210,13 @@ export default class HomePageComponent extends LightningElement {
 
     // To Get Selected Trip Status
     handleTripStatus(event) {
-        this.trip_status = event.detail;
-        // if (event.detail === 'All Status' || event.detail === "") {
-        //     this.trip_status = null;
-        // } else {
-        //     this.trip_status = event.detail;
-        // }
+				console.log(event.detail);
+        //this.trip_status = event.detail;
+         if (event.detail === 'All Status' || event.detail === "") {
+            this.trip_status = null;
+         } else {
+             this.trip_status = event.detail;
+        }
     }
 
     // To Get Selected Track Method
@@ -248,13 +251,18 @@ export default class HomePageComponent extends LightningElement {
         this.template.querySelector('c-multiple-dropdown-component').getActiveDriver(this.isActive);
     }
 
+    //High risk trips
+    handleHighRiskTrip(event){
+        this.isRisk = event.target.checked;
+    }
+
     // Get Data based on advance search filter
 
     async handleSearchEvent(isSend, rowLt, rowSet) {
         try {
-            if (this.driverId != undefined|| this.getstartDate != undefined || this.getendDate != undefined || this.fromlocation != undefined || this.tolocation != undefined ||
+            if ((this.driverId != undefined|| this.getstartDate != undefined || this.getendDate != undefined || this.fromlocation != undefined || this.tolocation != undefined ||
                 this.tolocation != undefined || this.startMileage != undefined || this.endMileage != undefined || this.trip_status != undefined ||
-                this.track_method != undefined || this.tags != undefined || this.activity != undefined) {
+                this.track_method != undefined || this.tags != undefined || this.activity != undefined) || this.isRisk === true) {
                 var rowLimit, rowOffSet = 0;
                 if (rowLt != undefined || rowLt != null) {
                     rowLimit = rowLt;
@@ -300,7 +308,8 @@ export default class HomePageComponent extends LightningElement {
                     TrackingMethod: this.TrackingMethod,
                     Tag: this.tags,
                     Notes: null,
-                    Activity: this.Activity
+                    Activity: this.Activity,
+                    highrisk: this.isRisk
                 });
                 if (mileageSizeResult != undefined) {
                     this.dataSize = parseInt(mileageSizeResult);
@@ -321,7 +330,8 @@ export default class HomePageComponent extends LightningElement {
                         Notes: null,
                         Activity: this.Activity,
                         limitSize: rowLimit,
-                        offset: rowOffSet
+                        offset: rowOffSet,
+                        highrisk: this.isRisk
                     });
                    this.loadingSpinner = false;
                    console.log("getMilegesData", mileageList);
@@ -342,6 +352,7 @@ export default class HomePageComponent extends LightningElement {
             }
 
         } catch (error) {
+						this.loadingSpinner = false;
             console.log("Error while advance search ", error);
         }
 
@@ -842,8 +853,6 @@ export default class HomePageComponent extends LightningElement {
         syncModalBackdrop.classList.remove("slds-hide");
         this.typeOfTripList = '';
     }
-
-
     renderedCallback() {
         if (!this.ready) {
             this.ready = true;

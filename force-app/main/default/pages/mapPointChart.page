@@ -1,0 +1,192 @@
+<apex:page showHeader="false" lightningStylesheets="true" standardStylesheets="false" sidebar="false" applyHtmlTag="false"
+    applyBodyTag="false" docType="html-5.0">
+     <head>
+        <style>
+            #container{
+                margin: 0 auto;
+            }
+            .chart {
+                margin: 0 auto;
+            }
+            .highcharts-title {
+                fill: #434348;
+                font-weight: 700;
+                font-size: 16px !important;
+                font-family: 'Proxima Nova'
+            }
+            .highcharts-subtitle{
+                 font-weight: 400;
+                 font-size: 14px;
+                 font-family: 'Proxima Nova'
+            }
+        </style>
+        <link rel="stylesheet" href="{!URLFOR($Resource.EmcCSS,'emc-design/assets/css/main.css')}"/>
+        <script src="{!URLFOR($Resource.HighChart, '/proj4.js')}"></script>
+        <script src="{!URLFOR($Resource.HighChart,'/highmaps.js')}"></script>
+        <!-- <script src="{!URLFOR($Resource.HighChart,'/exporting.js')}"></script> -->
+        <script src="{!URLFOR($Resource.HighChart,'/accessibility.js')}"></script>
+        <script src="{!URLFOR($Resource.HighChart,'/us-all-mainland.js')}"></script>
+        <script>
+             var lexOrigin = location.origin;
+             var postData, chartData, states, chart = [], chloChart, charturl;
+            window.addEventListener("message", function (event) {
+                console.log('Origin ' + event.origin);
+                console.log('data ' + event.data);
+                console.log('data-- ' , JSON.parse(event.data));
+                if (event.origin !== lexOrigin) {
+                    return;
+                }
+                charturl = location.origin + `{!URLFOR($Resource.HighChart,'/us-all-mainland.js')}`;
+                console.log(charturl)
+                postData = JSON.parse(event.data)
+                chartData = postData.modal;
+                let containerChart = document.getElementById('container');
+               //https://code.highcharts.com/mapdata/countries/us/custom/us-small.topo.json
+                Highcharts.mapChart(containerChart, {
+                        chart: {
+                            map: 'countries/us/custom/us-all-mainland',
+                            borderColor:postData.border,
+                            backgroundColor: postData.background,
+                          //  height: postData.height, //250
+                            height: (3 / 5 * 100) + '%',
+                            //width: postData.width, // 360
+                            margin: [0,0,0,0],
+                            // marginTop: 20,
+                            // marginBottom: 0,
+                            // marginLeft: 0,
+                            // marginRight: 0,
+                            spacingTop: 0,
+                            spacingBottom: 0,
+                            // spacingLeft: 0,
+                            // spacingRight: 0
+                            //styledMode: true
+                        },
+
+                        accessibility:{enabled: false},
+                        
+                        responsive:{
+                            rules:[{
+                              condition:{
+                               maxWidth: 1000
+                              }
+                             }]
+                        },
+
+                        title: {
+                            text: ''
+                        },
+
+                        tooltip: {
+                                pointFormatter :  function () {
+                                          // display only if larger than 1
+                                          console.log(this)
+                                          return '<b>'+this.Name+'</b>' + '<br>' + this.address + '<br/>' + 'Fixed Amount: ' + this.amount;
+                                },
+                                headerFormat: '',
+                                style: {
+                                    color: '#1d1d1d',
+                                    fontFamily: 'Proxima Nova'
+                                },
+                                borderColor: '#7abb4a'
+                        },
+
+                        legend: {
+                            enabled: false,
+                        },
+
+                        mapNavigation: {
+                            enabled: false,
+                            // enableDoubleClickZoomTo: true,
+                            // buttonOptions: {
+                            //     align: 'center',
+                            //     alignTo: 'spacingBox',
+                            //     verticalAlign: 'bottom'
+                            // }
+                        },
+
+                        credits: {
+                            enabled: false
+                        },
+
+                        // exporting: {
+                        //         menuItemDefinitions: {
+                        //         // Custom definition
+                        //         label: {
+                        //             onclick: function () {
+                        //                 this.renderer.label(
+                        //                     'You just clicked a custom menu item',
+                        //                     100,
+                        //                     100
+                        //                 )
+                        //                     // .attr({
+                        //                     //     fill: '#a4edba',
+                        //                     //     r: 5,
+                        //                     //     padding: 10,
+                        //                     //     zIndex: 10
+                        //                     // })
+                        //                     .css({
+                        //                         fontFamily: 'Proxima Nova'
+                        //                     })
+                        //                     .add();
+                        //             },
+                        //             text: 'Show label'
+                        //         }
+                        //     },
+                        //     buttons: {
+                        //         contextButton: {
+                        //             menuItems: ['viewFullscreen']
+                        //         }
+                        //     }
+                        // },
+
+                        series: [{
+                            name: 'My Team location',
+                            borderColor: '#FFFFFF',
+                            nullColor: '#d9d9d9',
+                            borderWidth: 0.3,
+                            animation: {
+                                duration: 1000
+                            },
+                            showInLegend: false
+                        },{
+                                type: 'mappoint',
+                                color: Highcharts.getOptions().colors[1],
+                                data: chartData,
+                                marker: {
+                                    symbol: `url({!URLFOR($Resource.mBurseCss, 'mburse/assets/map_point.png')})`
+                                },
+                                dataLabels: {
+                                    enabled: false
+                                }
+                        }],
+
+                        navigation: {
+                            menuItemStyle:{
+                                fontFamily: 'Proxima Nova',
+                                padding: '10px'
+                            },
+                            menuItemHoverStyle: {
+                                background: 'transparent',
+                                color: '#1D1D1D'
+                            }
+                            // },
+                            // buttonOptions: {
+                            //    width: 48
+                            // }
+                        }
+                    });
+                })
+            
+            // function reportWindowSize() {
+            //     console.log(document.getElementById('container').style)
+            // }
+
+            // window.onresize = reportWindowSize;
+        </script>
+        </head>
+        <div id="container" class="chart"></div>
+        <!-- <div style="width: 100%;" id="mapDiv">
+          
+             <button id="large">Large</button> 
+        </div> -->
+</apex:page>

@@ -1,21 +1,199 @@
 <apex:page showHeader="false" title="Driver Dashboard" sidebar="false" lightningStylesheets="true" standardStylesheets="false" showChat="false" controller="DriverDashboardLWCController">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-    <meta charset="UTF-8" />
-    <link rel="stylesheet" href="{!URLFOR($Resource.LwcDesignCss,'lwcDesign/assets/css/customstyle.css')}" />
-    <script src="https://code.jquery.com/jquery-2.1.3.min.js"></script>
-    <!-- Css Part Start -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/fontawesome.min.css" />
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v6.1.1/css/all.css" />
-    <link
-       rel="stylesheet"
-       href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"
-     />
-     <!--Toaster -->
-    <script  src="{!URLFOR($Resource.EMC_Header_Scripts,'EMC_Header_Scripts/js/toastr.min.js')}"></script>
-    <link href="{!URLFOR($Resource.EMC_Header_Scripts,'EMC_Header_Scripts/css/toastr.min.css')}" rel="stylesheet" />
-   <apex:includeLightning /> 
-   <div id="locationSpinner">
-    <div class="spinner-background"></div>
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+        <link rel="stylesheet" href="{!URLFOR($Resource.LwcDesignCss,'lwcDesign/assets/css/customstyle.css')}" />
+        <script src="https://code.jquery.com/jquery-2.1.3.min.js"></script>
+        <!-- Css Part Start -->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/fontawesome.min.css" />
+        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v6.1.1/css/all.css" />
+        <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"
+        />
+        <!--Toaster -->
+        <script  src="{!URLFOR($Resource.EMC_Header_Scripts,'EMC_Header_Scripts/js/toastr.min.js')}"></script>
+        <link href="{!URLFOR($Resource.EMC_Header_Scripts,'EMC_Header_Scripts/css/toastr.min.css')}" rel="stylesheet" />
+        <link href="{!URLFOR($Resource.minifiedApp)}" rel="stylesheet" />
+        <style>
+            *{
+                    user-select: none;
+            }
+
+            /* body{
+                font-family: 'Proxima Nova';
+            } */
+
+            header{
+                margin-bottom: 0 !important;
+            }
+
+            .opacity{
+                opacity: 0.98 !important;
+            }
+
+            .d-none{
+                display: none;
+            }
+
+            .d-block{
+                display: block;
+            }
+
+            .loader-text{
+                font-weight: 400;
+                font-size: 16px;
+                line-height: 19px;
+                padding-top: 15px;
+                color: #FFF;
+                font-family: 'Proxima Nova' !important;
+            }
+
+            .logo-m{
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+            }
+
+            .spinner-background{
+                    width: 100%;
+                    height: 100%;
+                    background: #FFF;
+                    opacity: 1;
+                    top: 0px;
+                    left: 0px;
+                    position: fixed;
+                    z-index: 1000000;
+            }
+
+            .loader{
+                    position: fixed;
+                    top: 0;
+                    left: 0;
+                    height: 100%;
+                    width: 100%;
+                    display: flex;
+                    flex-flow: column nowrap;
+                    justify-content: center;
+                    align-items: center;
+                    z-index: 1000000;
+            }
+
+            .mbloader-text{
+                font-weight: 400;
+                font-size: 22px;
+                line-height: 19px;
+                padding-top: 20px;
+                color: #1D1D1D;
+                font-family: 'Proxima Nova' !important;
+            }
+
+            .text-loading{
+                font-weight: 700;
+                font-size: 35px;
+                line-height: 39px;
+                display: flex;
+                align-items: center;
+                text-align: center;
+                color: #78BC42;
+                font-family: 'Proxima Nova' !important;
+            }
+
+            .data-text-loading{
+                font-weight: 700;
+                font-size: 30px;
+                line-height: 39px;
+                display: flex;
+                align-items: center;
+                text-align: center;
+                color: #78BC42;
+                font-family: 'Proxima Nova' !important;
+            }
+
+            .svg-container{
+                padding-top: 20px;
+            }
+
+            /* #toast-container>.toast-success{
+                opacity: 1 !important;
+                background-color: #7ABB4A !important
+            }
+
+            #toast-container>.toast-error{
+                opacity: 1 !important;
+                background-color: #FA7800!important
+            } */
+            .toast-message{
+                color: #1d1d1d;
+                font-size: 16px;
+                padding-top: 2px;
+                font-family: 'Proxima Nova' !important;
+            }
+
+            .toast-success,.toast-info,.toast-warning,.toast-error{
+                opacity: 1 !important;
+                width:400px !important;
+                font-family: 'Poppins', sans-serif !important;
+                font-size:0.9rem;
+                border-radius:1rem !important;
+                background-color:#edf1fd !important;
+                color:#404b5b !important;
+                border-color:transparent !important;
+                font-family: 'Proxima Nova' !important;
+            }
+
+
+            .toast-close-button{
+                width:25px !important;
+                height:25px !important;
+                border-radius:50%;
+                background-color:#ccd7fc !important;
+                font-size: 24px !important;
+                font-weight: 500 !important;
+                color: #000617 !important;
+                text-shadow: 0 1px 0 rgb(0, 22, 57) !important;
+                font-family: 'Proxima Nova' !important;
+            }
+
+            #toast-container>.toast-success {
+            background-image:  url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABwAAAAcCAYAAAByDd+UAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAKLSURBVHgBzZZNbtpAFMffjMFRQY28hFKpzg1gGZFKWGkqdZX2BHVOUHIC4AQ0J6g5QZVVpDTUqC10V3GDelGqSF3UG1cqgZm+GYIVbPAHoCp/CWY89sxP78289wbgP4tAShW+XugwyeiiP6Xc/VV9PkwzPxao2e+1fHbXBEqOgfEyztDCq5AecN4ZVQ+tuPUigY8H9hvOWHMpZLkc/LWiwEuBwqqcqrUJMBPWk+WN6alrGG4sULpQfWjjqzJsJDL0xsQIQmnws7y6294cJsTLeZW1g6MLwFK/a2JjwvZkFgfd+kogqgFbFuXQ0GxbCwFvrdNhHXHew3+Lz05pUNqD7MQMAYGT17AebTg6eGZMx+PWqhijVDme9zP+KOE1SItCixhVXom+oqp4sld4iHP/EEoLS/3LcsSqrnQVtsFXaFHret9wHvXtBkRvh1b81n3iA6eMrM4kBNw/Y1qZKrSyuEf8TGSUwucPNUwQTYiR4rE9HxgjPb/DGsISytiJRCHYyynNgn2hK5S+gxSaATMZJ/IrDvXip6uXP54e9QjjZ4xSw60YLu5bnCt9/cXKIlr/YGFY/MYmKkm7eBIr18YLRzzIxM7ZW0godL9k3Q2LuLqmKTs70n3ClbKKJBWRcQqLQJiex07kvFYafLRlCCQvWcKYjs+ed3RMPzcq+w6QYqEkLDxgP6uHe/Nn30JHlBEOLdiyRKwGnhdV+nJl4ZVhzTQXkoWH5eTuQCgOszdKXRRP2Fh86OXoaXA0BBSuzWKlFpciWJvFO5gYZKwGX0VeokTJwk1vkKRlS+Zb1hodHK2Mz0T3UlkrRflaVlEkhOMWkHMvT61lVqUGLsIvy+Q22WcyE8fZn2Wee6t/lXrvcWjggekAAAAASUVORK5CYII=')!important;
+            }
+
+            #toast-container>.toast-info {
+            background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABwAAAAcCAYAAAByDd+UAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAJaSURBVHgBvVZNbtNQEJ55idd4hSphKnOCkhM0PQHpCUhuADsWLTgkQuwQJyCcoOEEpSfAnKBW6cK0m6wb+U1nXu04bdLkTRT1kxLnOR5/b/7eNwge2Dn61ybEN4agbRFiBAjlPgFM+HfK1xSJfuXDl7/XvQtXEh1fdvnyiT8xeAEzgKKfD3ZHjz6xlOjDeYzN4IQQXsNGYOLpzUH+9VX28B+zQPbx8i0FwZ/NyQQUI7/j+dFFZ2Er8wt5wKA5gW0CoZt/jn7WyxISRvGsKojt8cGEptNWFd46pEFw6kfG+SE6KBrQ4kW27mmu4FDqoVo7wrIaY/AB2Z6U/3USpZbsey8Troed44vujBDuSt8LSDgrJs63IvwNx4HS1IB46msmObEAfUR8RkTvVDnnVDTZoEPgD5cTgG9svPrUWG7babLZntJowl8Ze5hKv/Gttr817htdg+MIucT/D6NWPnjR4/PzLyhg+Bw2ur6jLrfPj9lKH53QgBI07xVqwnkH43KiACKlcnXVrYRUuOHvTGNUFMYRsj6qD3fRTWMsnfkayA6vv0RpudoHJSQdEtKxtwHvsGZ3LaECb3hsyrEg8zGoCiZMzkMkrV5iJlxVlfa9TCym9W5xLB/wRuE4HGE+iEZ8AKRrbRpl3ibirf1OQJ5esnflnFMLcMICXGxfgN1k12ABTh4IsNxA8NM3FaHoZ1IPU/dOGnGbRfVQexgsJXLvsL2r4e69PC8fEzm8UASikTFsAK7glJrTw3nPVhLOiJ9qEF4gllGfxZPbYE/kbH7UF23kX2fS1D6j/i3BTfaqkKQ1ngAAAABJRU5ErkJggg==')!important;
+            }
+            #toast-container>.toast-warning {
+            background-image:  url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABwAAAAcCAYAAAByDd+UAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAHbSURBVHgBxZZPTsJAFMa/NxDEjYJE1/UGcgOP4BEwARNXeAP0BMSVCzWNJxBPIDfQG8COhSSwJBH7fFNbaKV/ZsA/vwVppzPz5Zt58zHAH0OwZOCisjNHgxWmBYVe9RRTm/FWgiMXzpZHz/LoBE1DUly3EVWwoOSpTkRM43hzXMACY4eBu0HCp6m4PDR1aeywzOSmfKrYuDQSHN9LkTCOFw3Mr/I7DF9JUXt0E1vqzQQVqBN5ne41UdfFop+DtkqppDpmc+Wg3SFeKL5IsGeLfSNw4+02sgrrCn5zl0mhkN83U3DiqjZgtjc+ss95LlMF9TFgj63OmCbPZapgGZbuQsRlsO/mguu6W05KnYlkbvK3BIII24TUyFsR1O50iWNDdBgkuVwR/AF3IYmRFwtvXdIF5f/9ZOGH9UwmlDB/0RPn9Y0Ge8yhiLnIp8IiZCDm9/U81Y02LBzqUpbqMhG0Zv7B9YMz6MBfOrSJMDkyV8z8YNq/WKTuUgeJAZ2hxk+1Fi5rTTSIuWc2Zhl5Sh8DG3dQtLuYh+jIdFgYeTS+w4kieoQdQ3wVTF7RxNhmdopSNlaDAhyswexd8kDfLRG5LvwWUmTX1XO5VoYNemmJYbwnNnhAf7+FPv6DT2e/n0VFnPgUAAAAAElFTkSuQmCC')!important;
+            }
+            #toast-container>.toast-error {
+            background-image:  url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABwAAAAcCAYAAAByDd+UAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAIlSURBVHgB3VbBbtNAEH2zTugFFIPgwAlzA4mK8AdrvgC+APiSKl/S9AvoH8SfEEQP3PCNAwjcA6IQeYcdYxtvbK/jNr30SVG86519npk3swvcdNCuC7880dF0Ck1QzxVMKHMGKmOYD5sNkoefknSXfQYJvz7TekJ0xIAe2CjJwSf3PybLgXXd+BzpcHZHHQP8CiPAoOWfjVn0edxJKOE7mNLKPka4HNLfG467SOkayGpSCvjF3XWSNSfV9qpbU3W0BzJBxLmkxIXj4bdD/VaBjrFH5Mzxg7MkqcaOhwHwBuOR+V4GVuHNcU0oubMK032GNh+P5Wdjsq4nGet6vh/619OXj1qEUtQeI/EiswJISXFckArZhGMRxcUFvPhJJm4REmPusQnZ0OrHXIdCIKQVmdTrwYTee2xBStV7T/7PIvQZWY/mJWlcSb1oDrdtCZH3Y6HIzOpnjIFxh2E4eofGcvarrZkz8awZXkdIXd/J6rxFyH6jzJK9rsgkjNs5hac8mMy6RRgESDyEECU6OStzKuVk30lwezXQ3NvpNN8Pte2h/bVYeuEX1zYYyb2zVbssBDljMWA+jszCEJ80xw7hv57Hp9gTCLzcPpBboqYA7+xfiqsjtc25FbEWYaG6oFBdiiuQyR7SCgcJS9LCgOHGfxfYMJ6WB2/a/X4AxRnJ9tgir3oLNdpL1KJ59l2KsIIt8ijP7TWRixqcldbn0jDGXBNvPv4C3QjuTqveJGAAAAAASUVORK5CYII=')!important;
+            }
+
+            ::-webkit-scrollbar-track {
+                -webkit-box-shadow: inset 0 0 6px #F6F6F6;
+                border-radius: 100px;
+                background-color: #F6F6F6;
+            }
+
+            ::-webkit-scrollbar {
+                width: 5px;
+                height: 50px;
+                background-color:#F6F6F6;
+            }
+
+            ::-webkit-scrollbar-thumb {
+                border-radius: 100px;
+                height: 50px;
+                background-color:#404B5B
+            }
+
+        </style>
+    </head>
+    <apex:slds />
+    <apex:includeLightning /> 
+   <div id="locationSpinner" class="d-none">
+     <div class="spinner-background"></div>
         <div class="loader">
             <div class="svg-container">
                 <div style="position:relative">
@@ -24,12 +202,12 @@
             </div>
             <div class="mbloader-text" id="locationText"></div>
         </div>
-</div>
+    </div>
 
-   <div id="mSpinner">
+   <div id="mSpinner" class="d-none">
         <div class="spinner-background"></div>
             <div class="loader">
-                <span class="text-loading">Your profile is loading…</span>
+                <span class="text-loading">Your Profile Is Loading…</span>
                 <div class="mbloader-text">This may take a few seconds</div>
                 <div class="svg-container">
                     <div style="position:relative">
@@ -39,7 +217,7 @@
             </div>
     </div>
 
-    <div id="mLoader">
+    <div id="mLoader" class="d-none">
         <div class="spinner-background opacity"></div>
         <div class="loader">
             <!-- <span class="text-loading">Loading...</span>-->
@@ -52,355 +230,25 @@
             </div>
         </div>
     </div>
-   <div style="padding-bottom: 24px" id="mainLwc" />
+    <div style="padding-bottom: 24px" id="mainLwc" />
    <!-- <div style=""> -->
     <c:mBurseChatBot />
    <!-- </div> -->
  
-   <style>
-        *{
-                user-select: none;
-         }
-        @keyframes animloader113 {
-            0%  { transform: translate(0px, 0px) scaleX(1) }
-            14%  { transform: translate(-12px, -16px) scaleX(1.05) }
-            28%  { transform: translate(-27px, -28px) scaleX(1.07) }
-            42%  { transform: translate(-46px, -35px) scaleX(1.1) }
-            57%  { transform: translate(-70px, -37px) scaleX(1.1) }
-            71%  { transform: translate(-94px, -32px) scaleX(1.07) }
-            85%  { transform: translate(-111px, -22px) scaleX(1.05) }
-            100%  { transform: translate(-125px, -9px) scaleX(1) }  
-        }
 
-        @keyframes animloader113L {
-            0%   { box-shadow: 0 -6px, -122.9px -8px}
-            25%, 75%  { box-shadow: 0 0px, -122.9px -8px}
-            100%   { box-shadow: 0 0px, -122.9px -16px}
-        }
-
-        @keyframes animloader114 {
-            0%  { transform: translateY(8px) scaleY(1) scaleX(1.25)}
-            25%, 75% { transform: translateY(-5px) scaleY(1.2) scaleX(1)}
-            50%  { transform: translateY(-10px) scaleY(1) scaleX(1)}
-            100% { transform: translateY(8px) scaleY(0.8) scaleX(0.8)}
-        }
-
-        @keyframes spin {
-            from {
-                transform:rotate(0deg);
-            }
-            to {
-                transform:rotate(360deg);
-            }
-        }
-
-        @keyframes lights {
-            0% {
-                color: hsl(230, 40%, 80%);
-                text-shadow:
-                0 0 1em hsla(320, 100%, 50%, 0.2),
-                0 0 0.125em hsla(320, 100%, 60%, 0.3),
-                -1em -0.125em 0.5em hsla(40, 100%, 60%, 0),
-                1em 0.125em 0.5em hsla(200, 100%, 60%, 0);
-            }
-            
-            30% { 
-                color: hsl(230, 80%, 90%);
-                text-shadow:
-                0 0 1em hsla(90, 45%, 51%, 0.5),
-                0 0 0.125em hsla(90, 45%, 51%, 0.5),
-                -0.5em -0.125em 0.25em hsla(40, 100%, 60%, 0.2),
-                0.5em 0.125em 0.25em hsla(200, 100%, 60%, 0.4);
-            }
-            
-            40% { 
-                color: hsl(230, 100%, 95%);
-                text-shadow:
-                0 0 1em hsla(90, 45%, 51%, 0.5),
-                0 0 0.125em hsla(320, 100%, 90%, 0.5),
-                -0.25em -0.125em 0.125em hsla(90, 45%, 51%, 0.2),
-                0.25em 0.125em 0.125em hsla(200, 100%, 60%, 0.4);
-            }
-            
-            70% {
-                color: hsl(230, 80%, 90%);
-                text-shadow:
-                0 0 1em hsla(90, 45%, 51%, 0.5),
-                0 0 0.125em hsla(90, 45%, 51%, 0.5),
-                0.5em -0.125em 0.25em hsla(40, 100%, 60%, 0.2),
-                -0.5em 0.125em 0.25em hsla(200, 100%, 60%, 0.4);
-            }
-            
-            100% {
-                color: hsl(230, 40%, 80%);
-                text-shadow:
-                0 0 1em hsla(90, 45%, 51%, 0.2),
-                0 0 0.125em hsla(90, 45%, 51%, 0.3),
-                1em -0.125em 0.5em hsla(40, 100%, 60%, 0),
-                -1em 0.125em 0.5em hsla(200, 100%, 60%, 0);
-            }
-            
-        }
-        
-
-        *{
-            font-family: 'Proxima Nova' !important;
-        }
-
-        header{
-            margin-bottom: 0 !important;
-        }
-
-        .opacity{
-            opacity: 0.98 !important;
-        }
-
-        .loader-text{
-            font-weight: 400;
-            font-size: 16px;
-            line-height: 19px;
-            padding-top: 15px;
-            color: #FFF;
-        }
-
-        .loader--spinner div {
-            animation: loader--spinner 1.2s linear infinite;
-            transform-origin: 30px 30px;
-        }
-
-        .loader--spinner div:after {
-            display: block;
-            position: absolute;
-            top: 3px;
-            left: 27px;
-            border-radius: 20%;
-            content: " ";
-            height: 10px;
-            width: 5px;
-            background: #FFF;
-        }
-
-        .loader--spinner div:nth-child(1) {
-            animation-delay: -1.1s;
-            transform: rotate(0deg);
-        }
-
-        .loader--spinner div:nth-child(2) {
-            animation-delay: -1s;
-            transform: rotate(30deg);
-        }
-
-        .loader--spinner div:nth-child(3) {
-            animation-delay: -0.9s;
-            transform: rotate(60deg);
-        }
-
-        .loader--spinner div:nth-child(4) {
-            animation-delay: -0.8s;
-            transform: rotate(90deg);
-        }
-
-        .loader--spinner div:nth-child(5) {
-            animation-delay: -0.7s;
-            transform: rotate(120deg);
-        }
-
-        .loader--spinner div:nth-child(6) {
-            animation-delay: -0.6s;
-            transform: rotate(150deg);
-        }
-
-        .loader--spinner div:nth-child(7) {
-            animation-delay: -0.5s;
-            transform: rotate(180deg);
-        }
-
-        .loader--spinner div:nth-child(8) {
-            animation-delay: -0.4s;
-            transform: rotate(210deg);
-        }
-
-        .loader--spinner div:nth-child(9) {
-            animation-delay: -0.3s;
-            transform: rotate(240deg);
-        }
-
-        .loader--spinner div:nth-child(10) {
-            animation-delay: -0.2s;
-            transform: rotate(270deg);
-        }
-
-        .loader--spinner div:nth-child(11) {
-            animation-delay: -0.1s;
-            transform: rotate(300deg);
-        }
-
-        .loader--spinner div:nth-child(12) {
-            animation-delay: 0s;
-            transform: rotate(330deg);
-        }
-
-        .loader--spinner div:nth-child(13) {
-            animation-delay: 0s;
-            transform: rotate(360deg);
-        }
-
-        .spinner {
-            animation: spin 5000ms linear infinite;
-        }
-
-        .logo-m{
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-        }
-
-       
-        @keyframes loader--spinner {
-            0% {
-                opacity: 1;
-            }
-
-            100% {
-                opacity: 0;
-            }
-        }
-
-        .loader--spinner {
-            display: inline-block;
-            position: relative;
-            color: #FFF;
-            height: 60px;
-            width: 60px;
-            padding-top: 15px;
-        }
-
-        .spinner-background{
-                width: 100%;
-                height: 100%;
-                background: #FFF;
-                opacity: 1;
-                top: 0px;
-                left: 0px;
-                position: fixed;
-                z-index: 1000000;
-        }
-
-        .loader{
-                position: fixed;
-                top: 0;
-                left: 0;
-                height: 100%;
-                width: 100%;
-                display: flex;
-                flex-flow: column nowrap;
-                justify-content: center;
-                align-items: center;
-                z-index: 1000000;
-        }
-
-        .loader-114{
-            color: #FFF;
-            position: relative;
-            font-size: 48px;
-            letter-spacing: 4px;
-        }
-
-        .loader-114::before {
-            content: "";
-            position: absolute;
-            right: 70px;
-            bottom: 10px;
-            height: 28px;
-            width: 5.15px;
-            background: currentColor;
-        }
-
-        .loader-114::after {
-            content: "";
-            width: 10px;
-            height: 10px;
-            position: absolute;
-            left: 120px;
-            top: 2px;
-            border-radius: 50%;
-            background: #7ABB4A;
-            -webkit-animation: animloader114 1s linear infinite alternate;
-            animation: animloader114 1s linear infinite alternate;
-        }
-
-        .mbloader-text{
-            font-weight: 400;
-            font-size: 22px;
-            line-height: 19px;
-            padding-top: 20px;
-            color: #1D1D1D;
-        }
-
-        .text-loading{
-            font-weight: 700;
-            font-size: 38px;
-            line-height: 39px;
-            display: flex;
-            align-items: center;
-            text-align: center;
-            color: #78BC42;
-        }
-
-        .data-text-loading{
-            font-weight: 700;
-            font-size: 30px;
-            line-height: 39px;
-            display: flex;
-            align-items: center;
-            text-align: center;
-            color: #78BC42;
-        }
-
-        .svg-container{
-            padding-top: 20px;
-        }
-
-        #toast-container>.toast-success{
-            opacity: 1 !important;
-            background-color: #7ABB4A !important
-        }
-
-        #toast-container>.toast-error{
-            opacity: 1 !important;
-            background-color: #FA7800!important
-        }
-
-        ::-webkit-scrollbar-track {
-            -webkit-box-shadow: inset 0 0 6px #F6F6F6;
-            border-radius: 100px;
-            background-color: #F6F6F6;
-        }
-
-        ::-webkit-scrollbar {
-            width: 5px;
-            height: 50px;
-            background-color:#F6F6F6;
-        }
-
-        ::-webkit-scrollbar-thumb {
-            border-radius: 100px;
-            height: 50px;
-            background-color:#404B5B
-        }
-
-    </style>
     <script>
+          window.addEventListener("load", (event) => {
+            document.getElementById("mSpinner").classList.remove("d-none");
+          });
             fetch("/app/c/LWCLightningApp.app?aura.format=JSON&aura.formatAdapter=LIGHTNING_OUT")
             .then(function (response) {
                 if (response.status !== 200) {
                     var url , path;
                     url = location;
                     path = url.origin + "/app/secur/logout.jsp";
-                    $("#mLoader").hide();
-                    $("#locationSpinner").hide();
-                    $("#mSpinner").hide();
+                    document.getElementById("mLoader").classList.add("d-none");
+                    document.getElementById("locationSpinner").classList.add("d-none");
+                    document.getElementById("mSpinner").classList.add("d-none");
                     location.replace(path);
                 }
             })
@@ -411,14 +259,19 @@
             this.setOptions = function () {
                 toastr.options.positionClass = "toast-top-right";
                 toastr.options.closeButton = true;
-                toastr.options.progressBar = true;
+                toastr.options.progressBar = false;
                 toastr.options.fadeOut = 5000;
-            };
+                toastr.options.hideDuration = 0,
+                toastr.options.timeOut = 0,
+                toastr.options.extendedTimeOut = 0,
+                toastr.options.showEasing = 'swing',
+                toastr.options.hideEasing = 'linear',
+                toastr.options.showMethod = 'fadeIn',
+                toastr.options.hideMethod = 'fadeOut'
+            }
 
             this.setOptions();
-            $("#mLoader").hide();
-            $("#locationSpinner").hide();
-            $("#mSpinner").show();
+          //  $("#mSpinner").show();
             function getUrlParamValue(url, key) {
                 return new URL(url).searchParams.get(key);
             }
@@ -430,6 +283,51 @@
                     return months.indexOf(a.month)
                         - months.indexOf(b.month);
                 });
+            }
+
+            function chartFormat(){
+                chartDetail.forEach((ch) => {
+                                    if(ch.month != null && ch.month != undefined){
+                                        midMonth.push(ch.month);
+                                        chartlabels.push(ch.month.charAt(0));
+                                        reimb = (ch.reimbursement == null) ? 0 : ch.reimbursement;
+                                        mil = (ch.mileage == null) ? 0 : ch.mileage;
+                                        avgReimb = (ch.averagereimbursement == null) ? 0 : ch.averagereimbursement;
+                                        avgMileage = (ch.averageMileage == null) ? 0 : ch.averageMileage;
+                                        averageReimbursement.push(avgReimb);
+                                        averageMileage.push(avgMileage);
+                                        reimbursement.push(reimb);
+                                        mileage.push(mil);
+                                    }
+                                })
+                                chartDataValue[0].Mileagechart.chartLabel = chartlabels;
+                                chartDataValue[0].monthName = midMonth;
+                                chartDataValue[0].Mileagechart.labelA = "Monthly";
+                                chartDataValue[0].Mileagechart.dataA = mileage;
+                                chartDataValue[0].Mileagechart.labelB = "Average";
+                                chartDataValue[0].Mileagechart.dataB = averageMileage;
+                                chartDataValue[0].Reimbursementchart.chartLabel = chartlabels;
+                                chartDataValue[0].Reimbursementchart.labelA = "Monthly";
+                                chartDataValue[0].Reimbursementchart.dataA = reimbursement;
+                                chartDataValue[0].Reimbursementchart.labelB = "Average";
+                                chartDataValue[0].Reimbursementchart.dataB = averageReimbursement;
+                            
+            }
+
+            function getChartDetail(){
+                Visualforce.remoting.Manager.invokeAction('{!$RemoteAction.DriverDashboardLWCController.getChartData}', idParamValue,
+                    function (result, event) {
+                        if (event.status) {
+                            let escapeResult = escapeSpecialChars(result)
+                            chartDetail = JSON.parse(escapeResult);
+                             sortByMonth(chartDetail);
+                            if (chartDetail != null && chartDetail != undefined) {
+                                 chartFormat();
+                            }
+                        }
+                        console.log("chart--->", chartDataValue);
+                    }
+                )
             }
 
             function escapeSpecialChars(str){
@@ -456,84 +354,57 @@
                    reimbursement = [],
                    averageReimbursement = [],
                    averageMileage = [],
+                   reimb,
+                   mil,
+                   avgReimb,
+                   avgMileage,
                    midMonth = [];
-            Visualforce.remoting.Manager.invokeAction('{!$RemoteAction.DriverDashboardLWCController.getChartData}', idParamValue,
-                    function (result, event) {
-                        if (event.status) {
-                            let escapeResult = escapeSpecialChars(result)
-                            chartDetail = JSON.parse(escapeResult);
-                            sortByMonth(chartDetail);
-        
-                            if (chartDetail != null && chartDetail != undefined) {
-                                for (var i = 0; i < chartDetail.length; i++) {
-                                    if (chartDetail[i].month != null && chartDetail[i].month != undefined) {
-                                        midMonth.push(chartDetail[i].month);
-                                        chartlabels.push(chartDetail[i].month.charAt(0));
-                                        var reimb = (chartDetail[i].reimbursement == null) ? 0 : chartDetail[i].reimbursement;
-                                        var mil = (chartDetail[i].mileage == null) ? 0 : chartDetail[i].mileage;
-                                        var avgReimb = (chartDetail[i].averagereimbursement == null) ? 0 : chartDetail[i].averagereimbursement;
-                                        var avgMileage = (chartDetail[i].averageMileage == null) ? 0 : chartDetail[i].averageMileage;
-                                        averageReimbursement.push(avgReimb);
-                                        averageMileage.push(avgMileage);
-                                        reimbursement.push(reimb);
-                                        mileage.push(mil);
-                                    }
-
-                                }
-                                chartDataValue[0].Mileagechart["chartLabel"] = chartlabels;
-                                chartDataValue[0].monthName = midMonth;
-                                chartDataValue[0].Mileagechart["labelA"] = "Monthly";
-                                chartDataValue[0].Mileagechart["dataA"] = mileage;
-                                chartDataValue[0].Mileagechart["labelB"] = "Average";
-                                chartDataValue[0].Mileagechart["dataB"] = averageMileage;
-                                chartDataValue[0].Reimbursementchart["chartLabel"] = chartlabels;
-                                chartDataValue[0].Reimbursementchart["labelA"] = "Monthly";
-                                chartDataValue[0].Reimbursementchart["dataA"] = reimbursement;
-                                chartDataValue[0].Reimbursementchart["labelB"] = "Average";
-                                chartDataValue[0].Reimbursementchart["dataB"] = averageReimbursement;
-                            }
-                        }
-                    }
-            )
-
+    
+                   getChartDetail();
           
-            console.log(chartDataValue);
+         
 
             $Lightning.use("c:LWCLightningApp", function () {
                 $Lightning.createComponent("c:driverDashboardFrame", {
                     //pass parameter values to lwc js controller
                     "chartData": chartDataValue
-                }, "mainLwc", function (cmp) {
-                    console.log("Component Created Successfully");
-                    document.querySelector('c-driver-dashboard-frame').addEventListener('show', (e) => {
-                        console.log("listening");
-                        $("#mSpinner").hide();
-                     });
+                    }, "mainLwc", function (cmp) {
+                            //document.getElementById("mSpinner").classList.add("d-none");
+                            console.log("Component Created Successfully");
+                            document.querySelector('c-driver-dashboard-frame').addEventListener('show', (e) => {
+                                console.log("listening");
+                               document.getElementById("mSpinner").classList.add("d-none");
+                            });
 
-                     document.querySelector('c-driver-dashboard-frame').addEventListener('profile', (e) => {
-                        if(e.detail === 'isShow'){
-                            console.log("profile", e.detail)
-                            $("#mLoader").show();
-                        }
-                        else{
-                            $("#mLoader").hide();
-                        }
-                     });
+                            document.querySelector('c-driver-dashboard-frame').addEventListener('profile', (e) => {
+                                if(e.detail === 'isShow'){
+                                    console.log("profile", e.detail)
+                                    document.getElementById("mLoader").classList.remove("d-none");
+                                //  $("#mLoader").show();
+                                }
+                                else{
+                                    document.getElementById("mLoader").classList.add("d-none");
+                                    //$("#mLoader").hide();
+                                }
+                            });
 
-                     document.querySelector('c-driver-dashboard-frame').addEventListener('toast', (e) => {
-                        toastr.error('No mileage')
-                     });
+                            document.querySelector('c-driver-dashboard-frame').addEventListener('toast', (e) => {
+                                toastr.error('No mileage', 'Error Message');
+                              //  toastr.success('Your mileage have been approved successfully', 'Success Message');
+                            });
 
-                     document.querySelector('c-driver-dashboard-frame').addEventListener('location', (e) => {
-                        if(e.detail != 'Hide'){
-                            $("#locationSpinner").show();
-                            $("#locationText").text(e.detail)
-                        }
-                        else{
-                            $("#locationSpinner").hide();
-                        }
-                     });
-                }
+                            document.querySelector('c-driver-dashboard-frame').addEventListener('location', (e) => {
+                                if(e.detail != 'Hide'){
+                                    document.getElementById("mLoader").classList.remove("d-none");
+                                // $("#locationSpinner").show();
+                                    $("#locationText").text(e.detail)
+                                }
+                                else{
+                                    document.getElementById("mLoader").classList.add("d-none");
+                                    //$("#locationSpinner").hide();
+                                }
+                            });
+                    }
                 );
             });
     </script>

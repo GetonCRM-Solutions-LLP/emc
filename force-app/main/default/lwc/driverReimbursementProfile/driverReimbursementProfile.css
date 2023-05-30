@@ -15,9 +15,43 @@
     --btn-grey-color: #A4A4A4;
 }
 
+/* Media Queries Start -- */
+/* Portrait and landscape Kindle Fire HD 7" */
+@media only screen 
+  and (min-device-width: 1024px) 
+  and (max-device-width: 1280px) 
+  and (-webkit-min-device-pixel-ratio: 1.5) {
+    .vehicle-info{
+        flex: 1 1 30% !important;
+    }
+
+    .map-state{
+        flex: 1 1 30% !important;
+    }
+
+    .map-config{
+        left: 52% !important;
+    }
+
+    .miles-view{
+        padding-top: 58px !important;
+        flex: 1 1 100% !important;
+    }
+
+    .middle-block{
+        height: 349px !important;
+    }
+}
+
 .flex-row{
     display: flex;
     flex-flow: row;
+}
+
+.map-config{
+    position: absolute;
+    top: 15px; 
+    left: 40%
 }
 
 .fa,
@@ -47,6 +81,13 @@
     color: var(--btn-grey-color);
 }
 
+.bc-white{
+    background: none !important;
+    background-color: var(--even-row-color)!important;
+    font-family: 'Proxima Nova Bold' !important;
+    color: var(--green-color);
+}
+
 .bc-green {
     background: none !important;
     background-color: var(--green-color)!important;
@@ -56,9 +97,10 @@
 
 .is-active{
     background: none !important;
-    background-color: #404B5A !important;
+    background-color: #f1f8ec !important;
     font-family: 'Proxima Nova Bold' !important;
-    color: var(--even-row-color);
+    color: var(--green-color);
+    opacity: 1 !important;
 }
 
 .slds-btn {
@@ -68,8 +110,8 @@
     cursor: pointer;
     border: 0;
     border-radius: .125rem;
-    -webkit-box-shadow: 0 2px 5px 0 rgb(0 0 0 / 16%), 0 2px 10px 0 rgb(0 0 0 / 12%);
-    box-shadow: 0 2px 5px 0 rgb(0 0 0 / 16%), 0 2px 10px 0 rgb(0 0 0 / 12%);
+    /* -webkit-box-shadow: 0 2px 5px 0 rgb(0 0 0 / 16%), 0 2px 10px 0 rgb(0 0 0 / 12%);
+    box-shadow: 0 2px 5px 0 rgb(0 0 0 / 16%), 0 2px 10px 0 rgb(0 0 0 / 12%); */
 }
 
 .waves-effect:focus {
@@ -86,12 +128,27 @@
 }
 
 .btn-trip{
-    border-radius: 6px;
+    border-radius: 10px;
     display: flex;
     flex-direction: row;
     justify-content: flex-end;
     align-items: center;
     font-size: 14px;
+    padding: 0.8rem 1.4rem !important;
+}
+
+.btn-toggle{
+    border-radius: 10px;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    align-items: center;
+    font-size: 14px;
+    padding: .5rem 1.5rem !important;
+    border: 2px solid var(--green-color) !important;
+    font-family: 'Proxima Nova Bold' !important;
+    color: var(--green-color);
+    opacity: 0.45;
 }
 
 .fa-arrow-right-from-bracket{
@@ -121,6 +178,14 @@
   
   .slds-input:focus{
     --slds-c-input-shadow: none !important;
+  }
+
+  .content-text{
+    cursor: pointer;
+  }
+
+  .content-text:hover{
+    color: var(--green-color) !important;
   }
 
 /* .breadcrumb {

@@ -1827,6 +1827,7 @@
                 var errorMsg = '{!($Label.ExceptionLabel)}';
                 $scope.accountERMI = '{!($Label.ERMI_Account)}';
                 $scope.accountSurfacePrep = '{!($Label.SurfacePrep_Account)}';
+                $scope.solarisOilfield = '{!($Label.Solaris_Oilfield)}';
                 $scope.designAIR = '{!($Label.DesignAir)}';
                 $scope.NWPipe = '{!($Label.NWPipeAccount)}';
                 $scope.SPBSAcc = '{!($Label.SPBS_Account)}';
@@ -2149,6 +2150,12 @@
                             $scope.emplistfordownload.push([item.employeeId, item.firstName, item.lastName, item.company, item.email, item.city, item.state, item.zipCode, item.cellphone, item.drivingStates != null ? item.drivingStates.join(';') : '', item.activationDate, item.freeze, item.deactivaedDate, item.role, item.managerName, item.vehicalType, item.fixedamount, item.compliancestatus, item.totalreimbursement, item.monthlymileageLimit, item.appVersion]);
                         });
                 }
+                else if($scope.accid === $scope.solarisOilfield){
+                    $scope.emplistfordownload.push(["EmployeeID", "First Name", "Last Name", "Email", "City", "State", "Zip Code", "Cell Phone", "Driving States", "Activation Date", "Frozen Date", "Deactivation Date", "Role", "Manager", "Cost Code", "Standard Vehicle", "Fixed Amount", "Compliance", "Average Monthly Reimbursement", "Average Monthly Mileage", "App Version"]);
+                        angular.forEach(empToUpdate, function (item, key) {
+                            $scope.emplistfordownload.push([item.employeeId, item.firstName, item.lastName, item.email, item.city, item.state, item.zipCode, item.cellphone, item.drivingStates != null ? item.drivingStates.join(';') : '', item.activationDate, item.freeze, item.deactivaedDate, item.role, item.managerName, item.costCode, item.vehicalType, item.fixedamount, item.compliancestatus, item.totalreimbursement, item.monthlymileageLimit, item.appVersion]);
+                        });
+                }
                 else if($scope.accid === $scope.accountSurfacePrep){
                     $scope.emplistfordownload.push(["EmployeeID", "First Name", "Last Name", "Email", "City", "State", "Zip Code", "Cell Phone", "Driving States", "Activation Date", "Frozen Date", "Deactivation Date", "Role", "Manager", "Standard Vehicle", "Fixed Amount", "Compliance", "Region", "Job Title", "Average Monthly Reimbursement", "Average Monthly Mileage", "App Version"]);
                     angular.forEach(empToUpdate, function (item, key) {
@@ -2411,6 +2418,7 @@
                 emplist.managerName = name;
 
             }
+
 
             // AI-000460 Starts -->
             $scope.displayCheckboxForMassResetPassword = function () {
@@ -3213,6 +3221,8 @@
             }
             $scope.edit = function (emp, userid) {
                 $scope.selectedRow = userid;
+                emp.citylist = [];
+                $scope.empData = obj_contactnew();
                 $scope.IsVisibleUpdatebtn = ($scope.isPlAccountAbsence === true) ? false : true;
                 $scope.managerlist = {!AllManagers
             }
@@ -3229,6 +3239,10 @@
 
       
             $scope.rolelist = {!Roles}
+            if (emp.city != null && emp.city != '') {
+                    emp.citylist.push(emp.city);
+            }
+            $scope.showcountryempedit(emp.zipCode , emp.role, emp);
             $scope.driverType = {!DriverType}
             $scope.recordfoundindex = -1;
             if (beforeUpdateEmployees.length == 0)
@@ -3239,6 +3253,9 @@
                     $scope.recordfoundindex = i;
                     break;
                 }
+                // }else{
+                //     $scope.empupdatelist[i].iseditable = false;
+                // }
             }
             if ($scope.recordfoundindex != -1) {
                 $scope.empupdatelist.remove($scope.recordfoundindex);
@@ -3247,6 +3264,7 @@
             else {
                 $scope.empupdatelist.push(emp);
             }
+            console.log("updated----", $scope.empupdatelist)
             }
             /* Field Edit Funtion Complete*/
 
@@ -3282,7 +3300,7 @@
                     } else {
                         if (form['email_' + $scope.empupdatelist[i].userid].$invalid
                             || form['role_' + $scope.empupdatelist[i].userid].$invalid
-                            //   || form['job_' +  $scope.empupdatelist[i].userid].$invalid
+                            || form['city_' +  $scope.empupdatelist[i].userid].$invalid
                             //  ||  form['dept_' +  $scope.empupdatelist[i].userid].$invalid
                             //   || form['manager_' + $scope.empupdatelist[i].userid ].$invalid
                             || form['zip_' + $scope.empupdatelist[i].userid].$invalid) {
@@ -3290,6 +3308,8 @@
                             if (form['email_' + $scope.empupdatelist[i].userid].$invalid)
                                 count++;
                             if (form['role_' + $scope.empupdatelist[i].userid].$invalid)
+                                count++;
+                            if (form['city_' + $scope.empupdatelist[i].userid].$invalid)
                                 count++;
                             //  if(form['manager_' + $scope.empupdatelist[i].userid ].$invalid)
                             // count ++;
@@ -3333,10 +3353,13 @@
                                 angular.forEach($scope.empupdatelist, function (employee) {
                                     employee.iseditable = false;
                                 });
-
+                                angular.forEach(  $scope.employeeslist, function(emp){
+                                    emp.iseditable = false;
+                                })
+                                
                                 $scope.empupdatelist = [];
                                 $scope.IsVisibleUpdatebtn = false;
-                                $scope.selectedRow = '';
+                                $scope.selectedRow = null;
                                 $scope.$apply();
                             } else {
                                 var err = result.message.split("==");
@@ -3394,6 +3417,7 @@
                 $('#spinner').show();
                 //  $scope.IsVisibleLogin = true;
                 $scope.relatedcitylist = [];
+                $scope.isZipValid = false;
                 $scope.contactData = obj_contactnew();
                 $scope.employeesList = [];
                 $scope.IsVisibleLoginManager = false;
@@ -3473,8 +3497,11 @@
                                     $scope.contactData.city = '';
                                     angular.forEach(address, function (item) {
                                         $scope.relatedcitylist.push(item.City__c);
+                                        if($scope.form1.zip_1.$dirty){
+                                            $scope.isZipValid = $scope.relatedcitylist.length > 1 ? true : false;
+                                        }
                                         $scope.contactData.state = item.Abbreviation__c;
-                                        $scope.contactData.city = $scope.relatedcitylist[0];
+                                        $scope.contactData.city =  $scope.relatedcitylist[0];
                                     });
                                 })
                                 if ($scope.stateabrivationObj.drivingstatefordriver == true) {
@@ -3503,18 +3530,89 @@
                     }
                     $scope.contactData.state = '';
                     $scope.relatedcitylist = [];
+                    $scope.isZipValid = false;
                     $scope.contactData.city = '';
                 }
 
             }
 
-            $scope.showcitycountryedit = function (zipcode, role) {
+            $scope.showcountryempedit = function(zipcode, role, emp){
+                if (Array.isArray($scope.empData)) {
+                    if (!emp.zipCode || emp.zipCode.length < 5) {
+                        return;
+                    }
+                } 
+                c('zipcode:--' + zipcode + 'role:--' + role);
+                if (role == 'Admin' || role == 'Manager') {
+                    $scope.stateabrivationObj.drivingstatefordriver == false;
+                }
+                if (role == 'Driver' || role == 'Driver/Manager' || role == valueofreport) {
+                    $scope.stateabrivationObj.drivingstatefordriver == false;
+                }
+                if (zipcode != undefined && zipcode != '' && zipcode != null) {
+                    $('#spinner').show();
+                    Visualforce.remoting.Manager.invokeAction('{!$RemoteAction.RosterController.getCountryStateCity}', zipcode,
+                        function (result, event) {
+                            if (event.status && result != null && result != '') {
+                                let address = JSON.parse(result);
+                                emp.citylist = [];
+                                $scope.$apply(function () {
+                                    c('remove drivingStates:--' + emp.state);
+                                    if ($scope.stateabrivationObj.drivingstatefordriver == true) {
+                                        for (var i = 0; i < $scope.drivingStatesList.length; i++) {
+                                            if ($scope.drivingStatesList[i] == emp.state) {
+                                                $('#drivingstateContact').tagsinput('remove', emp.state);
+                                            }
+                                        }
+                                    }
+                                    //$scope.contactData[0].state = '';
+                                    //$scope.contactData[0].city = '';
+
+                                    angular.forEach(address, function (item) {
+                                        emp.citylist.push(item.City__c);
+                                        emp.state = item.Abbreviation__c;
+                                       // emp.city =  $scope.citylist[0];
+                                    });
+                                })
+                                if ($scope.stateabrivationObj.drivingstatefordriver == true) {
+                                    if (emp.state != undefined || emp.state != '') {
+                                         emp.drivingStates = emp.state;
+                                        $('#drivingstateContact').tagsinput('add', emp.state);
+                                    }
+                                }
+                                $('#spinner').hide();
+                            }
+                            else {
+                                $('#spinner').hide();
+                                toastr.error('Please insert valid zipcode.');
+                            }
+                        },
+                        { escape: false }
+                    );
+                }
+
+                if (zipcode == '' || zipcode == undefined || zipcode == null) {
+                    if ($scope.stateabrivationObj.drivingstatefordriver == true) {
+                        for (var i = 0; i < $scope.drivingStatesList.length; i++) {
+                            if ($scope.drivingStatesList[i] == emp.state) {
+                                $('#drivingstateContact').tagsinput('remove', emp.state);
+                            }
+                        }
+                    }
+                    //emp.citylist = [];
+                    $('#spinner').hide();
+                }
+            }
+
+            $scope.showcitycountryedit = function (zipcode, role, form) {
                 if (Array.isArray($scope.contactData)) {
                     if (!$scope.contactData[0].zipCode || $scope.contactData[0].zipCode.length < 5) {
+                        $scope.isZipValid = false;
                         return;
                     }
                 } else {
                     if (!Array.isArray($scope.contactData) && ($scope.contactData.zipCode && $scope.contactData.zipCode.length < 5)) {
+                        $scope.isZipValid = false;
                         return;
                     }
                 }
@@ -3533,7 +3631,6 @@
                                 let address = JSON.parse(result);
                                 $scope.relatedcitylist = [];
                                 $scope.$apply(function () {
-
                                     c('remove drivingStates:--' + $scope.contactData[0].state);
                                     if ($scope.stateabrivationObj.drivingstatefordriver == true) {
                                         for (var i = 0; i < $scope.drivingStatesList.length; i++) {
@@ -3548,8 +3645,13 @@
 
                                     angular.forEach(address, function (item) {
                                         $scope.relatedcitylist.push(item.City__c);
+                                        if($scope.form1.zip_0.$dirty){
+                                            $scope.isZipValid = $scope.relatedcitylist.length > 1 ? true : false;
+                                            $scope.contactData[0].city =   $scope.relatedcitylist.length === 1 ? $scope.relatedcitylist[0] : '';
+                                        }
                                         $scope.contactData[0].state = item.Abbreviation__c;
-                                        $scope.contactData[0].city =  $scope.relatedcitylist[0];
+                                  
+                                      //  $scope.contactData[0].city =  $scope.relatedcitylist[0];
                                     });
                                 })
                                 if ($scope.stateabrivationObj.drivingstatefordriver == true) {
@@ -3578,6 +3680,7 @@
                         }
                     }
                     $scope.relatedcitylist = [];
+                    $scope.isZipValid = false;
                     $scope.contactData[0].city = '';
                     $scope.contactData[0].state = '';
                     $('#spinner').hide();
@@ -3613,6 +3716,7 @@
             $scope.passData = function (empId) {
                 $('#spinner').show();
                 $scope.IsShow = true;
+                $scope.isZipValid = false;
                 $scope.IsShowLinkBtn = true;
                 // $scope.showMassFreezebtn = false;
                 $scope.showSaveLOABtn = false;
@@ -3742,7 +3846,7 @@
                             $scope.showrequiredfield = true;
                         }
                     });
-                    if($scope.contactData[0].zipCode != undefined || $scope.contactData[0] != undefined){
+                    if($scope.contactData[0] != undefined){
                         $scope.showcitycountryedit($scope.contactData[0].zipCode, $scope.contactData[0].role)
                     }
                     $('#spinner').hide();
@@ -3958,7 +4062,7 @@
                         $scope.addfilds = '';
                         document.getElementById(elementId).value = $("#" + sourceId).tagsinput('items');
                         $scope.cont = con;
-                        console.log($scope.contactData[0].city, $scope.contactData.city);
+                       // console.log($scope.contactData[0].city, $scope.contactData.city);
                         con.drivingStates = $("#" + sourceId).tagsinput('items');
                         let inputtovalidate;
                         if ($scope.accid === $scope.designAIR) {
@@ -3992,6 +4096,15 @@
                                     inputtovalidate = ["firstname", "lastname", "email", "city", "state", "zip", "role", "netchexEmployeeID", "code", "district", "territory","cellphone", "manager", "vehicalType", "activedate"];
                                 }else{
                                     inputtovalidate = ["firstname", "lastname", "email", "city", "state", "zip", "role", "netchexEmployeeID", "code", "district", "territory", "manager", "vehicalType", "activedate"];
+                                }
+                            }
+                        }
+                        else if ($scope.accid === $scope.solarisOilfield) {
+                            if (con.role == 'Driver' || con.role == 'Driver/Manager' || con.role == valueofreport) {
+                                if($scope.accTrueDialog){
+                                    inputtovalidate = ["firstname", "lastname", "email", "city", "state", "zip", "role", "cellphone", "manager", "vehicalType", "activedate"];
+                                }else{
+                                    inputtovalidate = ["firstname", "lastname", "email", "city", "state", "zip", "role", "costCode" , "manager", "vehicalType","activedate"];
                                 }
                             }
                         }
@@ -4119,6 +4232,7 @@
                                                                     else {
                                                                         // toastr.error('Something went wrong.');
                                                                         //toastr.error(errorMsg);
+                                                                        $('#spinner').hide();
                                                                         toastr.error(result.message);
                                                                     }
                                                                 }
@@ -4155,6 +4269,7 @@
                                                                         });
                                                                         $('#spinner').hide();
                                                                         $scope.contactData = {};
+                                                                        $scope.isZipValid = false;
                                                                         $scope.contactData = obj_contactnew();
                                                                         $scope.contactData.addedDate = $filter('date')(new Date(), "MM/dd/yy");
                                                                         form.$setPristine();
@@ -4163,12 +4278,14 @@
                                                                     }
                                                                     else {
                                                                         $('#spinner').hide();
+                                                                        $scope.isZipValid = false;
                                                                         // toastr.error('Something went wrong.');    
                                                                         // toastr.error(errorMsg);
                                                                         toastr.error(result.message);
                                                                     }
                                                                 } else {
                                                                     $('#spinner').hide();
+                                                                    $scope.isZipValid = false;
                                                                     //toastr.error('Something went wrong.');
                                                                     toastr.error(errorMsg);
                                                                 }
@@ -4177,6 +4294,7 @@
                                                         );
                                                     }
                                                 } else {
+                                                    $scope.isZipValid = false;
                                                     $('#spinner').hide();
                                                     toastr.error('Something went wrong. ');
                                                 }
@@ -4215,6 +4333,7 @@
                                                                         $scope.$apply();
                                                                     }
                                                                     else {
+                                                                        $('#spinner').hide();
                                                                         // toastr.error('Something went wrong.');
                                                                         //  toastr.error(errorMsg);
                                                                         toastr.error(result.message);
@@ -4251,6 +4370,7 @@
                                                                             }
                                                                         });
                                                                         $scope.contactData = {};
+                                                                        $scope.isZipValid = false;
                                                                         $scope.contactData = obj_contactnew();
                                                                         $scope.contactData.addedDate = $filter('date')(new Date(), "MM/dd/yy");
                                                                         form.$setPristine();
@@ -4259,12 +4379,14 @@
                                                                         $scope.$apply();
                                                                     }
                                                                     else {
+                                                                        $scope.isZipValid = false;
                                                                         $('#spinner').hide();
                                                                         //   toastr.error('Something went wrong. result'+result);    
                                                                         // toastr.error(errorMsg + result);
                                                                         toastr.error(result.message);
                                                                     }
                                                                 } else {
+                                                                    $scope.isZipValid = false;
                                                                     $('#spinner').hide();
                                                                     //toastr.error('Something went wrong.');
                                                                     toastr.error(errorMsg);
@@ -4275,6 +4397,7 @@
                                                     }
                                                 } else {
                                                     $('#spinner').hide();
+                                                    $scope.isZipValid = false;
                                                     //  toastr.error('Something went wrong. ');
                                                     toastr.error(errorMsg);
                                                 }
@@ -4282,12 +4405,14 @@
                                     }
                                     else {
                                         $('#spinner').hide();
+                                        $scope.isZipValid = false;
                                         toastr.error('Please fill the required field ');
                                     }
                                 }
                             }
                             else {
                                 $('#spinner').hide();
+                                $scope.isZipValid = false;
                                 toastr.error('Please fill the required field ');
                             }
                         }
@@ -4335,13 +4460,14 @@
 
             $scope.updateContact = function () {
                 $('#spinner').hide();
+                $scope.isZipValid = false;
                 toastr.success('Success! You Just Updated ' + $scope.contactListForUpdateInsert[0].firstName + '\'s Details.');
                 refreshForm();
             }
 
             $scope.insertContact = function () {
-
                 $('#spinner').hide();
+                $scope.isZipValid = false;
                 toastr.success('Success! You Just Added ' + $scope.contactListForUpdateInsert[0].firstName);
                 refreshForm();
                 $("#drivingstatenew").tagsinput('removeAll');
@@ -4828,7 +4954,7 @@
                                     </thead>
                                     <tbody>
                                         <!-- height : 350px -->
-                                        <tr dir-paginate="emp in employeeslist|filter:search |itemsPerPage: itemPerPage" ng-class="{'selected':emp.userid == selectedRow}"
+                                        <tr dir-paginate="emp in employeeslist| filter:search |itemsPerPage: itemPerPage" ng-class="{'selected':emp.userid == selectedRow}"
                                             ng-model="emp" pagination-id="employees">
                                             <td ng-model="emp.check" class="deactivateChktd" ng-show="checkboxobjDeactivateShow">
                                                 <input type="checkbox" ng-model="emp.IsMassDeactivated" class="deactivateCheck" ng-change="CheckUncheckForMassDeactivate(emp);"
@@ -4915,7 +5041,6 @@
                                                     ng-change="selectedManager(event,emp)">
                                                     <option ng-selected="{{emp.managerId == manager.Id}}" ng-repeat="manager in managerlist" value="{{manager.Id}}" name="{{manager.Name}}">{{manager.Name}}</option>
                                                 </select>
-
                                             </td>
                                             <td ng-if="accid === accountERMI" ng-model="emp.driverType" ng-show="!emp.iseditable" ng-click="edit(emp,emp.userid);emp.iseditable = !emp.iseditable"
                                                 class="a-hover-pointer pl-1">
@@ -4930,13 +5055,13 @@
                                                 class="a-hover-pointer zipcode_td">{{emp.zipCode}}
                                             </td>
                                             <td ng-if="accid != accountERMI" ng-model="emp.zipCode" ng-show="emp.iseditable" class="zipcode_td">
-                                                <input ng-model="emp.zipCode" size="5" maxlength="5" pattern="^[0-9]{5}$" ng-required="emp.role!=='Manager' && emp.role!=='Admin'"
+                                                <input ng-model="emp.zipCode" style="margin-bottom: 14px" size="5" maxlength="5" pattern="^[0-9]{5}$" ng-required="emp.role!=='Manager' && emp.role!=='Admin'"
                                                     name="zip_{{emp.userid}}" class="form-control rounded-0 a-hover-pointer"
-                                                    type="text" />
+                                                    type="text"  ng-change="showcountryempedit(emp.zipCode, emp.role, emp)" id="zipUser"/>
                                                 <select id="city" ng-model="emp.city" ng-show="emp.iseditable" class="form-control rounded-0" ng-required="emp.role!=='Manager' && emp.role!=='Admin'"
-                                                        name="city_{{emp.userid}}"  ng-options="city for city in relatedcitylist">
-                                                    <!-- <option value=""></option>
-                                                    <option ng-selected="{{city == contactData[0].city}}" ng-repeat="city in relatedcitylist" value="{{city}}" >{{city}}</option> -->
+                                                        name="city_{{emp.userid}}"  ng-options="city for city in emp.citylist">
+                                                    <option value=""></option>
+                                                    <!-- <option ng-selected="{{city == contactData[0].city}}" ng-repeat="city in relatedcitylist" value="{{city}}" >{{city}}</option> --> 
                                                 </select>
                                             </td>
                                             <td ng-if="accid === accountERMI" ng-model="emp.employeeId" ng-show="!emp.iseditable" ng-click="edit(emp,emp.userid);emp.iseditable = !emp.iseditable"
@@ -5271,6 +5396,18 @@
                                                         data-mask="000-000-0000" placeholder="Enter Cell Phone Number" name="cellphone_1" ng-required="accTrueDialog" />
                                                 </div>
                                             </div>
+
+                                            <div class="form-group-theme row" ng-if="accid === solarisOilfield">
+                                                <label for="inputCostcode" class="col-xl-4 col-lg-3 col-md-3 col-sm-3 col-form-label form-lable">Cost Code:</label>
+                                                <div class="col-xl-8 col-lg-8 col-md-8 col-sm-8 validate-div">
+                                                    <span class="span-validation" data-toggle="tooltip" data-placement="top" title="Required field" ng-if="isFieldRequired">*</span>
+                                                    <input type="text" id="costcode" ng-model="contactData[0].costCode" ng-show="IsShow" class="costcodeinput form-control rounded-0"
+                                                        placeholder="Enter Cost Code" name="costCode_0"  ng-required="isFieldRequired" />
+                                                    <input type="text" id="costcode" ng-model="contactData.costCode" class="costcodeinput form-control rounded-0" ng-show="!IsShow"
+                                                        placeholder="Enter Cost Code" name="costCode_1" ng-required="isFieldRequired" />
+                                                </div>
+                                            </div>
+
                                             <div class="form-group-theme row" ng-if="accid === designAIR">
                                                 <label for="inputDepartmentDesign" class="col-xl-4 col-lg-3 col-md-3 col-sm-3 col-form-label form-lable">Department Design:</label>
                                                 <div class="col-xl-8 col-lg-8 col-md-8 col-sm-8 validate-div">
@@ -5447,6 +5584,7 @@
                                                     <input type="text" id="zipCode" ng-model="contactData.zipCode" ng-show="!IsShow" class="form-control rounded-0" placeholder=""
                                                         maxlength="5" name="zip_1" pattern="^[0-9]{5}$" ng-if="!showrequiredfield"
                                                         ng-change="showcitycountry(contactData.zipCode,contactData.role)" />
+                                                    <span class="span-error" ng-show="isZipValid">There are multiple cities associated with this zip code. Select the dropdown below</span>
                                                 </div>
                                             </div>
                                             <div class="form-group-theme row">
@@ -5454,23 +5592,25 @@
                                                 <div class="col-xl-8 col-lg-8 col-md-8 col-sm-8 validate-div">
                                                     <span class="span-validation" data-toggle="tooltip" data-placement="top" title="Required field" ng-if="showvalidation">*</span>
                                                     <select id="city" ng-model="contactData[0].city" ng-show="IsShow" class="form-control rounded-0" required="true" name="city_0"
-                                                        ng-if="showrequiredfield" ng-change="showcityedit(contactData[0].zipCode,contactData[0].city)" ng-options="city for city in relatedcitylist">
-                                                        <!-- <option value=""></option>
-                                                        <option ng-selected="{{city == contactData[0].city}}" ng-repeat="city in relatedcitylist" value="{{city}}" >{{city}}</option> -->
+                                                       ng-if="showrequiredfield" ng-change="showcityedit(contactData[0].zipCode,contactData[0].city)" ng-options="city for city in relatedcitylist">
+                                                        <option value=""></option>
+                                                        <!--<option ng-selected="{{city == contactData[0].city}}" ng-repeat="city in relatedcitylist" value="{{city}}" >{{city}}</option> -->
                                                     </select>
                                                     <select id="city" ng-model="contactData[0].city" ng-show="IsShow" class="form-control rounded-0" name="city_0" ng-if="!showrequiredfield" 
-                                                        ng-options="city for city in relatedcitylist" ng-change="showcityedit(contactData[0].zipCode,contactData[0].city)">
-                                                        <!-- <option value=""></option>
-                                                        <option ng-selected="{{city == contactData[0].city}}" ng-repeat="city in relatedcitylist" value="{{city}}">{{city}}</option> -->
+                                                    ng-options="city for city in relatedcitylist">
+                                                    <option value=""></option>
+                                                        <!--<option ng-selected="{{city == contactData[0].city}}" ng-repeat="city in relatedcitylist" value="{{city}}">{{city}}</option> -->
                                                     </select>
                                                     <select id="city" ng-model="contactData.city" ng-show="!IsShow" class="form-control rounded-0" required="true" name="city_1"
                                                         ng-if="showrequiredfield" ng-options="city for city in relatedcitylist" ng-change="showcityedit(contactData.zipCode,contactData.city)">
+                                                        <option value=""></option>
                                                         <!-- <option value=""></option>
                                                         <option ng-selected="{{city == contactData.city}}" ng-repeat="city in relatedcitylist" value="{{city}}">{{city}}</option> -->
                                                     </select>
-                                                    <select id="city" ng-model="contactData.city" ng-show="!IsShow" class="form-control rounded-0" name="city_1" ng-if="!showrequiredfield" ng-options="city for city in relatedcitylist" ng-change="showcityedit(contactData.zipCode,contactData.city)">
-                                                        <!-- <option value=""></option>
-                                                        <option ng-selected="{{city == contactData.city}}" ng-repeat="city in relatedcitylist" value="{{city}}">{{city}}</option> -->
+                                                    <select id="city" ng-model="contactData.city" ng-show="!IsShow" class="form-control rounded-0" name="city_1" ng-if="!showrequiredfield" 
+                                                        ng-options="city for city in relatedcitylist" ng-change="showcityedit(contactData.zipCode,contactData.city)">
+                                                         <option value=""></option>
+                                                        <!--<option ng-selected="{{city == contactData.city}}" ng-repeat="city in relatedcitylist" value="{{city}}">{{city}}</option> -->
                                                     </select>
                                                 </div>
                                             </div>
@@ -5927,6 +6067,7 @@
         <!-- End of cellphone field masking -->
         <script type="text/javascript">
             $(document).ready(function () {
+                $('.costcodeinput').mask('00-0000-000');
                 $('#adminroster-loadate').bind("cut copy paste",function(e) {
                     e.preventDefault();
                 });

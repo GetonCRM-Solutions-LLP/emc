@@ -867,6 +867,97 @@
                     };
             }]);
 
+            // Variable Reimbursement Report --- Added 21 Feb 2023
+            var EditVariableReimbursementModel = function () {
+                this.visible = false;
+            }
+
+            EditVariableReimbursementModel.prototype.open = function () {
+                this.visible = true;
+            }
+
+            EditVariableReimbursementModel.prototype.close = function () {
+                this.visible = false;
+            }
+
+            app.directive('editVariableReimbursementReport', ['$filter', '$http',
+                function ($filter, $http) {
+                    return {
+                        restrict: 'E',
+                        scope: {
+                            model: '='
+                        },
+                        link: function (scope, element, attributes) {
+                            scope.$watch('model.visible', function (newValue) {
+                                var modalElement = element.find('.modal');
+                                modalElement.modal(newValue ? 'show' : 'hide');
+                            });
+
+                            var url_string = $(location).attr("href");
+                            var url = new URL(url_string);
+                            var host = url.host;
+                            scope.accid = url.searchParams.get("accid");
+                            scope.dateObjArr = [];
+                            scope.originalObjArr = [];
+                            scope.defaultOption = "Select Pay Period";
+                            scope.startDate = "";
+                            scope.endDate = "";
+                            scope.reimbursementDownload = true;
+
+                            Visualforce.remoting.Manager.invokeAction('{!$RemoteAction.ReportListController.payPeriodDateList}', scope.accid,
+                                        function (result, event) {
+                                            if(result){
+                                                scope.originalObjArr = result.split(',');
+                                                scope.dateObjArr = scope.originalObjArr;
+                                                scope.dateObjArr.splice(0, 0, scope.defaultOption);
+                                                scope.variableReimbursement = scope.dateObjArr[0];
+                                            }
+                                            scope.$apply();
+                                            console.log("Result", result)
+                            });
+
+                            function refreshModal() {
+                                location.reload();
+                            }
+
+                            scope.onVariableReimbursementPayPeriodChange = function (period) {
+                                if (period != "Select Pay Period") {
+                                    scope.splitObj = period.split(' to ');
+                                    scope.startDate = scope.splitObj[0];
+                                    scope.endDate = scope.splitObj[1];
+                                    scope.reimbursementDownload = false;
+                                } else {
+                                    scope.reimbursementDownload = true;
+                                }
+                            }
+
+                            scope.downloadReimbursementReport = function () {
+                                var window_url;
+                                window_url = 'https://' + host + '/app/PayDateReport?id='+ scope.accid + '&startDate=' + scope.startDate + '&endDate=' + scope.endDate;
+                                window.open(window_url, '_blank');
+                                refreshModal();
+                            }
+
+                            scope.closeModal = function(){
+                                refreshModal();
+                            }
+
+                            element.on('shown.bs.modal', function () {
+                                scope.$apply(function () {
+                                    scope.model.visible = true;
+                                });
+                            });
+
+                            element.on('hidden.bs.modal', function () {
+                                scope.$apply(function () {
+                                    scope.model.visible = false;
+                                });
+                            });
+
+                        },
+                        template: '<div class="modal fade driver-dashboard-monthrecord show in reimbursementModal" tabindex="-1" role="dialog" aria-labelledby="driver-dashboard-monthrecord" id="driver-dashboard-monthrecord"><div class="fade modal-backdrop"></div><div class="modal-dialog modal-lg modal-dialog-centered"><div class="modal-content rounded-0"> <button type="button" class="close popup-close-btn" data-dismiss="modal" aria-label="Close" ng-click="closeModal()"> <span aria-hidden="true">×</span> </button><div class="modal-body"><h4>Bi-Weekly Payment Report</h4><div class="modal-divider"></div><form name="signup" class="form" id="myform"><div class="form-row"><div class="form-group-theme row-inline"><label for="payRole:" class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-form-label form-lable payRole">Pay Period: <span class="tagquestion1" data-toggle="tooltip" data-placement="top" data-html="true" title="" data-original-title="<b>Please select pay period</b>"> <i class="fa fa-question"></i> </span> </label><div class="col-xl-6 col-lg-6 col-md-6 col-sm-6"><select ng-model="variableReimbursement" ng-change="onVariableReimbursementPayPeriodChange(variableReimbursement)" class="browser-default custom-select custom-select-xl custom-payPeriod"><option ng-repeat="dateobj in dateObjArr" ng-selected="{{variableReimbursement == dateobj}}" value="{{dateobj}}">{{dateobj}}</option> </select></div></div></div></form></div><div class="modal-footer mb-3"><div class="col-md-12 mt-3 text-center"><button id="downloadReimReportBtn" class="btn btn-primary float-right mt-3 mb-3" ng-click="downloadReimbursementReport()" ng-disabled="reimbursementDownload">Download <i class="fa fa-download"></i> </button></div></div></div></div></div>'
+                    };
+            }]);
 
             // Annual Tax Liability Report
 
@@ -2492,12 +2583,14 @@
             console.log("accPayperiodStart",'{!accPayperiodStart}');
             console.log("accPayDays", {!accPayDays});
             $scope.showtaxdifferently = true;
+            $scope.accountReport = true;
             $scope.chkTripStatus = {!checkTripStatus}
             angular.forEach($scope.ListAllReports, function (report) {
                 if (report.categoryName != undefined && report.categoryName == "Tax Liability Reports") {
                     $scope.showtaxdifferently = false;
                 }
             });
+         
             $('#spinner').hide();
             var url_string = $(location).attr("href");
             var url = new URL(url_string);
@@ -2512,9 +2605,18 @@
             $scope.plMAcc = '{!($Label.PLMarketing)}';
             $scope.FrampAcc = '{!($Label.FramptonConstruction)}';
             $scope.AISId = '{!($Label.AISAccount)}';
+            // $scope.SanguineAcc = '{!($Label.Sanguine_Account)}';
+            // $scope.FlatWaterAcc = '{!($Label.Flat_Water_Homes_Account)}';
+            var TaxReportAccountIds = '{!($Label.TaxLiabilityReport)}';
             var ERMIAdminAcc = '{!($Label.ERMI_ADMIN_ID)}';
+            var biweeklyReport = '{!($Label.Bi_Weekly_Payment_Report)}';
             $scope.adminIDs = [];
+            $scope.accountTaxIDs = [];
+            $scope.accountBiweeklyIDs = [];
             $scope.adminIDs = ERMIAdminAcc.split(',');
+            $scope.accountTaxIDs = TaxReportAccountIds.split(',');
+            $scope.accountBiweeklyIDs = biweeklyReport.split(',');
+            console.log("Tax ids--", $scope.accountTaxIDs);
             $scope.admindriver = false;
             $scope.manId = url.searchParams.get("managerid");
             $scope.manVisible = false;
@@ -2523,9 +2625,17 @@
             }else{
                 $scope.manVisible = true;
             }
+
+            angular.forEach($scope.accountTaxIDs, function (taxId) {
+                if (taxId === $scope.accid) {
+                    $scope.accountReport = false;
+                }
+            });
+
             $scope.editDateModel = new EditLockDateModel();
             // $scope.stayTimeReportModel = new StayTimeReportModel();
             $scope.editTimeReportModel = new EditTimeReportModel();
+            $scope.editVariableReimbursementModel = new EditVariableReimbursementModel();
             $scope.editTimeReportSummaryModel = new EditTimeReportSummaryModel();
             $scope.editMonthlyTaxReportModel = new EditMonthlyTaxReportModel();
             $scope.editTimeCustomReportModel = new EditTimeCustomReportModel();
@@ -2688,6 +2798,7 @@
                                 <p>
                                     <a href="/app/AnnualComplianceReport?accid={{accid}}&showteam={{showteam}}&id={{id}}" title="This report includes details about drivers who's compliance status is yes">Annual Tax Liability Report </a>
                                 </p>
+                            
                             </div>
                         </div>
                         <!-- <div ng-if="chkTripStatus">
@@ -2695,6 +2806,14 @@
                                 <a ng-click="editTripReportModel.open()"> Change Trip Status in mlog/Triplog</a>
                             </p>
                         </div> -->
+                        <div ng-repeat="account in accountBiweeklyIDs">
+                            <div ng-if="accid === account">
+                                <p>
+                                    <a ng-click="editVariableReimbursementModel.open()"> Bi-Weekly Payment Report</a>
+                                </p>
+                            </div>
+                        </div>
+                      
                         <div ng-if="accid === AISId">
                             <p>
                                 <a ng-click="editNetchexReportModel.open()">Biweekly Mileage Reimbursement Report</a>
@@ -2755,31 +2874,35 @@
                                 </p>
                             </div>
                         </div>
+                        <!-- Added not visible to list account this report -->
                         <div ng-show="showtaxdifferently">
-                            <h3 class="mb-10 d-block">Tax Liability Reports</h3>
-                            <p>
-                                <a ng-show="!admindriver && !manVisible" href="/app/ReportofDriverCompliance?accid={{accid}}&showteam={{showteam}}&id={{id}}&reportid ='compliancecalculationreport'">Tax Liability</a>
-                                <a ng-show="!admindriver && manVisible" href="/app/ReportofDriverCompliance?managerid={{manId}}&accid={{accid}}&showteam={{showteam}}&id={{id}}&reportid ='compliancecalculationreport'">Tax Liability</a>
-                            </p>
-                            <p>
-                                <a ng-show="admindriver && !manVisible" href="/app/ReportofDriverCompliance?accid={{accid}}&showteam={{showteam}}&id={{id}}&reportid ='compliancecalculationreport'&admindriver=true">Tax Liability</a>
-                                <a ng-show="admindriver && manVisible" href="/app/ReportofDriverCompliance?managerid={{manId}}&accid={{accid}}&showteam={{showteam}}&id={{id}}&reportid ='compliancecalculationreport'&admindriver=true">Tax Liability</a>
-                            </p>
-                            <p>
-                                <a ng-click="editTaxLiabilityReportModel.open()">Annual Tax Liability Report </a>
-                            </p>
+                            <div ng-show="accountReport">
+                                <h3 class="mb-10 d-block">Tax Liability Reports</h3>
+                                <p>
+                                    <a ng-show="!admindriver && !manVisible" href="/app/ReportofDriverCompliance?accid={{accid}}&showteam={{showteam}}&id={{id}}&reportid ='compliancecalculationreport'">Tax Liability</a>
+                                    <a ng-show="!admindriver && manVisible" href="/app/ReportofDriverCompliance?managerid={{manId}}&accid={{accid}}&showteam={{showteam}}&id={{id}}&reportid ='compliancecalculationreport'">Tax Liability</a>
+                                </p>
+                                <p>
+                                    <a ng-show="admindriver && !manVisible" href="/app/ReportofDriverCompliance?accid={{accid}}&showteam={{showteam}}&id={{id}}&reportid ='compliancecalculationreport'&admindriver=true">Tax Liability</a>
+                                    <a ng-show="admindriver && manVisible" href="/app/ReportofDriverCompliance?managerid={{manId}}&accid={{accid}}&showteam={{showteam}}&id={{id}}&reportid ='compliancecalculationreport'&admindriver=true">Tax Liability</a>
+                                </p>
+                                <p>
+                                    <a ng-click="editTaxLiabilityReportModel.open()">Annual Tax Liability Report </a>
+                                </p>
+                            </div>
                             <!-- <p ng-if="accid === spbsId || accid === deltaId || accid === antonpaarId">
-                                <a href="/app/AnnualComplianceReport?accid={{accid}}&showteam={{showteam}}&id={{id}}" title="This report includes details about drivers who's compliance status is yes">Annual Tax Liability Report </a>
-                            </p>
-                            <p ng-if="accid === plMAcc">
-                                <a href="/app/AnnualComplianceReportPLM?accid={{accid}}">Annual Tax Liability Report </a>
-                            </p> -->
+                                                        <a href="/app/AnnualComplianceReport?accid={{accid}}&showteam={{showteam}}&id={{id}}" title="This report includes details about drivers who's compliance status is yes">Annual Tax Liability Report </a>
+                                                    </p>
+                                                    <p ng-if="accid === plMAcc">
+                                                        <a href="/app/AnnualComplianceReportPLM?accid={{accid}}">Annual Tax Liability Report </a>
+                                                    </p> -->
                         </div>
                     </div>
                 </div>
             </div>
             <edit-lock-Date model="editDateModel"></edit-lock-Date>
             <edit-time-attendance-Report model="editTimeReportModel"></edit-time-attendance-Report>
+            <edit-variable-reimbursement-Report model="editVariableReimbursementModel"></edit-variable-reimbursement-Report>
             <edit-tax-liability-Report model="editTaxLiabilityReportModel"></edit-tax-liability-Report>
             <edit-trip-detail-Report model="editTripDetailReportModel"></edit-trip-detail-Report>
             <edit-time-summary-Report model="editTimeReportSummaryModel"></edit-time-summary-Report>

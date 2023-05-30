@@ -183,8 +183,9 @@
                             }
                             else {
                                 listOfMileages = [];
+                                $('#spinner').hide();
                             }
-                            $('#spinner').hide();
+                         //   $('#spinner').hide();
                         }
                         else {
                             $('#spinner').hide();

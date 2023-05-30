@@ -66,53 +66,58 @@
                         plotOptions: {
                         series: {
                             dataLabels: {
-                            enabled: true,
-                            inside: true,
-                            color: "white",
-                            style: {
-                                fontFamily: "Proxima Nova",
-                                textOutline: false,
-                                fontSize: "20px"
-                            },
-                            formatter: function () {
-                                // display only if larger than 1
-                                return (
-                                "$" +
-                                this.y
-                                    .toString()
-                                    .replace(/\B(?=(\d{3})+(?!\d))/g, ",")
-                                );
-                            }
+                                enabled: true,
+                                inside: true,
+                                crop: false,
+                                color: "white",
+                                style: {
+                                    fontFamily: "Proxima Nova Bold",
+                                    textOutline: false,
+                                    fontSize: "20px"
+                                },
+                                formatter: function () {
+                                    if (this.y < 600) {
+                                        return
+                                    } 
+                                    // display only if larger than 1
+                                    return (
+                                    "$" +
+                                    this.y
+                                        .toString()
+                                        .replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+                                    );
+                                }
                             },
                             colorByPoint: true
                         }
                         },
                         series: [
-                        {
-                            data: dataList,
-                            colors: ["#7ABA4A", "#404b5a66", "#404B5A"],
-                            pointWidth: 200,
-                            borderRadiusTopLeft: "20px",
-                            borderRadiusTopRight: "20px"
-                        }
+                            {
+                                data: dataList,
+                                colors: ["#7ABA4A", "#404b5a66", "#404B5A"],
+                                pointWidth: 200,
+                                borderRadiusTopLeft: "20px",
+                                borderRadiusTopRight: "20px"
+                            }
                         ],
                         legend: {
-                        enabled: false
+                            enabled: false
                         },
                         tooltip: {
-                        borderRadius: 0,
-                        padding: 10,
-                        formatter: function () {
-                            return (
-                            this.x +
-                            ": <b> $" +
-                            this.y.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") +
-                            "</b>"
-                            );
-                        },
-                        style: {
-                            fontSize: "12px"
-                        }
+                            borderRadius: 0,
+                            padding: 10,
+                            formatter: function () {
+                                return (
+                                this.x +
+                                ": <b> $" +
+                                this.y.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") +
+                                "</b>"
+                                );
+                            },
+                            style: {
+                                fontFamily: "Proxima Nova",
+                                fontSize: "12px"
+                            }
                         }
                     });
                 }

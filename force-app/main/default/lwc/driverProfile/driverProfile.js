@@ -111,6 +111,7 @@ export default class DriverProfile extends LightningElement {
             }
             this.driverNotification();
         }
+        console.log('inside---- driver profile')
     }
     formatNumber(num) {
         if (this.isInformation) {

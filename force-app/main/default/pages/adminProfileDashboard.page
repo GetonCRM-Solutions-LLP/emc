@@ -1,0 +1,305 @@
+<apex:page showHeader="false" title="Driver Dashboard" sidebar="false" lightningStylesheets="true" standardStylesheets="false" showChat="false" controller="ManagerDashboardController">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+        <link rel="stylesheet" href="{!URLFOR($Resource.LwcDesignCss,'lwcDesign/assets/css/customstyle.css')}" />
+        <script src="https://code.jquery.com/jquery-2.1.3.min.js"></script>
+        <!-- Css Part Start -->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/fontawesome.min.css" />
+        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v6.1.1/css/all.css" />
+        <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"
+        />
+        <!--Toaster -->
+        <script  src="{!URLFOR($Resource.EMC_Header_Scripts,'EMC_Header_Scripts/js/toastr.min.js')}"></script>
+        <link href="{!URLFOR($Resource.EMC_Header_Scripts,'EMC_Header_Scripts/css/toastr.min.css')}" rel="stylesheet" />
+        <style>
+            *{
+                    user-select: none;
+            }
+
+            *{
+                font-family: 'Proxima Nova' !important;
+            }
+
+            header{
+                margin-bottom: 0 !important;
+            }
+
+            .opacity{
+                opacity: 0.98 !important;
+            }
+
+            .d-none{
+                display: none;
+            }
+
+            .d-block{
+                display: block;
+            }
+
+            .loader-text{
+                font-weight: 400;
+                font-size: 16px;
+                line-height: 19px;
+                padding-top: 15px;
+                color: #FFF;
+            }
+
+            .logo-m{
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+            }
+
+            .spinner-background{
+                    width: 100%;
+                    height: 100%;
+                    background: #FFF;
+                    opacity: 1;
+                    top: 0px;
+                    left: 0px;
+                    position: fixed;
+                    z-index: 1000000;
+            }
+
+            .loader{
+                    position: fixed;
+                    top: 0;
+                    left: 0;
+                    height: 100%;
+                    width: 100%;
+                    display: flex;
+                    flex-flow: column nowrap;
+                    justify-content: center;
+                    align-items: center;
+                    z-index: 1000000;
+            }
+
+            .mbloader-text{
+                font-weight: 400;
+                font-size: 22px;
+                line-height: 19px;
+                padding-top: 20px;
+                color: #1D1D1D;
+            }
+
+            .text-loading{
+                font-weight: 700;
+                font-size: 35px;
+                line-height: 39px;
+                display: flex;
+                align-items: center;
+                text-align: center;
+                color: #78BC42;
+            }
+
+            .data-text-loading{
+                font-weight: 700;
+                font-size: 30px;
+                line-height: 39px;
+                display: flex;
+                align-items: center;
+                text-align: center;
+                color: #78BC42;
+            }
+
+            .svg-container{
+                padding-top: 20px;
+            }
+
+            /* #toast-container>.toast-success{
+                opacity: 1 !important;
+                background-color: #7ABB4A !important
+            }
+
+            #toast-container>.toast-error{
+                opacity: 1 !important;
+                background-color: #FA7800!important
+            } */
+
+            .toast-message{
+                color: #1d1d1d;
+                font-size: 16px;
+                padding-top: 2px;
+            }
+
+            .toast-success,.toast-info,.toast-warning,.toast-error{
+                opacity: 1 !important;
+                width:400px !important;
+                font-family: 'Poppins', sans-serif !important;
+                font-size:0.9rem;
+                border-radius:1rem !important;
+                background-color:#edf1fd !important;
+                color:#404b5b !important;
+                border-color:transparent !important;
+            }
+
+
+            .toast-close-button{
+                width:25px !important;
+                height:25px !important;
+                border-radius:50%;
+                background-color:#ccd7fc !important;
+                font-size: 24px !important;
+                font-weight: 500 !important;
+                color: #000617 !important;
+                text-shadow: 0 1px 0 rgb(0, 22, 57) !important;
+            }
+
+            #toast-container>.toast-success {
+            background-image:  url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABwAAAAcCAYAAAByDd+UAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAKLSURBVHgBzZZNbtpAFMffjMFRQY28hFKpzg1gGZFKWGkqdZX2BHVOUHIC4AQ0J6g5QZVVpDTUqC10V3GDelGqSF3UG1cqgZm+GYIVbPAHoCp/CWY89sxP78289wbgP4tAShW+XugwyeiiP6Xc/VV9PkwzPxao2e+1fHbXBEqOgfEyztDCq5AecN4ZVQ+tuPUigY8H9hvOWHMpZLkc/LWiwEuBwqqcqrUJMBPWk+WN6alrGG4sULpQfWjjqzJsJDL0xsQIQmnws7y6294cJsTLeZW1g6MLwFK/a2JjwvZkFgfd+kogqgFbFuXQ0GxbCwFvrdNhHXHew3+Lz05pUNqD7MQMAYGT17AebTg6eGZMx+PWqhijVDme9zP+KOE1SItCixhVXom+oqp4sld4iHP/EEoLS/3LcsSqrnQVtsFXaFHret9wHvXtBkRvh1b81n3iA6eMrM4kBNw/Y1qZKrSyuEf8TGSUwucPNUwQTYiR4rE9HxgjPb/DGsISytiJRCHYyynNgn2hK5S+gxSaATMZJ/IrDvXip6uXP54e9QjjZ4xSw60YLu5bnCt9/cXKIlr/YGFY/MYmKkm7eBIr18YLRzzIxM7ZW0godL9k3Q2LuLqmKTs70n3ClbKKJBWRcQqLQJiex07kvFYafLRlCCQvWcKYjs+ed3RMPzcq+w6QYqEkLDxgP6uHe/Nn30JHlBEOLdiyRKwGnhdV+nJl4ZVhzTQXkoWH5eTuQCgOszdKXRRP2Fh86OXoaXA0BBSuzWKlFpciWJvFO5gYZKwGX0VeokTJwk1vkKRlS+Zb1hodHK2Mz0T3UlkrRflaVlEkhOMWkHMvT61lVqUGLsIvy+Q22WcyE8fZn2Wee6t/lXrvcWjggekAAAAASUVORK5CYII=')!important;
+            }
+
+            #toast-container>.toast-info {
+                background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABwAAAAcCAYAAAByDd+UAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAJaSURBVHgBvVZNbtNQEJ55idd4hSphKnOCkhM0PQHpCUhuADsWLTgkQuwQJyCcoOEEpSfAnKBW6cK0m6wb+U1nXu04bdLkTRT1kxLnOR5/b/7eNwge2Dn61ybEN4agbRFiBAjlPgFM+HfK1xSJfuXDl7/XvQtXEh1fdvnyiT8xeAEzgKKfD3ZHjz6xlOjDeYzN4IQQXsNGYOLpzUH+9VX28B+zQPbx8i0FwZ/NyQQUI7/j+dFFZ2Er8wt5wKA5gW0CoZt/jn7WyxISRvGsKojt8cGEptNWFd46pEFw6kfG+SE6KBrQ4kW27mmu4FDqoVo7wrIaY/AB2Z6U/3USpZbsey8Troed44vujBDuSt8LSDgrJs63IvwNx4HS1IB46msmObEAfUR8RkTvVDnnVDTZoEPgD5cTgG9svPrUWG7babLZntJowl8Ze5hKv/Gttr817htdg+MIucT/D6NWPnjR4/PzLyhg+Bw2ur6jLrfPj9lKH53QgBI07xVqwnkH43KiACKlcnXVrYRUuOHvTGNUFMYRsj6qD3fRTWMsnfkayA6vv0RpudoHJSQdEtKxtwHvsGZ3LaECb3hsyrEg8zGoCiZMzkMkrV5iJlxVlfa9TCym9W5xLB/wRuE4HGE+iEZ8AKRrbRpl3ibirf1OQJ5esnflnFMLcMICXGxfgN1k12ABTh4IsNxA8NM3FaHoZ1IPU/dOGnGbRfVQexgsJXLvsL2r4e69PC8fEzm8UASikTFsAK7glJrTw3nPVhLOiJ9qEF4gllGfxZPbYE/kbH7UF23kX2fS1D6j/i3BTfaqkKQ1ngAAAABJRU5ErkJggg==')!important;
+            }
+
+            #toast-container>.toast-warning {
+                background-image:  url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABwAAAAcCAYAAAByDd+UAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAHbSURBVHgBxZZPTsJAFMa/NxDEjYJE1/UGcgOP4BEwARNXeAP0BMSVCzWNJxBPIDfQG8COhSSwJBH7fFNbaKV/ZsA/vwVppzPz5Zt58zHAH0OwZOCisjNHgxWmBYVe9RRTm/FWgiMXzpZHz/LoBE1DUly3EVWwoOSpTkRM43hzXMACY4eBu0HCp6m4PDR1aeywzOSmfKrYuDQSHN9LkTCOFw3Mr/I7DF9JUXt0E1vqzQQVqBN5ne41UdfFop+DtkqppDpmc+Wg3SFeKL5IsGeLfSNw4+02sgrrCn5zl0mhkN83U3DiqjZgtjc+ss95LlMF9TFgj63OmCbPZapgGZbuQsRlsO/mguu6W05KnYlkbvK3BIII24TUyFsR1O50iWNDdBgkuVwR/AF3IYmRFwtvXdIF5f/9ZOGH9UwmlDB/0RPn9Y0Ge8yhiLnIp8IiZCDm9/U81Y02LBzqUpbqMhG0Zv7B9YMz6MBfOrSJMDkyV8z8YNq/WKTuUgeJAZ2hxk+1Fi5rTTSIuWc2Zhl5Sh8DG3dQtLuYh+jIdFgYeTS+w4kieoQdQ3wVTF7RxNhmdopSNlaDAhyswexd8kDfLRG5LvwWUmTX1XO5VoYNemmJYbwnNnhAf7+FPv6DT2e/n0VFnPgUAAAAAElFTkSuQmCC')!important;
+            }
+
+            #toast-container>.toast-error {
+                background-image:  url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABwAAAAcCAYAAAByDd+UAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAIlSURBVHgB3VbBbtNAEH2zTugFFIPgwAlzA4mK8AdrvgC+APiSKl/S9AvoH8SfEEQP3PCNAwjcA6IQeYcdYxtvbK/jNr30SVG86519npk3swvcdNCuC7880dF0Ck1QzxVMKHMGKmOYD5sNkoefknSXfQYJvz7TekJ0xIAe2CjJwSf3PybLgXXd+BzpcHZHHQP8CiPAoOWfjVn0edxJKOE7mNLKPka4HNLfG467SOkayGpSCvjF3XWSNSfV9qpbU3W0BzJBxLmkxIXj4bdD/VaBjrFH5Mzxg7MkqcaOhwHwBuOR+V4GVuHNcU0oubMK032GNh+P5Wdjsq4nGet6vh/619OXj1qEUtQeI/EiswJISXFckArZhGMRxcUFvPhJJm4REmPusQnZ0OrHXIdCIKQVmdTrwYTee2xBStV7T/7PIvQZWY/mJWlcSb1oDrdtCZH3Y6HIzOpnjIFxh2E4eofGcvarrZkz8awZXkdIXd/J6rxFyH6jzJK9rsgkjNs5hac8mMy6RRgESDyEECU6OStzKuVk30lwezXQ3NvpNN8Pte2h/bVYeuEX1zYYyb2zVbssBDljMWA+jszCEJ80xw7hv57Hp9gTCLzcPpBboqYA7+xfiqsjtc25FbEWYaG6oFBdiiuQyR7SCgcJS9LCgOHGfxfYMJ6WB2/a/X4AxRnJ9tgir3oLNdpL1KJ59l2KsIIt8ijP7TWRixqcldbn0jDGXBNvPv4C3QjuTqveJGAAAAAASUVORK5CYII=')!important;
+            }
+
+            ::-webkit-scrollbar-track {
+                -webkit-box-shadow: inset 0 0 6px #F6F6F6;
+                border-radius: 100px;
+                background-color: #F6F6F6;
+            }
+
+            ::-webkit-scrollbar {
+                width: 5px;
+                height: 50px;
+                background-color:#F6F6F6;
+            }
+
+            ::-webkit-scrollbar-thumb {
+                border-radius: 100px;
+                height: 50px;
+                background-color:#404B5B
+            }
+
+        </style>
+    </head>
+    <apex:includeLightning /> 
+   <div id="locationSpinner" class="d-none">
+     <div class="spinner-background"></div>
+        <div class="loader">
+            <div class="svg-container">
+                <div style="position:relative">
+                   <img style="width: 170px;" src="{!URLFOR($Resource.mBurseCss,'mburse/assets/mBurse-Icons/map-loading.gif')}" />
+                </div>
+            </div>
+            <div class="mbloader-text" id="locationText"></div>
+        </div>
+    </div>
+
+   <div id="mSpinner" class="d-none">
+        <div class="spinner-background"></div>
+            <div class="loader">
+                <span class="text-loading">Your Profile Is Loading…</span>
+                <div class="mbloader-text">This may take a few seconds</div>
+                <div class="svg-container">
+                    <div style="position:relative">
+                       <img style="width: 72px;" src="{!URLFOR($Resource.mBurseCss,'mburse/assets/mBurse-Icons/mburse-loading.gif')}" />
+                    </div>
+                </div>
+            </div>
+    </div>
+
+    <div id="mLoader" class="d-none">
+        <div class="spinner-background opacity"></div>
+        <div class="loader">
+            <!-- <span class="text-loading">Loading...</span>-->
+            <span class="data-text-loading">Loading data…</span>
+            <div class="mbloader-text">This may take a few seconds</div>
+            <div class="svg-container">
+                <div style="position:relative">
+                   <img style="width: 180px;" src="{!URLFOR($Resource.mBurseCss,'mburse/assets/mBurse-Icons/Bar-style.gif')}" />
+                </div>
+            </div>
+        </div>
+    </div>
+    <div style="padding-bottom: 80px" id="adminLwc" />
+   <!-- <div style=""> -->
+    <c:mBurseChatBot />
+    <script>
+        window.addEventListener("load", (event) => {
+          document.getElementById("mSpinner").classList.remove("d-none");
+        });
+          fetch("/app/c/LWCLightningApp.app?aura.format=JSON&aura.formatAdapter=LIGHTNING_OUT")
+          .then(function (response) {
+              if (response.status !== 200) {
+                  var url , path;
+                  url = location;
+                  path = url.origin + "/app/secur/logout.jsp";
+                  document.getElementById("mLoader").classList.add("d-none");
+                  document.getElementById("locationSpinner").classList.add("d-none");
+                  document.getElementById("mSpinner").classList.add("d-none");
+                  location.replace(path);
+              }
+          })
+          .catch(function (error) {
+              ///if status code 401...
+          });
+          /* Toaster Option */
+          this.setOptions = function () {
+              toastr.options.positionClass = "toast-top-right";
+              toastr.options.closeButton = true;
+              toastr.options.progressBar = true;
+              toastr.options.fadeOut = 5000;
+              toastr.options.showEasing = 'swing',
+              toastr.options.hideEasing = 'linear',
+              toastr.options.showMethod = 'fadeIn',
+              toastr.options.hideMethod = 'fadeOut'
+          };
+
+          this.setOptions();
+        //  $("#mSpinner").show();
+          function getUrlParamValue(url, key) {
+              return new URL(url).searchParams.get(key);
+          }
+
+          var url , path, team;
+          team = {!showMyTeam};
+          url = location;
+          path =  location.origin + location.pathname + "?accid=" + getUrlParamValue(window.location.href, 'accid') + "&id=" + getUrlParamValue(window.location.href, 'id') + "&showteam=false";
+          if(window.performance.navigation.type === 1){
+                location.replace(path);
+          }
+
+          console.log("Team-->", team);
+
+          $Lightning.use("c:LWCLightningApp", function () {
+                $Lightning.createComponent("c:dynamicDashboard", {
+                    //pass parameter values to lwc js controller
+                    "showTeam": team
+                    }, "adminLwc", function (cmp) {
+                            //document.getElementById("mSpinner").classList.add("d-none");
+                            console.log("Component Created Successfully");
+                            document.getElementById("mSpinner").classList.add("d-none");
+                            // document.querySelector('c-admin-dashboard-frame').addEventListener('show', (e) => {
+                            //         document.getElementById("mLoader").classList.remove("d-none");
+                            // })
+
+                            // document.querySelector('c-admin-dashboard-frame').addEventListener('hide', (e) => {
+                            //         document.getElementById("mLoader").classList.add("d-none");
+                            // })
+
+                            // document.querySelector('c-admin-dashboard-frame').addEventListener('toast', (e) => {
+                            //     console.log("toast", e);
+                            //       if(e.detail.type === 'error'){
+                            //         toastr.error(e.detail.message,  'Error Message')
+                            //       }else if(e.detail.type === 'success'){
+                            //         toastr.success(e.detail.message,  'Success Message')
+                            //       }
+                            // })
+                    }
+                );
+            });
+        </script>
+</apex:page>

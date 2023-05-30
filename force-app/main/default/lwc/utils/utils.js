@@ -34,4 +34,19 @@ const modalEvents  = (component, param) => {
     component.dispatchEvent(e);
 }
 
-export {events, skipEvents, backEvents, nextSkipEvents, openEvents, toastEvents, modalEvents}
+const searchEvents  = (component, param) => {
+    const e = new CustomEvent('search', {detail: param});
+    component.dispatchEvent(e);
+}
+
+const pageEvents  = (component, param) => {
+    const e = new CustomEvent('pagecount', {detail: param});
+    component.dispatchEvent(e);
+}
+
+const syncEvents  = (component, param) => {
+    const e = new CustomEvent('syncdone', {detail: param});
+    component.dispatchEvent(e);
+}
+
+export {events, skipEvents, backEvents, nextSkipEvents, openEvents, toastEvents, modalEvents, searchEvents, pageEvents, syncEvents}

@@ -3,10 +3,10 @@
         <table class="slds-table  slds-table_cell-buffer slds-table_striped">
             <thead class="">
                 <tr class="slds-line-height_reset">
-                    <template if:true={columns}>
+                    <template lwc:if={columns}>
                         <template for:each={columns} for:item="head">
                             <th class="header-title" scope="col" key={head.id}>
-                                <template if:true={isSortable}>
+                                <template lwc:if={isSortable}>
                                     <div class="head-title" onclick={sort} title={head.name} data-name={head.colName} data-type={head.colType}>
                                         <a  data-name={head.colName} data-type={head.colType} class="head-sort">
                                             {head.name}
@@ -21,7 +21,7 @@
                                         </a>
                                     </div>
                                 </template>
-                                <template if:false={isSortable}>
+                                <template lwc:else>
                                     <div class="head-title"  title={head.name} >
                                         <a   class="head-sort">
                                             {head.name}
@@ -30,50 +30,62 @@
                                 </template>
                             </th>
                         </template>
-                        <template if:true={rowDownload}>
+                        <template lwc:if={rowDownload}>
                             <th class="download-th"></th>
                         </template>
                     </template>
                 </tr>
             </thead>
             <tbody class="content-body">
-                <template if:true={pagedData}>
+                <template lwc:if={pagedData}>
                     <template for:each={pagedData} for:item="trip">
                             <tr key={trip.id}>
                                 <template for:each={trip.keyFields} for:item="mapKey">
-                                    <template if:true={mapKey.istwoDecimalCurrency}>
-                                        <template if:true={mapKey.hasLeadingZero}>
-                                            <td class="modal-content" key={mapKey.key} if:false={mapKey.bold}>
-                                                ${mapKey.hasLeadingZero}
-                                            </td>
-                                            <td class="modal-content bold-text" key={mapKey.key} if:true={mapKey.bold}>
-                                                ${mapKey.hasLeadingZero}
-                                            </td>
-                                        </template>
-                                        <template if:false={mapKey.hasLeadingZero}>
-                                            <td class="modal-content" key={mapKey.key} if:false={mapKey.bold}>
-                                                <lightning-formatted-number value={mapKey.value} format-style="currency"
-                                                    currency-code="USD" minimum-fraction-digits="2">
-                                                </lightning-formatted-number>
-                                            </td>
-                                            <td class="modal-content bold-text" key={mapKey.key} if:true={mapKey.bold}>
-                                                <lightning-formatted-number value={mapKey.value} format-style="currency"
-                                                    currency-code="USD" minimum-fraction-digits="2">
-                                                </lightning-formatted-number>
-                                            </td>
-                                        </template>
-                                    </template>
-                                    <template if:false={mapKey.istwoDecimalCurrency}>
-                                        <template if:true={mapKey.isfourDecimalCurrency}>
-                                            <template if:true={mapKey.hasLeadingZero}>
-                                                <td class="modal-content" key={mapKey.key} if:false={mapKey.bold}>
-                                                    ${mapKey.hasLeadingZero}
-                                                </td>
-                                                <td class="modal-content bold-text" key={mapKey.key} if:true={mapKey.bold}>
+                                    <template lwc:if={mapKey.istwoDecimalCurrency}>
+                                        <template lwc:if={mapKey.hasLeadingZero}>
+                                            <template lwc:if={mapKey.bold}>
+                                                <td class="modal-content bold-text" key={mapKey.key} >
                                                     ${mapKey.hasLeadingZero}
                                                 </td>
                                             </template>
-                                            <template if:false={mapKey.hasLeadingZero}>
+                                            <template lwc:else>
+                                                <td class="modal-content" key={mapKey.key}>
+                                                    ${mapKey.hasLeadingZero}
+                                                </td>
+                                            </template>
+                                        </template>
+                                        <template lwc:else>
+                                            <template lwc:if={mapKey.bold}>
+                                                <td class="modal-content bold-text" key={mapKey.key}>
+                                                    <lightning-formatted-number value={mapKey.value} format-style="currency"
+                                                        currency-code="USD" minimum-fraction-digits="2">
+                                                    </lightning-formatted-number>
+                                                </td>
+                                            </template>
+                                            <template lwc:else>
+                                                <td class="modal-content" key={mapKey.key}>
+                                                    <lightning-formatted-number value={mapKey.value} format-style="currency"
+                                                        currency-code="USD" minimum-fraction-digits="2">
+                                                    </lightning-formatted-number>
+                                                </td>    
+                                            </template>
+                                        </template>
+                                    </template>
+                                    <template lwc:else>
+                                        <template lwc:if={mapKey.isfourDecimalCurrency}>
+                                            <template lwc:if={mapKey.hasLeadingZero}>
+                                                <template lwc:if={mapKey.bold}>
+                                                    <td class="modal-content bold-text" key={mapKey.key}>
+                                                        ${mapKey.hasLeadingZero}
+                                                    </td>
+                                                </template>
+                                                <template lwc:else>
+                                                    <td class="modal-content" key={mapKey.key}>
+                                                        ${mapKey.hasLeadingZero}
+                                                    </td>
+                                                </template>
+                                            </template>
+                                            <template lwc:else>
                                                 <td class="modal-content" key={mapKey.key}>
                                                     <lightning-formatted-number value={mapKey.value} format-style="currency"
                                                         currency-code="USD" minimum-fraction-digits="4">
@@ -81,17 +93,21 @@
                                                 </td>
                                             </template>
                                         </template>
-                                        <template if:false={mapKey.isfourDecimalCurrency}>
-                                            <template if:true={mapKey.twoDecimal}>
-                                                <template if:true={mapKey.hasLeadingZero}>
-                                                    <td class="modal-content" key={mapKey.key} if:false={mapKey.bold}>
-                                                        {mapKey.hasLeadingZero}
-                                                    </td>
-                                                    <td class="modal-content bold-text" key={mapKey.key} if:true={mapKey.bold}>
-                                                        {mapKey.hasLeadingZero}
-                                                    </td>
+                                        <template lwc:else>
+                                            <template lwc:if={mapKey.twoDecimal}>
+                                                <template lwc:if={mapKey.hasLeadingZero}>
+                                                    <template lwc:if={mapKey.bold}>
+                                                        <td class="modal-content bold-text" key={mapKey.key}>
+                                                            {mapKey.hasLeadingZero}
+                                                        </td>
+                                                    </template>
+                                                    <template lwc:else>
+                                                        <td class="modal-content" key={mapKey.key}>
+                                                            {mapKey.hasLeadingZero}
+                                                        </td>
+                                                    </template>
                                                 </template>
-                                                <template if:false={mapKey.hasLeadingZero}>
+                                                <template lwc:else>
                                                     <td class="modal-content" key={mapKey.key}>
                                                         <lightning-formatted-number value={mapKey.value}
                                                             minimum-fraction-digits="2">
@@ -99,51 +115,57 @@
                                                     </td>
                                                 </template>
                                             </template>
-                                            <template if:false={mapKey.twoDecimal}>
-                                                <template if:true={mapKey.isDate}>
+                                            <template lwc:else>
+                                                <template lwc:if={mapKey.isDate}>
                                                     <td class="modal-content" key={mapKey.key}>
-                                                        <div if:true={mapKey.icon} class="flex-row">
-                                                            <div class="slds-m-top_xx-small slds-m-right_small icon-holder">
-                                                                <i class="fas fa-xs fa-chevron-right navigate" data-id={mapKey.id} data-st={mapKey.sDate} data-ed={mapKey.eDate} data-name={mapKey.value}></i>
+                                                        <template lwc:if={mapKey.icon}>
+                                                            <div  class="flex-row">
+                                                                <div class="slds-m-top_xx-small slds-m-right_small icon-holder">
+                                                                    <i class="fas fa-xs fa-chevron-right navigate" data-id={mapKey.id} data-st={mapKey.sDate} data-ed={mapKey.eDate} data-name={mapKey.value}></i>
+                                                                </div>
+                                                               <div>
+                                                                <lightning-formatted-date-time value={mapKey.value} year="2-digit"
+                                                                    month="numeric" day="numeric">
+                                                                </lightning-formatted-date-time>
+                                                                </div>
                                                             </div>
-                                                           <div>
-                                                            <lightning-formatted-date-time value={mapKey.value} year="2-digit"
-                                                                month="numeric" day="numeric">
-                                                            </lightning-formatted-date-time>
-                                                            </div>
-                                                        </div>
-                                                       <div if:false={mapKey.icon}>
+                                                        </template>
+                                                        <template lwc:else>
                                                             <lightning-formatted-date-time value={mapKey.value} year="2-digit"
                                                                     month="numeric" day="numeric">
                                                             </lightning-formatted-date-time>
-                                                       </div>
+                                                        </template>
                                                     </td>
                                                 </template>
-                                                <template if:false={mapKey.isDate}>
-                                                        <template if:true={mapKey.icon}>
-                                                            <td class="modal-content flex-row" key={mapKey.key}>
-                                                                <div if:true={mapKey.icon}
-                                                                    class="slds-m-top_xx-small slds-m-right_small icon-holder"><i
-                                                                        class="fas fa-xs fa-chevron-right navigate"  data-name={mapKey.value}></i></div>
-                                                                {mapKey.value}
-                                                            </td>
+                                                <template lwc:else>
+                                                    <template lwc:if={mapKey.icon}>
+                                                        <td class="modal-content flex-row" key={mapKey.key}>
+                                                            <div
+                                                                class="slds-m-top_xx-small slds-m-right_small icon-holder"><i
+                                                                    class="fas fa-xs fa-chevron-right navigate"  data-name={mapKey.value}></i></div>
+                                                            {mapKey.value}
+                                                        </td>
+                                                    </template>
+                                                    <template lwc:else>
+                                                        <template lwc:if={mapKey.bold}>
+                                                            <td class="modal-content bold-text" key={mapKey.key} >{mapKey.value}</td>
                                                         </template>
-                                                        <template if:false={mapKey.icon}>
-                                                            <td class="modal-content" key={mapKey.key} if:false={mapKey.bold}>{mapKey.value}</td>
-                                                            <td class="modal-content bold-text" key={mapKey.key} if:true={mapKey.bold}>{mapKey.value}</td>
+                                                        <template lwc:else>
+                                                            <td class="modal-content" key={mapKey.key}>{mapKey.value}</td>
                                                         </template>
+                                                    </template>
                                                 </template>
                                             </template>
                                         </template>
                                     </template>
                                 </template>
-                                <template if:true={rowDownload}>
+                                <template lwc:if={rowDownload}>
                                     <td class="model-content download-td"><img class="download-icon" data-key={trip.id} src={downloadIcon} onclick={handleDownload} /></td>
                                 </template>
                             </tr>
                     </template>
-                    <template if:true={isYtd}>
-                        <tr if:true={isYtdBiweek}>
+                    <template lwc:if={isYtd}>
+                        <tr lwc:if={isYtdBiweek}>
                             <td class="bold-text">YTD</td>
                             <td></td>
                             <td><lightning-formatted-number value={footerList.mileageCalc}  minimum-fraction-digits="2">
@@ -153,12 +175,12 @@
                             <td>{footerList.fixed1Calc}</td>
                             <td>{footerList.fixed2Calc}</td>
                             <td>{footerList.fixed3Calc}</td>
-                            <td><lightning-formatted-number value={footerList.totalFixedAmountCalc} format-style="currency"
+                            <td><lightning-formatted-number value={footerList.totalReim} format-style="currency"
                                 currency-code="USD" minimum-fraction-digits="2"></lightning-formatted-number></td>
                             <td><lightning-formatted-number value={footerList.totalAVGCalc} format-style="currency"
                                 currency-code="USD" minimum-fraction-digits="2"></lightning-formatted-number></td>
                         </tr>
-                        <tr if:false={isYtdBiweek}>
+                        <tr lwc:else>
                             <td class="bold-text">YTD</td>
                             <td></td>
                             <td><lightning-formatted-number value={footerList.mileageCalc}  minimum-fraction-digits="2">
@@ -168,15 +190,15 @@
                                 currency-code="USD" minimum-fraction-digits="2"></lightning-formatted-number></td>
                             <td><lightning-formatted-number value={footerList.totalMonthlyFixedCalc} format-style="currency"
                                 currency-code="USD" minimum-fraction-digits="2"></lightning-formatted-number></td>
-                            <td><lightning-formatted-number value={footerList.totalFixedAmountCalc} format-style="currency"
+                            <td><lightning-formatted-number value={footerList.totalReim} format-style="currency"
                                 currency-code="USD" minimum-fraction-digits="2"></lightning-formatted-number></td>
                             <td><lightning-formatted-number value={footerList.totalAVGCalc} format-style="currency"
                                     currency-code="USD" minimum-fraction-digits="2"></lightning-formatted-number></td>
                         </tr>
                     </template>
                 </template>
-                <template if:true={norecord}>
-                    <template if:true={columns}>
+                <template lwc:if={norecord}>
+                    <template lwc:if={columns}>
                             <tr>
                                 <template for:each={columns} for:item="head">
                                     <td key={head.id}>--</td>
@@ -222,16 +244,16 @@
             </template>
     </template>
  
-    <template if:true={scrollable}>
+    <template lwc:if={scrollable}>
         <div class={mainClass}> <!-- height: calc(100vh - 244px); -->
-            <div class="slds-scrollable_y slds-p-right_small">
+            <div class={className}>
                 <table class="slds-table slds-table--header-fixed slds-table_cell-buffer slds-table_striped" id="tableSel" >
                     <thead class="">
                         <tr class="slds-line-height_reset">
-                            <template if:true={columns}>
+                            <template lwc:if={columns}>
                                 <template for:each={columns} for:item="head">
                                     <th class="header-title" scope="col" key={head.id}>
-                                        <template if:true={isSortable}>
+                                        <template lwc:if={isSortable}>
                                             <div class="slds-cell-fixed" onclick={sort} title={head.name} data-name={head.colName} data-type={head.colType}>
                                                 <a  data-name={head.colName} data-type={head.colType} class="head-sort">
                                                     {head.name}
@@ -246,7 +268,7 @@
                                                 </a>
                                             </div>
                                         </template>
-                                        <template if:false={isSortable}>
+                                        <template lwc:else>
                                             <div class="slds-cell-fixed"  title={head.name} >
                                                 <a   class="head-sort">
                                                     {head.name}
@@ -260,20 +282,24 @@
                         </tr>
                     </thead>
                     <tbody class="content-body">
-                        <template if:true={pagedData}>
+                        <template lwc:if={pagedData}>
                             <template for:each={pagedData} for:item="trip">
                                     <tr  key={trip.id} class={trip.rejectedClass}>
                                         <template for:each={trip.keyFields} for:item="mapKey">
-                                            <template if:true={mapKey.istwoDecimalCurrency}>
-                                                <template if:true={mapKey.hasLeadingZero}>
-                                                    <td class="modal-content" key={mapKey.key} if:false={mapKey.bold}>
-                                                        ${mapKey.hasLeadingZero}
-                                                    </td>
-                                                    <td class="modal-content bold-text" key={mapKey.key} if:true={mapKey.bold}>
-                                                        ${mapKey.hasLeadingZero}
-                                                    </td>
+                                            <template lwc:if={mapKey.istwoDecimalCurrency}>
+                                                <template lwc:if={mapKey.hasLeadingZero}>
+                                                    <template lwc:if={mapKey.bold}>
+                                                        <td class="modal-content bold-text" key={mapKey.key}>
+                                                            ${mapKey.hasLeadingZero}
+                                                        </td>
+                                                    </template>
+                                                    <template lwc:else>
+                                                        <td class="modal-content" key={mapKey.key}>
+                                                            ${mapKey.hasLeadingZero}
+                                                        </td>
+                                                    </template>
                                                 </template>
-                                                <template if:false={mapKey.hasLeadingZero}>
+                                                <template lwc:else>
                                                     <td class="modal-content" key={mapKey.key}><lightning-formatted-number
                                                         value={mapKey.value}
                                                         format-style="currency"
@@ -282,17 +308,21 @@
                                                     </lightning-formatted-number></td>
                                                 </template>
                                             </template>
-                                                <template if:false={mapKey.istwoDecimalCurrency}>
-                                                    <template if:true={mapKey.isfourDecimalCurrency}>
-                                                        <template if:true={mapKey.hasLeadingZero}>
-                                                            <td class="modal-content" key={mapKey.key} if:false={mapKey.bold}>
-                                                                ${mapKey.hasLeadingZero}
-                                                            </td>
-                                                            <td class="modal-content bold-text" key={mapKey.key} if:true={mapKey.bold}>
-                                                                ${mapKey.hasLeadingZero}
-                                                            </td>
+                                                <template lwc:else>
+                                                    <template lwc:if={mapKey.isfourDecimalCurrency}>
+                                                        <template lwc:if={mapKey.hasLeadingZero}>
+                                                            <template lwc:if={mapKey.bold}>
+                                                                <td class="modal-content bold-text" key={mapKey.key}>
+                                                                    ${mapKey.hasLeadingZero}
+                                                                </td>
+                                                            </template>
+                                                            <template lwc:else>
+                                                                <td class="modal-content" key={mapKey.key}>
+                                                                    ${mapKey.hasLeadingZero}
+                                                                </td>
+                                                            </template>
                                                         </template>
-                                                        <template if:false={mapKey.hasLeadingZero}>
+                                                        <template lwc:else>
                                                             <td class="modal-content" key={mapKey.key}><lightning-formatted-number
                                                                 value={mapKey.value}
                                                                 format-style="currency"
@@ -301,37 +331,41 @@
                                                             </lightning-formatted-number></td>
                                                         </template>
                                                     </template>
-                                                    <template if:false={mapKey.isfourDecimalCurrency}>
-                                                        <template if:true={mapKey.twoDecimal}>
-                                                            <template if:true={mapKey.hasLeadingZero}>
-                                                                <td class="modal-content" key={mapKey.key} if:false={mapKey.bold}>
-                                                                    {mapKey.hasLeadingZero}
-                                                                </td>
-                                                                <td class="modal-content bold-text" key={mapKey.key} if:true={mapKey.bold}>
-                                                                    {mapKey.hasLeadingZero}
-                                                                </td>
+                                                    <template lwc:else>
+                                                        <template lwc:if={mapKey.twoDecimal}>
+                                                            <template lwc:if={mapKey.hasLeadingZero}>
+                                                                <template lwc:if={mapKey.bold}>
+                                                                    <td class="modal-content bold-text" key={mapKey.key}>
+                                                                        {mapKey.hasLeadingZero}
+                                                                    </td>
+                                                                </template>
+                                                                <template lwc:else>
+                                                                    <td class="modal-content" key={mapKey.key}>
+                                                                        {mapKey.hasLeadingZero}
+                                                                    </td>
+                                                                </template>
                                                             </template>
-                                                            <template if:false={mapKey.hasLeadingZero}>
+                                                            <template lwc:else>
                                                                 <td class="modal-content" key={mapKey.key}><lightning-formatted-number
                                                                     value={mapKey.value}
                                                                     minimum-fraction-digits="2">
                                                                 </lightning-formatted-number></td>
                                                             </template>
                                                         </template>
-                                                        <template if:false={mapKey.twoDecimal}>
-                                                            <template if:true={mapKey.icon}>
-                                                                <td  class="modal-content flex-row" key={mapKey.key}  data-name={mapKey.value}><div if:true={mapKey.icon} class="slds-m-top_xx-small slds-m-right_small icon-holder"><i  class="fas fa-xs fa-chevron-right navigate"></i></div>{mapKey.value}</td>
+                                                        <template lwc:else>
+                                                            <template lwc:if={mapKey.icon}>
+                                                                <td  class="modal-content flex-row" key={mapKey.key}  data-name={mapKey.value}><div class="slds-m-top_xx-small slds-m-right_small icon-holder"><i  class="fas fa-xs fa-chevron-right navigate"></i></div>{mapKey.value}</td>
                                                             </template>
-                                                            <template if:false={mapKey.icon}>
-                                                                <template if:true={mapKey.tooltip}>
-                                                                    <template if:true={mapKey.truncate}>
+                                                            <template lwc:else>
+                                                                <template lwc:if={mapKey.tooltip}>
+                                                                    <template lwc:if={mapKey.truncate}>
                                                                         <td  class="modal-content tooltipText" key={mapKey.key}><div class="slds-truncate" style="width: 10rem;">{mapKey.value}</div><span class="tooltipValue">{mapKey.tooltipText}</span></td>
                                                                     </template>
-                                                                    <template if:false={mapKey.truncate}>
+                                                                    <template lwc:else>
                                                                         <td  class="modal-content tooltipText" key={mapKey.key}>{mapKey.value}<span class="tooltipValue">{mapKey.tooltipText}</span></td>
                                                                     </template>
                                                                 </template>
-                                                                <template if:false={mapKey.tooltip}>
+                                                                <template lwc:else>
                                                                     <td  class="modal-content" key={mapKey.key}>{mapKey.value}</td>
                                                                 </template>
                                                             </template>
@@ -342,7 +376,7 @@
                                     </tr>
                             </template>
                         </template>
-                        <template if:true={norecord}>
+                        <template lwc:if={norecord}>
                             <!-- <tr><td colspan="100%"></td></tr> -->
                             <tr>
                                 <template for:each={columns} for:item="head">
@@ -383,25 +417,25 @@
         </div>
     </template>
 
-    <template if:true={isPaginate}>
+    <template lwc:if={isPaginate}>
         <template if:false={norecord}>
-            <div class="slds-p-top_medium slds-p-bottom_small">
+            <div class="slds-p-top_medium slds-p-bottom_small footer-container">
                 <div class="slds-float_left">
                     <table>
                         <tr>
                             <td class="footer-heading slds-p-top_x-small">Total: </td>
                             <td class="sub-value"><span class="sub-value-1">{perPageMileage}</span><span class="sub-value-2">/{totalMileage}</span></td>
-                            <td class="sub-value" if:true={isVariable}><span class="sub-value-1">${perPageVariable}</span><span class="sub-value-2">/${totalVarAmount}</span></td>
+                            <td class="sub-value" lwc:if={isVariable}><span class="sub-value-1">${perPageVariable}</span><span class="sub-value-2">/${totalVarAmount}</span></td>
                         </tr>
                         <tr>
                             <td></td>
                             <td class="sub-text">Mileage</td>
-                            <td class="sub-text" if:true={isVariable}>Variable Amount</td>
+                            <td class="sub-text" lwc:if={isVariable}>Variable Amount</td>
                         </tr>
                     </table>
                 </div>
             
-                <template if:true={pagedData}>
+                <template lwc:if={pagedData}>
                     <div class="slds-clearfix">
                         <span class="slds-float_right slds-p-top_small">
                             <ul class="slds-list_horizontal  slds-has-block-links_space border-radius">
@@ -433,10 +467,44 @@
                                     </a>
                                 </li>
                             </ul>
+                            <!-- <ul class="slds-list_horizontal  slds-has-block-links_space border-radius">
+                                <li class="slds-item navigate">
+                                    <a name="buttonBackwards"  label="Previous" title=""
+                                        onclick={onPrev} class={cssPreviousText}
+                                        disabled={disabledPreviousButton}>
+                                        <i class="fa-solid fa-arrow-left fa-lg navigate-icon"></i>
+                                    </a>
+                                </li>
+                                <li class="slds-item">
+                                    <div class="slds-p-horizontal_x-small slds-p-vertical_x-small pageEdit">
+                                        <template for:each={pages} for:item="page">
+                                            <div class="flow-block" key={page}>
+                                                <a data-id={page} class="page-num-block" onclick={onPageClick}>{page}</a>
+                                            </div>
+                                        </template>
+                                    </div>
+                                </li>
+                                <li class="slds-item navigate">
+                                    <a name="buttonForwards" label="Next" title=""
+                                        onclick={onNext} class={cssText}
+                                        disabled={disabledNextButton}>
+                                        <i class="fa-solid fa-arrow-right fa-lg navigate-icon"></i>
+                                    </a>
+                                </li>
+                             </ul> -->
                         </span>
-                        <template if:true={isAllDownload}>
+                        <template lwc:if={isAllDownload}>
                             <div class="slds-float_right slds-p-top_small slds-p-right_small">
-                                <button  class="slds-btn slds-btn-primary slds-btn-sm waves-effect bc-green waves-light mleft-0 btn-trip" onclick={downloadAllTrips}><img class="download-icon"  src={downloadAllIcon}  />Download</button>
+                                <button class="slds-btn slds-btn-primary slds-btn-sm waves-effect bc-green waves-light mleft-0 btn-trip"
+                                    onclick={downloadAllTrips}>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" viewBox="0 0 25 25" fill="none" style="
+                                                                    margin-right: 3px;
+                                                                ">
+                                        <path
+                                            d="m7.561 11.627 0.032 -0.032 -0.032 0.032 4.273 4.273a0.936 0.936 0 0 0 0.143 0.118 0.625 0.625 0 0 0 0.068 0.036h0.001l0.032 0.018 0.009 0.006 0.048 0.025a0.357 0.357 0 0 0 0.089 0.028l0.007 0.002a0.557 0.557 0 0 0 0.082 0.025l0.002 0.001a0.941 0.941 0 0 0 0.368 0h0.002a0.502 0.502 0 0 0 0.052 -0.018 0.522 0.522 0 0 1 0.027 -0.007l0.002 -0.002 0.032 -0.009 0.057 -0.018a0.527 0.527 0 0 0 0.098 -0.05l0.001 -0.001 0.002 -0.001a0.232 0.232 0 0 1 0.027 -0.016l0.036 -0.022a0.952 0.952 0 0 0 0.143 -0.118l4.273 -4.273a0.941 0.941 0 0 0 0 -1.332 0.941 0.941 0 0 0 -1.332 0l-2.668 2.668V4.843a0.943 0.943 0 0 0 -1.882 0v8.122L8.891 10.297a0.941 0.941 0 0 0 -1.331 0 0.941 0.941 0 0 0 0 1.332Zm13.323 7.718a0.942 0.942 0 0 0 -0.943 -0.941H5.057a0.943 0.943 0 0 0 0 1.881h14.886a0.943 0.943 0 0 0 0.942 -0.942Z"
+                                            fill="white" stroke="white" stroke-width="0.10081333333333335"></path>
+                                    </svg>Download
+                                </button>
                             </div>
                         </template>
                     </div>

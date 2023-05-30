@@ -60,8 +60,9 @@
                             map: topology,
                             borderColor:postData.border,
                             backgroundColor: postData.background,
-                            height: postData.height, //250
-                            width: postData.width, // 360
+                          //  height: postData.height, //250
+                            height: (3 / 5 * 100) + '%',
+                            //width: postData.width, // 360
                             margin: [0,0,0,0],
                             spacingTop: 0,
                             spacingBottom: 0,

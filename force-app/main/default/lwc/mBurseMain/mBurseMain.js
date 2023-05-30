@@ -39,15 +39,16 @@ export default class MBurseMain extends LightningElement {
     return JSON.parse(e)
   }
 
-  renderView(event) {
+  renderView(array) {
     let listForInfo, m, cList;
-    listForInfo = event.detail;
+   // listForInfo = (event.detail);
+   listForInfo = array
     cList = this.proxyToObject(listForInfo);
     m = cList[0];
-    console.log("renderview", event.detail)
+    //console.log("renderview", event.detail)
     //this.welcomePage = ((m.driverPacketStatus === null && m.insuranceStatus === null) || (m.driverPacketStatus === 'Skip' && m.insuranceStatus === 'Skip') || (m.driverPacketStatus === null  && m.insuranceStatus === 'Skip') || (m.driverPacketStatus === 'Uploaded' && m.insuranceStatus === 'Skip' )) ? true : false;
     this.nextInsurance = ((m.driverPacketStatus === null && m.insuranceStatus === null) || (m.driverPacketStatus !== 'Uploaded' && (m.insuranceStatus === null || m.insuranceStatus === 'Skip')) || (m.driverPacketStatus === null && (m.insuranceStatus === null || m.insuranceStatus === 'Skip')) || (m.driverPacketStatus === 'Uploaded' && (m.insuranceStatus === null || m.insuranceStatus === 'Skip'))) ? true : false;
-    this.isInsurance = ((m.driverPacketStatus === null && m.insuranceStatus === null) || (m.driverPacketStatus !== 'Uploaded' && (m.insuranceStatus === null || m.insuranceStatus === 'Skip')) || (m.driverPacketStatus !== 'Uploaded' && (m.insuranceStatus === null || m.insuranceStatus === 'Skip')) || (m.driverPacketStatus === 'Uploaded' && (m.insuranceStatus === null || m.insuranceStatus === 'Skip'))) ? true : false;
+    this.isInsurance = (m.insuranceDialogueRemove === false) ? (((m.driverPacketStatus === null && m.insuranceStatus === null) || (m.driverPacketStatus !== 'Uploaded' && (m.insuranceStatus === null || m.insuranceStatus === 'Skip')) || (m.driverPacketStatus !== 'Uploaded' && (m.insuranceStatus === null || m.insuranceStatus === 'Skip')) || (m.driverPacketStatus === 'Uploaded' && (m.insuranceStatus === null || m.insuranceStatus === 'Skip'))) ? true : false) : false;
     this.nextDriverPacket = (m.insuranceStatus === 'Uploaded' && m.driverPacketStatus !== 'Uploaded') ? true : false;
     this.nextmLogPreview = (m.insuranceStatus === 'Uploaded' && m.driverPacketStatus === 'Uploaded' && m.mlogApp === false) ? true : false;
     this.nextBurseMeeting = (m.insuranceStatus === 'Uploaded' && m.driverPacketStatus === 'Uploaded' && m.mlogApp === true) ? true : false;
@@ -62,6 +63,7 @@ export default class MBurseMain extends LightningElement {
         if (data) {
           this.information = data;
           driverDetailList = this.proxyToObject(data);
+          console.log("driver", driverDetailList)
           this.registerMeeting = driverDetailList[0].scheduleLink;
           this.scheduleMeeting = driverDetailList[0].scheduleLink;
           this.attachmentid = driverDetailList[0].insuranceId;
@@ -93,17 +95,21 @@ export default class MBurseMain extends LightningElement {
     const aidParamValue = this.getUrlParamValue(window.location.href, 'accid');
     this.contactId = idParamValue;
     this.accountId = aidParamValue;
-    this.callApex();
+   // this.callApex();
   }
 
   navigateToInsurance() {
-    // let listForInfo;
-    //listForInfo = this.information;
-    // cList = this.proxyToObject(listForInfo);
+    let listForInfo, list;
+    listForInfo = this.information;
+    list = this.proxyToObject(listForInfo);
+    console.log("inside insurance")
     this.welcomePage = false;
     this.nextInsurance = true;
-    this.isInsurance = true;
-    //this._renderView(cList[0]);
+    this.isInsurance = (!list[0].insuranceDialogueRemove) ? true : false;
+   // this.isDeclaration = (!this.isInsurance) ? true : false;
+   if(!this.isInsurance){
+    this.renderView(listForInfo);
+   }
     //this.nextInsurance = true;
   }
 
@@ -199,7 +205,7 @@ export default class MBurseMain extends LightningElement {
           if (status === 'Uploaded') {
             this.nextDriverPacket = false;
             this.nextInsurance = true;
-            this.isInsurance = true;
+            this.isInsurance = (!dataList[0].insuranceDialogueRemove) ? true : false;
           } else {
             this.nextInsurance = false;
             this.isInsurance = false;
@@ -278,7 +284,7 @@ export default class MBurseMain extends LightningElement {
             this.skipUpload = false;
             this.uploadVal = false;
             this.nextInsurance = true;
-            this.isInsurance = true;
+            this.isInsurance = (!detailList[0].insuranceDialogueRemove) ? true : false;
           } else {
             this.nextInsurance = false;
             this.isInsurance = false;

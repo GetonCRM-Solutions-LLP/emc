@@ -46,7 +46,7 @@ export default class UserLocation extends LightningElement {
 
     @api 
     async generateView(){
-        let btnItem = this.template.querySelectorAll(".btn-trip");
+        let btnItem = this.template.querySelectorAll(".btn-toggle");
         btnItem.forEach((el) => {
          el.classList.remove("is-active");
         });
@@ -57,7 +57,7 @@ export default class UserLocation extends LightningElement {
     }
 
     renderedCallback() {
-        const buttonItem = this.template.querySelectorAll(".btn-trip");
+        const buttonItem = this.template.querySelectorAll(".btn-toggle");
     
         buttonItem.forEach((el) =>
           el.addEventListener("click", () => {

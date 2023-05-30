@@ -1,0 +1,14 @@
+<template>
+    <template lwc:if={tripView}>
+        <c-preview-trips contact-id={_contactId} contact-info={userName} trip-month={monthOfTrip} trip-year={yearOfTrip} onnavigate={revertToReimbursement} start-date={startDt} end-date={endDt} 
+        biweek-id={biweekId} biweek-value={biweek}></c-preview-trips>
+    </template>
+    <template lwc:else>
+        <template lwc:if={contactInformation}>
+            <c-driver-reimbursement-profile contact-id={_contactId}  account-id={_accountId} my-trip={isTrip} is-archive={archive} time-attendance={isAttendance} driver-details={contactInformation} reimbursement-ytd={ytdList} excel-ytd={excelYtdList} onopen={myTripDetail} ontoast={handleToast} onshow={showSpinner}></c-driver-reimbursement-profile>
+            <div class="slds-m-top_medium slds-m-left_medium">
+                <button class="slds-btn waves-effect btn-grey slds-back-btn slds-btn-sm" onclick={revertHandler}><i class="fas fa-arrow-left"></i></button>
+            </div>
+        </template>
+    </template>
+</template>

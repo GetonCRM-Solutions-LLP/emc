@@ -3,11 +3,13 @@ import resourceImage from '@salesforce/resourceUrl/mBurseCss';
 export default class Select2Dropdown extends LightningElement {
     isOpen = false;
 	highlightCounter = null;
+	handleBlurElement = false;
 	message = "";
 	_value = "";
 	_selected = "";
 	_location = '';
 	searchIcon = resourceImage + '/mburse/assets/mBurse-Icons/Vector.png';
+	@api title;
 	@api mainClass;
 	@api defaultOption;
 	@api messageWhenInvalid = "Please type or select a value";
@@ -103,6 +105,7 @@ export default class Select2Dropdown extends LightningElement {
 	}
 
 	handleChange(event) {
+		event.stopPropagation();
 		console.log('change', event.target.value)
 		this._value = event.target.value;
 		if(this._value && this._value.length > 0 ) {
@@ -160,6 +163,7 @@ export default class Select2Dropdown extends LightningElement {
 
 	handleDropdownMouseDown() {
 		console.log('DropdownMouseDown');
+		this._cancelBlur = true;
 	}
 
 	handleDropdownMouseUp() {
@@ -169,7 +173,7 @@ export default class Select2Dropdown extends LightningElement {
 	}
 
 	handleMouseUp(){
-		console.log("LEave Div")
+		//console.log("LEave Div")
 		// if (!this._inputHasFocus) {
 			this.isOpen = false;
 		// }
@@ -185,22 +189,22 @@ export default class Select2Dropdown extends LightningElement {
 	}
 
 	handleBlur() {
-		console.log('handle blur')
-		this._inputHasFocus = false;
+		console.log("handle blur");
+		this.handleBlurElement = true;
+		//this._inputHasFocus = false;
 		if (this._cancelBlur) {
 			return;
 		}
-	//	this.isOpen = false;
-
+		this.isOpen = false;
+	
 		this.highlightCounter = null;
-		this.dispatchEvent(new CustomEvent("blur"));
 	}
 
 	removeHighlighted(){
 		let highlightedList = this.template.querySelectorAll('.slds-listbox__option');
 		highlightedList.forEach((option) => {
-		//if(option.dataset.label=== this._selected){
-			console.log('inside remove', this._selected)
+		//if(option.dataset.label === this._selected){
+			//console.log('inside remove', this._selected)
 				option.classList.remove('active');
 		//}
 		})
@@ -210,9 +214,9 @@ export default class Select2Dropdown extends LightningElement {
 		let highlightedList = this.template.querySelectorAll('.slds-listbox__option');
 		highlightedList.forEach((option) => {
 			if(option.dataset.label === selectedVal){
-				if(this._element === undefined){
+				//if(this._element === undefined){
 					option.classList.add('active');
-				}
+			//	}
 			}
 		})
 	}
@@ -246,7 +250,6 @@ export default class Select2Dropdown extends LightningElement {
 
 	handleSelect(event) {
 		//this.allowBlur();
-		console.log(event)
 		this._element = event.currentTarget;
 		this._previousElement = this._element;
 		//this._value = event.currentTarget.dataset.label;
@@ -260,6 +263,7 @@ export default class Select2Dropdown extends LightningElement {
 	}
 
 	handleKeyDown(event) {
+		console.log("key down--")
 		if (event.key === "Escape") {
 			this.isOpen = !this.isOpen;
 			this.highlightCounter = null;
@@ -298,21 +302,36 @@ export default class Select2Dropdown extends LightningElement {
 	handleContext(event){
 		event.preventDefault();
 	}
-
 	handlePaste(event){
 		event.preventDefault();
 	}
 
 	highLightOption(options) {
-		let classes = "slds-media slds-listbox__option slds-listbox__option_plain slds-media_small";
-
+		console.log("highLight-->")
+		// eslint-disable-next-line vars-on-top
+		var classes = "slds-media slds-listbox__option slds-listbox__option_plain slds-media_small";
+		// eslint-disable-next-line vars-on-top
+		var activeClasses = "slds-media slds-listbox__option slds-listbox__option_plain slds-media_small active";
 		return options.map((option, index) => {
-			let cs = classes;
-			let focused = "";
-			if (index === this.highlightCounter) {
-				cs = classes + " slds-has-focus";
-				focused = "yes";
+			var cs = classes;
+			var focused = "";
+			if(this._selected){
+				if(option.label === this._selected){
+					cs = activeClasses + " slds-has-focus";
+					focused = "yes";
+				}else{
+					if (index === this.highlightCounter) {
+						cs = classes + " slds-has-focus";
+						focused = "yes";
+					}
+				}
+			}else{
+				if (index === this.highlightCounter) {
+					cs = classes + " slds-has-focus";
+					focused = "yes";
+				}
 			}
+		
 			return {classes: cs, focused, ...option}; 
 		});
 
@@ -325,7 +344,6 @@ export default class Select2Dropdown extends LightningElement {
 
 	inputMouseDown(event){
 		event.target.selectionStart = event.target.selectionEnd;
-		console.log("select-----", event, event.target.selectionEnd)
 		//event.preventDefault();
 	}
 

@@ -26,7 +26,7 @@
                     </ul>
                 </div>
             </div>
-            <div class="footer-button mright-0 mleft-0">
+            <div class="footer-button slds-p-bottom_medium mright-0 mleft-0">
                 <div style="margin: 0.375rem 7rem 0.375rem 0;">
                     <ul class="slds-list_horizontal  slds-has-block-links_space border-radius">
                         <li class="slds-item navigate">
@@ -38,20 +38,21 @@
                             <i class="fa-solid fa-arrow-left fa-lg navigate-icon"></i>
                             </a>
                         </li>
-                        <li>
-                            
-                        </li>
                     </ul>
                     <!-- <div class="back_to_previous slds-float_left">
                         <a class="font-s" onclick={backToPrevious}><i class="fa-solid fa-angle-left"></i> Back</a>
                     </div> -->
-                    <div class="back_to_previous  slds-float_right" if:true={nextPreview}>
+                    <!-- <div class="back_to_previous  slds-float_right" if:true={nextPreview}>
                         <a class="font-s" onclick={skipToNext}>Skip<i class="fa-solid fa-angle-right"></i></a>
-                    </div>
+                    </div> -->
                 </div>
-                <button class="slds-btn slds-btn-primary slds-btn-sm waves-effect bc-blue waves-light" onclick={nextDeclaration} if:false={nextPreview}>
-                    Go to insurance preview
-                </button>
+                <div>
+                    <button class="slds-btn slds-btn-primary slds-btn-sm waves-effect bc-blue waves-light" onclick={nextDeclaration}>
+                        Go to insurance preview
+                    </button>
+                    <div class="align_message slds-p-top_small">  <a class="dont-font" onclick={removePreview}>Don’t show this page again</a> </div>
+                </div>
+             
             </div>
         </div>
     </div>
@@ -83,11 +84,11 @@
             <div class="footer-button mright-0 mleft-0">
                 <div>
                     <ul class="slds-list_horizontal  slds-has-block-links_space border-radius">
-                        <li class="slds-item navigate" style="margin: 0.375rem 2.375rem 0.375rem 0;">
+                        <li class="slds-item navigate" style="margin: 0.75rem 2.375rem 0.75rem 0rem;">
                             <a 
                             name="buttonBackwards"
                             label="Previous" 
-                            title="" 
+                            title="Back" 
                             onclick={backToPage}  >
                             <i class="fa-solid fa-arrow-left fa-lg navigate-icon"></i>
                             </a>
@@ -97,11 +98,11 @@
                                 Go to upload insurance
                             </button>
                         </li>
-                        <li class="slds-item navigate"  if:false={nextShow} style="margin: 0.375rem 0 0.375rem 2.375rem;">
+                        <li class="slds-item navigate"  if:false={nextShow} style="margin: 0.75rem 0rem 0.75rem 2.375rem;">
                             <a 
                             name="buttonBackwards"
                             label="Previous" 
-                            title="" 
+                            title="Skip this step" 
                             onclick={skipToPage}  >
                             <i class="fa-solid fa-arrow-right fa-lg navigate-icon"></i>
                             </a>

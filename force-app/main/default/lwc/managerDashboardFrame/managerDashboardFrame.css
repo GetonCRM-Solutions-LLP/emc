@@ -1,0 +1,26 @@
+.fa,
+.fas,
+.fa-solid,
+.fa-light,
+.fa-regular {
+    font-family: "Font Awesome 6 Free" !important
+}
+
+.fa-xmark{
+    cursor: pointer;
+}
+
+.white-cross{
+    color: #FFFFFF !important;
+}
+
+.main {
+    margin-left: 100px;
+    margin-top: 80px;
+    margin-right: 14px;
+}
+
+.sidebar-open {
+    margin-left: 256px;
+	margin-top: 80px;
+}

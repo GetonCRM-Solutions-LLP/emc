@@ -10,6 +10,8 @@ export default class NavigationMenu extends LightningElement {
     @api driverMenuItem;
     @api driverName;
     @api driverEmail;
+    menuLabel;
+    scroll = false;
     mileageMenu = false;
     manualMenu = false;
     company = logo + '/mburse/assets/mBurse-Icons/mBurse-logo.png';
@@ -91,6 +93,49 @@ export default class NavigationMenu extends LightningElement {
             }
         })
     }
+
+    mouseOverLink(event){
+        console.log("mouse over", event);
+        let _aLink = (event.toElement) ? event.toElement.name : '';
+        let parent = this.template.querySelector('.tooltipValue').parentElement.className
+        if(_aLink !== ''){
+            if(parent === 'sidebar close'){
+                this.menuLabel = _aLink;
+                console.log("mouse over", _aLink);
+                this.template.querySelector('.tooltipValue').style.top = (!this.scroll) ? event.toElement.offsetTop + 'px'  : (event.toElement.offsetTop - 52) + 'px';
+                this.template.querySelector('.tooltipValue').classList.remove('hidden')
+                this.template.querySelector('.tooltipValue').classList.add('tooltipVisible')
+            }
+        }
+    }
+
+    mouseLeave(){
+           this.menuLabel = '';
+           this.template.querySelector('.tooltipValue').classList.remove('tooltipVisible');
+           this.template.querySelector('.tooltipValue').classList.add('hidden');
+    }
+
+    scrollEnable(event){
+        if(!this.scroll){
+            let obj = this.template.querySelector('.menu-bar');
+            if( obj.scrollTop === (obj.scrollHeight - obj.offsetHeight)){
+                this.scroll = true;
+            }
+        }else{
+            this.scroll = false;
+        }
+        console.log("scroll", event, this.template.querySelector('.menu-bar').scrollTop,  this.template.querySelector('.menu-bar').scrollHeight , this.template.querySelector('.menu-bar').offsetHeight)
+    }
+    
+
+    // cssStyle(){
+    //     console.log("css",  this.template.querySelector('.menu-bar').style.overflow)
+    //     this.template.querySelector('.menu-bar').classList.add('revert');
+    // }
+
+    // cssStyleRemove(){
+    //     this.template.querySelector('.menu-bar').classList.remove('revert');
+    // }
 
     // connectedCallback(){
     //     window.addEventListener('contextmenu', this.handleContextMenu);

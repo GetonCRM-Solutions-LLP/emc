@@ -1,70 +1,110 @@
 <template>
-    <div class="row">
-        <div class="container">
-            <div class="accordion">
-                <template if:true={accordionData}>
-                    <template for:each={accordionData} for:item="accList">
-                        <div class={accList.classType} key={accList.Id} data-year={accList.yearName} onclick={fetchReimbursement} style="position: relative;">
-                            <template if:true={hrClass}>
-                                <div key={accList.Id} style="position: absolute;
-                                top: 112px;
-                                border-bottom: 2px solid #d9d9d98c;
-                                z-index: 1;
-                                width: 100vw;
-                                margin-left: -20px;"></div>
-                                <!-- <c-hr-custom key={accList.Id} class="border-head"></c-hr-custom> -->
-                            </template>
-                            <div class="accordion-head">
-                                <h3 class="title slds-p-vertical_x-small slds-p-left_small">
-                                    <span>{accList.accordionTitle}</span>
-                                    <template if:true={showArrowIcon}>
-                                        <i class="fas fa-chevron-right"></i>
-                                    </template>
-                                </h3>
-                                <div if:true={isDownloadAll}>
-                                        <button class="slds-btn slds-btn-primary slds-btn-sm waves-effect bc-green waves-light mleft-0 btn-trip" onclick={downloadAllTrips}><img class="download-icon"  src={downloadIcon}  />Download all</button>
+    <template lwc:if={isReimbursementView}>
+        <div class="row">
+            <div class="container">
+                <div class="accordion">
+                    <template lwc:if={accordionData}>
+                        <template for:each={accordionData} for:item="accList">
+                            <div class={accList.classType} key={accList.Id} data-year={accList.yearName}
+                                onclick={fetchReimbursement} style="position: relative;">
+                                <!-- <template lwc:if={isRecord}> -->
+                                <template lwc:if={hrClass}>
+                                    <div key={accList.Id} style="position: absolute;
+                                                                                    top: 112px;
+                                                                                    border-bottom: 2px solid #d9d9d98c;
+                                                                                    z-index: 1;
+                                                                                    width: 100vw;
+                                                                                    margin-left: -20px;"></div>
+                                    <!-- <c-hr-custom key={accList.Id} class="border-head"></c-hr-custom> -->
+                                </template>
+                                <div class="accordion-head">
+                                    <h3 class="title slds-p-vertical_x-small slds-p-left_small">
+                                        <span class="accordion-text">{accList.accordionTitle}</span>
+                                        <template lwc:if={showArrowIcon}>
+                                            <i class="fas fa-chevron-right"></i>
+                                        </template>
+                                    </h3>
+                                    <div lwc:if={isDownloadAll}>
+                                        <button class="slds-btn slds-btn-primary slds-btn-sm waves-effect bc-green waves-light mleft-0 btn-trip"
+                                            onclick={downloadAllTrips}><svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 22 22" fill="none"
+                                                style="margin-right: 3px;">
+                                                <path
+                                                    d="m6.654 10.232 0.029 -0.029 -0.029 0.029 3.76 3.76a0.824 0.824 0 0 0 0.125 0.103 0.55 0.55 0 0 0 0.059 0.032h0.001l0.029 0.015 0.008 0.006 0.042 0.022a0.315 0.315 0 0 0 0.078 0.024l0.007 0.002a0.491 0.491 0 0 0 0.073 0.022l0.002 0.001a0.828 0.828 0 0 0 0.323 0h0.002a0.442 0.442 0 0 0 0.046 -0.015 0.46 0.46 0 0 1 0.024 -0.007l0.002 -0.002 0.029 -0.008 0.051 -0.015a0.464 0.464 0 0 0 0.086 -0.044l0.001 -0.001 0.002 -0.001a0.205 0.205 0 0 1 0.024 -0.014l0.032 -0.02a0.838 0.838 0 0 0 0.125 -0.103l3.76 -3.76a0.828 0.828 0 0 0 0 -1.173 0.828 0.828 0 0 0 -1.173 0l-2.347 2.347V4.261a0.829 0.829 0 0 0 -1.657 0v7.148l-2.343 -2.347a0.828 0.828 0 0 0 -1.171 0 0.828 0.828 0 0 0 0 1.173Zm11.724 6.791a0.829 0.829 0 0 0 -0.829 -0.828H4.451a0.829 0.829 0 0 0 0 1.655h13.1a0.829 0.829 0 0 0 0.829 -0.829Z"
+                                                    fill="white" stroke="white" stroke-width="0.08871573333333337" />
+                                            </svg>Download all</button>
+                                    </div>
                                 </div>
+                                <template lwc:if={listOfRecord}>
+                                    <div class="paragraph" onclick={insideClick}>
+                                        <c-user-preview-table d-flex="flow-block"
+                                            main-class="slds-table--header-fixed_container modal-height p-top-v1"
+                                            divider-class="row-divider--v1" head-th="header-title--v1"
+                                            sort-th="sort-container p-top-v1" show-footer="true" contact-info={name}
+                                            row-download={isRowDn} scrollable={isScrollable} is-paginate={paginated}
+                                            model-data={accordionList} columns={accordionListColumn}
+                                            options={accordionKeyFields} onnavigate={getTrips} onopen={downloadTrips}
+                                            is-biweek={isPayperiod} is-sortable={sortable}></c-user-preview-table>
+                                    </div>
+                                </template>
+                                <template lwc:else>
+                                    <div class="paragraph" onclick={insideClick}>
+                                        <c-user-preview-table d-flex="flow-block"
+                                            main-class="slds-table--header-fixed_container modal-height p-top-v1"
+                                            show-footer="true" divider-class="row-divider--v1"
+                                            head-th="header-title--v1" sort-th="sort-container p-top-v1"
+                                            contact-info={name} row-download={isRowDn} scrollable={isScrollable}
+                                            is-paginate={paginated} model-data={accordionList}
+                                            columns={accordionListColumn} options={accordionKeyFields}
+                                            onnavigate={getTrips} onopen={downloadTrips} is-biweek={isPayperiod}
+                                            is-sortable={sortable}></c-user-preview-table>
+                                    </div>
+                                </template>
+                                <!-- </template> -->
+                                <!-- <template lwc:else>
+                                            <div class="slds-align_absolute-center slds-m-around_xx-large">
+                                                <div class="emc-flex" style="width: 100%; height: calc(100vh - 34rem);
+                                                                                    justify-content: center;">
+                                                    <div class="loader-img slds-align_absolute-center">
+                                                        <img src={loadingGif} />
+                                                    </div>
+                                                    <div class="systemText slds-align_absolute-center slds-p-around_small"> Please wait, while
+                                                        historical data is processing...</div>
+                                                </div>
+                                        
+                                            </div>
+                                        </template> -->
                             </div>
-                            <template  if:true={listVisible}>
-                                <div class="paragraph" onclick={insideClick}>
-                                    <c-user-preview-table main-class="slds-table--header-fixed_container modal-height" contact-info={name} row-download={isRowDn} scrollable={isScrollable} is-paginate={paginated} model-data={accordionList}
-                                    columns={accordionListColumn} options={accordionKeyFields} onnavigate={getTrips} onopen={downloadTrips}  is-biweek={isPayperiod} is-sortable={sortable}></c-user-preview-table>
-                                </div>
-                            </template> 
-                            <template  if:false={listVisible}>
-                                <div class="paragraph"  onclick={insideClick}>
-                                    <c-user-preview-table main-class="slds-table--header-fixed_container modal-height" contact-info={name} row-download={isRowDn} scrollable={isScrollable} is-paginate={paginated} model-data={accordionList}
-                                    columns={accordionListColumn} options={accordionKeyFields} onnavigate={getTrips} onopen={downloadTrips} is-biweek={isPayperiod} is-sortable={sortable}></c-user-preview-table>
-                                </div>
-                            </template>
-                        </div>
+                        </template>
                     </template>
-                </template>
-                <!-- <div class="accordion-item" onclick={toggleList}>
-                    <h3 class="title">
-                        <span>Second accordion item</span>
-                        <i class="fas fa-chevron-down"></i>
-                    </h3>
-                    <p class="paragraph">
-                        Lorem ipsum dolor sit amet, consectetur adipisicing elit. Blanditiis asperiores sit, optio
-                        odio assumenda laudantium quis culpa. Rerum eveniet, ipsum neque sunt laudantium, tempora
-                        consequatur maxime quibusdam doloribus, pariatur magni rem minus ducimus sint aliquam
-                        reprehenderit distinctio. Iusto obcaecati nemo ipsam corporis excepturi quos illo, error,
-                        voluptate enim. Velit, incidunt.
-                    </p>
-                </div> -->
-                <!-- <div class="accordion-item">
-                    <h3 class="title">
-                        <span>Third accordion item</span>
-                        <i class="fas fa-chevron-down"></i>
-                    </h3>
-                    <p class="paragraph">
-                        Lorem ipsum dolor sit amet, consectetur adipisicing elit. Cumque obcaecati molestiae
-                        asperiores, quo provident velit perferendis facere ullam. Voluptas, inventore.
-                    </p>
-                </div> -->
+
+                    <!-- <div class="accordion-item" onclick={toggleList}>
+                            <h3 class="title">
+                                <span>Second accordion item</span>
+                                <i class="fas fa-chevron-down"></i>
+                            </h3>
+                            <p class="paragraph">
+                                Lorem ipsum dolor sit amet, consectetur adipisicing elit. Blanditiis asperiores sit, optio
+                                odio assumenda laudantium quis culpa. Rerum eveniet, ipsum neque sunt laudantium, tempora
+                                consequatur maxime quibusdam doloribus, pariatur magni rem minus ducimus sint aliquam
+                                reprehenderit distinctio. Iusto obcaecati nemo ipsam corporis excepturi quos illo, error,
+                                voluptate enim. Velit, incidunt.
+                            </p>
+                        </div> -->
+                    <!-- <div class="accordion-item">
+                            <h3 class="title">
+                                <span>Third accordion item</span>
+                                <i class="fas fa-chevron-down"></i>
+                            </h3>
+                            <p class="paragraph">
+                                Lorem ipsum dolor sit amet, consectetur adipisicing elit. Cumque obcaecati molestiae
+                                asperiores, quo provident velit perferendis facere ullam. Voluptas, inventore.
+                            </p>
+                        </div> -->
+                </div>
+
             </div>
         </div>
-    </div>
+    </template>
+
     <c-export-excel></c-export-excel>
 </template>

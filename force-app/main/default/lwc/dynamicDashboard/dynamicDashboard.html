@@ -1,0 +1,130 @@
+<template>
+    <c-navigation-menu driver-menu-item={managerProfileMenu} onsidebar={handleSidebarToggle} driver-name={userName}
+        driver-email={userEmail} onlogout={handleLogout}></c-navigation-menu><!-- onopen={takeMeToMenu} -->
+    <c-dashboard-profile-header user-name={firstName} full-name={contactTitle} page-source={isHomePage}
+        onlogout={handleLogout} is-navigate="true"></c-dashboard-profile-header>
+    <section class={section} id="default">
+        <div class="slds-p-left_medium slds-p-right_large dashboard">
+            <template if:true={isOnboarding}>
+                <div class="slds-m-right_medium flex-view-2 tile">
+                    <div class="slds-col slds-p-left_large slds-p-top_small slds-p-bottom_medium tile-container">
+                        <h2  style="font-weight: 700;
+                        font-size: 20px;color: #7ABB4A;  flex-grow: 1;
+                        padding: 0.125rem;">Onboarding Status</h2>
+                        <div class="buttons">
+                            <div class="button" title="Close Tile" data-on-click="remove-tile" onclick={viewOnboarding}>
+                                <!-- close icon -->
+                                <svg width="24" height="24" viewBox="0 0 24 24">
+                                    <path
+                                        d="M12.71,12l4.64-4.65a.49.49,0,1,0-.7-.7L12,11.29,7.35,6.65a.49.49,0,0,0-.7.7L11.29,12,6.65,16.65a.48.48,0,0,0,0,.7.48.48,0,0,0,.7,0L12,12.71l4.65,4.64a.48.48,0,0,0,.7,0,.48.48,0,0,0,0-.7Z">
+                                    </path>
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
+                    <div
+                        class="slds-col slds-size_1-of-1 slds-medium-size_12-of-12 slds-large-size_12-of-12 slds-p-horizontal_medium">
+                        <template lwc:if={complianceList}>
+                            <c-chart-view-dashboard chart-list={complianceList}
+                                view-name="Onboarding"></c-chart-view-dashboard>
+                        </template>
+                    </div>
+                </div>
+
+            </template>
+            <template if:true={isTeam}>
+                <div class="flex-view-3 tile" style="
+                border: 1px solid #D7D7D7;
+                flex: 30%;
+                height: auto;
+                border-radius: 20px;">
+                    <div
+                        class="slds-col slds-size_1-of-1 slds-medium-size_6-of-12 slds-large-size_12-of-12 slds-p-left_large slds-p-top_small tile-container">
+                        <h2  style="font-weight: 700;
+            font-size: 20px;color: #7ABB4A;flex-grow: 1;
+            padding: 0.125rem;">My Team’s Locations</h2>
+                        <div class="buttons">
+                            <div class="button" title="Close Tile" data-on-click="remove-tile" onclick={viewLocations}>
+                                <!-- close icon -->
+                                <svg width="24" height="24" viewBox="0 0 24 24">
+                                    <path
+                                        d="M12.71,12l4.64-4.65a.49.49,0,1,0-.7-.7L12,11.29,7.35,6.65a.49.49,0,0,0-.7.7L11.29,12,6.65,16.65a.48.48,0,0,0,0,.7.48.48,0,0,0,.7,0L12,12.71l4.65,4.64a.48.48,0,0,0,.7,0,.48.48,0,0,0,0-.7Z">
+                                    </path>
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
+                    <div
+                        class="slds-col slds-size_1-of-1 slds-medium-size_12-of-12 slds-large-size_12-of-12 slds-align_absolute-center slds-p-top_medium">
+                        <c-point-chloropleth background="#FFFFFF" locate={locationList} border-color="#FFFFFF"
+                            width="260" height="150"></c-point-chloropleth>
+                    </div>
+                </div>
+            </template>
+            <template if:true={isInsurance}>
+                <div class="slds-m-right_medium flex-view-1 tile">
+                    <div class="slds-col slds-p-left_large slds-p-top_small slds-p-bottom_medium tile-container">
+                        <h2  style="font-weight: 700;
+                        font-size: 20px;color: #7ABB4A;flex-grow: 1;
+                        padding: 0.125rem;">Insurance</h2>
+                        <div class="buttons">
+                            <div class="button" title="Close Tile" data-on-click="remove-tile" onclick={viewInsurance}>
+                                <!-- close icon -->
+                                <svg width="24" height="24" viewBox="0 0 24 24">
+                                    <path
+                                        d="M12.71,12l4.64-4.65a.49.49,0,1,0-.7-.7L12,11.29,7.35,6.65a.49.49,0,0,0-.7.7L11.29,12,6.65,16.65a.48.48,0,0,0,0,.7.48.48,0,0,0,.7,0L12,12.71l4.65,4.64a.48.48,0,0,0,.7,0,.48.48,0,0,0,0-.7Z">
+                                    </path>
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
+                    <div
+                        class="slds-col slds-size_1-of-1 slds-medium-size_12-of-12 slds-large-size_12-of-12  slds-p-horizontal_medium">
+                        <template lwc:if={insuranceList}>
+                            <c-chart-view-dashboard chart-list={insuranceList}
+                                view-name="Insurance"></c-chart-view-dashboard>
+                        </template>
+                    </div>
+                </div>
+            </template>
+            <template if:true={compliance}>
+                <div class="slds-m-right_medium flex-view-2 tile">
+                    <div class="slds-col slds-p-left_large slds-p-top_small tile-container">
+                        <h2 style="font-weight: 700;
+                        font-size: 20px;color: #7ABB4A;flex-grow: 1;
+                        padding: 0.125rem;">Compliance Status</h2>
+                        <div class="buttons">
+                            <div class="button" title="Close Tile" data-on-click="remove-tile" onclick={viewComplaince}>
+                                <!-- close icon -->
+                                <svg width="24" height="24" viewBox="0 0 24 24">
+                                    <path
+                                        d="M12.71,12l4.64-4.65a.49.49,0,1,0-.7-.7L12,11.29,7.35,6.65a.49.49,0,0,0-.7.7L11.29,12,6.65,16.65a.48.48,0,0,0,0,.7.48.48,0,0,0,.7,0L12,12.71l4.65,4.64a.48.48,0,0,0,.7,0,.48.48,0,0,0,0-.7Z">
+                                    </path>
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
+                    <div
+                        class="slds-col slds-size_1-of-1 slds-medium-size_12-of-12 slds-large-size_12-of-12  slds-p-horizontal_medium">
+                        <template lwc:if={complianceList}>
+                            <c-chart-view-dashboard chart-list={complianceList}
+                                view-name="Compliance"></c-chart-view-dashboard>
+                        </template>
+                    </div>
+                </div>
+            </template>
+            <template if:false={none}>
+                <div class="blank">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="#fa7800" style="width: 3rem;
+                    height: 3rem;
+                    margin-bottom: 1rem;">
+                        <path d="M4,2H20A2,2 0 0,1 22,4V16A2,2 0 0,1 20,18H16L12,22L8,18H4A2,2 0 0,1 2,16V4A2,2 0 0,1 4,2M4,4V16H8.83L12,19.17L15.17,16H20V4H4M11,6H13V9H16V11H13V14H11V11H8V9H11V6Z"></path>
+                    </svg>
+                    <div style="color: #1d1d1d;
+                    font-size: 16px;">Click on an menu on the menu bar on the left to add the new section to the dashboard.</div>
+                </div>
+            </template>
+
+        </div>
+    </section>
+</template>

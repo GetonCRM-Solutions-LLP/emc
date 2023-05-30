@@ -1,0 +1,279 @@
+<template>
+    <div class="slds-p-left_medium slds-p-right_large">
+        <div class="flex-container-view">
+            <div class="slds-m-right_medium flex-view-1">
+                <div class="slds-col slds-p-left_large slds-p-top_small slds-p-bottom_medium">
+                    <h2 style="font-weight: 700;
+                    font-size: 20px;color: #7ABB4A;">High Risk Trips ( Last month )</h2>
+                </div>
+                <template lwc:if={driverIsHighRisk}>
+                    <div class="slds-p-around_medium list-view">
+                        <template for:each={highRiskMileageDriverList} for:item="list">
+                            <div class="slds-p-horizontal_x-small slds-p-vertical_xx-small" key={list.id}>
+                                <div><a data-id={list.id} class="name" onclick={navigateToRisk}>{list.name}</a></div>
+                            </div>
+                        </template>
+                    </div>
+                </template>
+                <template lwc:else>
+                    <div class="slds-align_absolute-center slds-p-top_medium slds-p-bottom_x-large no-data-message">
+                        There are no high risk trips at this time.</div>
+                </template>
+
+                <template lwc:if={driverIsHighRisk}>
+                    <div class="slds-p-around_small">
+                        <div class="view-all slds-p-around_medium view-link" onclick={navigateToHighRiskMileage}>
+                            View all
+                        </div>
+                    </div>
+                </template>
+            </div>
+
+            <div class="slds-m-right_medium flex-view-2">
+                <div class="slds-col slds-p-left_large slds-p-top_small">
+                    <h2 style="font-weight: 700;
+                    font-size: 20px;color: #7ABB4A;">Unapproved Mileage</h2>
+                </div>
+                <div class="slds-p-around_medium">
+                    <template lwc:if={driverIsUnapprove}>
+                        <table class="slds-table slds-table_cell-buffer slds-table_header-hidden driver-top">
+                            <template for:each={driverVisibleList} for:item="list">
+                                <tr key={list.contactid}>
+                                    <td><a class="name" data-id={list.contactid}
+                                            onclick={navigateToFlag}>{list.name}</a></td>
+                                    <td class="mileage">
+                                        <lightning-formatted-number value={list.totalMileages}
+                                            minimum-fraction-digits="2">
+                                        </lightning-formatted-number>
+                                        &nbsp; miles
+                                    </td>
+                                </tr>
+                            </template>
+                        </table>
+                    </template>
+                    <template lwc:else>
+                        <div class="slds-align_absolute-center slds-p-top_medium slds-p-bottom_x-large no-data-message">
+                            There are no unapproved mileage at this time.</div>
+                    </template>
+                </div>
+                <template lwc:if={driverIsUnapprove}>
+                    <div class="slds-p-around_small">
+                        <div class="view-all slds-p-around_medium view-link" onclick={navigateToMileage}>
+                            View all
+                        </div>
+                    </div>
+                </template>
+            </div>
+
+            <div class="flex-view-3" style="
+                        border: 1px solid #D7D7D7;
+                        flex: 30%;
+                        height: auto;
+                        border-radius: 20px;">
+                <div
+                    class="slds-col slds-size_1-of-1 slds-medium-size_6-of-12 slds-large-size_12-of-12 slds-p-left_large slds-p-top_small">
+                    <h2 style="font-weight: 700;
+                    font-size: 20px;color: #7ABB4A;">Notifications</h2>
+                </div>
+                <div class="slds-col slds-size_1-of-1 slds-medium-size_12-of-12 slds-large-size_12-of-12">
+                    <template lwc:if={notifyMessage}>
+                        <div class="notify-container overflow">
+                            <div class="slds-grid slds-wrap slds-align_absolute-center slds-m-vertical_small" style="margin-left: 22px;
+                            margin-right: 22px;">
+                                <template lwc:if={isNotify}>
+                                    <template for:each={notifyMessageList} for:item="notify" for:index="index">
+                                        <div data-id={notify.id} key={notify.id}
+                                            class="slds-col slds-size_1-of-1 slds-medium-size_6-of-12 slds-large-size_12-of-12  slds-m-around_xx-small slds-p-horizontal_x-small slds-p-vertical_small notify-text"
+                                            style="
+                                        width: 100%;
+                                        height: auto;
+                                        border-radius: 10px;
+                                        background: #F1F8EC;
+                                        display: flex;
+                                        flex-direction: row;">
+                                            <div class="slds-p-top_xx-small
+                                                slds-p-left_xx-small slds-p-right_x-small">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="9" height="9" viewBox="0 0 9 9" fill="none">
+                                                    <circle cx="4.5" cy="4.5" r="4.5" fill="#7ABB4A"/>
+                                                </svg>
+                                                <!-- <div style="width: 10px;
+                                                height: 10px;
+                                                border-radius: 50%;
+                                                background: rgb(122, 187, 74);"></div> -->
+                                                <!-- <img style="width: 12px;" src={circle} /> -->
+                                            </div>
+                                            <div class="slds-p-right_small" style="font-family: Proxima Nova;font-size: 14px;width:100%;font-weight: 700;
+                                                line-height: 17px;
+                                                letter-spacing: 0em;
+                                                text-align: left;
+                                                ">{notify.notificationMessage}
+                                                <div style="font-weight: 700;
+                                                font-size: 12px;
+                                                line-height: 12px;
+                                                color: #7ABB4A;
+                                                " class="slds-p-top_x-small"> <lightning-formatted-date-time
+                                                        value={notify.modifiedDate} year="numeric" day="2-digit"
+                                                        month="long" hour="2-digit" minute="2-digit"
+                                                        time-zone="America/Panama">
+                                                    </lightning-formatted-date-time></div>
+                                            </div>
+                                            <div class="slds-p-right_small">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="18" viewBox="0 0 20 18" fill="none" data-id={notify.id} onclick={handleClose}>
+                                                    <path d="M5.57812 13.4141L14.7504 4.58439" stroke="#1D1D1D" stroke-linecap="round"/>
+                                                    <path d="M5.57812 4.58594L14.7504 13.4156" stroke="#1D1D1D" stroke-linecap="round"/>
+                                                </svg>
+                                                <!-- <i class="fa-solid fa-lg fa-xmark" data-id={notify.id}
+                                                    onclick={handleClose}></i> -->
+                                            </div>
+                                        </div>
+                                    </template>
+                                    <div class="slds-p-around_small">
+                                        <div class="view-all slds-p-around_medium view-link" onclick={showAll}>
+                                            View all
+                                        </div>
+                                    </div>
+                                </template>
+                                <template lwc:else>
+                                    <div
+                                        class="slds-align_absolute-center slds-p-top_medium slds-p-bottom_x-large no-data-message">
+                                        You have no notifications right now.</div>
+                                </template>
+
+                            </div>
+                        </div>
+                    </template>
+                </div>
+            </div>
+        </div>
+
+        <div class="flex-container-view slds-m-top_x-large">
+            <div class="slds-m-right_medium flex-view-1">
+                <div class="slds-col slds-p-left_large slds-p-top_small">
+                    <h2 style="font-weight: 700;
+                    font-size: 20px;color: #7ABB4A;">My Team</h2>
+                </div>
+                <template lwc:if={driverIsMyteam}>
+                    <div class="slds-p-around_medium list-view">
+                        <template for:each={driverTeamVisibleList} for:item="list">
+                            <div class="slds-p-horizontal_x-small slds-p-vertical_xx-small" key={list.id}>
+                                <div><a class="name" data-id={list.id} onclick={navigateToUser}>{list.name}</a></div>
+                            </div>
+                        </template>
+                    </div>
+                </template>
+                <template lwc:else>
+                    <div class="slds-align_absolute-center slds-p-top_medium slds-p-bottom_x-large no-data-message">
+                        There is no team at this time.</div>
+                </template>
+
+                <template lwc:if={driverIsMyteam}>
+                    <div class="slds-p-around_small">
+                        <div class="view-all slds-p-around_medium view-link" onclick={navigateToTeam}>
+                            View all
+                        </div>
+                    </div>
+                </template>
+            </div>
+
+            <div class="slds-m-right_medium flex-view-2">
+                <div class="slds-col slds-p-left_large slds-p-top_small slds-p-bottom_medium">
+                    <h2 style="font-weight: 700;
+                    font-size: 20px;color: #7ABB4A;">Onboarding Status</h2>
+                </div>
+                <div
+                    class="slds-col slds-size_1-of-1 slds-medium-size_12-of-12 slds-large-size_12-of-12 slds-p-horizontal_medium" style="--aspect-ratio: 16/9;">
+                    <template lwc:if={complianceList}>
+                        <c-chart-view-dashboard chart-list={complianceList}
+                            view-name="Onboarding"></c-chart-view-dashboard>
+                    </template>
+                </div>
+            </div>
+
+            <div class="flex-view-3" style="
+                        border: 1px solid #D7D7D7;
+                        flex: 30%;
+                        height: auto;
+                        border-radius: 20px;">
+                <div
+                    class="slds-col slds-size_1-of-1 slds-medium-size_6-of-12 slds-large-size_12-of-12 slds-p-left_large slds-p-top_small">
+                    <h2 style="font-weight: 700;
+                    font-size: 20px;color: #7ABB4A;">My Team’s Locations</h2>
+                </div>
+                <div
+                    class="slds-col slds-size_1-of-1 slds-medium-size_12-of-12 slds-large-size_12-of-12 slds-align_absolute-center slds-p-top_medium" style="--aspect-ratio: 16/9;">
+                    <c-point-chloropleth background="#FFFFFF" locate={locationList} border-color="#FFFFFF" width="260"
+                        height="150"></c-point-chloropleth>
+                </div>
+            </div>
+        </div>
+
+        <div class="flex-container-view slds-m-top_x-large">
+            <div class="slds-m-right_medium flex-view-1">
+                <div class="slds-col slds-p-left_large slds-p-top_small slds-p-bottom_medium">
+                    <h2 style="font-weight: 700;
+                    font-size: 20px;color: #7ABB4A;">Insurance</h2>
+                </div>
+                <div
+                    class="slds-col slds-size_1-of-1 slds-medium-size_12-of-12 slds-large-size_12-of-12  slds-p-horizontal_medium" style="--aspect-ratio: 16/9;">
+                    <template lwc:if={insuranceList}>
+                        <c-chart-view-dashboard chart-list={insuranceList}
+                            view-name="Insurance"></c-chart-view-dashboard>
+                    </template>
+                </div>
+            </div>
+
+            <div class="slds-m-right_medium flex-view-2">
+                <div class="slds-col slds-p-left_large slds-p-top_small">
+                    <h2 style="font-weight: 700;
+                    font-size: 20px;color: #7ABB4A;">Compliance Status</h2>
+                </div>
+                <div
+                    class="slds-col slds-size_1-of-1 slds-medium-size_12-of-12 slds-large-size_12-of-12  slds-p-horizontal_medium" style="--aspect-ratio: 16/9;">
+                    <template lwc:if={complianceList}>
+                        <c-chart-view-dashboard chart-list={complianceList}
+                            view-name="Compliance"></c-chart-view-dashboard>
+                    </template>
+                </div>
+            </div>
+
+            <div class="flex-view-3" style="
+                        border: 1px solid #D7D7D7;
+                        flex: 30%;
+                        height: auto;
+                        border-radius: 20px;">
+                <div
+                    class="slds-col slds-size_1-of-1 slds-medium-size_6-of-12 slds-large-size_12-of-12 slds-p-left_large slds-p-top_small">
+                    <h2 style="font-weight: 700;
+                    font-size: 20px;color: #7ABB4A;">High Mileage Drivers</h2>
+                </div>
+                <div class="slds-p-around_medium">
+                    <template lwc:if={driverIsHighMileage}>
+                        <table class="slds-table slds-table_cell-buffer slds-table_header-hidden driver-top">
+                            <template for:each={highMileageDriverList} for:item="list">
+                                <tr key={list.id}>
+                                    <td><a data-id={list.id} class="name" onclick={navigateToHigh}>{list.name}</a></td>
+                                    <td class="mileage">
+                                        <lightning-formatted-number value={list.mileage} minimum-fraction-digits="2">
+                                        </lightning-formatted-number>
+                                        &nbsp; miles
+                                    </td>
+                                </tr>
+                            </template>
+                        </table>
+                    </template>
+                    <template lwc:else>
+                        <div class="slds-align_absolute-center slds-p-top_medium slds-p-bottom_x-large no-data-message">
+                            There are no high mileage drivers at this time.</div>
+                    </template>
+                </div>
+                <template lwc:if={driverIsHighMileage}>
+                    <div class="slds-p-around_small">
+                        <div class="view-all slds-p-around_medium view-link" onclick={navigateToHighMileage}>
+                            View all
+                        </div>
+                    </div>
+                </template>
+            </div>
+        </div>
+    </div>
+</template>

@@ -1,3 +1,4 @@
+/* eslint-disable @lwc/lwc/no-document-query */
 /* eslint-disable no-else-return */
 /* eslint-disable vars-on-top */
 import {
@@ -18,6 +19,7 @@ export default class CanvasChart extends LightningElement {
     @api defaultMonth;
     config;
     /* fires after every render of the component. */
+
     renderedCallback() {
         var _self = this;
         if (this.chartJsInitialized) {
@@ -46,32 +48,32 @@ export default class CanvasChart extends LightningElement {
                                 data: [...listOfChart.dataA],
                                 order: 2,
                                 backgroundColor: [
-                                    'rgba(0,0,0,0.2)',
-                                    'rgba(0,0,0,0.2)',
-                                    'rgba(0,0,0,0.2)',
-                                    'rgba(0,0,0,0.2)',
-                                    'rgba(0,0,0,0.2)',
-                                    'rgba(0,0,0,0.2)',
-                                    'rgba(0,0,0,0.2)',
-                                    'rgba(0,0,0,0.2)',
-                                    'rgba(0,0,0,0.2)',
-                                    'rgba(0,0,0,0.2)',
-                                    'rgba(0,0,0,0.2)',
-                                    'rgba(0,0,0,0.2)'
+                                    'rgba(217,217,217,1)',
+                                    'rgba(217,217,217,1)',
+                                    'rgba(217,217,217,1)',
+                                    'rgba(217,217,217,1)',
+                                    'rgba(217,217,217,1)',
+                                    'rgba(217,217,217,1)',
+                                    'rgba(217,217,217,1)',
+                                    'rgba(217,217,217,1)',
+                                    'rgba(217,217,217,1)',
+                                    'rgba(217,217,217,1)',
+                                    'rgba(217,217,217,1)',
+                                    'rgba(217,217,217,1)'
                                 ],
                                 borderColor: [
-                                    'rgba(0,0,0,0.2)',
-                                    'rgba(0,0,0,0.2)',
-                                    'rgba(0,0,0,0.2)',
-                                    'rgba(0,0,0,0.2)',
-                                    'rgba(0,0,0,0.2)',
-                                    'rgba(0,0,0,0.2)',
-                                    'rgba(0,0,0,0.2)',
-                                    'rgba(0,0,0,0.2)',
-                                    'rgba(0,0,0,0.2)',
-                                    'rgba(0,0,0,0.2)',
-                                    'rgba(0,0,0,0.2)',
-                                    'rgba(0,0,0,0.2)'
+                                    'rgba(217,217,217,1)',
+                                    'rgba(217,217,217,1)',
+                                    'rgba(217,217,217,1)',
+                                    'rgba(217,217,217,1)',
+                                    'rgba(217,217,217,1)',
+                                    'rgba(217,217,217,1)',
+                                    'rgba(217,217,217,1)',
+                                    'rgba(217,217,217,1)',
+                                    'rgba(217,217,217,1)',
+                                    'rgba(217,217,217,1)',
+                                    'rgba(217,217,217,1)',
+                                    'rgba(217,217,217,1)'
                                 ]
                             }, {
                                 label: listOfChart.labelB,
@@ -80,7 +82,7 @@ export default class CanvasChart extends LightningElement {
                                     'rgb(255,255,255, 0)'
                                 ],
                                 borderColor: [
-                                    'rgba(0, 128, 0, 0.7)'
+                                    'rgba(122, 187, 74, 1)'
                                 ],
                                 type: 'line',
                                 pointStyle: 'line',
@@ -96,45 +98,59 @@ export default class CanvasChart extends LightningElement {
                             }]
                         },
                         options: {
-                            // legend: false,
+                            legend: {
+                                labels: {
+                                        usePointStyle: true,
+                                        padding: 15,
+                                        fontSize: 14,
+                                        fontColor: '#1D1D1D',
+                                        fontFamily: 'Proxima Nova',
+                                        fontWeight: '800'
+                                },
+                                position: 'right',
+                                align: 'end'
+                            },
                             // legendCallback: function(chart){
                             //     var text = [];
                             //     text.push('<div class="_legend' + chart.id + '">');
-                            //     for (var i = 0; i < chart.data.datasets.length; i++) {
-                            //       text.push(`<div><div class="legendValue"><span class='symbol-${chart.data.datasets[i].label}' style="background-color:${chart.data.datasets[i].backgroundColor[0]}">&nbsp;&nbsp;&nbsp;&nbsp;</span>`);
+                            //    for (var i = 0; i < chart.data.datasets.length; i++) {
+                            //       console.log(chart.data.labels , chart.data.labels.length)
+                            //      text.push(`<div><div class="legendValue"><span class='symbol-${chart.data.datasets[i].label}' style="background-color:${chart.data.datasets[i].backgroundColor[0]}">&nbsp;&nbsp;&nbsp;&nbsp;</span>`);
                                   
                             //       if (chart.data.datasets[i].label) {
-                            //         text.push('<span class="label">' + chart.data.datasets[i].label + '</span>');
-                            //       }
+                            //        text.push('<span class="label">' + chart.data.datasets[i].label + '</span>');
+                            //      }
                           
-                            //       text.push('</div></div><div class="clear"></div>');
-                            //     }
+                            //      text.push('</div></div><div class="clear"></div>');
+                            //    }
                           
-                            //     text.push('</div>');
+                            //    text.push('</div>');
                           
-                            //     return text.join('');
+                            //    return text.join('');
                             // },
-                            legend: {
-                                labels: {
-                                    usePointStyle: true,
-                                    padding: 15,
-                                    fontSize: 14,
-                                    fontColor: '#1D1D1D',
-                                    fontFamily: 'Proxima Nova',
-                                    fontWeight: '800'
-                                },
-                                position: 'right',
-                                align: 'end',
-                            },
                             tooltips: {
-                                backgroundColor: 'rgba(0, 77, 0, 1)',
+                                backgroundColor: 'rgba(0, 128, 0, 0.7)',
                                 bodyFontFamily: 'Proxima Nova',
+                                titleFontFamily: 'Proxima Nova',
                                 mode: 'label',
                                 titleFontSize: 16,
+                                cornerRadius: 0,
+                                titleFontColor: '#FFF',
+                                bodyFontColor: '#FFF',
+                                displayColors: false,
+                                borderColor: 'rgba(0, 150, 0)',
                                 xPadding: 8,
                                 yPadding: 8,
                                 usePointStyle: true,
                                 callbacks: {
+                                    labelColor: function(tooltipItem, chart) {
+                                        var dataset = chart.config.data.datasets[tooltipItem.datasetIndex]
+                                        return {
+                                            borderColor: dataset.borderColor,
+                                            backgroundColor: dataset.backgroundColor
+                                        };
+                                    },
+                                
                                     title: function (tooltipItem, data) {
                                         var tooltipTitle;
                                         var titleInitial = data.labels[tooltipItem[0].index];
@@ -155,6 +171,7 @@ export default class CanvasChart extends LightningElement {
                                         return tooltipTitle;
                                     },
                                     label: function (tooltipItem, data) {
+                                        console.log("label", data.datasets[tooltipItem.datasetIndex].label, tooltipItem)
                                         //tooltipItem.yLabel = tooltipItem.yLabel.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
                                         if (_self.chartComponent === 'Reimbursement') {
                                             return data.datasets[tooltipItem.datasetIndex].label + ': $' + tooltipItem.yLabel.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
@@ -211,21 +228,51 @@ export default class CanvasChart extends LightningElement {
                     }
                 
                // window.Chart.platform.disableCSSInjection = true;
-                const canvas = document.createElement('canvas');
-                const ctx = canvas.getContext('2d');
-                ctx.canvas.width = 246;
-                ctx.canvas.height = 200;
-                this.template.querySelector('div.chart').appendChild(canvas);
-                this.chart = new window.Chart(ctx, this.config);
+                    const canvas = document.createElement('canvas');
+                    const ctx = canvas.getContext('2d');
+                    ctx.canvas.width = 'auto';
+                    ctx.canvas.height = 200;
+                    this.refs.chartRef.appendChild(canvas);
+                    this.chart = new window.Chart(ctx, this.config);
+                   
+                    // const legend = document.createElement('div');
+                    // legend.className = 'legend_wrapper';
+                    //ctx.canvas.width = 'content-box;'; /*246*/
+                   // ctx.canvas.height = 200;
+                    // this.refs.chartRef.appendChild(canvas);
+                    // canvas.prepend(legend);
+                  
+                    // window.document.querySelector('.legend_wrapper').innerHTML = this.chart.generateLegend();
+                    //console.log("Chart js ", this.chart, window.document.querySelector('.legend_wrapper'))
+                   // legend.innerHTML = this.chart.generateLegend();
                 }
-                //this.chart.canvas.parentNode.style.position = 'relative';
-                // this.chart.canvas.parentNode.style.margin = 'auto';
-                // this.chart.canvas.parentNode.style.height = '200px';
-                // this.chart.canvas.parentNode.style.width = '390px';
             })
             .catch((error) => {
                 this.error = error;
             });
+    }
+
+    updateDataset(e, datasetIndex){
+        var defaultLegendClickHandler = window.Chart.defaults.global.legend.onClick;
+        var index = datasetIndex;
+        console.log("Chart js method ", e, datasetIndex, index)
+        if (index > 1) {
+            defaultLegendClickHandler(e, datasetIndex);
+        }else{
+            var ci = this.chart;
+            var meta = ci.getDatasetMeta(0);    
+            var result= (meta.data[datasetIndex].hidden === true) ? false : true;
+            if(result === true)
+            {
+                meta.data[datasetIndex].hidden = true;
+                e.target.parentNode.querySelector(e.path[0].id).style.textDecoration = "line-through";
+            }else{
+                e.target.parentNode.querySelector(e.path[0].id).style.textDecoration = "";
+                meta.data[datasetIndex].hidden = false;
+            }
+            
+            ci.update();   
+        }
     }
 
 }

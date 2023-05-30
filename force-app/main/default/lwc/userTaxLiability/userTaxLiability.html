@@ -9,155 +9,331 @@
         </div>
         <div class="slds-tabs_default__content" role="tabpanel">
             <div class="compliance-text  slds-p-top_small slds-align_absolute-center">
-            <div class="status-holder slds-p-horizontal_large slds-p-vertical_medium">
-                <div class="compliance-message">{messageOfCompliance}</div>
-            </div>
+                <div class="status-holder slds-p-horizontal_large slds-p-vertical_medium">
+                    <div class="compliance-message">{messageOfCompliance}</div>
+                </div>
             </div>
             <div class="complaince-detail slds-m-left_medium slds-p-top_x-large">
-            <div class="slds-grid">
-                <template for:each={complianceData} for:item="compliance">
-                <div
-                    class="slds-col slds-m-right_small"
-                    key={compliance.quarterno}
-                >
-                    <div class="plan-info-compliance slds-p-around_large">
-                    <div class="compliance-header">
-                        {compliance.quarterno}{compliance.ordinal} Quarter Tax Analysis
-                    </div>
-                    <div class="slds-m-top_medium">
-                        <table
-                        class="slds-table slds-table_cell-buffer slds-table_header-hidden bordered-table"
-                        >
-                        <tr>
-                            <td>Mileage</td>
-                            <td>
-                            <lightning-formatted-number
-                                value={compliance.Mileages}
-                                minimum-fraction-digits="2"
-                            >
-                            </lightning-formatted-number>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Total Reimbursement</td>
-                            <td>
-                            <lightning-formatted-number
-                                value={compliance.Reimbursements}
-                                format-style="currency"
-                                currency-code="USD"
-                                minimum-fraction-digits="2"
-                            >
-                            </lightning-formatted-number>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Max IRS Amount</td>
-                            <td>
-                            <lightning-formatted-number
-                                value={compliance.MaxIRSrate}
-                                format-style="currency"
-                                currency-code="USD"
-                                minimum-fraction-digits="2"
-                            >
-                            </lightning-formatted-number>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Q{compliance.quarterno} Tax Liability</td>
-                            <td>
-                            <lightning-formatted-number
-                                value={compliance.ImputedAmount}
-                                format-style="currency"
-                                currency-code="USD"
-                                minimum-fraction-digits="2"
-                            >
-                            </lightning-formatted-number>
-                            </td>
-                        </tr>
-                        </table>
-                    </div>
-                    </div>
-                </div>
-                </template>
-            </div>
-        
-            <template if:true={lengthS}>
-                <div class="slds-grid slds-p-left_xx-small slds-align_absolute-center slds-p-top_x-large">
-                <div class="slds-col slds-size_1-of-4 slds-m-right_small">
-                    <div class="plan-info-compliance slds-p-around_large">
-                    <div class="compliance-header">Annual Tax Analysis</div>
-                    <div class="slds-m-top_medium">
-                        <table
-                        class="slds-table slds-table_cell-buffer slds-table_header-hidden bordered-table"
-                        >
-                        <tr>
-                            <td>Total Reimbursement</td>
-                            <td>
-                            <lightning-formatted-number
-                                value={reimbursements}
-                                format-style="currency"
-                                currency-code="USD"
-                                minimum-fraction-digits="2"
-                            >
-                            </lightning-formatted-number>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Maximum Allowable</td>
-                            <td>
-                            <lightning-formatted-number
-                                value={maxAllow}
-                                format-style="currency"
-                                currency-code="USD"
-                                minimum-fraction-digits="2"
-                            >
-                            </lightning-formatted-number>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Annual Tax Liability</td>
-                            <td>
-                            <lightning-formatted-number
-                                value={taxLiablity}
-                                format-style="currency"
-                                currency-code="USD"
-                                minimum-fraction-digits="2"
-                            >
-                            </lightning-formatted-number>
-                            </td>
-                        </tr>
-                        </table>
-                    </div>
-                    </div>
-                </div>
-                <div class="slds-col slds-size_1-of-4">
-                    <div class="plan-info-download slds-p-around_medium">
-                    <div class="slds-grid">
-                        <div class="slds-m-right_small download-report">
-                        <img src={downloadIcon} />
+                <div style="display: flex;
+                flex-wrap: wrap;">
+                    <template for:each={complianceData} for:item="compliance">
+                        <div style="flex-basis: 265px;margin: 0 30px 30px 0;" key={compliance.quarterno}>
+                            <div class="plan-info-compliance slds-p-around_large">
+                                <div class="compliance-header">{compliance.quarterno}{compliance.ordinal} Quarter Tax
+                                    Analysis</div>
+                                <div class="slds-m-top_medium">
+                                    <table
+                                        class="slds-table slds-table_cell-buffer slds-table_header-hidden bordered-table">
+                                        <tr>
+                                            <td>Mileage</td>
+                                            <td>
+                                                <lightning-formatted-number value={compliance.Mileages}
+                                                    minimum-fraction-digits="2">
+                                                </lightning-formatted-number>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>Total Reimbursement</td>
+                                            <td>
+                                                <lightning-formatted-number value={compliance.Reimbursements}
+                                                    format-style="currency" currency-code="USD"
+                                                    minimum-fraction-digits="2">
+                                                </lightning-formatted-number>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>Max IRS Amount</td>
+                                            <td>
+                                                <lightning-formatted-number value={compliance.MaxIRSrate}
+                                                    format-style="currency" currency-code="USD"
+                                                    minimum-fraction-digits="2">
+                                                </lightning-formatted-number>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>Q{compliance.quarterno} Tax Liability</td>
+                                            <td>
+                                                <lightning-formatted-number value={compliance.ImputedAmount}
+                                                    format-style="currency" currency-code="USD"
+                                                    minimum-fraction-digits="2">
+                                                </lightning-formatted-number>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </div>
                         </div>
-                        <div class="annual-liability">Annual Tax Liability Detail Report</div>
-                    </div>
-                    </div>
-                    <div
-                    class="plan-info-download slds-p-around_medium annual-margin"
-                    >
-                    <div class="slds-grid">
-                        <div class="slds-m-right_small"><img src={downloadIcon} /></div>
-                        <div class="annual-liability">Annual Tax Liability Summary Report</div>
-                    </div>
-                    </div>
-                    <div
-                    class="compliance-btn annual-margin"
-                    onclick={redirectToCompliance}>
-                    <div class="slds-grid">
-                        <div class="">See My Compliance</div>
-                    </div>
-                    </div>
+                    </template>
+                    <template if:true={lengthS}>
+                        <div style="flex-basis: 265px;margin: 0 30px 30px 0;">
+                            <div class="plan-info-compliance slds-p-around_large" style="height: 100%">
+                                <div class="compliance-header">Annual Tax Analysis</div>
+                                <div class="slds-m-top_medium">
+                                    <table
+                                        class="slds-table slds-table_cell-buffer slds-table_header-hidden bordered-table analysis">
+                                        <tr>
+                                            <td>Total Reimbursement</td>
+                                            <td>
+                                                <lightning-formatted-number value={reimbursements}
+                                                    format-style="currency" currency-code="USD"
+                                                    minimum-fraction-digits="2">
+                                                </lightning-formatted-number>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>Maximum Allowable</td>
+                                            <td>
+                                                <lightning-formatted-number value={maxAllow} format-style="currency"
+                                                    currency-code="USD" minimum-fraction-digits="2">
+                                                </lightning-formatted-number>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>Annual Tax Liability</td>
+                                            <td>
+                                                <lightning-formatted-number value={taxVal} format-style="currency"
+                                                    currency-code="USD" minimum-fraction-digits="2">
+                                                </lightning-formatted-number>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                        <div style="flex-basis: 265px;margin: 0 30px 30px 0;">
+                            <div class="plan-info-compliance" style="height: 100%">
+                                <div style="padding: 4rem 0;display:block;">
+                                    <table class="slds-table slds-table_cell-buffer slds-table_header-hidden no-border">
+                                        <tbody>
+                                            <tr>
+                                                <td style="padding-right: 41px !important;
+                                                padding-left: 41px !important;">
+                                                    <div class="annual-liability">Annual Tax Liability Detail</div>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <div class="download-report"><button
+                                                            class="slds-btn slds-btn-primary slds-btn-sm waves-effect bc-green waves-light mleft-0 btn-trip-download"
+                                                            onclick={taxLiabilityDetailReport}><svg
+                                                                xmlns="http://www.w3.org/2000/svg" width="25"
+                                                                height="25" viewBox="0 0 25 25" fill="none"
+                                                                style="margin-right: 3px;">
+                                                                <path
+                                                                    d="m7.561 11.627 0.032 -0.032 -0.032 0.032 4.273 4.273a0.936 0.936 0 0 0 0.143 0.118 0.625 0.625 0 0 0 0.068 0.036h0.001l0.032 0.018 0.009 0.006 0.048 0.025a0.357 0.357 0 0 0 0.089 0.028l0.007 0.002a0.557 0.557 0 0 0 0.082 0.025l0.002 0.001a0.941 0.941 0 0 0 0.368 0h0.002a0.502 0.502 0 0 0 0.052 -0.018 0.522 0.522 0 0 1 0.027 -0.007l0.002 -0.002 0.032 -0.009 0.057 -0.018a0.527 0.527 0 0 0 0.098 -0.05l0.001 -0.001 0.002 -0.001a0.232 0.232 0 0 1 0.027 -0.016l0.036 -0.022a0.952 0.952 0 0 0 0.143 -0.118l4.273 -4.273a0.941 0.941 0 0 0 0 -1.332 0.941 0.941 0 0 0 -1.332 0l-2.668 2.668V4.843a0.943 0.943 0 0 0 -1.882 0v8.122L8.891 10.297a0.941 0.941 0 0 0 -1.331 0 0.941 0.941 0 0 0 0 1.332Zm13.323 7.718a0.942 0.942 0 0 0 -0.943 -0.941H5.057a0.943 0.943 0 0 0 0 1.881h14.886a0.943 0.943 0 0 0 0.942 -0.942Z"
+                                                                    fill="white" stroke="white"
+                                                                    stroke-width="0.10081333333333335"></path>
+                                                            </svg>Download</button></div>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                        <div style="flex-basis: 265px;margin: 0 30px 30px 0;">
+                            <div class="plan-info-compliance" style="height: 100%">
+                                <div style="padding: 4rem 0;display:block;">
+                                    <table class="slds-table slds-table_cell-buffer slds-table_header-hidden no-border">
+                                        <tbody>
+                                            <tr>
+                                                <td style="padding-right: 27px !important;
+                                                padding-left: 27px !important;">
+                                                    <div class="annual-liability">Annual Tax Liability Summary</div>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <div class="download-report"><button
+                                                            class="slds-btn slds-btn-primary slds-btn-sm waves-effect bc-green waves-light mleft-0 btn-trip-download"
+                                                            onclick={taxLiabilitySummaryReport}><svg
+                                                                xmlns="http://www.w3.org/2000/svg" width="25"
+                                                                height="25" viewBox="0 0 25 25" fill="none"
+                                                                style="margin-right: 3px;">
+                                                                <path
+                                                                    d="m7.561 11.627 0.032 -0.032 -0.032 0.032 4.273 4.273a0.936 0.936 0 0 0 0.143 0.118 0.625 0.625 0 0 0 0.068 0.036h0.001l0.032 0.018 0.009 0.006 0.048 0.025a0.357 0.357 0 0 0 0.089 0.028l0.007 0.002a0.557 0.557 0 0 0 0.082 0.025l0.002 0.001a0.941 0.941 0 0 0 0.368 0h0.002a0.502 0.502 0 0 0 0.052 -0.018 0.522 0.522 0 0 1 0.027 -0.007l0.002 -0.002 0.032 -0.009 0.057 -0.018a0.527 0.527 0 0 0 0.098 -0.05l0.001 -0.001 0.002 -0.001a0.232 0.232 0 0 1 0.027 -0.016l0.036 -0.022a0.952 0.952 0 0 0 0.143 -0.118l4.273 -4.273a0.941 0.941 0 0 0 0 -1.332 0.941 0.941 0 0 0 -1.332 0l-2.668 2.668V4.843a0.943 0.943 0 0 0 -1.882 0v8.122L8.891 10.297a0.941 0.941 0 0 0 -1.331 0 0.941 0.941 0 0 0 0 1.332Zm13.323 7.718a0.942 0.942 0 0 0 -0.943 -0.941H5.057a0.943 0.943 0 0 0 0 1.881h14.886a0.943 0.943 0 0 0 0.942 -0.942Z"
+                                                                    fill="white" stroke="white"
+                                                                    stroke-width="0.10081333333333335"></path>
+                                                            </svg>Download</button></div>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                        <div style="flex-basis: 274px;margin: 0 30px 30px 0;">
+                            <div class="plan-info-compliance slds-p-around_large" style="height: 100%;background: #F1F8EC;">
+                                <div style="padding: 4rem 0;
+                                text-align: center;">
+                                    <button class="slds-btn slds-btn-primary slds-btn-sm waves-effect bc-green waves-light mleft-0 compliance-btn"
+                                    onclick={redirectToCompliance}>See My Compliance</button>
+                                </div>
+                            </div>
+                        </div>
+                    </template>
                 </div>
-                </div>
-            </template>
+                <!-- <div class="slds-grid slds-wrap slds-gutters slds-grid_vertical-stretch">
+                    <template for:each={complianceData} for:item="compliance">
+                        <div class="slds-col slds-m-bottom_large" key={compliance.quarterno}>
+                            <div class="plan-info-compliance slds-p-around_large">
+                                <div class="compliance-header">{compliance.quarterno}{compliance.ordinal} Quarter Tax
+                                    Analysis</div>
+                                <div class="slds-m-top_medium">
+                                    <table
+                                        class="slds-table slds-table_cell-buffer slds-table_header-hidden bordered-table">
+                                        <tr>
+                                            <td>Mileage</td>
+                                            <td>
+                                                <lightning-formatted-number value={compliance.Mileages}
+                                                    minimum-fraction-digits="2">
+                                                </lightning-formatted-number>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>Total Reimbursement</td>
+                                            <td>
+                                                <lightning-formatted-number value={compliance.Reimbursements}
+                                                    format-style="currency" currency-code="USD"
+                                                    minimum-fraction-digits="2">
+                                                </lightning-formatted-number>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>Max IRS Amount</td>
+                                            <td>
+                                                <lightning-formatted-number value={compliance.MaxIRSrate}
+                                                    format-style="currency" currency-code="USD"
+                                                    minimum-fraction-digits="2">
+                                                </lightning-formatted-number>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>Q{compliance.quarterno} Tax Liability</td>
+                                            <td>
+                                                <lightning-formatted-number value={compliance.ImputedAmount}
+                                                    format-style="currency" currency-code="USD"
+                                                    minimum-fraction-digits="2">
+                                                </lightning-formatted-number>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </template>
+                    <template if:true={lengthS}>
+                        <div class="slds-col slds-m-bottom_large">
+                            <div class="plan-info-compliance slds-p-around_large" style="height: 100%">
+                                <div class="compliance-header">Annual Tax Analysis</div>
+                                <div class="slds-m-top_medium">
+                                    <table
+                                        class="slds-table slds-table_cell-buffer slds-table_header-hidden bordered-table">
+                                        <tr>
+                                            <td>Total Reimbursement</td>
+                                            <td>
+                                                <lightning-formatted-number value={reimbursements}
+                                                    format-style="currency" currency-code="USD"
+                                                    minimum-fraction-digits="2">
+                                                </lightning-formatted-number>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>Maximum Allowable</td>
+                                            <td>
+                                                <lightning-formatted-number value={maxAllow} format-style="currency"
+                                                    currency-code="USD" minimum-fraction-digits="2">
+                                                </lightning-formatted-number>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>Annual Tax Liability</td>
+                                            <td>
+                                                <lightning-formatted-number value={taxVal} format-style="currency"
+                                                    currency-code="USD" minimum-fraction-digits="2">
+                                                </lightning-formatted-number>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="slds-col slds-m-bottom_large">
+                            <div class="plan-info-compliance" style="height: 100%">
+                                <div style="padding: 1rem;display:block;margin:45px 0;">
+                                    <table class="slds-table slds-table_cell-buffer slds-table_header-hidden no-border">
+                                        <tbody>
+                                            <tr>
+                                                <td style="padding-right: 28px !important;
+                                                padding-left: 28px !important;">
+                                                    <div class="annual-liability">Annual Tax Liability Detail</div>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <div class="download-report" style="padding-top: 18px;"><button
+                                                            class="slds-btn slds-btn-primary slds-btn-sm waves-effect bc-green waves-light mleft-0 btn-trip-download"
+                                                            onclick={taxLiabilityDetailReport}><svg
+                                                                xmlns="http://www.w3.org/2000/svg" width="25"
+                                                                height="25" viewBox="0 0 25 25" fill="none"
+                                                                style="margin-right: 3px;">
+                                                                <path
+                                                                    d="m7.561 11.627 0.032 -0.032 -0.032 0.032 4.273 4.273a0.936 0.936 0 0 0 0.143 0.118 0.625 0.625 0 0 0 0.068 0.036h0.001l0.032 0.018 0.009 0.006 0.048 0.025a0.357 0.357 0 0 0 0.089 0.028l0.007 0.002a0.557 0.557 0 0 0 0.082 0.025l0.002 0.001a0.941 0.941 0 0 0 0.368 0h0.002a0.502 0.502 0 0 0 0.052 -0.018 0.522 0.522 0 0 1 0.027 -0.007l0.002 -0.002 0.032 -0.009 0.057 -0.018a0.527 0.527 0 0 0 0.098 -0.05l0.001 -0.001 0.002 -0.001a0.232 0.232 0 0 1 0.027 -0.016l0.036 -0.022a0.952 0.952 0 0 0 0.143 -0.118l4.273 -4.273a0.941 0.941 0 0 0 0 -1.332 0.941 0.941 0 0 0 -1.332 0l-2.668 2.668V4.843a0.943 0.943 0 0 0 -1.882 0v8.122L8.891 10.297a0.941 0.941 0 0 0 -1.331 0 0.941 0.941 0 0 0 0 1.332Zm13.323 7.718a0.942 0.942 0 0 0 -0.943 -0.941H5.057a0.943 0.943 0 0 0 0 1.881h14.886a0.943 0.943 0 0 0 0.942 -0.942Z"
+                                                                    fill="white" stroke="white"
+                                                                    stroke-width="0.10081333333333335"></path>
+                                                            </svg>Download</button></div>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="slds-col slds-m-bottom_large">
+                            <div class="plan-info-compliance" style="height: 100%">
+                                <div style="padding: 1rem;display:block;margin:45px 0;">
+                                    <table class="slds-table slds-table_cell-buffer slds-table_header-hidden no-border">
+                                        <tbody>
+                                            <tr>
+                                                <td style="padding-right: 20px !important;
+                                                padding-left: 12px !important;">
+                                                    <div class="annual-liability">Annual Tax Liability Summary</div>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <div class="download-report" style="padding-top: 18px;"><button
+                                                            class="slds-btn slds-btn-primary slds-btn-sm waves-effect bc-green waves-light mleft-0 btn-trip-download"
+                                                            onclick={taxLiabilitySummaryReport}><svg
+                                                                xmlns="http://www.w3.org/2000/svg" width="25"
+                                                                height="25" viewBox="0 0 25 25" fill="none"
+                                                                style="margin-right: 3px;">
+                                                                <path
+                                                                    d="m7.561 11.627 0.032 -0.032 -0.032 0.032 4.273 4.273a0.936 0.936 0 0 0 0.143 0.118 0.625 0.625 0 0 0 0.068 0.036h0.001l0.032 0.018 0.009 0.006 0.048 0.025a0.357 0.357 0 0 0 0.089 0.028l0.007 0.002a0.557 0.557 0 0 0 0.082 0.025l0.002 0.001a0.941 0.941 0 0 0 0.368 0h0.002a0.502 0.502 0 0 0 0.052 -0.018 0.522 0.522 0 0 1 0.027 -0.007l0.002 -0.002 0.032 -0.009 0.057 -0.018a0.527 0.527 0 0 0 0.098 -0.05l0.001 -0.001 0.002 -0.001a0.232 0.232 0 0 1 0.027 -0.016l0.036 -0.022a0.952 0.952 0 0 0 0.143 -0.118l4.273 -4.273a0.941 0.941 0 0 0 0 -1.332 0.941 0.941 0 0 0 -1.332 0l-2.668 2.668V4.843a0.943 0.943 0 0 0 -1.882 0v8.122L8.891 10.297a0.941 0.941 0 0 0 -1.331 0 0.941 0.941 0 0 0 0 1.332Zm13.323 7.718a0.942 0.942 0 0 0 -0.943 -0.941H5.057a0.943 0.943 0 0 0 0 1.881h14.886a0.943 0.943 0 0 0 0.942 -0.942Z"
+                                                                    fill="white" stroke="white"
+                                                                    stroke-width="0.10081333333333335"></path>
+                                                            </svg>Download</button></div>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="slds-col slds-m-bottom_large">
+                            <div class="plan-info-compliance slds-p-around_large" style="height: 100%">
+                                <div style="padding: 1.3rem;
+                                text-align: center;
+                                margin: 54px 0;">
+                                    <button class="slds-btn slds-btn-primary slds-btn-sm waves-effect bc-green waves-light mleft-0 compliance-btn"
+                                    onclick={redirectToCompliance}>See My Compliance</button>
+                                </div>
+                            </div>
+                        </div>
+                    </template>
+                </div> -->
             </div>
         </div>
     </div>
+    <c-export-excel></c-export-excel>
 </template>

@@ -6,12 +6,13 @@ import getMileages from "@salesforce/apex/DriverDashboardLWCController.getMileag
 import getGasPriceandRate from "@salesforce/apex/DriverDashboardLWCController.getGasPriceandRate";
 import getAllReimbursements from "@salesforce/apex/DriverDashboardLWCController.getAllReimbursements";
 import getReimbursementData from "@salesforce/apex/DriverDashboardLWCController.getReimbursementData";
-import getDriverDetailsClone from "@salesforce/apex/DriverDashboardLWCController.getDriverDetailsClone";
 import getFuelVariableRate from "@salesforce/apex/DriverDashboardLWCController.getFuelVariableRate";
 import getPacketandMeeting from "@salesforce/apex/DriverDashboardLWCController.getPacketandMeeting";
 import getDrivingState from "@salesforce/apex/DriverDashboardLWCController.getDrivingState";
 import { events, openEvents, toastEvents } from "c/utils";
 export default class DriverReimbursementProfile extends LightningElement {
+  @api driverDetails;
+  @api isArchive;
   profileCarImage =
     carImage + "/emc-design/assets/images/2022-envision-mov-avenir-trim.png";
   milesIcon = resourceImage + "/mburse/assets/mBurse-Icons/Middle-block/1.png";
@@ -19,15 +20,15 @@ export default class DriverReimbursementProfile extends LightningElement {
   variableRateIcon =
     resourceImage + "/mburse/assets/mBurse-Icons/Middle-block/3.png";
   fuelIcon = resourceImage + "/mburse/assets/mBurse-Icons/Middle-block/4.png";
-  searchIcon = resourceImage + '/mburse/assets/mBurse-Icons/Vector.png';
-  headerText = '';
+  searchIcon = resourceImage + "/mburse/assets/mBurse-Icons/Vector.png";
+  headerText = "";
   modalLength = false;
   ytd = false;
   biweekYtd = false;
-  monthText = '';
-  lastMonth = '';
-  subTitle = '';
-  thisMonth = '';
+  monthText = "";
+  lastMonth = "";
+  subTitle = "";
+  thisMonth = "";
   vehicleType = "";
   year = "";
   address = "";
@@ -66,240 +67,267 @@ export default class DriverReimbursementProfile extends LightningElement {
   meetingStatus2 = false;
   meetingStatus3 = false;
   attachmentInsurance;
-  templateName = '';
+  templateName = "";
   lastMonthMiles = "";
   thisMonthMiles = "";
   halfFixedAmount = "";
   fixedAmount = "";
   variableRate = "";
   monthfuelPrice = "";
-  lastMonthMileageRate = '';
-  lastMilesZero = '';
-  thisMilesZero = '';
-  halfFixedZero= '';
-  fixedAmountZero = '';
-  fuelPriceZero = '';
-  mileageRateZero = '';
+  lastMonthMileageRate = "";
+  lastMilesZero = "";
+  thisMilesZero = "";
+  halfFixedZero = "";
+  fixedAmountZero = "";
+  fuelPriceZero = "";
+  mileageRateZero = "";
   lastModelList;
   originalModelList;
   modalKeyFields;
   modalListColumn;
-  lastMonthColumn = [{
-          id: 1,
-          name: "Trip date",
-          colName: "tripdate",
-          colType: "Date",
-          arrUp: true,
-          arrDown: false
-      },
-      {
-          id: 2,
-          name: "Origin",
-          colName: "originname",
-          colType: "String",
-          arrUp: false,
-          arrDown: false,
-      },
-      {
-          id: 3,
-          name: "Destination",
-          colName: "destinationname",
-          colType: "String",
-          arrUp: false,
-          arrDown: false
-      },
-      {
-          id: 4,
-          name: "Submitted",
-          colName: "submitteddate",
-          colType: "Date",
-          arrUp: false,
-          arrDown: false
-      },
-      {
-          id: 5,
-          name: "Approved",
-          colName: "approveddate",
-          colType: "Date",
-          arrUp: false,
-          arrDown: false
-      },
-      {
-          id: 6,
-          name: "Mileage",
-          colName: "mileage",
-          colType: "Decimal",
-          arrUp: false,
-          arrDown: false
-      },
-      {
-          id: 7,
-          name: "Variable Amount",
-          colName: "variableamount",
-          colType: "Decimal",
-          arrUp: false,
-          arrDown: false
-      }
-  ];
-  lastMonthKeyFields = ["tripdate", "originname", "destinationname", "submitteddate", "approveddate", "mileage", "variableamount"]
-  thisMonthColumn = [{
+  lastMonthColumn = [
+    {
       id: 1,
       name: "Trip date",
       colName: "tripdate",
       colType: "Date",
       arrUp: true,
       arrDown: false
-  },
-  {
+    },
+    {
       id: 2,
       name: "Origin",
       colName: "originname",
       colType: "String",
       arrUp: false,
-      arrDown: false,
-  },
-  {
+      arrDown: false
+    },
+    {
       id: 3,
       name: "Destination",
       colName: "destinationname",
       colType: "String",
       arrUp: false,
       arrDown: false
-  },
-  {
+    },
+    {
+      id: 4,
+      name: "Submitted",
+      colName: "submitteddate",
+      colType: "Date",
+      arrUp: false,
+      arrDown: false
+    },
+    {
+      id: 5,
+      name: "Approved",
+      colName: "approveddate",
+      colType: "Date",
+      arrUp: false,
+      arrDown: false
+    },
+    {
+      id: 6,
+      name: "Mileage",
+      colName: "mileage",
+      colType: "Decimal",
+      arrUp: false,
+      arrDown: false
+    },
+    {
+      id: 7,
+      name: "Variable Amount",
+      colName: "variableamount",
+      colType: "Decimal",
+      arrUp: false,
+      arrDown: false
+    }
+  ];
+  lastMonthKeyFields = [
+    "tripdate",
+    "originname",
+    "destinationname",
+    "submitteddate",
+    "approveddate",
+    "mileage",
+    "variableamount"
+  ];
+  thisMonthColumn = [
+    {
+      id: 1,
+      name: "Trip date",
+      colName: "tripdate",
+      colType: "Date",
+      arrUp: true,
+      arrDown: false
+    },
+    {
+      id: 2,
+      name: "Origin",
+      colName: "originname",
+      colType: "String",
+      arrUp: false,
+      arrDown: false
+    },
+    {
+      id: 3,
+      name: "Destination",
+      colName: "destinationname",
+      colType: "String",
+      arrUp: false,
+      arrDown: false
+    },
+    {
       id: 4,
       name: "Mileage",
       colName: "mileage",
       colType: "Decimal",
       arrUp: false,
       arrDown: false
-  }
+    }
   ];
-  thisMonthKeyFields = ["tripdate", "originname", "destinationname", "mileage"]
-  gasPriceColumn = [{
+  thisMonthKeyFields = ["tripdate", "originname", "destinationname", "mileage"];
+  gasPriceColumn = [
+    {
       id: 1,
       name: "",
       colName: "ReimMonth",
       colType: "String",
       arrUp: false,
       arrDown: false
-  },{
-          id: 2,
-          name: "Gas Prices",
-          colName: "fuelPrice",
-          colType: "Decimal",
-          arrUp: false,
-          arrDown: false
-      },
-      {
-          id: 3,
-          name: "Mileage Rate",
-          colName: "VariableRate",
-          colType: "Decimal",
-          arrUp: false,
-          arrDown: false
-      }
-  ];
-  gasPriceKeyFields = ["ReimMonth", "fuelPrice", "VariableRate"]
-  biweekKeyFields = ["month", "variableRate", "mileage","varibleAmount","fixed1","fixed2","fixed3","totalFixedAmount", "avgToDate"]
-  biweekColumn = [{
-        id: 1,
-        name: "",
-        colName: "month"
     },
     {
-        id: 2,
-        name: "Mi Rate",
-        colName: "variableRate"
+      id: 2,
+      name: "Gas Prices",
+      colName: "fuelPrice",
+      colType: "Decimal",
+      arrUp: false,
+      arrDown: false
     },
     {
-        id: 3,
-        name: "Mileage",
-        colName: "mileage"
-    },
-    {
-        id: 4,
-        name: "Variable",
-        colName: "varibleAmount"
-    },
-    {
-        id: 5,
-        name: "Fixed 1",
-        colName: "fixed1"
-    },
-    {
-        id: 6,
-        name: "Fixed 2",
-        colName: "fixed2"
-    },
-    {
-        id: 7,
-        name: "Fixed 3",
-        colName: "fixed3"
-    },{
-        id: 8,
-        name: "Total",
-        colName: "totalFixedAmount"
-    },{
-        id: 9,
-        name: "Avg to Date",
-        colName: "avgToDate"
+      id: 3,
+      name: "Mileage Rate",
+      colName: "VariableRate",
+      colType: "Decimal",
+      arrUp: false,
+      arrDown: false
     }
-  ]
+  ];
+  gasPriceKeyFields = ["ReimMonth", "fuelPrice", "VariableRate"];
+  biweekKeyFields = [
+    "month",
+    "variableRate",
+    "mileage",
+    "varibleAmount",
+    "fixed1",
+    "fixed2",
+    "fixed3",
+    "totalReimbursements",
+    "avgToDate"
+  ];
+  biweekColumn = [
+    {
+      id: 1,
+      name: "",
+      colName: "month"
+    },
+    {
+      id: 2,
+      name: "Mi Rate",
+      colName: "variableRate"
+    },
+    {
+      id: 3,
+      name: "Mileage",
+      colName: "mileage"
+    },
+    {
+      id: 4,
+      name: "Variable",
+      colName: "varibleAmount"
+    },
+    {
+      id: 5,
+      name: "Fixed 1",
+      colName: "fixed1"
+    },
+    {
+      id: 6,
+      name: "Fixed 2",
+      colName: "fixed2"
+    },
+    {
+      id: 7,
+      name: "Fixed 3",
+      colName: "fixed3"
+    },
+    {
+      id: 8,
+      name: "Total",
+      colName: "totalReimbursements"
+    },
+    {
+      id: 9,
+      name: "Avg to Date",
+      colName: "avgToDate"
+    }
+  ];
 
   monthKeyFields = [
-        "month",
-        "fuel",
-        "mileage",
-        "variableRate",
-        "varibleAmount",
-        "fixedAmount",
-        "totalReimbursements",
-        "avgToDate"
-  ]
+    "month",
+    "fuel",
+    "mileage",
+    "variableRate",
+    "varibleAmount",
+    "fixedAmount",
+    "totalReimbursements",
+    "avgToDate"
+  ];
 
   monthColumn = [
-        {
-          id: 1,
-          name: "",
-          colName: "month"
-        },
-        {
-          id: 2,
-          name: "Fuel",
-          colName: "fuel"
-        },
-        {
-          id: 3,
-          name: "Mileage",
-          colName: "mileage"
-        },
-        {
-          id: 4,
-          name: "Mi Rate",
-          colName: "variableRate"
-        },
-        {
-          id: 5,
-          name: "Variable",
-          colName: "varibleAmount"
-        },
-        {
-          id: 6,
-          name: "Fixed",
-          colName: "fixedAmount"
-        },
-        {
-          id: 7,
-          name: "Total",
-          colName: "totalReimbursements"
-        },{
-            id: 8,
-            name: "Avg to Date",
-            colName: "avgToDate"
-        }
-  ]
+    {
+      id: 1,
+      name: "",
+      colName: "month"
+    },
+    {
+      id: 2,
+      name: "Fuel",
+      colName: "fuel"
+    },
+    {
+      id: 3,
+      name: "Mileage",
+      colName: "mileage"
+    },
+    {
+      id: 4,
+      name: "Mi Rate",
+      colName: "variableRate"
+    },
+    {
+      id: 5,
+      name: "Variable",
+      colName: "varibleAmount"
+    },
+    {
+      id: 6,
+      name: "Fixed",
+      colName: "fixedAmount"
+    },
+    {
+      id: 7,
+      name: "Total",
+      colName: "totalReimbursements"
+    },
+    {
+      id: 8,
+      name: "Avg to Date",
+      colName: "avgToDate"
+    }
+  ];
   paginatedModal = false;
+  biweekly = false;
   @api contactId;
   @api accountId;
   @api timeAttendance;
@@ -332,18 +360,54 @@ export default class DriverReimbursementProfile extends LightningElement {
   reimbursementData({ data, error }) {
     if (data) {
       let reimbursementData = this.proxyToObject(data);
-      this.lastMilesZero = (reimbursementData.lastmonthmiles !== '0.00' && (/^0+/).test(reimbursementData.lastmonthmiles) === true) ? (reimbursementData.lastmonthmiles).replace(/^0+/, '') : null;
-      this.thisMilesZero = (reimbursementData.currentmonthmiles !== '0.00' && (/^0+/).test(reimbursementData.currentmonthmiles) === true) ? (reimbursementData.currentmonthmiles).replace(/^0+/, '') : null;
-      this.halfFixedZero= (reimbursementData.halfFixedAmount !== '0.00' && (/^0+/).test(reimbursementData.halfFixedAmount) === true) ? (reimbursementData.halfFixedAmount).replace(/^0+/, '') : null;
-      this.fixedAmountZero = (reimbursementData.fixedAmount !== '0.00' && (/^0+/).test(reimbursementData.fixedAmount) === true) ? (reimbursementData.fixedAmount).replace(/^0+/, '') : null;
-      this.fuelPriceZero = (reimbursementData.lastmonthfuelprice !== '0.00' && (/^0+/).test(reimbursementData.lastmonthfuelprice) === true) ? (reimbursementData.lastmonthfuelprice).replace(/^0+/, '') : null;
-      this.mileageRateZero = (reimbursementData.lastmonthmileagerate !== '0.00' && (/^0+/).test(reimbursementData.lastmonthmileagerate) === true) ? (reimbursementData.lastmonthmileagerate).replace(/^0+/, '') : null;
-      this.lastMonthMiles = (reimbursementData.lastmonthmiles) ? reimbursementData.lastmonthmiles : 0;
-      this.thisMonthMiles = (reimbursementData.currentmonthmiles) ? reimbursementData.currentmonthmiles : 0;
-      this.halfFixedAmount = (reimbursementData.halfFixedAmount) ? reimbursementData.halfFixedAmount : 0;
-      this.fixedAmount = (reimbursementData.fixedAmount) ? reimbursementData.fixedAmount : 0;
-      this.monthfuelPrice = (reimbursementData.lastmonthfuelprice) ? reimbursementData.lastmonthfuelprice : 0;
-      this.lastMonthMileageRate = (reimbursementData.lastmonthmileagerate) ? reimbursementData.lastmonthmileagerate : 0;
+      this.lastMilesZero =
+        reimbursementData.lastmonthmiles !== "0.00" &&
+        /^0+/.test(reimbursementData.lastmonthmiles) === true
+          ? reimbursementData.lastmonthmiles.replace(/^0+/, "")
+          : null;
+      this.thisMilesZero =
+        reimbursementData.currentmonthmiles !== "0.00" &&
+        /^0+/.test(reimbursementData.currentmonthmiles) === true
+          ? reimbursementData.currentmonthmiles.replace(/^0+/, "")
+          : null;
+      this.halfFixedZero =
+        reimbursementData.halfFixedAmount !== "0.00" &&
+        /^0+/.test(reimbursementData.halfFixedAmount) === true
+          ? reimbursementData.halfFixedAmount.replace(/^0+/, "")
+          : null;
+      this.fixedAmountZero =
+        reimbursementData.fixedAmount !== "0.00" &&
+        /^0+/.test(reimbursementData.fixedAmount) === true
+          ? reimbursementData.fixedAmount.replace(/^0+/, "")
+          : null;
+      this.fuelPriceZero =
+        reimbursementData.lastmonthfuelprice !== "0.00" &&
+        /^0+/.test(reimbursementData.lastmonthfuelprice) === true
+          ? reimbursementData.lastmonthfuelprice.replace(/^0+/, "")
+          : null;
+      this.mileageRateZero =
+        reimbursementData.lastmonthmileagerate !== "0.00" &&
+        /^0+/.test(reimbursementData.lastmonthmileagerate) === true
+          ? reimbursementData.lastmonthmileagerate.replace(/^0+/, "")
+          : null;
+      this.lastMonthMiles = reimbursementData.lastmonthmiles
+        ? reimbursementData.lastmonthmiles
+        : 0;
+      this.thisMonthMiles = reimbursementData.currentmonthmiles
+        ? reimbursementData.currentmonthmiles
+        : 0;
+      this.halfFixedAmount = reimbursementData.halfFixedAmount
+        ? reimbursementData.halfFixedAmount
+        : 0;
+      this.fixedAmount = reimbursementData.fixedAmount
+        ? reimbursementData.fixedAmount
+        : 0;
+      this.monthfuelPrice = reimbursementData.lastmonthfuelprice
+        ? reimbursementData.lastmonthfuelprice
+        : 0;
+      this.lastMonthMileageRate = reimbursementData.lastmonthmileagerate
+        ? reimbursementData.lastmonthmileagerate
+        : 0;
       console.log("getReimbursementData data", data);
     } else if (error) {
       console.log("getReimbursementData error", error);
@@ -402,7 +466,7 @@ export default class DriverReimbursementProfile extends LightningElement {
 
   renderedCallback() {
     console.log("rendered");
-    const buttonItem = this.template.querySelectorAll(".btn-trip");
+    const buttonItem = this.template.querySelectorAll(".btn-toggle");
 
     buttonItem.forEach((el) =>
       el.addEventListener("click", () => {
@@ -414,10 +478,18 @@ export default class DriverReimbursementProfile extends LightningElement {
     if (this.myTA) {
       console.log(this.myTrip, this.myTA);
       if (!this.myTrip) {
-        this.template.querySelector(".my-ta").classList.add("is-active");
-        this.template.querySelector(".my-trip").classList.remove("is-active");
+        if(!this.myPlanInfo){
+          this.template.querySelector(".my-ta").classList.add("is-active");
+          this.template.querySelector(".my-plan").classList.remove("is-active");
+          this.template.querySelector(".my-trip").classList.remove("is-active");
+        }else{
+          this.template.querySelector(".my-ta").classList.remove("is-active");
+          this.template.querySelector(".my-plan").classList.add("is-active");
+          this.template.querySelector(".my-trip").classList.remove("is-active");
+        }
       } else {
         this.template.querySelector(".my-ta").classList.remove("is-active");
+        this.template.querySelector(".my-plan").classList.remove("is-active");
         this.template.querySelector(".my-trip").classList.add("is-active");
       }
     }
@@ -425,69 +497,103 @@ export default class DriverReimbursementProfile extends LightningElement {
 
   mapOrder(array, order, key) {
     array.sort(function (a, b) {
-        var A = a[key],
-            B = b[key];
-        if (order.indexOf(A) > order.indexOf(B)) {
-            return 1;
-        }
-        return -1;
+      var A = a[key],
+        B = b[key];
+      if (order.indexOf(A) > order.indexOf(B)) {
+        return 1;
+      }
+      return -1;
     });
 
     return array;
-}
+  }
 
   dynamicModalBinding(data, keyFields) {
-    data.forEach(element => {
-        let model = [];
-        for (const key in element) {
-            if (Object.prototype.hasOwnProperty.call(element, key)) {
-                let singleValue = {}
-                if (keyFields.includes(key) !== false) {
-                    singleValue.key = key;
-                    singleValue.value = (element[key] === "null" || element[key] === null) ? "" : (key === "variableRate" || key === "varibleAmount" || key === 'fixed1' || key === 'fixed2' || 
-                    key === 'fixed3' || 
-                    key === 'totalFixedAmount' || key === "totalReimbursements") ? element[key].replace(/\$/g, "").replace(/\s/g, "") : element[key];
-                    // singleValue.isCurrency = (key === 'variableamount' || key === 'VariableRate' || key === 'variableRate'  || key === 'varibleAmount' || key === 'fixed1' || key === 'fixed2' || key === 'fixed3' || key === 'totalFixedAmount') ? true : false;
-                    singleValue.truncate = (key === 'originname' || key === 'destinationname') ? true : false;
-                    singleValue.bold = (key === "month" || key === "ReimMonth") ? true : false;
-                    singleValue.tooltip = (key === 'originname' || key === 'destinationname') ? true : false;
-                    singleValue.tooltipText = (key === 'originname') ? (element.origin != null ? element.origin : 'This trip was manually entered without an address.') : (element.destination != null ? element.destination : 'This trip was manually entered without an address.');
-                    singleValue.twoDecimal = (key === "mileage" )? true : false;
-                    singleValue.istwoDecimalCurrency = (key === "fuel" ||
-                    key === "fixedAmount" ||
-                    key === "avgToDate" ||
-                    key === "totalReimbursements" ||
-                    key === "varibleAmount" ||
-                    key === "fuelPrice" ||
-                    key === 'variableamount' || 
-                    key === 'fixed1' || key === 'fixed2' || 
-                    key === 'fixed3' || 
-                    key === 'totalFixedAmount' ||
-                    key === "totalReim" ||
-                    key === "variable") ? true : false;
-                    singleValue.isfourDecimalCurrency = (key === 'variableRate' || 
-                    key === 'VariableRate') ? true : false;
-                    singleValue.hasLeadingZero = ((key === "fuel" ||
-                    key === "fixedAmount" ||
-                    key === "totalReimbursements" ||
-                    key === "variableRate" ||
-                    key === "varibleAmount" ||
-                    key === "fuelPrice" ||
-                    key === 'variableamount' || 
-                    key === 'VariableRate' ||
-                    key === 'totalFixedAmount' ||
-                    key === "totalReim" ||
-                    key === "variable" || key === "mileage" ||
-                    key === "fixed1" || key === "fixed2" ||
-                    key === "fixed3") && ((element[key] !== "null" || element[key] !== null) && (singleValue.value !== '0.00') && (singleValue.value !== '0.0000')) && (/^0+/).test(singleValue.value) === true) ? (singleValue.value).replace(/^0+/, '') : null;
-                    model.push(singleValue);
-                }
-            }
+    data.forEach((element) => {
+      let model = [];
+      for (const key in element) {
+        if (Object.prototype.hasOwnProperty.call(element, key)) {
+          let singleValue = {};
+          if (keyFields.includes(key) !== false) {
+            singleValue.key = key;
+            singleValue.value =
+              element[key] === "null" || element[key] === null
+                ? ""
+                : key === "variableRate" ||
+                  key === "varibleAmount" ||
+                  key === "fixed1" ||
+                  key === "fixed2" ||
+                  key === "fixed3" ||
+                  key === "totalFixedAmount" ||
+                  key === "totalReimbursements"
+                ? element[key].replace(/\$/g, "").replace(/\s/g, "")
+                : element[key];
+            // singleValue.isCurrency = (key === 'variableamount' || key === 'VariableRate' || key === 'variableRate'  || key === 'varibleAmount' || key === 'fixed1' || key === 'fixed2' || key === 'fixed3' || key === 'totalFixedAmount') ? true : false;
+            singleValue.truncate =
+              key === "originname" || key === "destinationname" ? true : false;
+            singleValue.bold =
+              key === "month" || key === "ReimMonth" ? true : false;
+            singleValue.tooltip =
+              key === "originname" || key === "destinationname" ? true : false;
+            singleValue.tooltipText =
+              key === "originname"
+                ? element.origin != null
+                  ? element.origin
+                  : "This trip was manually entered without an address."
+                : element.destination != null
+                ? element.destination
+                : "This trip was manually entered without an address.";
+            singleValue.twoDecimal = key === "mileage" ? true : false;
+            singleValue.istwoDecimalCurrency =
+              key === "fuel" ||
+              key === "fixedAmount" ||
+              key === "avgToDate" ||
+              key === "totalReimbursements" ||
+              key === "varibleAmount" ||
+              key === "fuelPrice" ||
+              key === "variableamount" ||
+              key === "fixed1" ||
+              key === "fixed2" ||
+              key === "fixed3" ||
+              key === "totalFixedAmount" ||
+              key === "totalReim" ||
+              key === "variable"
+                ? true
+                : false;
+            singleValue.isfourDecimalCurrency =
+              key === "variableRate" || key === "VariableRate" ? true : false;
+            singleValue.hasLeadingZero =
+              (key === "fuel" ||
+                key === "fixedAmount" ||
+                key === "totalReimbursements" ||
+                key === "variableRate" ||
+                key === "varibleAmount" ||
+                key === "fuelPrice" ||
+                key === "variableamount" ||
+                key === "VariableRate" ||
+                key === "totalFixedAmount" ||
+                key === "totalReim" ||
+                key === "variable" ||
+                key === "mileage" ||
+                key === "fixed1" ||
+                key === "fixed2" ||
+                key === "fixed3") &&
+              (element[key] !== "null" || element[key] !== null) &&
+              singleValue.value !== "0.00" &&
+              singleValue.value !== "0.0000" &&
+              /^0+/.test(singleValue.value) === true
+                ? singleValue.value.replace(/^0+/, "")
+                : null;
+            model.push(singleValue);
+          }
         }
-        element.rejectedClass = (element.status === 'Rejected') ? 'rejected' : '';
-        element.keyFields = this.mapOrder(model, keyFields, 'key');
+      }
+      element.rejectedClass = element.status === "Rejected" ? "rejected" : "";
+      element.isYtd = (this.templateName === 'Biweek' || this.templateName === 'Monthly') ? true : false;
+      element.isYtdBiweek = (this.templateName === 'Biweek') ? true : false;
+      element.keyFields = this.mapOrder(model, keyFields, "key");
     });
-}
+  }
 
   dynamicBinding(data) {
     let dataBind = [];
@@ -664,8 +770,8 @@ export default class DriverReimbursementProfile extends LightningElement {
       contactId: this.contactId,
       accountId: this.accountId
     }).then((data) => {
-      let biweekReimbursementList = this.proxyToObject(data);
-      this.ytd = (biweekReimbursementList.length > 0) ? true : false;
+      let biweekReimbursementList = this.proxyToObject(data[0]);
+      this.ytd = biweekReimbursementList.length > 0 ? true : false;
       this.headerText = "";
       this.monthText = "";
       this.lastModelList = this.sortByMonthAsc(
@@ -697,7 +803,7 @@ export default class DriverReimbursementProfile extends LightningElement {
       accountId: this.accountId
     }).then((data) => {
       let biweekReimbursementList = this.proxyToObject(data[0]);
-      this.ytd = (biweekReimbursementList.length > 0) ? true : false;
+      this.ytd = biweekReimbursementList.length > 0 ? true : false;
       this.headerText = "";
       this.monthText = "";
       this.lastModelList = this.sortByMonthAsc(
@@ -844,11 +950,38 @@ export default class DriverReimbursementProfile extends LightningElement {
       let fileName =
         this.contactName + "'s Mileage Report " + this.dateTime(new Date());
       let sheetName = "Mileage Report";
-      downloadList.push(["Month", "Fuel", "Mileage", "Mi Rate", "Variable", "Fixed", "Total","Average To Date"])
-      this.lastModelList.forEach((item)=>{
-                downloadList.push([item.month, item.fuel, item.mileage,  item.variableRate, item.varibleAmount,  item.fixedAmount,  item.totalReimbursements, item.avgToDate])
-      })
-      downloadList.push(["YTD", "", this.excelYtd.mileageCalc, "", this.excelYtd.varibleAmountCalc, this.excelYtd.totalMonthlyFixedCalc, this.excelYtd.totalFixedAmountCalc, this.excelYtd.totalAVGCalc])
+      downloadList.push([
+        "Month",
+        "Fuel",
+        "Mileage",
+        "Mi Rate",
+        "Variable",
+        "Fixed",
+        "Total",
+        "Average To Date"
+      ]);
+      this.lastModelList.forEach((item) => {
+        downloadList.push([
+          item.month,
+          item.fuel,
+          item.mileage,
+          item.variableRate,
+          item.varibleAmount,
+          item.fixedAmount,
+          item.totalReimbursements,
+          item.avgToDate
+        ]);
+      });
+      downloadList.push([
+        "YTD",
+        "",
+        this.excelYtd.mileageCalc,
+        "",
+        this.excelYtd.varibleAmountCalc,
+        this.excelYtd.totalMonthlyFixedCalc,
+        this.excelYtd.totalReim,
+        this.excelYtd.totalAVGCalc
+      ]);
       this.excelToExport(downloadList, fileName, sheetName);
     } else {
       let downloadList = [];
@@ -856,19 +989,51 @@ export default class DriverReimbursementProfile extends LightningElement {
       let fileName =
         this.contactName + "'s Mileage Report " + this.dateTime(new Date());
       let sheetName = "Mileage Report";
-      downloadList.push(["Month", "Mi Rate", "Mileage", "Variable", "Fixed 1", "Fixed 2", "Fixed 3", "Total", "Average To Date"])
-      this.lastModelList.forEach((item)=>{
-          downloadList.push([item.month, item.variableRate, item.mileage,  item.varibleAmount,  item.fixed1,  item.fixed2,  item.fixed3,  item.totalFixedAmount, item.avgToDate])
-      })
-      downloadList.push(["YTD", "", this.excelYtd.mileageCalc,  this.excelYtd.varibleAmountCalc, this.excelYtd.fixed1Calc, this.excelYtd.fixed2Calc,  this.excelYtd.fixed3Calc,  this.excelYtd.totalFixedAmountCalc, this.excelYtd.totalAVGCalc])
+      downloadList.push([
+        "Month",
+        "Mi Rate",
+        "Mileage",
+        "Variable",
+        "Fixed 1",
+        "Fixed 2",
+        "Fixed 3",
+        "Total",
+        "Average To Date"
+      ]);
+      this.lastModelList.forEach((item) => {
+        downloadList.push([
+          item.month,
+          item.variableRate,
+          item.mileage,
+          item.varibleAmount,
+          item.fixed1 ? item.fixed1 : "",
+          item.fixed2 ? item.fixed2 : "",
+          item.fixed3 ? item.fixed3 : "",
+          item.totalReimbursements,
+          item.avgToDate
+        ]);
+      });
+      downloadList.push([
+        "YTD",
+        "",
+        this.excelYtd.mileageCalc,
+        this.excelYtd.varibleAmountCalc,
+        this.excelYtd.fixed1Calc,
+        this.excelYtd.fixed2Calc,
+        this.excelYtd.fixed3Calc,
+        this.excelYtd.totalReim,
+        this.excelYtd.totalAVGCalc
+      ]);
       this.excelToExport(downloadList, fileName, sheetName);
     }
   }
 
   handleChange(event) {
     this._value = event.target.value;
-    this.template.querySelector('c-user-data-table').searchByKey(this._value, this.lastModelList)
- }
+    this.template
+      .querySelector("c-user-data-table")
+      .searchByKey(this._value, this.lastModelList);
+  }
 
   sortByMonthAsc(data, colName) {
     let months = [
@@ -891,21 +1056,104 @@ export default class DriverReimbursementProfile extends LightningElement {
     return data;
   }
 
-  getMonthName(monthIndex){
-        let daymonth = new Array();
-        daymonth[0] = "January";
-        daymonth[1] = "February";
-        daymonth[2] = "March";
-        daymonth[3] = "April";
-        daymonth[4] = "May";
-        daymonth[5] = "June";
-        daymonth[6] = "July";
-        daymonth[7] = "August";
-        daymonth[8] = "September";
-        daymonth[9] = "October";
-        daymonth[10] = "November";
-        daymonth[11] = "December";
-        return  daymonth[monthIndex]
+  getMonthName(monthIndex) {
+    let daymonth = new Array();
+    daymonth[0] = "January";
+    daymonth[1] = "February";
+    daymonth[2] = "March";
+    daymonth[3] = "April";
+    daymonth[4] = "May";
+    daymonth[5] = "June";
+    daymonth[6] = "July";
+    daymonth[7] = "August";
+    daymonth[8] = "September";
+    daymonth[9] = "October";
+    daymonth[10] = "November";
+    daymonth[11] = "December";
+    return daymonth[monthIndex];
+  }
+
+  driverDetailsList(data) {
+    let contactList = this.proxyToObject(data);
+    console.log("contact", contactList);
+    this.lengthOfContact = contactList.length > 0 ? true : false;
+    this.myTA = contactList[0].Time_Attandance__c ? true : false;
+    this.biweekly =
+      contactList[0].Reimbursement_Frequency__c === "Bi-Weekly Reimbursement"
+        ? true
+        : false;
+    this.contact = contactList[0];
+    this.contactName = contactList[0].Name;
+    this.attachmentInsurance =
+      contactList[0].Insurance_Attachment_Id__c != null
+        ? contactList[0].Insurance_Attachment_Id__c
+        : null;
+    this.vehicleImage = contactList[0].Car_Image__c;
+    this.vehicleType = contactList[0].Vehicle_Type__c;
+    this.insuranceRate =
+      contactList[0].Insurance_Rate__c === null ||
+      contactList[0].Insurance_Rate__c === undefined
+        ? 0
+        : contactList[0].Insurance_Rate__c;
+    this.maintenance =
+      contactList[0].Maintenance__c === null ||
+      contactList[0].Maintenance__c === undefined
+        ? 0
+        : contactList[0].Maintenance__c;
+    this.tires =
+      contactList[0].Tires__c === null || contactList[0].Tires__c === undefined
+        ? 0
+        : contactList[0].Tires__c;
+    this.miles =
+      this.variablefuelprice != null
+        ? parseFloat(this.variablefuelprice) + this.maintenance + this.tires
+        : this.maintenance + this.tires;
+    this.license =
+      contactList[0].License_Ragistration__c === null ||
+      contactList[0].License_Ragistration__c === undefined
+        ? 0
+        : contactList[0].License_Ragistration__c;
+    this.taxes =
+      contactList[0].Taxes__c === null || contactList[0].Taxes__c === undefined
+        ? 0
+        : contactList[0].Taxes__c;
+    this.depreciation =
+      contactList[0].Depreciation__c === null ||
+      contactList[0].Depreciation__c === undefined
+        ? 0
+        : contactList[0].Depreciation__c;
+    this.totalCost = contactList[0].Total_Monthly_Costs__c;
+    this.percent = contactList[0].Business_Use__c;
+    this.businessUse =
+      contactList[0].Total_Monthly_Costs__c *
+      (contactList[0].Business_Use__c / 100);
+    this.totalMonthlyAmount = this.businessUse / 12;
+    this.fixedCostAdjustment =
+      contactList[0].Fixed_Cost_Adjustment__c === null ||
+      contactList[0].Fixed_Cost_Adjustment__c === undefined ||
+      contactList[0].Fixed_Cost_Adjustment__c === ""
+        ? null
+        : contactList[0].Fixed_Cost_Adjustment__c;
+    this.totalMonthlyFixedCost =
+      contactList[0].Fixed_Cost_Adjustment__c === null ||
+      contactList[0].Fixed_Cost_Adjustment__c === undefined ||
+      contactList[0].Fixed_Cost_Adjustment__c === ""
+        ? null
+        : this.fixedCostAdjustment + this.totalMonthlyAmount;
+    this.address =
+      contactList[0].MailingCity +
+      ", " +
+      contactList[0].MailingState +
+      " " +
+      contactList[0].MailingPostalCode;
+
+    console.log(
+      "Driver details reimbursement",
+      data,
+      this.totalMonthlyFixedCost,
+      this.fixedCostAdjustment,
+      this.totalMonthlyAmount
+    );
   }
 
   connectedCallback() {
@@ -920,7 +1168,10 @@ export default class DriverReimbursementProfile extends LightningElement {
     let previousMonthNo = currentDate.getMonth() - 1;
     this.year = currentDate.getFullYear();
     this.thisMonth = this.getMonthName(monthNo);
-    this.lastMonth = (previousMonthNo > 0) ? this.getMonthName(previousMonthNo) : this.getMonthName(11);
+    this.lastMonth =
+      previousMonthNo > 0
+        ? this.getMonthName(previousMonthNo)
+        : this.getMonthName(11);
     getDrivingState({
       contactId: this.contactId
     }).then((result) => {
@@ -973,80 +1224,9 @@ export default class DriverReimbursementProfile extends LightningElement {
         console.log("getPacketandMeeting error", error);
       });
 
-    getDriverDetailsClone({
-      contactId: this.contactId
-    })
-      .then((data) => {
-        if (data) {
-          let contactList = this.proxyToObject(data);
-          this.lengthOfContact = contactList.length > 0 ? true : false;
-          this.myTA = contactList[0].Time_Attandance__c ? true : false;
-          this.contact = contactList[0];
-          this.attachmentInsurance =
-            contactList[0].Insurance_Attachment_Id__c != null
-              ? contactList[0].Insurance_Attachment_Id__c
-              : null;
-          this.vehicleImage = contactList[0].Car_Image__c;
-          this.vehicleType = contactList[0].Vehicle_Type__c;
-          this.insuranceRate = contactList[0].Insurance_Rate__c;
-          this.maintenance =
-            contactList[0].Maintenance__c === null ||
-            contactList[0].Maintenance__c === undefined
-              ? 0
-              : contactList[0].Maintenance__c;
-          this.tires =
-            contactList[0].Tires__c === null ||
-            contactList[0].Tires__c === undefined
-              ? 0
-              : contactList[0].Tires__c;
-          this.miles =
-            this.variablefuelprice != null
-              ? parseFloat(this.variablefuelprice) +
-                this.maintenance +
-                this.tires
-              : this.maintenance + this.tires;
-          this.license = contactList[0].License_Ragistration__c;
-          this.taxes =
-            contactList[0].Taxes__c === null ||
-            contactList[0].Taxes__c === undefined
-              ? 0
-              : contactList[0].Taxes__c;
-          this.depreciation = contactList[0].Depreciation__c;
-          this.totalCost = contactList[0].Total_Monthly_Costs__c;
-          this.percent = contactList[0].Business_Use__c;
-          this.businessUse =
-            contactList[0].Total_Monthly_Costs__c *
-            (contactList[0].Business_Use__c / 100);
-          this.totalMonthlyAmount = this.businessUse / 12;
-          this.fixedCostAdjustment =
-            contactList[0].Fixed_Cost_Adjustment__c === null ||
-            contactList[0].Fixed_Cost_Adjustment__c === undefined ||
-            contactList[0].Fixed_Cost_Adjustment__c === ""
-              ? null
-              : contactList[0].Fixed_Cost_Adjustment__c;
-          this.totalMonthlyFixedCost =
-            contactList[0].Fixed_Cost_Adjustment__c === null ||
-            contactList[0].Fixed_Cost_Adjustment__c === undefined ||
-            contactList[0].Fixed_Cost_Adjustment__c === ""
-              ? null
-              : this.fixedCostAdjustment + this.totalMonthlyAmount;
-          this.address =
-            contactList[0].MailingCity +
-            ", " +
-            contactList[0].MailingState +
-            " " +
-            contactList[0].MailingPostalCode;
-        }
-        console.log(
-          "Driver details reimbursement",
-          data,
-          this.totalMonthlyFixedCost,
-          this.fixedCostAdjustment,
-          this.totalMonthlyAmount
-        );
-      })
-      .catch((error) => {
-        console.log("getDriverDetails error", error);
-      });
+    console.log("drivers--", this.driverDetails);
+    if (this.driverDetails) {
+      this.driverDetailsList(this.driverDetails);
+    }
   }
 }

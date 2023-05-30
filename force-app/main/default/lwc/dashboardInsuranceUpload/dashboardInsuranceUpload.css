@@ -1,6 +1,6 @@
-/* * {
+* {
     font-family: 'Proxima Nova' !important;
-} */
+}
 @keyframes slideIn {
   from {
     transform: translateX(-100%);
@@ -148,6 +148,10 @@
   .p_top {
     padding-top: 2vw !important;
   }
+
+  .back_to_previous{
+    left: 58px !important
+  }
 }
 
 @media only screen and (min-width: 4480px) and (max-width: 5120px) {
@@ -203,12 +207,12 @@ table tr td {
 
 .font-bold {
   font-size: 25px;
-  font-weight: bold;
+  font-family: 'Proxima Nova Bold' !important;
   color: #1D1D1D;
 }
 
 .font-ms {
-  font-weight: 700;
+  font-family: 'Proxima Nova Bold' !important;
   font-size: 15px;
   line-height: 12px;
   color: #FFFFFF !important;
@@ -270,7 +274,7 @@ table tr td {
   color: #FA7800;
   display: inline-block;
   font-size: 18px;
-  font-weight: 600;
+  font-family: 'Proxima Nova Semibold' !important;
 }
 
 .w-100 {
@@ -368,12 +372,13 @@ table tr td {
 }
 
 .slds-text-heading_large{
-  font-weight: 600;
+  font-family: 'Proxima Nova Semibold' !important;
   font-size: 32px;
   line-height: 39px;
 }
 
 .slds-btn-primary {
+  font-family: 'Proxima Nova Bold' !important;
   color: #fff;
   background-color: #7ABB4A;
   border-color: #7ABB4A;
@@ -403,7 +408,8 @@ table tr td {
 
 .back_to_previous {
   position: fixed;
-  left: 196px;
+  left: 175px;
+  /* left: 196px; */
   text-decoration: none;
   display: block;
 }
@@ -490,9 +496,8 @@ table tr td {
 }
 
 .insurance-header{
-  font-family: 'Proxima Nova';
   font-style: normal;
-  font-weight: 700;
+  font-family: 'Proxima Nova Bold' !important;
   font-size: 16px;
   line-height: 19px;
   color: #1D1D1D;
@@ -504,7 +509,7 @@ table tr td {
 }
 
 .bordered-table tr>td:last-child{
-  font-weight: 700;
+  font-family: 'Proxima Nova Bold' !important;
   text-align: right;
   padding-left: 4rem !important;
   padding-right: 0 !important;
@@ -512,6 +517,10 @@ table tr td {
 
 .bordered-table tbody tr:last-child>td{
   border-bottom: 0 !important;
+}
+
+.bordered-table tr>td:last-child>*{
+  font-family: 'Proxima Nova Bold' !important;
 }
 
 .bordered-table tbody tr:hover>td{
@@ -536,4 +545,20 @@ table tr td {
 
 .fa-lg{
   line-height: 1.05em !important;
+}
+
+.navigate-icon{
+  color: #7ABB4A !important;
+}
+
+.slds-item.navigate{
+  border: 1px solid #D7D7D7;
+  background: #FFFFFF;
+  border-radius: 10px;
+  width: 45px;
+  height: 45px;
+}
+
+.slds-item.navigate a{
+  padding: 0.85rem !important;
 }

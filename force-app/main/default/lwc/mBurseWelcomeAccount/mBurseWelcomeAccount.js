@@ -6,6 +6,7 @@ export default class MBurseWelcomeAccount extends LightningElement {
     pathname;
     search;
     redirectToInsurance(){
+        console.log("Redirect Insurance")
         events(this,'Next Welcome Insurance');
     }
 

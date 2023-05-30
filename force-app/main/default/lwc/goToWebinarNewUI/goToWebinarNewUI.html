@@ -1,21 +1,12 @@
 <template>
-    <div class="main">
-        <div class="steps">
+    <div class="main" lwc:if={mainPage}>
+        <!-- <div class="steps">
             <p class="green_clr">Step 5</p>
             <p class="desc">Watch your Driver Meeting</p>
-        </div>
+        </div> -->
         <div class="details">
-            <p class="green_clr details_desc">Acme Corporation Driver Meeting</p>
-            <p>Learn About your new vechicle reimbursement plan, the mBurse Plan of Vehicle Reimbursements.</p>
-            <p>The Training session will Cover the Following topics:</p>
-            <div class="details_main">
-                <ol class="slds-list_ordered">
-                    <li>How the mBursement program works</li>
-                    <li>What you need to do</li>
-                    <li>What you need to do</li>
-                </ol>
-            </div>
-            <p>We Look Forward to sharing more information about your reimbursement program.</p>
+            <p class="green_clr details_desc">{meetingName}</p>
+            <div style="white-space:pre-wrap;">{description}</div>
             <div class="fill_field">
                 <p>*Required field</p>
                 <div class="field_details">
@@ -50,20 +41,59 @@
             </div>
         </div>
     </div>
-
-    <div class="timepick">
-        
-        <lightning-input class="picker" type="time" name="input1" label="Enter a time"></lightning-input>
-        <input type="text" id="example" class="form-control" name="example" autocomplete="off" onchange={handleTextChange}/>
-    </div>
-    <lightning-card title="Include JQuery in LWC (Lightning Web Component) ">
-        <div class="slds-m-around_medium">
-            <div class="flip" onclick={slideIt}>Click Here to Slide Down or Up</div>
-            <div class="panel">
-                <p class="innerDiv" onclick={slideRight}>
-                    JQuery in LWC
-                </p>
-            </div>
+    <div class="second" lwc:if={secondPage}>
+        <div class="nameDetail">
+            <!-- <svg class= "svg-effect checkSign" version="1.1" baseProfile="full" width="100" height="100" xmlns="https://icons8.com/icon/114054/checkmark">
+            </svg> -->
+            <lightning-icon class= "svg-effect checkSign" icon-name="action:approval" alternative-text="Approved" title="Approved"></lightning-icon>
+            <P class="fname">{firstName}</P>
+            <p class="fname registerText">You are Registered!</P>
         </div>
-    </lightning-card>
+        
+        <div class="rectInfo">
+            <div>
+                <P class="boldEff meetingText">Meeting Information</p>
+                <p class="meetName">{meetingName}</p>
+                <p class="dateIST">{fullDateIST}</p>
+            </div>
+            <!-- <div class="btnURl">
+                <a class="slds-button slds-button_brand calendarBtn" target="_blank" href={url}>Add To Calendar</a>
+            </div> -->
+            <!-- <div class="btnURl">
+                <select class="slds-select" name = "Add To Calendar" >
+                    <option value= {url}>Google Calendar</option>
+                    <option value="OPTION B">Outlook Calendar</option>
+                </select> 
+            </div> -->
+            <div class="selectOption">
+                <SELECT class="slds-select selectHead" id="s1" onchange={handleGetSelectedValue}>
+                    <Option value="">Add To Calendar</option>
+                        <template for:each={options} for:item="option">
+                            <option key={option.Id} class="uiInputSelectOption" value={option.Id}>{option.Name}</option>
+                        </template>
+                </SELECT>
+            </div>
+            <!-- <div class="slds-p-around_medium">
+                <lightning-button-menu alternative-text="Show menu" label="Add to calendar">
+                    <lightning-menu-item value="MenuItemOne" label="Google Calendar"></lightning-menu-item>
+                    <lightning-menu-item value="MenuItemTwo" label="Outlook.com Calendar"></lightning-menu-item>
+                    <lightning-menu-item value="MenuItemThree" label="iCal"></lightning-menu-item>
+                </lightning-button-menu>
+            </div> -->
+            <div class="regiDesc">
+                <P>A confirmation email with the information on how to join the webinar has been emailed to you.</P>
+                <p>If you are joining the meeting from tablet of phone you must download the GoToWebinar App</p>
+            </div>
+            <div class="slds-align_absolute-center downBtn">
+                <button class="slds-button slds-button_outline-brand button2"><img src={svgApple} class="svgImg">Download for Apple</button>
+                <button class="slds-button slds-button_outline-brand button2"><img src={svgURL} class="svgImg">Download for Andriod</button>
+                <!-- <lightning-button variant="brand-outline" label="Download for Apple" title="Primary action with lighter look" onclick={handleClick} class="button2 slds-size_1-of-2"></lightning-button> -->
+                <!-- <lightning-button variant="brand-outline" label="Download for Andriod" title="Primary action with lighter look" onclick={handleClick} class="button2 slds-size_1-of-2"></lightning-button> -->
+            </div>
+            <div>
+                <p class="footerText">Questions or comments on the webinar? Contact <a href = "mailto: whill@mburse.com" class="mailLnk">whill@mburse.com</a></p>
+            </div>
+        </div>    
+    </div>
+    
 </template>

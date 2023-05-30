@@ -1,0 +1,46 @@
+<template>
+    <div class="animate__animated animate__slideInLeft animate__faster">
+        <template lwc:if={modelList}>
+            <c-user-preview-table  view-name="Team" divider-class="row-divider--v2"
+                head-th="header-title--v2" d-flex="flex-block" sort-th="sort-container p-top-v2" main-class={classToTable}
+                scrollable={isScrollable} is-paginate={paginatedModal} model-data={modelList} columns={modalListColumn}
+                options={modalKeyFields} is-sortable={sortable} onaccess={redirectModal}
+                is-default-sort={isSort} colname="name" coltype="String" sortorder="desc" >
+                <div slot="filter" class="slds-p-left_small slds-p-bottom_small row">
+                    <template lwc:if={isRecord}>
+                        <button  onclick={downloadAllTrips} class="slds-btn slds-btn-primary slds-btn-sm waves-effect bc-green waves-light mleft-0 btn-trip"
+                        ><svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" viewBox="0 0 25 25" fill="none" style="
+                        margin-right: 3px;
+                    "><path d="m7.561 11.627 0.032 -0.032 -0.032 0.032 4.273 4.273a0.936 0.936 0 0 0 0.143 0.118 0.625 0.625 0 0 0 0.068 0.036h0.001l0.032 0.018 0.009 0.006 0.048 0.025a0.357 0.357 0 0 0 0.089 0.028l0.007 0.002a0.557 0.557 0 0 0 0.082 0.025l0.002 0.001a0.941 0.941 0 0 0 0.368 0h0.002a0.502 0.502 0 0 0 0.052 -0.018 0.522 0.522 0 0 1 0.027 -0.007l0.002 -0.002 0.032 -0.009 0.057 -0.018a0.527 0.527 0 0 0 0.098 -0.05l0.001 -0.001 0.002 -0.001a0.232 0.232 0 0 1 0.027 -0.016l0.036 -0.022a0.952 0.952 0 0 0 0.143 -0.118l4.273 -4.273a0.941 0.941 0 0 0 0 -1.332 0.941 0.941 0 0 0 -1.332 0l-2.668 2.668V4.843a0.943 0.943 0 0 0 -1.882 0v8.122L8.891 10.297a0.941 0.941 0 0 0 -1.331 0 0.941 0.941 0 0 0 0 1.332Zm13.323 7.718a0.942 0.942 0 0 0 -0.943 -0.941H5.057a0.943 0.943 0 0 0 0 1.881h14.886a0.943 0.943 0 0 0 0.942 -0.942Z" fill="white" stroke="white" stroke-width="0.10081333333333335"></path></svg>Download</button>
+                    </template>
+                        <template lwc:if={showTeam}>
+                            <div class="slds-size_3-of-12 slds-m-left_small">
+                                <c-dropdown-select options={teamList} value={value} title="My Team" 
+                                    onchange={handleTeamChange} main-class="default-box-input slds-truncate"></c-dropdown-select>
+                            </div>
+                        </template>
+                        <!-- <template lwc:else> -->
+                            <template lwc:if={accountYear}>
+                                <div class="slds-size_3-of-12 slds-m-left_small">
+                                    <c-dropdown-select options={monthYearList} selected-value={monthYear} value={value} title="Month" 
+                                     main-class="default-box-input slds-truncate" onchange={handleMonthChange}></c-dropdown-select>
+                                </div>
+                            </template>
+                        <!-- </template> -->
+                </div>
+                <div slot="header">
+                    <div class="slds-float_right">
+                        <div class="slds-input-has-icon slds-input-has-icon_right search-holder">
+                            <div class="search-icon-block">
+                                <img class="search-icon" src={searchIcon} />
+                            </div>
+                            <input class="slds-input filter-input" type="text" placeholder="Search"
+                            onkeyup={handleChange}/>
+                        </div>
+                    </div>
+                </div>
+            </c-user-preview-table>
+        </template>
+        <c-export-excel></c-export-excel>
+    </div>
+</template>

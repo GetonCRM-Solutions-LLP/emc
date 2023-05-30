@@ -57,7 +57,8 @@ header {
 
 .logout-container {
     padding-left: 20px;
-    padding-top: 2px;
+    padding-top: 9px;
+    cursor: pointer;
 }
 
 .slds-btn-sm {

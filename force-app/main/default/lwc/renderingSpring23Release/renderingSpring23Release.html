@@ -1,0 +1,33 @@
+<template>
+    <div class="slds-p-around_medium">
+        <lightning-card  variant="Narrow"  title="Conditional Render - if:true and if:false">
+            <div class="slds-p-around_large">
+                <lightning-input label="Salesforce Certification" value={certificate} onchange={handleChangeEvent}> </lightning-input>
+                <template if:true={isValidCertification}>
+                   <div class="slds-p-around_small slds-align_absolute-center" >{certificate} is my Certication</div>
+                </template>
+                <template if:false={isValidCertification}>
+                    <div class="slds-p-around_small slds-align_absolute-center" > {certificate} is not my Certication </div>
+                </template>
+            </div>
+        </lightning-card>
+    </div>
+    
+    <div class="slds-p-around_medium">
+        <lightning-card  variant="Narrow"  title="Conditional Render - lwc:if and lwc:else">
+            <div class="slds-p-around_large">
+                <lightning-input label="Salesforce Certification" value={nextCertificate} onchange={handleChangeEvent1}> </lightning-input>
+                <template lwc:if={isValidNextCertificate}>
+                   <div class="slds-p-around_small slds-align_absolute-center" >{nextCertificate} is my Certication</div>
+                </template>
+                <template lwc:elseif={isValidNextCertificate2}>
+                    <div class="slds-p-around_small slds-align_absolute-center" >{nextCertificate} is my Certication</div>
+                 </template>
+                <template lwc:else>
+                    <div class="slds-p-around_small slds-align_absolute-center" > {nextCertificate} is not my Certication </div>
+                </template>
+            </div>
+        </lightning-card>
+    </div>
+    
+</template>

@@ -1,237 +1,344 @@
 <template>
-    <div class="transition" if:true={isDownload}>
-        <div if:false={render} class="flex-container">
-            <c-m-burse-header-text head-text="Step 4 - Download mLog"></c-m-burse-header-text>
-            <div class="carousel-holder">
-                <button class="tips-button" onclick={popOut}><i class="fa-solid fa-info"></i></button>
-                <template if:true={carousel}>
-                    <c-carousel-popover onpop={handlePopover} total-contacts={carouselLists}
-                        style-carousel={typePopover}
-                        style-header="slds-popover__header bg-dark-blue" style-body="slds-popover__body border"
-                        style-footer="slds-popover__footer border-footer" header-title="Instructions"></c-carousel-popover>
-                </template>
-            </div>
-        </div>
-        <div if:true={render} class="flex-container">
-            <c-m-burse-header-text head-text="Step 4 - Sign in to mLog"></c-m-burse-header-text>
-            <div class="carousel-holder">
-                <button class="tips-button" onclick={popOut}><i class="fa-solid fa-info"></i></button>
-                <template if:true={carousel}>
-                    <c-carousel-popover onpop={handlePopover} total-contacts={carouselLists}
-                        style-carousel="slds-popover slds-nubbin_left-top  slds-popover_large c_popover"
-                        style-header="slds-popover__header bg-dark-blue" style-body="slds-popover__body border"
-                        style-footer="slds-popover__footer border-footer" header-title="Instructions"></c-carousel-popover>
-                </template>
-            </div>
-        </div>
-        <template if:true={render}>
-            <div
-                class="slds-text-heading_small slds-text-align_center slds-p-bottom_x-small emcFont font-style p_bottom">
-                Check your email and text messages and open the link and select Step 2  <br/>
-                Are you still having challenges? Contact <a onclick={contactSupport}>Support</a>
-            </div>
-            <div
-                class="slds-text-heading_small slds-text-align_center slds-p-top_medium slds-p-bottom_large emcFont font-style">
-                Still want a little help? Watch the video below.
-            </div>
-            <div class="slds-align_absolute-center video-flow">
-                <div class="mright">
-                    <div class="video-container">
-                        <template if:false={isPlay}>
-                            <div class="apple_icon_box">
-                                <img class="apple_icon slds-m-left_xx-small" src={appleUrl} />
-                            </div>
-                            <div class="slds-align_absolute-center img-header">IOS Getting Started Video</div>
-                            <div
-                                class="slds-size_5-of-12 slds-align_absolute-center slds-m-top_small slds-p-bottom_xx-large slds-p-right_xx-large slds-p-left_xx-large img-container">
-                                <img src={videoLogoUrl} class="img-logo" onclick={playVideo} />
-                            </div>
-                        </template>
-                        <template if:true={isPlay}>
-                            <iframe width={videoWidth} height={videoHeight} src={iosVideoUrl}
-                                title="YouTube video player" frameborder="0"
-                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                                allowfullscreen></iframe>
-                        </template>
-                    </div>
-                </div>
-                <div class="mleft">
-                    <div class="video-container">
-                        <template if:false={isPlayAndroid}>
-                            <div class="android_icon_box">
-                                <img class="android_icon slds-m-left_xx-small" src={androidUrl} />
-                            </div>
-                            <div class="slds-align_absolute-center img-header">Android Getting Started Video</div>
-                            <div
-                                class="slds-size_5-of-12 slds-align_absolute-center slds-m-top_small slds-p-bottom_xx-large slds-p-right_xx-large slds-p-left_xx-large img-container">
-                                <img src={videoLogoUrl} class="img-logo" onclick={playVideoAndroid} />
-                            </div>
-                        </template>
-                        <template if:true={isPlayAndroid}>
-                            <iframe width={videoWidth} height={videoHeight} src={androidVideoUrl}
-                                title="YouTube video player" frameborder="0"
-                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                                allowfullscreen></iframe>
-                        </template>
-                    </div>
-                </div>
-            </div>
-            <div class="slds-clearfix slds-p-top_x-large">
-                <!-- <div class="footer-text  slds-align_absolute-center p_top font-style">
-                    <div class="font-style"><strong>Follow these tips and download instructions <a
-                                href={instructionUrlAndroid} target="_blank" onclick={handleRedirect}>here</a> and <a
-                                href={mLogTracking} target="_blank">here</a>:</strong>
-                        <ul class="slds-list_dotted slds-p-top_x-small">
-                            <li>Make sure you turn on the app every day that you are using it by selecting the mLog icon
-                            </li>
-                            <li>Review your trips daily if possible, weekly at a minimum</li>
-                            <li>You can categorize any trips as Personal or delete any trips you do not want to share
-                            </li>
-                        </ul>
-                    </div>
-                </div> -->
-                <div class="footer-button slds-p-top_large  slds-p-bottom_large p_top">
-                    <div>
-                        <div class="watch-meet slds-align_absolute-center slds-p-bottom_medium" if:false={afterRegister}>
-                            <button class="slds-btn slds-btn-primary slds-btn-sm waves-effect bc-blue waves-light"
-                                onclick={nextDriverMeeting}>
-                                {buttonRender}
-                            </button>
-                        </div>
-                        <template if:true={allowRedirect}>
-                            <div class="watch-meet slds-align_absolute-center" if:true={afterRegister}>
-                                <button class="slds-btn slds-btn-primary slds-btn-sm waves-effect bc-blue waves-light"
-                                    onclick={takeMeToDashboard}>
-                                    Go To My Account
-                                </button>
-                            </div>
-                            <div class="watch-meet slds-align_absolute-center" if:true={showWatchBtn}>
-                                <button class="slds-btn slds-btn-primary slds-btn-sm waves-effect bc-blue waves-light"
-                                    onclick={takeMeToDashboard}>
-                                    Take me to the dashboard
-                                </button>
-                            </div>
-                        </template>
-                       
-                        <div class="back_to_previous slds-m-top_small slds-align_absolute-center">
-                            <a class="font-s" onclick={backToPage}><i class="fa-solid fa-angle-left"></i> Back</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
+    <div class="transition" >
+        <template lwc:if={render}>
+
         </template>
-        <template if:false={render}>
-            <div
-                class="slds-text-heading_small slds-text-align_center slds-p-bottom_x-large emcFont font-style p_bottom">
-                Watch this short video to learn how to set up mLog.
-            </div>
-            <div class="slds-align_absolute-center video-flow">
-                <div class="mright">
-                    <div class="video-container">
-                        <template if:false={isPlay}>
-                            <div class="apple_icon_box">
-                                <img class="apple_icon slds-m-left_xx-small" src={appleUrl} />
-                            </div>
-                            <div class="slds-align_absolute-center img-header">IOS Getting Started Video</div>
-                            <div
-                                class="slds-size_5-of-12 slds-align_absolute-center slds-m-top_small slds-p-bottom_xx-large slds-p-right_xx-large slds-p-left_xx-large img-container">
-                                <img src={videoLogoUrl} class="img-logo" onclick={playVideo} />
-                            </div>
-                        </template>
-                        <template if:true={isPlay}>
-                            <iframe width={videoWidth} height={videoHeight} src={iosVideoUrl}
-                                title="YouTube video player" frameborder="0"
-                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                                allowfullscreen></iframe>
-                        </template>
+        <template lwc:else>
+            <div>
+                <template lwc:if={isDownload}>
+                    <div class="flex-container">
+                        <c-m-burse-header-text head-text="Step 4">
+                            <div slot="subHeading"
+                                class="slds-text-heading_small slds-text-align_center font-style slds-p-bottom_small emc-font">
+                                Download mLog</div>
+                        </c-m-burse-header-text>
+                    </div>    
+                    <div class="slds-align_absolute-center slds-p-top_x-large video-flow">
+                        <div class="mright">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="106" height="110" viewBox="0 0 106 126" fill="none">
+                                <path
+                                    d="M103.307 97.6239C101.412 102.001 99.1697 106.029 96.5715 109.733C93.03 114.782 90.1303 118.278 87.8956 120.218C84.4315 123.404 80.7198 125.036 76.7453 125.129C73.892 125.129 70.451 124.317 66.4456 122.67C62.427 121.03 58.734 120.218 55.3572 120.218C51.8157 120.218 48.0174 121.03 43.9548 122.67C39.8859 124.317 36.6081 125.175 34.102 125.26C30.2906 125.422 26.4916 123.744 22.6996 120.218C20.2793 118.107 17.252 114.489 13.6255 109.362C9.73448 103.887 6.53553 97.5389 4.02942 90.3012C1.34546 82.4836 0 74.9135 0 67.5846C0 59.1894 1.81405 51.9487 5.44757 45.881C8.30319 41.0071 12.1022 37.1625 16.8569 34.3402C21.6116 31.5178 26.7491 30.0795 32.2818 29.9875C35.309 29.9875 39.2789 30.9239 44.2123 32.7643C49.1317 34.6108 52.2904 35.5472 53.6753 35.5472C54.7107 35.5472 58.2197 34.4523 64.1684 32.2694C69.7938 30.245 74.5415 29.4068 78.431 29.737C88.9704 30.5876 96.8886 34.7422 102.154 42.2273C92.7285 47.9386 88.0657 55.9379 88.1585 66.1997C88.2436 74.1928 91.1433 80.8443 96.8422 86.1257C99.4248 88.5769 102.309 90.4713 105.518 91.8168C104.822 93.835 104.088 95.7681 103.307 97.6239ZM79.1347 2.50611C79.1347 8.77108 76.8458 14.6207 72.2837 20.035C66.7781 26.4715 60.1188 30.1909 52.8974 29.604C52.8054 28.8524 52.7521 28.0613 52.7521 27.2301C52.7521 21.2157 55.3703 14.7792 60.0199 9.51642C62.3412 6.85179 65.2934 4.63619 68.8736 2.86877C72.446 1.12771 75.8252 0.164857 79.0032 0C79.096 0.83751 79.1347 1.67517 79.1347 2.50611Z"
+                                    fill="#7ABB4A" />
+                            </svg>
+                        </div>
+                        <div class="mleft">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="110" height="110" viewBox="0 0 110 123" fill="none">
+                                <path
+                                    d="M37.4547 74.875C41.6799 74.875 45.1052 78.3003 45.1052 82.5255V115.344C45.1052 119.569 41.6799 122.994 37.4547 122.994C33.23 122.994 29.8047 119.569 29.8047 115.344V82.5255C29.8047 78.3008 33.23 74.8755 37.4547 74.8755V74.875Z"
+                                    fill="#7ABB4A" />
+                                <path
+                                    d="M19.9926 35.4219C19.9673 35.712 19.9453 36.0053 19.9453 36.3018V86.0252C19.9453 91.3727 24.1781 95.6807 29.4326 95.6807H79.9978C85.2529 95.6807 89.4856 91.3722 89.4856 86.0252V36.3018C89.4856 36.0053 89.4749 35.7109 89.4502 35.4219H19.9926Z"
+                                    fill="#7ABB4A" />
+                                <path
+                                    d="M71.9707 74.8804C76.1959 74.8804 79.6212 78.3057 79.6212 82.5309V115.35C79.6212 119.575 76.1959 123 71.9707 123C67.746 123 64.3207 119.575 64.3207 115.35V82.5309C64.3207 78.3062 67.746 74.8809 71.9707 74.8809V74.8804ZM7.65053 39.8484C11.8752 39.8484 15.3005 43.2737 15.3005 47.4989V80.3176C15.3005 84.5428 11.8752 87.9681 7.65053 87.9681C3.42531 87.9681 6.31837e-08 84.5428 6.31837e-08 80.3181V47.4994C-0.000537156 43.2742 3.42477 39.8484 7.65053 39.8484ZM101.776 39.8484C106.001 39.8484 109.426 43.2737 109.426 47.4989V80.3176C109.426 84.5428 106.001 87.9681 101.776 87.9681C97.5509 87.9681 94.1256 84.5428 94.1256 80.3181V47.4994C94.1256 43.2742 97.5509 39.8484 101.776 39.8484ZM20.2134 32.157C20.4261 16.8839 33.7567 4.36127 50.8682 2.71094H58.5569C75.6694 4.36181 88.9989 16.8849 89.2117 32.157H20.2134Z"
+                                    fill="#7ABB4A" />
+                                <path d="M22.875 1.23438L30.9451 15.2128M86.5532 1.23438L78.4825 15.2128" stroke="#7ABB4A"
+                                    stroke-width="1.61166" stroke-linecap="round" stroke-linejoin="round" />
+                                <path
+                                    d="M44.4394 18.4703C44.4458 20.6052 42.6789 22.341 40.4924 22.3469C38.307 22.3523 36.5299 20.6267 36.5235 18.4918V18.4703C36.5175 16.3349 38.2845 14.5997 40.4704 14.5938C42.6558 14.5879 44.4329 16.3129 44.4394 18.4488V18.4703ZM73.9843 18.4703C73.9907 20.6052 72.2238 22.341 70.0373 22.3469C67.8519 22.3523 66.0748 20.6267 66.0684 18.4918V18.4703C66.0624 16.3349 67.8294 14.5997 70.0153 14.5938C72.2007 14.5879 73.9778 16.3129 73.9843 18.4488V18.4703Z"
+                                    fill="white" />
+                            </svg>
+                        </div>
                     </div>
-                </div>
-                <div class="mleft">
-                    <div class="video-container">
-                        <template if:false={isPlayAndroid}>
-                            <div class="android_icon_box">
-                                <img class="android_icon slds-m-left_xx-small" src={androidUrl} />
+                    <div class="slds-clearfix slds-p-top_x-large">
+                        <div
+                            class="footer-button slds-p-top_large slds-p-bottom_large slds-align_absolute-center p_top display_vertical">
+                            <div>
+                                <button class="slds-btn slds-btn-primary slds-btn-sm waves-effect bc-blue waves-light"
+                                    data-id="Apple" onclick={nextTodownload}>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="19" viewBox="0 0 22 19"
+                                        fill="none" style="margin-right: 10px">
+                                        <path
+                                            d="M5.75933 9.54381L5.72583 9.58094C5.3254 9.21965 5.32539 8.6347 5.72583 8.27344C6.12329 7.91485 6.76228 7.91484 7.15972 8.27344L10.0611 10.8911V1.87094C10.0611 1.35794 10.521 0.95 11.0764 0.95C11.6318 0.95 12.0917 1.35794 12.0917 1.87094V10.8911L14.9931 8.27344C15.3905 7.91485 16.0295 7.91484 16.427 8.27344C16.8274 8.63472 16.8274 9.21967 16.427 9.58094L11.7935 13.7614C11.7441 13.8059 11.6914 13.8424 11.6396 13.8746L11.6389 13.8751L11.6389 13.8751C11.6248 13.8835 11.611 13.8897 11.5999 13.8947L11.599 13.8951C11.5871 13.9005 11.5781 13.9046 11.5694 13.9098L11.5683 13.9104L11.5683 13.9104L11.5673 13.911C11.5374 13.9279 11.5026 13.9476 11.4625 13.9597M5.75933 9.54381L11.4473 13.9121M5.75933 9.54381L5.72584 9.58094L10.3604 13.7614L10.3605 13.7615C10.405 13.8013 10.4577 13.8419 10.5153 13.8752M5.75933 9.54381L10.3939 13.7243C10.4365 13.7624 10.4865 13.8008 10.5407 13.8322M11.4625 13.9597C11.4622 13.9598 11.462 13.9599 11.4617 13.96L11.4473 13.9121M11.4625 13.9597C11.4628 13.9597 11.463 13.9596 11.4633 13.9595L11.4473 13.9121M11.4625 13.9597C11.4437 13.9661 11.4225 13.9719 11.4022 13.9775C11.3892 13.981 11.3767 13.9845 11.3653 13.9879L11.3635 13.9884L11.3635 13.9884C11.3537 13.991 11.3439 13.994 11.3326 13.9976C11.33 13.9984 11.3274 13.9992 11.3247 14C11.3104 14.0045 11.2943 14.0093 11.2768 14.0132L11.2744 14.0137L11.2744 14.0136C11.2108 14.0244 11.1422 14.0318 11.0769 14.0318C11.0117 14.0318 10.9431 14.0244 10.8795 14.0136L10.8768 14.0132L10.8768 14.0131C10.8466 14.0062 10.8178 13.9991 10.7885 13.988M11.4473 13.9121C11.429 13.9183 11.4107 13.9233 11.3917 13.9285C11.3786 13.9321 11.3651 13.9358 11.3509 13.94C11.3398 13.9429 11.3286 13.9464 11.3172 13.95C11.3009 13.9551 11.2841 13.9603 11.266 13.9643C11.2043 13.9748 11.1386 13.9818 11.0769 13.9818C11.0153 13.9818 10.9495 13.9748 10.8879 13.9643C10.8569 13.9573 10.83 13.9505 10.803 13.94M10.7885 13.988C10.7897 13.9883 10.7908 13.9885 10.7919 13.9888L10.803 13.94M10.7885 13.988C10.7873 13.9876 10.7861 13.9871 10.7849 13.9867L10.803 13.94M10.7885 13.988C10.7862 13.9875 10.7838 13.987 10.7814 13.9864C10.7542 13.9804 10.7189 13.9726 10.6869 13.9581M10.803 13.94C10.7994 13.9392 10.7957 13.9384 10.792 13.9376C10.764 13.9313 10.7337 13.9245 10.7066 13.9121M10.7066 13.9121L10.6881 13.9585C10.6877 13.9584 10.6873 13.9582 10.6869 13.9581M10.7066 13.9121C10.6854 13.9036 10.6655 13.8938 10.6463 13.8843C10.6341 13.8782 10.6221 13.8723 10.6102 13.8669C10.587 13.8564 10.5638 13.846 10.5407 13.8322M10.7066 13.9121L10.6857 13.9575C10.6861 13.9577 10.6865 13.9579 10.6869 13.9581M10.6869 13.9581C10.6681 13.9505 10.6507 13.9422 10.6348 13.9344C10.6309 13.9325 10.6272 13.9306 10.6236 13.9288C10.6116 13.9229 10.6006 13.9175 10.5896 13.9125L10.5887 13.912C10.5661 13.9019 10.5409 13.8905 10.5153 13.8752M10.5407 13.8322L10.5156 13.8754C10.5155 13.8754 10.5154 13.8753 10.5153 13.8752M10.5407 13.8322L10.515 13.8751C10.5151 13.8751 10.5152 13.8752 10.5153 13.8752M20.3433 16.2081H1.80908C1.25366 16.2081 0.79375 16.6161 0.79375 17.1291C0.79375 17.6421 1.25366 18.05 1.80908 18.05H20.3433C20.8987 18.05 21.3587 17.6421 21.3587 17.1291C21.3584 16.6158 20.899 16.2081 20.3433 16.2081Z"
+                                            fill="white" stroke="#7ABB4A" stroke-width="0.1" />
+                                    </svg> Get the mLog app
+                                </button>
+                                <!-- <button class="slds-btn slds-btn-primary slds-btn-sm waves-effect bc-blue waves-light"
+                                        onclick={downloadLater}>
+                                        Download later
+                                    </button> -->
+                                <button class="slds-btn slds-btn-primary slds-btn-sm waves-effect bc-blue waves-light"
+                                    data-id="Android" onclick={nextTodownload}>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="19" viewBox="0 0 22 19"
+                                        fill="none" style="margin-right: 10px">
+                                        <path
+                                            d="M5.75933 9.54381L5.72583 9.58094C5.3254 9.21965 5.32539 8.6347 5.72583 8.27344C6.12329 7.91485 6.76228 7.91484 7.15972 8.27344L10.0611 10.8911V1.87094C10.0611 1.35794 10.521 0.95 11.0764 0.95C11.6318 0.95 12.0917 1.35794 12.0917 1.87094V10.8911L14.9931 8.27344C15.3905 7.91485 16.0295 7.91484 16.427 8.27344C16.8274 8.63472 16.8274 9.21967 16.427 9.58094L11.7935 13.7614C11.7441 13.8059 11.6914 13.8424 11.6396 13.8746L11.6389 13.8751L11.6389 13.8751C11.6248 13.8835 11.611 13.8897 11.5999 13.8947L11.599 13.8951C11.5871 13.9005 11.5781 13.9046 11.5694 13.9098L11.5683 13.9104L11.5683 13.9104L11.5673 13.911C11.5374 13.9279 11.5026 13.9476 11.4625 13.9597M5.75933 9.54381L11.4473 13.9121M5.75933 9.54381L5.72584 9.58094L10.3604 13.7614L10.3605 13.7615C10.405 13.8013 10.4577 13.8419 10.5153 13.8752M5.75933 9.54381L10.3939 13.7243C10.4365 13.7624 10.4865 13.8008 10.5407 13.8322M11.4625 13.9597C11.4622 13.9598 11.462 13.9599 11.4617 13.96L11.4473 13.9121M11.4625 13.9597C11.4628 13.9597 11.463 13.9596 11.4633 13.9595L11.4473 13.9121M11.4625 13.9597C11.4437 13.9661 11.4225 13.9719 11.4022 13.9775C11.3892 13.981 11.3767 13.9845 11.3653 13.9879L11.3635 13.9884L11.3635 13.9884C11.3537 13.991 11.3439 13.994 11.3326 13.9976C11.33 13.9984 11.3274 13.9992 11.3247 14C11.3104 14.0045 11.2943 14.0093 11.2768 14.0132L11.2744 14.0137L11.2744 14.0136C11.2108 14.0244 11.1422 14.0318 11.0769 14.0318C11.0117 14.0318 10.9431 14.0244 10.8795 14.0136L10.8768 14.0132L10.8768 14.0131C10.8466 14.0062 10.8178 13.9991 10.7885 13.988M11.4473 13.9121C11.429 13.9183 11.4107 13.9233 11.3917 13.9285C11.3786 13.9321 11.3651 13.9358 11.3509 13.94C11.3398 13.9429 11.3286 13.9464 11.3172 13.95C11.3009 13.9551 11.2841 13.9603 11.266 13.9643C11.2043 13.9748 11.1386 13.9818 11.0769 13.9818C11.0153 13.9818 10.9495 13.9748 10.8879 13.9643C10.8569 13.9573 10.83 13.9505 10.803 13.94M10.7885 13.988C10.7897 13.9883 10.7908 13.9885 10.7919 13.9888L10.803 13.94M10.7885 13.988C10.7873 13.9876 10.7861 13.9871 10.7849 13.9867L10.803 13.94M10.7885 13.988C10.7862 13.9875 10.7838 13.987 10.7814 13.9864C10.7542 13.9804 10.7189 13.9726 10.6869 13.9581M10.803 13.94C10.7994 13.9392 10.7957 13.9384 10.792 13.9376C10.764 13.9313 10.7337 13.9245 10.7066 13.9121M10.7066 13.9121L10.6881 13.9585C10.6877 13.9584 10.6873 13.9582 10.6869 13.9581M10.7066 13.9121C10.6854 13.9036 10.6655 13.8938 10.6463 13.8843C10.6341 13.8782 10.6221 13.8723 10.6102 13.8669C10.587 13.8564 10.5638 13.846 10.5407 13.8322M10.7066 13.9121L10.6857 13.9575C10.6861 13.9577 10.6865 13.9579 10.6869 13.9581M10.6869 13.9581C10.6681 13.9505 10.6507 13.9422 10.6348 13.9344C10.6309 13.9325 10.6272 13.9306 10.6236 13.9288C10.6116 13.9229 10.6006 13.9175 10.5896 13.9125L10.5887 13.912C10.5661 13.9019 10.5409 13.8905 10.5153 13.8752M10.5407 13.8322L10.5156 13.8754C10.5155 13.8754 10.5154 13.8753 10.5153 13.8752M10.5407 13.8322L10.515 13.8751C10.5151 13.8751 10.5152 13.8752 10.5153 13.8752M20.3433 16.2081H1.80908C1.25366 16.2081 0.79375 16.6161 0.79375 17.1291C0.79375 17.6421 1.25366 18.05 1.80908 18.05H20.3433C20.8987 18.05 21.3587 17.6421 21.3587 17.1291C21.3584 16.6158 20.899 16.2081 20.3433 16.2081Z"
+                                            fill="white" stroke="#7ABB4A" stroke-width="0.1" />
+                                    </svg> Get the mLog app
+                                </button>
                             </div>
-                            <div class="slds-align_absolute-center img-header">Android Getting Started Video</div>
-                            <div
-                                class="slds-size_5-of-12 slds-align_absolute-center slds-m-top_small slds-p-bottom_xx-large slds-p-right_xx-large slds-p-left_xx-large img-container">
-                                <img src={videoLogoUrl} class="img-logo" onclick={playVideoAndroid} />
+                            <div>
+                                <div class="back_to_previous slds-m-top_small slds-align_absolute-center">
+                                    <!-- <div style="margin: 0.375rem 7rem 0.375rem 0;"> -->
+                                    <ul class="slds-list_horizontal  slds-has-block-links_space border-radius">
+                                        <li class="slds-item navigate margin">
+                                            <a name="buttonBackwards" label="Previous" title="" onclick={backToPage}>
+                                                <i class="fa-solid fa-arrow-left fa-lg navigate-icon"></i>
+                                            </a>
+                                        </li>
+                                        <li class="slds-item navigate margin">
+                                            <a name="buttonForwards" label="Next" title="">
+                                                <i class="fa-solid fa-arrow-right fa-lg navigate-icon"></i>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                    <!-- </div> -->
+                                </div>
                             </div>
-                        </template>
-                        <template if:true={isPlayAndroid}>
-                            <iframe width={videoWidth} height={videoHeight} src={androidVideoUrl}
-                                title="YouTube video player" frameborder="0"
-                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                                allowfullscreen></iframe>
-                        </template>
-                    </div>
-                </div>
-            </div>
-            <div class="slds-clearfix slds-p-top_x-large">
-                <!-- <div class="footer-text  slds-align_absolute-center p_top font-style">
-                    <div><strong>Follow these tips and download instructions <a href={instructionUrlAndroid} target="_blank" onclick={handleRedirect}>here</a> and <a href={mLogTracking} target="_blank">here</a>:</strong>
-                        <ul class="slds-list_dotted slds-p-top_x-small">
-                            <li>Select the mLog icon to open the app to automatically track mileage every day</li>
-                            <li>Review your trips daily if possible, weekly at a minimum</li>
-                            <li>Reclassify any trip as personal, business or delete any trips you don't want to show</li>
-                        </ul>
-                    </div>
-                </div> -->
-                <template if:false={render}>
-                    <div class="footer-button slds-p-top_large slds-p-bottom_large slds-align_absolute-center p_top">
-                        <button class="slds-btn slds-btn-primary slds-btn-sm waves-effect bc-blue waves-light"
-                            onclick={downloadNow}>
-                            Download now
-                        </button>
-                        <button class="slds-btn slds-btn-primary slds-btn-sm waves-effect bc-blue waves-light"
-                            onclick={downloadLater}>
-                            Download later
-                        </button>
-                        <button class="slds-btn slds-btn-primary slds-btn-sm waves-effect bc-blue waves-light"
-                            onclick={downloadAlready}>
-                            I already have mLog
-                        </button>
-                        <div class="back_btn">
-                            <div class="back_to_previous">
-                                <a class="font-s" onclick={backToPage}><i class="fa-solid fa-angle-left"></i> Back</a>
-                            </div>
+        
+        
+                            <!-- <div class="back_btn">
+                                    <div class="back_to_previous">
+                                        <a class="font-s" onclick={backToPage}><i class="fa-solid fa-angle-left"></i> Back</a>
+                                    </div>
+                                </div> -->
                         </div>
                     </div>
                 </template>
-                <template if:true={render}>
-                    <div class="footer-button slds-p-bottom_large">
-                        <div>
-                            <div class="watch-meet slds-align_absolute-center slds-p-bottom_medium" if:false={afterRegister}>
-                                <button class="slds-btn slds-btn-primary slds-btn-sm waves-effect bc-blue waves-light"
-                                    onclick={nextDriverMeeting}>
-                                    {buttonRender}
-                                </button>
+                <template lwc:else>
+                    <template lwc:if={isCommonDownload}>
+                        <div class="transition" >
+                            <div class="flex-container">
+                                <div class="slds-text-heading_small slds-text-align_center font-style slds-p-bottom_small emc-font">
+                                    Download and Install mLog</div>
                             </div>
-                            <template if:true={allowRedirect}>
-                                <div class="watch-meet slds-align_absolute-center" if:true={afterRegister}>
-                                    <button class="slds-btn slds-btn-primary slds-btn-sm waves-effect bc-blue waves-light"
-                                        onclick={takeMeToDashboard}>
-                                        Go To My Account
-                                    </button>
+                            <div
+                                class="slds-text-heading_small slds-text-align_center slds-p-bottom_medium emcFont p_bottom font-style">
+                                Ryan, we just sent your link to <br />
+                                get started to Review &amp; Sign
+                            </div>
+                            <div class="flex-container  slds-p-bottom_medium">
+                                <h2 class="step-count">1</h2>
+                            </div>
+                            <div
+                                class="slds-text-heading_small slds-text-align_center slds-p-bottom_xx-large emcFont p_bottom font-style">
+                                Start by opening your email and pressing Step 1 or scan the <br /> QR code in your email to download
+                                the mLog app
+                            </div>
+                            <div class="flex-container">
+                                <picture style="width: 544px;
+                        height: 657px;
+                        border: 1.00001px solid #D7D7D7;
+                        filter: drop-shadow(0px 1px 29px rgba(0, 0, 0, 0.08));
+                        border-radius: 14.1515px;">
+                                    <img src={QRCode} />
+                                </picture>
+                            </div>
+                            <div
+                                class="footer-button  slds-p-bottom_large slds-align_absolute-center p_top display_vertical">
+                                <div>
+                                    <div class="back_to_previous slds-m-top_small slds-align_absolute-center">
+                                        <ul class="slds-list_horizontal  slds-has-block-links_space border-radius">
+                                            <li class="slds-item navigate margin-QR">
+                                                <a name="buttonBackwards" label="Previous" title="Back to download mLog"
+                                                    onclick={backToDownloadmLog}>
+                                                    <i class="fa-solid fa-arrow-left fa-lg navigate-icon"></i>
+                                                </a>
+                                            </li>
+                                            <li class="slds-item navigate margin-QR">
+                                                <a name="buttonForwards" label="Next" title="Next" onclick={nextPageOfmLog}>
+                                                    <i class="fa-solid fa-arrow-right fa-lg navigate-icon"></i>
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </div>
                                 </div>
-                                <div class="watch-meet slds-align_absolute-center"  if:true={showWatchBtn}>
-                                    <button class="slds-btn slds-btn-primary slds-btn-sm waves-effect bc-blue waves-light"
-                                        onclick={takeMeToDashboard}>
-                                    Take me to the dashboard
-                                    </button>
-                                </div>
-                            </template>
-                            <div class="back_to_previous slds-m-top_small slds-align_absolute-center">
-                                <a class="font-s" onclick={backToPage}><i class="fa-solid fa-angle-left"></i> Back</a>
                             </div>
                         </div>
-                    </div>
+                    </template>
+                    <template lwc:else>
+                        <template  lwc:if={isDownloadForApple}>
+                            <div class="transition">
+                                <div class="flex-container">
+                                    <div class="slds-text-heading_small slds-text-align_center font-style slds-p-bottom_small emc-font">
+                                        Get Started with mLog</div>
+                                </div>
+                                <div class="slds-text-heading_small slds-p-vertical_medium emcFont  font-style info-background">
+                                    There is no password! <br />
+                                    Select Step 2 to log into your account.
+                                </div>
+                                <div class="flex-container slds-p-vertical_medium">
+                                    <h2 class="step-count">2</h2>
+                                </div>
+                                <div
+                                    class="slds-text-heading_small slds-text-align_center slds-p-bottom_medium emcFont p_bottom font-style">
+                                    The link will open the browser page.<br />
+                                    Press “Step 1. Download Log App” on your mobile device.
+                                </div>
+                                <div
+                                    class="slds-text-heading_small slds-text-align_center slds-p-bottom_large emcFont p_bottom font-style">
+                                    <strong>Important <br />
+                                        Do not open mLog in the Play Store go back to the browser and press Step 2.
+                                    </strong>
+                                </div>
+                                <div class="flex-container">
+                                    <div class="slds-m-around_medium">
+                                        <picture style="
+                                border: 1px solid #D7D7D7;
+                                filter: drop-shadow(0px 1px 29px rgba(0, 0, 0, 0.08));
+                                border-radius: 14.1515px;">
+                                            <img class="img-prop img-padding" src={IOS1} />
+                                        </picture>
+                                    </div>
+                                    <div class="slds-m-around_medium">
+                                        <picture style="
+                                border: 1px solid #D7D7D7;
+                                filter: drop-shadow(0px 1px 29px rgba(0, 0, 0, 0.08));
+                                border-radius: 14.1515px;">
+                                            <img class="img-prop" src={IOS2} />
+                                        </picture>
+                                    </div>
+                                    <div class="slds-m-around_medium">
+                                        <picture style="
+                                border: 1px solid #D7D7D7;
+                                filter: drop-shadow(0px 1px 29px rgba(0, 0, 0, 0.08));
+                                border-radius: 14.1515px;">
+                                            <img class="img-prop img-padding" src={IOS3} />
+                                        </picture>
+                                    </div>
+                                </div>
+                                <div
+                                    class="footer-button slds-p-top_medium slds-p-bottom_large slds-align_absolute-center p_top display_vertical">
+                                    <div>
+                                        <div class="back_to_previous slds-align_absolute-center">
+                                            <ul class="slds-list_horizontal  slds-has-block-links_space border-radius">
+                                                <li class="slds-item navigate navigate marginR">
+                                                    <a name="buttonBackwards" label="Previous" title="Back to Step 1"
+                                                        onclick={backToStep1}>
+                                                        <i class="fa-solid fa-arrow-left fa-lg navigate-icon"></i>
+                                                    </a>
+                                                </li>
+                                                <li>
+                                                    <template if:false={afterRegister}>
+                                                        <button
+                                                            class="slds-btn slds-btn-primary slds-btn-sm waves-effect bc-blue waves-light"
+                                                            onclick={nextDriverMeeting}>
+                                                            {buttonRender}
+                                                        </button>
+                                                    </template>
+                                                    <template if:true={allowRedirect}>
+                                                        <template if:true={afterRegister}>
+                                                            <button
+                                                                class="slds-btn slds-btn-primary slds-btn-sm waves-effect bc-blue waves-light"
+                                                                onclick={takeMeToDashboard}>
+                                                                Go To My Account
+                                                            </button>
+                                                        </template>
+                                                        <template if:true={showWatchBtn}>
+                                                            <button
+                                                                class="slds-btn slds-btn-primary slds-btn-sm waves-effect bc-blue waves-light"
+                                                                onclick={takeMeToDashboard}>
+                                                                Take me to the dashboard
+                                                            </button>
+                                                        </template>
+                                                    </template>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </template>
+                      
+                        <template lwc:elseif={isDownloadForAndroid}>
+                            <div class="transition">
+                                <div class="flex-container">
+                                    <div class="slds-text-heading_small slds-text-align_center font-style slds-p-bottom_small emc-font">
+                                        Get Started with mLog</div>
+                                </div>
+                                <div class="slds-text-heading_small slds-p-vertical_medium emcFont  font-style info-background">
+                                    There is no password! <br />
+                                    Select Step 2 to log into your account.
+                                </div>
+                                <div class="flex-container slds-p-vertical_medium">
+                                    <h2 class="step-count">2</h2>
+                                </div>
+                                <div
+                                    class="slds-text-heading_small slds-text-align_center slds-p-bottom_medium emcFont p_bottom font-style">
+                                    The link will open the browser page.<br />
+                                    Press “Step 1. Download Log App” on your mobile device.
+                                </div>
+                                <div
+                                    class="slds-text-heading_small slds-text-align_center slds-p-bottom_large emcFont p_bottom font-style">
+                                    <strong>Important <br />
+                                        Do not open mLog in the Play Store go back to the browser and press Step 2.
+                                    </strong>
+                                </div>
+                                <div class="flex-container">
+                                    <div class="slds-m-around_medium">
+                                        <picture style="
+                                border: 1px solid #D7D7D7;
+                                filter: drop-shadow(0px 1px 29px rgba(0, 0, 0, 0.08));
+                                border-radius: 14.1515px;">
+                                            <img class="img-prop img-padding" src={ANDR1} />
+                                        </picture>
+                                    </div>
+                                    <div class="slds-m-around_medium">
+                                        <picture style="
+                                border: 1px solid #D7D7D7;
+                                filter: drop-shadow(0px 1px 29px rgba(0, 0, 0, 0.08));
+                                border-radius: 14.1515px;">
+                                            <img class="img-prop" src={ANDR2} />
+                                        </picture>
+                                    </div>
+                                    <div class="slds-m-around_medium">
+                                        <picture style="
+                                border: 1px solid #D7D7D7;
+                                filter: drop-shadow(0px 1px 29px rgba(0, 0, 0, 0.08));
+                                border-radius: 14.1515px;">
+                                            <img class="img-prop img-padding" src={ANDR3} />
+                                        </picture>
+                                    </div>
+                                </div>
+                                <div
+                                    class="footer-button slds-p-top_medium  slds-p-bottom_medium slds-align_absolute-center p_top display_vertical">
+                                    <div>
+                                        <div class="back_to_previous slds-align_absolute-center">
+                                            <ul class="slds-list_horizontal  slds-has-block-links_space border-radius">
+                                                <li class="slds-item navigate marginR">
+                                                    <a name="buttonBackwards" label="Previous" title="Back to Step 1"   onclick={backToStep1}>
+                                                        <i class="fa-solid fa-arrow-left fa-lg navigate-icon"></i>
+                                                    </a>
+                                                </li>
+                                                <li>
+                                                    <template if:false={afterRegister}>
+                                                        <button
+                                                            class="slds-btn slds-btn-primary slds-btn-sm waves-effect bc-blue waves-light"
+                                                            onclick={nextDriverMeeting}>
+                                                            {buttonRender}
+                                                        </button>
+                                                    </template>
+                                                    <template if:true={allowRedirect}>
+                                                        <template if:true={afterRegister}>
+                                                            <button
+                                                                class="slds-btn slds-btn-primary slds-btn-sm waves-effect bc-blue waves-light"
+                                                                onclick={takeMeToDashboard}>
+                                                                Go To My Account
+                                                            </button>
+                                                        </template>
+                                                        <template if:true={showWatchBtn}>
+                                                            <button
+                                                                class="slds-btn slds-btn-primary slds-btn-sm waves-effect bc-blue waves-light"
+                                                                onclick={takeMeToDashboard}>
+                                                                Take me to the dashboard
+                                                            </button>
+                                                        </template>
+                                                    </template>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </template>
+                    </template>
                 </template>
             </div>
         </template>
     </div>
 
-    <div class="transition" if:true={isDownloadNow}>
+
+    <!-- <div class="transition" if:true={isDownloadNow}>
         <div class="flex-container">
             <c-m-burse-header-text head-text="Step 4 - Get mLog"></c-m-burse-header-text>
             <div class="carousel-holder">
@@ -248,8 +355,8 @@
             Check your email and text messages and open the link and follow the steps. <br />
             (Remember there is no password, select the links in the email.) <br />
             Are you still having challenges? Contact <a onclick={contactSupport}>Support</a>
-            <!-- You should have received an email and possibly a text message.<br/>
-          Watch this short video to learn how to set up mLog -->
+            //You should have received an email and possibly a text message.<br/>
+          Watch this short video to learn how to set up mLog 
         </div>
         <div
             class="slds-text-heading_small slds-text-align_center slds-p-top_medium slds-p-bottom_large emcFont font-style">
@@ -298,7 +405,7 @@
             </div>
         </div>
         <div class="slds-clearfix slds-p-top_x-large">
-            <!-- <div class="footer-text  slds-align_absolute-center p_top font-style">
+            // <div class="footer-text  slds-align_absolute-center p_top font-style">
                 <div><strong>Follow these tips and download instructions <a href={instructionUrlAndroid} target="_blank" onclick={handleRedirect}>here</a> and <a href={mLogTracking} target="_blank">here</a>:</strong>
                     <ul class="slds-list_dotted slds-p-top_x-small">
                         <li>Select the mLog icon on your phone to open the app to track mileage each day automatically</li>
@@ -306,7 +413,7 @@
                         <li>Reclassify trips as business, personal, or delete trips you don't want to share</li>
                     </ul>
                 </div>
-            </div> -->
+            </div> 
             <div class="footer-button slds-p-bottom_large p_top">
                 <div class="watch-meet slds-align_absolute-center slds-p-bottom_medium" if:false={afterRegister}>
                     <button class="slds-btn slds-btn-primary slds-btn-sm waves-effect bc-blue waves-light"
@@ -331,11 +438,11 @@
                 <div class="back_to_previous slds-m-top_small slds-align_absolute-center">
                     <a class="font-s" onclick={backToDownloadPage}><i class="fa-solid fa-angle-left"></i> Back</a>
                 </div>
-                <!-- <div>
+                // <div>
                     <div class="back_to_previous slds-float_left  ml-26">
                         <a class="font-s" onclick={backToDownloadPage}><i class="fa-solid fa-angle-left"></i> <span>  Back</span></a>
                     </div>
-                </div> -->
+                </div> 
             </div>
         </div>
     </div>
@@ -405,7 +512,7 @@
             </div>
         </div>
         <div class="slds-clearfix slds-p-top_x-large">
-            <!-- <div class="footer-text  slds-align_absolute-center p_top font-style">
+         // <div class="footer-text  slds-align_absolute-center p_top font-style">
                 <div><strong>Follow these tips and download instructions <a href={instructionUrlAndroid} target="_blank" onclick={handleRedirect}>here</a> and <a href={mLogTracking} target="_blank">here</a>:</strong>
                     <ul class="slds-list_dotted slds-p-top_x-small">
                         <li>Select the mLog icon on your phone to open the app to track mileage each day automatically</li>
@@ -413,7 +520,7 @@
                         <li>Reclassify trips as business, personal, or delete trips you don't want to share</li>
                     </ul>
                 </div>
-            </div> -->
+            </div>
             <div class="footer-button slds-p-bottom_large p_top">
                 <div>
                     <div class="watch-meet slds-align_absolute-center slds-p-bottom_medium" if:false={afterRegister}>
@@ -517,7 +624,7 @@
             </div>
         </div>
         <div class="slds-p-top_x-large">
-            <!-- <div class="footer-text  slds-align_absolute-center p_top font-style">
+            // <div class="footer-text  slds-align_absolute-center p_top font-style">
                 <div><strong>Follow these tips and download instructions <a href={instructionUrlAndroid} target="_blank"
                             onclick={handleRedirect}>here</a> and <a href={mLogTracking} target="_blank">here</a>
                         :</strong>
@@ -528,7 +635,7 @@
                         <li>Reclassify trips as business, personal, or delete trips you don't want to share</li>
                     </ul>
                 </div>
-            </div> -->
+            </div> 
             <div class="footer-button slds-p-bottom_large p_top">
                 <div>
                     <div class="watch-meet slds-align_absolute-center slds-p-bottom_medium" if:false={afterRegister}>
@@ -557,7 +664,7 @@
                 </div>
             </div>
         </div>
-    </div>
+    </div> -->
 
     <div class="mburse-support" if:true={isChatBot}>
         <c-m-burse-support></c-m-burse-support>

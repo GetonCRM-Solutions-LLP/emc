@@ -29,6 +29,7 @@ export default class MBurseDriverPacket extends LightningElement {
     packetAlreadySent = false;
     packetIntial = false;
     allowRedirect = false;
+    helloSignId = '';
     @api days
     @api cellType;
     @api contactId;
@@ -48,24 +49,27 @@ export default class MBurseDriverPacket extends LightningElement {
         this.packetAlreadySent  = false;
         this.packetSent = true;
         let contactList, mLogList;
+        console.log("Driver details", this.driverDetails);
         if (this.driverDetails) {
             mLogList = this.driverDetails;
             contactList = this.proxyToObject(mLogList);
             this.isAppDone = (contactList[0].mlogApp) ? true : false;
+            this.helloSignId =  contactList[0].helloSignId;
             signatureRequestForDriver({
-                    userEmail: this.emailOfDriver,
-                    contactName: this.contactOfDriver
-                })
-                .then((result) => {
-                    console.log("Packet received --", result);
+                userEmail: this.emailOfDriver,
+                contactName: this.contactOfDriver,
+                helloSignId: this.helloSignId
+            })
+            .then((result) => {
+                console.log("Packet received --", result);
                     contactList[0].driverPacketStatus = (contactList[0].driverPacketStatus === null) ? "Sent" :
                         (contactList[0].driverPacketStatus === "Sent") ? "Resent" : (contactList[0].driverPacketStatus === "Resent") ? "Resent Again" : (contactList[0].driverPacketStatus === "Skip") ? "Sent" : "Resent Again"
-                    updateContactDetail({
-                        contactData: JSON.stringify(contactList),
-                        driverPacket: true
-                    }).then(() => {
-                        this.toggleHide();
-                    })
+                        updateContactDetail({
+                            contactData: JSON.stringify(contactList),
+                            driverPacket: true
+                        }).then(() => {
+                            this.toggleHide();
+                        })
                 })
                 .catch((error) => {
                     console.log(error);
@@ -252,6 +256,7 @@ export default class MBurseDriverPacket extends LightningElement {
     backToPacket() {
         let checkList, info, packetStatus;
         this.packetSent = false;
+        this.toggleHide();
         if (this.driverDetails) {
             checkList = this.driverDetails;
             info = this.proxyToObject(checkList);

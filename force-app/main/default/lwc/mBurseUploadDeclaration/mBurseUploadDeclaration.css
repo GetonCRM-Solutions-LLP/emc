@@ -213,7 +213,7 @@ table tr td {
 .box {
   font-size: 1.25rem;
   position: relative;
-  padding: 25px 20px;
+  padding: 40px 20px;
 }
 
 .box__input {
@@ -363,6 +363,7 @@ table tr td {
 }
 
 .footer-text {
+  margin: auto;
   font-size: 15px;
 }
 

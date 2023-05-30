@@ -2167,7 +2167,7 @@
         <iframe id="videoFrame" frameborder="0" class="vf-video-iframe d-none" name="videoVf"></iframe>
         <section class="container-fluid">
             <div id="pills-admin-dashbord-myteamprofile" class="myteamprofile">
-                <iframe id="vfFrame" height="345" width="100%" style="border: 0" class="vf-iframe"></iframe>
+                <iframe id="vfFrame" height="345" width="100%" style="border: 0" class="vf-iframe" loading="lazy"></iframe>
             </div>
             <div class="my-5 admin-roster-tab-section">
                 <ul class="nav nav-pills">

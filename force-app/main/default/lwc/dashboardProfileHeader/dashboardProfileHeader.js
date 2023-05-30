@@ -3,10 +3,12 @@ import logo from '@salesforce/resourceUrl/EmcCSS';
 export default class DashboardProfileHeader extends LightningElement {
     @api userName;
     @api pageSource;
+    @api driverMenu;
     @api fullName;
     @api companyLogo;
     @api isNavigate;
     @api expirationDate;
+    @api unread;
     notificationlogo = logo + '/emc-design/assets/images/Icons/PNG/Green/Notifications.png';
     @api setSource(value){
         // eslint-disable-next-line @lwc/lwc/no-api-reassignments
@@ -18,9 +20,11 @@ export default class DashboardProfileHeader extends LightningElement {
         if(value === 'sidebar close'){
               this.template.querySelector('.welcome-msg').classList.add('extend');
               this.template.querySelector('.welcome-msg').classList.remove('enclose');
+              this.template.querySelector('.header-inner').classList.add('expand');
         }else{
             this.template.querySelector('.welcome-msg').classList.add('enclose');
             this.template.querySelector('.welcome-msg').classList.remove('extend');
+            this.template.querySelector('.header-inner').classList.remove('expand');
         }
     }
 

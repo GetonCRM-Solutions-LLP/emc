@@ -16,7 +16,7 @@ export default class MBurseMeeting extends LightningElement {
      @api accountType;
 
      get textForHeader(){
-        return (this.accountType === 'New Account') ? "Step 5 - Schedule Your Driver Meeting" : "Step 5 - Watch Your Driver Meeting"
+        return (this.accountType === 'New Account') ? "Schedule Your Driver Meeting" : "Watch Your Driver Meeting"
      }
 
      get description(){

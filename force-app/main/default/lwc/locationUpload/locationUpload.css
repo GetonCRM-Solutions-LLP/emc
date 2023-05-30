@@ -11,6 +11,10 @@
   --btn-grey-color: #A4A4A4;
 }
 
+*{
+  font-family: 'Proxima Nova' !important;
+}
+
 @keyframes slideIn {
     from {
       transform: translateX(-100%);
@@ -218,12 +222,12 @@
   
   .font-bold {
     font-size: 25px;
-    font-weight: bold;
+    font-family: 'Proxima Nova Bold' !important;
     color: #1D1D1D;
   }
   
   .font-ms {
-    font-weight: 700;
+    font-family: 'Proxima Nova Bold' !important;
     font-size: 15px;
     line-height: 12px;
     color: #FFFFFF !important;
@@ -285,7 +289,7 @@
     color: #FA7800;
     display: inline-block;
     font-size: 18px;
-    font-weight: 600;
+    font-family: 'Proxima Nova Semibold' !important;
   }
   
   .w-100 {
@@ -336,7 +340,7 @@
   .slds-btn-sm {
     padding: 0.7rem 1.6rem;
     font-size: 16px;
-    font-family: 'Proxima Nova' !important;
+    font-family: 'Proxima Nova Bold' !important;
   }
   
   .slds-btn-md {
@@ -383,7 +387,7 @@
   }
   
   .slds-text-heading_large{
-    font-weight: 600;
+    font-family: 'Proxima Nova Semibold' !important;
     font-size: 32px;
     line-height: 39px;
   }
@@ -510,9 +514,8 @@
   }
   
   .insurance-header{
-    font-family: 'Proxima Nova';
     font-style: normal;
-    font-weight: 700;
+    font-family: 'Proxima Nova Bold' !important;
     font-size: 16px;
     line-height: 19px;
     color: #1D1D1D;
@@ -524,7 +527,7 @@
   }
   
   .bordered-table tr>td:last-child{
-    font-weight: 700;
+    font-family: 'Proxima Nova Bold' !important;
     text-align: right;
     padding-left: 4rem !important;
     padding-right: 0 !important;
@@ -556,5 +559,5 @@
 
  a {
     color: var(--green-color) !important;
-    font-weight: 600;
+    font-family: 'Proxima Nova Semibold' !important;
  }

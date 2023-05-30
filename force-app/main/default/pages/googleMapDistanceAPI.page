@@ -7,87 +7,130 @@
               var resultActive = false; */
 
             // Listening from iframe !
-            console.log("listening---", lexOrigin)
-            window.addEventListener("message", function (event) {
-                console.log("listening---", event)
-                // if (event.originname !== lexOrigin) {
-                //     // Not the expected origin: reject message!
-                //     return;
-                // }else{
-                //     console.log(event)
-                // }
+            function calculateDistance(origin, destination) {
+                var service = new google.maps.DistanceMatrixService();
+                service.getDistanceMatrix(
+                    {
+                        origins: [origin],
+                        destinations: [destination],
+                        travelMode: google.maps.TravelMode.DRIVING,
+                        unitSystem: google.maps.UnitSystem.IMPERIAL,
+                        avoidHighways: false,
+                        avoidTolls: false
+                    }, callback);
+            }
 
-                // var map;
-                // // initialize services
-                const geocoder = new google.maps.Geocoder();
-                const service = new google.maps.DistanceMatrixService();
-                // build request
-                const origin1 = { lat: 55.93, lng: -3.118 };
-                const origin2 = "Greenwich, England";
-                const destinationA = "Stockholm, Sweden";
-                const destinationB = { lat: 50.087, lng: 14.421 };
-                const request = {
-                    origins: [origin1, origin2],
-                    destinations: [destinationA, destinationB],
-                    travelMode: google.maps.TravelMode.DRIVING,
-                    unitSystem: google.maps.UnitSystem.METRIC,
-                    avoidHighways: false,
-                    avoidTolls: false,
-                };
-
-                // get distance matrix response
-                service.getDistanceMatrix(request, callback).then((response) => {
-                    // put response
-                    console.log(JSON.stringify(
-                        response,
-                        null,
-                        2
-                    ));
-                });
-
-                function callback(response, status) {
-                    if (status != google.maps.DistanceMatrixStatus.OK) {
-                      console.log('error');
+            function callback(response, status) {
+                if (status != google.maps.DistanceMatrixStatus.OK) {
+                    $('#result').html(err);
+                } else {
+                    var origin = response.originAddresses[0];
+                    var destination = response.destinationAddresses[0];
+                    if (response.rows[0].elements[0].status === "ZERO_RESULTS") {
+                        console.log("Better get on a plane. There are no roads between "
+                            + origin + " and " + destination);
                     } else {
-                        var origin = response.originAddresses[0];
-                        console.log(origin);
-                        var destination = response.destinationAddresses[0];
-                        console.log(destination);
-                        if (response.rows[0].elements[0].status === "ZERO_RESULTS") {
-                         console.log(
-                                "Better get on a plane. There are no roads between " +
-                                origin +
-                                " and " +
-                                destination
-                            );
-                        } else {
-                            var distance = response.rows[0].elements[0].distance;
-                            console.log(distance);
-                            var duration = response.rows[0].elements[0].duration;
-                            console.log(duration);
-                            console.log(response.rows[0].elements[0].distance);
-                            var distance_in_kilo = distance.value / 1000; // the kilom
-                            var distance_in_mile = distance.value / 1609.34; // the mile
-                            console.log(distance_in_kilo);
-                            console.log(distance_in_mile);
-                        }
+                        var distance = response.rows[0].elements[0].distance;
+                        var distance_value = distance.value;
+                        var distance_text = distance.text;
+                        var miles = distance_text.substring(0, distance_text.length - 3);
+                        console.log(response.rows[0], response.rows[0].elements[0])
+                        console.log("It is " + miles + " miles from " + origin + " to " + destination);
                     }
                 }
-            });
+            }
+            // window.addEventListener("message", function (event) {
+            //     debugger
+            //     console.log("listening---", event)
+            //     // if (event.originname !== lexOrigin) {
+            //     //     // Not the expected origin: reject message!
+            //     //     return;
+            //     // }else{
+            //     //     console.log(event)
+            //     // }
 
-            function initMap(){
+            //     // var map;
+            //     // // initialize services
+            //     const geocoder = new google.maps.Geocoder();
+            //     const service = new google.maps.DistanceMatrixService();
+            //     // build request
+            //     const origin1 = { lat: 55.93, lng: -3.118 };
+            //     const origin2 = "Greenwich, England";
+            //     const destinationA = "Stockholm, Sweden";
+            //     const destinationB = { lat: 50.087, lng: 14.421 };
+            //     const request = {
+            //         origins: [origin1, origin2],
+            //         destinations: [destinationA, destinationB],
+            //         travelMode: google.maps.TravelMode.DRIVING,
+            //         unitSystem: google.maps.UnitSystem.METRIC,
+            //         avoidHighways: false,
+            //         avoidTolls: false,
+            //     };
+
+            //     // get distance matrix response
+            //     service.getDistanceMatrix(request, callback).then((response) => {
+            //         // put response
+            //         console.log(JSON.stringify(
+            //             response,
+            //             null,
+            //             2
+            //         ));
+            //     });
+
+            //     function callback(response, status) {
+            //         if (status != google.maps.DistanceMatrixStatus.OK) {
+            //           console.log('error');
+            //         } else {
+            //             var origin = response.originAddresses[0];
+            //             console.log(origin);
+            //             var destination = response.destinationAddresses[0];
+            //             console.log(destination);
+            //             if (response.rows[0].elements[0].status === "ZERO_RESULTS") {
+            //              console.log(
+            //                     "Better get on a plane. There are no roads between " +
+            //                     origin +
+            //                     " and " +
+            //                     destination
+            //                 );
+            //             } else {
+            //                 var distance = response.rows[0].elements[0].distance;
+            //                 console.log(distance);
+            //                 var duration = response.rows[0].elements[0].duration;
+            //                 console.log(duration);
+            //                 console.log(response.rows[0].elements[0].distance);
+            //                 var distance_in_kilo = distance.value / 1000; // the kilom
+            //                 var distance_in_mile = distance.value / 1609.34; // the mile
+            //                 console.log(distance_in_kilo);
+            //                 console.log(distance_in_mile);
+            //             }
+            //         }
+            //     }
+            // });
+
+            function initMap() {
                 var map, geocoder;
+                const urlParams = new URLSearchParams(window.location.search);
+                console.log("Search params", urlParams.get("origin"), urlParams.get("destination"), urlParams.get("name"))
+                const origin1 = { lat: 33.808169, lng: -118.358222};
+                const origin2 = "4205 Pacific Coast Hwy, Torrance, CA  90505";
+                const destinationA = "30404 Rhone Dr Rancho Palos Verdes, CA  90275";
+                const destinationB = { lat: 33.754619, lng: -118.393404 };
                 /* Intialize google map */
-               console.log('map initialize')
+                calculateDistance(urlParams.get("origin"), urlParams.get("destination"));
+                //calculateDistance('4205 Pacific Coast Hwy, Torrance, CA  90505', '30404 Rhone Dr Rancho Palos Verdes, CA  90275');
+                console.log('map initialize')
             }
         </script>
-        <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js" async="true" defer="true"></script>
+
     </head>
+
     <body>
         <!-- <div style="width: 100%;" id="mapDiv">
             <div id="map" style="width: 100%; height: 230px;overflow:hidden"></div>
         </div> -->
-        <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDnaP6tZBTFOCUpfNbCXMZwnLDTQ3aOrug&callback=initMap" async="true" defer="true"></script>
+        <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js" async="true" defer="true"></script>
+        <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDnaP6tZBTFOCUpfNbCXMZwnLDTQ3aOrug&callback=initMap"
+            async="true" defer="true"></script>
     </body>
-   
+
 </apex:page>

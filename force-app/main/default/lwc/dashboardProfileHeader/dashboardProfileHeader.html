@@ -10,19 +10,21 @@
 			</div>
 			<div class="navigation-link"> 
 				<template if:true={isNavigate}>
-					<template if:true={pageSource}>
-						<ul>
-							<li><a href="#Insurance-Upload" onclick={redirectToInsurance} name="Insurance-Upload">Insurance</a></li>
-							<li><a href="#Videos"  name="Videos" onclick={redirectToResource}>Resources</a></li>
-						</ul>
-					</template>
-					<div class="text-alert" if:false={pageSource}>
-						<template if:true={expirationDate}>
-							Your insurance expires <strong><lightning-formatted-date-time value={expirationDate}
-									year="2-digit" month="2-digit" day="2-digit">
-								</lightning-formatted-date-time></strong>
+					<template if:true={driverMenu}>
+						<template if:true={pageSource}>
+							<ul>
+								<li><a href="#Insurance-Upload" onclick={redirectToInsurance} name="Insurance-Upload">Insurance</a></li>
+								<li><a href="#Videos"  name="Videos" onclick={redirectToResource}>Resources</a></li>
+							</ul>
 						</template>
-					</div>
+						<div class="text-alert" if:false={pageSource}>
+							<template if:true={expirationDate}>
+								Your insurance expires <strong><lightning-formatted-date-time value={expirationDate}
+										year="2-digit" month="2-digit" day="2-digit">
+									</lightning-formatted-date-time></strong>
+							</template>
+						</div>
+					</template>
 					<div class="notify" onclick={notificationRedirect}>
 						<div class="notify-placeholder">
 							<svg xmlns="http://www.w3.org/2000/svg" width="31" height="31" viewBox="0 0 31 31" fill="none">
@@ -30,8 +32,8 @@
 							</svg>
 							<!-- <img class="notification-size" src={notificationlogo} /> -->
 						</div>
-						<div class="notify-count">
-							1
+						<div class="notify-count" if:true={unread}>
+							{unread}
 						</div>
 					</div>
 				</template>

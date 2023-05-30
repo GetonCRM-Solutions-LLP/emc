@@ -4,15 +4,22 @@
     --mburse-color: #7ABB4A;
 }
 
-
 table tr td {
     font-family: 'Proxima Nova' !important;
-  }
+}
 
 .animated{
     transition: all 0.3s ease-in-out;
     transform-style: preserve-3d;
     transform: rotateY(-60deg);
+}
+
+.slds-modal__header:focus-visible{
+    outline: 0 !important;
+}
+
+.slds-modal__content:focus-visible{
+    outline: 0 !important;
 }
 
 .resource-header{
@@ -21,25 +28,41 @@ table tr td {
     color: #7abb4a !important;
     font-size: 16px !important;
     font-weight: 700 !important;
+    font-family: 'Proxima Nova';
+}
+
+.message-header{
+    border-bottom: 0 !important;
+    font-family: 'Proxima Nova';
 }
 
 .header-preview{
     background: var(--white-color) !important;
     border: 1px solid var(--grey-color) !important;
+    font-family: 'Proxima Nova';
 }
 
 .slds-modal__header{
     border-bottom: 0 !important;
     border-top-right-radius: 20px !important;
     border-top-left-radius: 20px !important;
+    font-family: 'Proxima Nova';
 }
 
 .slds-modal__content{
     border-bottom-right-radius: 20px !important;
     border-bottom-left-radius: 20px !important;
     box-shadow: none !important;
-    border: 1px solid var(--grey-color) !important;
+    /* border: 1px solid var(--grey-color) !important; */
     border-top: 0 !important;
+    font-family: 'Proxima Nova';
+}
+
+h2{
+    font-family: 'Proxima Nova Bold' !important;
+}
+
+.overflow-none{
     overflow: visible !important;
     overflow-y: visible !important;
 }
@@ -115,10 +138,15 @@ button.close {
 }
 
 .slds-text-heading_medium{
-    font-size: 32px;
+    font-size: 25px;
     line-height: 39px;
     font-weight: 700;
     color: var(--mburse-color);
+}
+
+.header-v1{
+    font-weight: 700;
+    font-size: 16px;
 }
 
 sub {
@@ -138,12 +166,19 @@ sub {
 .modal_header{
     border-top-right-radius: 20px !important;
     border-top-left-radius: 20px !important;
+    font-family: 'Proxima Nova';
 }
 
 .modal_info .slds-modal__container{
     width: 50% !important;
     max-width: 27.0625rem !important;
     min-width: 24rem !important;
+    border: 0 !important;
+    font-family: 'Proxima Nova';
+}
+
+.slds-modal__container:focus-visible{
+    outline: 0 !important;
 }
 
 .slds-heading_small{
@@ -155,4 +190,5 @@ sub {
 .slds-modal-figma_small{
     width: 628px !important;
 }
+
 

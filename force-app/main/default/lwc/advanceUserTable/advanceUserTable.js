@@ -560,7 +560,7 @@ export default class AdvanceUserTable extends LightningElement {
   }
 
   calculateDistance(){
-    this.template.querySelector('c-distance-query').getDistance();
+   // this.template.querySelector('c-distance-query').getDistance();
   }
 
   validateField(event){
@@ -1223,6 +1223,7 @@ export default class AdvanceUserTable extends LightningElement {
  
 
   renderedCallback() {
+    console.log('inside picker')
     let pageBlock
     if(this.datepickerInitialized){
       return;
@@ -1252,7 +1253,7 @@ export default class AdvanceUserTable extends LightningElement {
       loadStyle(this, datepicker + '/datepicker.css')
     ])
       .then(() => {
-        this.datepickerInitialized = true;
+       // this.datepickerInitialized = true;
         this.intializeTimepicker();
         this.intializeDatepickup();
         console.log("script loaded")

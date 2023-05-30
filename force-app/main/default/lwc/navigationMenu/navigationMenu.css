@@ -1,9 +1,27 @@
+*{
+    font-family: 'Proxima Nova' !important;
+}
+
 .fa,
 .fas,
 .fa-solid,
 .fa-regular {
     font-family: "Font Awesome 6 Free" !important
 }
+
+@keyframes security {
+    0% {
+        opacity: 1;
+        -webkit-transform: scaleX(1);
+        transform: scaleX(1);
+    }
+    100% {
+        opacity: 0;
+        -webkit-transform: scaleX(0.02);
+        transform: scaleX(0.02);
+    }
+}
+
 
 nav{
     transition: .2s;
@@ -18,9 +36,9 @@ nav{
         margin-top: 30px !important;
     }
 
-    .sidebar dd {
+    /* .sidebar dd {
         height: 60px !important;
-    }
+    } */
 }
 
 /* Smartphones (landscape) ----------- */
@@ -31,9 +49,9 @@ nav{
         margin-top: 30px !important;
     }
 
-    .sidebar dd {
+    /* .sidebar dd {
         height: 60px !important;
-    }
+    } */
 }
 
 /* Smartphones (portrait) ----------- */
@@ -44,9 +62,9 @@ nav{
         margin-top: 30px !important;
     }
 
-    .sidebar dd {
+    /* .sidebar dd {
         height: 60px !important;
-    }
+    } */
 }
 
 /* Tablets, iPads (portrait and landscape) ----------- */
@@ -57,9 +75,9 @@ nav{
         margin-top: 30px !important;
     }
 
-    .sidebar dd {
+    /* .sidebar dd {
         height: 60px !important;
-    }
+    } */
 }
 
 /* Tablets, iPads (landscape) ----------- */
@@ -70,9 +88,9 @@ nav{
         margin-top: 0px !important;
     }
 
-    .sidebar dd {
+    /* .sidebar dd {
         height: 40px !important;
-    }
+    } */
 }
 
 /* Tablets, iPads (portrait) ----------- */
@@ -83,22 +101,22 @@ nav{
         margin-top: 30px !important;
     }
 
-    .sidebar dd {
+    /* .sidebar dd {
         height: 60px !important;
-    }
+    } */
 }
 
 /* Desktops and laptops ----------- */
-@media only screen and (min-width : 1224px) and (max-width: 1336) {
+@media only screen and (min-width : 1224px) and (max-width: 1366) {
 
     /* Styles */
     .sidebar .text-head {
         margin-top: 30px !important;
     }
 
-    .sidebar dd {
-        height: 60px !important;
-    }
+    /* .sidebar dd {
+        height: 42px !important;
+    } */
 }
 
 @media only screen and (min-width : 1400px) and (max-width: 1880) {
@@ -108,9 +126,9 @@ nav{
         margin-top: 30px !important;
     }
 
-    .sidebar dd {
+    /* .sidebar dd {
         height: 60px !important;
-    }
+    } */
 }
 
 /* Large screens ----------- */
@@ -121,15 +139,22 @@ nav{
         margin-top: 30px !important;
     }
 
-    .sidebar dd {
+    /* .sidebar dd {
         height: 60px !important;
-    }
+    } */
 }
 
-/* iPhone 4 ----------- */
-@media only screen and (-webkit-min-device-pixel-ratio : 1.5),
-only screen and (min-device-pixel-ratio : 1.5) {
+
+@media only screen 
+and (device-width: 1280px) and (device-height: 646px){ 
     /* Styles */
+    .sidebar .text-head {
+        margin-top: 4px !important;
+    }
+
+    /* .sidebar dd {
+        height: 40px !important;
+    } */
 }
 
 
@@ -193,7 +218,7 @@ body {
     top: 0;
     left: 0;
     height: 100%;
-    width: 245px;
+    width: 241px;
     padding: 10px 0px;
     /* display: grid;
     grid-template-rows: 1fr auto; */
@@ -260,6 +285,7 @@ body {
     font-weight: 500;
     white-space: nowrap;
     opacity: 1;
+    padding: 0 0 0 10px;
     margin-top: 10px;
 }
 
@@ -311,6 +337,7 @@ body {
     display: none;
 }
 
+
 .icon img {
     width: 26px !important;
     height: 26px !important;
@@ -347,7 +374,10 @@ header .image-text .name {
 
 header .image-text .profession {
     font-size: 15px;
-    display: block;
+    display: inline-block;
+    word-wrap: break-word;
+    width: 160px;
+    white-space: pre-line;
     color: #7F8690;
 }
 
@@ -466,11 +496,22 @@ body.dark .sidebar dd a:hover .text {
 }
 
 .sidebar .menu-bar {
-    /* height: calc(100% - 120px);
-    overflow-y: auto; */
+    height: calc(100% - 120px);
+    overflow-y: auto;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+}
+
+/* .tooltipWrapper{
+    position: absolute;
+    visibility: hidden;
+    opacity: 0;
+    /* left: 82px; 
+} */
+
+.sidebar .menu-bar.revert{
+    overflow-y: visible;
 }
 
 .menu-links {
@@ -634,7 +675,7 @@ body.dark .home .text {
   }
 
   
-.tooltipText{
+  .tooltipText{
     position:relative;
   }
   
@@ -654,9 +695,9 @@ body.dark .home .text {
     justify-content: center;
   }
 
-  .sidebar a  .tooltipValue{
+  .tooltipValue{
     display: inline-block;
-    visibility: hidden;
+    left: 80px;
     position:absolute; 
     z-index:100;
     /* background-color:#F6F6F6;
@@ -668,8 +709,8 @@ body.dark .home .text {
     border-top-right-radius: 10px;
     padding:10px 18px;
     top: 2em; */
-    left: 70px;
-    opacity: 0;
+    /* left: 70px; */
+    /* opacity: 0; */
     /* top: auto;
     left: 34px; */
     /* white-space: pre-wrap; */
@@ -680,8 +721,23 @@ body.dark .home .text {
     /* identical to box height, or 20px */
     /* color: #404B5A; */
   }
-  
-  .sidebar.close a:hover .tooltipValue{
-    visibility: visible !important;
-    opacity: 1 !important;
+
+  .hidden{
+    visibility: hidden;
+    opacity: 0;
   }
+
+  .tooltipVisible{
+    visibility: visible;
+    opacity: 1;
+  }
+
+ .tooltipText:focus-visible {
+    outline-offset: none !important;
+    outline: none !important;
+}
+  
+
+  /* .sidebar .menu-bar a:hover{
+    overflow-y: visible;
+  } */

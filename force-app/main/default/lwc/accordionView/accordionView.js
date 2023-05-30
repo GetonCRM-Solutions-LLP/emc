@@ -2,6 +2,7 @@
 /* eslint-disable no-useless-escape */
 import { LightningElement, api, track } from "lwc";
 import resourceImage from '@salesforce/resourceUrl/mBurseCss';
+import mBurseCss from '@salesforce/resourceUrl/LwcDesignImage';
 import getAllReimbursements from "@salesforce/apex/DriverDashboardLWCController.getAllReimbursements";
 import getMileages  from '@salesforce/apex/DriverDashboardLWCController.getMileages';
 import getMileagesData from '@salesforce/apex/DriverDashboardLWCController.getMileagesData';
@@ -22,9 +23,14 @@ export default class AccordionView extends LightningElement {
   @api hrClass;
   @api  isDownloadAll;
   @api showArrowIcon;
+  systemLoader = mBurseCss + '/Resources/PNG/Green/6.png';
+  loadingGif = resourceImage + '/mburse/assets/mBurse-Icons/Bar-style.gif';
   defaultYear = '';
+  isReimbursementView = false;
+  isRecord = false;
   isScrollable = false;
-  listVisible = false;
+  listOfRecord;
+ @track listVisible = false;
   isRowDn = true;
   sortable =  false;
   name;
@@ -88,49 +94,49 @@ export default class AccordionView extends LightningElement {
   dynamicBinding(data, keyFields) {
     data.forEach((element) => {
       let model = [];
-      for (const key in element) {
-        if (Object.prototype.hasOwnProperty.call(element, key)) {
-          let singleValue = {};
-          if (keyFields.includes(key) !== false) {
-            if (this.contactInfo.Biweek_Reimbursement__c) {
-              singleValue.id = element.biweekId;
-              singleValue.eDate = element.endDate;
-              singleValue.sDate = element.startDate ;
-            }
-            singleValue.key = key;
-            singleValue.value = (element[key] === "null" || element[key] === null) ? "" : (key === "variableRate" || key === "varibleAmount" || key === 'fixed1' || key === 'fixed2' || 
-            key === 'fixed3' || 
-            key === 'totalFixedAmount' || key === "totalReimbursements") ? element[key].replace(/\$/g, "").replace(/\s/g, "") : element[key];
-            singleValue.icon = (!this.isTandA) ? (key === "month" || key === "startDate") ? true : false : false;
-            singleValue.bold = (key === "totalReimbursements" || key === "totalReim") ? true : false;
-            singleValue.twoDecimal = (key === "mileage" ) ? true : false;
-            singleValue.isDate = (key === "startDate" || key === "endDate") ? true : false;
-            singleValue.isfourDecimalCurrency = (key === 'variableRate' || key === 'VariableRate') ? true : false;
-            singleValue.istwoDecimalCurrency = (key === "fuel" ||
-                  key === "fixedAmount" ||
-                  key === "totalReimbursements" ||
-                  key === "varibleAmount" ||
-                  key === "totalReim" ||
-                  key === "variable") ? true : false;
-             singleValue.hasLeadingZero = ((key === "fuel" ||
-                key === "fixedAmount" ||
-                key === "totalReimbursements" ||
-                key === "variableRate" ||
-                key === "varibleAmount" ||
-                key === "totalReim" ||
-                key === "variable" || key === "mileage" ||
-                key === "fixed1" || key === "fixed2" ||
-                key === "fixed3") && ((element[key] !== "null" || element[key] !== null) && (singleValue.value !== '0.00') && (singleValue.value !== '0.0000')) && (/^0+/).test(singleValue.value) === true) ? (singleValue.value).replace(/^0+/, '') : null;
-            singleValue.isDate = (key === "startDate" || key === "endDate") ? true : false;
-            model.push(singleValue);
+      Object.keys(element).forEach(key => {
+        // let key = entry[0];
+        // let value = entry[1];
+        let singleValue = {};
+        if (keyFields.includes(key) !== false) {
+          if (this.contactInfo.Reimbursement_Frequency__c === 'Bi-Weekly Reimbursement' && this.contactInfo.Reimbursement_Type__c === 'Mileage Rate') {
+            singleValue.id = element.biweekId;
+            singleValue.eDate = element.endDate;
+            singleValue.sDate = element.startDate;
           }
+          singleValue.key = key;
+          singleValue.value = (element[key] === "null" || element[key] === null) ? "" : (key === "variableRate" || key === "varibleAmount" || key === 'fixed1' || key === 'fixed2' ||
+            key === 'fixed3' ||
+            key === 'totalFixedAmount' || key === "totalReimbursements") ? element[key].replace(/\$/g, "").replace(/\s/g, "") : element[key];
+          singleValue.icon = (!this.isTandA) ? (key === "month" || key === "startDate") ? true : false : false;
+          singleValue.bold = (key === "totalReimbursements" || key === "totalReim") ? true : false;
+          singleValue.twoDecimal = (key === "mileage") ? true : false;
+          singleValue.isDate = (key === "startDate" || key === "endDate") ? true : false;
+          singleValue.isfourDecimalCurrency = (key === 'variableRate' || key === 'VariableRate') ? true : false;
+          singleValue.istwoDecimalCurrency = (key === "fuel" ||
+            key === "fixedAmount" ||
+            key === "totalReimbursements" ||
+            key === "varibleAmount" ||
+            key === "totalReim" ||
+            key === "variable") ? true : false;
+          singleValue.hasLeadingZero = ((key === "fuel" ||
+            key === "fixedAmount" ||
+            key === "totalReimbursements" ||
+            key === "variableRate" ||
+            key === "varibleAmount" ||
+            key === "totalReim" ||
+            key === "variable" || key === "mileage" ||
+            key === "fixed1" || key === "fixed2" ||
+            key === "fixed3") && ((element[key] !== "null" || element[key] !== null) && (singleValue.value !== '0.00') && (singleValue.value !== '0.0000')) && (/^0+/).test(singleValue.value) === true) ? (singleValue.value).replace(/^0+/, '') : null;
+          singleValue.isDate = (key === "startDate" || key === "endDate") ? true : false;
+          model.push(singleValue);
         }
-      }
-
-      if(!this.isTandA){
-        if (this.contactInfo.Biweek_Reimbursement__c) {
+        //use key and value here
+      });
+      if (!this.isTandA) {
+        if (this.contactInfo.Reimbursement_Frequency__c === 'Bi-Weekly Reimbursement' && this.contactInfo.Reimbursement_Type__c === 'Mileage Rate') {
           element.id = element.biweekId;
-        }else{
+        } else {
           element.id = element.employeeReimbursementId;
         }
       }
@@ -150,7 +156,9 @@ export default class AccordionView extends LightningElement {
   }
 
   getBiweekReimbursement(viewList, yearTo) {
+    this.isRecord = false;
     if (viewList) {
+      this.isReimbursementView = true;
       // this.dispatchEvent(
       //   new CustomEvent("show", {
       //     detail: "isShow"
@@ -208,11 +216,13 @@ export default class AccordionView extends LightningElement {
         .then((result) => {
           let resultBiweek = this.proxyToObject(result);
           this.accordionList = this.sortByDateDesc(resultBiweek, "startDate");
-          this.listVisible = this.accordionList.length > 0 ? true : false;
+        //  this.listVisible = this.accordionList.length > 0 ? true : false;
           this.isDownloadAll = this.accordionList.length > 0 ? true : false;
           this.accordionListColumn = this.column;
           this.accordionKeyFields = this.keyFields;
           this.dynamicBinding(this.accordionList, this.accordionKeyFields);
+          this.listOfRecord = this.accordionList.length > 0 ? true : false;
+          this.isRecord = true;
           const accordionItem =
           this.template.querySelectorAll(".accordion-item");
           accordionItem.forEach((el) =>
@@ -251,6 +261,7 @@ export default class AccordionView extends LightningElement {
   }
 
   getReimbursementFromApex(viewList, yearTo) {
+    this.isRecord = false;
     if (viewList) {
       // this.dispatchEvent(
       //   new CustomEvent("show", {
@@ -258,8 +269,9 @@ export default class AccordionView extends LightningElement {
       //   })
       // );
       this.defaultYear = yearTo;
-      if (viewList.Bi_Week_Fixed_Amount__c) {
-        /* Bi-weekly fixed and Monthly variable */
+      this.isReimbursementView = true;
+      if (viewList.Reimbursement_Frequency__c === 'Bi-Weekly Reimbursement' && viewList.Reimbursement_Type__c === 'FAVR') {
+        /* Bi-weekly fixed and Monthly variable */  // This is for Bi_Week_Fixed_Amount__c
         this._RkeyFields = [
           "month",
           "fuel",
@@ -321,7 +333,7 @@ export default class AccordionView extends LightningElement {
 
         this.keyFields = this._RkeyFields;
         this.column = this._Rcolumn;
-      } else if (viewList.Monthly_Reimbursement__c) {
+      } else if (viewList.Reimbursement_Frequency__c === 'Monthly Reimbursement' && viewList.Reimbursement_Type__c === 'FAVR' ) { //This is for Monthly_Reimbursement__c
         /* Monthly fixed and variable */
         this._RkeyFields = [
           "month",
@@ -372,7 +384,7 @@ export default class AccordionView extends LightningElement {
 
         this.keyFields = this._RkeyFields;
         this.column = this._Rcolumn;
-      } else {
+      } else if (viewList.Reimbursement_Frequency__c === 'Monthly Reimbursement' && viewList.Reimbursement_Type__c === 'Mileage Rate' ) {
         /* Monthly mileage rate */
         this._RkeyFields = [
           "month",
@@ -411,6 +423,9 @@ export default class AccordionView extends LightningElement {
 
         this.keyFields = this._RkeyFields;
         this.column = this._Rcolumn;
+      }else{
+        this.isReimbursementView = false;
+        console.log("inside list")
       }
     }
 
@@ -423,11 +438,12 @@ export default class AccordionView extends LightningElement {
         .then((result) => {
           let reimbursementList = this.proxyToObject(result[0]);
           this.accordionList = this.sortByMonthDesc(reimbursementList, "month");
-          this.listVisible = this.accordionList.length > 0 ? true : false;
           this.isDownloadAll = this.accordionList.length > 0 ? true : false;
           this.accordionListColumn = this.column;
           this.accordionKeyFields = this.keyFields;
           this.dynamicBinding(this.accordionList, this.accordionKeyFields);
+          this.listOfRecord = this.accordionList.length > 0 ? true : false;
+          this.isRecord = true;
           const accordionItem =
             this.template.querySelectorAll(".accordion-item");
             accordionItem.forEach((el) =>
@@ -469,12 +485,14 @@ export default class AccordionView extends LightningElement {
   }
 
   getBiweekReim(viewList, yearTo) {
+    this.isRecord = false;
     this.defaultYear = yearTo;
-    this.dispatchEvent(
-      new CustomEvent("show", {
-        detail: "isShow"
-      })
-    );
+    this.isReimbursementView = true;
+    // this.dispatchEvent(
+    //   new CustomEvent("show", {
+    //     detail: "isShow"
+    //   })
+    // );
     if (viewList) {
       this._RkeyFields = [
         "startDate",
@@ -528,11 +546,13 @@ export default class AccordionView extends LightningElement {
         .then((result) => {
           let resultBiweek = this.proxyToObject(result);
           this.accordionList = this.sortByDateDesc(resultBiweek, "startDate");
-          this.listVisible = this.accordionList.length > 0 ? true : false;
+          //this.listVisible = this.accordionList.length > 0 ? true : false;
           this.isDownloadAll = this.accordionList.length > 0 ? true : false;
           this.accordionListColumn = this.column;
           this.accordionKeyFields = this.keyFields;
           this.dynamicBinding(this.accordionList, this.accordionKeyFields);
+          this.listOfRecord = this.accordionList.length > 0 ? true : false;
+          this.isRecord = true;
           this.dispatchEvent(
             new CustomEvent("show", {
               detail: "isHide"
@@ -547,14 +567,16 @@ export default class AccordionView extends LightningElement {
   }
 
   getReimbursement(viewList, yearTo) {
+    this.isRecord = false;
     this.defaultYear = yearTo;
-    this.dispatchEvent(
-      new CustomEvent("show", {
-        detail: "isShow"
-      })
-    );
+    // this.dispatchEvent(
+    //   new CustomEvent("show", {
+    //     detail: "isShow"
+    //   })
+    // );
     if (viewList) {
-      if (viewList.Bi_Week_Fixed_Amount__c) {
+      this.isReimbursementView = true;
+      if (viewList.Reimbursement_Frequency__c === 'Bi-Weekly Reimbursement' && viewList.Reimbursement_Type__c === 'FAVR') {
         /* Bi-weekly fixed and Monthly variable */
         this._RkeyFields = [
           "month",
@@ -617,7 +639,7 @@ export default class AccordionView extends LightningElement {
 
         this.keyFields = this._RkeyFields;
         this.column = this._Rcolumn;
-      } else if (viewList.Monthly_Reimbursement__c) {
+      } else if (viewList.Reimbursement_Frequency__c === 'Monthly Reimbursement' && viewList.Reimbursement_Type__c === 'FAVR') {
         /* Monthly fixed and variable */
         this._RkeyFields = [
           "month",
@@ -668,7 +690,7 @@ export default class AccordionView extends LightningElement {
 
         this.keyFields = this._RkeyFields;
         this.column = this._Rcolumn;
-      } else {
+      } else if(viewList.Reimbursement_Frequency__c === 'Monthly Reimbursement' && viewList.Reimbursement_Type__c === 'Mileage Rate'){
         /* Monthly mileage rate */
         this._RkeyFields = [
           "month",
@@ -707,6 +729,8 @@ export default class AccordionView extends LightningElement {
 
         this.keyFields = this._RkeyFields;
         this.column = this._Rcolumn;
+      }else{
+        this.isReimbursementView = false;
       }
     }
 
@@ -719,11 +743,12 @@ export default class AccordionView extends LightningElement {
         .then((result) => {
           let reimbursementList = this.proxyToObject(result[0]);
           this.accordionList = this.sortByMonthDesc(reimbursementList, "month");
-          this.listVisible = this.accordionList.length > 0 ? true : false;
           this.isDownloadAll = this.accordionList.length > 0 ? true : false;
           this.accordionListColumn = this.column;
           this.accordionKeyFields = this.keyFields;
           this.dynamicBinding(this.accordionList, this.accordionKeyFields);
+          this.listOfRecord = this.accordionList.length > 0 ? true : false;
+          this.isRecord = true;
           this.dispatchEvent(
             new CustomEvent("show", {
               detail: "isHide"
@@ -738,12 +763,14 @@ export default class AccordionView extends LightningElement {
   }
 
   getTAndA(viewList, yearTo){
+    this.isRecord = false;
     this.defaultYear = yearTo;
-    this.dispatchEvent(
-      new CustomEvent("show", {
-        detail: "isShow"
-      })
-    );
+    this.isReimbursementView = true;
+    // this.dispatchEvent(
+    //   new CustomEvent("show", {
+    //     detail: "isShow"
+    //   })
+    // );
     if (viewList) {
       this._RkeyFields = [
         "startDate",
@@ -798,11 +825,12 @@ export default class AccordionView extends LightningElement {
           console.log("getTA ----", result);
           let resultTA= this.proxyToObject(result);
           this.accordionList = this.sortByDateDesc(resultTA, "startDate");
-          this.listVisible = this.accordionList.length > 0 ? true : false;
           this.isDownloadAll = this.accordionList.length > 0 ? true : false;
           this.accordionListColumn = this.column;
           this.accordionKeyFields = this.keyFields;
           this.dynamicBinding(this.accordionList, this.accordionKeyFields);
+          this.listOfRecord = this.accordionList.length > 0 ? true : false;
+          this.isRecord = true;
           this.dispatchEvent(
             new CustomEvent("show", {
               detail: "isHide"
@@ -816,12 +844,14 @@ export default class AccordionView extends LightningElement {
   }
 
   getTimeAndAttendance(viewList, yearTo) {
+    this.isRecord = false;
     if (viewList) {
-      this.dispatchEvent(
-        new CustomEvent("show", {
-          detail: "isShow"
-        })
-      );
+      this.isReimbursementView = true;
+      // this.dispatchEvent(
+      //   new CustomEvent("show", {
+      //     detail: "isShow"
+      //   })
+      // );
       this._RkeyFields = [
         "startDate",
         "endDate",
@@ -875,11 +905,12 @@ export default class AccordionView extends LightningElement {
           console.log("getTA ----", result);
           let resultTA= this.proxyToObject(result);
           this.accordionList = this.sortByDateDesc(resultTA, "startDate");
-          this.listVisible = this.accordionList.length > 0 ? true : false;
           this.isDownloadAll = this.accordionList.length > 0 ? true : false;
           this.accordionListColumn = this.column;
           this.accordionKeyFields = this.keyFields;
           this.dynamicBinding(this.accordionList, this.accordionKeyFields);
+          this.listOfRecord = this.accordionList.length > 0 ? true : false;
+          this.isRecord = true;
          const accordionItem =
             this.template.querySelectorAll(".accordion-item");
           accordionItem.forEach((el) =>
@@ -919,7 +950,10 @@ export default class AccordionView extends LightningElement {
   }
 
   fetchReimbursement(event) {
+    console.log("this.showArrowIcon", this.showArrowIcon)
+    if(this.showArrowIcon){
       this.accordionList = [];
+      this.listOfRecord = this.accordionList.length > 0 ? true : false;
       let lastYear = event ? event.currentTarget.dataset.year : "";
       if(this.isTandA){
         this.getTAndA(
@@ -927,12 +961,13 @@ export default class AccordionView extends LightningElement {
           lastYear
         );
       }else{
-          if (!this.contactInfo.Biweek_Reimbursement__c) {
-            this.getReimbursement(this.contactInfo, lastYear);
-          } else {
+          if (this.contactInfo.Reimbursement_Frequency__c === 'Bi-Weekly Reimbursement' && this.contactInfo.Reimbursement_Type__c === 'Mileage Rate') {
             this.getBiweekReim(this.contactInfo, lastYear);
+          } else {
+            this.getReimbursement(this.contactInfo, lastYear);
           }
       }
+    }
   }
 
   escapeSpecialChars(str){
@@ -943,7 +978,6 @@ export default class AccordionView extends LightningElement {
 }
 
   connectedCallback() {
-    console.log("this.contactInfo.Biweek_Reimbursement__c", this.contactInfo.Biweek_Reimbursement__c, this.accordionData, JSON.stringify(this.accordionData))
     this.name = this.contactInfo;
     if(this.isTandA){
       if(this.accordionData){
@@ -955,20 +989,22 @@ export default class AccordionView extends LightningElement {
         }
       }
     }else{
-      if (!this.contactInfo.Biweek_Reimbursement__c) {
+      if (this.contactInfo.Reimbursement_Frequency__c === 'Bi-Weekly Reimbursement' && this.contactInfo.Reimbursement_Type__c === 'Mileage Rate') { // !this.contactInfo.Biweek_Reimbursement__c
+          this.isPayperiod = (this.contactInfo.Reimbursement_Frequency__c === 'Bi-Weekly Reimbursement' && this.contactInfo.Reimbursement_Type__c === 'Mileage Rate') ? true : false //this.contactInfo.Biweek_Reimbursement__c;
+          console.log("inside biweek done")
         if(this.accordionData){
           if(this.accordionData[0].yearName){
-            this.getReimbursementFromApex(
+            this.getBiweekReimbursement(
               this.contactInfo,
               this.accordionData[0].yearName
             );
           }
         }
       } else {
-        this.isPayperiod = this.contactInfo.Biweek_Reimbursement__c;
+        console.log("inside biweek")
         if(this.accordionData){
           if(this.accordionData[0].yearName){
-            this.getBiweekReimbursement(
+            this.getReimbursementFromApex(
               this.contactInfo,
               this.accordionData[0].yearName
             );
@@ -1033,7 +1069,7 @@ export default class AccordionView extends LightningElement {
         console.log("error", error)
       })
     }else{
-      if(this.contactInfo.Biweek_Reimbursement__c){
+      if(this.contactInfo.Reimbursement_Frequency__c === 'Bi-Weekly Reimbursement' && this.contactInfo.Reimbursement_Type__c === 'Mileage Rate'){
         let exportReimDetailList = [];
         const downloadList = [...this.accordionList]; // does not mutuate original array
         downloadList.sort(this.compareArray);
@@ -1104,21 +1140,21 @@ export default class AccordionView extends LightningElement {
   }
 
   getTrips(event) {
-    if (!this.contactInfo.Biweek_Reimbursement__c) {
+    if (this.contactInfo.Reimbursement_Frequency__c === 'Bi-Weekly Reimbursement' && this.contactInfo.Reimbursement_Type__c === 'Mileage Rate') {
+      let tripList = {
+        boolean : true,
+        trip: event.detail
+      }
+      //console.log('from table---', JSON.stringify(event.detail), this.contactInfo.Biweek_Reimbursement__c)
+      events(this, tripList)
+    }else{
       let tripDetail = {
-        boolean: this.contactInfo.Biweek_Reimbursement__c,
+        boolean: false,
         month: event.detail,
         year: this.defaultYear
       }
       //console.log('from table---', event.detail, this.defaultYear, tripDetail)
       events(this, tripDetail)
-    }else{
-      let tripList = {
-        boolean : this.contactInfo.Biweek_Reimbursement__c,
-        trip: event.detail
-      }
-      console.log('from table---', JSON.stringify(event.detail), this.contactInfo.Biweek_Reimbursement__c)
-      events(this, tripList)
     }
   }
 
@@ -1180,40 +1216,7 @@ export default class AccordionView extends LightningElement {
           }
         })
     }else{
-      if(!this.contactInfo.Biweek_Reimbursement__c){
-        _month = element.month;
-        getMileages({
-          clickedMonth: _month,
-          year: this.defaultYear,
-          contactId: this.contactId
-        }).then(result=>{
-          console.log("getMileages excel----", result);
-          let escapeChar = this.escapeSpecialChars(result[0]);
-          let mileageList = JSON.parse(escapeChar);
-          console.log("mileageList excel----", result);
-          if(mileageList.length > 0){
-            let excelMileage = [];
-            let excelFileName = this.contactInfo.Name + '\'s Mileage Report ' + this.dateTime(new Date());
-            let excelSheetName = 'Mileage Report';
-            excelMileage.push(["Contact Email", "Tracking Style", "Day Of Week", "Trip Date", "Start Time", "End Time", "Trip Origin", "Trip Destination", "Mileage", "Status", "Date Submitted", "Date Approved", "Maint/Tires", "Fuel Rate", "Mi Rate", "Amount", "Total Time", "Notes", "Tags"])
-            mileageList.forEach((item)=>{
-              excelMileage.push([item.emailaddress, item.tracingstyle, item.dayofweek, item.tripdate, item.starttime, item.endtime, item.originname, item.destinationname, item.mileage, item.status, item.submitteddate, item.approveddate, item.maintTyre, item.fuelVariableRate, item.variablerate, item.variableamount, item.totaltime, item.notes, item.tag])
-            })
-            this.excelToExport(excelMileage, excelFileName, excelSheetName);
-          }else{
-            toastEvents(this, 'No mileage')
-          }
-          console.log("getMileages excel----", result);
-        }).catch(error => {
-          if (Array.isArray(error.body)) {
-            message = error.body.map((e) => e.message).join(", ");
-          } else if (typeof error.body.message === "string") {
-            message = error.body.message;
-          }
-
-          console.log("Error getMileages", message)
-        })
-      }else{
+      if(this.contactInfo.Reimbursement_Frequency__c === 'Bi-Weekly Reimbursement' && this.contactInfo.Reimbursement_Type__c === 'Mileage Rate'){
         _biweekId = element.biweekId
         getBiweekMileages({
             biweekId: _biweekId
@@ -1245,6 +1248,40 @@ export default class AccordionView extends LightningElement {
           }
 
           console.log("Error getBiweekMileages", message)
+        })
+      }
+     else{
+        _month = element.month;
+        getMileages({
+          clickedMonth: _month,
+          year: this.defaultYear,
+          contactId: this.contactId
+        }).then(result=>{
+          console.log("getMileages excel----", result);
+          let escapeChar = this.escapeSpecialChars(result[0]);
+          let mileageList = JSON.parse(escapeChar);
+          console.log("mileageList excel----", result);
+          if(mileageList.length > 0){
+            let excelMileage = [];
+            let excelFileName = this.contactInfo.Name + '\'s Mileage Report ' + this.dateTime(new Date());
+            let excelSheetName = 'Mileage Report';
+            excelMileage.push(["Contact Email", "Tracking Style", "Day Of Week", "Trip Date", "Start Time", "End Time", "Trip Origin", "Trip Destination", "Mileage", "Status", "Date Submitted", "Date Approved", "Maint/Tires", "Fuel Rate", "Mi Rate", "Amount", "Total Time", "Notes", "Tags"])
+            mileageList.forEach((item)=>{
+              excelMileage.push([item.emailaddress, item.tracingstyle, item.dayofweek, item.tripdate, item.starttime, item.endtime, item.originname, item.destinationname, item.mileage, item.status, item.submitteddate, item.approveddate, item.maintTyre, item.fuelVariableRate, item.variablerate, item.variableamount, item.totaltime, item.notes, item.tag])
+            })
+            this.excelToExport(excelMileage, excelFileName, excelSheetName);
+          }else{
+            toastEvents(this, 'No mileage')
+          }
+          console.log("getMileages excel----", result);
+        }).catch(error => {
+          if (Array.isArray(error.body)) {
+            message = error.body.map((e) => e.message).join(", ");
+          } else if (typeof error.body.message === "string") {
+            message = error.body.message;
+          }
+
+          console.log("Error getMileages", message)
         })
       }
     }

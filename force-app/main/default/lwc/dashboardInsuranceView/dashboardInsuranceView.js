@@ -15,7 +15,6 @@ export default class DashboardInsuranceView extends LightningElement {
     @api  accountId;
     information;
     renderInitialized = false;
-    insuranceExpired = false;
     exclaimIcon = resourceImage + '/mburse/assets/mBurse-Icons/exclaim.png';
     
     // /* decorator used to pass list from parent component */
@@ -57,16 +56,9 @@ export default class DashboardInsuranceView extends LightningElement {
             contactId: this.contactId
           })
           .then((data) => {
-            var driverDetailList, expirationDate, Today;
             if (data) {
               console.log("getContactDetail",data);
               this.information = data;
-              driverDetailList = this.proxyToObject(data);
-              Today = new Date();
-              expirationDate = driverDetailList[0].insuranceExpirationDate;
-              //(new Date(expirationDate) <= Today ? true : false)
-              this.insuranceExpired = (expirationDate == null) ? false : (new Date(expirationDate) <= Today ? true : false);
-              console.log("insurance expiration", this.insuranceExpired, expirationDate, typeof expirationDate)
             }
           })
           .catch((error) => {

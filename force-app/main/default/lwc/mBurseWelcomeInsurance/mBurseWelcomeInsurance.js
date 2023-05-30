@@ -41,6 +41,27 @@ export default class MBurseWelcomeInsurance extends LightningElement {
         this.insuranceDeclaration = true;
         this.isPlay = false;
     }
+
+    removePreview(){
+        var listToContact, contactData
+        if (this.driverDetails) {
+            listToContact = this.driverDetails;
+            contactData = this.proxyToObject(listToContact);
+            contactData[0].insuranceDialogueRemove = true;
+            updateContactDetail({
+                contactData: JSON.stringify(contactData),
+                driverPacket: false
+            })
+            .then(() => {
+                // eslint-disable-next-line @lwc/lwc/no-api-reassignments
+                this.welcomeInsurance = false;
+                // eslint-disable-next-line @lwc/lwc/no-api-reassignments
+                this.insuranceDeclaration = true;
+                this.isPlay = false;
+            })
+        }
+    }
+
     proxyToObject(e) {
         return JSON.parse(e)
     }
@@ -138,9 +159,17 @@ export default class MBurseWelcomeInsurance extends LightningElement {
         nextSkipEvents(this, this.driverDetails)
     }
     backToPage() {
-        // let delayInMilliseconds = 100;
-        // eslint-disable-next-line @lwc/lwc/no-api-reassignments
-        this.welcomeInsurance = true;
+        var  listFrom, contactData;
+        if (this.driverDetails) {
+            listFrom = this.driverDetails
+            contactData = this.proxyToObject(listFrom);
+            // eslint-disable-next-line @lwc/lwc/no-api-reassignments
+            this.welcomeInsurance = (!contactData[0].insuranceDialogueRemove) ? true : false;
+        }
+        
+        if(!this.welcomeInsurance){
+            this.backToPrevious()
+        } 
         this.isPlay = false;
         // eslint-disable-next-line @lwc/lwc/no-api-reassignments
         this.insuranceDeclaration = false;

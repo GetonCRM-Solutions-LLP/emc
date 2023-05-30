@@ -48,6 +48,7 @@ export default class UserProfileModal extends LightningElement {
     @api hide() {
         this.showModal = false;
     }
+    
     handleDialogClose() {
         //Let parent know that dialog is closed (mainly by that cross button) so it can set proper variables if needed
         const closedialog = new CustomEvent('closedialog');

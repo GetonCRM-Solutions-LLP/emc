@@ -1,26 +1,20 @@
 <template>
     <div onclick={insideDivElement}>
-        <!-- <label
-            class="slds-form-element__label"
-            for="combobox-id-2"
-            id="combobox-label-id-130"
-        >
-            <abbr
-                if:true={required}
-                class="slds-required"
-                title="required"
-            >* </abbr>
-            {label}
-        </label> -->
         <div class="slds-form-element__control">
             <div class="slds-combobox_container">
-                <div class={classes}>
+                <div class={classes}  tabindex="0" onblur={handleBlur}>
                     <div class="slds-combobox__form-element slds-input-has-icon slds-input-has-icon_right" role="none">
                         <div class="slds-form-element">
                             <div class="slds-form-element__control">
                                 <div class={mainClass} onclick={handleFocus}>
-                                    <span class="selection__rendered" id="single-action-container" role="textbox"
+                                    <template lwc:if={selectedValue}>
+                                        <span class="selection__rendered" id="single-action-container" role="textbox"
                                         aria-readonly="true">{selectedValue}</span>
+                                    </template>
+                                    <template lwc:else>
+                                        <span class="selection__rendered" role="textbox"
+                                        aria-readonly="true">{title}</span>
+                                    </template>
                                     <i if:false={isOpen} class="fa-solid fa-sort-down sort_icon" style="position: absolute;
                                     right: 8px;
                                     top: 10px;"></i>
@@ -28,7 +22,6 @@
                                     right: 8px;
                                     top: 14px;"></i>
                                 </div>
-                                <!-- sldsValidatorIgnoreNextLine -->
                             </div>
                         </div>
 
@@ -40,27 +33,28 @@
                             <div>
                                 <div  class="slds-input-has-icon slds-m-horizontal_xx-small slds-input-has-icon_right search-holder">
                                     <div class="search-icon-block">
-                                        <img class="search-icon" src={searchIcon} />
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="search-icon" width="30" height="30" viewBox="0 0 30 30" fill="none">
+                                            <g clip-path="url(#clip0_711_5970)">
+                                                <circle cx="12.1096" cy="11.3827" r="8.11966" transform="rotate(49.1347 12.1096 11.3827)" stroke="#7ABB4A"
+                                                    stroke-width="1.88877" />
+                                                <rect x="20.5156" y="18.6641" width="9.5146" height="3.4445" rx="1.72225"
+                                                    transform="rotate(49.1347 20.5156 18.6641)" stroke="#7ABB4A" stroke-width="1.88877" />
+                                                <path d="M16.7891 16.8906L19.6187 20.1613" stroke="#7ABB4A" stroke-width="1.60896" />
+                                            </g>
+                                            <defs>
+                                                <clipPath id="clip0_711_5970">
+                                                    <rect width="30" height="30" fill="white" />
+                                                </clipPath>
+                                            </defs>
+                                        </svg>
+                                        <!-- <img class="search-icon" src={searchIcon} /> -->
                                     </div>
                                     <input  class={inputClasses}  type="text" placeholder="Search..." value={value}
-                                    onkeyup={handleChange} oninput={handleInput} onselect={inputMouseDown} />
+                                    onkeyup={handleChange} oninput={handleInput} onkeydown={handleKeyDown}/>
                                 </div>
                             </div>
-                            <!-- <input type="text" id="text-input-id-1" class={inputClasses} value={value}
-                                 onkeyup={handleChange} oninput={handleInput} onselect={inputMouseDown}/> onkeydown={handleKeyDown}
-                            <i class="fa-solid fa-magnifying-glass fa-lg" style="position: absolute;
-                        right: 16px;
-                        top: 26px;"></i> -->
-                            <!-- <lightning-icon
-                                    size="x-small"
-                                    style="position: absolute;
-                                    right: 0;
-                                    top: 16px;"
-                                    class="slds-icon slds-input__icon slds-input__icon_right slds-icon-text-default"
-                                    icon-name="utility:search"
-                                ></lightning-icon> -->
                         </span>
-                        <span class="dropdown--results slds-dropdown_length-5">
+                        <span class="dropdown--results slds-dropdown_length-10">
                             <ul class="slds-listbox slds-listbox_vertical" role="presentation">
                                 <template if:false={message}>
                                     <li for:each={tempOptions} for:item="option" key={option.value} role="presentation"
@@ -82,15 +76,9 @@
                                 </template>
                             </ul>
                         </span>
-
                     </div>
                 </div>
             </div>
         </div>
-        <!-- <div
-            class="slds-form-element__help"
-            if:true={isInvalid}
-            id="form-error-01"
-        >{messageWhenInvalid}</div> -->
     </div>
 </template>

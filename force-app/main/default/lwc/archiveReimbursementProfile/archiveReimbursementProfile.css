@@ -14,11 +14,11 @@
 
 .btn-back{
     outline: none;
-    border: 1.3px solid var(--color-light, 10) !important;
+    border: 1px solid #d7d7d7 !important;
     background: var(--color-white) !important;
-    border-radius: 8px !important;
+    border-radius: 10px !important;
     justify-content: space-between;
-    padding: 1em;
+    padding: 1.2em;
     margin: 1em 0;
 }
 

@@ -15,7 +15,8 @@ export default class PreviewTrips extends LightningElement {
     @api endDate;
     @api contactInfo;
     sortable = true;
-    classToTable = 'slds-table--header-fixed_container';
+    recordDisplay = false;
+    classToTable = 'slds-table--header-fixed_container p-top-v1';
     modelList;
     originalModelList;
     modalKeyFields;
@@ -57,8 +58,8 @@ export default class PreviewTrips extends LightningElement {
         {
             id: 5,
             name: "Status",
-            colName: "approveddate",
-            colType: "Date",
+            colName: "status",
+            colType: "String",
             arrUp: false,
             arrDown: false
         },
@@ -79,7 +80,7 @@ export default class PreviewTrips extends LightningElement {
             arrDown: false
         }
     ];
-    monthKeyFields = ["tripdate", "originname", "destinationname", "submitteddate", "approveddate", "mileage", "variableamount"]
+    monthKeyFields = ["tripdate", "originname", "destinationname", "submitteddate", "status", "mileage", "variableamount"]
     searchIcon = resourceImage + '/mburse/assets/mBurse-Icons/Vector.png';
     flagIcon = resourceImage + '/mburse/assets/mBurse-Icons/Tooltip/flag.png';
     unapproveIcon = resourceImage + '/mburse/assets/mBurse-Icons/Tooltip/unapprove.png';
@@ -112,9 +113,9 @@ export default class PreviewTrips extends LightningElement {
                         singleValue.key = key;
                         singleValue.value = element[key];
                         singleValue.truncate = (key === 'originname' || key === 'destinationname') ? true : false;
-                        singleValue.tooltip = (key === 'approveddate' || key === 'originname' || key === 'destinationname') ? true : false;
-                        singleValue.tooltipText = (key === 'originname') ? (element.origin != null ? element.origin : 'This trip was manually entered without an address.') : (key === 'destinationname') ? (element.destination != null ? element.destination : 'This trip was manually entered without an address.') : (element.status === 'Rejected') ?  ('Flagged - ' + (element.approvalName !== null ? element.approvalName : '') + ' ' + element.approveddate) : (element.status === 'Approved') ?  ('Approved - ' + (element.approvalName !== null ? element.approvalName : '') + ' ' + element.approveddate) : 'Unapproved';
-                        singleValue.tIcon = (key === 'approveddate') ? true : false;
+                        singleValue.tooltip = (key === 'status' || key === 'originname' || key === 'destinationname') ? true : false;
+                        singleValue.tooltipText = (key === 'originname') ? (element.origin != null ? element.origin : 'This trip was manually entered without an address.') : (key === 'destinationname') ? (element.destination != null ? element.destination : 'This trip was manually entered without an address.') : (element.status === 'Rejected') ? (element.approvalName !== null && element.approvalName === 'Tom Honkus') ? 'Your mileage was automatically flagged by the system on ' + element.approveddate :  ((element.approvalName !== null ? element.approvalName : '') + ' flagged on ' + element.approveddate) : (element.status === 'Approved') ? (element.approvalName !== null && element.approvalName === 'Tom Honkus') ? 'Your mileage was automatically approved by the system on ' + element.approveddate : ((element.approvalName !== null ? element.approvalName : '') + ' approved on ' + element.approveddate) : 'Unapproved';
+                        singleValue.tIcon = (key === 'status') ? true : false;
                         singleValue.tooltipIcon = (element.status === 'Rejected') ?  this.flagIcon  : (element.status === 'Approved') ?   this.approveIcon : this.unapproveIcon;
                         singleValue.twoDecimal = (key === "mileage" )? true : false;
                         singleValue.istwoDecimalCurrency = (key === 'variableamount') ? true : false;
@@ -223,10 +224,11 @@ export default class PreviewTrips extends LightningElement {
             }).then(data => {
                 let resultData = data[0].replace(/\\/g, '');
                 this.modelList = this.proxyToObject(resultData);
-                this.classToTable = this.modelList.length > 5 ? 'slds-table--header-fixed_container preview-height' : 'slds-table--header-fixed_container'
+                this.classToTable = this.modelList.length > 5 ? 'slds-table--header-fixed_container preview-height p-top-v1' : 'slds-table--header-fixed_container p-top-v1'
                 this.originalModelList = this.proxyToObject(resultData);
                 this.modalListColumn = this.monthColumn;
                 this.modalKeyFields = this.monthKeyFields;
+                this.recordDisplay = (this.modelList.length > 0) ? true : false;
                 this.dynamicBinding(this.modelList, this.modalKeyFields)
                 console.log("Driver getMileages", data)
             })
@@ -244,6 +246,7 @@ export default class PreviewTrips extends LightningElement {
                 this.originalModelList = this.proxyToObject(resultData);
                 this.modalListColumn = this.monthColumn;
                 this.modalKeyFields = this.monthKeyFields;
+                this.recordDisplay = (this.modelList.length > 0) ? true : false;
                 this.dynamicBinding(this.modelList, this.modalKeyFields)
                 console.log("Driver getBiweekMileages", data)
             })

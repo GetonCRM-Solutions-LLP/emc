@@ -1,0 +1,40 @@
+<template>
+    <c-navigation-menu driver-menu-item={managerProfileMenu} onsidebar={handleSidebarToggle} driver-name={userName} driver-email={userEmail} onlogout={handleLogout}></c-navigation-menu><!-- onopen={takeMeToMenu} -->
+	<c-dashboard-profile-header user-name={firstName} full-name={contactTitle} page-source={isHomePage} onlogout={handleLogout} is-navigate="true"></c-dashboard-profile-header>
+    <section class={section} id="default">
+        <!-- <div class="slds-size_1-of-12">
+            <c-dropdown-select options={selectList}
+            title="Calendar"
+            value={value}
+            main-class="default-box-input slds-truncate"></c-dropdown-select>
+        </div> -->
+        <template lwc:if={isProfile}>
+            <c-manager-user-profile contact-id={_contactId} account-id={_accountId} onmileage={getMileageList} onteam={getMyTeamList} onaccess={getUnapproveMileage} onhighrisk={redirectToHighRiskMileage}></c-manager-user-profile>
+        </template>
+        <template lwc:elseif={mileageApproval}>
+            <template lwc:if={listOfDriver}>
+                <c-user-mileage-grid contact-id={_contactId} account-id={_accountId} contact-list={listOfDriver} onpreview={getUnapproveMileage} onshow={showSpinner} onhide={hideSpinner} ontoast={showToast} show-team={showTeam} filter={nameFilter}></c-user-mileage-grid>
+            </template>
+        </template>
+        <template lwc:elseif={teamList}>
+            <template lwc:if={myTeamList}>
+               <c-user-view-mileage contact-id={_contactId} account-id={_accountId} contact-list={myTeamList} show-team={showTeam} trip-column={teamColumn} trip-key-fields={teamKeyFields}></c-user-view-mileage>
+            </template>
+        </template>
+        <template lwc:elseif={mileageSummary}>
+            <template lwc:if={listOfReimbursement}>
+               <c-user-view-mileage contact-id={_contactId} account-id={_accountId} contact-list={listOfReimbursement} show-team={showTeam} account-year={mileageAccountList} trip-column={summaryColumn} trip-key-fields={summaryKeyFields} onpreview={getMileage}></c-user-view-mileage>
+            </template>
+        </template>
+        <template lwc:elseif={mileageSummaryView}>
+            <template lwc:if={viewMileages}>
+               <c-view-detail-user contact-id={_contactId} account-id={_accountId} contact-list={viewMileages} trip-column={summaryDetailColumn} trip-key-fields={summaryDetailKeyFields} month={mileageMonthList} selected-month={monthSelected} onback={redirectToSummary} onmonthchange={refreshDetailSummary}></c-view-detail-user>
+            </template>
+        </template>
+        <template lwc:else>
+            <template lwc:if={unapproveMileages}>
+                 <c-user-flagging-trip contact-id={_contactId} account-id={_accountId}  header-name={driverName} contact-list={unapproveMileages} onback={redirectToMileage} onshow={showSpinner} onhide={hideSpinner} ontoast={showToast} onflagcomplete={handleComplete}></c-user-flagging-trip>
+            </template>
+        </template>
+    </section>
+</template>

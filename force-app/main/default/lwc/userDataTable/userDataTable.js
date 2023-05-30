@@ -10,6 +10,8 @@ export default class UserDataTable extends LightningElement {
     previousIcon = '';
     searchPreviousIcon = '';
     cssText = 'cPadding';
+    className;
+    cssButtonText = 'page-num-block';
     cssPreviousText = 'cPadding';
     downloadIcon = resourceImage + '/mburse/assets/mBurse-Icons/Plan-Info/download.png';
     downloadAllIcon = resourceImage + '/mburse/assets/mBurse-Icons/download-all.png';
@@ -27,7 +29,14 @@ export default class UserDataTable extends LightningElement {
     @api searchKey;
     @api isBiweek;
     @api isDefaultSort = false;
-    @track norecord = false;
+    norecord = false;
+    @track searchVisible = false;
+    @track pages = [];
+    @track paginate = [];
+    @track moveNext = 3;
+    @track moveBefore = 7;
+    @track shortPaginate = 10;
+    @track maxPage = 10;
     @api footerList;
     @api isYtd;
     @api isYtdBiweek;
@@ -228,6 +237,180 @@ export default class UserDataTable extends LightningElement {
         return result;
     }
 
+    // totalPages(maxPage){
+    //     var j;
+    //     this.pages = [];
+    //     for(j = 1;j<=maxPage;j++){
+    //         this.pages.push(j)
+    //     }
+    //     if(this.pages.length > 10){
+    //         this.mapPages();
+    //     }
+    // }
+
+    // setPages() {
+    //     this.pages = [];
+    //     this.paginate = [];
+    //     let numberOfPages = Math.ceil(this.modelData.length / Number(this.displayRecordCount));
+    //     for (let index = 1; index <= numberOfPages; index++) {
+    //         this.pages.push(index);
+    //         this.paginate.push(index);
+    //     }
+    //     if(this.pages.length > 10){
+    //         this.mapPages();
+    //     }
+    // }
+
+    // mapPages(){
+    //     var pagelen = this.pages.length;
+    //     var indexlen = pagelen - (this.maxPage + 1)
+    //     if(this.pages.length > this.maxPage){
+    //         this.pages.splice(this.maxPage,indexlen,"...");
+    //     }
+    //    console.log("this.paginate", JSON.stringify(this.pages));
+    // }
+
+    // onLastPage(index){
+    //     let pageSkip = index - 10;
+    //     this.pages = this.paginate.slice();
+    //     this.pages.splice(1,pageSkip,'...');
+    // }
+
+    //    /* When user moves back while filter pagination*/
+    // reverseEndPaginate(index, nextClick) {
+    //     if(nextClick === undefined){
+    //         nextClick = this.paginate.length;
+    //     }
+    //     if (index < nextClick) {
+    //         if (index >= 10) {
+    //           //  console.log("inside paginateChange")
+    //             this.paginateChange(index);
+    //         } else {
+    //             this.maxPage = 10;
+    //             let pagelen = this.paginate.length;
+    //             let indexlen = pagelen - (this.maxPage + 1)
+    //             this.pages = this.paginate.slice();
+    //             this.pages.splice(this.maxPage, indexlen, '...');
+    //         }
+    //     } else {
+    //         if (index === 1) {
+    //             this.maxPage = 10;
+    //             let pagelen = this.paginate.length;
+    //             let indexlen = pagelen - (this.maxPage + 1)
+    //             this.pages = this.paginate.slice();
+    //             this.pages.splice(this.maxPage, indexlen, '...');
+    //         }
+
+    //     }
+    //     //  console.log('reverse:-', index, nextClick);
+    // }
+    // paginateChange(index) {
+    //     var totalpage = this.paginate.length;
+    //     if (index !== totalpage) {
+    //         this.pages = this.paginate.slice();
+    //         this.maxPage = index + this.moveNext;
+    //         this.minPage = index - this.moveBefore;
+    //         let skip = totalpage - (this.maxPage + 1)
+    //         if (this.maxPage !== totalpage && this.maxPage < totalpage) {
+    //             this.pages.splice(this.maxPage, skip, '...');
+    //             this.pages.splice(1, this.minPage, '...');
+    //         } else {
+    //             this.pages.splice(1, this.minPage, '...');
+    //         }
+    //     }
+    //   console.log(this.pages);
+    // }
+
+    // onPageClick = (e) => {
+    //     var pageBlock = this.template.querySelectorAll('.page-num-block');
+    //     var nowPage = parseInt(e.target.dataset.id, 10);
+    //     var maxPages = this.getMaxPages(this.getSource());
+    //     var next;
+    //     if (this.paginate.length > 10) {
+    //         if (nowPage !== this.paginate.length) {
+    //             if (nowPage === this.maxPage) {
+    //                 next = nowPage
+    //                 this.paginateChange(nowPage);
+    //             } else {
+    //                 this.reverseEndPaginate(nowPage, next);
+    //             }
+    //         } else {
+    //             this.onLastPage(nowPage);
+    //         }
+    //     }
+   
+    //     if (nowPage > 0 && nowPage <= maxPages) {
+    //         pageBlock.forEach(item=>{
+    //             if(item.dataset.id){
+    //                 // eslint-disable-next-line radix
+    //                 if(parseInt(item.dataset.id) === nowPage){
+    //                     item.classList.add('active')
+    //                 }else{
+    //                     item.classList.remove('active')
+    //                 }
+    //             }
+    //         })
+    //         this.gotoPage(nowPage, this.getSource());
+    //     }
+    //   console.log("pagecount", nowPage, this.maxPages)
+    // }
+
+    //   /* increments the page number. */
+    //   onNext = () => {
+    //     var pageNo = this.currentPage + 1;
+    //     this.handleButtonNext()
+    //     console.log(this.paginate.length, pageNo)
+    //     if (this.paginate.length > this.shortPaginate) {
+    //         if (pageNo > 10) {
+    //             this.nextPrevChange(pageNo);
+    //         }
+    //     }
+    // }
+
+    // /* decrements the page number. */
+    // onPrev = () => {
+    //     var pageNo = this.currentPage - 1;
+    //     this.handleButtonPrevious();
+    //     if (this.paginate.length > this.shortPaginate) {
+    //         if (pageNo < this.paginate.length) {
+    //             if (pageNo > 10) {
+    //                 this.nextPrevChange(pageNo);
+    //             } else {
+    //                 this.noPageChange(pageNo);
+    //             }
+    //         }
+    //     }
+      
+
+    // }
+
+    // noPageChange(index){
+    //     this.maxPage = 10;
+    //     let pagelen = this.paginate.length;
+    //     let indexlen = pagelen - (this.maxPage + 1)
+    //     if(index === this.maxPage){
+    //         this.pages = this.paginate.slice();
+    //         this.pages.splice(this.maxPage,indexlen,'...');
+    //     }
+    // }
+
+    // nextPrevChange(index){
+    //     var len = this.paginate.length;//46
+    //     if(index !== len ){
+    //         this.pages = this.paginate.slice(); 
+    //         let startP = index + this.moveNext;
+    //         let skiplen = len - (startP + 1);
+    //         let inclen = index - this.moveBefore;
+    //         if(startP < len){
+    //                 this.pages.splice(startP,skiplen,'...');
+    //                 this.pages.splice(1,inclen,'...');
+    //         }else{
+    //             this.pages.splice(1,inclen,'...');
+    //         }
+    //       console.log("pages",JSON.stringify(this.pages));
+    //     }
+    // }
+
     getTotalVarAmount() {
         let data = this.proxyToObj(this.modelData);
         let totalVar = 0;
@@ -395,9 +578,13 @@ export default class UserDataTable extends LightningElement {
     connectedCallback() {
         // Initialize data table to the specified current page (should be 1)
         console.log("Trip", JSON.stringify(this.modelData))
+        this.className = (this.scrollable) ? (this.modelData.length > 6)  ? 'slds-scrollable_y slds-p-right_small' : 'slds-p-right_small' : 'slds-p-right_small';
+        this.mainClass = (this.scrollable) ? (this.modelData.length > 6) ? 'slds-table--header-fixed_container modal-height' : 'slds-table--header-fixed_container overflow-none' : this.mainClass;
         if(this.isPaginate){
             this.sortedColumn = this.columns[0].colName;
             this.gotoPage(this.currentPage, this.modelData);
+             //  this.totalPages(this.maxPages);
+          //   this.setPages();
         }else{
             this.pagedData = [];
             this.pagedData = this.modelData;
@@ -407,6 +594,8 @@ export default class UserDataTable extends LightningElement {
             this.norecord = true;
             this.nopagedata = true;
             this.searchVisible = true;
+        }else{
+            this.norecord = false;
         }
 
         if(this.isDefaultSort){
@@ -415,8 +604,25 @@ export default class UserDataTable extends LightningElement {
     }
 
     renderedCallback(){
+        var pageBlock = this.template.querySelectorAll('.page-num-block');
         let customIcon = this.template.querySelectorAll('.navigate');
         let _self = this;
+        if(pageBlock){
+            pageBlock.forEach(item=>{
+                if(item.dataset.id){
+                    if(item.dataset.id !== '...'){
+                         // eslint-disable-next-line radix
+                        if(parseInt(item.dataset.id) === this.currentPage){
+                            item.classList.add('active')
+                        }else{
+                            item.classList.remove('active')
+                        }
+                    }else{
+                        item.classList.add('page-num-disabled');
+                    }
+                }
+            })
+        }
         if(customIcon){
             customIcon.forEach(ev=>{
                 ev.addEventListener('click', function(e){

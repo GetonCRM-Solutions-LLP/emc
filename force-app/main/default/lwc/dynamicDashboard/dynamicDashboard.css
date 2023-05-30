@@ -1,0 +1,172 @@
+*{
+    font-family: 'Proxima Nova' !important;
+}
+
+:host{
+    --grey-color: #D7D7D7;
+    --green-color: #7ABB4A;
+    --link-color: #1D1D1D;
+    --text-color: #6C6C6C;
+    --even-row-color: #FFFFFF;
+    --odd-row-color: #F7F7F7;
+    --scroll-color: #F6F6F6;
+    --active-color: #404B5B;
+    --step-bg: #F1F8EC;
+}
+
+.fa,
+.fas,
+.fa-solid,
+.fa-light,
+.fa-regular {
+    font-family: "Font Awesome 6 Free" !important
+}
+
+.flex-container-view{
+    display: flex;
+}
+
+.list-view{
+    display: grid;
+    grid-column: 2;
+    grid-template-columns: 1fr 1fr;
+}
+
+.view-link{
+    position: absolute;
+    bottom: 0;
+    right: 0;
+}
+
+.dashboard{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    margin: auto;
+}
+
+.buttons {
+    transition: all 250ms;
+    opacity: 0;
+}
+
+.button{
+    cursor: pointer;
+}
+
+.tile:hover .buttons {
+    opacity: 1;
+}
+
+.tile-container{
+    display: flex;
+    padding: 0.75rem 1rem;
+}
+
+.tile{
+    display: flex;
+    flex-direction: column;
+    /* flex: 0 0 auto; */
+    /* width: calc(25% - 1rem); */
+    margin: 0.5rem;
+    height: 50vh;
+    max-height: calc(50% - 1rem);
+    overflow: hidden;
+    background: white;
+    page-break-inside: avoid;
+    transition: all 250ms;
+    border-radius: 0.5rem;
+    box-sizing: border-box;
+    box-shadow: 0 1px 2px rgba(55, 63, 66, 0.07), 0 2px 4px rgba(55, 63, 66, 0.07), 0 4px 8px rgba(55, 63, 66, 0.07), 0 8px 16px rgba(55, 63, 66, 0.07), 0 16px 24px rgba(55, 63, 66, 0.07), 0 24px 32px rgba(55, 63, 66, 0.07);
+}
+
+.flex-view-1{
+    border: 1px solid #D7D7D7;
+    flex: 30%;
+    border-radius: 20px;
+    position: relative;
+}
+
+.flex-view-2{
+    border: 1px solid #D7D7D7;
+    flex: 30%;
+    border-radius: 20px;
+    position: relative;
+}
+
+.flex-view-3{
+    border: 1px solid #D7D7D7;
+    flex: 30%;
+    border-radius: 20px;
+    position: relative;
+}
+
+.no-data-message{
+    font-size: 24px;
+    line-height: 29px;
+    text-align: center;
+    font-weight: 600;
+    color: var(--link-color);
+}
+
+.name{
+    font-family: 'Proxima Nova' !important;
+    font-size: 14px;
+    color: var(--link-color);
+    font-weight: bold;
+    text-decoration: underline;
+}
+
+.mileage{
+    font-family: 'Proxima Nova' !important;
+    font-size: 14px;
+    color: var(--link-color);
+}
+
+.driver-top td:first-child{
+    padding-left: 0.6rem !important;
+}
+
+.driver-top tr td{
+    padding-bottom: 0 !important;
+}
+
+.view-all{
+    width: 100%;
+    text-align: right;
+    color: var(--green-color);
+    font-weight: bold;
+    text-decoration: underline;
+    font-size: 12px;
+    font-family: 'Proxima Nova' !important;
+    cursor: pointer;
+}
+
+.fa-xmark{
+    cursor: pointer;
+}
+
+.white-cross{
+    color: #FFFFFF !important;
+}
+
+.main {
+    margin-left: 100px;
+    margin-top: 80px;
+    margin-right: 14px;
+}
+
+.sidebar-open {
+    margin-left: 256px;
+	margin-top: 80px;
+}
+
+.blank{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    justify-content: center;
+    text-align: center;
+}

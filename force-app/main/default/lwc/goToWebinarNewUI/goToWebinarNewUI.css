@@ -1,3 +1,6 @@
+*{
+    font-family: 'Proxima Nova' !important;
+}
 .main{
     margin:0 auto; 
     width: 60%;
@@ -57,10 +60,104 @@
 .field_label{
     -webkit-text-fill-color: black;
 }
-.timepick{
-    margin-top: 8px;
-    margin-bottom: 40px;
+.second{
+    margin:0 auto; 
+    width: 60%;
 }
-.picker{
-    width: 20%;
+.svg-effect{
+    /* --sds-c--color-foreground: #7ABB4A; */
+    text-align: center;
+    --sds-c-icon-color-foreground:  #7ABB4A;
+    --sds-c-icon-color-background: white;
+    --sds-c-icon-color-border : #7ABB4A;
+    border: 2px solid #7ABB4A;
+    border-radius: 50%;
+    padding: 4px;
+}
+.fname{
+    text-align: center;
+    font-size: 16px;
+    font-weight: bold;
+}
+.nameDetail{
+    text-align: center;
+}
+.rectInfo{
+    border: 1px solid #909090;
+    border-radius: 10px;
+    text-align: center;
+    padding-top: 30px;
+    padding-bottom: 30px;
+}
+.btnURl{
+    padding-top: 20px;
+    padding-bottom: 20px;
+}
+.calendarBtn{
+    /* -sds-c-button-brand-color-background: #7ABB4A !important;
+    --sds-c-button-text-color: white;
+    --slds-c-button-brand-color-border : #7ABB4A !important; */
+    --slds-c-button-radius-border : 10px;
+    background-color: #7ABB4A;
+    color: #ffffff;
+}
+.registerText{
+    padding-bottom: 20px;
+}
+.boldEff{
+    font-weight: bold;
+}
+.meetingText{
+    padding-bottom: 10px;
+}
+.regiDesc{
+    padding-bottom: 20px;
+}
+.downBtn{
+    padding-bottom: 20px;
+    gap: 20px;
+}
+.mailLnk{
+    font-weight: bold;
+    color: #7ABB4A;
+}
+.svgImg{
+    height: 15px;
+    margin-right: 5px;
+}
+.meetName{
+    font-weight: bold;
+    font-size: 22px;
+    color: #7ABB4A;
+    margin-bottom: 15px;
+}
+.dateIST{
+    color: #909090;
+}
+.footerText{
+    color: #909090;
+}
+.selectHead{
+    background-color: #7ABB4A;
+    width: 170px;
+    color: #ffffff;
+    border-radius: 10px;
+    cursor: pointer;
+    padding-left: 10px;
+}
+.selectOption{
+    margin-top: 15px;
+    margin-bottom: 15px;
+}
+.selectHead:focus{
+    background-color: #7ABB4A;
+    color: white;
+}
+.selectHead:focus option{
+    background-color: #ffffff;
+    color: black;
+}
+.selectHead option:hover{
+    background-color: #7ABB4A;
+    color: white;
 }

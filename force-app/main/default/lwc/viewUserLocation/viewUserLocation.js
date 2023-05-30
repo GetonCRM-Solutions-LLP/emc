@@ -123,6 +123,9 @@ export default class ViewUserLocation extends LightningElement {
             toastEvents(this, 'Hide');
             modalEvents(this, 'Your location has been updated');
             this.isEditMode = false;
+            if(this.template.querySelector('.filter-input')){
+                this.template.querySelector('.filter-input').value = "";
+            }
             this.refreshList = await getLocations(this.contactId);
             this.locationModelList =  this.proxyToObject(this.refreshList);
             this.dynamicBinding(this.locationModelList, this.keyFields);
@@ -139,21 +142,26 @@ export default class ViewUserLocation extends LightningElement {
 
     cancelEditMode(){
         this.isEditMode = false;
+        if(this.template.querySelector('.filter-input')){
+            this.template.querySelector('.filter-input').value = "";
+        }
         this.template.querySelector('c-user-preview-table').refreshTable(this.locationModelList);
     }
 
     connectedCallback(){
-        this.locationModelList = this.proxyToObject(this.location);
-        this.column = this.locationColumn;
-        this.keyFields = this.locationKeyFields;
-        this.isSortable = true;
-        this.editableView = true;
-        if(this.locationModelList){
-            this.classToTable = this.locationModelList.length > 6 ? 'slds-table--header-fixed_container preview-height' : 'slds-table--header-fixed_container';
-            this.isScrollable = this.locationModelList.length > 6 ? true : false;
+        if (this.location) {
+            this.locationModelList = this.proxyToObject(this.location);
+            this.column = this.locationColumn;
+            this.keyFields = this.locationKeyFields;
+            this.isSortable = true;
+            this.editableView = true;
+            if (this.locationModelList !== undefined) {
+                this.classToTable = this.locationModelList.length > 6 ? 'slds-table--header-fixed_container preview-height' : 'slds-table--header-fixed_container p-top-v2 overflow-none';
+                this.isScrollable = this.locationModelList.length > 6 ? true : false;
+            }
+
+            this.paginatedModal = true;
+            this.dynamicBinding(this.locationModelList, this.keyFields);
         }
-      
-        this.paginatedModal =  true;
-        this.dynamicBinding(this.locationModelList, this.keyFields);
     }
 }

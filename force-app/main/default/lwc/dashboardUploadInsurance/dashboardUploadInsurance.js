@@ -77,6 +77,7 @@ export default class DashboardUploadInsurance extends LightningElement {
               expirationDate = driverDetailList[0].insuranceExpirationDate;
                //(new Date(expirationDate) <= Today ? true : false)
               this.insuranceExpired = (expirationDate == null) ? false : ((new Date(expirationDate)).setHours(0,0,0,0) <= Today ? true : false);
+              console.log("insurance expiration", this.insuranceExpired, expirationDate, typeof expirationDate)
               this.mBurseCheck = driverDetailList[0].mburseDashboard;
               if (this.mBurseCheck === false) {
                 if (this.role === 'Driver') {

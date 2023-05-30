@@ -16,6 +16,9 @@ export default class UserTaxLiability extends LightningElement {
   reimbursements;
   maxAllow;
   taxLiablity;
+  detailReport;
+  summaryR;
+  taxVal;
   chartResourcesLoaded = false;
   @api contactId;
 
@@ -64,6 +67,7 @@ export default class UserTaxLiability extends LightningElement {
           );
         }
 
+        this.detailReport = this.proxyToObject(data[3]);
         if (data[4]) {
           this.summaryR = this.proxyToObject(data[4]);
           this.lengthS = this.summaryR.length > 0 ? true : false;
@@ -81,6 +85,7 @@ export default class UserTaxLiability extends LightningElement {
 
         if (data[7]) {
           taxVal = this.proxyToObject(data[7]);
+          this.taxVal = taxVal;
           this.taxLiablity =
             parseFloat(taxVal) === 0 ? null : parseFloat(taxVal);
           console.log("taxVal", taxVal, this.taxLiablity)
@@ -95,6 +100,38 @@ export default class UserTaxLiability extends LightningElement {
       .catch((error) => {
         console.log("getCompliance error", error.body.message, error.message);
       });
+  }
+
+  excelToExport(data, file, sheet){
+    this.template.querySelector('c-export-excel').download(data, file, sheet);
+  }
+
+  taxLiabilityDetailReport(){
+    let name, excelFileName, excelSheetName
+    let excelReport = [];
+    name = this.detailReport[0].drivername;
+    excelFileName = name +  ' Annual Tax Liability Detail Report';
+    excelSheetName = 'Detail Report';
+    excelReport.push([ "Employee Id", "Driver Name", "Email", "Year", "Month", "Approved Mileage", "Mileage Rate", "IRS Max Allowable", "Total Reimbursement", "Imputed Income"])
+    this.detailReport.forEach(item => {
+      excelReport.push([item.employeeid, item.drivername, item.emailid, item.year,  item.month, item.approvedmileages, "$" + item.variableRate, "$" + item.totalreim, "$" + item.iRSallowable, "$" + item.imputedincome])
+    })
+
+    this.excelToExport(excelReport, excelFileName, excelSheetName);
+  }
+
+  taxLiabilitySummaryReport(){
+    let name, excelFileName, excelSheetName
+    let excelReport = [];
+    name = this.summaryR[0].drivername;
+    excelFileName = name +  ' Annual Tax Liability Summary Report';
+    excelSheetName = 'Summary Report';
+    excelReport.push(["Employee Id", "Driver Name", "Email", "Total Reimbursement", "IRS allowable", "Imputed Income"])
+    this.summaryR.forEach(item => {
+      excelReport.push([item.employeeid, item.drivername, item.emailid,  "$" + this.reimbursements, "$" + this.maxAllow, "$" + item.imputedincome])
+    })
+
+    this.excelToExport(excelReport, excelFileName, excelSheetName);
   }
 
   initializeChart() {

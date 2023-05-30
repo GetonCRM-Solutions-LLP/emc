@@ -1,0 +1,27 @@
+<template>
+    <div class="slds-p-around_medium">
+        <lightning-card variant="Narrow" title="Translator">
+            <lightning-combobox class="slds-m-bottom_small slds-p-around_medium" label="Translate From" data-id="fromLang" value={value}
+                placeholder="Select Translate From Language" options={languageOptions}
+                onchange={handleLangSelection}></lightning-combobox>
+    
+            <lightning-combobox class="slds-m-bottom_small slds-p-around_medium" placeholder="Select Translate To Language" label="Translate To"
+                value={value} options={languageOptions} data-id="toLang" onchange={handleLangSelection}>
+            </lightning-combobox>
+    
+    
+            <lightning-textarea class="slds-m-top-small slds-m-bottom-large slds-p-around_medium" name="Enter text to translate"
+                label="Enter text to translate" onchange={handleTextChange}></lightning-textarea>
+    
+            <template if:true={convertedText}>
+                <h1 class="slds-m-bottom-large">Converted Text: </h1>
+                <h3>{convertedText}</h3>
+            </template>
+    
+    
+            <lightning-button variant="brand" label="Convert" title="Primary action" class=" slds-p-around_medium slds-m-top-large"
+                onclick={convertText} style="margin-top: 20px; " disabled={convertButtnstateDisabled}></lightning-button>
+        </lightning-card>
+    </div>
+  
+</template>

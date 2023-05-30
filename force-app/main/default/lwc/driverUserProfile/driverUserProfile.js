@@ -10,6 +10,7 @@ import getDrivingState  from '@salesforce/apex/DriverDashboardLWCController.getD
 import {
     events
 } from 'c/utils';
+
 export default class DriverUserProfile extends LightningElement {
     profileCarImage = carImage + '/emc-design/assets/images/car.png';
     milesIcon = resourceImage + '/mburse/assets/mBurse-Icons/Middle-block/1.png';
@@ -59,6 +60,8 @@ export default class DriverUserProfile extends LightningElement {
     lastMonthMiles = '';
     thisMonthMiles = '';
     halfFixedAmount = '';
+    biweekly = false;
+    monthly = false;
     fixedAmount = '';
     variableRate = '';
     monthfuelPrice = '';
@@ -323,20 +326,12 @@ export default class DriverUserProfile extends LightningElement {
     }
 
     getMonthName(monthIndex){
-        let daymonth = new Array();
-        daymonth[0] = "January";
-        daymonth[1] = "February";
-        daymonth[2] = "March";
-        daymonth[3] = "April";
-        daymonth[4] = "May";
-        daymonth[5] = "June";
-        daymonth[6] = "July";
-        daymonth[7] = "August";
-        daymonth[8] = "September";
-        daymonth[9] = "October";
-        daymonth[10] = "November";
-        daymonth[11] = "December";
-        return  daymonth[monthIndex]
+        const months = Array.from({length: 12}, (item, i) => {
+            return new Date(0, i).toLocaleString('en-US', {month: 'long'})
+          });
+          
+        console.log(months, months[monthIndex]);
+        return  months[monthIndex]
     }
 
     proxyToObject(e) {
@@ -679,7 +674,7 @@ export default class DriverUserProfile extends LightningElement {
             this.lastModelList.forEach((item)=>{
                 downloadList.push([item.month, item.fuel, item.mileage,  item.variableRate, item.varibleAmount,  item.fixedAmount,  item.totalReimbursements, item.avgToDate])
             })
-            downloadList.push(["YTD", "", this.excelYtd.mileageCalc, "", this.excelYtd.varibleAmountCalc, this.excelYtd.totalMonthlyFixedCalc, this.excelYtd.totalFixedAmountCalc, this.excelYtd.totalAVGCalc])
+            downloadList.push(["YTD", "", this.excelYtd.mileageCalc, "", this.excelYtd.varibleAmountCalc, this.excelYtd.totalMonthlyFixedCalc, this.excelYtd.totalReim, this.excelYtd.totalAVGCalc])
             this.excelToExport(downloadList, fileName, sheetName);
         }else{
             let downloadList = [];
@@ -688,12 +683,49 @@ export default class DriverUserProfile extends LightningElement {
             let sheetName = 'Mileage Report';
             downloadList.push(["Month", "Mi Rate", "Mileage", "Variable", "Fixed 1", "Fixed 2", "Fixed 3", "Total", "Average To Date"])
             this.lastModelList.forEach((item)=>{
-                downloadList.push([item.month, item.variableRate, item.mileage,  item.varibleAmount,  item.fixed1,  item.fixed2,  item.fixed3,  item.totalFixedAmount, item.avgToDate])
+                downloadList.push([item.month, item.variableRate, item.mileage,  item.varibleAmount,  (item.fixed1) ? item.fixed1 : '',  (item.fixed2) ? item.fixed2 : '',  (item.fixed3) ? item.fixed3 : '',  item.totalReimbursements, item.avgToDate])
             })
-            downloadList.push(["YTD", "", this.excelYtd.mileageCalc,  this.excelYtd.varibleAmountCalc, this.excelYtd.fixed1Calc, this.excelYtd.fixed2Calc,  this.excelYtd.fixed3Calc,  this.excelYtd.totalFixedAmountCalc, this.excelYtd.totalAVGCalc])
+            downloadList.push(["YTD", "", this.excelYtd.mileageCalc,  this.excelYtd.varibleAmountCalc, this.excelYtd.fixed1Calc, this.excelYtd.fixed2Calc,  this.excelYtd.fixed3Calc,  this.excelYtd.totalReim, this.excelYtd.totalAVGCalc])
             this.excelToExport(downloadList, fileName, sheetName);
         }
       
+    }
+
+    dataReimbursement(reimbursementData){
+        this.lastMilesZero = (reimbursementData.lastmonthmiles !== '0.00' && (/^0+/).test(reimbursementData.lastmonthmiles) === true) ? (reimbursementData.lastmonthmiles).replace(/^0+/, '') : null;
+        this.thisMilesZero = (reimbursementData.currentmonthmiles !== '0.00' && (/^0+/).test(reimbursementData.currentmonthmiles) === true) ? (reimbursementData.currentmonthmiles).replace(/^0+/, '') : null;
+        this.halfFixedZero= (reimbursementData.halfFixedAmount !== '0.00' && (/^0+/).test(reimbursementData.halfFixedAmount) === true) ? (reimbursementData.halfFixedAmount).replace(/^0+/, '') : null;
+        this.fixedAmountZero = (reimbursementData.fixedAmount !== '0.00' && (/^0+/).test(reimbursementData.fixedAmount) === true) ? (reimbursementData.fixedAmount).replace(/^0+/, '') : null;
+        this.fuelPriceZero = (reimbursementData.lastmonthfuelprice !== '0.00' && (/^0+/).test(reimbursementData.lastmonthfuelprice) === true) ? (reimbursementData.lastmonthfuelprice).replace(/^0+/, '') : null;
+        this.mileageRateZero = (reimbursementData.lastmonthmileagerate !== '0.00' && (/^0+/).test(reimbursementData.lastmonthmileagerate) === true) ? (reimbursementData.lastmonthmileagerate).replace(/^0+/, '') : null;
+        this.lastMonthMiles = (reimbursementData.lastmonthmiles) ? reimbursementData.lastmonthmiles : 0;
+        this.thisMonthMiles = (reimbursementData.currentmonthmiles) ? reimbursementData.currentmonthmiles : 0;
+        this.halfFixedAmount = (reimbursementData.halfFixedAmount) ? reimbursementData.halfFixedAmount : 0;
+        this.fixedAmount = (reimbursementData.fixedAmount) ? reimbursementData.fixedAmount : 0;
+        this.monthfuelPrice = (reimbursementData.lastmonthfuelprice) ? reimbursementData.lastmonthfuelprice : 0;
+        this.lastMonthMileageRate = (reimbursementData.lastmonthmileagerate) ? reimbursementData.lastmonthmileagerate : 0;
+    }
+
+    driverListOfDetail(contactList){
+        this.vehicleImage = contactList[0].Car_Image__c;
+        this.vehicleType = contactList[0].Vehicle_Type__c;
+        this.contactName = contactList[0].Name;
+        this.address = contactList[0].MailingCity + ', ' + contactList[0].MailingState +' '+ contactList[0].MailingPostalCode;
+        this.planInsurance = (contactList[0].Insurance__c !== undefined) ? (contactList[0].Insurance__c === 'Yes') ? true : false : false;
+        // this.planMileage =    (contactList[0].Mileage_Meet__c !== undefined) ? (contactList[0].Mileage_Meet__c === 'Yes') ? true : false : false;
+        this.planVehicleAge =  (contactList[0].Vehicle_Age__c !== undefined) ?  (contactList[0].Vehicle_Age__c === 'Yes') ? true : false : false;
+        this.planVehicleValue = (contactList[0].Vehicle_Value_Check__c !== undefined) ?   (contactList[0].Vehicle_Value_Check__c === 'Yes') ? true : false : false;
+        this.planCompliance =  (contactList[0].compliancestatus__c !== undefined) ?  (contactList[0].compliancestatus__c === 'Yes') ? true : false : false;
+        this.planYear = (contactList[0].Plan_Years__c !== undefined) ?  contactList[0].Plan_Years__c : 0;
+        this.complianceMileage = (contactList[0].Compliance_Mileage__c !== undefined) ? contactList[0].Compliance_Mileage__c : 0;
+        this.vehicleValue = (contactList[0].Vehicle_Value__c !== undefined) ? (contactList[0].Vehicle_Value__c) : 0;
+        this.insurancePlan = (contactList[0].Insurance_Plan__c !== undefined) ? contactList[0].Insurance_Plan__c : '';
+        this.complianceStatus = (contactList[0].compliancestatus__c !== undefined) ? contactList[0].compliancestatus__c : '';
+        this.annualMileage = (contactList[0].Total_Approved_Mileages__c !== undefined) ? contactList[0].Total_Approved_Mileages__c : '0';
+        this.annualReimbursement = (contactList[0].Total_reimbursment__c !== undefined) ? contactList[0].Total_reimbursment__c : '0';
+        this.isValid = parseFloat(this.annualMileage) >= parseFloat(this.complianceMileage) ? true : false;
+        this.planMileage =   (this.isValid) ?  true : false;
+        this.biweekly = (contactList[0].Reimbursement_Frequency__c === 'Bi-Weekly Reimbursement') ? true : false;
     }
 
     @wire(getDriverDetails, {
@@ -701,24 +733,7 @@ export default class DriverUserProfile extends LightningElement {
     })driverDetailInfo({data,error}) {
         if (data) {
             let contactList = this.proxyToObject(data);
-            this.vehicleImage = contactList[0].Car_Image__c;
-            this.vehicleType = contactList[0].Vehicle_Type__c;
-            this.contactName = contactList[0].Name;
-            this.address = contactList[0].MailingCity + ', ' + contactList[0].MailingState +' '+ contactList[0].MailingPostalCode;
-            this.planInsurance = (contactList[0].Insurance__c !== undefined) ? (contactList[0].Insurance__c === 'Yes') ? true : false : false;
-            // this.planMileage =    (contactList[0].Mileage_Meet__c !== undefined) ? (contactList[0].Mileage_Meet__c === 'Yes') ? true : false : false;
-            this.planVehicleAge =  (contactList[0].Vehicle_Age__c !== undefined) ?  (contactList[0].Vehicle_Age__c === 'Yes') ? true : false : false;
-            this.planVehicleValue = (contactList[0].Vehicle_Value_Check__c !== undefined) ?   (contactList[0].Vehicle_Value_Check__c === 'Yes') ? true : false : false;
-            this.planCompliance =  (contactList[0].compliancestatus__c !== undefined) ?  (contactList[0].compliancestatus__c === 'Yes') ? true : false : false;
-            this.planYear = (contactList[0].Plan_Years__c !== undefined) ?  contactList[0].Plan_Years__c : 0;
-            this.complianceMileage = (contactList[0].Compliance_Mileage__c !== undefined) ? contactList[0].Compliance_Mileage__c : 0;
-            this.vehicleValue = (contactList[0].Vehicle_Value__c !== undefined) ? (contactList[0].Vehicle_Value__c) : 0;
-            this.insurancePlan = (contactList[0].Insurance_Plan__c !== undefined) ? contactList[0].Insurance_Plan__c : '';
-            this.complianceStatus = (contactList[0].compliancestatus__c !== undefined) ? contactList[0].compliancestatus__c : '';
-            this.annualMileage = (contactList[0].Total_Approved_Mileages__c !== undefined) ? contactList[0].Total_Approved_Mileages__c : '0';
-            this.annualReimbursement = (contactList[0].Total_reimbursment__c !== undefined) ? contactList[0].Total_reimbursment__c : '0';
-            this.isValid = parseFloat(this.annualMileage) >= parseFloat(this.complianceMileage) ? true : false;
-            this.planMileage =   (this.isValid) ?  true : false;
+           this.driverListOfDetail(contactList);
             console.log("getDriverDetails data", data)
         }else if(error){
             console.log("getDriverDetails error", error.message)
@@ -730,18 +745,7 @@ export default class DriverUserProfile extends LightningElement {
     })reimbursementData({data,error}) {
         if (data) {
             let reimbursementData = this.proxyToObject(data);
-            this.lastMilesZero = (reimbursementData.lastmonthmiles !== '0.00' && (/^0+/).test(reimbursementData.lastmonthmiles) === true) ? (reimbursementData.lastmonthmiles).replace(/^0+/, '') : null;
-            this.thisMilesZero = (reimbursementData.currentmonthmiles !== '0.00' && (/^0+/).test(reimbursementData.currentmonthmiles) === true) ? (reimbursementData.currentmonthmiles).replace(/^0+/, '') : null;
-            this.halfFixedZero= (reimbursementData.halfFixedAmount !== '0.00' && (/^0+/).test(reimbursementData.halfFixedAmount) === true) ? (reimbursementData.halfFixedAmount).replace(/^0+/, '') : null;
-            this.fixedAmountZero = (reimbursementData.fixedAmount !== '0.00' && (/^0+/).test(reimbursementData.fixedAmount) === true) ? (reimbursementData.fixedAmount).replace(/^0+/, '') : null;
-            this.fuelPriceZero = (reimbursementData.lastmonthfuelprice !== '0.00' && (/^0+/).test(reimbursementData.lastmonthfuelprice) === true) ? (reimbursementData.lastmonthfuelprice).replace(/^0+/, '') : null;
-            this.mileageRateZero = (reimbursementData.lastmonthmileagerate !== '0.00' && (/^0+/).test(reimbursementData.lastmonthmileagerate) === true) ? (reimbursementData.lastmonthmileagerate).replace(/^0+/, '') : null;
-            this.lastMonthMiles = (reimbursementData.lastmonthmiles) ? reimbursementData.lastmonthmiles : 0;
-            this.thisMonthMiles = (reimbursementData.currentmonthmiles) ? reimbursementData.currentmonthmiles : 0;
-            this.halfFixedAmount = (reimbursementData.halfFixedAmount) ? reimbursementData.halfFixedAmount : 0;
-            this.fixedAmount = (reimbursementData.fixedAmount) ? reimbursementData.fixedAmount : 0;
-            this.monthfuelPrice = (reimbursementData.lastmonthfuelprice) ? reimbursementData.lastmonthfuelprice : 0;
-            this.lastMonthMileageRate = (reimbursementData.lastmonthmileagerate) ? reimbursementData.lastmonthmileagerate : 0;
+           this.dataReimbursement(reimbursementData);
             console.log("getReimbursementData data",data)
         }else if(error){
             console.log("getReimbursementData error", error)
@@ -781,28 +785,13 @@ export default class DriverUserProfile extends LightningElement {
 
     }
 
-    // renderedCallback(){
-    //     if (this.renderedInitialized) {
-    //         return;
-    //     }
-    //     this.renderedInitialized = true;
-    //     if(this.contactData){
-    //         let currentDay = new Date(), currentYear = '', selectedYear='';
-    //         this.headerModalText = 'Notifications';
-    //         //this.view = (this.notification.length > 1) ? true : false;
-    //         if(currentDay.getMonth() === 0){
-    //             currentYear = currentDay.getFullYear() - 1;
-    //             selectedYear = currentYear.toString();
-    //         }else{
-    //             currentYear = currentDay.getFullYear();
-    //             // eslint-disable-next-line no-unused-vars
-    //             selectedYear = currentYear.toString();
-    //         }
-    //       this.driverNotification(this.contactData[0].Notification_Message__c, this.contactData[0].Notification_Date__c, this.contactData[0].Insurance_Upload_Date__c);
-    //     }
-    // }
 
     redirectToReimbursement(){
         events(this, '');
+    }
+
+    redirectToResources(){
+        const e = new CustomEvent('redirectview', {});
+        this.dispatchEvent(e);
     }
 }
