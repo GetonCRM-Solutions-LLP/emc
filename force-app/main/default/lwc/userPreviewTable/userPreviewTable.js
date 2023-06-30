@@ -1,3 +1,4 @@
+/* eslint-disable no-self-assign */
 /* eslint-disable radix */
 /* eslint-disable @lwc/lwc/no-api-reassignments */
 import { LightningElement, api, track } from 'lwc';
@@ -44,12 +45,12 @@ export default class UserPreviewTable extends LightningElement {
     @api options;
     @api pagedData;
     @api modelData;
+    @api isFooter;
     @api searchKey;
     @api editableView;
     @api isBiweek;
     @api norecordMessage;
     norecord = false;
-
     @track searchVisible = false;
     @track pages = [];
     @track paginate = [];
@@ -83,6 +84,7 @@ export default class UserPreviewTable extends LightningElement {
     @api searchByKey(_keyValue){
         var searchList;
         if(_keyValue && _keyValue.length > 0 ) {
+            console.log(_keyValue);
                 this.search = true;
                 this.searchData = [];
                 let data = this.modelData;
@@ -90,11 +92,13 @@ export default class UserPreviewTable extends LightningElement {
                 for (const key in data) {
                     if (Object.prototype.hasOwnProperty.call(data, key)) {
                         let res;
+                        console.log("options--", this.options, data[key])
                         for (const item in data[key]) {
                             if (this.options.includes(item)) {
                                 //hasOwnProperty : Returns true if the object has the specified property as own property; false otherwise.
                                 if (data[key].hasOwnProperty.call(data[key], item)) {
                                     const element = data[key][item];
+                                    console.log("element", element)
                                     if (element) {
                                         res = element.toString().toLowerCase().includes(_keyValue.toLowerCase());
                                         if (res) {
@@ -107,15 +111,18 @@ export default class UserPreviewTable extends LightningElement {
                         }
                     }
                 }
-            this.norecord = (!result.length) ? true : false
-        //    console.log(JSON.stringify(result));
-            this.pagedData = result;
-            this.searchData = result;
-            this.sortedDirection = this.previousIcon;
+                this.norecord = (!result.length) ? true : false
+                this.tableClass = (this.norecord) ? 'slds-table slds-table--header-fixed slds-table_cell-buffer slds-table_striped' : 'slds-table slds-table--header-fixed slds-table_cell-buffer slds-table_fixed-layout slds-max-medium-table_stacked-horizontal slds-table_striped'
+                this.className = (this.searchData.length > 6) ? this.className : 'slds-p-right_small'
+                this.pagedData = result;
+                this.searchData = result;
+                this.sortedDirection = this.previousIcon;
         }else{
           //  console.log("search key --- ", this.modelData);
+            this.tableClass = 'slds-table slds-table--header-fixed slds-table_cell-buffer slds-table_fixed-layout slds-max-medium-table_stacked-horizontal slds-table_striped'
             this.search = false;
             this.norecord = false;
+            this.className = this.className;
             this.sortedDirection = this.previousIcon;
             this.pagedData = this.modelData;
         }
@@ -138,12 +145,28 @@ export default class UserPreviewTable extends LightningElement {
         this.currentPage = 1
         this.gotoPage(this.currentPage, this.modelData)
         this.setPages();
+        if(this.modelData.length > 8){
+            this.searchVisible = true;
+        }else{
+            this.searchVisible = false;
+        }
+        this.mainClass = (this.scrollable) ? (this.modelData.length > 6) ? 'slds-table--header-fixed_container p-top-v1' : 'slds-table--header-fixed_container p-top-v1 overflow-none' : this.mainClass;
+        if (!this.modelData.length) {
+            this.norecord = true;
+            this.nopagedata = true;
+            this.tableClass = 'slds-table slds-table--header-fixed slds-table_cell-buffer slds-table_striped'
+        }else{
+            this.norecord = false;
+            this.tableClass = 'slds-table slds-table--header-fixed slds-table_cell-buffer slds-table_fixed-layout slds-max-medium-table_stacked-horizontal slds-table_striped';
+        }
+        pageEvents(this, this.maxPages);
         // if(this.isDefaultSort){
         //     this.defaultSort(this.colname, this.coltype, this.sortorder) 
         // }
     }
 
     @api refreshTable(_data){
+		this.search = false;
         this.modelData = _data;
         this.pagedData = _data;
         this.gotoPage(this.currentPage, this.pagedData)
@@ -151,7 +174,6 @@ export default class UserPreviewTable extends LightningElement {
 
     @api resetView(_data, key){
         var refresh = [], search = [];
-        console.log("data", _data);
         this.pagedData = _data;
         refresh = this.modelData.map(obj => this.pagedData.find(o => o[key] === obj[key]) || obj);
     //    if(this.search){
@@ -174,7 +196,6 @@ export default class UserPreviewTable extends LightningElement {
         sList = this.searchData.map(obj => this.pagedData.find(o => o[key] === obj[key]) || obj);
         this.searchData = sList;
         this.modelData = list;
-        console.log(" view-----",  this.modelData);
     //  console.log(" this.modelData----",  this.modelData);
     
       //  this.pagedData = _data;
@@ -297,7 +318,7 @@ export default class UserPreviewTable extends LightningElement {
                     }
                 }
             })
-            console.log("next", nextPage, this.getSource());
+            
             this.gotoPage(nextPage, this.getSource());
        
         }
@@ -347,7 +368,6 @@ export default class UserPreviewTable extends LightningElement {
 
             // Float value of number of pages in data table
             divideValue = arrayLength / this.displayRecordCount;
-            console.log("divide value", divideValue)
             // Round up to the next Integer value for the actual number of pages
             result = Math.ceil(divideValue);
         }
@@ -387,7 +407,6 @@ export default class UserPreviewTable extends LightningElement {
         if(this.pages.length > this.maxPage){
             this.pages.splice(this.maxPage,indexlen,"...");
         }
-       console.log("this.paginate", JSON.stringify(this.pages));
     }
 
     onLastPage(index){
@@ -570,7 +589,6 @@ export default class UserPreviewTable extends LightningElement {
             colName = this.sortedColumn;
 
         data = this.getSource();
-        console.log(data, colType, colName);
         if(colType !== undefined){
             this.pagedData = JSON.parse(JSON.stringify(data)).sort((a, b) => {
                 if (colType === "Decimal") {
@@ -674,7 +692,6 @@ export default class UserPreviewTable extends LightningElement {
                 }
             } 
         }
-        console.log(this.columns);
         // eslint-disable-next-line @lwc/lwc/no-api-reassignments
         this.columns = data;
     }
@@ -711,7 +728,7 @@ export default class UserPreviewTable extends LightningElement {
     handleInput(event){
         let input = event.target.value;
         let keyName = event.currentTarget.dataset.name;
-        let dataList = this.proxyToObj(this.modelData);
+        let dataList = (this.search) ? this.proxyToObj(this.searchData) : this.proxyToObj(this.modelData);
         let updatedList = [];
        // let element = dataList.find(ele  => ele.id === this.rowId);
         for (let i = 0; i < dataList.length; i++) {
@@ -726,7 +743,12 @@ export default class UserPreviewTable extends LightningElement {
             }
         }
         updatedList = dataList;
-        this.modelData = dataList;
+       if(this.search){
+            this.modelData = dataList;
+            this.searchData = dataList;
+		}else{
+			this.modelData = dataList;
+		}
         this.pagedData = dataList;
         this.gotoPage(this.currentPage, this.pagedData)
         this.dispatchEvent(
@@ -739,7 +761,7 @@ export default class UserPreviewTable extends LightningElement {
     handleEditMode(event){
         let targetId = (event.currentTarget) ? event.currentTarget.dataset.id : undefined;
         this.rowId = targetId;
-        let data = this.proxyToObj(this.modelData);
+        let data = (this.search) ? this.proxyToObj(this.searchData) : this.proxyToObj(this.modelData);
         if(targetId){
             this.dispatchEvent(
                 new CustomEvent("editmode", {
@@ -747,16 +769,21 @@ export default class UserPreviewTable extends LightningElement {
                 })
             );
             if (data) {
-                for (let i = 0; i < data.length; i++) {
-                  if(data[i].id === targetId){
-                    data[i].isEdited = true;
-                  }else{
-                    data[i].isEdited = (!data[i].isEdited) ? false : true;
-                  }
+              for (let i = 0; i < data.length; i++) {
+                if (data[i].id === targetId) {
+                  data[i].isEdited = true;
+                } else {
+                  data[i].isEdited = !data[i].isEdited ? false : true;
                 }
+              }
+              if (this.search) {
                 this.modelData = data;
-                this.pagedData = data;
-                this.gotoPage(this.currentPage, this.pagedData)
+                this.searchData = data;
+              } else {
+                this.modelData = data;
+              }
+              this.pagedData = data;
+              this.gotoPage(this.currentPage, this.pagedData);
             }
         }
      
@@ -801,37 +828,40 @@ export default class UserPreviewTable extends LightningElement {
 
     connectedCallback() {
         // Initialize data table to the specified current page (should be 1)
-        console.log("Trip", JSON.stringify(this.modelData), this.norecord)
+        console.log("Trip", JSON.stringify(this.modelData), this.norecord, this.scrollable)
         this.tableClass = 'slds-table slds-table--header-fixed slds-table_cell-buffer slds-table_fixed-layout slds-max-medium-table_stacked-horizontal slds-table_striped';
-        this.className = (this.scrollable) ? (this.modelData.length > 6)  ? ((this.viewName === 'Team') ? 'slds-scrollable_y scroll-modal-height-v2 slds-p-right_small' : 'slds-scrollable_y scroll-modal-height slds-p-right_small') : 'slds-p-right_small' : 'slds-p-right_small';
-        this.mainClass = (this.scrollable) ? (this.modelData.length > 6) ? 'slds-table--header-fixed_container p-top-v1' : 'slds-table--header-fixed_container p-top-v1 overflow-none' : this.mainClass;
-        if(this.isPaginate){
-            this.sortedColumn = this.columns[0].colName;
-            this.gotoPage(this.currentPage, this.modelData);
-          //  this.totalPages(this.maxPages);
-            this.setPages();
-        }else{
-            this.pagedData = [];
-            this.pagedData = this.modelData;
+        if(this.modelData){
+            this.className = (this.scrollable) ? (this.modelData.length > 6)  ? ((this.viewName === 'Team') ? 'slds-scrollable_y scroll-modal-height-v2 slds-p-right_small' : 'slds-scrollable_y scroll-modal-height slds-p-right_small') : 'slds-p-right_small' : 'slds-p-right_small';
+            this.mainClass = (this.scrollable) ? (this.modelData.length > 6) ? 'slds-table--header-fixed_container p-top-v1' : 'slds-table--header-fixed_container p-top-v1 overflow-none' : this.mainClass;
+            if(this.isPaginate){
+                this.sortedColumn = this.columns[0].colName;
+                this.gotoPage(this.currentPage, this.modelData);
+              //  this.totalPages(this.maxPages);
+                this.setPages();
+            }else{
+                this.pagedData = [];
+                this.pagedData = this.modelData;
+            }
+            pageEvents(this, this.maxPages);
+            if (!this.modelData.length) {
+                this.norecord = true;
+                this.nopagedata = true;
+                this.tableClass = 'slds-table slds-table--header-fixed slds-table_cell-buffer slds-table_striped'
+            }else{
+                this.norecord = false;
+                this.tableClass = 'slds-table slds-table--header-fixed slds-table_cell-buffer slds-table_fixed-layout slds-max-medium-table_stacked-horizontal slds-table_striped';
+            }
+            if(this.modelData.length > 8){
+                this.searchVisible = true;
+            }else{
+                this.searchVisible = false;
+            }
+          
+            if(this.isDefaultSort){
+                this.defaultSort(this.colname, this.coltype, this.sortorder) 
+            }
         }
-        pageEvents(this, this.maxPages);
-        if (!this.modelData.length) {
-            this.norecord = true;
-            this.nopagedata = true;
-            this.tableClass = 'slds-table slds-table--header-fixed slds-table_cell-buffer slds-table_striped'
-        }else{
-            this.norecord = false;
-            this.tableClass = 'slds-table slds-table--header-fixed slds-table_cell-buffer slds-table_fixed-layout slds-max-medium-table_stacked-horizontal slds-table_striped';
-        }
-        if(this.modelData.length > 8){
-            this.searchVisible = true;
-        }else{
-            this.searchVisible = false;
-        }
-        console.log(this.colname, this.coltype, this.sortorder)
-        if(this.isDefaultSort){
-            this.defaultSort(this.colname, this.coltype, this.sortorder) 
-        }
+      
     }
 
     renderedCallback(){
@@ -857,7 +887,6 @@ export default class UserPreviewTable extends LightningElement {
         if(customIcon){
             customIcon.forEach(ev=>{
                 ev.addEventListener('click', function(e){
-                    console.log("Icon----", e, e.currentTarget.dataset.name)
                     // console.log("Icon----", e, e.currentTarget.dataset.id, e.currentTarget.dataset.st, _self.isBiweek )
                     if(e.currentTarget.dataset.name !== undefined){
                         if(_self.isBiweek !== true){
