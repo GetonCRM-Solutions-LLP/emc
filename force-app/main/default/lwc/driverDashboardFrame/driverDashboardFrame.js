@@ -1,3 +1,4 @@
+/* eslint-disable radix */
 /* eslint-disable @lwc/lwc/no-async-operation */
 /* eslint-disable guard-for-in */
 import {
@@ -17,7 +18,8 @@ export default class DriverDashboardFrame extends LightningElement {
     @track notifyList;
     @track notificationList;
     @api chartData;
-    section = 'main';
+    @api profile;
+    section = 'content-wrapper main';
     unreadCount;
     insuranceVideo;
     contentCss;
@@ -28,14 +30,18 @@ export default class DriverDashboardFrame extends LightningElement {
     excelYtdList;
     @track isTrip = true;
     @track isAttendance = false;
+    notificationViewClicked = false;
     managerRole = false;
     notificationModal = false;
     isFalse = false;
     archive = true;
     dateOfExpiration = '';
+    defaultYear = '';
+    defaultMonth = '';
     contentMessage = '';
     subMessage = '';
     myProfile = true;
+    menu = true;
     reimbursementView = false;
     manualEntryView = false;
     reimbursementArchive = false;
@@ -54,7 +60,6 @@ export default class DriverDashboardFrame extends LightningElement {
     liabilityView = false;
     tripView = false;
     biweek = false;
-    menu = true;
     monthOfTrip;
     yearOfTrip;
     startDt;
@@ -77,8 +82,8 @@ export default class DriverDashboardFrame extends LightningElement {
             "menu": "Mileage",
             "menuLabel" : "Mileage",
             "menuClass": "active",
-            "logo": logo + '/emc-design/assets/images/Icons/PNG/Green/Historical_Mileage.png',
-            "logoHov": logo + '/emc-design/assets/images/Icons/PNG/White/Historical_Mileage.png'
+            "logo": logo + '/emc-design/assets/images/Icons/PNG/Green/Mileage.png',
+            "logoHov": logo + '/emc-design/assets/images/Icons/PNG/White/Mileage.png'
         }, {
             "menuId": 102,
             "menu": "Archive",
@@ -115,20 +120,13 @@ export default class DriverDashboardFrame extends LightningElement {
             "logoHov": logo + '/emc-design/assets/images/Icons/PNG/White/Locations.png'
         }, {
             "menuId": 203,
-            "menu": "Notifications",
-            "menuLabel" : "Notifications",
-            "menuClass": "",
-            "logo": logo + '/emc-design/assets/images/Icons/PNG/Green/Notifications.png',
-            "logoHov": logo + '/emc-design/assets/images/Icons/PNG/White/Notifications.png'
-        }, {
-            "menuId": 204,
             "menu": "Compliance",
             "menuLabel" : "Compliance",
             "menuClass": "",
             "logo": logo + '/emc-design/assets/images/Icons/PNG/Green/Compliance.png',
             "logoHov": logo + '/emc-design/assets/images/Icons/PNG/White/Compliance.png'
         }, {
-            "menuId": 205,
+            "menuId": 204,
             "menu": "Tax-Liability",
             "menuLabel" : "Tax Liability",
             "menuClass": "",
@@ -140,6 +138,13 @@ export default class DriverDashboardFrame extends LightningElement {
         "label": "Help & info",
         "menuItem": [{
             "menuId": 301,
+            "menu": "Notifications",
+            "menuLabel" : "Notifications",
+            "menuClass": "",
+            "logo": logo + '/emc-design/assets/images/Icons/PNG/Green/Notifications.png',
+            "logoHov": logo + '/emc-design/assets/images/Icons/PNG/White/Notifications.png'
+        },{
+            "menuId": 302,
             "menu": "Videos",
             "menuLabel" : "Videos/Training",
             "menuClass": "",
@@ -148,92 +153,70 @@ export default class DriverDashboardFrame extends LightningElement {
         }]
     }]
 
-    managerProfileMenu = [
+    yearList = [];
+    
+    monthList = [
         {
           id: 1,
-          label: "Mileage",
-          menuItem: [
-            {
-              menuId: 101,
-              menu: "Mileage-Approval",
-              menuLabel: "Approval",
-              menuClass: "active",
-              logo: logo + "/emc-design/assets/images/Icons/PNG/Green/Approval.png",
-              logoHov:
-                logo + "/emc-design/assets/images/Icons/PNG/White/Approval.png"
-            },
-            {
-              menuId: 102,
-              menu: "Mileage-Summary",
-              menuLabel: "Summary",
-              menuClass: "active",
-              logo:
-                logo +
-                "/emc-design/assets/images/Icons/PNG/Green/Mileage_summary.png",
-              logoHov:
-                logo +
-                "/emc-design/assets/images/Icons/PNG/White/Mileage_summary.png"
-            },
-            {
-              menuId: 103,
-              menu: "Mileage-Preview",
-              menuLabel: "Preview",
-              menuClass: "active",
-              logo:
-                logo +
-                "/emc-design/assets/images/Icons/PNG/Green/Historical_Mileage.png",
-              logoHov:
-                logo +
-                "/emc-design/assets/images/Icons/PNG/White/Historical_Mileage.png"
-            }
-          ]
+          label: "January",
+          value: "January"
         },
         {
           id: 2,
-          label: "Plan management",
-          menuItem: [
-            {
-              menuId: 201,
-              menu: "Team",
-              menuLabel: "Team",
-              menuClass: "",
-              logo:
-                logo + "/emc-design/assets/images/Icons/PNG/Green/Drivers_list.png",
-              logoHov:
-                logo + "/emc-design/assets/images/Icons/PNG/White/Drivers_list.png"
-            }
-          ]
+          label: "February",
+          value: "February"
         },
         {
           id: 3,
-          label: "Help & info",
-          menuItem: [
-            {
-              menuId: 301,
-              menu: "Notifications",
-              menuLabel: "Notifications",
-              menuClass: "",
-              logo:
-                logo +
-                "/emc-design/assets/images/Icons/PNG/Green/Notifications.png",
-              logoHov:
-                logo + "/emc-design/assets/images/Icons/PNG/White/Notifications.png"
-            },
-            {
-              menuId: 302,
-              menu: "Videos",
-              menuLabel: "Videos/Training",
-              menuClass: "",
-              logo:
-                logo +
-                "/emc-design/assets/images/Icons/PNG/Green/Driver_Videos_Training.png",
-              logoHov:
-                logo +
-                "/emc-design/assets/images/Icons/PNG/White/Driver_Videos_Training.png"
-            }
-          ]
+          label: "March",
+          value: "March"
+        },
+        {
+          id: 4,
+          label: "April",
+          value: "April"
+        },
+        {
+          id: 5,
+          label: "May",
+          value: "May"
+        },
+        {
+          id: 6,
+          label: "June",
+          value: "June"
+        },
+        {
+          id: 7,
+          label: "July",
+          value: "July"
+        },
+        {
+          id: 8,
+          label: "August",
+          value: "August"
+        },
+        {
+          id: 9,
+          label: "September",
+          value: "September"
+        },
+        {
+          id: 10,
+          label: "October",
+          value: "October"
+        },
+        {
+          id: 11,
+          label: "November",
+          value: "November"
+        },
+        {
+          id: 12,
+          label: "December",
+          value: "December"
         }
-      ];
+    ]
 
     @wire(getCompanyLogoUrl, {
         accountId: '$_accountId'
@@ -252,13 +235,24 @@ export default class DriverDashboardFrame extends LightningElement {
     //      console.log('Main---->', url.hash)
     //     }, 2000)
     // }
-
+     
     proxyToObject(e) {
         return JSON.parse(e)
     }
 
     getUrlParamValue(url, key) {
         return new URL(url).searchParams.get(key);
+    }
+
+    handleOutsideClick = (event) => {
+        console.log("OUtside", event, this.notificationViewClicked)
+        if(!this.notificationViewClicked){
+            this.closeNotification();
+        }   
+    }
+
+    handleLiveNotification = (event) => {
+        event.stopPropagation();
     }
 
     /*Existing Notification Logic */
@@ -465,12 +459,14 @@ export default class DriverDashboardFrame extends LightningElement {
         var notification = [], result;
         this.unreadCount = 0;
         getNotificationMessageList({
-            conId: this._contactId
+            conId: this._contactId,
+            year: parseInt(this.defaultYear),
+            month: this.defaultMonth
         }).then((data) => { 
             result = data
             notification = this.proxyToObject(result);
             this.notifyList = notification;
-            this.notificationList = this.notifyList.slice(0, 2);
+            this.notificationList = this.notifyList.slice(0, 1);
             for (let i = 0; i < this.notifyList.length; i++) {
                 if (this.notifyList[i].unread === true) {
                   this.unreadCount++;
@@ -490,23 +486,32 @@ export default class DriverDashboardFrame extends LightningElement {
       
     }
 
-    async handleNotification(event) {
+    handleNotification(event) {
         // eslint-disable-next-line radix
         var rd = event.detail;
-       // this.unreadCount = 0
-        await updateNotificationMessage({msgId: rd}).then((data) => { 
-            let  result = data
-            let notification = this.proxyToObject(result);
-            this.notifyList = notification;
-            this.notificationList = this.notifyList.slice(0, 2);
-            for (let i = 0; i < this.notifyList.length; i++) {
-                if (this.notifyList[i].unread === true) {
-                  this.unreadCount++;
-                }
+      //  this.unreadCount = 0
+        for (let i = 0; i < this.notifyList.length; i++) {
+            if(this)
+            if (this.notifyList[i].id === rd) {
+                this.notifyList.splice(i, 1);
+                this.unreadCount = this.unreadCount - 1;
             }
-          //  this.notificationList = notification;
-            this.isNotify = (this.notifyList.length > 0) ? true : false
-           console.log("Notification", notification, result, this.unreadCount)
+        }
+        this.notificationList = this.notifyList.slice(0, 1);
+        this.isNotify = (this.notifyList.length > 0) ? true : false;
+        updateNotificationMessage({msgId: rd, year: this.defaultYear, month: this.defaultMonth}).then((data) => { 
+            let  result = data
+        //     let notification = this.proxyToObject(result);
+        //     this.notifyList = notification;
+        //     this.notificationList = this.notifyList.slice(0, 1);
+        //     for (let i = 0; i < this.notifyList.length; i++) {
+        //         if (this.notifyList[i].unread === true) {
+        //           this.unreadCount++;
+        //         }
+        //     }
+        //   //  this.notificationList = notification;
+        //     this.isNotify = (this.notifyList.length > 0) ? true : false
+           console.log("Notification", result, this.unreadCount)
         }).catch(error=>{console.log(error)})
         // for (let i = 0; i < this.notifyList.length; i++) {
         //     if (this.notifyList[i].id === rd) {
@@ -520,7 +525,7 @@ export default class DriverDashboardFrame extends LightningElement {
     handleClose(event) {
         // console.log("id", event.target.dataset.id)
         // eslint-disable-next-line radix
-        var eId = event.target.dataset.id;
+        var eId = event.currentTarget.dataset.id;
         console.log("MEssage id", eId)
       //  this.unreadCount = 0
           for (let i = 0; i < this.notifyList.length; i++) {
@@ -530,9 +535,9 @@ export default class DriverDashboardFrame extends LightningElement {
                 this.unreadCount = this.unreadCount - 1;
             }
         }
-        this.notificationList = this.notifyList.slice(0, 2);
+        this.notificationList = this.notifyList.slice(0, 1);
         this.isNotify = (this.notifyList.length > 0) ? true : false;
-        updateNotificationMessage({msgId: eId}).then((data) => { 
+        updateNotificationMessage({msgId: eId, year: this.defaultYear, month: this.defaultMonth}).then((data) => { 
             let  result = data
         //     let notification = this.proxyToObject(result);
         //     this.notifyList = notification;
@@ -557,6 +562,7 @@ export default class DriverDashboardFrame extends LightningElement {
 
 
     viewAllNotification() {
+        this.notificationViewClicked = true;
         this.headerModalText = 'Notifications';
         this.modalClass = "slds-modal slds-modal_large slds-is-fixed slds-fade-in-open animate__animated animate__fadeInTopLeft animate__delay-1s"
         this.headerClass = "slds-modal__header header-preview slds-p-left_xx-large slds-clearfix"
@@ -566,9 +572,12 @@ export default class DriverDashboardFrame extends LightningElement {
         this.styleClosebtn = "close-notify"
         // eslint-disable-next-line no-restricted-globals
         this.notificationModal = true;
-        if (this.template.querySelector('c-user-profile-modal')) {
-            this.template.querySelector('c-user-profile-modal').show();
-        }
+        setTimeout(()=>{
+            this.notificationViewClicked = false;
+        }, 1000)
+        // if (this.template.querySelector('c-user-profile-modal')) {
+        //     this.template.querySelector('c-user-profile-modal').show();
+        // }
     }
 
     editEntryTripLocation(){
@@ -581,6 +590,7 @@ export default class DriverDashboardFrame extends LightningElement {
         this.styleClosebtn = "close-notify"
         // eslint-disable-next-line no-restricted-globals
         this.notificationModal = false;
+        this.notificationViewClicked = false;
         if (this.template.querySelector('c-user-profile-modal')) {
             this.template.querySelector('c-user-profile-modal').show();
         }
@@ -588,7 +598,7 @@ export default class DriverDashboardFrame extends LightningElement {
 
     handleSidebarToggle(event) {
         console.log("From navigation", event.detail)
-        this.section = (event.detail === 'sidebar close') ? 'sidebar-open' : 'main';
+        this.section = (event.detail === 'sidebar close') ? 'content-wrapper sidebar-open' : 'content-wrapper main';
         this.contentCss = (event.detail === 'sidebar close') ? "slds-align_absolute-center content-flex content-open" : "slds-align_absolute-center content-padding2-close content-flex";
         this.videoCss = (event.detail === 'sidebar close') ?   "slds-align_absolute-center video-container video-padding" : "slds-align_absolute-center video-container video-padding-close"
         this.template.querySelector('c-dashboard-profile-header').styleHeader(event.detail);
@@ -612,6 +622,7 @@ export default class DriverDashboardFrame extends LightningElement {
         this.locationUploadView = false;
         this.resources = false;
         this.notificationModal = false;
+        this.notificationViewClicked = false;
         // eslint-disable-next-line no-restricted-globals
         window.location.href = location.origin + location.pathname + location.search + '#Insurance-Upload';
         this.template.querySelector('c-navigation-menu').toggleStyle('Insurance-Upload');
@@ -627,6 +638,7 @@ export default class DriverDashboardFrame extends LightningElement {
         this.tripView = false;
         this.locationUploadView = false;
         this.notificationModal = false;
+        this.notificationViewClicked = false;
         this.resources = true;
         // eslint-disable-next-line no-restricted-globals
         window.location.href = location.origin + location.pathname + location.search + '#Videos';
@@ -654,6 +666,7 @@ export default class DriverDashboardFrame extends LightningElement {
         this.tripView = false;
         this.locationUploadView = false;
         this.notificationModal = false;
+        this.notificationViewClicked = false;
         this.resources = true;
         // eslint-disable-next-line no-restricted-globals
         window.location.href = location.origin + location.pathname + location.search + '#Videos';
@@ -678,6 +691,9 @@ export default class DriverDashboardFrame extends LightningElement {
         this.manualEntryView = false;
         this.reimbursementArchive = true;
         this.isTripType = event.detail;
+        this.isTrip = (this.isTripType === 'MyTrip') ? true : false;
+        this.isAttendance = (this.isTripType === 'timeAttendance') ? true : false;
+        console.log("revert", this.isTripType)
         this.dispatchEvent(
             new CustomEvent("profile", {
                 detail: 'isHide'
@@ -686,6 +702,12 @@ export default class DriverDashboardFrame extends LightningElement {
         // eslint-disable-next-line no-restricted-globals
         window.location.href = location.origin + location.pathname + location.search + '#Archive';
         this.template.querySelector('c-navigation-menu').toggleStyle('Archive');
+    }
+
+    toggleHandler(event){
+        this.isTripType = event.detail;
+        this.isTrip = (this.isTripType === 'MyTrip') ? true : false;
+        this.isAttendance = (this.isTripType === 'timeAttendance') ? true : false;
     }
 
     switchToCompliance() {
@@ -758,7 +780,7 @@ export default class DriverDashboardFrame extends LightningElement {
 
     myTripDetail(event) {
         this.biweek = event.detail.boolean;
-        console.log("biweek", this.biweek)
+        // console.log("biweek", this.biweek)
         if (event.detail.boolean !== undefined) {
             if (event.detail.boolean === false) {
                 this.monthOfTrip = event.detail.month;
@@ -780,7 +802,7 @@ export default class DriverDashboardFrame extends LightningElement {
     revertToReimbursement() {
         this.isAttendance = false;
         this.isTrip = true;
-        console.log("trip boolean", this.isAttendance, this.isTrip)
+        // console.log("trip boolean", this.isAttendance, this.isTrip)
         this.myProfile = false;
         this.tripView = false;
         this.isHomePage = true;
@@ -797,7 +819,7 @@ export default class DriverDashboardFrame extends LightningElement {
         setTimeout(()=>{
             const url = new URL(document.location);
             let address = url.hash;
-            console.log("window.history", address);
+            // console.log("window.history", address);
             if(address === undefined || address === '')
                   redirectionURL({ contactId: this._contactId })
                   .then((result) => {
@@ -820,7 +842,7 @@ export default class DriverDashboardFrame extends LightningElement {
     }
 
     showSpinner(event) {
-        console.log("navigate spin")
+        // console.log("navigate spin")
         this.dispatchEvent(
             new CustomEvent("profile", {
                 detail: event.detail
@@ -850,7 +872,6 @@ export default class DriverDashboardFrame extends LightningElement {
     }
 
     renderedCallback() {
-        console.log('inside picker')
         let pageBlock
         if(this.datepickerInitialized){
           return;
@@ -869,9 +890,9 @@ export default class DriverDashboardFrame extends LightningElement {
           })
         }
     
-      }
+    }
 
-    popStateMessage = (event) => {
+    popStateMessage = () => {
         this.tripView = false;
         const url = new URL(document.location);
         let address = url.hash;
@@ -879,10 +900,14 @@ export default class DriverDashboardFrame extends LightningElement {
             document.title = 'Archive'
             this.myProfile = false;
             this.notificationModal = false;
+            this.notificationViewClicked = false;
             if (this.template.querySelector('c-user-profile-modal')) {
                 this.template.querySelector('c-user-profile-modal').hide();
             }
             this.isHomePage = true;
+            this.isTrip = (this.isTripType === 'MyTrip') ? true : false;
+            this.isAttendance = (this.isTripType === 'timeAttendance') ? true : false;
+          //  this.isTripType = (this.isTrip === true) ? 'MyTrip' : 'timeAttendance';
             this.reimbursementView = false;
             this.manualEntryView = false;
             this.reimbursementArchive = true;
@@ -894,17 +919,23 @@ export default class DriverDashboardFrame extends LightningElement {
             // eslint-disable-next-line @lwc/lwc/no-async-operation
              setTimeout(() => {
                 this.template.querySelector('c-dashboard-profile-header').styleLink('');
+                this.template
+                .querySelector("c-navigation-menu")
+                .toggleStyle('Archive');
             }, 10)
         } else if (address === '#Insurance-Upload') {
             document.title = 'My Insurance Upload'
             this.myProfile = false;
             this.notificationModal = false;
+            this.notificationViewClicked = false;
             if (this.template.querySelector('c-user-profile-modal')) {
                 this.template.querySelector('c-user-profile-modal').hide();
             }
             this.isHomePage = true;
             this.reimbursementView = false;
             this.manualEntryView = false;
+            this.isTrip = true;
+            this.isAttendance = false;
             this.reimbursementArchive = false;
             this.complianceView = false;
             this.insuranceView = true;
@@ -916,15 +947,21 @@ export default class DriverDashboardFrame extends LightningElement {
             // eslint-disable-next-line @lwc/lwc/no-async-operation
             setTimeout(() => {
                 this.template.querySelector('c-dashboard-profile-header').styleLink('Insurance-Upload');
+                this.template
+                .querySelector("c-navigation-menu")
+                .toggleStyle('Insurance-Upload');
             }, 10)
         } else if (address === '#Manual-Entry') {
             document.title = 'Manual Entry'
             this.myProfile = false;
             this.notificationModal = false;
+            this.notificationViewClicked = false;
             if (this.template.querySelector('c-user-profile-modal')) {
                 this.template.querySelector('c-user-profile-modal').hide();
             }
             this.isHomePage = true;
+            this.isTrip = true;
+            this.isAttendance = false;
             this.reimbursementView = false;
             this.manualEntryView = true;
             this.reimbursementArchive = false;
@@ -936,11 +973,20 @@ export default class DriverDashboardFrame extends LightningElement {
             // eslint-disable-next-line @lwc/lwc/no-async-operation
             setTimeout(() => {
                 this.template.querySelector('c-dashboard-profile-header').styleLink('');
+                this.template
+                .querySelector("c-navigation-menu")
+                .toggleStyle('Manual-Entry');
             }, 10)
         } else if (address === '#Notifications') {
             // this.myProfile = (this.myProfile) ? false : true;
             // console.log("Profile", this.myProfile)
+            this.notificationViewClicked = true;
             this.notificationModal = true;
+            this.isTrip = true;
+            this.isAttendance = false;
+            setTimeout(()=>{
+                this.notificationViewClicked = false;
+            }, 1000)
             this.isHomePage = (this.isHomePage) ? true : false;
             this.reimbursementView = (this.reimbursementView) ? true : false;
             this.reimbursementArchive = (this.reimbursementArchive) ? true : false;
@@ -951,24 +997,30 @@ export default class DriverDashboardFrame extends LightningElement {
             this.locationUploadView = (this.locationUploadView) ? true : false;
             this.liabilityView = (this.liabilityView) ? true : false;
             this.myProfile = (this.myProfile) ? true : false;
-            if (this.template.querySelector('c-user-profile-modal')) {
-                this.headerModalText = 'Notifications';
-                this.modalClass = "slds-modal slds-modal_large slds-is-fixed slds-fade-in-open animate__animated animate__fadeInTopLeft animate__delay-1s"
-			    this.headerClass = "slds-modal__header header-preview slds-p-left_xx-large slds-clearfix"
-			    this.subheaderClass = "slds-text-heading slds-hyphenate slds-float_left"
-			    this.modalContent = "slds-modal__content slds-p-left_medium slds-p-right_medium slds-p-bottom_medium  slds-p-top_small"
-			    this.styleHeader = "slds-modal__container slds-m-top_medium"
-			    this.styleClosebtn = "close-notify"
-                this.template.querySelector('c-user-profile-modal').show();
-            }
+            // if (this.template.querySelector('c-user-profile-modal')) {
+            //     this.headerModalText = 'Notifications';
+            //     this.modalClass = "slds-modal slds-modal_large slds-is-fixed slds-fade-in-open animate__animated animate__fadeInTopLeft animate__delay-1s"
+			//     this.headerClass = "slds-modal__header header-preview slds-p-left_xx-large slds-clearfix"
+			//     this.subheaderClass = "slds-text-heading slds-hyphenate slds-float_left"
+			//     this.modalContent = "slds-modal__content slds-p-left_medium slds-p-right_medium slds-p-bottom_medium  slds-p-top_small"
+			//     this.styleHeader = "slds-modal__container slds-m-top_medium"
+			//     this.styleClosebtn = "close-notify"
+            //     this.template.querySelector('c-user-profile-modal').show();
+            // }
              // eslint-disable-next-line @lwc/lwc/no-async-operation
             setTimeout(() => {
                 this.template.querySelector('c-dashboard-profile-header').styleLink('');
+                this.template
+                .querySelector("c-navigation-menu")
+                .toggleStyle('Notifications');
             }, 10)
         } else if (address === '#Compliance') {
             document.title = 'Compliance'
             this.myProfile = false;
             this.notificationModal = false;
+            this.isTrip = true;
+            this.isAttendance = false;
+            this.notificationViewClicked = false;
             if (this.template.querySelector('c-user-profile-modal')) {
                 this.template.querySelector('c-user-profile-modal').hide();
             }
@@ -984,16 +1036,22 @@ export default class DriverDashboardFrame extends LightningElement {
             // eslint-disable-next-line @lwc/lwc/no-async-operation
               setTimeout(() => {
                 this.template.querySelector('c-dashboard-profile-header').styleLink('');
+                this.template
+                .querySelector("c-navigation-menu")
+                .toggleStyle('Compliance');
             }, 10)
         } else if (address === '#Mileage') {
             document.title = 'Mileage'
             this.myProfile = false;
             this.notificationModal = false;
+            this.notificationViewClicked = false;
             if (this.template.querySelector('c-user-profile-modal')) {
                 this.template.querySelector('c-user-profile-modal').hide();
             }
             this.isHomePage = true;
             this.reimbursementView = true;
+            this.isTrip = (this.isTripType === 'MyTrip') ? true : false;
+            this.isAttendance = (this.isTripType === 'timeAttendance') ? true : false;
             this.manualEntryView = false;
             this.reimbursementArchive = false;
             this.complianceView = false;
@@ -1004,13 +1062,22 @@ export default class DriverDashboardFrame extends LightningElement {
             // eslint-disable-next-line @lwc/lwc/no-async-operation
             setTimeout(() => {
                 this.template.querySelector('c-dashboard-profile-header').styleLink('');
+                this.template
+                .querySelector("c-navigation-menu")
+                .toggleStyle('Mileage');
             }, 10)
         } else if (address === '#Tax-Liability') {
             document.title = 'Tax Liability'
             this.myProfile = false;
             this.notificationModal = false;
+            this.isTrip = true;
+            this.isAttendance = false;
+            this.notificationViewClicked = false;
             if (this.template.querySelector('c-user-profile-modal')) {
                 this.template.querySelector('c-user-profile-modal').hide();
+                this.template
+                .querySelector("c-navigation-menu")
+                .toggleStyle('Tax-Liability');
             }
             this.isHomePage = true;
             this.reimbursementView = false;
@@ -1028,7 +1095,10 @@ export default class DriverDashboardFrame extends LightningElement {
         } else if (address === '#Locations') {
             document.title = 'Locations'
             this.myProfile = false;
+            this.isTrip = true;
+            this.isAttendance = false;
             this.notificationModal = false;
+            this.notificationViewClicked = false;
             if (this.template.querySelector('c-user-profile-modal')) {
                 this.template.querySelector('c-user-profile-modal').hide();
             }
@@ -1044,11 +1114,17 @@ export default class DriverDashboardFrame extends LightningElement {
             // eslint-disable-next-line @lwc/lwc/no-async-operation
               setTimeout(() => {
                 this.template.querySelector('c-dashboard-profile-header').styleLink('');
+                this.template
+                .querySelector("c-navigation-menu")
+                .toggleStyle('Locations');
             }, 10)
         } else if (address === '#Videos') {
             document.title = 'Videos/Training'
             this.myProfile = false;
+            this.isTrip = true;
+            this.isAttendance = false;
             this.notificationModal = false;
+            this.notificationViewClicked = false;
             if (this.template.querySelector('c-user-profile-modal')) {
                 this.template.querySelector('c-user-profile-modal').hide();
             }
@@ -1064,10 +1140,14 @@ export default class DriverDashboardFrame extends LightningElement {
             // eslint-disable-next-line @lwc/lwc/no-async-operation
          setTimeout(() => {
             this.template.querySelector('c-dashboard-profile-header').styleLink('Videos')
+            this.template
+            .querySelector("c-navigation-menu")
+            .toggleStyle('Videos');
          }, 10);
         } else {
             this.isHomePage = false;
             this.notificationModal = false;
+            this.notificationViewClicked = false;
             if (this.template.querySelector('c-user-profile-modal')) {
                 this.template.querySelector('c-user-profile-modal').hide();
             }
@@ -1083,6 +1163,9 @@ export default class DriverDashboardFrame extends LightningElement {
             // eslint-disable-next-line @lwc/lwc/no-async-operation
               setTimeout(() => {
                 this.template.querySelector('c-dashboard-profile-header').styleLink('');
+                this.template
+                .querySelector("c-navigation-menu")
+                .toggleStyle('');
             }, 10)
         }
          // eslint-disable-next-line @lwc/lwc/no-async-operation
@@ -1093,28 +1176,79 @@ export default class DriverDashboardFrame extends LightningElement {
         this.template.querySelector('c-dashboard-profile-header').setSource(this.isHomePage);
         // let address = params.get('#'); // is the string "Jonathan Smith".
         //setTimeout(function (){
-        console.log('Main---->', url.hash, event)
+        console.log('Main---->', url.hash)
         // }, 1000)
+    }
+
+    getLastYear(){
+        var current, year, count = 5, i, list = [];
+        current = new Date();
+        year = current.getFullYear();
+        for (i = year; i > year - count; i--) {
+            let obj = {}
+            obj.id = i;
+            obj.label = (i).toString();
+            obj.value = (i).toString();
+            list.push(obj);
+         }
+
+         return list
+    }
+
+    closeNotification(){
+        let divElement = this.template.querySelector('.vue-sidebar');
+        const url = new URL(document.location);
+        let address = url.hash;
+      
+        if (divElement) {
+          divElement.classList.remove("transition");
+          divElement.classList.add("transition-back");
+          setTimeout(() => {
+            this.notificationModal = false;
+            if (address === "#Notifications") {
+                window.history.go(
+                window.history.length - window.history.length - 1
+                );
+          }
+          }, 1000);
+         
+        }
+       // this.notificationModal = false;
+    }
+
+    handleYearChange(event){
+        this.defaultYear = event.detail.value;
+        this.getContactNotification();
+        console.log("Year change-", this.defaultYear);
+    }
+
+    
+    handleMonthChange(event){
+        this.defaultMonth = event.detail.value;
+        this.getContactNotification();
+        console.log("month change-",  this.defaultMonth);
     }
 
     connectedCallback() {
         var currentDay = new Date(), currentYear = '', selectedYear = '';
         const idParamValue = this.getUrlParamValue(window.location.href, 'id');
         const aidParamValue = this.getUrlParamValue(window.location.href, 'accid');
-        const managerId = this.getUrlParamValue(window.location.href, 'managerid');
-        this.managerRole = (managerId) ? true : false;
         this.currentDate = validateDate(new Date());
+        this.defaultYear = (currentDay.getFullYear()).toString();
+        this.defaultMonth = currentDay.toLocaleString('default', {
+            month: 'long'
+        })
         //this.currentDate = 'null';
         this._contactId = idParamValue;
         this._accountId = aidParamValue;
         this.isHomePage = false;
+        this.yearList = this.getLastYear();
+
+        window.addEventListener('click', this._handler = this.handleOutsideClick.bind(this));
         window.addEventListener('popstate', this.popStateMessage);
         getCustomSettings()
             .then((result) => {
                 this.insuranceVideo = result.Insurance_Link__c;
-                if(window.location.hash !== ''){
-                    setTimeout(() => {this.popStateMessage()} , 10);
-                 }
                 console.log("getCustomSettings", result)
             }).catch((error) => {
                 console.log("getCustomSettings", error)
@@ -1128,48 +1262,53 @@ export default class DriverDashboardFrame extends LightningElement {
                 selectedYear = currentYear.toString();
             }
 
-            console.time("Start")
-            getAllReimbursements({
-                year: selectedYear,
-                contactId: this._contactId,
-                accountId: this._accountId
-            })
-            .then((result) => {
-                let reimbursementList = this.proxyToObject(result[0]);
-                this.mileageList = reimbursementList;
-                this.excelYtdList = this.proxyToObject(result[1]);
-                this.ytdList = this.proxyToObject(result[1]);
-                if (this.ytdList) {
-                    this.ytdList.varibleAmountCalc = (this.ytdList.varibleAmountCalc) ? this.ytdList.varibleAmountCalc.replace(/\$/g, "") : this.ytdList.varibleAmountCalc;
-                    this.ytdList.totalReim = (this.ytdList.totalReim) ? this.ytdList.totalReim.replace(/\$/g, "") : this.ytdList.totalReim;
-                    this.ytdList.totalMonthlyFixedCalc = (this.ytdList.totalMonthlyFixedCalc) ? this.ytdList.totalMonthlyFixedCalc.replace(/\$/g, "") : this.ytdList.totalMonthlyFixedCalc;
-                    this.ytdList.totalAVGCalc = (this.ytdList.totalAVGCalc) ? this.ytdList.totalAVGCalc.replace(/\$/g, "") : this.ytdList.totalAVGCalc;
+            getDriverDetails({
+                contactId: this._contactId
+            }).then((data) => {
+                if (data) {
+                    let contactList = this.proxyToObject(data);
+                    this.contactInformation = data;
+                    console.log("contact--->", this.contactInformation);
+                    this.userTriplogId = contactList[0].Triplog_UserID__c;
+                    this.userEmail = contactList[0].External_Email__c;
+                    this.userName = contactList[0].Name;
+                    this.firstName = contactList[0].FirstName;
+                    this.dateOfExpiration = contactList[0].Expiration_Date__c;
+                    console.log("Name", this.userName, this.userEmail)
+                    this.getContactNotification();
+                    getAllReimbursements({
+                        year: selectedYear,
+                        contactId: this._contactId,
+                        accountId: this._accountId
+                    })
+                    .then((result) => {
+                        let reimbursementList = this.proxyToObject(result[0]);
+                        this.mileageList = reimbursementList;
+                        this.excelYtdList = this.proxyToObject(result[1]);
+                        this.ytdList = this.proxyToObject(result[1]);
+                        if (this.ytdList) {
+                            this.ytdList.varibleAmountCalc = (this.ytdList.varibleAmountCalc) ? this.ytdList.varibleAmountCalc.replace(/\$/g, "") : this.ytdList.varibleAmountCalc;
+                            this.ytdList.totalFixedAmountCalc = (this.ytdList.totalFixedAmountCalc) ? this.ytdList.totalFixedAmountCalc.replace(/\$/g, "") : this.ytdList.totalFixedAmountCalc;
+                            this.ytdList.totalReim = (this.ytdList.totalReim) ? this.ytdList.totalReim.replace(/\$/g, "") : this.ytdList.totalReim;
+                            this.ytdList.totalMonthlyFixedCalc = (this.ytdList.totalMonthlyFixedCalc) ? this.ytdList.totalMonthlyFixedCalc.replace(/\$/g, "") : this.ytdList.totalMonthlyFixedCalc;
+                            this.ytdList.totalAVGCalc = (this.ytdList.totalAVGCalc) ? this.ytdList.totalAVGCalc.replace(/\$/g, "") : this.ytdList.totalAVGCalc;
+                            if(window.location.hash !== ''){
+                                setTimeout(() => {this.popStateMessage()} , 10);
+                            }
+                        }
+                        console.log("getAllReimbursement", result)
+                    })
+                    .catch((error) => {
+                        console.log("getAllReimbursements error", error);
+                    });
+                    // this.driverNotification(contactList[0].Notification_Message__c, contactList[0].Notification_Date__c, contactList[0].Insurance_Upload_Date__c);
                 }
-                console.log("getAllReimbursement", result)
-                getDriverDetails({
-                    contactId: this._contactId
-                }).then((data) => {
-                    if (data) {
-                        console.timeEnd("Start")
-                        let contactList = this.proxyToObject(data);
-                        this.contactInformation = data;
-                        console.log("contact--->", this.contactInformation);
-                        this.userTriplogId = contactList[0].Triplog_UserID__c;
-                        this.userEmail = contactList[0].External_Email__c;
-                        this.userName = contactList[0].Name;
-                        this.firstName = contactList[0].FirstName;
-                        this.dateOfExpiration = contactList[0].Expiration_Date__c;
-                        console.log("Name", this.userName, this.userEmail)
-                        this.getContactNotification();
-                        // this.driverNotification(contactList[0].Notification_Message__c, contactList[0].Notification_Date__c, contactList[0].Insurance_Upload_Date__c);
-                    }
-                }).catch((error) => {
-                    console.log("getDriverDetails error", error.message)
-                })
+            }).catch((error) => {
+                console.log("getDriverDetails error", error)
             })
-            .catch((error) => {
-                console.log("getAllReimbursements error", error);
-            });
+
+          
+
 
     }
 }

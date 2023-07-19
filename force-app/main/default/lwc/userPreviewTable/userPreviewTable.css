@@ -15,6 +15,28 @@
     font-family: 'Proxima Nova' !important;
 }
 
+
+/*Media Queriers Started */
+@media screen and (max-width: 1199px) and (min-width: 768px) {
+    .slds-table--header-fixed_container, .overflow-none{
+        overflow-x: auto !important;
+        padding-bottom: 1rem;
+    }
+
+    .slds-scrollable_y,
+    .slds-p-right_small{
+        width: 300%;
+    }
+}
+
+
+/*  top: -68px;
+    bottom: 0;
+    right: 0;
+    position: absolute;
+    left: 66%;
+    transform: translateX(-66%); */
+
 .fa,
 .fas,
 .fa-solid,
@@ -86,6 +108,47 @@
 
 .header-title--v2 a:hover {
     text-decoration: none !important;
+}
+
+.status{
+    display: inline-flex;
+    padding: 1px 6px;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+}
+
+.status-success{
+    border-radius: 4px;
+    background: rgba(122, 187, 74, 0.15);
+}
+
+.status-error{
+    border-radius: 4px;
+    background: rgba(250, 120, 0, 0.15);
+}
+
+.status-normal{
+    border-radius: 4px;
+    background: #f6f6f6;
+}
+
+.status-text{
+    text-align: center;
+    font-family: 'Proxima Nova' !important;
+    font-size: 13px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: 132.8%;
+    text-transform: capitalize;
+}
+
+.text-red{
+    color: #FA7800;
+}
+
+.text-green{
+    color: #7abb4a
 }
 
 .slds-table thead th {
@@ -194,13 +257,13 @@
 
 .slds-scrollable_y::-webkit-scrollbar {
     width: 5px;
-    height: 50px;
+    height: 5px;
     background-color: var(--scroll-color);
 }
 
 .slds-scrollable_y::-webkit-scrollbar-thumb {
     border-radius: 100px;
-    height: 50px;
+    height: 5px;
     background-color: var(--active-color)
 }
 
@@ -246,7 +309,7 @@
 }
 
 .linked:hover {
-    color: #7abb4a !important;
+    color: var(--link-color) !important;
 }
 
 .sort_icon {
@@ -397,7 +460,7 @@
 }
 
 .overflow-none {
-    overflow: visible !important;
+    overflow: visible;
 }
 
 .download-icon {
@@ -546,12 +609,17 @@
 
 .edit-mode {
     cursor: pointer;
+    vertical-align: top;
 }
 
 .linked {
     text-decoration: underline;
-    color: var(--green-color);
+    color: var(--link-color);
     font-family: 'Proxima Nova Bold' !important;
+}
+
+.checkbox-toggle{
+    padding: 4px 0;
 }
 
 .row-divider--v1 {
@@ -589,4 +657,8 @@
 .slds-checkbox [type=checkbox]:checked+.slds-checkbox__label .slds-checkbox_faux:after {
     border-bottom: 2px solid var(--even-row-color) !important;
     border-left: 2px solid var(--even-row-color) !important;
+}
+
+.header-checkbox{
+    width: 40px;
 }

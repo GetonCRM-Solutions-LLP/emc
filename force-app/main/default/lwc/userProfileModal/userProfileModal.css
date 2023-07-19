@@ -4,6 +4,10 @@
     --mburse-color: #7ABB4A;
 }
 
+*{
+    font-family: 'Proxima Nova' !important;
+}
+
 table tr td {
     font-family: 'Proxima Nova' !important;
 }
@@ -27,8 +31,7 @@ table tr td {
     border: 0 !important;
     color: #7abb4a !important;
     font-size: 16px !important;
-    font-weight: 700 !important;
-    font-family: 'Proxima Nova';
+    font-family: 'Proxima Nova Bold' !important;
 }
 
 .message-header{
@@ -87,7 +90,7 @@ button.close {
 }
 
 .close{
-    font-weight: 700;
+    font-family: 'Proxima Nova Bold' !important;
     position: relative;
     float: right;
 }
@@ -140,12 +143,12 @@ button.close {
 .slds-text-heading_medium{
     font-size: 25px;
     line-height: 39px;
-    font-weight: 700;
+    font-family: 'Proxima Nova Bold' !important;
     color: var(--mburse-color);
 }
 
 .header-v1{
-    font-weight: 700;
+    font-family: 'Proxima Nova Bold' !important;
     font-size: 16px;
 }
 
@@ -153,13 +156,14 @@ sub {
     bottom: -0.1em !important;
     font-size: 60% !important;
     padding-left: 7px !important;
+    font-family: 'Proxima Nova Bold' !important;
 }
 
 
 .slds-text-heading{
     font-size: 26px;
     line-height: 39px;
-    font-weight: 700;
+    font-family: 'Proxima Nova Bold' !important;
     color: #1d1d1d;
 }
 
@@ -183,7 +187,7 @@ sub {
 
 .slds-heading_small{
     font-size: 20px;
-    font-weight: 700;
+    font-family: 'Proxima Nova Bold' !important;
     color: var(--mburse-color);
 }
 
@@ -191,4 +195,13 @@ sub {
     width: 628px !important;
 }
 
+.overflow-visible{
+    overflow: visible !important;
+}
 
+.close-btn-employee {
+    right: 14px;
+    top: 8px;
+    margin-top: 26px;
+    margin-right: 60px;
+ }

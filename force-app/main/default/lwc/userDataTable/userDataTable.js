@@ -28,6 +28,9 @@ export default class UserDataTable extends LightningElement {
     @api modelData;
     @api searchKey;
     @api isBiweek;
+    @api colname;
+    @api sortorder;
+    @api coltype;
     @api isDefaultSort = false;
     norecord = false;
     @track searchVisible = false;
@@ -565,10 +568,18 @@ export default class UserDataTable extends LightningElement {
                 return this.modelData;
     }
 
-  
 
     proxyToObj(obj) {
         return JSON.parse(JSON.stringify(obj));
+    }
+
+    linkHandler(event){
+        let id = event.currentTarget.dataset.id;
+        let element =  this.getElement(this.modelData, id);
+        const linkEvent = new CustomEvent('access', {detail: JSON.stringify(element)});
+        this.dispatchEvent(linkEvent);
+        const editRecord = new CustomEvent('edit', { detail: id});
+        this.dispatchEvent(editRecord);
     }
 
     numberWithCommas(x) {
@@ -599,7 +610,8 @@ export default class UserDataTable extends LightningElement {
         }
 
         if(this.isDefaultSort){
-            this.defaultSort('tripdate', 'Date') 
+           // this.defaultSort('tripdate', 'Date') 
+           this.defaultSort(this.colname, this.coltype, this.sortorder) 
         }
     }
 

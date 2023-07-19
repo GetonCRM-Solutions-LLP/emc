@@ -3,6 +3,7 @@
 /* eslint-disable vars-on-top */
 import { LightningElement,api,track } from 'lwc';
 import resourceImage from '@salesforce/resourceUrl/mBurseCss';
+import MassSyncTripsForBiweek from "@salesforce/apex/ManagerDashboardController.MassSyncTripsForBiweek";
 import MassSyncTripsForReimbursements from '@salesforce/apex/ManagerDashboardController.MassSyncTripsForReimbursements';
 import {
     toastEvents, syncEvents
@@ -13,6 +14,8 @@ export default class UserFlaggingTrip extends LightningElement {
     @api accountId;
     @api contactId;
     @api headerName;
+    @api emailaddress;
+    @api isAccountBiweek;
     isRecord = false;
     sortable = true;
     modalOpen = false;
@@ -164,6 +167,7 @@ export default class UserFlaggingTrip extends LightningElement {
     handleChange(event){
         var pageItem = { "id": 1, "label": "This Page", "value": "This Page" }
         this._value = event.target.value;
+        this.isRecord = this._value === "" ? true : false;
         this.template.querySelector('c-user-preview-table').searchByKey(this._value)
         if (this.selectList.length < 2) {
             this.selectList.splice(0, 0, pageItem)
@@ -203,6 +207,19 @@ export default class UserFlaggingTrip extends LightningElement {
             this.modelList = this.template.querySelector('c-user-preview-table').returnList();
         }
         //console.log("Select--->", JSON.stringify(event.detail))
+    }
+
+    resetList(reimList) {
+        this.modelList = reimList;
+        this.dynamicBinding(this.modelList, this.modalKeyFields);
+        if (this.modelList) {
+          this.isSubmitVisible = false;
+         // this.modelList = this.sort(this.modelList, "name");
+          this.template
+            .querySelector("c-user-preview-table")
+            .refreshTable(this.modelList);
+            this.template.querySelector('c-user-preview-table').defaultSort('tripdate', 'Date', 'desc')
+        }
     }
 
     renderList(event) {
@@ -271,7 +288,8 @@ export default class UserFlaggingTrip extends LightningElement {
         target = event.detail.targetId;
         this.modelList = this.template.querySelector('c-user-preview-table').returnList();
         console.log("Model", this.modelList)
-        content = this.modelList;
+       // content = this.modelList;
+       content = (this.searchmodelList.content) ? (this.searchmodelList.content.length > 0) ? this.searchmodelList.content : this.modelList : this.modelList;
         boolean = this.checkUncheckRow(target, checkbox, content);
         model = content;
         len = content.length;
@@ -397,20 +415,35 @@ export default class UserFlaggingTrip extends LightningElement {
               this.allReimbursementList.push(el.reimbursementid)
           }
         })
-        MassSyncTripsForReimbursements({
-            reimbursements: JSON.stringify(this.allReimbursementList)
-          }).then((result) => {
-            if(result){
-              let toast = { type: "success", message: 'Please wait for few minutes. mileage sync process is running in background.' };
-              syncEvents(this, '')
-              toastEvents(this, toast);
-            }
-          }).catch((error) => {
-             console.log('Error', error)
-          })
+        if(this.isAccountBiweek) {
+            MassSyncTripsForBiweek({
+                biWeek: JSON.stringify(element),
+                accID: this.accountId
+            }).then((result) => {
+                if(result){
+                let toast = { type: "success", message: 'Please wait for few minutes. mileage sync process is running in background.' };
+                syncEvents(this, '')
+                toastEvents(this, toast);
+                }
+            }).catch((error) => {
+                console.log('Error', error)
+            })
+        }else{
+            MassSyncTripsForReimbursements({
+                reimbursements: JSON.stringify(this.allReimbursementList)
+            }).then((result) => {
+                if(result){
+                let toast = { type: "success", message: 'Please wait for few minutes. mileage sync process is running in background.' };
+                syncEvents(this, '')
+                toastEvents(this, toast);
+                }
+            }).catch((error) => {
+                console.log('Error', error)
+            })
+        }
     }
 
-    submitHandler(){
+    flaggingProcess(){
         var approveTrip, flagTrip, unapproveTrip, arrayElement, toast, message
         arrayElement = this.modelList;
         this.dispatchEvent(
@@ -436,12 +469,12 @@ export default class UserFlaggingTrip extends LightningElement {
             selected: JSON.stringify(approveTrip),
             unapprove: JSON.stringify(unapproveTrip),
             name: this.headerName,
-            emailaddress: 'sjg.it22@gmail.com'
+            emailaddress: this.emailaddress
         })
         .then((result) => {
             if(result != null){
                 if(result === 'success'){
-                    message = 'Mileage has been approved';
+                    message = 'Mileage has been flagged';
                     this.dispatchEvent(
                         new CustomEvent("hide", {
                             detail: "spinner"
@@ -497,6 +530,57 @@ export default class UserFlaggingTrip extends LightningElement {
         console.log("Approve", approveTrip);
         console.log("Flag", flagTrip);
         console.log("unapprove", unapproveTrip);
+    }
+
+    cancelFlagging(){
+        if (this.template.querySelector("c-user-profile-modal")) {
+          this.template.querySelector("c-user-profile-modal").hide();
+        }
+        this.resetList(this.originalModelList)
+    }
+    
+    
+    handleFlagging(){
+        if (this.template.querySelector("c-user-profile-modal")) {
+          this.template.querySelector("c-user-profile-modal").hide();
+        }
+        this.flaggingProcess();
+    }
+
+    submitHandler(){
+        let data = this.modelList, lockdatecount = 0;
+        for (let i = 0; i < data.length; i++) {
+          if (data[i].isChecked) {
+            if (data[i].lockdate !== "") {
+                if(data[i].lockdate != null){
+                    lockdatecount++;
+                }
+            }
+          }
+        }
+        
+        console.log("lockdate--", lockdatecount, this.emailaddress)
+        if (lockdatecount > 0) {
+            let lockDate = this.modelList[0].lockdate;
+            let currentDateLocked = new Date(lockDate);
+            console.log("date", lockDate, currentDateLocked)
+            let lockedMonth = currentDateLocked.toLocaleString('default', { month: 'long' });
+            this.islockdate = true;
+            this.headerModalText = "Mileage Lock Date";
+            this.modalClass = "slds-modal modal_info slds-fade-in-open";
+            this.headerClass = "slds-modal__header";
+            this.subheaderClass = "slds-p-top_large header-v1";
+            this.modalContent = "slds-modal__content";
+            this.styleHeader = "slds-modal__container slds-m-top_medium";
+            this.styleClosebtn = "close-notify";
+            this.contentMessage =
+                "You approved mileage after the "+ lockedMonth + " month reimbursement report was run. This mileage will be applied to the next reimbursement period report";
+                if (this.template.querySelector("c-user-profile-modal")) {
+                    this.template.querySelector("c-user-profile-modal").show();
+                }
+        } else {
+            this.flaggingProcess();
+        }
     }
 
     connectedCallback(){

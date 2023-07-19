@@ -18,7 +18,7 @@
     background: var(--color-white) !important;
     border-radius: 10px !important;
     justify-content: space-between;
-    padding: 1.2em;
+    padding: 1.2em 1em;
     margin: 1em 0;
 }
 

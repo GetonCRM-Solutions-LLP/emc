@@ -1,0 +1,189 @@
+<template>
+    <div class="">
+    <div class="flex-row tab-wrapper">
+        <button style="border-color:  var(--green-color) !important;" 
+        class="slds-btn slds-btn-primary tab-btn slds-btn-sm waves-effect bc-white waves-light mleft-0 employee  btn-toggle is-active" data-id="employee" onclick={handleTab}>
+            View All Employee
+        </button>
+        <button style="border-color:  var(--green-color) !important;" 
+        class="slds-btn slds-btn-primary tab-btn slds-btn-sm waves-effect bc-white waves-light mleft-0  add-employee btn-toggle" data-id="add" onclick={handleTab}>
+            Add
+        </button>
+        <button style="border-color:  var(--green-color) !important;" 
+        class="slds-btn slds-btn-primary tab-btn slds-btn-sm waves-effect bc-white waves-light mleft-0  import btn-toggle" data-id="import" onclick={handleTab}>
+            Import
+        </button>
+    </div>
+    <template if:true={isListEmployeetab}>
+        <template if:true={isdataLoaded}>
+            <div class="employee-container">
+                <c-user-preview-table  head-th="header-title--v1" sort-th="sort-container p-top-v1" main-class={classToTable} model-data={employeeList} 
+                columns={employeeColumn} options={empKeyFields} is-sortable={sortable} oneditmode={editMode} onupdate={handleUpdateList}
+                colname="name" coltype="String" onremovetag={handleRemoveTag} norecord-message={noMessage} inline-checkbox={isCheckbox} oniconclick={handleModal} 
+                is-paginate={paginated} sortorder="asc" editable-view={editableView} scrollable={isScrollable} 
+                onenablesubmit={enableSubmit} ondisablecheckbox={disableCheckbox} onedit={editEmployee}>
+                <div slot="filter"  class="slds-p-left_small slds-p-bottom_small row">
+        
+                        <button  onclick={downloadAllEmployee}
+                                    class="slds-btn slds-btn-primary slds-btn-sm waves-effect bc-green waves-light mleft-0"><svg
+                                        xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 22 22"
+                                        fill="none" style="margin-right: 3px;margin-bottom: 2px;">
+                                        <path
+                                            d="m6.654 10.232 0.028 -0.028 -0.028 0.028 3.76 3.76a0.824 0.824 0 0 0 0.126 0.104 0.55 0.55 0 0 0 0.06 0.032h0.001l0.028 0.016 0.008 0.005 0.042 0.022a0.314 0.314 0 0 0 0.078 0.025l0.006 0.002a0.49 0.49 0 0 0 0.072 0.022l0.002 0.001a0.828 0.828 0 0 0 0.324 0h0.002a0.442 0.442 0 0 0 0.046 -0.016 0.459 0.459 0 0 1 0.024 -0.006l0.002 -0.002 0.028 -0.008 0.05 -0.016a0.464 0.464 0 0 0 0.086 -0.044l0.001 -0.001 0.002 -0.001a0.204 0.204 0 0 1 0.024 -0.014l0.032 -0.019a0.838 0.838 0 0 0 0.126 -0.104l3.76 -3.76a0.828 0.828 0 0 0 0 -1.172 0.828 0.828 0 0 0 -1.172 0l-2.348 2.348V4.262a0.83 0.83 0 0 0 -1.656 0v7.147l-2.343 -2.348a0.828 0.828 0 0 0 -1.171 0 0.828 0.828 0 0 0 0 1.172Zm11.724 6.792a0.829 0.829 0 0 0 -0.83 -0.828H4.45a0.83 0.83 0 0 0 0 1.655h13.1a0.83 0.83 0 0 0 0.829 -0.829Z"
+                                            fill="white" stroke="white" stroke-width="0.08871573333333335" />
+                                    </svg>Export Excel
+                                    <!-- <i class="fa-solid fa-download"></i>Download -->
+                        </button>
+                        <template if:false={isSubmitVisible}>
+                            <c-dropdown-select class="activity-dropdown" options={activityList} 
+                                    onchange={handleActivity}
+                                    selected-value={currentActivity}
+                                    main-class="default-box-input slds-truncate"> </c-dropdown-select>
+                        </template>     
+                        <c-activity-actions onstart={startSpinner} ontoast={showToast} onstop={stopSpinner} onreset={disableCheckbox} activity-list={activities} ></c-activity-actions>
+                        <template if:true={isSubmitVisible}>
+                            <button  onclick={submitActivity} class="slds-btn slds-btn-primary slds-btn-sm waves-effect bc-green waves-light mleft-0 submit-activity btn-no-icon">{currentActivity}</button>
+                        </template>
+                </div> 
+                <div slot="header">
+                    <div class="slds-float_right">
+                        <div class="slds-input-has-icon slds-input-has-icon_right search-holder">
+                            <div class="search-icon-block">
+                                <img class="search-icon" src={searchIcon} />
+                            </div>
+                            <input class="slds-input filter-input" type="text" placeholder="Search"
+                            onkeyup={handleChange}/>
+                        </div>
+                    </div>
+                    <div if:true={isSubmitVisible} class="slds-float_right">
+                        <button  onclick={disableCheckbox} class="slds-btn slds-btn-primary slds-btn-sm waves-effect slds-cancelBtn waves-light mleft-0 submit-activity"> <svg class="cancel_icon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 18 18"
+                            fill="none">
+                            <path d="M1.8 16 15.8 1.998M1.8 2 15.8 16.002" stroke="white" stroke-width="2.16"
+                                stroke-linecap="round" />
+                          </svg> Cancel</button>
+                    </div>
+                </div> 
+                </c-user-preview-table>
+                <div class="slds-align_absolute-center" if:true={isEditMode}>
+                    <button class="slds-btn slds-btn-primary slds-btn-md waves-effect bc-green waves-light" onclick={updateEmployee}>
+                        Update
+                    </button>
+                    <button class="slds-btn slds-btn-primary slds-btn-md waves-effect bc-black waves-light" onclick={cancelEditMode}>
+                      Cancel
+                    </button>
+                </div>
+            </div>
+    
+        </template>
+    </template>
+    <template if:true={isAddEmployeeTab}>
+        <div class="employee-container employee-container-border">
+                <c-add-employee accid={accid} contactid={contactid}  record={currentRecord} ontoast={showToast} onshow={startSpinner} onhide={stopSpinner}  onaddemployee={AddEmployee}>
+                </c-add-employee>
+        </div>
+    </template>
+    <template if:true={isImportTab}>
+        <div class="employee-container employee-container-border">
+            <c-import-employee acc-id={accid} con-id={contactid}></c-import-employee>
+        </div>
+    </template>
+    
+    <c-user-profile-modal header="" modal-class="slds-modal slds-modal_x-small slds-is-fixed slds-fade-in-open animate__animated animate__slideInUp animate__fast"
+    modal-content-style={contentText}
+    header-class="slds-modal__header resource-header slds-clearfix"
+    style-header="slds-modal__container slds-m-top_medium"
+    close-btn-class="close-btn-employee" onclosedialog={handleCloseModal} >
+
+            <!-- do not remove below code it's for adding new state list -->
+            <div class="modal-content"> 
+                <div class="tag-input tag-h-medium">
+                    <template if:true={isDrivingStateModal}>
+                        <h3 class="drive-state-label">Driving States
+                            <span onmouseenter={showTooltip} onmouseleave={hideTooltip}><svg width="25" height="24" viewBox="0 0 25 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M12.5944 1.95441C18.0947 1.95441 22.5426 6.44578 22.5426 12.0001C22.5426 17.5545 18.0949 22.0458 12.5944 22.0458C7.09401 22.0458 2.64625 17.5545 2.64625 12.0001C2.64625 6.44578 7.09401 1.95441 12.5944 1.95441ZM12.5944 0C6.04153 0 0.710938 5.38298 0.710938 12C0.710938 18.617 6.04165 24 12.5944 24C19.1472 24 24.4779 18.617 24.4779 12C24.4779 5.38298 19.1472 0 12.5944 0Z" fill="#7ABB4A"/>
+                                <path d="M14.0178 17.2092C14.0178 17.9286 13.4402 18.5118 12.7275 18.5118C12.0151 18.5118 11.4375 17.9285 11.4375 17.2092C11.4375 16.4895 12.0151 15.9062 12.7275 15.9062C13.4402 15.9062 14.0178 16.4896 14.0178 17.2092Z" fill="#7ABB4A"/>
+                                <path d="M9.8125 9.53407C9.8125 7.88843 11.1705 6.5513 12.8004 6.6197C14.3283 6.6539 15.5847 7.92262 15.6185 9.46543C15.6524 10.6997 14.9054 11.7967 13.8529 12.2425C13.1739 12.551 12.6986 13.1683 12.6986 13.9226" stroke="#7ABB4A" stroke-width="1.74938" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                            </span>
+                            <div class="slds-popover slds-popover_tooltip slds-nubbin_bottom-left state-popover" role="tooltip" id="help">
+                                <div class="slds-popover__body">
+                                    <b>Use State Abbreviations:</b><br/>
+                                    <div class="state-content">{validStateList}</div>
+                                </div>
+                            </div>
+                        </h3>
+                        <c-tag-state-list class="state-list" modal-class="tag-input-container" tags={tags} onremove={handleRemoveTag} >
+                            <input type="text" placeholder="Enter a state" value={newTag} onkeydown={handleTagInput} onblur={handleTagInput} />
+                        </c-tag-state-list>
+                    </template>
+                    <template if:true={isDeactivateDateModal}>
+                        <div>
+                            <div class="slds-grid slds-wrap slds-p-top_large">
+                                <div class="slds-col slds-size_2-of-4 slds-p-top_x-small modal-input">Deactivation Date:</div>
+                                <div class="slds-col slds-size_2-of-4 slds-m-bottom_medium">
+                                    <c-date-picker  ondateselect={handledate}></c-date-picker>
+                                </div>
+                                <div class="slds-col slds-size_2-of-4 slds-p-top_x-small modal-input">Final Payroll Amount:</div>
+                                <div class="slds-col slds-size_2-of-4 slds-m-bottom_small"> 
+                                        <input class="content-input" onkeydown={handleKeyDown} oninput={handleInput} onchange={handlePayRoll}>
+                                </div>
+                            </div>
+                            <div class="date-modal-btn slds-p-top_medium">
+                                <button class="slds-btn slds-btn-primary slds-btn-md waves-effect bc-green waves-light" onclick={updateDeactivationDate}>
+                                    Select
+                                </button>
+                                <button class="slds-btn slds-btn-primary slds-btn-md waves-effect bc-black waves-light" onclick={handleCloseModal}>
+                                    Cancel
+                                </button>
+                            </div>
+                        </div>
+                    </template>
+                    <template if:true={isMileageLockDateModal} >
+                        <div>
+                            <div class="slds-grid slds-wrap slds-p-top_large">
+                                <div class="slds-col slds-size_2-of-4  modal-input">Lock Date :</div>
+                                <div class="slds-col slds-size_2-of-4 slds-m-bottom_medium">
+                                    <c-date-picker  ondateselect={handleMileageLockDate}></c-date-picker>
+                                </div>
+                                <div class="slds-col slds-size_2-of-4  modal-input">Reimbursement:</div>
+                                <div class="slds-col slds-size_2-of-4 slds-m-bottom_small"> 
+                                        <c-dropdown-select class="activity-dropdown" options={lockDateList} 
+                                        onchange={handleLockMonth}
+                                        main-class="default-box-input slds-truncate" ></c-dropdown-select>
+                                </div>
+                            </div>
+                            <div class="date-modal-btn slds-p-top_medium">
+                                <button class="slds-btn slds-btn-primary slds-btn-md waves-effect bc-green waves-light" onclick={handleLockDate}>
+                                    Submit
+                                </button>
+                                <button class="slds-btn slds-btn-primary slds-btn-md waves-effect bc-black waves-light" onclick={handleCloseModal}>
+                                    Cancel
+                                </button>
+                            </div>
+                        </div>
+                    </template>
+                    <template if:true={isMassDeactivationModal}>
+                        <div class="deactivate-modal"> 
+                            <div class="slds-grid slds-wrap slds-p-top_large">
+                                <div class="slds-col slds-size_2-of-4 modal-input">Deactivation Date :</div>
+                                <div class="slds-col slds-size_2-of-4 slds-m-bottom_medium">
+                                    <c-date-picker  ondateselect={handleMassDeactivationDate}></c-date-picker>
+                                </div>
+                            </div>
+                            <div class="date-modal-btn slds-p-top_xx-large">
+                                <button class="slds-btn slds-btn-primary slds-btn-md waves-effect bc-green waves-light" onclick={handleMassDeactivation}>
+                                    Submit
+                                </button>
+                                <button class="slds-btn slds-btn-primary slds-btn-md waves-effect bc-black waves-light" onclick={handleCloseModal}>
+                                    Cancel
+                                </button>
+                            </div>
+                        </div>
+                    </template>
+                  </div>
+            </div>
+        
+    </c-user-profile-modal>
+    <c-export-excel></c-export-excel>
+    </div>
+</template>

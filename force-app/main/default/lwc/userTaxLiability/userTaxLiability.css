@@ -157,7 +157,7 @@
 .bordered-table tbody td{
     border-bottom: 1px solid var(--grey-color);
     padding-left: 0 !important;
-    padding-right: 12px !important;
+    padding-right: 19px !important;
     font-family: 'Proxima Nova';
     font-style: normal;
     font-size: 14px !important;

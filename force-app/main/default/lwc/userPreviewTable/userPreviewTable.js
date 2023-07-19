@@ -1,4 +1,3 @@
-/* eslint-disable no-self-assign */
 /* eslint-disable radix */
 /* eslint-disable @lwc/lwc/no-api-reassignments */
 import { LightningElement, api, track } from 'lwc';
@@ -8,6 +7,7 @@ import {
 } from 'c/utils';
 export default class UserPreviewTable extends LightningElement {
     className;
+    originalClass;
     tableClass;
     rowId;
     sortedColumn = 'tripdate';
@@ -59,6 +59,7 @@ export default class UserPreviewTable extends LightningElement {
     @track shortPaginate = 10;
     @track maxPage = 10;
     @api isDefaultSort = false;
+    @track isCheckBoxVisible = false;
     sortedData = [];
      // Current page of results on display
      currentPage = 1;
@@ -111,18 +112,18 @@ export default class UserPreviewTable extends LightningElement {
                         }
                     }
                 }
-                this.norecord = (!result.length) ? true : false
-                this.tableClass = (this.norecord) ? 'slds-table slds-table--header-fixed slds-table_cell-buffer slds-table_striped' : 'slds-table slds-table--header-fixed slds-table_cell-buffer slds-table_fixed-layout slds-max-medium-table_stacked-horizontal slds-table_striped'
-                this.className = (this.searchData.length > 6) ? this.className : 'slds-p-right_small'
-                this.pagedData = result;
-                this.searchData = result;
-                this.sortedDirection = this.previousIcon;
+            this.norecord = (!result.length) ? true : false
+            this.tableClass = (this.norecord) ? 'slds-table slds-table--header-fixed slds-table_cell-buffer slds-table_striped' : 'slds-table slds-table--header-fixed slds-table_cell-buffer slds-table_fixed-layout slds-max-medium-table_stacked-horizontal slds-table_striped'
+            this.className = (result.length > 6) ? this.originalClass : 'slds-p-right_small'
+            this.pagedData = result;
+            this.searchData = result;
+            this.sortedDirection = this.previousIcon;
         }else{
           //  console.log("search key --- ", this.modelData);
             this.tableClass = 'slds-table slds-table--header-fixed slds-table_cell-buffer slds-table_fixed-layout slds-max-medium-table_stacked-horizontal slds-table_striped'
             this.search = false;
             this.norecord = false;
-            this.className = this.className;
+            this.className = this.originalClass;
             this.sortedDirection = this.previousIcon;
             this.pagedData = this.modelData;
         }
@@ -164,6 +165,43 @@ export default class UserPreviewTable extends LightningElement {
         //     this.defaultSort(this.colname, this.coltype, this.sortorder) 
         // }
     }
+
+   @api tableListRefresh(data){
+    this.modelData = [...data];
+    this.tableClass = 'slds-table slds-table--header-fixed slds-table_cell-buffer slds-table_fixed-layout slds-max-medium-table_stacked-horizontal slds-table_striped';
+    if(this.modelData){
+        this.originalClass = (this.scrollable) ? (this.modelData.length > 6)  ? ((this.viewName === 'Team') ? 'slds-scrollable_y scroll-modal-height-v2 slds-p-right_small' : 'slds-scrollable_y scroll-modal-height slds-p-right_small') : 'slds-p-right_small' : 'slds-p-right_small';
+        this.className = (this.scrollable) ? (this.modelData.length > 6)  ? ((this.viewName === 'Team') ? 'slds-scrollable_y scroll-modal-height-v2 slds-p-right_small' : 'slds-scrollable_y scroll-modal-height slds-p-right_small') : 'slds-p-right_small' : 'slds-p-right_small';
+        this.mainClass = (this.scrollable) ? (this.modelData.length > 6) ? 'slds-table--header-fixed_container p-top-v1' : 'slds-table--header-fixed_container p-top-v1 overflow-none' : this.mainClass;
+        if(this.isPaginate){
+            this.sortedColumn = this.columns[0].colName;
+            this.gotoPage(this.currentPage, this.modelData);
+          //  this.totalPages(this.maxPages);
+            this.setPages();
+        }else{
+            this.pagedData = [];
+            this.pagedData = this.modelData;
+        }
+        pageEvents(this, this.maxPages);
+        if (!this.modelData.length) {
+            this.norecord = true;
+            this.nopagedata = true;
+            this.tableClass = 'slds-table slds-table--header-fixed slds-table_cell-buffer slds-table_striped'
+        }else{
+            this.norecord = false;
+            this.tableClass = 'slds-table slds-table--header-fixed slds-table_cell-buffer slds-table_fixed-layout slds-max-medium-table_stacked-horizontal slds-table_striped';
+        }
+        if(this.modelData.length > 8){
+            this.searchVisible = true;
+        }else{
+            this.searchVisible = false;
+        }
+      
+        if(this.isDefaultSort){
+            this.defaultSort(this.colname, this.coltype, this.sortorder) 
+        }
+    }
+   } 
 
     @api refreshTable(_data){
 		this.search = false;
@@ -708,6 +746,8 @@ export default class UserPreviewTable extends LightningElement {
         let element =  this.getElement(this.modelData, id);
         const linkEvent = new CustomEvent('access', {detail: JSON.stringify(element)});
         this.dispatchEvent(linkEvent);
+        const editRecord = new CustomEvent('edit', { detail: id});
+        this.dispatchEvent(editRecord);
     }
 
     modalHandler(){
@@ -726,8 +766,18 @@ export default class UserPreviewTable extends LightningElement {
     }
 
     handleInput(event){
-        let input = event.target.value;
+        let inputType = event.currentTarget.dataset.inputType;
         let keyName = event.currentTarget.dataset.name;
+        let input;
+        if(inputType === "select" || inputType === "address"){
+            input = event.detail.value;
+            if(event.detail.key) {
+                keyName = event.detail.key;
+            }
+        }else if(inputType === "input") {
+            input = event.target.value;
+        }
+        
         let dataList = (this.search) ? this.proxyToObj(this.searchData) : this.proxyToObj(this.modelData);
         let updatedList = [];
        // let element = dataList.find(ele  => ele.id === this.rowId);
@@ -759,6 +809,7 @@ export default class UserPreviewTable extends LightningElement {
     }
 
     handleEditMode(event){
+        console.log("handleEditMode");
         let targetId = (event.currentTarget) ? event.currentTarget.dataset.id : undefined;
         this.rowId = targetId;
         let data = (this.search) ? this.proxyToObj(this.searchData) : this.proxyToObj(this.modelData);
@@ -812,10 +863,16 @@ export default class UserPreviewTable extends LightningElement {
     }
 
     checkboxHandler(event){
+        console.log("checkboxHandler");
+        event.stopPropagation();
         let checked = event.target.checked;
         let targetId = event.currentTarget.dataset.id;
         let rowObject = {isChecked: checked, targetId: targetId }
         this.dispatchEvent(new CustomEvent('rowselection', {detail: rowObject}));
+        let recordIndex = this.modelData.findIndex(record => record.id === targetId);
+        if(this.modelData[recordIndex] && "isChecked" in this.modelData[recordIndex]) {
+            this.updateCheckBox(event.target.checked,targetId);
+        }
     }
 
     proxyToObj(obj) {
@@ -829,8 +886,11 @@ export default class UserPreviewTable extends LightningElement {
     connectedCallback() {
         // Initialize data table to the specified current page (should be 1)
         console.log("Trip", JSON.stringify(this.modelData), this.norecord, this.scrollable)
+        //Object.assign({},this.objContactData);
+       // this.myContactData = this.objContactData;
         this.tableClass = 'slds-table slds-table--header-fixed slds-table_cell-buffer slds-table_fixed-layout slds-max-medium-table_stacked-horizontal slds-table_striped';
         if(this.modelData){
+            this.originalClass = (this.scrollable) ? (this.modelData.length > 6)  ? ((this.viewName === 'Team') ? 'slds-scrollable_y scroll-modal-height-v2 slds-p-right_small' : 'slds-scrollable_y scroll-modal-height slds-p-right_small') : 'slds-p-right_small' : 'slds-p-right_small';
             this.className = (this.scrollable) ? (this.modelData.length > 6)  ? ((this.viewName === 'Team') ? 'slds-scrollable_y scroll-modal-height-v2 slds-p-right_small' : 'slds-scrollable_y scroll-modal-height slds-p-right_small') : 'slds-p-right_small' : 'slds-p-right_small';
             this.mainClass = (this.scrollable) ? (this.modelData.length > 6) ? 'slds-table--header-fixed_container p-top-v1' : 'slds-table--header-fixed_container p-top-v1 overflow-none' : this.mainClass;
             if(this.isPaginate){
@@ -914,5 +974,144 @@ export default class UserPreviewTable extends LightningElement {
     downloadAllTrips(){
         const tripEvent = new CustomEvent('view', {detail: this.tripMonth});
         this.dispatchEvent(tripEvent);
+    }
+
+    handleIcon(event) {
+        // event.stopPropagation();
+        let record = event.currentTarget.dataset.id;
+        let key = event.currentTarget.dataset.key;
+        const dateIconEvent = new CustomEvent('iconclick', {detail: {
+            id: record,
+            key: key
+        } });
+        this.dispatchEvent(dateIconEvent);
+    }
+
+    handleConditionalIcon(event) {
+        // event.stopPropagation();
+        let record = event.currentTarget.dataset.id;
+        const deleteIconEvent = new CustomEvent('conditionalclick', {detail: {
+            id: record
+        } });
+        this.dispatchEvent(deleteIconEvent);
+    }
+
+    handleMultipleIcon(event){
+        event.stopPropagation();
+        let record = event.currentTarget.dataset.id;
+        let key = event.currentTarget.dataset.key;
+        const dateIconEvent = new CustomEvent('icon2click', {detail: {
+            id: record,
+            key: key
+        } });
+        this.dispatchEvent(dateIconEvent);
+    }
+
+    handleRemoveTag(event) {
+        // event.stopPropagation();
+        let detail = {
+            key: event.currentTarget.dataset.key,
+            tag: event.detail,
+            record : event.currentTarget.dataset.id
+        }
+        const removeTag = new CustomEvent('removetag', {
+            detail : detail
+        });
+        this.dispatchEvent(removeTag);
+    }
+
+    handleSelectAll(event) {
+        console.log("checkboxHandler");
+        this.updateCheckBox(event.currentTarget.checked, null);
+    }
+
+    updateCheckBox(isChecked, recordId) {
+        let dataList = (this.search) ? this.proxyToObj(this.searchData) : this.proxyToObj(this.modelData);
+        let updatedList = [];
+        // let element = dataList.find(ele  => ele.id === this.rowId);
+        if(recordId) {
+            let recordIndex = dataList.findIndex(record => record.id === recordId);
+            if(dataList && "isChecked" in dataList[recordIndex]) {
+                dataList[recordIndex].isChecked = isChecked;
+            }
+            // Check if any object has isChecked = false
+            const hasFalseValue = dataList.some(obj => obj.isChecked === false);
+
+            // Set the value of the "Select All" checkbox
+            const selectAllCheckbox = this.template.querySelector('.select-all-checkbox .checkbox-input');
+            selectAllCheckbox.checked = !hasFalseValue;
+        } else {
+            for (let i = 0; i < dataList.length; i++) {
+                if(dataList[i] && "isChecked" in dataList[i]) {
+                    dataList[i].isChecked = isChecked;
+                }
+            }
+        }
+        updatedList = dataList;
+        
+        if(this.search){
+            this.modelData = dataList;
+            this.searchData = dataList;
+        }else{
+            this.modelData = dataList;
+        }
+        this.pagedData = dataList;
+        this.gotoPage(this.currentPage, this.pagedData)
+        this.dispatchEvent(
+            new CustomEvent("update", {
+            detail: JSON.stringify(updatedList)
+            })
+        );
+        this.triggerDisableCheckbox(dataList);
+    }
+
+    preventEdit(event) {
+        event.stopPropagation();
+    }
+
+    @api
+    toggleCheckBox(toogle) {
+        this.isCheckBoxVisible = toogle;
+        if(!toogle) {
+            this.disableAll();
+        }
+    }
+
+    disableAll() {
+        let dataList = (this.search) ? this.proxyToObj(this.searchData) : this.proxyToObj(this.modelData);
+        let updatedList = [];
+        for (let i = 0; i < dataList.length; i++) {
+            if(dataList[i] && "isChecked" in dataList[i]) {
+                dataList[i].isChecked = false;
+            }
+        }
+        updatedList = dataList;
+        
+        if(this.search){
+            this.modelData = dataList;
+            this.searchData = dataList;
+        }else{
+            this.modelData = dataList;
+        }
+        this.pagedData = dataList;
+        this.gotoPage(this.currentPage, this.pagedData)
+        this.dispatchEvent(
+            new CustomEvent("update", {
+            detail: JSON.stringify(updatedList)
+            })
+        );
+    }
+
+    triggerDisableCheckbox(data) {
+        const hasTrueValue = data.some(obj => obj.isChecked === true);
+        if(!hasTrueValue) {
+            this.dispatchEvent(
+                new CustomEvent("disablecheckbox", {})
+            );
+        } else {
+            this.dispatchEvent(
+                new CustomEvent("enablesubmit", {})
+            );
+        }
     }
 }

@@ -21,6 +21,7 @@
             }
         </style>
         <link rel="stylesheet" href="{!URLFOR($Resource.EmcCSS,'emc-design/assets/css/main.css')}"/>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/proj4js/2.3.6/proj4.js"></script>
         <script src="{!URLFOR($Resource.HighChart,'/highmaps.js')}"></script>
         <script src="{!URLFOR($Resource.HighChart,'/data.js')}"></script>
         <script src="{!URLFOR($Resource.HighChart,'/exporting.js')}"></script>
@@ -53,9 +54,12 @@
                
                 console.log(chartData, chartstates)
                 let containerChart = document.getElementById('container');
+                //https://code.highcharts.com/mapdata/countries/us/us-all-all.topo.json
+                //https://code.highcharts.com/mapdata/countries/us/custom/us-all-territories.topo.json
+                //https://code.highcharts.com/mapdata/countries/us/us-all.topo.json
                //https://code.highcharts.com/mapdata/countries/us/custom/us-small.topo.json
                 Highcharts.getJSON('https://code.highcharts.com/mapdata/countries/us/us-all.topo.json', function (topology) {
-                  chloChart =  Highcharts.mapChart(containerChart, {
+                    chloChart =  Highcharts.mapChart(containerChart, {
                         chart: {
                             map: topology,
                             borderColor:postData.border,
@@ -142,11 +146,16 @@
                                 duration: 1000
                             },
                             data: chartstates,
-                            joinBy: ['postal-code', 'code'],
+                            joinBy: ['hc-a2', 'code'],
                             dataLabels: {
-                                enabled: false,
-                                color: '#FFFFFF',
-                                format: '{point.code}'
+                                allowOverlap: false,
+                                enabled: true,
+                                formatter: function(){
+                                    console.log("formatter", this)
+                                    if(this.point.options.code === "DC")
+                                        return this.point.options.code;
+                                },
+                                color: '#FFFFFF'
                             },
                             name:  'Driving State', //  'Population density'
                             states: {

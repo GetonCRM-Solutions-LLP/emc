@@ -7,6 +7,7 @@
     --color-white: #ffffff;
     --grey-color: #D7D7D7;
     --green-color: #7abb4a;
+    --error-color: #FA7800;
 }
 
 .fa,
@@ -17,7 +18,7 @@
 
 .slds-listbox__item{
     /*padding-left: 6px !important;*/
-    color: #1d1d1d !important;
+    color: #ffffff !important;
     font-size: 14px !important;
     padding: 14px 16px;
     text-align: center;
@@ -38,9 +39,15 @@
 }
 
 .slds-listbox__option:hover{
-    color: #1d1d1d!important;
-    font-weight: 600;
+    color: var(--green-color) !important;
+    font-family: 'Proxima Nova Bold' !important;
+    background-color: transparent !important;
 }
+
+.slds-listbox__option:hover .slds-truncate{
+    font-family: 'Proxima Nova Bold' !important;
+}
+
 
 .slds-combobox_container{
     /* max-width: 390px; */
@@ -48,9 +55,14 @@
 }
 
 .active {
-    background-color: #d6deea5c !important;
-    font-weight: 600;
+    background-color: transparent !important;
+    font-family: 'Proxima Nova Bold' !important;
+    color: var(--green-color) !important;
     /* background-color: rgb(55 193 238 / 60%) !important; */
+}
+
+.active .slds-truncate{
+    font-family: 'Proxima Nova Bold' !important;
 }
 
 .slds-dropdown_fluid{
@@ -65,9 +77,11 @@
     border-top-right-radius: 13px;
     border-bottom-left-radius: 13px;
     border-bottom-right-radius: 13px;
-    min-width: 6rem !important;
+    padding-right: 7px;
+    min-width: auto !important;
     background: #404b5a !important;
 }
+
 .slds-combobox__input{
     user-select: none;
     /* border-radius: 0 !important;
@@ -82,19 +96,22 @@
 }
 .dropdown--results{
     display: block;
-    padding-top: 10px;
+    padding-top: 6px;
     padding-bottom: 10px;
+    word-wrap: break-word;
+    /* width: 192px; */
 }
 .dropdown--results::-webkit-scrollbar-track {
-    -webkit-box-shadow: inset 0 0 6px var(--grey-color);
+    -webkit-box-shadow: none;
     border-radius: 100px;
+    background-color: var(--box-color);
     /* background-color: var(--scroll-color); */
 }
 
 .dropdown--results::-webkit-scrollbar {
     /*width: 5px;*/
     height: 50px;
-    width: 0;  /* Remove scrollbar space */
+    width: 6px;  /* Remove scrollbar space */
     background: transparent;  /* Optional: just make scrollbar invisible */
     /*background-color: var(--scroll-color);*/
 }
@@ -102,11 +119,12 @@
 .dropdown--results::-webkit-scrollbar-thumb {
     border-radius: 100px;
     height: 50px;
+    background-color: var(--color-white);
     /* background-color: var(--box-color) */
 }
 
 .default-box-input{
-    border: 1px solid var(--grey-color) !important;
+    border: 1px solid var(--grey-color);
     border-radius: 10px;
     font-family: 'Proxima Nova' !important;
     padding-left: 12px;
@@ -120,6 +138,14 @@
     font-weight: 400;
     font-size: 14px;
     color: #1d1d1d !important;
+}
+
+.box-input-success{
+    border: 1px solid var(--green-color) !important;
+}
+
+.box-input-error{
+    border: 1px solid var(--error-color) !important;
 }
 
 .default-box-input-small{
@@ -181,6 +207,7 @@
   
   .slds-input:focus{
     --slds-c-input-shadow: none !important;
+    box-shadow: none !important;
   }
 
   .search-icon-block{

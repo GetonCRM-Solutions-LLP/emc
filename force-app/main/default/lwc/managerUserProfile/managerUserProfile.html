@@ -3,12 +3,12 @@
         <div class="flex-container-view">
             <div class="slds-m-right_medium flex-view-1">
                 <div class="slds-col slds-p-left_large slds-p-top_small slds-p-bottom_medium">
-                    <h2 style="font-weight: 700;
+                    <h2 style="font-family: 'Proxima Nova Bold' !important;
                     font-size: 20px;color: #7ABB4A;">High Risk Trips ( Last month )</h2>
                 </div>
                 <template lwc:if={driverIsHighRisk}>
                     <div class="slds-p-around_medium list-view">
-                        <template for:each={highRiskMileageDriverList} for:item="list">
+                        <template for:each={driverRiskList} for:item="list">
                             <div class="slds-p-horizontal_x-small slds-p-vertical_xx-small" key={list.id}>
                                 <div><a data-id={list.id} class="name" onclick={navigateToRisk}>{list.name}</a></div>
                             </div>
@@ -16,8 +16,10 @@
                     </div>
                 </template>
                 <template lwc:else>
-                    <div class="slds-align_absolute-center slds-p-top_medium slds-p-bottom_x-large no-data-message">
-                        There are no high risk trips at this time.</div>
+                    <div  class="slds-grid slds-wrap slds-m-vertical_small" style="margin-left: 22px; margin-right: 22px;">
+                        <div class="slds-p-top_medium slds-p-bottom_x-large no-data-message">
+                            Currently, there are no high risk trips.</div>
+                    </div>
                 </template>
 
                 <template lwc:if={driverIsHighRisk}>
@@ -31,7 +33,7 @@
 
             <div class="slds-m-right_medium flex-view-2">
                 <div class="slds-col slds-p-left_large slds-p-top_small">
-                    <h2 style="font-weight: 700;
+                    <h2 style="font-family: 'Proxima Nova Bold' !important;
                     font-size: 20px;color: #7ABB4A;">Unapproved Mileage</h2>
                 </div>
                 <div class="slds-p-around_medium">
@@ -52,8 +54,11 @@
                         </table>
                     </template>
                     <template lwc:else>
-                        <div class="slds-align_absolute-center slds-p-top_medium slds-p-bottom_x-large no-data-message">
-                            There are no unapproved mileage at this time.</div>
+                        <div  class="slds-grid slds-wrap slds-m-vertical_small" style="margin-left: 10px; margin-right: 10px;">
+                            <div class="slds-p-top_medium slds-p-bottom_x-large no-data-message">
+                                Currently, there is no unapproved mileage.
+                            </div>
+                        </div>
                     </template>
                 </div>
                 <template lwc:if={driverIsUnapprove}>
@@ -72,58 +77,63 @@
                         border-radius: 20px;">
                 <div
                     class="slds-col slds-size_1-of-1 slds-medium-size_6-of-12 slds-large-size_12-of-12 slds-p-left_large slds-p-top_small">
-                    <h2 style="font-weight: 700;
+                    <h2 style="font-family: 'Proxima Nova Bold' !important;
                     font-size: 20px;color: #7ABB4A;">Notifications</h2>
                 </div>
                 <div class="slds-col slds-size_1-of-1 slds-medium-size_12-of-12 slds-large-size_12-of-12">
                     <template lwc:if={notifyMessage}>
                         <div class="notify-container overflow">
-                            <div class="slds-grid slds-wrap slds-align_absolute-center slds-m-vertical_small" style="margin-left: 22px;
-                            margin-right: 22px;">
+                            <div class="slds-grid slds-wrap slds-p-left_large slds-m-vertical_small">
                                 <template lwc:if={isNotify}>
                                     <template for:each={notifyMessageList} for:item="notify" for:index="index">
                                         <div data-id={notify.id} key={notify.id}
-                                            class="slds-col slds-size_1-of-1 slds-medium-size_6-of-12 slds-large-size_12-of-12  slds-m-around_xx-small slds-p-horizontal_x-small slds-p-vertical_small notify-text"
+                                            class="slds-col slds-size_1-of-1 slds-medium-size_6-of-12 slds-large-size_12-of-12 slds-m-around_xx-small slds-p-horizontal_x-small slds-p-vertical_small notify-text"
                                             style="
                                         width: 100%;
                                         height: auto;
                                         border-radius: 10px;
-                                        background: #F1F8EC;
+                                        background: #fa780014;
                                         display: flex;
                                         flex-direction: row;">
                                             <div class="slds-p-top_xx-small
                                                 slds-p-left_xx-small slds-p-right_x-small">
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="9" height="9" viewBox="0 0 9 9" fill="none">
-                                                    <circle cx="4.5" cy="4.5" r="4.5" fill="#7ABB4A"/>
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="9" height="9"
+                                                    viewBox="0 0 9 9" fill="none">
+                                                    <circle cx="4.5" cy="4.5" r="4.5" fill="#FA7800" />
                                                 </svg>
-                                                <!-- <div style="width: 10px;
-                                                height: 10px;
-                                                border-radius: 50%;
-                                                background: rgb(122, 187, 74);"></div> -->
                                                 <!-- <img style="width: 12px;" src={circle} /> -->
                                             </div>
-                                            <div class="slds-p-right_small" style="font-family: Proxima Nova;font-size: 14px;width:100%;font-weight: 700;
+                                            <div class="slds-p-right_small" style="font-family: 'Proxima Nova Bold' !important;font-size: 14px;width:100%;
                                                 line-height: 17px;
                                                 letter-spacing: 0em;
                                                 text-align: left;
                                                 ">{notify.notificationMessage}
-                                                <div style="font-weight: 700;
+                                                <div style="font-family: 'Proxima Nova Semibold' !important;
                                                 font-size: 12px;
                                                 line-height: 12px;
-                                                color: #7ABB4A;
+                                                color: #FA7800;
                                                 " class="slds-p-top_x-small"> <lightning-formatted-date-time
                                                         value={notify.modifiedDate} year="numeric" day="2-digit"
                                                         month="long" hour="2-digit" minute="2-digit"
                                                         time-zone="America/Panama">
                                                     </lightning-formatted-date-time></div>
                                             </div>
-                                            <div class="slds-p-right_small">
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="18" viewBox="0 0 20 18" fill="none" data-id={notify.id} onclick={handleClose}>
-                                                    <path d="M5.57812 13.4141L14.7504 4.58439" stroke="#1D1D1D" stroke-linecap="round"/>
-                                                    <path d="M5.57812 4.58594L14.7504 13.4156" stroke="#1D1D1D" stroke-linecap="round"/>
+                                            <div class="slds-p-right_xx-small close-notify" data-id={notify.id}  onclick={handleClose}>
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="19" height="19"
+                                                    viewBox="0 0 19 19" fill="none"  >
+                                                    <path d="M4.53906 13.6328L13.6303 4.54161" stroke="#FA7800"
+                                                        stroke-width="1.7" stroke-linecap="round" />
+                                                    <path d="M4.53906 4.55469L13.6303 13.6459" stroke="#FA7800"
+                                                        stroke-width="1.7" stroke-linecap="round" />
                                                 </svg>
-                                                <!-- <i class="fa-solid fa-lg fa-xmark" data-id={notify.id}
-                                                    onclick={handleClose}></i> -->
+                                                <!-- <svg xmlns="http://www.w3.org/2000/svg" width="20" height="18"
+                                                viewBox="0 0 20 18" fill="none" data-id={notify.id}
+                                                onclick={handleClose}>
+                                                <path d="M5.57812 13.4141L14.7504 4.58439" stroke="#1D1D1D"
+                                                    stroke-linecap="round" />
+                                                <path d="M5.57812 4.58594L14.7504 13.4156" stroke="#1D1D1D"
+                                                    stroke-linecap="round" />
+                                            </svg> -->
                                             </div>
                                         </div>
                                     </template>
@@ -134,9 +144,11 @@
                                     </div>
                                 </template>
                                 <template lwc:else>
-                                    <div
-                                        class="slds-align_absolute-center slds-p-top_medium slds-p-bottom_x-large no-data-message">
-                                        You have no notifications right now.</div>
+                                    <div  class="slds-grid slds-wrap slds-m-vertical_small">
+                                        <div
+                                            class="slds-p-top_medium slds-p-bottom_x-large no-data-message">
+                                            There are no notifications.</div>
+                                    </div>
                                 </template>
 
                             </div>
@@ -149,7 +161,7 @@
         <div class="flex-container-view slds-m-top_x-large">
             <div class="slds-m-right_medium flex-view-1">
                 <div class="slds-col slds-p-left_large slds-p-top_small">
-                    <h2 style="font-weight: 700;
+                    <h2 style="font-family: 'Proxima Nova Bold' !important;
                     font-size: 20px;color: #7ABB4A;">My Team</h2>
                 </div>
                 <template lwc:if={driverIsMyteam}>
@@ -162,8 +174,10 @@
                     </div>
                 </template>
                 <template lwc:else>
-                    <div class="slds-align_absolute-center slds-p-top_medium slds-p-bottom_x-large no-data-message">
-                        There is no team at this time.</div>
+                    <div  class="slds-grid slds-wrap slds-m-vertical_small" style="margin-left: 22px; margin-right: 22px;">
+                        <div class="slds-p-top_medium slds-p-bottom_x-large no-data-message">
+                            You have no drivers.</div>
+                    </div>
                 </template>
 
                 <template lwc:if={driverIsMyteam}>
@@ -177,16 +191,23 @@
 
             <div class="slds-m-right_medium flex-view-2">
                 <div class="slds-col slds-p-left_large slds-p-top_small slds-p-bottom_medium">
-                    <h2 style="font-weight: 700;
+                    <h2 style="font-family: 'Proxima Nova Bold' !important;
                     font-size: 20px;color: #7ABB4A;">Onboarding Status</h2>
                 </div>
-                <div
-                    class="slds-col slds-size_1-of-1 slds-medium-size_12-of-12 slds-large-size_12-of-12 slds-p-horizontal_medium" style="--aspect-ratio: 16/9;">
-                    <template lwc:if={complianceList}>
-                        <c-chart-view-dashboard chart-list={complianceList}
+                <template lwc:if={complianceList}>
+                    <div class="slds-col slds-size_1-of-1 slds-medium-size_12-of-12 slds-large-size_12-of-12 slds-p-horizontal_medium"
+                    style="--aspect-ratio: 16/9;">
+                       <c-chart-view-dashboard chart-list={complianceList}
                             view-name="Onboarding"></c-chart-view-dashboard>
-                    </template>
-                </div>
+                    </div>
+                </template>
+                <template lwc:else>
+                    <div  class="slds-grid slds-wrap slds-m-vertical_small" style="margin-left: 22px; margin-right: 22px;">
+                        <div class="slds-p-top_medium slds-p-bottom_x-large no-data-message">
+                            There is no onboarding list at this time.</div>
+                    </div>
+                </template>
+              
             </div>
 
             <div class="flex-view-3" style="
@@ -196,44 +217,72 @@
                         border-radius: 20px;">
                 <div
                     class="slds-col slds-size_1-of-1 slds-medium-size_6-of-12 slds-large-size_12-of-12 slds-p-left_large slds-p-top_small">
-                    <h2 style="font-weight: 700;
+                    <h2 style="font-family: 'Proxima Nova Bold' !important;
                     font-size: 20px;color: #7ABB4A;">My Team’s Locations</h2>
                 </div>
-                <div
-                    class="slds-col slds-size_1-of-1 slds-medium-size_12-of-12 slds-large-size_12-of-12 slds-align_absolute-center slds-p-top_medium" style="--aspect-ratio: 16/9;">
-                    <c-point-chloropleth background="#FFFFFF" locate={locationList} border-color="#FFFFFF" width="260"
-                        height="150"></c-point-chloropleth>
-                </div>
+                <template lwc:if={locationList}>
+                    <div class="slds-col slds-size_1-of-1 slds-medium-size_12-of-12 slds-large-size_12-of-12 slds-align_absolute-center slds-p-top_medium"
+                    style="--aspect-ratio: 16/9;">
+                        <c-point-chloropleth background="#FFFFFF" locate={locationList} map-navigation={navigation} margin={margin} v-h={vhHeight} spacing-top={top} spacing-bottom={bottom} border-color="#FFFFFF" width="260" frame-class="vf-iframe slds-col slds-size_1-of-1 slds-medium-size_12-of-12 slds-large-size_12-of-12"
+                            height="200"></c-point-chloropleth> 
+                   </div>
+                </template>
+                <template lwc:else>
+                    <div  class="slds-grid slds-wrap slds-m-vertical_small" style="margin-left: 22px; margin-right: 22px;">
+                        <div class="slds-p-top_medium slds-p-bottom_x-large no-data-message">
+                            You have no drivers.</div>
+                    </div>
+                </template>
+
+                <template lwc:if={isLocation}>
+                    <div class="slds-p-around_small">
+                        <div class="view-all slds-p-around_medium view-link" onclick={getLocation}>
+                            View all
+                        </div>
+                    </div>
+                </template>
             </div>
         </div>
 
         <div class="flex-container-view slds-m-top_x-large">
             <div class="slds-m-right_medium flex-view-1">
                 <div class="slds-col slds-p-left_large slds-p-top_small slds-p-bottom_medium">
-                    <h2 style="font-weight: 700;
+                    <h2 style="font-family: 'Proxima Nova Bold' !important;
                     font-size: 20px;color: #7ABB4A;">Insurance</h2>
                 </div>
-                <div
-                    class="slds-col slds-size_1-of-1 slds-medium-size_12-of-12 slds-large-size_12-of-12  slds-p-horizontal_medium" style="--aspect-ratio: 16/9;">
-                    <template lwc:if={insuranceList}>
-                        <c-chart-view-dashboard chart-list={insuranceList}
-                            view-name="Insurance"></c-chart-view-dashboard>
-                    </template>
-                </div>
+                <template lwc:if={insuranceList}>
+                    <div class="slds-col slds-size_1-of-1 slds-medium-size_12-of-12 slds-large-size_12-of-12  slds-p-horizontal_medium"
+                        style="--aspect-ratio: 16/9;">
+                            <c-chart-view-dashboard chart-list={insuranceList}
+                                view-name="Insurance"></c-chart-view-dashboard>
+                    </div>
+                </template>
+                <template lwc:else>
+                    <div  class="slds-grid slds-wrap slds-m-vertical_small" style="margin-left: 22px; margin-right: 22px;">
+                        <div class="slds-p-top_medium slds-p-bottom_x-large no-data-message">
+                            There is no insurance list at this time.</div>
+                    </div>
+                </template>
             </div>
 
             <div class="slds-m-right_medium flex-view-2">
                 <div class="slds-col slds-p-left_large slds-p-top_small">
-                    <h2 style="font-weight: 700;
+                    <h2 style="font-family: 'Proxima Nova Bold' !important;
                     font-size: 20px;color: #7ABB4A;">Compliance Status</h2>
                 </div>
-                <div
-                    class="slds-col slds-size_1-of-1 slds-medium-size_12-of-12 slds-large-size_12-of-12  slds-p-horizontal_medium" style="--aspect-ratio: 16/9;">
-                    <template lwc:if={complianceList}>
-                        <c-chart-view-dashboard chart-list={complianceList}
-                            view-name="Compliance"></c-chart-view-dashboard>
-                    </template>
-                </div>
+                <template lwc:if={complianceList}>
+                    <div class="slds-col slds-size_1-of-1 slds-medium-size_12-of-12 slds-large-size_12-of-12  slds-p-horizontal_medium"
+                        style="--aspect-ratio: 16/9;">
+                           <c-chart-view-dashboard chart-list={complianceList}
+                                view-name="Compliance"></c-chart-view-dashboard>
+                    </div>
+                </template>
+                <template lwc:else>
+                    <div  class="slds-grid slds-wrap slds-m-vertical_small" style="margin-left: 22px; margin-right: 22px;">
+                        <div class="slds-p-top_medium slds-p-bottom_x-large no-data-message">
+                            There is no compliance list at this time.</div>
+                    </div>
+                </template>
             </div>
 
             <div class="flex-view-3" style="
@@ -243,13 +292,13 @@
                         border-radius: 20px;">
                 <div
                     class="slds-col slds-size_1-of-1 slds-medium-size_6-of-12 slds-large-size_12-of-12 slds-p-left_large slds-p-top_small">
-                    <h2 style="font-weight: 700;
+                    <h2 style="font-family: 'Proxima Nova Bold' !important;
                     font-size: 20px;color: #7ABB4A;">High Mileage Drivers</h2>
                 </div>
                 <div class="slds-p-around_medium">
                     <template lwc:if={driverIsHighMileage}>
                         <table class="slds-table slds-table_cell-buffer slds-table_header-hidden driver-top">
-                            <template for:each={highMileageDriverList} for:item="list">
+                            <template for:each={driverMileageList} for:item="list">
                                 <tr key={list.id}>
                                     <td><a data-id={list.id} class="name" onclick={navigateToHigh}>{list.name}</a></td>
                                     <td class="mileage">
@@ -262,8 +311,10 @@
                         </table>
                     </template>
                     <template lwc:else>
-                        <div class="slds-align_absolute-center slds-p-top_medium slds-p-bottom_x-large no-data-message">
-                            There are no high mileage drivers at this time.</div>
+                        <div  class="slds-grid slds-wrap slds-m-vertical_small" style="margin-left: 22px; margin-right: 22px;">
+                            <div class="slds-p-top_medium slds-p-bottom_x-large no-data-message">
+                                Currently, there are no high mileage drivers.</div>
+                        </div>
                     </template>
                 </div>
                 <template lwc:if={driverIsHighMileage}>
@@ -276,4 +327,11 @@
             </div>
         </div>
     </div>
+    <template lwc:if={paginatedModal}> 
+                <div class="parent overlay-slide-down">
+                   <c-point-chloropleth title="My Team's Locations" background="#FFFFFF" margin={margin} spacing-top={top} spacing-bottom={bottom} v-h={vhHeight} map-navigation={navigation} frame-class="vf-iframe frame-full" locate={locationList} border-color="#FFFFFF" width="260"
+                    ></c-point-chloropleth>
+                </div>
+                <button type="button" class="close popup-close-btn" onclick={exitFullscreen}><span aria-hidden="true" title="Exit fullscreen">×</span></button>
+     </template>
 </template>

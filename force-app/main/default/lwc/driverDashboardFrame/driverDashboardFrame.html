@@ -1,17 +1,6 @@
 <template>
-	<template lwc:if={managerRole}>
-		<c-navigation-menu driver-menu-item={managerProfileMenu} onsidebar={handleSidebarToggle} driver-name={userName} driver-email={userEmail} onlogout={handleLogout}></c-navigation-menu><!-- onopen={takeMeToMenu} -->
-		<c-dashboard-profile-header user-name={firstName} full-name={userName} unread={unreadCount} page-source={isHomePage} driver-menu={menu} onredirect={navigateToInsurance}  onresourcenavigate={navigateToResource} onnotify={viewAllNotification} company-logo={companyLogoUrl} expiration-date={dateOfExpiration} 
-			onlogout={handleLogout} is-navigate="true"></c-dashboard-profile-header>
-		<section class={section} id="default-section">
-			<template lwc:if={contactInformation}>
-				<c-driver-reimbursement-profile contact-id={_contactId} account-id={_accountId} my-trip={isTrip} time-attendance={isAttendance} driver-details={contactInformation} reimbursement-ytd={ytdList} excel-ytd={excelYtdList} is-archive={archive} onnavigate={reimbursementArchived} onopen={myTripDetail} ontoast={handleToast} onshow={showSpinner}></c-driver-reimbursement-profile>
-			</template>
-		</section>
-	</template>
-	<template lwc:else>
-		<c-navigation-menu driver-menu-item={driverProfileMenu} onsidebar={handleSidebarToggle} driver-name={userName} driver-email={userEmail} onlogout={handleLogout}></c-navigation-menu><!-- onopen={takeMeToMenu} -->
-		<c-dashboard-profile-header user-name={firstName} full-name={userName} unread={unreadCount} page-source={isHomePage} onredirect={navigateToInsurance}  onresourcenavigate={navigateToResource} onnotify={viewAllNotification} company-logo={companyLogoUrl} expiration-date={dateOfExpiration} 
+		<c-navigation-menu driver-menu-item={driverProfileMenu} onsidebar={handleSidebarToggle} driver-name={userName} driver-email={userEmail} onlogout={handleLogout} profile-id={profile}></c-navigation-menu><!-- onopen={takeMeToMenu} -->
+		<c-dashboard-profile-header user-name={firstName} full-name={userName} unread={unreadCount} driver-menu={menu} page-source={isHomePage} onredirect={navigateToInsurance}  onresourcenavigate={navigateToResource} onnotify={viewAllNotification} company-logo={companyLogoUrl} expiration-date={dateOfExpiration} 
 			onlogout={handleLogout} is-navigate="true"></c-dashboard-profile-header>
 		<section class={section} id="default">
 			<template lwc:if={reimbursementView}>
@@ -20,7 +9,8 @@
 					biweek-id={biweekId} biweek-value={biweek}></c-preview-trips>
 				</template>
 				<template lwc:else>
-					<c-driver-reimbursement-profile contact-id={_contactId}  account-id={_accountId} my-trip={isTrip} is-archive={archive} time-attendance={isAttendance} driver-details={contactInformation} reimbursement-ytd={ytdList} excel-ytd={excelYtdList} onnavigate={reimbursementArchived} onopen={myTripDetail} ontoast={handleToast} onshow={showSpinner}></c-driver-reimbursement-profile>
+					<c-manual-entry contact-id={_contactId} account-id={_accountId}></c-manual-entry>
+					<!-- <c-driver-reimbursement-profile contact-id={_contactId}  account-id={_accountId} my-trip={isTrip} is-archive={archive} time-attendance={isAttendance} driver-details={contactInformation} reimbursement-ytd={ytdList} excel-ytd={excelYtdList} onnavigate={reimbursementArchived} onopen={myTripDetail} ontoast={handleToast} onshow={showSpinner} ontoggle={toggleHandler}></c-driver-reimbursement-profile> -->
 				</template>
 			</template> 
 			<template lwc:else>
@@ -54,6 +44,19 @@
 				<c-user-resource minimums={contactInformation}></c-user-resource>
 			</template>
 			<c-user-profile-modal header={headerModalText} month='' show-footer={isFalse} show-btn={isFalse}
+				modal-class={modalClass}
+				header-class={headerClass}
+				subheader-class={subheaderClass}
+				modal-content-style={modalContent}
+				style-header={styleHeader}
+				close-btn-class={styleClosebtn} onclosedialog={handleCloseModal}>
+						<div class="slds-p-around_large" style="display: flex;flex-flow: column;">
+							<div class="slds-align_absolute-center"><i class="fa-solid fa-3x fa-check"></i></div>
+							<div class="slds-align_absolute-center slds-p-around_medium message">{contentMessage}</div>
+							<div class="slds-align_absolute-center sub-message">{subMessage}</div>
+						</div>
+			</c-user-profile-modal>
+			<!-- <c-user-profile-modal header={headerModalText} month='' show-footer={isFalse} show-btn={isFalse}
 				modal-class={modalClass}
 				header-class={headerClass}
 				subheader-class={subheaderClass}
@@ -121,63 +124,74 @@
 							<div class="slds-align_absolute-center sub-message">{subMessage}</div>
 						</div>
 					</template>
-			</c-user-profile-modal>
-			<!-- <template lwc:if={notificationModal}>
-				<div class="vue-sidebar transition" style="background: #fff;
-				position: fixed;
-				top: 46px;
-				right: 0;
-				width: 340px;
-				bottom: 0;
-				z-index: 1002;
-				overflow: visible;
-				display: flex;
-				flex-direction: column;
-				box-shadow: -4px 0 16px 0 rgba(0,0,0,0.1);
-				transform: translate3d(0, 0, 0);transition: all 0.5s;
-			">
-					<div class="vue-sidebar-content"><button class="close popup-close-btn" type="button" data-dismiss="modal" aria-label="Close"><span class="close-aligned" aria-hidden="true">×</span></button>
+			</c-user-profile-modal> -->
+			<template lwc:if={notificationModal}>
+				<div class="vue-sidebar transition" data-id="Notification" onclick={handleLiveNotification}>
+					<div class="vue-sidebar-content">
 						<div class="custom-app-tabs-wrapper">
-							<ul class="nav nav-tabs" style="flex-wrap: nowrap;
-							max-width: 90%;
-							margin-top: 15px;
-							margin-bottom: 30px;display: inline-flex;
-							flex-wrap: wrap;
-							flex-shrink: 0;
-							border-color: transparent;">
-								<li class="nav-item active" style="border-bottom: 2px solid #2aa7ff;"><a id="tab-filters" style="color: #2aa7ff;
-									font-weight: 500;
-									border-color: transparent;
-									background-color: transparent;
-									cursor: pointer;border: 1px solid #ddd;text-transform: uppercase;
-									font-size: 13px;
-									padding-top: 5px;
-									padding-bottom: 5px;margin-right: 2px;
-									line-height: 1.45;
-									border: 1px solid transparent;
-									border-radius: 6px 6px 0 0;position: relative;
-									display: block;
-									padding: 10px 15px;" class="nav-link">Filters</a></li>
-								<li class="nav-item" style="box-shadow: none;
-								border-bottom: 0.5px solid #ced9ee;"><a id="tab-savedFilters" class="nav-link" style="border-color: transparent;
-									background-color: transparent;
-									cursor: pointer;border: 1px solid #ddd;text-transform: uppercase;
-									font-size: 13px;
-									padding-top: 5px;
-									padding-bottom: 5px;margin-right: 2px;
-									line-height: 1.45;
-									border: 1px solid transparent;
-									border-radius: 6px 6px 0 0;position: relative;
-									display: block;
-									padding: 10px 15px;">Saved Filters</a></li>
-							</ul>
-							<div class="header-content"></div>
+							<div class="header-content">
+								<div class="slds-p-left_x-large slds-p-bottom_large filter-wrapper">
+									<div class="filter-view-1">
+										<div class="filter-label">Year</div>
+										<div>
+											<c-dropdown-select data-id="yearSelect" options={yearList} value={value} 
+											onchange={handleYearChange} main-class="default-box-input slds-truncate" selected-value={defaultYear}></c-dropdown-select>
+										</div>
+									</div>
+									<div  class="filter-view-2">
+										<div class="filter-label" style="padding-left: 16px;">Month</div>
+										<div>
+											<c-dropdown-select data-id="monthSelect" options={monthList} value={value} 
+											onchange={handleMonthChange} main-class="default-box-input slds-truncate" selected-value={defaultMonth}></c-dropdown-select>
+										</div>
+									</div>
+								</div>
+								<div class="close-btn">
+									<svg class="close-icon" xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 22 22" fill="none"  onclick={closeNotification}>
+										<path d="M5.29688 15.9062L15.9035 5.29965" stroke="#D9D9D9" stroke-width="1.5" stroke-linecap="round"/>
+										<path d="M5.29688 5.3125L15.9035 15.9191" stroke="#D9D9D9" stroke-width="1.5" stroke-linecap="round"/>
+									</svg>
+								</div>
+							</div>
+							<div class="tab-content">
+									<div class="slds-p-left_x-large slds-p-right_medium notification-wrapper">
+										<template if:true={isNotify}>
+											<template for:each={notifyList} for:item="notify" for:index="index">
+												<div data-id={notify.id} key={notify.id}
+													class="slds-col slds-size_1-of-1 slds-medium-size_6-of-12 slds-large-size_12-of-12 slds-m-around_xx-small slds-p-horizontal_x-small slds-p-vertical_small notify-text">
+													<div class="slds-p-top_xx-small slds-p-left_xx-small slds-p-right_x-small">
+														<svg xmlns="http://www.w3.org/2000/svg" width="9" height="9" viewBox="0 0 9 9" fill="none">
+															<circle cx="4.5" cy="4.5" r="4.5" fill="#FA7800" />
+														</svg>
+														<!-- <img style="width: 12px;" src={circle} /> -->
+													</div>
+													<div class="slds-p-right_small notify-message-tab">{notify.notificationMessage}
+														<div class="slds-p-top_x-small notify-message-date"> <lightning-formatted-date-time value={notify.modifiedDate} year="numeric"
+																day="2-digit" month="long" hour="2-digit" minute="2-digit" time-zone="America/Panama">
+															</lightning-formatted-date-time></div>
+													</div>
+													<div class="slds-p-right_xx-small close-notify-icon" data-id={notify.id} onclick={handleClose}>
+														<svg xmlns="http://www.w3.org/2000/svg" width="19" height="19" viewBox="0 0 19 19" fill="none">
+															<path d="M4.53906 13.6328L13.6303 4.54161" stroke="#FA7800" stroke-width="1.7"
+																stroke-linecap="round" />
+															<path d="M4.53906 4.55469L13.6303 13.6459" stroke="#FA7800" stroke-width="1.7"
+																stroke-linecap="round" />
+														</svg>
+													</div>
+												</div>
+											</template>
+										</template>
+									
+										<template if:false={isNotify}>
+											<div class="slds-align_absolute-center slds-p-top_medium slds-p-bottom_x-large no-data-message">You have no notifications right now.</div>
+										</template>
+									</div>
+							</div>
 						</div>
 					</div>
 				</div>
 			</template>
-			 -->
+			
 		
 		</section>
-	</template>
 </template>

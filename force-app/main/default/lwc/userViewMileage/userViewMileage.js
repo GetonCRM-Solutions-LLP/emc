@@ -118,10 +118,11 @@ export default class UserViewMileage extends LightningElement {
                     if (keyFields.includes(key) !== false) {
                         console.log("key--", key, element)
                         singleValue.key = key;
-                        singleValue.value = (key === 'activationDate') && (element[key] !== null) ? toDate(element[key]) : element[key];
+                        singleValue.value = (element[key] === "null" || element[key] === null) ? "" : element[key];
                         singleValue.uId = (element.contactid) ? element.contactid : element.id;
+                        singleValue.isDate = (key === "activationDate") ? true : false;
                         singleValue.isLink = (key === 'name') ? true : false;
-                        singleValue.twoDecimal = (key === "mileage" || key === "rejectedMileges" || key === "totalMileages" || key === "approvedMileages") ? true : false;
+                        singleValue.twoDecimal = (key === "mileage" || key === "rejectedMileges" || key === "totalMileages" || key === "approvedMileages" || key === "totalHighRiskMileages" || key === "highRiskTotalRejected" || key === "highRiskTotalApproved") ? true : false;
                         singleValue.istwoDecimalCurrency = (key === 'fixedamount') ? true : false;
                         // singleValue.hasLeadingZero = ((
                         // key === "fixedamount") && ((element[key] !== "null" || element[key] !== null))) ? singleValue.value : null;
@@ -199,7 +200,7 @@ export default class UserViewMileage extends LightningElement {
         let excelList = this.sort(this.modelList, "name");
         mileage.push(["Name", "Email", "Activation Date", "Fixed Amount"])
         excelList.forEach((item)=>{
-            mileage.push([item.name.replace(/\\'/g, "\'"), item.email, (item.activationDate !== null) ? toDate(item.activationDate) : item.activationDate, item.fixedamount])
+            mileage.push([item.name.replace(/\\'/g, "\'"), item.email, (item.activationDate !== null) ? toDate(item.activationDate) : item.activationDate, (item.fixedamount !== null) ? '$' + item.fixedamount : item.fixedamount])
         })
         this.excelToExport(mileage, fileName, sheetName);
     }

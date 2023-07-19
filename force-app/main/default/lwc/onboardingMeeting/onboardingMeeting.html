@@ -1,0 +1,15 @@
+<template>
+    <template if:true={promiseError}>
+        <c-m-burse-error message={errorMessage}></c-m-burse-error>
+    </template>
+    <div class="transition">
+        <div>
+            <c-m-burse-header-text head-text="Step 3">
+                <div slot="subHeading" class="slds-text-heading_small slds-text-align_center font-style slds-p-bottom_small font-head">{textForHeader}</div>
+            </c-m-burse-header-text>
+        </div>
+        <div>
+            <c-go-to-webinar-new-u-i></c-go-to-webinar-new-u-i> 
+        </div>
+    </div>
+</template>

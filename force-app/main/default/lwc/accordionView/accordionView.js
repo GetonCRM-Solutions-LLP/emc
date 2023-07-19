@@ -27,9 +27,8 @@ export default class AccordionView extends LightningElement {
   loadingGif = resourceImage + '/mburse/assets/mBurse-Icons/Bar-style.gif';
   defaultYear = '';
   isReimbursementView = false;
-  isRecord = false;
   isScrollable = false;
-  listOfRecord;
+  listOfRecord = false;
  @track listVisible = false;
   isRowDn = true;
   sortable =  false;
@@ -156,7 +155,6 @@ export default class AccordionView extends LightningElement {
   }
 
   getBiweekReimbursement(viewList, yearTo) {
-    this.isRecord = false;
     if (viewList) {
       this.isReimbursementView = true;
       // this.dispatchEvent(
@@ -222,7 +220,6 @@ export default class AccordionView extends LightningElement {
           this.accordionKeyFields = this.keyFields;
           this.dynamicBinding(this.accordionList, this.accordionKeyFields);
           this.listOfRecord = this.accordionList.length > 0 ? true : false;
-          this.isRecord = true;
           const accordionItem =
           this.template.querySelectorAll(".accordion-item");
           accordionItem.forEach((el) =>
@@ -261,7 +258,6 @@ export default class AccordionView extends LightningElement {
   }
 
   getReimbursementFromApex(viewList, yearTo) {
-    this.isRecord = false;
     if (viewList) {
       // this.dispatchEvent(
       //   new CustomEvent("show", {
@@ -443,7 +439,6 @@ export default class AccordionView extends LightningElement {
           this.accordionKeyFields = this.keyFields;
           this.dynamicBinding(this.accordionList, this.accordionKeyFields);
           this.listOfRecord = this.accordionList.length > 0 ? true : false;
-          this.isRecord = true;
           const accordionItem =
             this.template.querySelectorAll(".accordion-item");
             accordionItem.forEach((el) =>
@@ -485,7 +480,6 @@ export default class AccordionView extends LightningElement {
   }
 
   getBiweekReim(viewList, yearTo) {
-    this.isRecord = false;
     this.defaultYear = yearTo;
     this.isReimbursementView = true;
     // this.dispatchEvent(
@@ -552,7 +546,6 @@ export default class AccordionView extends LightningElement {
           this.accordionKeyFields = this.keyFields;
           this.dynamicBinding(this.accordionList, this.accordionKeyFields);
           this.listOfRecord = this.accordionList.length > 0 ? true : false;
-          this.isRecord = true;
           this.dispatchEvent(
             new CustomEvent("show", {
               detail: "isHide"
@@ -567,7 +560,6 @@ export default class AccordionView extends LightningElement {
   }
 
   getReimbursement(viewList, yearTo) {
-    this.isRecord = false;
     this.defaultYear = yearTo;
     // this.dispatchEvent(
     //   new CustomEvent("show", {
@@ -748,7 +740,6 @@ export default class AccordionView extends LightningElement {
           this.accordionKeyFields = this.keyFields;
           this.dynamicBinding(this.accordionList, this.accordionKeyFields);
           this.listOfRecord = this.accordionList.length > 0 ? true : false;
-          this.isRecord = true;
           this.dispatchEvent(
             new CustomEvent("show", {
               detail: "isHide"
@@ -763,7 +754,6 @@ export default class AccordionView extends LightningElement {
   }
 
   getTAndA(viewList, yearTo){
-    this.isRecord = false;
     this.defaultYear = yearTo;
     this.isReimbursementView = true;
     // this.dispatchEvent(
@@ -830,7 +820,6 @@ export default class AccordionView extends LightningElement {
           this.accordionKeyFields = this.keyFields;
           this.dynamicBinding(this.accordionList, this.accordionKeyFields);
           this.listOfRecord = this.accordionList.length > 0 ? true : false;
-          this.isRecord = true;
           this.dispatchEvent(
             new CustomEvent("show", {
               detail: "isHide"
@@ -844,7 +833,6 @@ export default class AccordionView extends LightningElement {
   }
 
   getTimeAndAttendance(viewList, yearTo) {
-    this.isRecord = false;
     if (viewList) {
       this.isReimbursementView = true;
       // this.dispatchEvent(
@@ -910,7 +898,6 @@ export default class AccordionView extends LightningElement {
           this.accordionKeyFields = this.keyFields;
           this.dynamicBinding(this.accordionList, this.accordionKeyFields);
           this.listOfRecord = this.accordionList.length > 0 ? true : false;
-          this.isRecord = true;
          const accordionItem =
             this.template.querySelectorAll(".accordion-item");
           accordionItem.forEach((el) =>

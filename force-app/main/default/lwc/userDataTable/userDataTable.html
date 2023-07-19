@@ -160,7 +160,9 @@
                                     </template>
                                 </template>
                                 <template lwc:if={rowDownload}>
-                                    <td class="model-content download-td"><img class="download-icon" data-key={trip.id} src={downloadIcon} onclick={handleDownload} /></td>
+                                    <td class="model-content download-td">
+                                        <svg class="download-icon" data-key={trip.id} xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none" onclick={handleDownload}><path d="m5.453 7.609 0.034 -0.034 -0.034 0.034 3.219 3.219 0.082 0.082V1.152a0.994 0.994 0 0 1 1.988 0V10.909l0.081 -0.081 3.22 -3.219c0.39 -0.39 1.018 -0.39 1.408 0 0.39 0.39 0.39 1.017 0 1.407l-4.998 4.998a1.067 1.067 0 0 1 -0.152 0.124l-0.031 0.017c-0.012 0.006 -0.027 0.013 -0.042 0.023a0.444 0.444 0 0 1 -0.093 0.05h-0.002l-0.054 0.019 -0.048 0.014a0.851 0.851 0 0 0 -0.038 0.012l-0.007 0.002a0.497 0.497 0 0 1 -0.042 0.013c-0.065 0.012 -0.131 0.019 -0.194 0.019a1.086 1.086 0 0 1 -0.193 -0.019 0.544 0.544 0 0 1 -0.083 -0.026v-0.001l-0.008 -0.002 -0.011 -0.003a0.39 0.39 0 0 1 -0.083 -0.027l-0.002 -0.001a0.659 0.659 0 0 1 -0.05 -0.026l-0.01 -0.006a1.124 1.124 0 0 0 -0.042 -0.022 0.657 0.657 0 0 1 -0.07 -0.038v-0.001a0.93 0.93 0 0 1 -0.15 -0.123l-5 -4.998a0.993 0.993 0 0 1 0 -1.407c0.39 -0.39 1.019 -0.39 1.408 0ZM1.041 17.124h17.413a0.994 0.994 0 0 1 0 1.988H1.041a0.994 0.994 0 0 1 0 -1.988Z" fill="#7ABB4A" stroke="white" stroke-width="0.09523809523809523"/></svg>
+                                    </td>
                                 </template>
                             </tr>
                     </template>
@@ -168,31 +170,31 @@
                         <tr lwc:if={isYtdBiweek}>
                             <td class="bold-text">YTD</td>
                             <td></td>
-                            <td><lightning-formatted-number value={footerList.mileageCalc}  minimum-fraction-digits="2">
+                            <td class="no-bold"><lightning-formatted-number value={footerList.mileageCalc}  minimum-fraction-digits="2">
                             </lightning-formatted-number></td>
-                            <td><lightning-formatted-number value={footerList.varibleAmountCalc} format-style="currency"
+                            <td class="no-bold"><lightning-formatted-number value={footerList.varibleAmountCalc} format-style="currency"
                                 currency-code="USD" minimum-fraction-digits="2"></lightning-formatted-number></td>
-                            <td>{footerList.fixed1Calc}</td>
-                            <td>{footerList.fixed2Calc}</td>
-                            <td>{footerList.fixed3Calc}</td>
-                            <td><lightning-formatted-number value={footerList.totalReim} format-style="currency"
+                            <td class="no-bold">{footerList.fixed1Calc}</td>
+                            <td class="no-bold">{footerList.fixed2Calc}</td>
+                            <td class="no-bold">{footerList.fixed3Calc}</td>
+                            <td class="no-bold"><lightning-formatted-number value={footerList.totalReim} format-style="currency"
                                 currency-code="USD" minimum-fraction-digits="2"></lightning-formatted-number></td>
-                            <td><lightning-formatted-number value={footerList.totalAVGCalc} format-style="currency"
+                            <td class="no-bold"><lightning-formatted-number value={footerList.totalAVGCalc} format-style="currency"
                                 currency-code="USD" minimum-fraction-digits="2"></lightning-formatted-number></td>
                         </tr>
                         <tr lwc:else>
                             <td class="bold-text">YTD</td>
                             <td></td>
-                            <td><lightning-formatted-number value={footerList.mileageCalc}  minimum-fraction-digits="2">
+                            <td class="no-bold"><lightning-formatted-number value={footerList.mileageCalc}  minimum-fraction-digits="2">
                             </lightning-formatted-number></td>
                             <td></td>
-                            <td><lightning-formatted-number value={footerList.varibleAmountCalc} format-style="currency"
+                            <td class="no-bold"><lightning-formatted-number value={footerList.varibleAmountCalc} format-style="currency"
                                 currency-code="USD" minimum-fraction-digits="2"></lightning-formatted-number></td>
-                            <td><lightning-formatted-number value={footerList.totalMonthlyFixedCalc} format-style="currency"
+                            <td class="no-bold"><lightning-formatted-number value={footerList.totalMonthlyFixedCalc} format-style="currency"
                                 currency-code="USD" minimum-fraction-digits="2"></lightning-formatted-number></td>
-                            <td><lightning-formatted-number value={footerList.totalReim} format-style="currency"
+                            <td class="no-bold"><lightning-formatted-number value={footerList.totalReim} format-style="currency"
                                 currency-code="USD" minimum-fraction-digits="2"></lightning-formatted-number></td>
-                            <td><lightning-formatted-number value={footerList.totalAVGCalc} format-style="currency"
+                            <td class="no-bold"><lightning-formatted-number value={footerList.totalAVGCalc} format-style="currency"
                                     currency-code="USD" minimum-fraction-digits="2"></lightning-formatted-number></td>
                         </tr>
                     </template>
@@ -238,7 +240,7 @@
             <template if:false={norecord}>
                     <div class="slds-p-top_medium slds-p-bottom_small">
                         <div class="slds-float_right">
-                            <img class="download-icon" src={downloadIcon} onclick={handleAllDownload} />
+                            <svg class="download-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none" onclick={handleAllDownload}><path d="m5.453 7.609 0.034 -0.034 -0.034 0.034 3.219 3.219 0.082 0.082V1.152a0.994 0.994 0 0 1 1.988 0V10.909l0.081 -0.081 3.22 -3.219c0.39 -0.39 1.018 -0.39 1.408 0 0.39 0.39 0.39 1.017 0 1.407l-4.998 4.998a1.067 1.067 0 0 1 -0.152 0.124l-0.031 0.017c-0.012 0.006 -0.027 0.013 -0.042 0.023a0.444 0.444 0 0 1 -0.093 0.05h-0.002l-0.054 0.019 -0.048 0.014a0.851 0.851 0 0 0 -0.038 0.012l-0.007 0.002a0.497 0.497 0 0 1 -0.042 0.013c-0.065 0.012 -0.131 0.019 -0.194 0.019a1.086 1.086 0 0 1 -0.193 -0.019 0.544 0.544 0 0 1 -0.083 -0.026v-0.001l-0.008 -0.002 -0.011 -0.003a0.39 0.39 0 0 1 -0.083 -0.027l-0.002 -0.001a0.659 0.659 0 0 1 -0.05 -0.026l-0.01 -0.006a1.124 1.124 0 0 0 -0.042 -0.022 0.657 0.657 0 0 1 -0.07 -0.038v-0.001a0.93 0.93 0 0 1 -0.15 -0.123l-5 -4.998a0.993 0.993 0 0 1 0 -1.407c0.39 -0.39 1.019 -0.39 1.408 0ZM1.041 17.124h17.413a0.994 0.994 0 0 1 0 1.988H1.041a0.994 0.994 0 0 1 0 -1.988Z" fill="#7ABB4A" stroke="white" stroke-width="0.09523809523809523"/></svg>
                         </div>
                     </div>
             </template>
@@ -286,28 +288,36 @@
                             <template for:each={pagedData} for:item="trip">
                                     <tr  key={trip.id} class={trip.rejectedClass}>
                                         <template for:each={trip.keyFields} for:item="mapKey">
-                                            <template lwc:if={mapKey.istwoDecimalCurrency}>
-                                                <template lwc:if={mapKey.hasLeadingZero}>
-                                                    <template lwc:if={mapKey.bold}>
-                                                        <td class="modal-content bold-text" key={mapKey.key}>
-                                                            ${mapKey.hasLeadingZero}
-                                                        </td>
-                                                    </template>
-                                                    <template lwc:else>
-                                                        <td class="modal-content" key={mapKey.key}>
-                                                            ${mapKey.hasLeadingZero}
-                                                        </td>
-                                                    </template>
-                                                </template>
-                                                <template lwc:else>
-                                                    <td class="modal-content" key={mapKey.key}><lightning-formatted-number
-                                                        value={mapKey.value}
-                                                        format-style="currency"
-                                                        currency-code="USD"
-                                                        minimum-fraction-digits="2">
-                                                    </lightning-formatted-number></td>
+                                            <template lwc:if={mapKey.onlyLink}>
+                                                <template lwc:if={mapKey.isLink}>
+                                                    <td class="modal-content" key={mapKey.key}>
+                                                        <a class="linked" onclick={linkHandler} data-id={mapKey.id}>{mapKey.value}</a>
+                                                    </td>
                                                 </template>
                                             </template>
+                                            <template lwc:else>
+                                                <template lwc:if={mapKey.istwoDecimalCurrency}>
+                                                    <template lwc:if={mapKey.hasLeadingZero}>
+                                                        <template lwc:if={mapKey.bold}>
+                                                            <td class="modal-content bold-text" key={mapKey.key}>
+                                                                ${mapKey.hasLeadingZero}
+                                                            </td>
+                                                        </template>
+                                                        <template lwc:else>
+                                                            <td class="modal-content" key={mapKey.key}>
+                                                                ${mapKey.hasLeadingZero}
+                                                            </td>
+                                                        </template>
+                                                    </template>
+                                                    <template lwc:else>
+                                                        <td class="modal-content" key={mapKey.key}><lightning-formatted-number
+                                                            value={mapKey.value}
+                                                            format-style="currency"
+                                                            currency-code="USD"
+                                                            minimum-fraction-digits="2">
+                                                        </lightning-formatted-number></td>
+                                                    </template>
+                                                </template>
                                                 <template lwc:else>
                                                     <template lwc:if={mapKey.isfourDecimalCurrency}>
                                                         <template lwc:if={mapKey.hasLeadingZero}>
@@ -372,6 +382,7 @@
                                                         </template>
                                                     </template>
                                                 </template>
+                                            </template>
                                         </template>
                                     </tr>
                             </template>
@@ -497,13 +508,8 @@
                             <div class="slds-float_right slds-p-top_small slds-p-right_small">
                                 <button class="slds-btn slds-btn-primary slds-btn-sm waves-effect bc-green waves-light mleft-0 btn-trip"
                                     onclick={downloadAllTrips}>
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" viewBox="0 0 25 25" fill="none" style="
-                                                                    margin-right: 3px;
-                                                                ">
-                                        <path
-                                            d="m7.561 11.627 0.032 -0.032 -0.032 0.032 4.273 4.273a0.936 0.936 0 0 0 0.143 0.118 0.625 0.625 0 0 0 0.068 0.036h0.001l0.032 0.018 0.009 0.006 0.048 0.025a0.357 0.357 0 0 0 0.089 0.028l0.007 0.002a0.557 0.557 0 0 0 0.082 0.025l0.002 0.001a0.941 0.941 0 0 0 0.368 0h0.002a0.502 0.502 0 0 0 0.052 -0.018 0.522 0.522 0 0 1 0.027 -0.007l0.002 -0.002 0.032 -0.009 0.057 -0.018a0.527 0.527 0 0 0 0.098 -0.05l0.001 -0.001 0.002 -0.001a0.232 0.232 0 0 1 0.027 -0.016l0.036 -0.022a0.952 0.952 0 0 0 0.143 -0.118l4.273 -4.273a0.941 0.941 0 0 0 0 -1.332 0.941 0.941 0 0 0 -1.332 0l-2.668 2.668V4.843a0.943 0.943 0 0 0 -1.882 0v8.122L8.891 10.297a0.941 0.941 0 0 0 -1.331 0 0.941 0.941 0 0 0 0 1.332Zm13.323 7.718a0.942 0.942 0 0 0 -0.943 -0.941H5.057a0.943 0.943 0 0 0 0 1.881h14.886a0.943 0.943 0 0 0 0.942 -0.942Z"
-                                            fill="white" stroke="white" stroke-width="0.10081333333333335"></path>
-                                    </svg>Download
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="23" height="23" viewBox="0 0 23 23" fill="none" style="margin-right:3px"><path d="m6.956 10.697.029-.029-.029.029 3.931 3.931a.861.861 0 0 0 .132.109.575.575 0 0 0 .063.033h.001l.029.017.008.006.044.023a.328.328 0 0 0 .082.026l.006.002a.512.512 0 0 0 .075.023l.002.001a.866.866 0 0 0 .339 0h.002a.462.462 0 0 0 .048-.017.48.48 0 0 1 .025-.006l.002-.002.029-.008.052-.017a.485.485 0 0 0 .09-.046l.001-.001.002-.001a.213.213 0 0 1 .025-.015l.033-.02a.876.876 0 0 0 .132-.109l3.931-3.931a.866.866 0 0 0 0-1.225.866.866 0 0 0-1.225 0l-2.455 2.455V4.456a.868.868 0 0 0-1.731 0v7.472L8.18 9.473a.866.866 0 0 0-1.225 0 .866.866 0 0 0 0 1.225Zm12.257 7.101a.867.867 0 0 0-.868-.866H4.652a.868.868 0 0 0 0 1.731h13.695a.868.868 0 0 0 .867-.867Z" fill="#fff" stroke="#fff" stroke-width=".093"/></svg>
+                                    Download
                                 </button>
                             </div>
                         </template>

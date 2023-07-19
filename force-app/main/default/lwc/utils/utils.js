@@ -49,4 +49,9 @@ const syncEvents  = (component, param) => {
     component.dispatchEvent(e);
 }
 
-export {events, skipEvents, backEvents, nextSkipEvents, openEvents, toastEvents, modalEvents, searchEvents, pageEvents, syncEvents}
+const toggleEvents  = (component, param) => {
+    const e = new CustomEvent('toggle', {detail: param});
+    component.dispatchEvent(e);
+}
+
+export {events, skipEvents, backEvents, nextSkipEvents, openEvents, toastEvents, modalEvents, searchEvents, pageEvents, syncEvents, toggleEvents}

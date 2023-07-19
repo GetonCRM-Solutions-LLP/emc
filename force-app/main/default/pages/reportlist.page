@@ -1482,15 +1482,35 @@
                             scope.originalObjArr = [];
                             scope.defaultOption = "Select Pay Period";
                             scope.originalObjArr = scope.netchexpayPeriod.split(',');
+                            // var payArr = [];
+                            // var myDate = new Date();
+                            // var previousMonth = new Date(myDate);
+                            // previousMonth.setMonth(myDate.getMonth() - 1);
+                            // var nextMonth = new Date(myDate);
+                            // nextMonth.setMonth(myDate.getMonth() + 1);
+                            // var currentMonth = $filter('date')(new Date(), 'MMMM');
+                            // var preMonth = $filter('date')(previousMonth, 'MMMM');
+                            // var neMonth = $filter('date')(nextMonth, 'MMMM');
+                            var currentDate = new Date();
                             var payArr = [];
-                            var myDate = new Date();
-                            var previousMonth = new Date(myDate);
-                            previousMonth.setMonth(myDate.getMonth() - 1);
-                            var nextMonth = new Date(myDate);
-                            nextMonth.setMonth(myDate.getMonth() + 1);
+                            function daysInMonth(month, year)
+                            {
+                                return 32 - new Date(year, month, 32).getDate();
+                            }
+                            
+                            var y = currentDate.getFullYear();
+                            var m = currentDate.getMonth() - 1;
+                            var d = Math.min(currentDate.getDate(), daysInMonth(m, y));
+                            var previousDate = new Date(y, m, d);
+                            
+                            var yNext = currentDate.getFullYear();
+                            var mNext = currentDate.getMonth() + 1;
+                            var dNext = Math.min(currentDate.getDate(), daysInMonth(mNext, yNext));
+                            var nextDate = new Date(yNext, mNext, dNext);
+                            
                             var currentMonth = $filter('date')(new Date(), 'MMMM');
-                            var preMonth = $filter('date')(previousMonth, 'MMMM');
-                            var neMonth = $filter('date')(nextMonth, 'MMMM');
+                            var preMonth = $filter('date')(previousDate , 'MMMM');
+                            var neMonth = $filter('date')(nextDate , 'MMMM');
                             angular.forEach(scope.originalObjArr, function (date) {
                                 var split = date.split(' to ');
                                 var startMonth = $filter('date')(new Date(split[0]), 'MMMM');
@@ -1851,15 +1871,35 @@
                             scope.originalObjArr = [];
                             scope.defaultOption = "Select Pay Period";
                             scope.originalObjArr = scope.netchexpayPeriod.split(',');
+                            // var payArr = [];
+                            // var myDate = new Date();
+                            // var previousMonth = new Date(myDate);
+                            // previousMonth.setMonth(myDate.getMonth() - 1);
+                            // var nextMonth = new Date(myDate);
+                            // nextMonth.setMonth(myDate.getMonth() + 1);
+                            // var currentMonth = $filter('date')(new Date(), 'MMMM');
+                            // var preMonth = $filter('date')(previousMonth, 'MMMM');
+                            // var neMonth = $filter('date')(nextMonth, 'MMMM');
+                            var currentDate = new Date();
                             var payArr = [];
-                            var myDate = new Date();
-                            var previousMonth = new Date(myDate);
-                            previousMonth.setMonth(myDate.getMonth() - 1);
-                            var nextMonth = new Date(myDate);
-                            nextMonth.setMonth(myDate.getMonth() + 1);
+                            function daysInMonth(month, year)
+                            {
+                                return 32 - new Date(year, month, 32).getDate();
+                            }
+                            
+                            var y = currentDate.getFullYear();
+                            var m = currentDate.getMonth() - 1;
+                            var d = Math.min(currentDate.getDate(), daysInMonth(m, y));
+                            var previousDate = new Date(y, m, d);
+                            
+                            var yNext = currentDate.getFullYear();
+                            var mNext = currentDate.getMonth() + 1;
+                            var dNext = Math.min(currentDate.getDate(), daysInMonth(mNext, yNext));
+                            var nextDate = new Date(yNext, mNext, dNext);
+                            
                             var currentMonth = $filter('date')(new Date(), 'MMMM');
-                            var preMonth = $filter('date')(previousMonth, 'MMMM');
-                            var neMonth = $filter('date')(nextMonth, 'MMMM');
+                            var preMonth = $filter('date')(previousDate , 'MMMM');
+                            var neMonth = $filter('date')(nextDate , 'MMMM');
                             angular.forEach(scope.originalObjArr, function (date) {
                                 var split = date.split(' to ');
                                 var startMonth = $filter('date')(new Date(split[0]), 'MMMM');

@@ -9,10 +9,9 @@
                 margin: 0 auto;
             }
             .highcharts-title {
-                fill: #434348;
-                font-weight: 700;
-                font-size: 16px !important;
-                font-family: 'Proxima Nova'
+                fill: #1d1d1d;
+                font-size: 2em !important;
+                font-family: 'Proxima Nova Bold'
             }
             .highcharts-subtitle{
                  font-weight: 400;
@@ -23,9 +22,8 @@
         <link rel="stylesheet" href="{!URLFOR($Resource.EmcCSS,'emc-design/assets/css/main.css')}"/>
         <script src="{!URLFOR($Resource.HighChart, '/proj4.js')}"></script>
         <script src="{!URLFOR($Resource.HighChart,'/highmaps.js')}"></script>
-        <!-- <script src="{!URLFOR($Resource.HighChart,'/exporting.js')}"></script> -->
         <script src="{!URLFOR($Resource.HighChart,'/accessibility.js')}"></script>
-        <script src="{!URLFOR($Resource.HighChart,'/us-all-mainland.js')}"></script>
+        <script src="{!URLFOR($Resource.HighChart,'/us-all.js')}"></script>
         <script>
              var lexOrigin = location.origin;
              var postData, chartData, states, chart = [], chloChart, charturl;
@@ -36,27 +34,25 @@
                 if (event.origin !== lexOrigin) {
                     return;
                 }
-                charturl = location.origin + `{!URLFOR($Resource.HighChart,'/us-all-mainland.js')}`;
-                console.log(charturl)
                 postData = JSON.parse(event.data)
                 chartData = postData.modal;
                 let containerChart = document.getElementById('container');
-               //https://code.highcharts.com/mapdata/countries/us/custom/us-small.topo.json
+               //countries/us/custom/us-all-territories
                 Highcharts.mapChart(containerChart, {
                         chart: {
-                            map: 'countries/us/custom/us-all-mainland',
+                            map: 'countries/us/us-all',
                             borderColor:postData.border,
                             backgroundColor: postData.background,
                           //  height: postData.height, //250
-                            height: (3 / 5 * 100) + '%',
+                            height: postData.vertical,
                             //width: postData.width, // 360
-                            margin: [0,0,0,0],
+                            margin: postData.margin,
                             // marginTop: 20,
                             // marginBottom: 0,
                             // marginLeft: 0,
                             // marginRight: 0,
-                            spacingTop: 0,
-                            spacingBottom: 0,
+                            spacingTop: postData.top,
+                            spacingBottom: postData.bottom,
                             // spacingLeft: 0,
                             // spacingRight: 0
                             //styledMode: true
@@ -73,13 +69,12 @@
                         },
 
                         title: {
-                            text: ''
+                            text: postData.title
                         },
 
                         tooltip: {
                                 pointFormatter :  function () {
                                           // display only if larger than 1
-                                          console.log(this)
                                           return '<b>'+this.Name+'</b>' + '<br>' + this.address + '<br/>' + 'Fixed Amount: ' + this.amount;
                                 },
                                 headerFormat: '',
@@ -95,13 +90,13 @@
                         },
 
                         mapNavigation: {
-                            enabled: false,
+                            enabled: postData.navigation,
                             // enableDoubleClickZoomTo: true,
-                            // buttonOptions: {
-                            //     align: 'center',
-                            //     alignTo: 'spacingBox',
-                            //     verticalAlign: 'bottom'
-                            // }
+                            buttonOptions: {
+                                align: 'bottom',
+                                alignTo: 'plotBox',
+                                verticalAlign: 'bottom',
+                            }
                         },
 
                         credits: {
@@ -144,6 +139,7 @@
                             borderColor: '#FFFFFF',
                             nullColor: '#d9d9d9',
                             borderWidth: 0.3,
+                            joinBy: ['hc-a2', 'MailingState'],
                             animation: {
                                 duration: 1000
                             },

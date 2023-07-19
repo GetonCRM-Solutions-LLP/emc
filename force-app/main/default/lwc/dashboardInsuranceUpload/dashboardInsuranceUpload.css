@@ -532,7 +532,7 @@ table tr td {
 }
 
 .insurance-container{
-  height: 426px;
+  height: 334px;
 }
 
 .fa-2x{
@@ -560,5 +560,5 @@ table tr td {
 }
 
 .slds-item.navigate a{
-  padding: 0.85rem !important;
+  padding: 0.98rem !important;
 }

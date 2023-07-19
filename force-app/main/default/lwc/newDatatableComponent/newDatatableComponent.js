@@ -5,14 +5,17 @@ import resourceImage from '@salesforce/resourceUrl/mBurseCss';
 import deleteMileages from '@salesforce/apex/GetDriverData.deleteMileages';
 import approveMileages from '@salesforce/apex/GetDriverData.approveMileages';
 import fetchMileages from '@salesforce/apex/GetDriverData.fetchMileageslwc';
-import datepicker from '@salesforce/resourceUrl/calendar';
-import customMinifiedDP  from '@salesforce/resourceUrl/modalCalDp';
 import mileageListData from '@salesforce/apex/GetDriverData.mileageListData';
 import deleteTrips from '@salesforce/apex/GetDriverData.deleteTrips';
 import MassSyncTrips from '@salesforce/apex/GetDriverData.MassSyncTrips';
-import fetchHighRiskValues from '@salesforce/apex/GetDriverData.highRiskMileages';
+import fetchMileagesSize from '@salesforce/apex/GetDriverData.fetchMileagesSize';
+import getMilegesData from '@salesforce/apex/GetDriverData.getMilegesData';
+import getMilegesDataSize from '@salesforce/apex/GetDriverData.getMilegesDataSize';
+
+
 import {
   formatData,
+  changeKeyObjects,
   dateTypeFormat,
   excelFormatDate,
   yearMonthDate
@@ -20,6 +23,7 @@ import {
 export default class NewDatatableComponent extends LightningElement {
   @api accId ;
   @api adminId;
+  @api roleOfUser
   contactId;
   accountId;
   Accounts = [];
@@ -32,8 +36,8 @@ export default class NewDatatableComponent extends LightningElement {
   pagination = false;
   checkinTolltip = false;
   pageSize = '25';
-  totalrows;
-  totalmileage = 0;
+  totalrows = 0;
+  totalmileage = 0.00;
   pageSizeOptions = [{Id:1,label:'25',value:'25'},{Id:2,label:'50',value:'50'},{Id:3,label:'100',value:'100'},{Id:4,label:'200',value:'200'}];
   openmodel = false;
   recordid;
@@ -57,57 +61,105 @@ export default class NewDatatableComponent extends LightningElement {
   modalcontentstyle = "slds-modal__content slds-p-left_medium slds-p-right_medium slds-p-bottom_medium slds-p-top_small"
   styleheader = "slds-modal__container"
   closebtnclass = "close-notify"
-  modalcontentmessage;
+  modalcontentmessage='';
   updatetext;
-  btnlabel;
+  btnlabel='';
   advancesearch = false;
+  advanceSearchdata = false;
   celenderdropdown = false;
   filename;
   xlsHeader = [];
   xlsData = [];
   temp = [];
-  currentDate;
   fromDate = '';
   toDate = '';
-  calStartDate;
-  calendDate;
   csvFiledata = [];
-  _accid;
-  _adminid;
+  _accid ='';
+  _adminid='';
   @api driverData;
-  driverDataNew;
+  driverDataNew = [];
   syStDate;
   syEnDate;
   @api monthList ;
   @api driverList;
-  @api statusList;
+  // @api statusList;
   typeList = [{Id : 1 , label : 'All Types' , value : 'All Types'},{Id : 1 , label : 'High Risk' , value : 'High Risk'}];
-  // driveroption = [];
-  /** Class name decorator added by megha */
+  statusList = [{Id : 1 , label : 'All Status' , value : 'All Status'},
+                {Id : 2 , label : 'Approved' , value : 'Approved'},
+                {Id : 3 , label : 'Not Approved Yet' , value : 'Not Approved Yet'},
+                {Id : 4 , label : 'Rejected' , value : 'Rejected'}];
   @api mainClass;
-  className = 'slds-scrollable_y slds-p-right_small slds-p-left_small';
+  className = 'slds-p-right_small slds-p-left_small';
   @api norecordMessage;
-  visibleRecords;
-  user ='';
+  offset=0;
+  limit=25;
+  limitSize = 0 ;
   tripStatus='';
+  datatable = 'slds-table slds-table--header-fixed slds-table_cell-buffer slds-table_striped';
+  id='' ; 
+  AdminId ='';
+  idOfDriver='';
+  StartDate ;
+  EndDate; 
+  OriginName ='';
+  DestinationName ='';
+  ActiveDriver ='';
+  StartMileage =''; 
+  EndMileage='';
+  TripStatus ='';
+  TrackingMethod ='';
+  Tag='';
+  Activity='';
+  monthfilter = '';
+  searchStatus = '';
+  Status = '';
+  searchDriver='';
+  filterdriver='';
+  highrisk = false;
+  selectedDriver = '';
+  remmonth = '';
   
-   TypeOptions = [ { fieldlabel: 'Date & Time', fieldName: 'datetime' },
-                            { fieldlabel: 'Driver', fieldName: 'Driver' },
+   TypeOptions = [ { fieldlabel: 'Driver', fieldName: 'Driver' },
                             { fieldlabel: 'Mileage', fieldName: 'mileage' },
                             { fieldlabel: 'From', fieldName: 'from' },
                             { fieldlabel: 'To', fieldName: 'to' },
                             { fieldlabel: 'Tags', fieldName: 'tags' },
                             { fieldlabel: 'Notes', fieldName: 'notes' }];
-
     
      getUrlParamValue(url, key) {
       return new URL(url).searchParams.get(key);
     }
 
     connectedCallback(){
+
       this._accid  = this.getUrlParamValue(window.location.href, 'accid')
       this._adminid  = this.getUrlParamValue(window.location.href, 'id')
-      this.getmilegeslist(this.driverData);
+      if(this.advanceSearchdata == false){
+        fetchMileagesSize({accID: this._accid, adminId:this._adminid})
+        .then((result) => {
+         console.log("limitsize",result)
+         this.limitSize = result;
+         this.totalrows = result;
+            if(this.template.querySelector('c-new-paginator')){
+               this.template.querySelector('c-new-paginator').updateRecords(result  , this.pageSize)
+             } 
+             console.log("this.driverData",this.driverData)
+             this.getmilegeslist(this.driverData);
+
+             this.dispatchEvent(
+               new CustomEvent("showloader", { detail :{ message: 'Please wait while we load your data'}})
+             );
+             setTimeout(() => {
+               this.dispatchEvent(
+                 new CustomEvent("hideloader", { detail : ''})
+               );
+             },2000); 
+        })
+        .catch((error) => {
+         console.log("relod",error)
+       })
+      }
+      
     }
 
     renderedCallback() {
@@ -132,34 +184,43 @@ export default class NewDatatableComponent extends LightningElement {
 
     get driveroption() {
       var driverlist = JSON.parse( JSON.stringify( this.driverList ) ).sort( ( a, b ) => {
-        a = a.value ? a.value.toLowerCase() : ''; // Handle null values
-        b = b.value ? b.value.toLowerCase() : '';
+        a = a.label ? a.label.toLowerCase() : ''; // Handle null values
+        b = b.label ? b.label.toLowerCase() : '';
         return a > b ? 1 : -1;
       });;
-      let driverarray = [{id: 1,label:'All Active Users',value:'All Active Users'}].concat(driverlist);
+      let driverarray = [{id: 1,label:'All Active Users',value:'All Drivers'}].concat(driverlist);
       return driverarray;
     }
-    get statusoption() {
-      return JSON.parse(JSON.stringify(this.statusList));
-    }
+    // get statusoption() {
+    //   var statusoption = JSON.parse(JSON.stringify(this.statusList));
+    //   console.log("status option",statusoption)
+
+    //   return statusoption;
+    // }
     get monthoptions() {
       var monthoption = JSON.parse(  this.monthList ).sort( ( a, b ) => {
         return a.id < b.id ? 1 : -1;
       });
-      let arr2 = [{label:'Calendar',value:'Calendar'}].concat(monthoption);
+      let arr2 = [{label:'Month',value:'Month'}].concat(monthoption);
       return arr2;
     }
+    get lastmonth(){
+      var makeDate = new Date();
+      makeDate.setMonth(makeDate.getMonth()-1);
+      let lastmonth = makeDate.toLocaleString('default', { month: 	'long' });
+      return lastmonth;
+    }
+
+   
     @api getmilegeslist(data){
      let accdata = [];
-     let dateformatenew;
-     let enddateformate;
-     let dateformate;
+     let dateformatenew ='';
+     let enddateformate='';
+     let dateformate='';
      let acctdata = JSON.parse(data);
-     console.log("acc data1",data);
      console.log("acc data2",acctdata);
 
      for(let index  = 0 ; index < acctdata.length ; index++){
-           
            //for trip date
            if(acctdata[index].Trip_Date__c != undefined){
              let objectDate = new Date(acctdata[index].Trip_Date__c);
@@ -232,43 +293,143 @@ export default class NewDatatableComponent extends LightningElement {
                          tripId:acctdata[index].Trip_Id__c == undefined ? 0 : acctdata[index].Trip_Id__c,
                          triplog: acctdata[index].Triplog_Map__c == undefined ? '' : acctdata[index].Triplog_Map__c,
                          timezone: acctdata[index].TimeZone__c == undefined ? '' : acctdata[index].TimeZone__c,
-                         waypoint: acctdata[index].Way_Points__c == undefined ? null : acctdata[index].Way_Points__c,
+                         waypoint: acctdata[index].Way_Points__c == undefined ? undefined : acctdata[index].Way_Points__c,
                          EmailID : acctdata[index].EmployeeReimbursement__r.Contact_Id__r.External_Email__c,
-                         TrackingStyle : acctdata[index].Tracing_Style__c == undefined ?  '' : acctdata[index].Tracing_Style__c
+                         TrackingStyle : acctdata[index].Tracing_Style__c == undefined ?  '' : acctdata[index].Tracing_Style__c,
+                         approverejecticon : null,
+                         milegeLockDate :acctdata[index].EmployeeReimbursement__r.Mileage_Lock_Date__c == undefined ? '' : acctdata[index].EmployeeReimbursement__r.Mileage_Lock_Date__c
              });
          }
          
          this.Accounts = accdata;
          this.driverDataNew = accdata;
-         console.log("in loop",this.Accounts)
          if (this.Accounts.length != 0) {
+           this.datatable = 'slds-table slds-table--header-fixed slds-table_cell-buffer slds-table_fixed-layout slds-max-medium-table_stacked-horizontal slds-table_striped';
            this.searchDataLength = true;
-           this.totalrows = this.Accounts.length;
-           console.log("in loop",this.Accounts.length)
+           this.totalrows = this.limitSize;
            this.pagination = true;
            this.headershow = true;
-           if(this.template.querySelector('c-new-paginator')){
-             this.template.querySelector('c-new-paginator').updateRecords(this.Accounts , this.pageSize)
-           }  
-           this.dispatchEvent(
-            new CustomEvent("showloader", { detail : ''})
-          );
-          setTimeout(() => {
-            this.dispatchEvent(
-              new CustomEvent("hideloader", { detail : ''})
-            );
-          },2000);  
+           this.pageEventClick(this.Accounts);
+           console.log("after pageevent")
+            if(this.Accounts.length > 8){
+              this.className = 'slds-scrollable_y slds-p-right_small slds-p-left_small';
+            }else{
+              this.className = ' slds-p-right_small slds-p-left_small';
+            }
+            if(this.template.querySelector('.CheckUncheckAll')){
+              let checkboxes = this.template.querySelector('.CheckUncheckAll')
+              
+              let checkbox = this.template.querySelectorAll('.checkboxCheckUncheckSearch')
+              if(checkbox){
+                  let count = 0;
+                  for(let i=0; i<checkbox.length; i++) {
+                    if(checkbox[i].checked == true) {
+                        count++;
+                    }
+                  }
+                  console.log("count",count +'---'+checkbox.length)
+                  if(count == checkbox.length){
+                    checkboxes.checked = true;
+                  }else{
+                    checkboxes.checked = false;
+                  }
+                }  
+              }
          } else {
+          this.datatable = 'slds-table slds-table--header-fixed slds-table_cell-buffer slds-table_striped';
            this.searchDataLength = false;
            this.pagination = false;
            this.headershow = false;
-           this.totalrows = this.Accounts.length;
+           this.totalrows = 0;
+           this.totalmileage = 0.00;
          }
      }
+    handleoffset(event){
+      console.log("in offset")
+      this.offset = event.detail.offset;
+      this.limit = event.detail.limit;
+     
+      const accidparavalue  = this.getUrlParamValue(window.location.href, 'accid')
+      const idparavalue  = this.getUrlParamValue(window.location.href, 'id')
+      if(this.advanceSearchdata == false ) {
+        fetchMileages({accID : accidparavalue,AdminId: idparavalue,limitSize : this.limit,offset : this.offset})
+        .then((result) => {
+            let accresult1 = JSON.stringify(result)
+            if(accresult1.length > 0){
+              this.getmilegeslist(accresult1);
+            }else{
+              this.searchDataLength = false;
+              this.pagination = false;
+              this.totalmileage = 0.00;
+              this.totalrows = 0;
+            }
+        })  
+        .catch((error) => {
+          console.log("relod in offset",error)
+        })
+     
+      }else {
+        
+        if(this.StartDate == null){
+          this.StartDate = null;
+          this.EndDate = null;
+        }
+        if(this.Status){
+          this.TripStatus = this.Status;
+        }else if(this.searchStatus){
+          this.TripStatus = this.searchStatus;
+        }else{
+          this.TripStatus = 'All Status';
+        }
+        if(this.filterdriver){
+          this.idOfDriver = this.filterdriver;
+        }else if(this.searchDriver){
+          this.idOfDriver = this.searchDriver;
+        }else{
+          this.idOfDriver = '';
+        }
+       
+        console.log("in advance true",this.TripStatus)
+        this.getmileagesData(this._accid , this._adminid , this.idOfDriver , this.StartDate , this.EndDate , this.OriginName , this.DestinationName , this.ActiveDriver , this.StartMileage , this.EndMileage,
+          this.TripStatus , this.TrackingMethod , this.Tag  , this.limit , this.offset,this.remmonth,this.highrisk)
+      }
+      // if(this.template.querySelector('.CheckUncheckAll')){
+      //   let checkboxes = this.template.querySelector('.CheckUncheckAll')
+        
+      //   let checkbox = this.template.querySelectorAll('.checkboxCheckUncheckSearch')
+      //   if(checkbox){
+      //       let count = 0;
+      //       for(let i=0; i<checkbox.length; i++) {
+      //         if(checkbox[i].checked == true) {
+      //             count++;
+      //         }
+      //       }
+      //       console.log("count",count +'---'+checkbox.length)
+      //       if(count == checkbox.length){
+      //         checkboxes.checked = true;
+      //       }else{
+      //         checkboxes.checked = false;
+      //       }
+      //     }  
+      //   }
+      let checkbox = this.template.querySelectorAll('.checkboxCheckUncheckSearch')
+     
+          let count = 0;
+          for(let i=0; i<checkbox.length; i++) {
+            checkbox[i].checked = false;
+          }
+        
+        
+      if(this.template.querySelector('.CheckUncheckAll')){
+        let checkboxes = this.template.querySelector('.CheckUncheckAll')
+        checkboxes.checked = false;
+      }
 
-    pageEventClick(event){
-      let pageeventdata = [...event.detail.records];
-      this.MilegesData = JSON.parse(JSON.stringify(pageeventdata))
+    }
+    pageEventClick(data){
+      // let pageeventdata = [...event.detail.records];
+      console.log("pageclickevent",data)
+      this.MilegesData = JSON.parse(JSON.stringify(data))
       let mileges = 0;
         this.MilegesData.forEach(rowItem => {
           mileges = mileges + rowItem.Mileges;
@@ -282,45 +443,46 @@ export default class NewDatatableComponent extends LightningElement {
             rowItem.rowSelected = 'row collapsible row-approved-color';
             rowItem.iconcolor = 'checkin_icon';
             rowItem.timeColor  = 'start_time';
+            rowItem.approverejecticon = true;
           }else if(rowItem.Status === "Rejected") {
             rowItem.rowSelected = 'row collapsible row-rejected-color';
             rowItem.iconcolor = 'reject_checkin_icon';
             rowItem.timeColor  = 'reject_time';
+            rowItem.approverejecticon = false;
           } else{
             rowItem.rowSelected = 'row collapsible';
             rowItem.iconcolor = 'reject_checkin_icon';
             rowItem.timeColor  = 'start_time';
+            rowItem.approverejecticon = null;
           } 
         })
+      console.log("pageclickevent2",data)
+
         if(this.MilegesData.length > 0){
           this.headershow = true;
           this.celenderdropdown = true;
+        
           if(this.template.querySelector('.CheckUncheckAll')){
             let checkboxes = this.template.querySelector('.CheckUncheckAll')
             checkboxes.checked = false;
           }
+         
           this.totalmileage = mileges.toFixed(2);
         }else{
           this.celenderdropdown = false;
           this.headershow = false;
           this.totalmileage = 0.00;
         }
+      console.log("pageclickevent3",data)
+
         this.MilegesDatanew = this.MilegesData;
     }
     
     handleRecordsPerPage(event){
       if(this.MilegesData.length > 0){
         this.pageSize = event.detail.value;
-        this.dispatchEvent(
-          new CustomEvent("showloader", { detail : ''})
-        );
-        setTimeout(() => {
-          this.dispatchEvent(
-            new CustomEvent("hideloader", { detail : ''})
-          );
-          this.template.querySelector("c-new-paginator").updateRecords(this.Accounts, this.pageSize);
+          this.template.querySelector("c-new-paginator").updateRecords(this.limitSize , this.pageSize);
           this.celenderdropdown = true;
-        },1000);  
       }  
     }
 
@@ -333,9 +495,23 @@ export default class NewDatatableComponent extends LightningElement {
     }
 
     handleCheckbox(event){
+      let checkboxes = this.template.querySelector('.CheckUncheckAll')
       if(event.target.checked == false ){
-        let checkboxes = this.template.querySelector('.CheckUncheckAll')
+        
             checkboxes.checked = false;
+      }
+      let checkbox = this.template.querySelectorAll('.checkboxCheckUncheckSearch')
+      let count = 0;
+      for(let i=0; i<checkbox.length; i++) {
+       if(checkbox[i].checked == true) {
+          count++;
+       }
+      }
+      console.log("count",count +'---'+checkbox.length)
+      if(count == checkbox.length){
+        checkboxes.checked = event.target.checked;
+      }else{
+        checkboxes.checked = false;
       }
     }
     handleicon(event){
@@ -345,6 +521,7 @@ export default class NewDatatableComponent extends LightningElement {
     sortRecs(event){
       if(this.MilegesData.length > 0){
         let colName = event.currentTarget.dataset.name;
+        console.log("colName",colName)
         if(colName == 'Driver' ){
           this.updateSorting(colName ,'DriverName')
         }else if(colName == 'Mileage'){
@@ -372,20 +549,40 @@ export default class NewDatatableComponent extends LightningElement {
       })
        
       if(this.reverse  == false){
-        this.MilegesData = JSON.parse( JSON.stringify( this.MilegesData ) ).sort( ( a, b ) => {
-          a = a[ field ] ? a[ field ].toLowerCase() : ''; // Handle null values
-          b = b[ field ] ? b[ field ].toLowerCase() : '';
-          return a < b ? 1 : -1;
-      });;
+        if(colname == 'Mileage'){
+          this.MilegesData = JSON.parse( JSON.stringify( this.MilegesData ) ).sort( ( a, b ) => {
+            a = a[ field ] == null ? 0 : a[ field ]; // Handle null values
+            b = b[ field ] == null ? 0 : b[ field ];
+            console.log("if 1")
+            return a < b ? 1 : -1;
+          });  
+        }else{
+          this.MilegesData = JSON.parse( JSON.stringify( this.MilegesData ) ).sort( ( a, b ) => {
+            a = a[ field ] ? a[ field ].toLowerCase() : ''; // Handle null values
+            b = b[ field ] ? b[ field ].toLowerCase() : '';
+            console.log("if 1")
+            return a < b ? 1 : -1;
+          });
+        }
         this.reverse = true;
         this.template.querySelector(`.sorting_dsc[data-name="${colname}"]`).classList.add('asc-style'); 
         this.template.querySelector(`.sorting_asc[data-name="${colname}"]`).classList.remove('asc-style');
       }else{
-        this.MilegesData = JSON.parse( JSON.stringify( this.MilegesData ) ).sort( ( a, b ) => {
-          a = a[ field ] ? a[ field ].toLowerCase() : ''; // Handle null values
-          b = b[ field ] ? b[ field ].toLowerCase() : '';
-          return a > b ? 1 : -1;
-        });;
+        if(colname == 'Mileage'){
+          this.MilegesData = JSON.parse( JSON.stringify( this.MilegesData ) ).sort( ( a, b ) => {
+            a = a[ field ] == null ? 0 : a[ field ]; // Handle null values
+            b = b[ field ] == null ? 0 : b[ field ];
+            console.log("if 1")
+            return a > b ? 1 : -1;
+          });  
+        }else{
+          this.MilegesData = JSON.parse( JSON.stringify( this.MilegesData ) ).sort( ( a, b ) => {
+            a = a[ field ] ? a[ field ].toLowerCase() : ''; // Handle null values
+            b = b[ field ] ? b[ field ].toLowerCase() : '';
+            console.log("if 1")
+            return a > b ? 1 : -1;
+          });
+        }
         this.reverse = false;
         this.template.querySelector(`.sorting_asc[data-name="${colname}"]`).classList.add('asc-style'); 
         this.template.querySelector(`.sorting_dsc[data-name="${colname}"]`).classList.remove('asc-style');
@@ -441,7 +638,7 @@ export default class NewDatatableComponent extends LightningElement {
         let row = this.template.querySelectorAll(
           `[data-id="${this.recordid}"],.content_view`
         );
-        
+        this.datatable = 'slds-table slds-table--header-fixed slds-table_cell-buffer slds-table_fixed-layout slds-max-medium-table_stacked-horizontal slds-table_striped';
         for (let i = 0; i < row.length; i++) {
           let view = row[i];
           if (view.className === "row collapsible" || view.className === "row collapsible row-approved-color" || view.className === "row collapsible row-rejected-color") {
@@ -451,14 +648,15 @@ export default class NewDatatableComponent extends LightningElement {
             } else {view.classList.remove('active')};
           } else if (view.className === "row content_view") {
             if (this.recordid === view.dataset.id) {
-              if (view.style.display === "table-row") { view.classList.remove('active'); view.style.display = "none";}
-              else {  view.classList.add('active'); view.style.display = "table-row"; }
+              if (view.style.display === "block") { view.classList.remove('active'); view.style.display = "none";}
+              else {  view.classList.add('active'); view.style.display = "block"; }
             }
           } 
         }
        
         this.MilegesData.forEach(newindex =>{
           if(newindex.Id === this.recordid){
+            console.log("newindex.waypoint",newindex.waypoint)
             this.template.querySelector(`c-editable-datatable[data-id="${this.recordid}"]`).openmodal(newindex.Id , newindex.DriverName , newindex.Date ,newindex.Mileges ,newindex.From , newindex.To ,newindex.Tags , newindex.Notes , newindex.Activity ,newindex.DriveTime ,newindex.StayTime,newindex.fromlatitude,newindex.fromlongitude,newindex.tolatitude,newindex.tolongitude,newindex.tripId,newindex.triplog,newindex.timezone,newindex.waypoint,newindex.StartTime ,newindex.EndTime);
           }
           return newindex;
@@ -489,30 +687,22 @@ export default class NewDatatableComponent extends LightningElement {
           }else {view.classList.add('active')};
         } else if (view.className === "row content_view active") {
           if (this.recordid === view.dataset.id) {
-            if (view.style.display === "table-row")  { view.classList.remove('active'); view.style.display = "none";}
-            else { view.classList.add('active'); view.style.display = "table-row"; }
+            if (view.style.display === "block")  { view.classList.remove('active'); view.style.display = "none";}
+            else { view.classList.add('active'); view.style.display = "block"; }
           }
         }
       }
     }
     /** Ends --- */
     handleRefresh(event){
-      let data = this.Accounts;
+      let data = this.MilegesData;
       data.forEach(rowindex =>{
         if(rowindex.Id === event.detail.userid){
           rowindex.Notes = event.detail.usernote;
           rowindex.Tags = event.detail.usertag;
           rowindex.StayTime = event.detail.userstaytime;
           this.template.querySelector('c-editable-datatable').closeModal();
-          // this.isLoading = true;
-          this.dispatchEvent(
-            new CustomEvent("showloader", { detail : ''})
-          );
           setTimeout(() => {
-            // this.isLoading = false;
-            this.dispatchEvent(
-              new CustomEvent("hideloader", { detail : ''})
-            );
             this.template.querySelector(`.row[data-id="${rowindex.Id}"]`).classList.add('hightlight_row');
             this.dispatchEvent(
               new CustomEvent("toastmessage", {
@@ -526,12 +716,10 @@ export default class NewDatatableComponent extends LightningElement {
                 this.template.querySelector(`.row[data-id="${rowindex.Id}"]`).classList.remove('hightlight_row');
             }, 3000);
           }, 1000);
-          
         }
         return rowindex;
       })
-      this.Accounts = data;
-      this.template.querySelector("c-new-paginator").updateRecords(this.Accounts, this.pageSize);
+      this.MilegesData = JSON.parse(JSON.stringify(data));
     }
 
     getcheckboxtrue(){
@@ -542,6 +730,7 @@ export default class NewDatatableComponent extends LightningElement {
           listofarray.push({
             Id: this.MilegesData[i].Id,
             employeeEmailId: this.MilegesData[i].EmailID,
+            milegeLockDate : this.MilegesData[i].milegeLockDate
           });
         }
       }
@@ -553,7 +742,6 @@ export default class NewDatatableComponent extends LightningElement {
       if(this.MilegesData.length > 0){
         this.getcheckboxtrue();
         if (this.approveRejectData.length == 2) {
-          //this.SetToasterrorMessage("Select atleast one trip to unapprove.");
           this.dispatchEvent(
             new CustomEvent("toastmessage", {
               detail: {
@@ -573,7 +761,6 @@ export default class NewDatatableComponent extends LightningElement {
       if(this.MilegesData.length > 0){
         this.getcheckboxtrue();
         if (this.approveRejectData.length == 2) {
-          //this.SetToasterrorMessage("Select atleast one trip to reject.");
           this.dispatchEvent(
             new CustomEvent("toastmessage", {
               detail: {
@@ -593,7 +780,6 @@ export default class NewDatatableComponent extends LightningElement {
       if(this.MilegesData.length > 0){
         this.getcheckboxtrue();
         if (this.approveRejectData.length == 2) {
-          //this.SetToasterrorMessage("Select atleast one trip to approve.");
           this.dispatchEvent(
             new CustomEvent("toastmessage", {
               detail: {
@@ -603,8 +789,29 @@ export default class NewDatatableComponent extends LightningElement {
             })
           );
         }else{
+          let count = 0;
+          let modaltxt;
+          let lockdatearray = JSON.parse(this.approveRejectData);
+         
+            lockdatearray.forEach(element =>{
+              console.log("in each loop",element.milegeLockDate)
+              if(element.milegeLockDate != null){
+                count = count + 1;
+              }
+            })
+            
+           
+          // }
+          console.log("count",count)
+          if(count > 0){
+            const date = new Date();  // 2009-11-10
+            const month = date.toLocaleString('default', { month: 'long' });
+            modaltxt = 'You approved mileage after the ' + month + ' month reimbursement report was run. This mileage will be applied to the next reimbursement period report';
+          }else{
+            modaltxt = 'The mileage approval and flagging process could take several minutes. Would you like to receive an email when the process is complete ?'
+          }
           this.btnlabel = "No";
-          this.openmodal("Mileage Status","The mileage approval and flagging process could take several minutes. Would you like to receive an email when the process is complete ?");
+          this.openmodal("Mileage Status",modaltxt);
           this.updatetext = "Approved";
         }
       }
@@ -613,7 +820,6 @@ export default class NewDatatableComponent extends LightningElement {
       if(this.MilegesData.length > 0){
         this.getcheckboxtrue();
         if (this.approveRejectData.length == 2) {
-          // this.SetToasterrorMessage("Select atleast one trip to delete.");
           this.dispatchEvent(
             new CustomEvent("toastmessage", {
               detail: {
@@ -646,43 +852,55 @@ export default class NewDatatableComponent extends LightningElement {
         this.template.querySelector('c-user-profile-modal[data-id="mileges"]').hide();
       }
       if(this.updatetext == "Not Approved Yet"){
-        this.updateMileges(updateidlist ,"Trip Successfully unapproved", false , true , true);
+        this.updateMileges(updateidlist ,"Trip's unapproved sucessfully", false , true , true);
       }else if(this.updatetext == "Approved"){
-        this.updateMileges(updateidlist ,"Trip Successfully approved", true , true , false);
+        this.updateMileges(updateidlist ,"Trip's approved sucessfully", true , true , false);
       }else if(this.updatetext == "Rejected"){
-        this.updateMileges(updateidlist ,"Trip Successfully rejected", false , false , false);
+        this.updateMileges(updateidlist ,"Trip's rejected sucessfully", false , false , false);
       }else{
         deleteMileages({emailaddress: updateidlist })
         .then((data) => {
+          setTimeout(() => {
+            this.dispatchEvent(
+              new CustomEvent("toastmessage", {
+                detail: {
+                  errormsg: "success",
+                  message:"Trip's deleted sucessfully."
+                } 
+              })
+            );
+          }, 2000);
           const accidparavalue  = this.getUrlParamValue(window.location.href, 'accid')
           const idparavalue  = this.getUrlParamValue(window.location.href, 'id')
-          fetchMileages({accID : accidparavalue,AdminId: idparavalue,limitSize : 7000,offset : 100})
+          fetchMileagesSize({accID:accidparavalue, adminId:idparavalue})
           .then((result) => {
-            let accresult = JSON.parse(JSON.stringify(result))
-            console.log('accresult',accresult)
-            this.getmilegeslist(accresult);
-            //this.isLoading = true;
-            this.dispatchEvent(
-              new CustomEvent("showloader", { detail : ''})
-            );
-            setTimeout(() => {
-              //this.isLoading = false;
+          this.limitSize = result;
+          this.totalrows = result;
+              if(this.template.querySelector('c-new-paginator')){
+                this.template.querySelector('c-new-paginator').updateRecords(result  , this.pageSize)
+              } 
+              fetchMileages({accID : accidparavalue,AdminId: idparavalue,limitSize : this.pageSize,offset : 0})
+              .then((acc) => {
+                let accresult2 = JSON.stringify(acc)
+                this.getmilegeslist(accresult2);
+              
+               
+              })
+              .catch((error) => {
+                console.log(error)
+              });
               this.dispatchEvent(
-                new CustomEvent("hideloader", { detail : ''})
+                new CustomEvent("showloader", { detail :{ message: 'Please wait while we load your data'}})
               );
-              this.dispatchEvent(
-                new CustomEvent("toastmessage", {
-                  detail: {
-                    errormsg: "success",
-                    message:"Trip Successfully deleted."
-                  } 
-                })
-              );
-            }, 2000);
+              setTimeout(() => {
+                this.dispatchEvent(
+                  new CustomEvent("hideloader", { detail : ''})
+                );
+              },2000); 
           })
           .catch((error) => {
-            console.log(error)
-          });
+            console.log("relod",error)
+          })
           
          
           let boxes = this.template.querySelectorAll('.checkboxCheckUncheckSearch')
@@ -706,9 +924,9 @@ export default class NewDatatableComponent extends LightningElement {
         this.template.querySelector('c-user-profile-modal[data-id="mileges"]').hide();
       }
       if(this.updatetext == "Approved"){
-        this.updateMileges(updateidlist ,"Trip Successfully approved", true , false , false);
+        this.updateMileges(updateidlist ,"Trip's approved sucessfully", true , false , false);
       }else if(this.updatetext == "Rejected"){
-        this.updateMileges(updateidlist ,"Trip Successfully rejected", false , false , false);
+        this.updateMileges(updateidlist ,"Trip's rejected sucessfully", false , false , false);
       }
       let boxes = this.template.querySelectorAll('.checkboxCheckUncheckSearch')
       for(let i=0; i<boxes.length; i++) {
@@ -735,13 +953,10 @@ export default class NewDatatableComponent extends LightningElement {
       })
       .then((result) => {
           if(result){
-            // this.SetToastsuccessMessage(toastmsg);
-            // this.isLoading = true;
             this.dispatchEvent(
-              new CustomEvent("showloader", { detail : ''})
+              new CustomEvent("showloader", { detail : {message: 'Your mileages is processing in the background and can take a little time.You will receive an email notification once it has benn completed.'}})
             );
             setTimeout(() => {
-              // this.isLoading = false;
               this.dispatchEvent(
                 new CustomEvent("hideloader", { detail : ''})
               );
@@ -763,7 +978,7 @@ export default class NewDatatableComponent extends LightningElement {
             }
             let formateddata = JSON.parse(this.approveRejectData);
             for(let j=0; j<formateddata.length;j++){
-              this.Accounts.forEach(account => {
+              this.MilegesData.forEach(account => {
                 if(account.Id == formateddata[j].Id){
                   if(approve == true){
                     account.Status = 'Approved';
@@ -775,7 +990,7 @@ export default class NewDatatableComponent extends LightningElement {
                 }
               })
             }
-            this.template.querySelector("c-new-paginator").updateRecords(this.Accounts, this.pageSize);
+            this.pageEventClick( this.MilegesData)
             this.approveRejectData =  [];
           }
       })
@@ -788,21 +1003,26 @@ export default class NewDatatableComponent extends LightningElement {
     }
     /// click on sync all button
     async handleSyncAll(){
-      // if(this.MilegesData.length > 0){
         this.styleheader = "slds-modal__container slds-m-top_medium modal_width"
         if (this.template.querySelector('c-user-profile-modal')) {
           this.template.querySelector('c-user-profile-modal[data-id="syncall"]').show();
-          
         }
-      // }  
     }
     async handlemodalselect(){
       if (this.selectedMonth != undefined) { 
         var today = new Date();
-        var now = new Date(today.getFullYear(), today.getMonth(), 1);
-        var last = new Date(today.getFullYear(), today.getMonth() + 1, 0);
-        this.syStDate = yearMonthDate(now);
-        this.syEnDate = yearMonthDate(last);
+        var cDate = dateTypeFormat(today);
+        if (cDate === this.selectedMonth) {
+            var now = new Date(today.getFullYear(), today.getMonth(), 1);
+            var last = new Date(today.getFullYear(), today.getMonth() + 1, 0);
+            this.syStDate = yearMonthDate(now);
+            this.syEnDate = yearMonthDate(last);
+        } else {
+            var previousNow = new Date(today.getFullYear(), today.getMonth() - 1, 1);
+            var previousLast = new Date(today.getFullYear(), today.getMonth(), 0);
+            this.syStDate = yearMonthDate(previousNow);
+            this.syEnDate = yearMonthDate(previousLast);
+        }
         
           let deleteResult = await deleteTrips({
             accountId: this._accid,
@@ -831,33 +1051,39 @@ export default class NewDatatableComponent extends LightningElement {
                       console.log("Mass Result", finalMassResult);
                       if(finalMassResult){
                             this.handlesynccloseModal();
-                            // this.isLoading = true
-                            this.dispatchEvent(
-                              new CustomEvent("showloader", { detail : ''})
-                            );
-                            setTimeout(() => {
-                              // this.isLoading = false
+                             this.advanceSearchdata = false;
+                              const accidparavalue  = this.getUrlParamValue(window.location.href, 'accid')
+                              const idparavalue  = this.getUrlParamValue(window.location.href, 'id')
                               this.dispatchEvent(
-                                new CustomEvent("hideloader", { detail : ''})
+                                new CustomEvent("showloader", { detail :{ message: 'Please wait while we load your data'}})
                               );
-                              if(finalMassResult === 'Success'){
-                                setTimeout(() => {
-                                  this.dispatchEvent(
-                                    new CustomEvent("toastmessage", {
-                                      detail: {
-                                        errormsg: "success",
-                                        message:"Please wait for few minutes. mileage sync process is running in background!"
-                                      } 
+                              setTimeout(() => {
+                                fetchMileagesSize({accID: accidparavalue, adminId:idparavalue})
+                                .then((result) => {
+                                  console.log("sync limitsize",result)
+                                  this.limitSize = result;
+                                  this.totalrows = result;
+                                    if(this.template.querySelector('c-new-paginator')){
+                                      this.template.querySelector('c-new-paginator').updateRecords(result  , this.pageSize)
+                                    } 
+                                    fetchMileages({accID : accidparavalue , AdminId : idparavalue , limitSize : this.pageSize , offset : 0})
+                                    .then((result) => {
+                                      console.log("result",JSON.parse(JSON.stringify(result)))
+                                      this.getmilegeslist(JSON.stringify(result));
                                     })
-                                  );
-                                })    
-                                setTimeout(() => {
-                                    location.reload();
-                                }, 1000);
-                              }
-                            }, 1000);
+                                    .catch((error) => {
+                                      console.log("error",error)
+                                    })
+                                  
+                                })
+                                .catch((error) => {
+                                  console.log("relod",error)
+                                })
+                                this.dispatchEvent(
+                                  new CustomEvent("hideloader", { detail : ''})
+                                );
+                              },5000);   
                       }
-
                 }
           }
       }
@@ -868,30 +1094,14 @@ export default class NewDatatableComponent extends LightningElement {
       }
     }
     exportTripsByDate(){
-      // if(this.MilegesData.length > 0){
+      this.styleheader = "slds-modal__container slds-m-top_medium"
         if (this.template.querySelector('c-user-profile-modal')) {
           this.template.querySelector('c-user-profile-modal[data-id="export_trip"]').show();
-          Promise.all([loadScript(this, datepicker + '/jquery3v.min.js'),
-          loadScript(this, resourceImage + '/mburse/assets/datepicker/flatpickr.js'),
-          loadStyle(this, resourceImage + '/mburse/assets/datepicker/customMinifiedDatePicker.css'),
-          loadStyle(this, resourceImage + '/mburse/assets/datepicker/flatpickr.min.css'),
-          loadScript(this, datepicker + '/popper.min.js'),
-          loadScript(this, datepicker + '/datepicker.js'),
-          //loadScript(this, datepicker + '/datepicker.en.min.js'),
-          loadScript(this, datepicker + '/datepicker.en.js'),
-          loadStyle(this, datepicker + '/minifiedCustomDP.css'),
-          loadStyle(this, datepicker + '/datepicker.css'),
-          loadStyle(this, customMinifiedDP)])
-          .then((result)=>{
-             this.intializeDatepickup();
-          })
-          .catch(error => {
-            console.error({
-                message : 'error while loading calendar',
-                error
-            })
-          })
-        // }
+          setTimeout(() => {
+            if(this.template.querySelectorAll('.date-selector').length > 0){
+              this.intializeDatepickup();
+            }
+          },1000);
       }  
     }
    
@@ -933,6 +1143,120 @@ export default class NewDatatableComponent extends LightningElement {
         }
       }  
     }
+    async handledownloadCSV(){
+      console.log("in")
+      let fdate = this.template.querySelector(`.date-selector[data-id="from_date"]`).value;
+      let todate = this.template.querySelector(`.date-selector[data-id="to_date"]`).value;
+      let exportList = await this.exportExcelByDateRange();
+      // console.log("length",exportList.length)
+      if (exportList) {
+ 
+             let rowEnd = '\n';
+             let csvString = '';
+             let regExp = /^[0-9/]*$/gm;
+             let regExpForTime = /^[0-9:\sAM|PM]*$/gm
+             let decimalExp = /^(\d*\.)?\d+$/gm
+             // this set elminates the duplicates if have any duplicate keys
+             let rowData = new Set();
+             let csvdata = exportList;
+             csvdata.forEach(function (record) {
+               Object.keys(record).forEach(function (key) {
+                 rowData.add(key);
+               });
+             });
+             rowData = Array.from(rowData);
+             
+             csvString += rowData.join(',');
+             csvString += rowEnd;
+ 
+             var i = 0;
+             for(let i=0; i < csvdata.length; i++){
+               let colVal = 0;
+               // validating keys in data
+               for(let key in rowData) {
+                   if(rowData.hasOwnProperty(key)) {
+                       let rowKey = rowData[key];
+                       if(colVal > 0){
+                           csvString += ',';
+                       }
+                       // If the column is undefined, it as blank in the CSV file.
+                       let value = csvdata[i][rowKey] === undefined ? '' : csvdata[i][rowKey];
+                       if (value != null || value != '') {
+                         if (value.match) {
+                           if (value.match(regExp) || value.match(regExpForTime) || value.match(decimalExp)) {
+                             csvString += '="' + value + '"';
+                           } else {
+                             csvString += '"' + value + '"';
+                           }
+                         } else {
+                           csvString += '"' + value + '"';
+                         }
+                       } else {
+                         csvString += '"' + value + '"';
+                       }
+                   }
+                   colVal++;
+               }
+               csvString += rowEnd;
+               console.log("csvString",csvString)
+             }
+             /* Updated change on 27-09-2021 */
+             var universalBOM = "\uFEFF";
+             var a = window.document.createElement('a');
+             a.setAttribute('href', 'data:text/csv; charset=utf-8,' + encodeURIComponent(universalBOM+csvString));
+             a.setAttribute('target', '_self');
+             a.setAttribute('download',  'all_trips_' + fdate + '_to_' + todate + '.csv')
+             window.document.body.appendChild(a);
+             a.click();
+         }else{
+           setTimeout(() => {
+             this.dispatchEvent(
+               new CustomEvent("toastmessage", {
+                 detail: {
+                   errormsg: "error",
+                   message:"No data found for this date range."
+                 } 
+               })
+             );
+           }, 2000);
+         }
+      
+      this.handleexportcloseModal()
+     
+   }
+   async exportExcelByDateRange() {
+    try {
+      const accidparavalue  = this.getUrlParamValue(window.location.href, 'accid')
+       const idparavalue  = this.getUrlParamValue(window.location.href, 'id')
+       let fdate = this.template.querySelector(`.date-selector[data-id="from_date"]`).value;
+       let todate = this.template.querySelector(`.date-selector[data-id="to_date"]`).value;
+       
+       let convertFromDate = excelFormatDate(fdate);
+       let convertToDate = excelFormatDate(todate);
+      let resData = await mileageListData({
+        accId: accidparavalue,
+        adminId: idparavalue,
+        startDate: convertFromDate,
+        endDate: convertToDate
+      });
+      // console.log("response->", resData);
+      var exportCSV = [];
+      if (resData.length > 0) {
+        this.isExcelEmpty = false;
+        exportCSV = formatData(resData);
+        this.csvExportData = exportCSV;
+        //  console.log("response csv->", exportCSV);
+        if (this.csvExportData.length != 0) {
+          this.csvFiledata = changeKeyObjects(this.csvExportData);
+        }
+       return this.csvFiledata;
+      } else {
+        this.isExcelEmpty = true;
+      }
+    } catch (error) {
+      console.log("Error while exporting list ", error);
+    }
+  }
     handleexportcloseModal(){
       if (this.template.querySelector('c-user-profile-modal')) {
         this.template.querySelector('c-user-profile-modal[data-id="export_trip"]').hide();
@@ -989,11 +1313,12 @@ export default class NewDatatableComponent extends LightningElement {
  
   intializeDatepickup(){
     let $jq = jQuery.noConflict();
-    let $input = $jq(this.template.querySelectorAll('.date-selector'));
+    let $input =  $jq(this.template.querySelectorAll('.date-selector'));
+    let _self = this;
     $input.each(function(index) {
       console.log("index",index)
-          let _self2 = $jq(this)
-          let $btn = $jq(this).next()
+          let _self2 =  $jq(this)
+          let $btn =  $jq(this).next()
           console.log("this",this)
           $jq(this).datepicker({
 
@@ -1086,17 +1411,19 @@ export default class NewDatatableComponent extends LightningElement {
             hoursStep: 1,
             minutesStep: 1,
             // callback events
-            onSelect: function(date, formattedDate, dpicker){
+            onSelect: function(date, formattedDate, datepicker){
                 //datepicker.$el.val(_self2.val())
-                 console.log('explain:', date, formattedDate, dpicker, _self2.val());
-                 if(index ==  0){
-                  let fromdate = date;
-                   this.fromDate =  fromdate;
-                 }
-                 if(index ==  1){
-                  let todate = date;
-                  this.toDate =  todate;
-                 }
+                console.log('explain:', date, formattedDate, datepicker, _self2.val());
+                console.log('selected date', date);
+                //  console.log('explain:', date, formattedDate, dpicker, _self2.val());
+                //  if(index ===  0){
+                //   let fromdate = date;
+                //   _self.fromDate =  fromdate;
+                //  }
+                //  if(index ===  1){
+                //   let todate = date;
+                //   _self.toDate =  todate;
+                //  }
             },
             onShow: function (dp, animationCompleted) {
               console.log('selected date');
@@ -1133,115 +1460,125 @@ export default class NewDatatableComponent extends LightningElement {
           })//.data('datepicker').selectDate(new Date(_self2.val()))
           $btn.on('click', function(){
             console.log('btnon');
+            _self2.datepicker({showEvent: 'none'}).data('datepicker').show();
             _self2.focus();
           });
     })
   }
 
-  handledownloadCSV(){
-     const accidparavalue  = this.getUrlParamValue(window.location.href, 'accid')
-      const idparavalue  = this.getUrlParamValue(window.location.href, 'id')
-      let fdate = this.template.querySelector(`.date-selector[data-id="from_date"]`).value;
-      let todate = this.template.querySelector(`.date-selector[data-id="to_date"]`).value;
-      
-      let convertFromDate = excelFormatDate(fdate);
-      let convertToDate = excelFormatDate(todate);
-      let resData = mileageListData({
-        accId: accidparavalue,
-        adminId: idparavalue,
-        startDate: convertFromDate,
-        endDate: convertToDate
-      });
-      resData.then(function(result) {
-        console.log("response->",result) // "Some User token"
-        var exportCSV = [];
-        let res = result;
-        exportCSV = formatData(res);
-        let exportCSVdata= JSON.parse(JSON.stringify(exportCSV))
-        
-          if(exportCSVdata.length > 0) {
-            let rowEnd = '\n';
-            let csvString = '';
-            let regExp = /^[0-9/]*$/gm;
-            let regExpForTime = /^[0-9:\sAM|PM]*$/gm
-            let decimalExp = /^(\d*\.)?\d+$/gm
-            // this set elminates the duplicates if have any duplicate keys
-            let rowData = new Set();
-            let csvdata = exportCSVdata;
-            csvdata.forEach(function (record) {
-              Object.keys(record).forEach(function (key) {
-                rowData.add(key);
-              });
-            });
-            rowData = Array.from(rowData);
-            
-            csvString += rowData.join(',');
-            csvString += rowEnd;
-
-            var i = 0;
-            for(let i=0; i < csvdata.length; i++){
-              let colVal = 0;
-              // validating keys in data
-              for(let key in rowData) {
-                  if(rowData.hasOwnProperty(key)) {
-                      let rowKey = rowData[key];
-                      if(colVal > 0){
-                          csvString += ',';
-                      }
-                      // If the column is undefined, it as blank in the CSV file.
-                      let value = csvdata[i][rowKey] === undefined ? '' : csvdata[i][rowKey];
-                      if (value != null || value != '') {
-                        if (value.match) {
-                          if (value.match(regExp) || value.match(regExpForTime) || value.match(decimalExp)) {
-                            csvString += '="' + value + '"';
-                          } else {
-                            csvString += '"' + value + '"';
-                          }
-                        } else {
-                          csvString += '"' + value + '"';
-                        }
-                      } else {
-                        csvString += '"' + value + '"';
-                      }
-                  }
-                  colVal++;
-              }
-              csvString += rowEnd;
-              console.log("csvString",csvString)
-            }
-            /* Updated change on 27-09-2021 */
-            var universalBOM = "\uFEFF";
-            var a = window.document.createElement('a');
-            a.setAttribute('href', 'data:text/csv; charset=utf-8,' + encodeURIComponent(universalBOM+csvString));
-            a.setAttribute('target', '_self');
-            a.setAttribute('download',  'all_trips_' + fdate + '_to_' + todate + '.csv')
-            window.document.body.appendChild(a);
-            a.click();
-          }
-     })
-  }
+  
   handlefilterdata(event){
-    // this.isLoading = true;
-    this.dispatchEvent(
-      new CustomEvent("showloader", { detail : ''})
-    );
-    setTimeout(() => {
-        // this.isLoading = false;
-        this.dispatchEvent(
-          new CustomEvent("hideloader", { detail : ''})
-        );
         this.MilegesData = [];
         this.totalmileage = 0.00;
         this.totalrows = 0;
         this.headershow = false;
-        this.pagination = false;
+        // this.pagination = false;
         this.celenderdropdown = false;
         this.searchDataLength = false;
-        let accountData = JSON.stringify(event.detail)
-        if(accountData.length > 2){
-          this.getmilegeslist(accountData);
+        this.id = event.detail.accountId;
+        this.AdminId = event.detail.AdminId;
+        this.searchDriver = event.detail.idOfDriver;
+        this.StartDate = event.detail.StartDate;
+        this.EndDate = event.detail.EndDate;
+        this.OriginName = event.detail.OriginName;
+        this.DestinationName = event.detail.DestinationName;
+        this.ActiveDriver = event.detail.ActiveDriver;
+        this.StartMileage = event.detail.StartMileage;
+        this.EndMileage = event.detail.EndMileage;
+        this.searchStatus = event.detail.TripStatus;
+        this.Status = '';
+        this.filterdriver = ''
+        this.TrackingMethod = event.detail.TrackingMethod;
+        this.Tag = event.detail.Tag;
+        this.remmonth = null;
+        if(this.StartDate == null){
+          this.StartDate = null;
+          this.EndDate = null;
         }
-    },2000); 
+        getMilegesDataSize({
+          accountId: this.id,
+          AdminId: this.AdminId,
+          idOfDriver: this.searchDriver,
+          StartDate: this.StartDate,
+          EndDate: this.EndDate,
+          OriginName: this.OriginName,
+          DestinationName: this.DestinationName,
+          ActiveDriver: this.ActiveDriver,
+          StartMileage: this.StartMileage,
+          EndMileage: this.EndMileage,
+          TripStatus: this.searchStatus,
+          TrackingMethod: this.TrackingMethod,
+          Tag:  this.Tag ,
+          Notes: null,
+          Activity: null,
+          reimMonth:null,
+          highRisk: false
+      })
+      .then((result) => {
+        console.log("limitsize",result , this.pageSize)
+        this.totalrows = result;
+       this.limitSize = result;
+      
+      
+          // this.pagination = true;
+          this.advanceSearchdata = true;
+          if(this.template.querySelector('c-new-paginator')){
+            this.template.querySelector('c-new-paginator').updateRecords(this.totalrows , this.pageSize)
+          } 
+          this.dispatchEvent(
+            new CustomEvent("showloader", { detail :{ message: 'Please wait while we load your data'}})
+          );
+          this.getmileagesData(this.id , this.AdminId , this.searchDriver , this.StartDate , this.EndDate , this.OriginName , this.DestinationName , this.ActiveDriver , this.StartMileage , this.EndMileage,
+            this.searchStatus , this.TrackingMethod , this.Tag  , this.pageSize , 0,null,false)
+          setTimeout(() => {
+           
+            this.dispatchEvent(
+              new CustomEvent("hideloader", { detail : ''})
+            );
+          },2000); 
+       
+          
+      }) 
+      .catch((error) => {
+        console.log(error)
+      });
+    // },2000); 
+  }
+ 
+  getmileagesData(accid ,adminid,driver,startdate,enddate,originname,destinationname,active,frommilege,tomilege,status,trackingmethod,tag,limit,offset,remmonth,highrisk){
+    getMilegesData({
+      accountId: accid,
+        AdminId: adminid,
+        idOfDriver: driver,
+        StartDate: startdate,
+        EndDate: enddate,
+        OriginName: originname,
+        DestinationName: destinationname,
+        ActiveDriver: active,
+        StartMileage: frommilege,
+        EndMileage: tomilege,
+        TripStatus: status,
+        TrackingMethod: trackingmethod,
+        Tag:  tag ,
+        Notes: null,
+        Activity: null,
+        limitSize: limit,
+        offset: offset,
+        reimMonth:remmonth,
+        highRisk:highrisk
+    })
+    .then((result) => {
+        let accresult = JSON.stringify(result)
+        console.log('accresult',accresult.length)
+        if(accresult.length > 0){
+          this.getmilegeslist(accresult);
+        }else{
+          this.totalmileage = 0.00;
+        }
+    })
+    .catch((error) => {
+      console.log("advance search",error)
+    });
   }
   handleToastMessage(event){
     this.dispatchEvent(
@@ -1258,112 +1595,268 @@ export default class NewDatatableComponent extends LightningElement {
   }
 
   handlemonthchange(event){
-    let month = event.detail.value;
-    this.Accounts = this.driverDataNew;
-    if(month == "Calendar"){
-      this.pagination = true;
-      this.searchDataLength = true;
-      this.totalrows = this.Accounts.length;
-      if(this.template.querySelector("c-new-paginator")){
-        this.template.querySelector("c-new-paginator").updateRecords(this.Accounts, this.pageSize);
-      }
+    this.advanceSearchdata = true;
+    this.monthfilter = event.detail.value;
+    if(this.filterdriver){
+      this.idOfDriver = this.filterdriver;
+    }else if(this.searchDriver){
+      this.idOfDriver = this.searchDriver;
+    }else{
+      this.idOfDriver = '';
+    }
+    if(this.highrisk == true){
+      this.highrisk = true;
+    }else{
+      this.highrisk = false;
+    }
+    this.highrisk = false;
+    if(this.monthfilter == "Month"){
+      // var makeDate = new Date();
+      // makeDate.setMonth(makeDate.getMonth()-1);
+      // this.remmonth = makeDate.toLocaleString('default', { month: 	'long' });;
+
+      //   let monthNumber = makeDate.getMonth();
+      //   var year = new Date().toLocaleDateString('en', {year: '2-digit'})
+      //   let convertFromDate = monthNumber +'/01/'+ year
+      //   let convertToDate = monthNumber +'/31/'+ year
+      //   this.StartDate = excelFormatDate(convertFromDate);
+      //   this.EndDate = excelFormatDate(convertToDate);
+      this.StartDate = null;
+      this.EndDate = null;
+      this.remmonth= null;
+      this.handlefilterbydropdown(this.idOfDriver,this.StartDate,this.EndDate, this.OriginName,this.DestinationName,this.ActiveDriver,this.StartMileage,this.EndMileage,this.TripStatus,this.TrackingMethod,this.Tag,this.remmonth,this.highrisk);
+  
     }else{
       // Get the month number (0-indexed)
-      const date = new Date(`${month} 1`);
-      const monthNumber = date.getMonth() + 1;
-
-      const filteredRecords = this.Accounts.filter(record => {
-        const date = new Date(record.Date);
-        return date.getMonth() + 1 == monthNumber;
-      });
-      this.Accounts = filteredRecords;
-      if(filteredRecords.length == 0){
-          this.searchDataLength = false;
-          this.pagination = false;
-          this.totalmileage = 0;
-          this.totalrows = 0;
-      }else{
-          this.searchDataLength = true;
-          this.totalrows = this.Accounts.length;
-          if(this.template.querySelector("c-new-paginator")){
-            this.template.querySelector("c-new-paginator").updateRecords(this.Accounts, this.pageSize);
-          }
-      }
+        const date = new Date(`${this.monthfilter} 1`);
+        var monthNumber = date.getMonth() + 1;
+        if(monthNumber < 9){
+          monthNumber = '0'+monthNumber;
+        }
+        this.remmonth = this.monthfilter;
+        var year = new Date().toLocaleDateString('en', {year: '2-digit'})
+        // 2023-07-06
+        let convertFromDate = monthNumber +'/01/'+ year
+        let convertToDate = monthNumber +'/31/'+ year
+        this.StartDate = excelFormatDate(convertFromDate);
+        this.EndDate = excelFormatDate(convertToDate);
+        this.remmonth = this.monthfilter;
     }
+        if(this.advanceSearchdata == false){
+          this.advanceSearchdata = true;
+          // this.idOfDriver = this.idOfDriver.length == 0 ?  '' : this.idOfDriver;
+          this.OriginName = this.OriginName.length == 0 ? null : this.OriginName;
+          this.DestinationName = this.DestinationName.length == 0 ? null : this.DestinationName;
+          this.ActiveDriver = this.ActiveDriver.length == 0 ? true : this.ActiveDriver;
+          this.StartMileage = this.StartMileage.length == 0 ? '' : this.StartMileage;
+          this.EndMileage = this.EndMileage.length == 0 ? '' : this.EndMileage;
+          this.TrackingMethod = this.TrackingMethod.length == 0 ? null : this.TrackingMethod;
+          this.Tag = this.Tag.length == 0 ? null : this.Tag;
+        }
+       this.handlefilterbydropdown(this.idOfDriver,this.StartDate,this.EndDate, this.OriginName,this.DestinationName,this.ActiveDriver,this.StartMileage,this.EndMileage,this.TripStatus,this.TrackingMethod,this.Tag,this.remmonth,this.highrisk);
+  
   }
 
   handleTypechange(event){
+    // this.advanceSearchdata = true;
     let type = event.detail.value;
     if(type == "All Types"){
-      this.getmilegeslist(this.driverData);
+      this.highrisk = false;
+      var makeDate = new Date();
+      makeDate.setMonth(makeDate.getMonth()-1);
+      let lastmonth = makeDate.toLocaleString('default', { month: 	'long' });
+
+      if(this.monthfilter){
+        this.remmonth = this.monthfilter;
+      }else{
+        this.remmonth = lastmonth;
+      }
+      if(this.StartDate == null){
+        let monthNumber = makeDate.getMonth()+1;
+        var year = new Date().toLocaleDateString('en', {year: '2-digit'})
+        let convertFromDate = monthNumber +'/01/'+ year
+        let convertToDate = monthNumber +'/31/'+ year
+        this.StartDate = excelFormatDate(convertFromDate);
+        this.EndDate = excelFormatDate(convertToDate);
+      }
+      this.handlefilterbydropdown(this.filterdriver,this.StartDate,this.EndDate, this.OriginName,this.DestinationName,this.ActiveDriver,this.StartMileage,this.EndMileage,this.Status,this.TrackingMethod,this.Tag,this.remmonth,this.highrisk);
+ 
     }else{
-      fetchHighRiskValues({accID : this._accid , AdminId : this._adminid , limitSize : 10000 , offset : 100})
-      .then((result) => {
-        console.log("result",JSON.parse(JSON.stringify(result)))
-        this.getmilegeslist(JSON.stringify(result));
-      })
-      .catch((error) => {
-         console.log("error",error)
-      })
+      this.highrisk = true;
+      var makeDate = new Date();
+      makeDate.setMonth(makeDate.getMonth()-1);
+      let lastmonth = makeDate.toLocaleString('default', { month: 	'long' });
+  
+      if(this.monthfilter){
+        this.remmonth = this.monthfilter;
+      }else{
+        this.remmonth = lastmonth;
+      }
+      if(this.StartDate == null){
+        let monthNumber = makeDate.getMonth()+1;
+        var year = new Date().toLocaleDateString('en', {year: '2-digit'})
+        let convertFromDate = monthNumber +'/01/'+ year
+        let convertToDate = monthNumber +'/31/'+ year
+        this.StartDate = excelFormatDate(convertFromDate);
+        this.EndDate = excelFormatDate(convertToDate);
+      }
+      this.handlefilterbydropdown(this.filterdriver,this.StartDate,this.EndDate, this.OriginName,this.DestinationName,this.ActiveDriver,this.StartMileage,this.EndMileage,this.Status,this.TrackingMethod,this.Tag,this.remmonth,this.highrisk);
+   
     }
   }
  
   handledriverchange(event){
-    this.user = event.detail.value;
-    this.Accounts = this.driverDataNew;
-    if(this.user == "All Active Users"){
-      this.pagination = true;
-      this.searchDataLength = true;
-      this.totalrows = this.Accounts.length;
-      if(this.template.querySelector("c-new-paginator")){
-        this.template.querySelector("c-new-paginator").updateRecords(this.Accounts, this.pageSize);
-      }
+    this.filterdriver = event.detail.value;
+    this.selectedDriver = event.detail.value;
+    if(this.highrisk == true){
+      this.highrisk = true;
     }else{
-      const filteredOptions = this.Accounts.filter(item => item.DriverName == this.user);
-      this.Accounts = filteredOptions;
-      if(filteredOptions.length == 0){
-          this.searchDataLength = false;
-          this.pagination = false;
-          this.totalmileage = 0;
-          this.totalrows = 0;
-      }else{
-          this.searchDataLength = true;
-          this.totalrows = this.Accounts.length;
-          if(this.template.querySelector("c-new-paginator")){
-            this.template.querySelector("c-new-paginator").updateRecords(this.Accounts, this.pageSize);
+      this.highrisk = false;
+    }
+    if(this.filterdriver == "All Active Users"){
+      this.filterdriver = 'All Drivers'
+      this.selectedDriver= 'All Drivers'
+    }else{
+      if(this.filterdriver){
+        for(let i = 0;i<this.driverList.length;i++){
+          if(this.driverList[i].label == this.filterdriver){
+            this.filterdriver = this.driverList[i].value;
+           
           }
+        }
+      }else{
+        this.filterdriver = '';
       }
-    }  
+    }
+   
+    this.searchDriver = '';
+    if(this.filterdriver){
+      this.idOfDriver = this.filterdriver;
+    }else if(this.searchDriver){
+      this.idOfDriver = this.searchDriver;
+    }else{
+      this.idOfDriver = '';
+    }
+    if(this.advanceSearchdata == false){
+      this.advanceSearchdata = true;
+      this.OriginName = this.OriginName.length == 0 ? null : this.OriginName;
+      this.DestinationName = this.DestinationName.length == 0 ? null : this.DestinationName;
+      this.ActiveDriver = this.ActiveDriver.length == 0 ? true : this.ActiveDriver;
+      this.StartMileage = this.StartMileage.length == 0 ? '' : this.StartMileage;
+      this.EndMileage = this.EndMileage.length == 0 ? '' : this.EndMileage;
+      this.TrackingMethod = this.TrackingMethod.length == 0 ? null : this.TrackingMethod;
+      this.Tag = this.Tag.length == 0 ? null : this.Tag;
+    }
+    var makeDate = new Date();
+    makeDate.setMonth(makeDate.getMonth()-1);
+    let lastmonth = makeDate.toLocaleString('default', { month: 	'long' });
+
+    if(this.monthfilter){
+      this.remmonth = this.monthfilter;
+    }else{
+      this.remmonth = lastmonth;
+    }
+    if(this.StartDate == null){
+      let monthNumber = makeDate.getMonth()+1;
+      var year = new Date().toLocaleDateString('en', {year: '2-digit'})
+      let convertFromDate = monthNumber +'/01/'+ year
+      let convertToDate = monthNumber +'/31/'+ year
+      this.StartDate = excelFormatDate(convertFromDate);
+      this.EndDate = excelFormatDate(convertToDate);
+    }
+    this.handlefilterbydropdown(this.filterdriver,this.StartDate,this.EndDate, this.OriginName,this.DestinationName,this.ActiveDriver,this.StartMileage,this.EndMileage,this.Status,this.TrackingMethod,this.Tag,this.remmonth,this.highrisk);
+ 
   }  
   
   handlestatuschange(event){
-    this.tripStatus = event.detail.value;
-    console.log("status",this.tripStatus)
-    this.Accounts = this.driverDataNew;
-    if(this.tripStatus == "All Status"){
-      this.pagination = true;
-      this.searchDataLength = true;
-      this.totalrows = this.Accounts.length;
-      if(this.template.querySelector("c-new-paginator")){
-        this.template.querySelector("c-new-paginator").updateRecords(this.Accounts, this.pageSize);
-      }
-    }else{
-      const filteredOptions = this.Accounts.filter(item => item.Status == this.tripStatus);
-      this.Accounts = filteredOptions;
-      
-      if(filteredOptions.length == 0){
-         this.searchDataLength = false;
-         this.pagination = false;
-         this.totalmileage = 0;
-         this.totalrows = 0;
+      this.searchStatus = '';
+      if(this.filterdriver){
+        this.idOfDriver = this.filterdriver;
+      }else if(this.searchDriver){
+        this.idOfDriver = this.searchDriver;
       }else{
-         this.searchDataLength = true;
-         this.pagination = true;
-         this.totalrows = this.Accounts.length;
-         if(this.template.querySelector("c-new-paginator")){
-          this.template.querySelector("c-new-paginator").updateRecords(this.Accounts, this.pageSize);
-        }
+        this.idOfDriver = '';
       }
-    }
+      if(this.highrisk == true){
+        this.highrisk = true;
+      }else{
+        this.highrisk = false;
+      }
+      this.Status = event.detail.value;
+      if(this.advanceSearchdata == false){
+        this.advanceSearchdata = true;
+        // this.idOfDriver = this.idOfDriver.length == 0 ?  "" : this.idOfDriver;
+        this.OriginName = this.OriginName.length == 0 ? null : this.OriginName;
+        this.DestinationName = this.DestinationName.length == 0 ? null : this.DestinationName;
+        this.ActiveDriver = this.ActiveDriver.length == 0 ? true : this.ActiveDriver;
+        this.StartMileage = this.StartMileage.length == 0 ? '' : this.StartMileage;
+        this.EndMileage = this.EndMileage.length == 0 ? '' : this.EndMileage;
+        this.TrackingMethod = this.TrackingMethod.length == 0 ? null : this.TrackingMethod;
+        this.Tag = this.Tag.length == 0 ? null : this.Tag;
+      }
+      var makeDate = new Date();
+      makeDate.setMonth(makeDate.getMonth()-1);
+      let lastmonth = makeDate.toLocaleString('default', { month: 	'long' });
+
+      if(this.monthfilter){
+        this.remmonth = this.monthfilter;
+      }else{
+        this.remmonth = lastmonth;
+      }
+      if(this.StartDate == null){
+        let monthNumber = makeDate.getMonth()+1;
+        var year = new Date().toLocaleDateString('en', {year: '2-digit'})
+        let convertFromDate = monthNumber +'/01/'+ year
+        let convertToDate = monthNumber +'/31/'+ year
+        this.StartDate = excelFormatDate(convertFromDate);
+        this.EndDate = excelFormatDate(convertToDate);
+      }
+      this.handlefilterbydropdown(this.idOfDriver,this.StartDate,this.EndDate, this.OriginName,this.DestinationName,this.ActiveDriver,this.StartMileage,this.EndMileage,this.Status,this.TrackingMethod,this.Tag,this.remmonth,this.highrisk);
   }  
+
+  handlefilterbydropdown(idofdriver , StartDate , EndDate,OriginName,DestinationName,ActiveDriver,StartMileage,EndMileage,TripStatus,TrackingMethod,Tag,remMonth,highrisk){
+      getMilegesDataSize({
+        accountId: this._accid,
+        AdminId: this._adminid,
+        idOfDriver: idofdriver,
+        StartDate: StartDate,
+        EndDate: EndDate,
+        OriginName: OriginName,
+        DestinationName: DestinationName,
+        ActiveDriver: ActiveDriver,
+        StartMileage: StartMileage,
+        EndMileage: EndMileage,
+        TripStatus: TripStatus,
+        TrackingMethod: TrackingMethod,
+        Tag:  Tag ,
+        Notes: null,
+        Activity: null,
+        reimMonth:remMonth,
+        highRisk:highrisk
+      })
+      .then((result) => {
+        console.log("limitsize",result , this.pageSize)
+        this.totalrows = result;
+        this.limitSize = result;
+          // this.pagination = true;
+          this.advanceSearchdata = true;
+          if(this.template.querySelector('c-new-paginator')){
+            this.template.querySelector('c-new-paginator').updateRecords(this.totalrows , this.pageSize)
+          } 
+          this.getmileagesData(this._accid , this._adminid , idofdriver , StartDate , EndDate,OriginName,DestinationName,ActiveDriver,StartMileage,EndMileage,TripStatus,TrackingMethod,Tag , this.pageSize , 0,remMonth,highrisk)
+          this.dispatchEvent(
+            new CustomEvent("showloader", { detail :{ message: 'Please wait while we load your data'}})
+          );
+          setTimeout(() => {
+            this.dispatchEvent(
+              new CustomEvent("hideloader", { detail : ''})
+            );
+          },2000);
+         
+      }) 
+      .catch((error) => {
+        console.log(error)
+      });
+  }
+ 
 }

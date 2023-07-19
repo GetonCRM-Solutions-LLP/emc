@@ -1,10 +1,6 @@
 import { LightningElement  , api} from 'lwc';
 import fetchLookUpValues from '@salesforce/apex/GetDriverData.fetchLookUpValues';
 import getMilegesData from '@salesforce/apex/GetDriverData.getMilegesData';
-import datepicker from '@salesforce/resourceUrl/calendar';
-import customMinifiedDP  from '@salesforce/resourceUrl/modalCalDp';
-import { loadStyle , loadScript } from 'lightning/platformResourceLoader';
-import resourceImage from '@salesforce/resourceUrl/mBurseCss';
 import {
   excelFormatDate
 } from 'c/commonLib';
@@ -43,31 +39,18 @@ export default class AdvanceSearchComponent extends LightningElement {
     tomileges = '';
     driverId = '';
     allowRenderCallback = true;
+    
+    renderedCallback(){
+      if(this.allowRenderCallback == true){
+        setTimeout(() => {
+          if(this.template.querySelectorAll('.date-selector').length > 0){
+            this.intializeDatepickupnew();
+          }
+        },1000);
+      }  
+    }
 
     connectedCallback(){
-        Promise.all([loadScript(this, datepicker + '/jquery3v.min.js'),
-        loadScript(this, resourceImage + '/mburse/assets/datepicker/flatpickr.js'),
-        loadStyle(this, resourceImage + '/mburse/assets/datepicker/customMinifiedDatePicker.css'),
-        loadStyle(this, resourceImage + '/mburse/assets/datepicker/flatpickr.min.css'),
-        loadScript(this, datepicker + '/popper.min.js'),
-        loadScript(this, datepicker + '/datepicker.js'),
-        loadScript(this, datepicker + '/datepicker.en.js'),
-        loadStyle(this, datepicker + '/minifiedCustomDP.css'),
-        loadStyle(this, datepicker + '/datepicker.css'),
-        loadStyle(this, customMinifiedDP)])
-        .then(()=>{
-          console.log("Script Loded")
-          this.intializeDatepickupnew()
-          
-          this.intializeDatepickupnew();
-        })
-        .catch(error => {
-          console.error({
-              message : 'error while loading calendar',
-              error
-          })
-        })
-        
       this.getDriverOption();
       this.getTagsOption();
       this.getStatusOption();
@@ -111,15 +94,17 @@ export default class AdvanceSearchComponent extends LightningElement {
       }
     }
     intializeDatepickupnew(){
+      console.log("datetime",this.fromdate + this.todate )
         let $jq = jQuery.noConflict();
         let $input = $jq(this.template.querySelectorAll('.date-selector'))
+        let _self = this
         $input.each(function(index) {
               let _self2 = $jq(this)
               console.log("before")
-              let $btn = _self2.next()
+              let $btn = $jq(this).next()
               console.log("after")
 
-              _self2.datepicker({
+              $jq(this).datepicker({
                 // inline mode
                 inline: false,
     
@@ -210,15 +195,15 @@ export default class AdvanceSearchComponent extends LightningElement {
                 minutesStep: 1,
     
                 // callback events
-                onSelect: function(date, formattedDate, dpicker){
+                onSelect: function(date, formattedDate, datepicker){
 
-                     if(index ==  0){
+                     if(index ===  0){
                       let fromdate = date;
-                       this.fromdate =  fromdate;
+                      _self.fromdate =  fromdate;
                      }
-                     if(index ==  1){
+                     if(index ===  1){
                       let todate = date;
-                      this.todate =  todate;
+                      _self.todate =  todate;
                      }
                      
                 },
@@ -466,8 +451,8 @@ export default class AdvanceSearchComponent extends LightningElement {
             if(this.options[i].label == this.selectedDriver){
               this.driverId = this.options[i].value;
               this.getFromLocation();
-              this.template.querySelector(`.date-selector[data-id="from_date"]`).value = this.fromdate;
-        this.template.querySelector(`.date-selector[data-id="to_date"]`).value = this.todate;
+        //       this.template.querySelector(`.date-selector[data-id="from_date"]`).value = this.fromdate;
+        // this.template.querySelector(`.date-selector[data-id="to_date"]`).value = this.todate;
             }
           }
         }else{

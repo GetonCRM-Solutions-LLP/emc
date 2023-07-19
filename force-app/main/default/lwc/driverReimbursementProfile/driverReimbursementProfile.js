@@ -9,9 +9,10 @@ import getReimbursementData from "@salesforce/apex/DriverDashboardLWCController.
 import getFuelVariableRate from "@salesforce/apex/DriverDashboardLWCController.getFuelVariableRate";
 import getPacketandMeeting from "@salesforce/apex/DriverDashboardLWCController.getPacketandMeeting";
 import getDrivingState from "@salesforce/apex/DriverDashboardLWCController.getDrivingState";
-import { events, openEvents, toastEvents } from "c/utils";
+import { events, openEvents, toastEvents, toggleEvents } from "c/utils";
 export default class DriverReimbursementProfile extends LightningElement {
   @api driverDetails;
+  contactName = '';
   @api isArchive;
   profileCarImage =
     carImage + "/emc-design/assets/images/2022-envision-mov-avenir-trim.png";
@@ -66,6 +67,9 @@ export default class DriverReimbursementProfile extends LightningElement {
   meetingStatus1 = false;
   meetingStatus2 = false;
   meetingStatus3 = false;
+  colname="name";
+  coltype="String";
+  sortorder="desc";
   attachmentInsurance;
   templateName = "";
   lastMonthMiles = "";
@@ -373,22 +377,22 @@ export default class DriverReimbursementProfile extends LightningElement {
       this.halfFixedZero =
         reimbursementData.halfFixedAmount !== "0.00" &&
         /^0+/.test(reimbursementData.halfFixedAmount) === true
-          ? reimbursementData.halfFixedAmount.replace(/^0+/, "")
+          ? reimbursementData.halfFixedAmount.replace(/^0+/, "$")
           : null;
       this.fixedAmountZero =
         reimbursementData.fixedAmount !== "0.00" &&
         /^0+/.test(reimbursementData.fixedAmount) === true
-          ? reimbursementData.fixedAmount.replace(/^0+/, "")
+          ? reimbursementData.fixedAmount.replace(/^0+/, "$")
           : null;
       this.fuelPriceZero =
         reimbursementData.lastmonthfuelprice !== "0.00" &&
         /^0+/.test(reimbursementData.lastmonthfuelprice) === true
-          ? reimbursementData.lastmonthfuelprice.replace(/^0+/, "")
+          ? reimbursementData.lastmonthfuelprice.replace(/^0+/, "$")
           : null;
       this.mileageRateZero =
         reimbursementData.lastmonthmileagerate !== "0.00" &&
         /^0+/.test(reimbursementData.lastmonthmileagerate) === true
-          ? reimbursementData.lastmonthmileagerate.replace(/^0+/, "")
+          ? reimbursementData.lastmonthmileagerate.replace(/^0+/, "$")
           : null;
       this.lastMonthMiles = reimbursementData.lastmonthmiles
         ? reimbursementData.lastmonthmiles
@@ -408,7 +412,7 @@ export default class DriverReimbursementProfile extends LightningElement {
       this.lastMonthMileageRate = reimbursementData.lastmonthmileagerate
         ? reimbursementData.lastmonthmileagerate
         : 0;
-      console.log("getReimbursementData data", data);
+      // console.log("getReimbursementData data", data);
     } else if (error) {
       console.log("getReimbursementData error", error);
     }
@@ -422,7 +426,9 @@ export default class DriverReimbursementProfile extends LightningElement {
     this.myPlanInfo = false;
     this.myTrip = true;
     this.timeAttendance = false;
+    let toogleText = this.timeAttendance ? "timeAttendance" : "MyTrip";
     this.accordionList = this.dynamicBinding(yearList);
+    toggleEvents(this, toogleText)
     // this.accordionList.forEach(element => {
     //     element.accordionTitle = element.yearName +' Reimbursement Data';
     //     element.classType = 'accordion-item active';
@@ -437,7 +443,9 @@ export default class DriverReimbursementProfile extends LightningElement {
     this.myPlanInfo = false;
     this.myTrip = false;
     this.timeAttendance = true;
+    let toogleText = this.timeAttendance ? "timeAttendance" : "MyTrip";
     this.accordionList = this.dynamicBinding(yearList);
+    toggleEvents(this, toogleText)
     // this.accordionList.forEach(element => {
     //     element.accordionTitle = element.yearName +' Reimbursement Data (T & A)';
     //     element.classType = 'accordion-item active';
@@ -465,7 +473,6 @@ export default class DriverReimbursementProfile extends LightningElement {
   }
 
   renderedCallback() {
-    console.log("rendered");
     const buttonItem = this.template.querySelectorAll(".btn-toggle");
 
     buttonItem.forEach((el) =>
@@ -476,7 +483,7 @@ export default class DriverReimbursementProfile extends LightningElement {
     );
 
     if (this.myTA) {
-      console.log(this.myTrip, this.myTA);
+      // console.log(this.myTrip, this.myTA);
       if (!this.myTrip) {
         if(!this.myPlanInfo){
           this.template.querySelector(".my-ta").classList.add("is-active");
@@ -584,6 +591,9 @@ export default class DriverReimbursementProfile extends LightningElement {
               /^0+/.test(singleValue.value) === true
                 ? singleValue.value.replace(/^0+/, "")
                 : null;
+            element[key] = (element[key] === "null" || element[key] === null) ? "" : (key === "variableRate" || key === "varibleAmount" || key === 'fixed1' || key === 'fixed2' || 
+                key === 'fixed3' || 
+                key === 'totalFixedAmount' || key === "totalReimbursements") ? element[key].replace(/\$/g, "").replace(/\s/g, "") : element[key];
             model.push(singleValue);
           }
         }
@@ -682,6 +692,8 @@ export default class DriverReimbursementProfile extends LightningElement {
         this.lastModelList = JSON.parse(resultData);
         this.modalLength = this.lastModelList.length > 0 ? true : false;
         this.originalModelList = JSON.parse(resultData);
+        this.colname = "tripdate";
+        this.coltype = "Date";
         this.modalListColumn = this.lastMonthColumn;
         this.modalKeyFields = this.lastMonthKeyFields;
         console.log("My getMileages list->", resultData);
@@ -716,6 +728,8 @@ export default class DriverReimbursementProfile extends LightningElement {
         this.lastModelList = JSON.parse(resultData);
         this.modalLength = this.lastModelList.length > 0 ? true : false;
         this.originalModelList = JSON.parse(resultData);
+        this.colname = "tripdate";
+        this.coltype = "Date";
         this.modalListColumn = this.thisMonthColumn;
         this.modalKeyFields = this.thisMonthKeyFields;
         console.log("My getMileages list->", resultData);
@@ -745,7 +759,7 @@ export default class DriverReimbursementProfile extends LightningElement {
       let gasPriceList = this.proxyToObject(data);
       this.headerText = "";
       this.monthText = "";
-      this.lastModelList = this.sortByMonthAsc(gasPriceList, "ReimMonth");
+      this.lastModelList = this.sortByMonthDesc(gasPriceList, "ReimMonth");
       this.originalModelList = gasPriceList;
       this.modalListColumn = this.gasPriceColumn;
       this.modalKeyFields = this.gasPriceKeyFields;
@@ -770,11 +784,12 @@ export default class DriverReimbursementProfile extends LightningElement {
       contactId: this.contactId,
       accountId: this.accountId
     }).then((data) => {
+			 console.log("getAllReimbursements biweek----", data);
       let biweekReimbursementList = this.proxyToObject(data[0]);
       this.ytd = biweekReimbursementList.length > 0 ? true : false;
       this.headerText = "";
       this.monthText = "";
-      this.lastModelList = this.sortByMonthAsc(
+      this.lastModelList = this.sortByMonthDesc(
         biweekReimbursementList,
         "month"
       );
@@ -783,7 +798,9 @@ export default class DriverReimbursementProfile extends LightningElement {
       this.modalKeyFields = this.biweekKeyFields;
       this.dynamicModalBinding(this.lastModelList, this.modalKeyFields);
       this.template.querySelector("c-user-profile-modal").show();
-      console.log("getAllReimbursements ----", data);
+     
+    }).catch((error) => {
+        console.log(JSON.stringify(error), error);
     });
   }
 
@@ -806,7 +823,7 @@ export default class DriverReimbursementProfile extends LightningElement {
       this.ytd = biweekReimbursementList.length > 0 ? true : false;
       this.headerText = "";
       this.monthText = "";
-      this.lastModelList = this.sortByMonthAsc(
+      this.lastModelList = this.sortByMonthDesc(
         biweekReimbursementList,
         "month"
       );
@@ -834,8 +851,8 @@ export default class DriverReimbursementProfile extends LightningElement {
     sec = yd.getSeconds();
     ydd = ydd < 10 ? "0" + ydd : ydd;
     ymm = ymm < 10 ? "0" + ymm : ymm;
-    console.log(ymm + ydd);
-    console.log(yy.toString(), hh.toString(), min.toString(), sec.toString());
+    // console.log(ymm + ydd);
+    // console.log(yy.toString(), hh.toString(), min.toString(), sec.toString());
     return (
       ymm.toString() +
       ydd.toString() +
@@ -1056,6 +1073,28 @@ export default class DriverReimbursementProfile extends LightningElement {
     return data;
   }
 
+
+  sortByMonthDesc(data, colName) {
+    let months = [
+      "January",
+      "February",
+      "March",
+      "April",
+      "May",
+      "June",
+      "July",
+      "August",
+      "September",
+      "October",
+      "November",
+      "December"
+    ];
+    data.sort((a, b) => {
+      return months.indexOf(b[colName]) - months.indexOf(a[colName]);
+    });
+    return data;
+  }
+
   getMonthName(monthIndex) {
     let daymonth = new Array();
     daymonth[0] = "January";
@@ -1075,7 +1114,7 @@ export default class DriverReimbursementProfile extends LightningElement {
 
   driverDetailsList(data) {
     let contactList = this.proxyToObject(data);
-    console.log("contact", contactList);
+    // console.log("contact", contactList);
     this.lengthOfContact = contactList.length > 0 ? true : false;
     this.myTA = contactList[0].Time_Attandance__c ? true : false;
     this.biweekly =
@@ -1140,24 +1179,19 @@ export default class DriverReimbursementProfile extends LightningElement {
       contactList[0].Fixed_Cost_Adjustment__c === ""
         ? null
         : this.fixedCostAdjustment + this.totalMonthlyAmount;
-    this.address =
-      contactList[0].MailingCity +
-      ", " +
-      contactList[0].MailingState +
-      " " +
-      contactList[0].MailingPostalCode;
+        this.address = (contactList[0].MailingCity !== undefined ? contactList[0].MailingCity + ', ' : '') + (contactList[0].MailingState !== undefined ? contactList[0].MailingState : '') +' '+ (contactList[0].MailingPostalCode !== undefined ? contactList[0].MailingPostalCode : '');
 
-    console.log(
-      "Driver details reimbursement",
-      data,
-      this.totalMonthlyFixedCost,
-      this.fixedCostAdjustment,
-      this.totalMonthlyAmount
-    );
+    // console.log(
+    //   "Driver details reimbursement",
+    //   data,
+    //   this.totalMonthlyFixedCost,
+    //   this.fixedCostAdjustment,
+    //   this.totalMonthlyAmount
+    // );
   }
 
   connectedCallback() {
-    console.log("console-->", this.myTrip, this.timeAttendance);
+    // console.log("console-->", this.myTrip, this.timeAttendance);
     let currDate = new Date();
     let currentYear = currDate.getFullYear();
     let yearList = new Array();
@@ -1218,13 +1252,13 @@ export default class DriverReimbursementProfile extends LightningElement {
         this.meetingStatus = packetMeeting[0].Meeting__c;
         this.getPacketStatus();
         this.getMeetingStatus();
-        console.log("getPacketandMeeting", JSON.parse(data), data);
+        // console.log("getPacketandMeeting", JSON.parse(data), data);
       })
       .catch((error) => {
         console.log("getPacketandMeeting error", error);
       });
 
-    console.log("drivers--", this.driverDetails);
+    // console.log("drivers--", this.driverDetails);
     if (this.driverDetails) {
       this.driverDetailsList(this.driverDetails);
     }

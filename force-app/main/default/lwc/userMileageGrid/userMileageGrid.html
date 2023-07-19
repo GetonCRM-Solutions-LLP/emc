@@ -1,31 +1,53 @@
 <template>
     <div class="animate__animated animate__slideInLeft animate__faster">
         <template lwc:if={modelList}>
-            <c-user-preview-table  view-name="Team" divider-class="row-divider--v2" d-flex="flex-block"
+            <c-user-preview-table view-name="Team" divider-class="row-divider--v2" d-flex="flex-block"
                 head-th="header-title--v2" sort-th="sort-container p-top-v2" main-class={classToTable}
                 scrollable={isScrollable} is-paginate={paginatedModal} model-data={modelList} columns={modalListColumn}
                 options={modalKeyFields} is-sortable={sortable} inline-checkbox={isCheckbox} onrowselection={rowHandler}
-                is-default-sort={isSort} colname="name" coltype="String" sortorder="desc" onapprovalprocess={showModal} onsearch={handleSearchEvent}
-                onaccess={redirectModal} onpagecount={renderList}>
+                is-default-sort={isSort} colname="name" coltype="String" sortorder="desc" onapprovalprocess={showModal}
+                onsearch={handleSearchEvent} onaccess={redirectModal} onpagecount={renderList}>
                 <div slot="filter" class="slds-p-left_small slds-p-bottom_small row">
-                    <template lwc:if={isSearchEnable}>
-                        <button onclick={downloadAllTrips} class="slds-btn slds-btn-primary slds-btn-sm waves-effect bc-green waves-light mleft-0 btn-trip"
-                            ><svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" viewBox="0 0 25 25" fill="none" style="
-                            margin-right: 3px;
-                        "><path d="m7.561 11.627 0.032 -0.032 -0.032 0.032 4.273 4.273a0.936 0.936 0 0 0 0.143 0.118 0.625 0.625 0 0 0 0.068 0.036h0.001l0.032 0.018 0.009 0.006 0.048 0.025a0.357 0.357 0 0 0 0.089 0.028l0.007 0.002a0.557 0.557 0 0 0 0.082 0.025l0.002 0.001a0.941 0.941 0 0 0 0.368 0h0.002a0.502 0.502 0 0 0 0.052 -0.018 0.522 0.522 0 0 1 0.027 -0.007l0.002 -0.002 0.032 -0.009 0.057 -0.018a0.527 0.527 0 0 0 0.098 -0.05l0.001 -0.001 0.002 -0.001a0.232 0.232 0 0 1 0.027 -0.016l0.036 -0.022a0.952 0.952 0 0 0 0.143 -0.118l4.273 -4.273a0.941 0.941 0 0 0 0 -1.332 0.941 0.941 0 0 0 -1.332 0l-2.668 2.668V4.843a0.943 0.943 0 0 0 -1.882 0v8.122L8.891 10.297a0.941 0.941 0 0 0 -1.331 0 0.941 0.941 0 0 0 0 1.332Zm13.323 7.718a0.942 0.942 0 0 0 -0.943 -0.941H5.057a0.943 0.943 0 0 0 0 1.881h14.886a0.943 0.943 0 0 0 0.942 -0.942Z" fill="white" stroke="white" stroke-width="0.10081333333333335"></path></svg>Download
+                    <template lwc:if={isSearchEnable}>                        
+                        <button lwc:if={isRecord} onclick={downloadAllTrips}
+                            class="slds-btn slds-btn-primary slds-btn-sm waves-effect bc-green waves-light mleft-0 btn-trip"><svg
+                                xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 22 22"
+                                fill="none" style="margin-right: 3px;">
+                                <path
+                                    d="m6.654 10.232 0.028 -0.028 -0.028 0.028 3.76 3.76a0.824 0.824 0 0 0 0.126 0.104 0.55 0.55 0 0 0 0.06 0.032h0.001l0.028 0.016 0.008 0.005 0.042 0.022a0.314 0.314 0 0 0 0.078 0.025l0.006 0.002a0.49 0.49 0 0 0 0.072 0.022l0.002 0.001a0.828 0.828 0 0 0 0.324 0h0.002a0.442 0.442 0 0 0 0.046 -0.016 0.459 0.459 0 0 1 0.024 -0.006l0.002 -0.002 0.028 -0.008 0.05 -0.016a0.464 0.464 0 0 0 0.086 -0.044l0.001 -0.001 0.002 -0.001a0.204 0.204 0 0 1 0.024 -0.014l0.032 -0.019a0.838 0.838 0 0 0 0.126 -0.104l3.76 -3.76a0.828 0.828 0 0 0 0 -1.172 0.828 0.828 0 0 0 -1.172 0l-2.348 2.348V4.262a0.83 0.83 0 0 0 -1.656 0v7.147l-2.343 -2.348a0.828 0.828 0 0 0 -1.171 0 0.828 0.828 0 0 0 0 1.172Zm11.724 6.792a0.829 0.829 0 0 0 -0.83 -0.828H4.45a0.83 0.83 0 0 0 0 1.655h13.1a0.83 0.83 0 0 0 0.829 -0.829Z"
+                                    fill="white" stroke="white" stroke-width="0.08871573333333335" />
+                            </svg>Download
                             <!-- <i class="fa-solid fa-download"></i>Download -->
                         </button>
-                        <button  class="slds-btn slds-btn-primary slds-btn-sm slds-m-left_small slds-m-right_small waves-effect bc-outline--background waves-light mleft-0 btn-outline-green sync-mileage-btn" onclick={syncAllTrips}><svg width="25px" height="25px" viewBox="0 0 9.375 9.375" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"/><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"/><g id="SVGRepo_iconCarrier"><path d="M7.199 1.66a0.297 0.297 0 0 0 -0.293 0.293v0.949l-0.328 -0.328a2.828 2.828 0 0 0 -4.688 1.086 0.289 0.289 0 0 0 0.18 0.391 0.285 0.285 0 0 0 0.098 0 0.297 0.297 0 0 0 0.277 -0.199 2.199 2.199 0 0 1 0.535 -0.859 2.25 2.25 0 0 1 3.176 0l0.328 0.328h-0.941a0.293 0.293 0 1 0 0 0.586h1.656a0.289 0.289 0 0 0 0.293 -0.293V1.953a0.293 0.293 0 0 0 -0.293 -0.293Z" fill="#7abb4a"/><path d="M7.297 5.344a0.297 0.297 0 0 0 -0.391 0.184 2.199 2.199 0 0 1 -0.535 0.859 2.25 2.25 0 0 1 -3.176 0l-0.328 -0.328h0.965a0.293 0.293 0 1 0 0 -0.586H2.176a0.289 0.289 0 0 0 -0.293 0.293V7.422a0.293 0.293 0 1 0 0.586 0v-0.949l0.328 0.328a2.828 2.828 0 0 0 4.688 -1.086 0.289 0.289 0 0 0 -0.188 -0.371Z" fill="#7abb4a"/></g></svg> Sync All</button>
-                           <div class="slds-size_2-of-7 slds-m-left_x-small">
-                               <c-dropdown-select  data-id="typeSelect" options={typeList} value={value} title="Type" 
-                                   onchange={handleTypeChange} main-class="default-box-input slds-truncate"></c-dropdown-select>
-                           </div>
-                           <template lwc:if={showTeam}>
-                               <div class="slds-size_2-of-7 slds-m-left_x-small">
-                                   <c-dropdown-select data-id="teamSelect" options={teamList} value={value} title="My Team" 
-                                       onchange={handleTeamChange} main-class="default-box-input slds-truncate"></c-dropdown-select>
-                               </div>
-                           </template>
+                        <button lwc:if={isRecord}
+                            class="slds-btn slds-btn-primary slds-btn-sm slds-m-left_small slds-m-right_small waves-effect bc-outline--background waves-light mleft-0 btn-outline-green sync-mileage-btn"
+                            onclick={syncAllTrips}><svg width="25px" height="25px" viewBox="0 0 9.375 9.375" fill="none"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <g id="SVGRepo_bgCarrier" stroke-width="0" />
+                                <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round" />
+                                <g id="SVGRepo_iconCarrier">
+                                    <path
+                                        d="M7.199 1.66a0.297 0.297 0 0 0 -0.293 0.293v0.949l-0.328 -0.328a2.828 2.828 0 0 0 -4.688 1.086 0.289 0.289 0 0 0 0.18 0.391 0.285 0.285 0 0 0 0.098 0 0.297 0.297 0 0 0 0.277 -0.199 2.199 2.199 0 0 1 0.535 -0.859 2.25 2.25 0 0 1 3.176 0l0.328 0.328h-0.941a0.293 0.293 0 1 0 0 0.586h1.656a0.289 0.289 0 0 0 0.293 -0.293V1.953a0.293 0.293 0 0 0 -0.293 -0.293Z"
+                                        fill="#7abb4a" />
+                                    <path
+                                        d="M7.297 5.344a0.297 0.297 0 0 0 -0.391 0.184 2.199 2.199 0 0 1 -0.535 0.859 2.25 2.25 0 0 1 -3.176 0l-0.328 -0.328h0.965a0.293 0.293 0 1 0 0 -0.586H2.176a0.289 0.289 0 0 0 -0.293 0.293V7.422a0.293 0.293 0 1 0 0.586 0v-0.949l0.328 0.328a2.828 2.828 0 0 0 4.688 -1.086 0.289 0.289 0 0 0 -0.188 -0.371Z"
+                                        fill="#7abb4a" />
+                                </g>
+                            </svg> 
+                            Sync All
+                        </button>
+                        <div class="slds-size_2-of-7 slds-m-left_x-small">
+                            <c-dropdown-select data-id="typeSelect" options={typeList} value={value} title="Type"
+                                onchange={handleTypeChange}
+                                main-class="default-box-input slds-truncate"></c-dropdown-select>
+                        </div>
+                        <template lwc:if={showTeam}>
+                            <div class="slds-size_2-of-7 slds-m-left_x-small">
+                                <c-dropdown-select data-id="teamSelect" options={teamList} value={value} title="My Team"
+                                    onchange={handleTeamChange}
+                                    main-class="default-box-input slds-truncate"></c-dropdown-select>
+                            </div>
+                        </template>
                     </template>
                 </div>
                 <div slot="header">
@@ -47,23 +69,37 @@
                     </template>
                     <div class="slds-size_6-of-12 corner-select">
                         <c-dropdown-select options={selectList} title="Approve" value={value}
-                            onchange={handlePageChange} main-class="default-box-input slds-truncate"></c-dropdown-select>
+                            onchange={handlePageChange}
+                            main-class="default-box-input slds-truncate"></c-dropdown-select>
                     </div>
                 </div>
             </c-user-preview-table>
         </template>
-  
-    <!-- <template lwc:if={modalOpen}> -->
-    <!-- </template> -->
     </div>
     <c-user-profile-modal header={headerModalText} month='' show-footer={isFalse} show-btn={isFalse}
-    modal-class={modalClass} header-class={headerClass} subheader-class={subheaderClass}
-    modal-content-style={modalContent} style-header={styleHeader} close-btn-class={styleClosebtn}>
-        <div>
-            <div
-                class="slds-align_absolute-center slds-p-right_medium slds-p-left_medium slds-p-bottom_x-large message">
-                {contentMessage}</div>
-        </div>
+        modal-class={modalClass} header-class={headerClass} subheader-class={subheaderClass}
+        modal-content-style={modalContent} style-header={styleHeader} close-btn-class={styleClosebtn} onclosedialog={closeModal}>
+        <template lwc:if={islockdate}>
+            <div>
+                <div class="slds-align_absolute-center slds-p-bottom_x-large message-center">
+                    {contentMessage}</div>
+                <div class="slds-align_absolute-center slds-p-right_medium slds-p-left_medium slds-p-bottom_x-large">
+                    <button
+                        class="slds-btn slds-btn-primary slds-btn-sm waves-effect bc-green waves-light mleft-0 btn-submit" onclick={handleApproval}>
+                        Submit</button>
+                    <button
+                        class="slds-btn slds-btn-primary slds-btn-sm slds-m-left_medium waves-effect bc-black waves-light mleft-0 btn-submit" onclick={cancelApproval}>
+                        Cancel</button>
+                </div>
+            </div>
+        </template>
+        <template lwc:else>
+            <div>
+                <div
+                    class="slds-align_absolute-center slds-p-right_medium slds-p-left_medium slds-p-bottom_x-large message">
+                    {contentMessage}</div>
+            </div>
+        </template>
     </c-user-profile-modal>
     <c-export-excel></c-export-excel>
 </template>

@@ -55,10 +55,17 @@ export default class PointChloropleth extends LightningElement {
     }];
     renderInitialized = false;
     @api locate;
+    @api frameClass;
     @api background;
     @api borderColor;
     @api height;
     @api width;
+    @api vH;
+    @api margin;
+    @api mapNavigation;
+    @api spacingTop;
+    @api spacingBottom;
+    @api title;
     initializeChart() {
         // eslint-disable-next-line no-restricted-globals
         let url = location.origin;
@@ -68,8 +75,9 @@ export default class PointChloropleth extends LightningElement {
         // eslint-disable-next-line @lwc/lwc/no-api-reassignments
         this.locate = (this.locate !== undefined) ? this.locate : [];
         console.log("Mapp---", this.locate)
-        let obj = {modal : this.locate, background: this.background, border: this.borderColor, height: this.height, width: this.width}
+        let obj = {modal : this.locate, title: this.title, background: this.background, border: this.borderColor, height: this.height, width: this.width, navigation: this.mapNavigation, vertical: this.vH, margin: this.margin, top: this.spacingTop, bottom: this.spacingBottom}
         let messagePost = JSON.stringify(obj)
+        console.log("MEssgae" , messagePost)
         if(this.template.querySelector('.vf-iframe').contentWindow){
                     this.template.querySelector('.vf-iframe').contentWindow.postMessage(messagePost, this.origin)
             }

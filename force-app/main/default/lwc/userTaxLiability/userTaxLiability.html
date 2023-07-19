@@ -25,7 +25,7 @@
                                     <table
                                         class="slds-table slds-table_cell-buffer slds-table_header-hidden bordered-table">
                                         <tr>
-                                            <td>Mileage</td>
+                                            <td>Approved Mileage</td>
                                             <td>
                                                 <lightning-formatted-number value={compliance.Mileages}
                                                     minimum-fraction-digits="2">
@@ -72,6 +72,14 @@
                                     <table
                                         class="slds-table slds-table_cell-buffer slds-table_header-hidden bordered-table analysis">
                                         <tr>
+                                            <td>Total Approved Mileage</td>
+                                            <td>
+                                                <lightning-formatted-number value={totalApprovedMileage}
+                                                    minimum-fraction-digits="2">
+                                                </lightning-formatted-number>
+                                            </td>
+                                        </tr>
+                                        <tr>
                                             <td>Total Reimbursement</td>
                                             <td>
                                                 <lightning-formatted-number value={reimbursements}
@@ -106,8 +114,8 @@
                                     <table class="slds-table slds-table_cell-buffer slds-table_header-hidden no-border">
                                         <tbody>
                                             <tr>
-                                                <td style="padding-right: 41px !important;
-                                                padding-left: 41px !important;">
+                                                <td style="padding-right: 49px !important;
+                                                padding-left: 49px !important;">
                                                     <div class="annual-liability">Annual Tax Liability Detail</div>
                                                 </td>
                                             </tr>
@@ -137,8 +145,8 @@
                                     <table class="slds-table slds-table_cell-buffer slds-table_header-hidden no-border">
                                         <tbody>
                                             <tr>
-                                                <td style="padding-right: 27px !important;
-                                                padding-left: 27px !important;">
+                                                <td style="padding-right: 36px !important;
+                                                padding-left: 36px !important;">
                                                     <div class="annual-liability">Annual Tax Liability Summary</div>
                                                 </td>
                                             </tr>
@@ -162,7 +170,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div style="flex-basis: 274px;margin: 0 30px 30px 0;">
+                        <div style="flex-basis: 287px;margin: 0 30px 30px 0;">
                             <div class="plan-info-compliance slds-p-around_large" style="height: 100%;background: #F1F8EC;">
                                 <div style="padding: 4rem 0;
                                 text-align: center;">

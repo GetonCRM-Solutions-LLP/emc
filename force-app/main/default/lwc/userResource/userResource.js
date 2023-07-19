@@ -1,22 +1,5 @@
 import { LightningElement, api } from 'lwc';
-import mBurseCss from '@salesforce/resourceUrl/LwcDesignImage';
 export default class UserResource extends LightningElement {
-    welcome = mBurseCss + '/Resources/PNG/Green/1.png';
-    parameters  = mBurseCss + '/Resources/PNG/Green/2.png';
-    mLog  = mBurseCss + '/Resources/PNG/Green/1.png';
-    downloadmLog  = mBurseCss + '/Resources/PNG/Green/3.png';
-    meeting = mBurseCss + '/Resources/PNG/Green/1.png';
-    sync = mBurseCss + '/Resources/PNG/Green/4.png';
-    troubleShoot  = mBurseCss + '/Resources/PNG/Green/5.png';
-    optimize = mBurseCss + '/Resources/PNG/Green/6.png';
-    faq  = mBurseCss + '/Resources/PNG/Green/7.png';
-    instructions = mBurseCss + '/Resources/PNG/Green/8.png';
-    compliance = mBurseCss + '/Resources/PNG/Green/9.png';
-    tax = mBurseCss + '/Resources/PNG/Green/10.png';
-    insurance = mBurseCss + '/Resources/PNG/Green/11.png';
-    methodology = mBurseCss + '/Resources/PNG/Green/12.png';
-    privacy = mBurseCss + '/Resources/PNG/Green/13.png';
-    policy = mBurseCss + '/Resources/PNG/Green/14.png';
 
      // width of video
      videoWidth = "100%";

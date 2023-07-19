@@ -907,7 +907,6 @@ export default class DataTableComponent extends LightningElement {
                 dateB = formatDateB == "" ? "" : new Date(formatDateB.toLowerCase());
               //sort string ascending
               const searchTime12to24 = (time12h, cdate) => {
-							if(typeof cdate === 'object'){
                 const [time, modifier] = time12h.split(' ');
 
                 let [hours, minutes] = time.split(':');
@@ -921,7 +920,6 @@ export default class DataTableComponent extends LightningElement {
                 }
                 let seconds = '00'
                 cdate.setHours(hours, minutes, seconds);
-							}
                 return cdate
                 //return `${hours}:${minutes}`;
               }
@@ -947,21 +945,19 @@ export default class DataTableComponent extends LightningElement {
                 dateB = formatDateB == "" ? "" : new Date(formatDateB.toLowerCase());
 
               const Time12to24 = (time12h, cdate) => {
-                if(typeof cdate === 'object'){
-                  const [time, modifier] = time12h.split(' ');
+                const [time, modifier] = time12h.split(' ');
 
-                  let [hours, minutes] = time.split(':');
+                let [hours, minutes] = time.split(':');
 
-                  if (hours === '12') {
-                    hours = '00';
-                  }
-
-                  if (modifier === 'PM') {
-                    hours = parseInt(hours, 10) + 12;
-                  }
-                  let seconds = '00'
-                  cdate.setHours(hours, minutes, seconds);
+                if (hours === '12') {
+                  hours = '00';
                 }
+
+                if (modifier === 'PM') {
+                  hours = parseInt(hours, 10) + 12;
+                }
+                let seconds = '00'
+                cdate.setHours(hours, minutes, seconds);
                 return cdate
                 //return `${hours}:${minutes}`;
               }
@@ -1066,22 +1062,19 @@ export default class DataTableComponent extends LightningElement {
                 dateB = formatDateB == "" ? "" : new Date(formatDateB.toLowerCase());
 
               const searchconvertTime12to24 = (time12h, cdate) => {
-								console.log("date--", cdate)
-									if(typeof cdate === 'object'){
-											 const [time, modifier] = time12h.split(' ');
-												let [hours, minutes] = time.split(':');
+                const [time, modifier] = time12h.split(' ');
 
-												if (hours === '12') {
-													hours = '00';
-												}
+                let [hours, minutes] = time.split(':');
 
-												if (modifier === 'PM') {
-													hours = parseInt(hours, 10) + 12;
-												}
-												let seconds = '00'
-												cdate.setHours(hours, minutes, seconds);
-									}
-               
+                if (hours === '12') {
+                  hours = '00';
+                }
+
+                if (modifier === 'PM') {
+                  hours = parseInt(hours, 10) + 12;
+                }
+                let seconds = '00'
+                cdate.setHours(hours, minutes, seconds);
                 return cdate
                 //return `${hours}:${minutes}`;
               }
@@ -1108,21 +1101,19 @@ export default class DataTableComponent extends LightningElement {
                 dateB = formatDateB == "" ? "" : new Date(formatDateB.toLowerCase());
 
               const convertTime12to24 = (time12h, cdate) => {
-										if(typeof cdate === 'object'){
-												const [time, modifier] = time12h.split(' ');
+                const [time, modifier] = time12h.split(' ');
 
-												let [hours, minutes] = time.split(':');
+                let [hours, minutes] = time.split(':');
 
-												if (hours === '12') {
-													hours = '00';
-												}
+                if (hours === '12') {
+                  hours = '00';
+                }
 
-												if (modifier === 'PM') {
-													hours = parseInt(hours, 10) + 12;
-												}
-												let seconds = '00'
-												cdate.setHours(hours, minutes, seconds);
-										}
+                if (modifier === 'PM') {
+                  hours = parseInt(hours, 10) + 12;
+                }
+                let seconds = '00'
+                cdate.setHours(hours, minutes, seconds);
                 return cdate
                 //return `${hours}:${minutes}`;
               }
@@ -1202,7 +1193,7 @@ export default class DataTableComponent extends LightningElement {
     this.rowOffSet = (this.rowOffSet - 1) * this.rowLimit
     this.template.querySelector(".CheckUncheckAll").checked = false;
     if (this.searchData.length != 0) {
-      console.log("inside row action", this.rowOffSet, this.rowLimit);
+      // console.log("inside row action", this.rowOffSet)
       const rowAction = new CustomEvent("rowactionevent", {
         detail: {
           rowLimit: this.rowLimit,
@@ -1211,7 +1202,6 @@ export default class DataTableComponent extends LightningElement {
       })
       this.dispatchEvent(rowAction);
     } else {
-			console.log("inside row action not search", this.rowOffSet, this.rowLimit);
       this.apexMethodCall(undefined, this.rowLimit, this.rowOffSet);
     }
 

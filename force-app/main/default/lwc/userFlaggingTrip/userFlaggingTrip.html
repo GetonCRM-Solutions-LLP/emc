@@ -12,19 +12,15 @@
                         inline-checkbox={isCheckbox} onpagecount={renderList} is-default-sort={isSort}
                         colname="tripdate" coltype="Date" sortorder="desc">
                         <template lwc:if={isRecord}>
-                            <div slot="filter" class="slds-p-left_small slds-p-bottom_small row">
+                            <div slot="filter" class="slds-p-left_small slds-p-top_xx-small row">
                                 <button
                                     class="slds-btn slds-btn-primary slds-btn-sm waves-effect bc-green waves-light mleft-0 btn-trip slds-float_right"
-                                    onclick={downloadAllTrips}><svg xmlns="http://www.w3.org/2000/svg" width="25"
-                                        height="25" viewBox="0 0 25 25" fill="none" style="
-                                 margin-right: 3px;
-                             ">
-                                        <path
-                                            d="m7.561 11.627 0.032 -0.032 -0.032 0.032 4.273 4.273a0.936 0.936 0 0 0 0.143 0.118 0.625 0.625 0 0 0 0.068 0.036h0.001l0.032 0.018 0.009 0.006 0.048 0.025a0.357 0.357 0 0 0 0.089 0.028l0.007 0.002a0.557 0.557 0 0 0 0.082 0.025l0.002 0.001a0.941 0.941 0 0 0 0.368 0h0.002a0.502 0.502 0 0 0 0.052 -0.018 0.522 0.522 0 0 1 0.027 -0.007l0.002 -0.002 0.032 -0.009 0.057 -0.018a0.527 0.527 0 0 0 0.098 -0.05l0.001 -0.001 0.002 -0.001a0.232 0.232 0 0 1 0.027 -0.016l0.036 -0.022a0.952 0.952 0 0 0 0.143 -0.118l4.273 -4.273a0.941 0.941 0 0 0 0 -1.332 0.941 0.941 0 0 0 -1.332 0l-2.668 2.668V4.843a0.943 0.943 0 0 0 -1.882 0v8.122L8.891 10.297a0.941 0.941 0 0 0 -1.331 0 0.941 0.941 0 0 0 0 1.332Zm13.323 7.718a0.942 0.942 0 0 0 -0.943 -0.941H5.057a0.943 0.943 0 0 0 0 1.881h14.886a0.943 0.943 0 0 0 0.942 -0.942Z"
-                                            fill="white" stroke="white" stroke-width="0.10081333333333335"></path>
-                                    </svg><!--<svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 30 30" fill="none">
-                                    <path d="M9.07367 13.9529L9.11346 13.9131L9.07368 13.9529L14.2022 19.0802L14.2023 19.0803C14.2516 19.1293 14.3102 19.1792 14.3744 19.2204C14.403 19.2393 14.4312 19.2535 14.4561 19.2659L14.4573 19.2665C14.4693 19.2725 14.4812 19.2791 14.4946 19.2864C14.4986 19.2886 14.5027 19.2908 14.507 19.2932C14.5246 19.3028 14.544 19.3131 14.5651 19.3225C14.6014 19.3407 14.6414 19.3505 14.6714 19.3579C14.6738 19.3585 14.6762 19.3591 14.6785 19.3596C14.7113 19.3733 14.7435 19.3822 14.7768 19.3905L14.7768 19.3907L14.7804 19.3913C14.8512 19.4046 14.9278 19.4138 15.0008 19.4138C15.0738 19.4138 15.1504 19.4046 15.2212 19.3913L15.2212 19.3914L15.2245 19.3906C15.2443 19.3858 15.2624 19.3797 15.2782 19.3743C15.2813 19.3733 15.2842 19.3723 15.287 19.3713C15.2995 19.3669 15.3101 19.3633 15.3208 19.3602L15.3208 19.3602L15.3231 19.3595C15.3352 19.3554 15.3489 19.3513 15.3631 19.3469C15.3858 19.34 15.4098 19.3326 15.4308 19.3248C15.4761 19.3096 15.5151 19.2851 15.5479 19.2646L15.5494 19.2636L15.5495 19.2637L15.5508 19.2628C15.56 19.2566 15.5696 19.2518 15.5828 19.2452L15.5838 19.2447C15.5961 19.2385 15.6117 19.2307 15.6277 19.2202L15.6277 19.2202L15.6286 19.2195C15.686 19.1799 15.7447 19.135 15.7994 19.0802L20.9268 13.9529C21.3692 13.5105 21.3692 12.7971 20.9268 12.3547C20.4844 11.9123 19.771 11.9123 19.3287 12.3547L16.1289 15.5545V5.80983C16.1289 5.18688 15.6232 4.68113 15.0002 4.68113C14.3773 4.68113 13.8715 5.18688 13.8715 5.80983V15.5545L10.6718 12.3547C10.2294 11.9123 9.51606 11.9123 9.07368 12.3547C8.63129 12.7971 8.63129 13.5105 9.07367 13.9529ZM25.0605 23.2134V23.2134C25.0602 22.5902 24.5551 22.0847 23.9318 22.0847H6.06821C5.44526 22.0847 4.93951 22.5905 4.93951 23.2134C4.93951 23.8364 5.44526 24.3421 6.06821 24.3421H23.9318C24.5547 24.3421 25.0605 23.8364 25.0605 23.2134Z" fill="white" stroke="white" stroke-width="0.120976"/>
-                                    </svg>-->Download</button>
+                                    onclick={downloadAllTrips}><svg
+                                    xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 22 22"
+                                    fill="none" style="margin-right: 3px;">
+                                    <path
+                                        d="m6.654 10.232 0.028 -0.028 -0.028 0.028 3.76 3.76a0.824 0.824 0 0 0 0.126 0.104 0.55 0.55 0 0 0 0.06 0.032h0.001l0.028 0.016 0.008 0.005 0.042 0.022a0.314 0.314 0 0 0 0.078 0.025l0.006 0.002a0.49 0.49 0 0 0 0.072 0.022l0.002 0.001a0.828 0.828 0 0 0 0.324 0h0.002a0.442 0.442 0 0 0 0.046 -0.016 0.459 0.459 0 0 1 0.024 -0.006l0.002 -0.002 0.028 -0.008 0.05 -0.016a0.464 0.464 0 0 0 0.086 -0.044l0.001 -0.001 0.002 -0.001a0.204 0.204 0 0 1 0.024 -0.014l0.032 -0.019a0.838 0.838 0 0 0 0.126 -0.104l3.76 -3.76a0.828 0.828 0 0 0 0 -1.172 0.828 0.828 0 0 0 -1.172 0l-2.348 2.348V4.262a0.83 0.83 0 0 0 -1.656 0v7.147l-2.343 -2.348a0.828 0.828 0 0 0 -1.171 0 0.828 0.828 0 0 0 0 1.172Zm11.724 6.792a0.829 0.829 0 0 0 -0.83 -0.828H4.45a0.83 0.83 0 0 0 0 1.655h13.1a0.83 0.83 0 0 0 0.829 -0.829Z"
+                                        fill="white" stroke="white" stroke-width="0.08871573333333335" /></svg>Download</button>
                                 <button
                                     class="slds-btn slds-btn-primary slds-btn-sm slds-m-left_small slds-m-right_small waves-effect bc-outline--background waves-light mleft-0 btn-outline-green sync-mileage-btn"
                                     onclick={syncMileage}>
@@ -75,6 +71,22 @@
                 </div>
             </div>
         </div>
-        <c-export-excel></c-export-excel>
     </div>
+    <c-user-profile-modal header={headerModalText} month='' show-footer={isFalse} show-btn={isFalse}
+        modal-class={modalClass} header-class={headerClass} subheader-class={subheaderClass}
+        modal-content-style={modalContent} style-header={styleHeader} close-btn-class={styleClosebtn}>
+            <div>
+                <div class="slds-align_absolute-center slds-p-bottom_x-large message-center">
+                    {contentMessage}</div>
+                <div class="slds-align_absolute-center slds-p-right_medium slds-p-left_medium slds-p-bottom_x-large">
+                    <button
+                        class="slds-btn slds-btn-primary slds-btn-sm waves-effect bc-green waves-light mleft-0 btn-submit" onclick={handleFlagging}>
+                        Submit</button>
+                    <button
+                        class="slds-btn slds-btn-primary slds-btn-sm slds-m-left_medium waves-effect bc-black waves-light mleft-0 btn-submit" onclick={cancelFlagging}>
+                        Cancel</button>
+                </div>
+            </div>
+    </c-user-profile-modal>
+    <c-export-excel></c-export-excel>
 </template>

@@ -39,6 +39,7 @@ export default class UserPlanInfo extends LightningElement {
   urlToPacket;
   driverPacketId;
   contentVersionUrl;
+  totalApprovedMileage;
   isPacketDownload = false;
 
   @api contactId;
@@ -121,17 +122,19 @@ export default class UserPlanInfo extends LightningElement {
     console.log('Synthetic?', !!this.template.synthetic)
     const tabItem = this.template.querySelectorAll('.slds-tabs_default__item');
 
-    tabItem.forEach((el) =>
-      el.addEventListener("click", () => {
-        console.log("----", el);
-        if (el.classList.contains("slds-is-active")) {
-          //el.classList.remove("slds-is-active");
-        } else {
-          console.log("---- inside else");
-          tabItem.forEach((el2) => el2.classList.remove("slds-is-active"));
-          el.classList.add("slds-is-active");
-        }
-      })
+    tabItem.forEach((el) => {
+      let child = el.children ? el.children[0] ? el.children[0] : el : el
+      child.addEventListener("click", () => {
+          console.log("----", el.children);
+          if (el.classList.contains("slds-is-active")) {
+            //el.classList.remove("slds-is-active");
+          } else {
+            console.log("---- inside else");
+            tabItem.forEach((el2) => el2.classList.remove("slds-is-active"));
+            el.classList.add("slds-is-active");
+          }
+        })
+      }
     );
   }
 
@@ -168,9 +171,9 @@ export default class UserPlanInfo extends LightningElement {
     name = this.summaryR[0].drivername;
     excelFileName = name +  ' Annual Tax Liability Summary Report';
     excelSheetName = 'Summary Report';
-    excelReport.push(["Employee Id", "Driver Name", "Email", "Total Reimbursement", "IRS allowable", "Imputed Income"])
+    excelReport.push(["Employee Id", "Driver Name", "Email", "Total Approved Mileage", "Total Reimbursement", "IRS allowable", "Imputed Income"])
     this.summaryR.forEach(item => {
-      excelReport.push([item.employeeid, item.drivername, item.emailid,  "$" + this.reimbursements, "$" + this.maxAllow, "$" + item.imputedincome])
+      excelReport.push([item.employeeid, item.drivername, item.emailid, this.totalApprovedMileage, "$" + this.reimbursements, "$" + this.maxAllow, "$" + item.imputedincome])
     })
 
     this.excelToExport(excelReport, excelFileName, excelSheetName);
@@ -203,6 +206,7 @@ export default class UserPlanInfo extends LightningElement {
         })
         .then((data) => {
             console.log("getCompliance", data)
+            let totalApprovedMileage
             if(data[1]){
               this.messageOfCompliance = this.proxyToObject(data[1]);
             }
@@ -230,6 +234,10 @@ export default class UserPlanInfo extends LightningElement {
 
             if(data[7]){
               this.taxLiablity = this.proxyToObject(data[7]);
+            }
+            if (data[8]) {
+              totalApprovedMileage = this.proxyToObject(data[8]);
+              this.totalApprovedMileage = parseFloat(totalApprovedMileage);
             }
           
             console.log("getCompliance", data);

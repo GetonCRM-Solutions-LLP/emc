@@ -11,6 +11,10 @@
     --border-color: #E4E4E4;
 }
 
+*{
+  font-family: 'Proxima Nova' !important;
+}
+
 .fa,
 .fas,
 .fa-solid,
@@ -96,7 +100,7 @@
 }
 
 .slds-back-btn{
-    font-weight: 700;
+    font-family: 'Proxima Nova Bold' !important;
     font-size: 14px;
     line-height: 17px;
     text-align: center;
@@ -158,6 +162,7 @@
   
   .slds-input:focus{
     --slds-c-input-shadow: none !important;
+    box-shadow: none !important;
   }
 
   .search-icon-block{

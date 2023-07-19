@@ -1,0 +1,65 @@
+<template>
+    <!-- <lightning-card class="card_header"> -->
+    <template if:true={isopenmodel}>
+        <div class="slds-container_small card_header">
+            <!-- <lightning-card> -->
+                <div class="slds-var-m-around_medium"> 
+                    <span class="driver-label">Driver:</span>
+                    <input class="Driver_name slds-input" type="text" disabled value={drivername}></input>
+
+                    <span class="mileges-label">Mileage:</span>
+                    <input class="mileges slds-input" type="text" disabled value={mileges}></input>
+
+                    <span class="date-label">Date time:</span>
+                    <input class="datetime slds-input" type="text" disabled value={date}></input>
+                    <input class="fromtime slds-input" type="text" disabled value={StartTime}></input>
+                    <span class="fromtolabel">to</span>
+                    <input class="totime slds-input" type="text" disabled value={EndTime}></input>
+
+                    <!-- <span class="activity-label">Activity:</span>
+                    <input class="activity_input slds-input" type="text" disabled value={Activity}></input> -->
+
+                    <span class="from-label">From:</span>
+                    <input class="from_input slds-input" type="text" disabled value={from}></input>
+
+                    <span class="drivetime-label">Drive time:</span> 
+                    <lightning-input class ="drivetime_input slds-m-left_x-small "  disabled data-id={RecordId} value={DriveTime} onkeypress={keyHandler}  onchange={handleDriveTimeChange}></lightning-input>
+                    <!-- <input class=" slds-input" type="text" disabled value={DriveTime}></input> -->
+                    <span class="to-label">To:</span>
+                    <input class="to_input slds-input" type="text" disabled value={to}></input>
+
+                    <span class="staytime-label">Stay time:</span><lightning-input class ="stay_input slds-m-left_x-small" data-id={RecordId} value={StayTime} onkeypress={keyHandler} onchange={handleStayTimeChange}></lightning-input>
+                    <span class="tags-label">Tags:</span><lightning-input class ="tag_input slds-m-left_x-small" data-id={RecordId} value={tags}  onchange={handleTagChange}></lightning-input>
+                    
+                    <span class="notes-label">Notes:</span>
+                    <div class="notes_input slds_input">
+                        <textarea data-id={RecordId} class="slds-textarea text_area"
+                            oninput={handleTextAreaInput} placeholder="Optional, free text"
+                            value={notes}>{notes}</textarea>
+                    </div>
+                </div>
+                <div class="button_class">
+                    <!-- <lightning-button class="save_btton" variant="brand" type="submit"  label="Save"></lightning-button>
+                    <lightning-button class="close_button" variant="neutral" label="Close" onclick={closeModal}></lightning-button> -->
+                    <button type="button"
+                        class="slds-btn slds-btn-primary slds-btn-sm waves-effect bc-green waves-light mleft-0 btn-trip" data-id={RecordId} onclick={handleSave}>
+                        Save</button>
+                    <button type="button"
+                        class="slds-btn slds-btn-primary slds-btn-sm waves-effect bc-black waves-light mleft-0 btn-trip" data-id={RecordId} onclick={closeModal}>
+                        Close</button>
+                </div>
+                  <c-map-creation-component class="map_creation" data-id={RecordId}
+                                                            start-location-lt={fromlatitude}
+                                                            start-location-lg={fromlongitude}
+                                                            end-location-lt={tolatitude}
+                                                            end-location-lg={tolongitude}
+                                                            trip-id={tripid}
+                                                            trip-log-api={triplogapi}
+                                                            time-zone={timezone} 
+                                                            way-pt={waypoint}>
+                                                        </c-map-creation-component>  
+            <!-- </lightning-card>  -->
+        </div>
+    </template>
+    <!-- </lightning-card> -->
+</template>

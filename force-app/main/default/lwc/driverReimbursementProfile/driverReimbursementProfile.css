@@ -1,8 +1,8 @@
-*{
+* {
     font-family: 'Proxima Nova' !important;
 }
 
-:host{
+:host {
     --grey-color: #D7D7D7;
     --green-color: #7ABB4A;
     --link-color: #1D1D1D;
@@ -17,41 +17,69 @@
 
 /* Media Queries Start -- */
 /* Portrait and landscape Kindle Fire HD 7" */
-@media only screen 
-  and (min-device-width: 1024px) 
-  and (max-device-width: 1280px) 
-  and (-webkit-min-device-pixel-ratio: 1.5) {
-    .vehicle-info{
+@media only screen and (min-device-width: 1024px) and (max-device-width: 1280px) and (-webkit-min-device-pixel-ratio: 1.5) {
+    /* .vehicle-info {
         flex: 1 1 30% !important;
-    }
+    } */
 
-    .map-state{
+    /* .map-state {
         flex: 1 1 30% !important;
-    }
+    } */
 
-    .map-config{
+    .map-config {
         left: 52% !important;
     }
 
-    .miles-view{
+    /* .miles-view {
         padding-top: 58px !important;
         flex: 1 1 100% !important;
-    }
+    } */
 
-    .middle-block{
+    /* .middle-block {
         height: 349px !important;
-    }
+    } */
 }
 
-.flex-row{
+.flex-row {
     display: flex;
     flex-flow: row;
 }
 
-.map-config{
+.miles-view{
+    flex-basis: 410px;
+    flex-grow: 2;
+}
+
+.map-config {
     position: absolute;
-    top: 15px; 
+    width: 180px;
+    height: 93px;
+    top: 34px;
     left: 40%
+}
+
+.map-state{
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: row;
+    position: relative;
+    flex-basis: 248px;
+    flex-grow: 1;
+    margin: 0 0px 35px 0px;
+}
+
+.vehicle-info{
+    flex-basis: 310px;
+    flex-grow: 1;
+    margin: 0 15px 35px 0;
+}
+
+.carProfile{
+    left: 42%;
+    top: 40px;
+    width: 189px;
+    height: inherit;
+    position: absolute;
 }
 
 .fa,
@@ -62,8 +90,8 @@
     font-family: "Font Awesome 6 Free" !important
 }
 
-.middle-block{
-    height: 182px;
+.middle-block {
+    height: auto;
     background: var(--odd-row-color);
     border-radius: 20px;
 }
@@ -76,26 +104,26 @@
 
 .bc-grey {
     background: none !important;
-    background-color: var(--white-color)!important;
+    background-color: var(--white-color) !important;
     font-family: 'Proxima Nova Bold' !important;
     color: var(--btn-grey-color);
 }
 
-.bc-white{
+.bc-white {
     background: none !important;
-    background-color: var(--even-row-color)!important;
+    background-color: var(--even-row-color) !important;
     font-family: 'Proxima Nova Bold' !important;
     color: var(--green-color);
 }
 
 .bc-green {
     background: none !important;
-    background-color: var(--green-color)!important;
+    background-color: var(--green-color) !important;
     font-family: 'Proxima Nova Bold' !important;
     color: var(--even-row-color);
 }
 
-.is-active{
+.is-active {
     background: none !important;
     background-color: #f1f8ec !important;
     font-family: 'Proxima Nova Bold' !important;
@@ -122,12 +150,12 @@
     opacity: 1;
 }
 
-.icon{
+.icon {
     width: 32px !important;
     height: 32px !important;
 }
 
-.btn-trip{
+.btn-trip {
     border-radius: 10px;
     display: flex;
     flex-direction: row;
@@ -137,7 +165,7 @@
     padding: 0.8rem 1.4rem !important;
 }
 
-.btn-toggle{
+.btn-toggle {
     border-radius: 10px;
     display: flex;
     flex-direction: row;
@@ -145,48 +173,62 @@
     align-items: center;
     font-size: 14px;
     padding: .5rem 1.5rem !important;
-    border: 2px solid var(--green-color) !important;
+    border: 1px solid var(--green-color) !important;
     font-family: 'Proxima Nova Bold' !important;
     color: var(--green-color);
     opacity: 0.45;
 }
 
-.fa-arrow-right-from-bracket{
+.fa-arrow-right-from-bracket {
     color: #7ABB4A !important;
 }
 
-.filter-input{
+.filter-input {
     border: 0;
     padding-left: 0;
     border-top-right-radius: 10px;
     border-bottom-right-radius: 10px;
-  }
-  
-  .search-icon{
+}
+
+.search-icon {
     width: 19px;
     height: 19px;
     margin: 10px 11px 10px 18px;
-  }
-  
-  .search-holder{
+}
+
+.search-holder {
     display: flex;
     border: 1px solid #e4e4e4;
     border-radius: 10px;
     width: 300px;
     height: 40px;
-  }
-  
-  .slds-input:focus{
+}
+
+.slds-input:focus {
     --slds-c-input-shadow: none !important;
-  }
+    box-shadow: none !important;
+}
 
-  .content-text{
+.content-text {
     cursor: pointer;
-  }
+}
 
-  .content-text:hover{
+.content-text:hover {
     color: var(--green-color) !important;
-  }
+}
+
+.content-text>*{
+    font-family: 'Proxima Nova Bold' !important; 
+    font-size: 32px; 
+    line-height: 32px; 
+    color: rgb(29, 29, 29);
+}
+
+.grid-block{
+    display: flex;
+    flex-wrap: wrap;
+    width: 100%;
+}
 
 /* .breadcrumb {
     display: inline-block;

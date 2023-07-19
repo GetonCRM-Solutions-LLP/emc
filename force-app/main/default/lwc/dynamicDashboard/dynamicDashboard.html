@@ -1,10 +1,7 @@
 <template>
-    <c-navigation-menu driver-menu-item={managerProfileMenu} onsidebar={handleSidebarToggle} driver-name={userName}
-        driver-email={userEmail} onlogout={handleLogout}></c-navigation-menu><!-- onopen={takeMeToMenu} -->
-    <c-dashboard-profile-header user-name={firstName} full-name={contactTitle} page-source={isHomePage}
-        onlogout={handleLogout} is-navigate="true"></c-dashboard-profile-header>
     <section class={section} id="default">
-        <div class="slds-p-left_medium slds-p-right_large dashboard">
+        <c-m-burse-s-m-s driver-name="Divya Ghodasara" driver-id="0030Z00003RI524"></c-m-burse-s-m-s>
+        <!--<div class="slds-p-left_medium slds-p-right_large dashboard">
             <template if:true={isOnboarding}>
                 <div class="slds-m-right_medium flex-view-2 tile">
                     <div class="slds-col slds-p-left_large slds-p-top_small slds-p-bottom_medium tile-container">
@@ -13,7 +10,7 @@
                         padding: 0.125rem;">Onboarding Status</h2>
                         <div class="buttons">
                             <div class="button" title="Close Tile" data-on-click="remove-tile" onclick={viewOnboarding}>
-                                <!-- close icon -->
+                                 close icon 
                                 <svg width="24" height="24" viewBox="0 0 24 24">
                                     <path
                                         d="M12.71,12l4.64-4.65a.49.49,0,1,0-.7-.7L12,11.29,7.35,6.65a.49.49,0,0,0-.7.7L11.29,12,6.65,16.65a.48.48,0,0,0,0,.7.48.48,0,0,0,.7,0L12,12.71l4.65,4.64a.48.48,0,0,0,.7,0,.48.48,0,0,0,0-.7Z">
@@ -45,7 +42,7 @@
             padding: 0.125rem;">My Team’s Locations</h2>
                         <div class="buttons">
                             <div class="button" title="Close Tile" data-on-click="remove-tile" onclick={viewLocations}>
-                                <!-- close icon -->
+                              
                                 <svg width="24" height="24" viewBox="0 0 24 24">
                                     <path
                                         d="M12.71,12l4.64-4.65a.49.49,0,1,0-.7-.7L12,11.29,7.35,6.65a.49.49,0,0,0-.7.7L11.29,12,6.65,16.65a.48.48,0,0,0,0,.7.48.48,0,0,0,.7,0L12,12.71l4.65,4.64a.48.48,0,0,0,.7,0,.48.48,0,0,0,0-.7Z">
@@ -69,7 +66,7 @@
                         padding: 0.125rem;">Insurance</h2>
                         <div class="buttons">
                             <div class="button" title="Close Tile" data-on-click="remove-tile" onclick={viewInsurance}>
-                                <!-- close icon -->
+                              
                                 <svg width="24" height="24" viewBox="0 0 24 24">
                                     <path
                                         d="M12.71,12l4.64-4.65a.49.49,0,1,0-.7-.7L12,11.29,7.35,6.65a.49.49,0,0,0-.7.7L11.29,12,6.65,16.65a.48.48,0,0,0,0,.7.48.48,0,0,0,.7,0L12,12.71l4.65,4.64a.48.48,0,0,0,.7,0,.48.48,0,0,0,0-.7Z">
@@ -95,7 +92,7 @@
                         padding: 0.125rem;">Compliance Status</h2>
                         <div class="buttons">
                             <div class="button" title="Close Tile" data-on-click="remove-tile" onclick={viewComplaince}>
-                                <!-- close icon -->
+                              
                                 <svg width="24" height="24" viewBox="0 0 24 24">
                                     <path
                                         d="M12.71,12l4.64-4.65a.49.49,0,1,0-.7-.7L12,11.29,7.35,6.65a.49.49,0,0,0-.7.7L11.29,12,6.65,16.65a.48.48,0,0,0,0,.7.48.48,0,0,0,.7,0L12,12.71l4.65,4.64a.48.48,0,0,0,.7,0,.48.48,0,0,0,0-.7Z">
@@ -125,6 +122,6 @@
                 </div>
             </template>
 
-        </div>
+        </div>-->
     </section>
 </template>

@@ -1,3 +1,45 @@
+:host {
+    --grey-color: #D7D7D7;
+    --green-color: #7ABB4A;
+    --link-color: #1D1D1D;
+    --text-color: #6C6C6C;
+    --even-row-color: #FFFFFF;
+    --odd-row-color: #F7F7F7;
+    --scroll-color: #F6F6F6;
+    --active-color: #404B5B;
+    --step-bg: #F1F8EC;
+}
+
+@keyframes slideIn {
+    0% {
+        transform: translateX(100%);
+    }
+
+    100% {
+        transform: translateX(0%);
+    }
+}
+
+@keyframes slide-out {
+    0% {
+        transform: translateX(0%);
+    }
+
+    100% {
+        transform: translateX(100%);
+    }
+}
+
+.transition {
+    animation: slideIn 1s cubic-bezier(.1, .86, .45, 1);
+    animation-fill-mode: forwards;
+}
+
+.transition-back {
+    animation: slide-out 1s cubic-bezier(.1, .86, .45, 1);
+    animation-fill-mode: backwards;
+}
+
 .fa,
 .fas,
 .fa-solid,
@@ -6,12 +48,84 @@
     font-family: "Font Awesome 6 Free" !important
 }
 
-.fa-xmark{
+.fa-xmark {
     cursor: pointer;
 }
 
-.white-cross{
+.white-cross {
     color: #FFFFFF !important;
+}
+
+.content-wrapper {
+    will-change: margin-left;
+    transition: margin-left .4s ease;
+}
+
+.message {
+    font-size: 16px;
+    width: 65%;
+    text-align: center;
+    font-family: 'Proxima Nova Bold' !important;
+    color: var(--link-color);
+}
+
+.notify-text {
+    width: 100%;
+    height: auto;
+    border-radius: 10px;
+    background: #fa780014;
+    display: flex;
+    flex-direction: row;
+}
+
+.notify-message-tab {
+    font-family: 'Proxima Nova Bold' !important;
+    font-size: 14px;
+    color: #1D1D1D !important;
+    width: 100%;
+    line-height: 17px;
+    letter-spacing: 0em;
+    text-align: left;
+}
+
+.notify-message-date {
+    font-family: 'Proxima Nova Semibold' !important;
+    font-size: 12px;
+    line-height: 12px;
+    color: #FA7800;
+}
+
+.close-btn {
+    position: relative;
+    display: flex;
+    justify-content: end;
+    text-align: end;
+    right: 40px;
+}
+
+.close-icon {
+    cursor: pointer;
+}
+
+.vue-sidebar {
+    background: #fff;
+    position: fixed;
+    top: 0px;
+    right: 0;
+    width: 510px;
+    bottom: 0;
+    z-index: 1002;
+    overflow: visible;
+    display: flex;
+    flex-direction: column;
+    box-shadow: -4px 0 16px 0 rgba(0, 0, 0, 0.1);
+    transform: translate3d(0, 0, 0);
+    transition: all 0.5s;
+}
+
+.header-content{
+    margin-top: 15px;
+    margin-bottom: 30px;
 }
 
 .main {
@@ -22,5 +136,66 @@
 
 .sidebar-open {
     margin-left: 256px;
-	margin-top: 80px;
+    margin-top: 80px;
+}
+
+.notification-wrapper {
+    height: calc(100vh - 130px);
+    width: 486px;
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
+.notification-wrapper::-webkit-scrollbar {
+    width: 2px;
+    height: 20px;
+    background-color: #F6F6F6;
+}
+
+.notification-wrapper::-webkit-scrollbar-thumb {
+    border-radius: 13px;
+    height: 20px;
+    background-color: #404B5B;
+}
+
+.notification-wrapper::-webkit-scrollbar-track {
+    -webkit-box-shadow: inset 0 0 6px #F6F6F6;
+    border-radius: 13px;
+    background-color: #F6F6F6;
+}
+
+.filter-wrapper {
+    display: grid;
+    grid-template-columns: 1.5fr 2fr;
+    float: left;
+    width: 74%;
+}
+
+.filter-view-1 {
+    display: grid;
+    grid-template-columns: 0.25fr 0.6fr;
+}
+
+.filter-view-2 {
+    display: grid;
+    grid-template-columns: 0.6fr 1fr;
+}
+
+.filter-label {
+    font-size: 14px;
+    font-family: 'Proxima Nova Bold' !important;
+    padding: 7px 0px;
+    color: #1D1D1D;
+}
+
+.no-data-message {
+    font-size: 24px;
+    line-height: 29px;
+    text-align: center;
+    font-family: 'Proxima Nova Semibold' !important;
+    color: var(--link-color);
+}
+
+.close-notify-icon {
+    cursor: pointer;
 }

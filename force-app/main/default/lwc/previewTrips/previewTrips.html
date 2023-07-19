@@ -3,14 +3,19 @@
         <div class="row">
             <div class="container">
                 <template if:true={modelList}>
-                    <c-user-preview-table   show-footer="true" header-name="true" d-flex="flow-block" divider-class="row-divider--v1"  head-th="header-title--v1" sort-th="sort-container p-top-v1" trip-month={tripMonth}  biweek-value={biweekValue} start-date={startDate} end-date={endDate} main-class={classToTable} scrollable={isScrollable} is-paginate={paginatedModal} model-data={modelList}
+                    <c-user-preview-table   show-footer="true" header-name="true" d-flex="grid-block" divider-class="row-divider--v1"  head-th="header-title--v1" sort-th="sort-container p-top-v1" trip-month={tripMonth}  biweek-value={biweekValue} start-date={startDate} end-date={endDate} main-class={classToTable} scrollable={isScrollable} is-paginate={paginatedModal} model-data={modelList}
                     columns={modalListColumn} options={modalKeyFields} is-sortable={sortable}  is-default-sort={isSort} colname="tripdate" coltype="Date" sortorder="asc">
                     <div slot="filter" class="slds-p-left_small slds-p-bottom_small row">
                         <template lwc:if={recordDisplay}>
                             <button class="slds-btn slds-btn-primary slds-btn-sm waves-effect bc-green waves-light mleft-0 btn-trip"
-                            onclick={downloadAllTrips}><svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" viewBox="0 0 25 25" fill="none" style="
-                            margin-right: 3px;
-                        "><path d="m7.561 11.627 0.032 -0.032 -0.032 0.032 4.273 4.273a0.936 0.936 0 0 0 0.143 0.118 0.625 0.625 0 0 0 0.068 0.036h0.001l0.032 0.018 0.009 0.006 0.048 0.025a0.357 0.357 0 0 0 0.089 0.028l0.007 0.002a0.557 0.557 0 0 0 0.082 0.025l0.002 0.001a0.941 0.941 0 0 0 0.368 0h0.002a0.502 0.502 0 0 0 0.052 -0.018 0.522 0.522 0 0 1 0.027 -0.007l0.002 -0.002 0.032 -0.009 0.057 -0.018a0.527 0.527 0 0 0 0.098 -0.05l0.001 -0.001 0.002 -0.001a0.232 0.232 0 0 1 0.027 -0.016l0.036 -0.022a0.952 0.952 0 0 0 0.143 -0.118l4.273 -4.273a0.941 0.941 0 0 0 0 -1.332 0.941 0.941 0 0 0 -1.332 0l-2.668 2.668V4.843a0.943 0.943 0 0 0 -1.882 0v8.122L8.891 10.297a0.941 0.941 0 0 0 -1.331 0 0.941 0.941 0 0 0 0 1.332Zm13.323 7.718a0.942 0.942 0 0 0 -0.943 -0.941H5.057a0.943 0.943 0 0 0 0 1.881h14.886a0.943 0.943 0 0 0 0.942 -0.942Z" fill="white" stroke="white" stroke-width="0.10081333333333335"></path></svg>Download</button>
+                            onclick={downloadAllTrips}>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 22 22" fill="none"
+                                style="margin-right: 3px;margin-bottom: 2px;">
+                                <path
+                                    d="m6.654 10.232 0.028 -0.028 -0.028 0.028 3.76 3.76a0.824 0.824 0 0 0 0.126 0.104 0.55 0.55 0 0 0 0.06 0.032h0.001l0.028 0.016 0.008 0.005 0.042 0.022a0.314 0.314 0 0 0 0.078 0.025l0.006 0.002a0.49 0.49 0 0 0 0.072 0.022l0.002 0.001a0.828 0.828 0 0 0 0.324 0h0.002a0.442 0.442 0 0 0 0.046 -0.016 0.459 0.459 0 0 1 0.024 -0.006l0.002 -0.002 0.028 -0.008 0.05 -0.016a0.464 0.464 0 0 0 0.086 -0.044l0.001 -0.001 0.002 -0.001a0.204 0.204 0 0 1 0.024 -0.014l0.032 -0.019a0.838 0.838 0 0 0 0.126 -0.104l3.76 -3.76a0.828 0.828 0 0 0 0 -1.172 0.828 0.828 0 0 0 -1.172 0l-2.348 2.348V4.262a0.83 0.83 0 0 0 -1.656 0v7.147l-2.343 -2.348a0.828 0.828 0 0 0 -1.171 0 0.828 0.828 0 0 0 0 1.172Zm11.724 6.792a0.829 0.829 0 0 0 -0.83 -0.828H4.45a0.83 0.83 0 0 0 0 1.655h13.1a0.83 0.83 0 0 0 0.829 -0.829Z"
+                                    fill="white" stroke="white" stroke-width="0.08871573333333335"></path>
+                            </svg>
+                            Download</button>
                         </template>
                     </div>
                     <div slot="header">

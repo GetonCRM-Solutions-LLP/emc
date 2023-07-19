@@ -77,6 +77,9 @@ export default class DriverUserProfile extends LightningElement {
     vehicleImage;
     chartList;
     contactName;
+    colname="name";
+    coltype="String";
+    sortorder="desc";
     renderedInitialized = false;
     planInsurance = false;
     planMileage = false;
@@ -213,7 +216,7 @@ export default class DriverUserProfile extends LightningElement {
         }
     ];
     gasPriceKeyFields = ["ReimMonth", "fuelPrice", "VariableRate"]
-    biweekKeyFields = ["month", "variableRate", "mileage","varibleAmount","fixed1","fixed2","fixed3","totalFixedAmount", "avgToDate"]
+    biweekKeyFields = ["month", "variableRate", "mileage","varibleAmount","fixed1","fixed2","fixed3","totalReimbursements", "avgToDate"]
     biweekColumn = [{
         id: 1,
         name: "",
@@ -251,7 +254,7 @@ export default class DriverUserProfile extends LightningElement {
     },{
         id: 8,
         name: "Total",
-        colName: "totalFixedAmount"
+        colName: "totalReimbursements"
     },{
         id: 9,
         name: "Avg to Date",
@@ -371,6 +374,27 @@ export default class DriverUserProfile extends LightningElement {
         });
         return data;
       }
+
+      sortByMonthDesc(data, colName) {
+        let months = [
+          "January",
+          "February",
+          "March",
+          "April",
+          "May",
+          "June",
+          "July",
+          "August",
+          "September",
+          "October",
+          "November",
+          "December"
+        ];
+        data.sort((a, b) => {
+          return months.indexOf(b[colName]) - months.indexOf(a[colName]);
+        });
+        return data;
+      }
       
     dynamicBinding(data, keyFields) {
         data.forEach(element => {
@@ -415,10 +439,14 @@ export default class DriverUserProfile extends LightningElement {
                         key === "variable" || key === "mileage" ||
                         key === "fixed1" || key === "fixed2" ||
                         key === "fixed3") && ((element[key] !== "null" || element[key] !== null) && (singleValue.value !== '0.00') && (singleValue.value !== '0.0000')) && (/^0+/).test(singleValue.value) === true) ? (singleValue.value).replace(/^0+/, '') : null;
+                        element[key] = (element[key] === "null" || element[key] === null) ? "" : (key === "variableRate" || key === "varibleAmount" || key === 'fixed1' || key === 'fixed2' || 
+                        key === 'fixed3' || 
+                        key === 'totalFixedAmount' || key === "totalReimbursements") ? element[key].replace(/\$/g, "").replace(/\s/g, "") : element[key];
                         model.push(singleValue);
                     }
                 }
             }
+            
             element.rejectedClass = (element.status === 'Rejected') ? 'rejected' : '';
             element.isYtd = (this.templateName === 'Biweek' || this.templateName === 'Monthly') ? true : false;
             element.isYtdBiweek = (this.templateName === 'Biweek') ? true : false;
@@ -446,7 +474,7 @@ export default class DriverUserProfile extends LightningElement {
 	}
 
     handleClose(event) {
-        var eId = event.target.dataset.id;
+        var eId = event.currentTarget.dataset.id;
         this.dispatchEvent(
             new CustomEvent("close", {
               detail: eId
@@ -480,6 +508,8 @@ export default class DriverUserProfile extends LightningElement {
             this.lastModelList = JSON.parse(resultData);
             this.modalLength = this.lastModelList.length > 0 ? true : false;
             this.originalModelList = JSON.parse(resultData);
+            this.colname = "tripdate";
+            this.coltype = "Date";
             this.modalListColumn = this.lastMonthColumn;
             this.modalKeyFields = this.lastMonthKeyFields;
             console.log("My getMileages list->", resultData);
@@ -514,6 +544,8 @@ export default class DriverUserProfile extends LightningElement {
             this.lastModelList = JSON.parse(resultData);
             this.modalLength = this.lastModelList.length > 0 ? true : false;
             this.originalModelList = JSON.parse(resultData);
+            this.colname = "tripdate";
+            this.coltype = "Date";
             this.modalListColumn = this.thisMonthColumn;
             this.modalKeyFields = this.thisMonthKeyFields;
             console.log("My getMileages list->", resultData);
@@ -543,7 +575,7 @@ export default class DriverUserProfile extends LightningElement {
             let gasPriceList = this.proxyToObject(data);
             this.headerText = '';
             this.monthText =  '';
-            this.lastModelList = this.sortByMonthAsc(gasPriceList, "ReimMonth");
+            this.lastModelList = this.sortByMonthDesc(gasPriceList, "ReimMonth");
             this.originalModelList = gasPriceList;
             this.modalListColumn = this.gasPriceColumn;
             this.modalKeyFields = this.gasPriceKeyFields;
@@ -571,7 +603,7 @@ export default class DriverUserProfile extends LightningElement {
             this.ytd = (biweekReimbursementList.length > 0) ? true : false;
             this.headerText = '';
             this.monthText =  '';
-            this.lastModelList = this.sortByMonthAsc(biweekReimbursementList, "month");
+            this.lastModelList = this.sortByMonthDesc(biweekReimbursementList, "month");
             this.originalModelList = biweekReimbursementList;
             this.modalListColumn = this.biweekColumn;
             this.modalKeyFields = this.biweekKeyFields;
@@ -600,7 +632,7 @@ export default class DriverUserProfile extends LightningElement {
             this.ytd = (biweekReimbursementList.length > 0) ? true : false;
             this.headerText = '';
             this.monthText =  '';
-            this.lastModelList = this.sortByMonthAsc(biweekReimbursementList, "month");
+            this.lastModelList = this.sortByMonthDesc(biweekReimbursementList, "month");
             this.originalModelList = biweekReimbursementList;
             this.modalListColumn = this.monthColumn;
             this.modalKeyFields = this.monthKeyFields;
@@ -694,10 +726,10 @@ export default class DriverUserProfile extends LightningElement {
     dataReimbursement(reimbursementData){
         this.lastMilesZero = (reimbursementData.lastmonthmiles !== '0.00' && (/^0+/).test(reimbursementData.lastmonthmiles) === true) ? (reimbursementData.lastmonthmiles).replace(/^0+/, '') : null;
         this.thisMilesZero = (reimbursementData.currentmonthmiles !== '0.00' && (/^0+/).test(reimbursementData.currentmonthmiles) === true) ? (reimbursementData.currentmonthmiles).replace(/^0+/, '') : null;
-        this.halfFixedZero= (reimbursementData.halfFixedAmount !== '0.00' && (/^0+/).test(reimbursementData.halfFixedAmount) === true) ? (reimbursementData.halfFixedAmount).replace(/^0+/, '') : null;
-        this.fixedAmountZero = (reimbursementData.fixedAmount !== '0.00' && (/^0+/).test(reimbursementData.fixedAmount) === true) ? (reimbursementData.fixedAmount).replace(/^0+/, '') : null;
-        this.fuelPriceZero = (reimbursementData.lastmonthfuelprice !== '0.00' && (/^0+/).test(reimbursementData.lastmonthfuelprice) === true) ? (reimbursementData.lastmonthfuelprice).replace(/^0+/, '') : null;
-        this.mileageRateZero = (reimbursementData.lastmonthmileagerate !== '0.00' && (/^0+/).test(reimbursementData.lastmonthmileagerate) === true) ? (reimbursementData.lastmonthmileagerate).replace(/^0+/, '') : null;
+        this.halfFixedZero= (reimbursementData.halfFixedAmount !== '0.00' && (/^0+/).test(reimbursementData.halfFixedAmount) === true) ? (reimbursementData.halfFixedAmount).replace(/^0+/, '$') : null;
+        this.fixedAmountZero = (reimbursementData.fixedAmount !== '0.00' && (/^0+/).test(reimbursementData.fixedAmount) === true) ? (reimbursementData.fixedAmount).replace(/^0+/, '$') : null;
+        this.fuelPriceZero = (reimbursementData.lastmonthfuelprice !== '0.00' && (/^0+/).test(reimbursementData.lastmonthfuelprice) === true) ? (reimbursementData.lastmonthfuelprice).replace(/^0+/, '$') : null;
+        this.mileageRateZero = (reimbursementData.lastmonthmileagerate !== '0.00' && (/^0+/).test(reimbursementData.lastmonthmileagerate) === true) ? (reimbursementData.lastmonthmileagerate).replace(/^0+/, '$') : null;
         this.lastMonthMiles = (reimbursementData.lastmonthmiles) ? reimbursementData.lastmonthmiles : 0;
         this.thisMonthMiles = (reimbursementData.currentmonthmiles) ? reimbursementData.currentmonthmiles : 0;
         this.halfFixedAmount = (reimbursementData.halfFixedAmount) ? reimbursementData.halfFixedAmount : 0;
@@ -710,7 +742,7 @@ export default class DriverUserProfile extends LightningElement {
         this.vehicleImage = contactList[0].Car_Image__c;
         this.vehicleType = contactList[0].Vehicle_Type__c;
         this.contactName = contactList[0].Name;
-        this.address = contactList[0].MailingCity + ', ' + contactList[0].MailingState +' '+ contactList[0].MailingPostalCode;
+        this.address = (contactList[0].MailingCity !== undefined ? contactList[0].MailingCity + ', ' : '') + (contactList[0].MailingState !== undefined ? contactList[0].MailingState : '') +' '+ (contactList[0].MailingPostalCode !== undefined ? contactList[0].MailingPostalCode : '');
         this.planInsurance = (contactList[0].Insurance__c !== undefined) ? (contactList[0].Insurance__c === 'Yes') ? true : false : false;
         // this.planMileage =    (contactList[0].Mileage_Meet__c !== undefined) ? (contactList[0].Mileage_Meet__c === 'Yes') ? true : false : false;
         this.planVehicleAge =  (contactList[0].Vehicle_Age__c !== undefined) ?  (contactList[0].Vehicle_Age__c === 'Yes') ? true : false : false;

@@ -123,6 +123,7 @@
                                             enabled: true,
                                             padding: 0,
                                             connectorPadding: 0,
+                                            connectorWidth: 0,
                                             // x: 5,
                                             // y: -8,
                                             verticalAlign: 'middle',
@@ -132,7 +133,11 @@
                                                 fontFamily: 'Proxima Nova',
                                                 textOverflow: 'ellipsis'
                                             },
-                                            format: '{point.percentage:.1f} %',
+                                            formatter: function () {
+                                                // display only if larger than 1
+                                                return (this.y != 0) ? '<b>' + Highcharts.numberFormat(this.percentage, 1) + '%'  + '</b>' : ''
+                                            },
+                                            //format: '{point.percentage:.1f} %',
                                             distance: 10
                                             //distance: -42
                                         },

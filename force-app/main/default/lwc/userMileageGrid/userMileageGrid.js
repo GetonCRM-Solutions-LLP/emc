@@ -7,7 +7,8 @@ import resourceImage from "@salesforce/resourceUrl/mBurseCss";
 import approveMileagesClone from "@salesforce/apex/ManagerDashboardController.approveMileagesClone";
 import CheckBatchStatus from "@salesforce/apex/ManagerDashboardController.CheckBatchStatus";
 import UpdatedReimList from "@salesforce/apex/ManagerDashboardController.UpdatedReimList";
-import MassSyncTripsForReimbursements from '@salesforce/apex/ManagerDashboardController.MassSyncTripsForReimbursements';
+import MassSyncTripsForBiweek from "@salesforce/apex/ManagerDashboardController.MassSyncTripsForBiweek";
+import MassSyncTripsForReimbursements from "@salesforce/apex/ManagerDashboardController.MassSyncTripsForReimbursements";
 import { toastEvents } from "c/utils";
 export default class UserMileageGrid extends LightningElement {
   @api contactList;
@@ -17,9 +18,13 @@ export default class UserMileageGrid extends LightningElement {
   @api showTeam;
   @api monthTeamList;
   @api filter;
+  @api role;
+  @api isAccountBiweek;
   sortable = true;
   modalOpen = false;
+  isRecord = false;
   endProcess = false;
+  islockdate = false;
   _flag = false;
   isFalse = false;
   typeFilter = "";
@@ -104,7 +109,7 @@ export default class UserMileageGrid extends LightningElement {
   isScrollable = false;
   isSearchEnable = true;
   isSort = true;
-  isCheckbox = true;
+  isCheckbox = false;
   tripColumn = [
     {
       id: 1,
@@ -248,10 +253,12 @@ export default class UserMileageGrid extends LightningElement {
       });
       this.tripColumn[1].colName = "totalHighRiskMileages";
       this.tripListColumn[1].colName = "totalHighRiskMileages";
+      this.tripListColumn[2].colName = "highRiskTotalRejected";
       this.tripKeyFields[1] = "totalHighRiskMileages";
       this.tripListKeyFields[1] = "totalHighRiskMileages";
+      this.tripListKeyFields[2] = "highRiskTotalRejected";
       this.highRiskList.forEach((el) => {
-        if (el.rejectedMileges > "0.00") {
+        if (el.highRiskTotalRejected > "0.00") {
           count++;
         }
       });
@@ -273,14 +280,16 @@ export default class UserMileageGrid extends LightningElement {
     } else {
       this.tripColumn[1].colName = "totalMileages";
       this.tripListColumn[1].colName = "totalMileages";
+      this.tripListColumn[2].colName = "rejectedMileges";
       this.tripKeyFields[1] = "totalMileages";
       this.tripListKeyFields[1] = "totalMileages";
-      this.highRiskList.forEach((el) => {
+      this.tripListKeyFields[2] = "rejectedMileges";
+      this.modelList = this.originalModelList;
+      this.modelList.forEach((el) => {
         if (el.rejectedMileges > "0.00") {
           count++;
         }
       });
-      this.modelList = this.originalModelList;
 
       if (count > 0) {
         this.modalListColumn = this.tripListColumn;
@@ -335,7 +344,8 @@ export default class UserMileageGrid extends LightningElement {
       item = { id: 2, label: "All Pages", value: "All Pages" };
     arrayElement = this.selectList;
     originalItem = this.selectList;
-    if (event.detail < 2) {
+    let eventAt = (event.detail) ? event.detail : event;
+    if (eventAt < 2) {
       this.selectList = arrayElement.filter(function (a) {
         return a.value !== "All Pages";
       });
@@ -433,103 +443,56 @@ export default class UserMileageGrid extends LightningElement {
   }
 
   handleTypeChange(event) {
-    var count = 0;
-    let element = this.originalModelList;
-    let type = event.detail ? event.detail.value : event;
-    this.typeFilter = type;
-    this.filter = "";
-    console.log("type", this.typeFilter);
-    this.isSubmitVisible = false;
-    if (type === "High Risk") {
-      this.highRiskList = element.filter(function (b) {
-        return b.totalHighRiskMileages !== 0;
-      });
-      this.tripColumn[1].colName = "totalHighRiskMileages";
-      this.tripListColumn[1].colName = "totalHighRiskMileages";
-      this.tripKeyFields[1] = "totalHighRiskMileages";
-      this.tripListKeyFields[1] = "totalHighRiskMileages";
-      this.highRiskList.forEach((el) => {
-        if (el.rejectedMileges > "0.00") {
-          count++;
+    if(this.endProcess){
+      this.template.querySelector(
+        'c-dropdown-select[data-id="typeSelect"]'
+      ).selection();
+      this.showModal()
+    }else{
+      let element = this.originalModelList;
+      let type = event.detail ? event.detail.value : event;
+      this.typeFilter = type;
+      this.filter = "";
+      console.log("type", this.typeFilter);
+      this.isSubmitVisible = false;
+      this.resetViewList(element);
+      if (this.typeFilter === "All Trips") {
+        if (
+          this.template.querySelector('c-dropdown-select[data-id="typeSelect"]')
+        ) {
+          this.template.querySelector(
+            'c-dropdown-select[data-id="typeSelect"]'
+          ).selectedValue = "All Trips";
+          this.template
+            .querySelector('c-dropdown-select[data-id="typeSelect"]')
+            .toggleSelected("All Trips");
+          this.template
+            .querySelector('c-dropdown-select[data-id="typeSelect"]')
+            .removeHidden("High Risk");
         }
-      });
-      this.modelList = this.highRiskList;
-
-      if (count > 0) {
-        this.modalListColumn = this.tripListColumn;
-        this.modalKeyFields = this.tripListKeyFields;
       } else {
-        this.modalListColumn = this.tripColumn;
-        this.modalKeyFields = this.tripKeyFields;
-      }
-
-      this.dynamicBinding(this.modelList, this.modalKeyFields);
-      this.modelList = this.sort(this.modelList, "name");
-      this.template
-        .querySelector("c-user-preview-table")
-        .viewData(this.modelList);
-    } else {
-      this.tripColumn[1].colName = "totalMileages";
-      this.tripListColumn[1].colName = "totalMileages";
-      this.tripKeyFields[1] = "totalMileages";
-      this.tripListKeyFields[1] = "totalMileages";
-      this.highRiskList.forEach((el) => {
-        if (el.rejectedMileges > "0.00") {
-          count++;
+        if (
+          this.template.querySelector('c-dropdown-select[data-id="typeSelect"]')
+        ) {
+         
+          this.template.querySelector(
+            'c-dropdown-select[data-id="typeSelect"]'
+          ).selectedValue = "High Risk";
+          this.template
+            .querySelector('c-dropdown-select[data-id="typeSelect"]')
+            .toggleSelected("High Risk");
+          this.template
+            .querySelector('c-dropdown-select[data-id="typeSelect"]')
+            .removeHidden("All Trips");
         }
-      });
-      this.modelList = this.originalModelList;
-
-      if (count > 0) {
-        this.modalListColumn = this.tripListColumn;
-        this.modalKeyFields = this.tripListKeyFields;
-      } else {
-        this.modalListColumn = this.tripColumn;
-        this.modalKeyFields = this.tripKeyFields;
       }
 
-      this.dynamicBinding(this.modelList, this.modalKeyFields);
-      this.modelList = this.sort(this.modelList, "name");
-      this.template
-        .querySelector("c-user-preview-table")
-        .viewData(this.modelList);
+      // console.log(
+      //   JSON.stringify(this.highRiskList),
+      //   type,
+      //   this.originalModelList
+      // );
     }
-
-    if (this.typeFilter === "All Trips") {
-      if (
-        this.template.querySelector('c-dropdown-select[data-id="typeSelect"]')
-      ) {
-        this.template.querySelector(
-          'c-dropdown-select[data-id="typeSelect"]'
-        ).selectedValue = "All Trips";
-        this.template
-          .querySelector('c-dropdown-select[data-id="typeSelect"]')
-          .toggleSelected("All Trips");
-        this.template
-          .querySelector('c-dropdown-select[data-id="typeSelect"]')
-          .removeHidden("High Risk");
-      }
-    } else {
-      if (
-        this.template.querySelector('c-dropdown-select[data-id="typeSelect"]')
-      ) {
-        this.template.querySelector(
-          'c-dropdown-select[data-id="typeSelect"]'
-        ).selectedValue = "High Risk";
-        this.template
-          .querySelector('c-dropdown-select[data-id="typeSelect"]')
-          .toggleSelected("High Risk");
-        this.template
-          .querySelector('c-dropdown-select[data-id="typeSelect"]')
-          .removeHidden("All Trips");
-      }
-    }
-
-    console.log(
-      JSON.stringify(this.highRiskList),
-      type,
-      this.originalModelList
-    );
   }
 
   checkUncheckRow(id, value, table) {
@@ -542,9 +505,9 @@ export default class UserMileageGrid extends LightningElement {
     this.template
       .querySelector("c-user-preview-table")
       .resetView(_tbody, "contactid");
-    this.template
-      .querySelector("c-user-preview-table")
-      .defaultSort("name", "String", "desc");
+    // this.template
+    //   .querySelector("c-user-preview-table")
+    //   .defaultSort("name", "String", "desc");
     //console.log("Gotooo---",  this.template.querySelector('c-user-preview-table').returnList())
     return true;
   }
@@ -594,6 +557,40 @@ export default class UserMileageGrid extends LightningElement {
     console.log("Team reimbursement", JSON.stringify(this.myTeamReimbursement));
   }
 
+  removeIds(target) {
+    for (let i = 0; i < this.modelList.length; i++) {
+      if (this.modelList[i].reimbursementid === target) {
+        if (this.modelList[i].reimbursementIdList.length > 0) {
+          for (
+            let j = 0;
+            j < this.modelList[i].reimbursementIdList.length;
+            j++
+          ) {
+            let index = this.myTeamReimbursement
+              .map((a) => {
+                return a;
+              })
+              .indexOf(this.modelList[i].reimbursementIdList[j]);
+            // console.log("index", el, target);
+            if (index !== -1) {
+              this.myTeamReimbursement.splice(index, 1);
+            }
+          }
+        } else {
+          let index = this.myTeamReimbursement
+            .map((a) => {
+              return a;
+            })
+            .indexOf(target);
+          // console.log("index", el, target);
+          if (index !== -1) {
+            this.myTeamReimbursement.splice(index, 1);
+          }
+        }
+      }
+    }
+  }
+
   rowHandler(event) {
     var checkbox,
       target,
@@ -613,8 +610,8 @@ export default class UserMileageGrid extends LightningElement {
     // console.log( "original----",this.template.querySelector('c-user-preview-table').returnSearchList())
     // console.log("search", this.searchmodelList.search, this.searchmodelList)
     // this.modelList =  this.template.querySelector('c-user-preview-table').returnList();
-    content = this.modelList;
-    // content = (this.searchmodelList.content) ? (this.searchmodelList.content.length > 0) ? this.searchmodelList.content : this.modelList : this.modelList;
+   // content = this.modelList;
+    content = (this.searchmodelList.content) ? (this.searchmodelList.content.length > 0) ? this.searchmodelList.content : this.modelList : this.modelList;
     //  console.log('search----',this.searchmodelList);
     //  console.log(this.modelList);
     boolean = this.checkUncheckRow(target, checkbox, content);
@@ -641,17 +638,18 @@ export default class UserMileageGrid extends LightningElement {
         this.myTeamReimbursement
       );
       if (checkbox === false) {
-        this.myTeamReimbursement.forEach((el) => {
-          if (el === target) {
-            let index = this.myTeamReimbursement
-              .map((a) => {
-                return a;
-              })
-              .indexOf(target);
-            // console.log("index", el, target);
-            this.myTeamReimbursement.splice(index, 1);
-          }
-        });
+        this.removeIds(target);
+        // this.myTeamReimbursement.forEach((el) => {
+        //   if (el === target) {
+        //     let index = this.myTeamReimbursement
+        //       .map((a) => {
+        //         return a;
+        //       })
+        //       .indexOf(target);
+        //     // console.log("index", el, target);
+        //     this.myTeamReimbursement.splice(index, 1);
+        //   }
+        // });
       }
     } else {
       this.myTeamReimbursement = [];
@@ -717,6 +715,7 @@ export default class UserMileageGrid extends LightningElement {
   }
 
   showModal() {
+    this.islockdate = false;
     this.modalOpen = true;
     this.headerModalText = "Mileage approvals are processing";
     this.modalClass =
@@ -738,15 +737,22 @@ export default class UserMileageGrid extends LightningElement {
     if (this.modelList) {
       this.isSubmitVisible = false;
       this.modelList = this.sort(this.modelList, "name");
+      if(this.template.querySelector('.filter-input')){
+        this.template.querySelector('.filter-input').value = '';
+        this.isSearchEnable = true;
+      }
       this.template
         .querySelector("c-user-preview-table")
         .refreshTable(this.modelList);
+      this.template.querySelector('c-user-preview-table').defaultSort('name', 'String', 'desc')
     }
   }
 
   resetViewList(b) {
     var count = 0;
     let element = b;
+    this.modalListColumn = [];
+    this.modalKeyFields = [];
     this.originalModelList = element;
     if (this.typeFilter === "High Risk") {
       this.highRiskList = element.filter(function (m) {
@@ -754,15 +760,16 @@ export default class UserMileageGrid extends LightningElement {
       });
       this.tripColumn[1].colName = "totalHighRiskMileages";
       this.tripListColumn[1].colName = "totalHighRiskMileages";
+      this.tripListColumn[2].colName = "highRiskTotalRejected";
       this.tripKeyFields[1] = "totalHighRiskMileages";
       this.tripListKeyFields[1] = "totalHighRiskMileages";
+      this.tripListKeyFields[2] = "highRiskTotalRejected";
       this.highRiskList.forEach((el) => {
-        if (el.rejectedMileges > "0.00") {
+        if (el.highRiskTotalRejected > 0) {
           count++;
         }
       });
       this.modelList = this.highRiskList;
-
       if (count > 0) {
         this.modalListColumn = this.tripListColumn;
         this.modalKeyFields = this.tripListKeyFields;
@@ -772,15 +779,17 @@ export default class UserMileageGrid extends LightningElement {
       }
 
       this.dynamicBinding(this.modelList, this.modalKeyFields);
-      this.modelList = this.sort(this.modelList, "name");
-      this.template
-        .querySelector("c-user-preview-table")
-        .viewData(this.modelList);
+      // this.modelList = this.sort(this.modelList, "name");
+      // this.template
+      //   .querySelector("c-user-preview-table")
+      //   .viewData(this.modelList);
     } else {
       this.tripColumn[1].colName = "totalMileages";
       this.tripListColumn[1].colName = "totalMileages";
+      this.tripListColumn[2].colName = "rejectedMileges";
       this.tripKeyFields[1] = "totalMileages";
       this.tripListKeyFields[1] = "totalMileages";
+      this.tripListKeyFields[2] = "rejectedMileges";
       this.modelList = b;
       this.modelList.forEach((el) => {
         if (el.rejectedMileges > "0.00") {
@@ -803,6 +812,7 @@ export default class UserMileageGrid extends LightningElement {
     if (this.modelList) {
       this.isSubmitVisible = false;
       this.modelList = this.sort(this.modelList, "name");
+      this.isRecord = this.modelList.length > 0 ? true : false;
       this.template
         .querySelector("c-user-preview-table")
         .viewData(this.modelList);
@@ -811,6 +821,7 @@ export default class UserMileageGrid extends LightningElement {
 
   CheckStatus(runTime) {
     var errResult, toast, message, batchId;
+    this.islockdate = false;
     CheckBatchStatus({
       batchprocessid: runTime.Id
     })
@@ -851,7 +862,8 @@ export default class UserMileageGrid extends LightningElement {
             UpdatedReimList({
               did: this.contactId,
               accid: this.accountId,
-              showTeamRecord: false
+              showTeamRecord: false,
+              role: this.role
             })
               .then((a) => {
                 if (a != null && a !== "") {
@@ -960,24 +972,33 @@ export default class UserMileageGrid extends LightningElement {
       });
   }
 
-  dateTime(date){
-    var yd, ydd,ymm, yy, hh, min ,sec;
-    yd = date
+  dateTime(date) {
+    var yd, ydd, ymm, yy, hh, min, sec;
+    yd = date;
     ydd = yd.getDate();
     ymm = yd.getMonth() + 1;
     yy = yd.getFullYear();
     hh = yd.getHours();
     min = yd.getMinutes();
     sec = yd.getSeconds();
-    ydd = (ydd < 10) ? ('0' + ydd) : ydd;
-    ymm = (ymm < 10) ? ('0' + ymm) : ymm;
+    ydd = ydd < 10 ? "0" + ydd : ydd;
+    ymm = ymm < 10 ? "0" + ymm : ymm;
     console.log(ymm + ydd);
     console.log(yy.toString(), hh.toString(), min.toString(), sec.toString());
-    return  ymm.toString() + ydd.toString() + yy.toString() + hh.toString() + min.toString() + sec.toString();
+    return (
+      ymm.toString() +
+      ydd.toString() +
+      yy.toString() +
+      hh.toString() +
+      min.toString() +
+      sec.toString()
+    );
   }
+  
 
-  submitHandler() {
+  approvalProcess() {
     var toastMessage, message;
+    this.islockdate = false;
     this.modalOpen = true;
     this.headerModalText = "Processing Mileage Approvals";
     this.modalClass = "slds-modal modal_info slds-fade-in-open";
@@ -1027,51 +1048,175 @@ export default class UserMileageGrid extends LightningElement {
         toastEvents(this, toastMessage);
         console.log("approveMileagesClone", error);
       });
-
-    console.log("Final----", JSON.stringify(this.myTeamReimbursement));
   }
 
-  syncAllTrips(){
+  cancelApproval(){
+    this.islockdate = false;
+    if (this.template.querySelector("c-user-profile-modal")) {
+      this.template.querySelector("c-user-profile-modal").hide();
+    }
+    this.resetList(this.originalModelList)
+  }
+
+  closeModal(){
+    if(this.islockdate){
+      this.resetList(this.originalModelList)
+      this.islockdate = false
+    }
+  }
+
+
+  handleApproval(){
+    if (this.template.querySelector("c-user-profile-modal")) {
+      this.template.querySelector("c-user-profile-modal").hide();
+    }
+    this.approvalProcess();
+  }
+
+  submitHandler() {
+    let data = this.modelList,
+      lockdatecount = 0;
+    for (let i = 0; i < data.length; i++) {
+      if (data[i].reimbursementIdList.length > 0) {
+        for (let j = 0; j < data[i].reimbursementIdList.length; j++) {
+          if (
+            this.myTeamReimbursement.includes(data[i].reimbursementIdList[j])
+          ) {
+            if (data[i].lockDate !== null) {
+              if(data[i].lockDate !== ''){
+                lockdatecount++;
+              }
+            }
+          }
+        }
+      }
+    }
+
+    if (lockdatecount > 0) {
+      let lockDate = this.modelList[0].lockDate;
+      let currentDateLocked = new Date(lockDate);
+      console.log("date", lockDate, currentDateLocked)
+      let lockedMonth = currentDateLocked.toLocaleString('default', { month: 'long' });
+      this.islockdate = true;
+      this.headerModalText = "Mileage Lock Date";
+      this.modalClass = "slds-modal modal_info slds-fade-in-open";
+      this.headerClass = "slds-modal__header";
+      this.subheaderClass = "slds-p-top_large header-v1";
+      this.modalContent = "slds-modal__content";
+      this.styleHeader = "slds-modal__container slds-m-top_medium";
+      this.styleClosebtn = "close-notify";
+      this.contentMessage =
+        "You approved mileage after the "+ lockedMonth + " month reimbursement report was run. This mileage will be applied to the next reimbursement period report";
+      if (this.template.querySelector("c-user-profile-modal")) {
+        this.template.querySelector("c-user-profile-modal").show();
+      }
+    } else {
+      this.approvalProcess();
+    }
+
+    console.log(
+      "Final----",
+      JSON.stringify(this.myTeamReimbursement),
+      lockdatecount
+    );
+  }
+
+  syncAllTrips() {
     let element = this.modelList;
-    element.forEach((el)=>{
-      if(el.reimbursementIdList){
-        el.reimbursementIdList.forEach((fl)=>{
-          this.allReimbursementList.push(fl)
-        })
+    element.forEach((el) => {
+      if (el.reimbursementIdList) {
+        el.reimbursementIdList.forEach((fl) => {
+          this.allReimbursementList.push(fl);
+        });
       }
-    })
+    });
 
-    MassSyncTripsForReimbursements({
-      reimbursements: JSON.stringify(this.allReimbursementList)
-    }).then((result) => {
-      if(result){
-        let toast = { type: "success", message: 'Please wait for few minutes. mileage sync process is running in background.' };
-        toastEvents(this, toast);
-        setTimeout(function () {
-          location.reload();
-        }, 4000);
-      }
-    }).catch((error) => {
-       console.log('Error', error)
-    })
-    console.log("Reimbu-->", JSON.stringify(this.allReimbursementList))
+    if(this.isAccountBiweek) {
+      console.log("Inside biweek", this.isAccountBiweek)
+      MassSyncTripsForBiweek({
+        biWeek: JSON.stringify(element),
+        accID: this.accountId
+      })
+        .then((result) => {
+          if (result) {
+            let toast = {
+              type: "success",
+              message:
+                "Please wait for few minutes. mileage sync process is running in background."
+            };
+            toastEvents(this, toast);
+            setTimeout(function () {
+              location.reload();
+            }, 4000);
+          }
+        })
+        .catch((error) => {
+          console.log("Error", error);
+        });
+    }else{
+      console.log("Inside monthly", this.isAccountBiweek)
+      MassSyncTripsForReimbursements({
+        reimbursements: JSON.stringify(this.allReimbursementList)
+      })
+        .then((result) => {
+          if (result) {
+            let toast = {
+              type: "success",
+              message:
+                "Please wait for few minutes. mileage sync process is running in background."
+            };
+            toastEvents(this, toast);
+            setTimeout(function () {
+              location.reload();
+            }, 4000);
+          }
+        })
+        .catch((error) => {
+          console.log("Error", error);
+        });
+    }
+  
+    console.log("Reimbu-->", JSON.stringify(this.allReimbursementList));
   }
 
-  excelToExport(data, file, sheet){
-    this.template.querySelector('c-export-excel').download(data, file, sheet);
+  excelToExport(data, file, sheet) {
+    this.template.querySelector("c-export-excel").download(data, file, sheet);
   }
 
-  downloadAllTrips(){
-        console.log("Type--", this.typeFilter)
-        let mileage = [];
-        let fileName = this.contactInfo + '\'s Unapproved Mileage ' + this.dateTime(new Date());
-        let sheetName = 'Mileage Report';
-        let excelList = this.sort(this.modelList, "name");
-        mileage.push(["Month", "Name","Unapproved Mileage","Approved Mileage", "Approved By", "Approval Date", "Lock Date/Report Run", "Managers Name", "Managers Email"])
-        excelList.forEach((item)=>{
-            mileage.push([item.month, item.name.replace(/\\'/g, "\'"), (this.typeFilter === 'High Risk') ? item.totalHighRiskMileages : item.totalMileages, item.approvedMileages, item.mileageApproval, item.approvedDate, item.lockDate, item.managerName, item.managerEmail])
-        })
-        this.excelToExport(mileage, fileName, sheetName);
+  downloadAllTrips() {
+    console.log("Type--", this.typeFilter);
+    let mileage = [];
+    let fileName =
+      this.contactInfo + "'s Unapproved Mileage " + this.dateTime(new Date());
+    let sheetName = "Mileage Report";
+    let excelList = this.sort(this.modelList, "name");
+    mileage.push([
+      "Month",
+      "Name",
+      "Unapproved Mileage",
+      "Approved Mileage",
+      "Approved By",
+      "Approval Date",
+      "Lock Date/Report Run",
+      "Managers Name",
+      "Managers Email"
+    ]);
+    excelList.forEach((item) => {
+      mileage.push([
+        item.month,
+        item.name.replace(/\\'/g, "'"),
+        this.typeFilter === "High Risk"
+          ? item.totalHighRiskMileages
+          : item.totalMileages,
+        item.approvedMileages,
+        item.mileageApproval,
+        item.approvedDate,
+        item.lockDate,
+        item.managerName,
+        item.managerEmail
+      ]);
+    });
+    this.excelToExport(mileage, fileName, sheetName);
   }
 
   renderedCallback() {
@@ -1163,6 +1308,7 @@ export default class UserMileageGrid extends LightningElement {
 
   connectedCallback() {
     sessionStorage.removeItem("Batch-Id");
+    console.log("Parennt", this.role)
     let count = 0;
     this.isScrollable = true;
     this.paginatedModal = true;
@@ -1184,10 +1330,12 @@ export default class UserMileageGrid extends LightningElement {
         });
         this.tripColumn[1].colName = "totalHighRiskMileages";
         this.tripListColumn[1].colName = "totalHighRiskMileages";
+        this.tripListColumn[2].colName = "highRiskTotalRejected";
         this.tripKeyFields[1] = "totalHighRiskMileages";
         this.tripListKeyFields[1] = "totalHighRiskMileages";
+        this.tripListKeyFields[2] = "highRiskTotalRejected";
         this.highRiskList.forEach((el) => {
-          if (el.rejectedMileges > "0.00") {
+          if (el.highRiskTotalRejected > "0.00") {
             count++;
           }
         });
@@ -1205,13 +1353,17 @@ export default class UserMileageGrid extends LightningElement {
       } else {
         this.tripColumn[1].colName = "totalMileages";
         this.tripListColumn[1].colName = "totalMileages";
+        this.tripListColumn[2].colName = "rejectedMileges";
         this.tripKeyFields[1] = "totalMileages";
+        this.tripListKeyFields[1] = "totalMileages";
+        this.tripListKeyFields[2] = "rejectedMileges";
         this.modelList = this.originalModelList;
         this.modelList.forEach((el) => {
           if (el.rejectedMileges > "0.00") {
             count++;
           }
         });
+
 
         if (count > 0) {
           this.modalListColumn = this.tripListColumn;
@@ -1223,6 +1375,9 @@ export default class UserMileageGrid extends LightningElement {
 
         this.dynamicBinding(this.modelList, this.modalKeyFields);
       }
+
+
+      this.isRecord = this.modelList.length > 0 ? true : false;
       // this.modelList.forEach((el)=>{
       //     if(el.rejectedMileges > '0.00'){
       //         count++;

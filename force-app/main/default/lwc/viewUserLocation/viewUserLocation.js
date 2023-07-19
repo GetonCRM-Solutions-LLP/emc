@@ -75,7 +75,7 @@ export default class ViewUserLocation extends LightningElement {
                         singleValue.value = (element[key] === "null" || element[key] === null) ? "" : element[key];
                         singleValue.truncate = (key === 'name' || key === 'address') ? true : false;
                         singleValue.tooltip = (key === 'name' || key === 'address') ? true : false;
-                        singleValue.tooltipText =  (key === 'name' || key === 'address') ? element[key] : "";
+                        singleValue.tooltipText =  (key === 'name' || key === 'address') ? (element[key] != null) ? element[key] : 'This trip was manually entered without an address.' : "";
                         // singleValue.isCurrency = (key === 'variableamount' || key === 'VariableRate' || key === 'variableRate'  || key === 'varibleAmount' || key === 'fixed1' || key === 'fixed2' || key === 'fixed3' || key === 'totalFixedAmount') ? true : false;
                         model.push(singleValue);
                     }
@@ -149,6 +149,7 @@ export default class ViewUserLocation extends LightningElement {
     }
 
     connectedCallback(){
+        console.log("this.location", this.location)
         if (this.location) {
             this.locationModelList = this.proxyToObject(this.location);
             this.column = this.locationColumn;
@@ -158,10 +159,11 @@ export default class ViewUserLocation extends LightningElement {
             if (this.locationModelList !== undefined) {
                 this.classToTable = this.locationModelList.length > 6 ? 'slds-table--header-fixed_container preview-height' : 'slds-table--header-fixed_container p-top-v2 overflow-none';
                 this.isScrollable = this.locationModelList.length > 6 ? true : false;
+                this.paginatedModal = true;
+                this.dynamicBinding(this.locationModelList, this.keyFields);
             }
 
-            this.paginatedModal = true;
-            this.dynamicBinding(this.locationModelList, this.keyFields);
+          
         }
     }
 }

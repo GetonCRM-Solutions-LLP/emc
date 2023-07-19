@@ -40,7 +40,7 @@ export default class MapCreationComponent extends LightningElement {
       }
 
       resultArray = (apiJSON != null) ? apiJSON.routes : [];
-      console.log('apiCall->', resultArray);
+      console.log('apiCall->', JSON.stringify(resultArray));
       if (resultArray.length > 25) {
         resultArray = resultArray.slice(0, 25);
       }

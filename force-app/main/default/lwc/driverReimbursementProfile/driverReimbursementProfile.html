@@ -4,14 +4,14 @@
             <lightning-layout>
                 <lightning-layout-item class="slds-p-horizontal_medium slds-size_12-of-12">
                     <div class="middle-block slds-p-around_small slds-col slds-size_12-of-12">
-                        <div class="slds-grid slds-wrap">
-                            <div class="slds-size_4-of-12 vehicle-info">
+                        <div class="grid-block">
+                            <div class="vehicle-info">
                                 <div style="display: flex;
                                 flex-direction: row;position:relative;">
-                                    <div class="slds-p-horizontal_small slds-p-vertical_small" style="display: flex;
+                                    <div class="slds-p-horizontal_x-small slds-p-vertical_small" style="display: flex;
                                     flex-direction: column;">
                                         <div
-                                            class="slds-col slds-size_12-of-12 slds-p-left_small slds-p-right_small slds-p-bottom_large">
+                                            class="slds-col slds-size_12-of-12 slds-p-left_xx-small slds-p-right_small slds-p-bottom_large">
                                             <div style="
                                             font-family: 'Proxima Nova Bold' !important;
                                             font-size: 16px;
@@ -23,7 +23,7 @@
                                             line-height: 14px;color: #6C6C6C;">{vehicleType}</div>
                                         </div>
 
-                                        <div class="slds-col slds-size_12-of-12 slds-p-right_small slds-p-left_small">
+                                        <div class="slds-col slds-size_12-of-12 slds-p-right_small slds-p-left_xx-small">
                                             <div style="
                                             font-family: 'Proxima Nova Bold' !important;
                                             font-size: 16px;
@@ -36,11 +36,8 @@
                                             line-height: 14px;color: #6C6C6C;">{address}</div>
                                         </div>
                                     </div>
-                                    <div  class="carProfile slds-col slds-size_1-of-1 slds-medium-size_6-of-12 slds-large-size_5-of-12" style="
-                                    left: 49%;
-                                    top: 30px;
-                                    position: absolute;
-                                        ">
+                                    <div id="spacer" style="width: 200px;height: 25px;margin-right:0px;"></div>
+                                    <div  class="carProfile">
                                         <!-- <div class="slds-size_4-of-4 carProfile" style="position: absolute;
                                             top: 21px;
                                             left: 143px;"> -->
@@ -50,15 +47,15 @@
 
                                 </div>
                             </div>
-                            <div class="slds-size_3-of-12 map-state" style="display: flex;flex-direction:row;position:relative">
-                                <div class="slds-size_5-of-12" style="display: flex;flex-direction:column">
+                            <div class="map-state">
+                                <div style="display: flex;flex-direction:column;flex-wrap:wrap;flex-basis:115px;">
                                     <div style="font-size: 16px; font-family: 'Proxima Nova Bold' !important; color: #1D1D1D">Driving States</div>
                                     <div style="font-weight: 400;
                                     font-size: 14px;
                                     line-height: 14px;
                                     color: #6C6C6C;">{states}</div>
                                 </div>
-                                <div class="choropleth slds-col slds-size_1-of-1 slds-medium-size_5-of-12 slds-large-size_6-of-12 map-config">
+                                <div class="choropleth map-config">
                                     <c-choropleth-map contact-id={contactId} width="160" height="127"
                                         background="#F7F7F7" border-color="#F7F7F7"></c-choropleth-map>
                                 </div>
@@ -146,21 +143,25 @@
                             </div> -->
 
                             
-                            <div  class="slds-size_5-of-12  slds-p-left_small miles-view">
+                            <div  class="slds-p-left_small miles-view">
                                 <div  class="slds-grid slds-grid--pull-padded">
                                     <div  class="slds-col--padded">
                                         <div class="slds-box--xx-small slds-text-align--center" style="display: flex;width: 100%;">
                                             <div  style="width: 90%;">
                                                 <div class="slds-size--1-of-1 slds-medium-size--1-of-2 slds-large-size--6-of-12" style="float: left;">
                                                     <div  class="slds-text-align--center slds-p-right_medium" style="float: left;">
-                                                        <img class="middle-icon"
-                                                        src={milesIcon}  style="max-width: 36px;float: left;" />
+                                                        <!-- <img class="middle-icon"
+                                                        src={milesIcon}  style="max-width: 36px;float: left;" /> -->
+                                                        <svg xmlns="http://www.w3.org/2000/svg" width="42" height="42" viewBox="0 0 42 42" fill="none"><path d="M32.188 4.2c3.063 0 5.612 2.254 5.612 5.248 0 .73-.173 1.68-.438 2.347-1.501 3.024-3.017 6.056-4.528 9.082a.722.722 0 0 1-.635.38h-9.1c-1.757 0-3.15 1.305-3.15 2.951 0 1.648 1.393 2.953 3.15 2.953h4.55c2.896 0 5.25 2.205 5.25 4.919 0 2.716-2.354 4.921-5.25 4.921H10.5a.721.721 0 0 1-.635-.38c-1.704-3.407-3.486-6.79-5.173-10.199a7.508 7.508 0 0 1-.492-2.543c0-3.332 2.853-5.904 6.311-5.904s6.289 2.576 6.289 5.904c0 .811-.207 1.827-.491 2.543-1.559 3.087-3.136 6.177-4.704 9.266H27.65c2.147 0 3.85-1.599 3.85-3.609s-1.704-3.607-3.85-3.607H23.1c-2.507 0-4.55-1.913-4.55-4.265 0-2.35 2.042-4.263 4.55-4.263h7.996c-1.349-2.719-2.735-5.426-4.06-8.148a7.114 7.114 0 0 1-.436-2.349c0-2.993 2.525-5.247 5.589-5.247Zm0 1.312C29.839 5.512 28 7.132 28 9.447c0 .486.191 1.475.35 1.887 1.276 2.57 2.567 5.138 3.85 7.707 1.255-2.58 2.552-5.077 3.85-7.707.16-.41.35-1.4.35-1.887 0-2.315-1.862-3.934-4.211-3.934Zm.012 1.639c1.344 0 2.45 1.036 2.45 2.296 0 1.26-1.106 2.296-2.45 2.296s-2.45-1.036-2.45-2.296c0-1.26 1.106-2.296 2.45-2.296Zm0 1.313c-.588 0-1.05.433-1.05.982 0 .551.462.984 1.05.984s1.05-.433 1.05-.984c0-.551-.462-.982-1.05-.982ZM10.511 19.288c-2.73 0-4.911 1.95-4.911 4.592 0 .56.21 1.578.404 2.071C7.495 28.905 9 31.857 10.5 34.808c1.47-2.966 3.038-5.953 4.496-8.857.196-.494.406-1.512.406-2.072 0-2.641-2.161-4.591-4.89-4.591Zm-.011 1.641c1.732 0 3.15 1.33 3.15 2.951 0 1.624-1.418 2.953-3.15 2.953s-3.15-1.33-3.15-2.953 1.418-2.95 3.15-2.95Zm0 1.312c-.974 0-1.75.725-1.75 1.64s.775 1.641 1.75 1.641 1.75-.728 1.75-1.641-.775-1.64-1.75-1.64Z" fill="#1D1D1D"/></svg>
                                                     </div>
                                                     <div style="display: flex;flex-flow: column;">
                                                         <div  class="slds-text-align--center content-text"
                                                         style="font-family: 'Proxima Nova Bold' !important;font-size: 26px;line-height: 35px;color: rgb(29, 29, 29);"
                                                         onclick={getLastMonthMileage}>
-                                                            <div style="float: left;">
+                                                            <div style="float: left;font-family: 'Proxima Nova Bold' !important;
+                                                            font-size: 26px;
+                                                            line-height: 35px;
+                                                            color: rgb(29, 29, 29);">
                                                                 <template if:true={lastMilesZero}>
                                                                     {lastMilesZero}
                                                                 </template>
@@ -182,7 +183,10 @@
                                                         <div class="slds-p-left_x-small content-text"
                                                         style="font-family: 'Proxima Nova Bold' !important;font-size: 26px; line-height: 35px; color: rgb(29, 29, 29)"
                                                         onclick={getThisMonthMileage}>
-                                                            <div style="float:left;"><template if:true={thisMilesZero}>
+                                                            <div style="float: left;font-family: 'Proxima Nova Bold' !important;
+                                                            font-size: 26px;
+                                                            line-height: 35px;
+                                                            color: rgb(29, 29, 29);"><template if:true={thisMilesZero}>
                                                                 {thisMilesZero}
                                                             </template>
                                                             <template if:false={thisMilesZero}>
@@ -200,12 +204,16 @@
                                             <div  style="width: 50%;">
                                                 <div class="slds-size--1-of-1 slds-medium-size--1-of-2 slds-large-size--12-of-12">
                                                     <div  class="slds-text-align--center slds-p-right_small" style="float: left;">
-                                                        <img class="middle-icon" src={moneyIcon}   style="max-width: 36px;"/>
+                                                        <!-- <img class="middle-icon" src={moneyIcon}   style="max-width: 36px;"/> -->
+                                                        <svg xmlns="http://www.w3.org/2000/svg" width="42" height="42" viewBox="0 0 42 42" fill="none"><path d="M5.116 11.489h30.878M32.905 8.4H8.204M3.57 14.576h33.965c0.427 0 0.772 0.346 0.772 0.772v16.982a0.772 0.772 0 0 1 -0.772 0.772H3.573a0.772 0.772 0 0 1 -0.772 -0.772V15.348c0 -0.427 0.346 -0.772 0.772 -0.772Zm30.878 12.351v-6.174c0 -0.427 -0.352 -0.759 -0.763 -0.874a2.021 2.021 0 0 1 -1.456 -1.452c-0.112 -0.41 -0.443 -0.763 -0.868 -0.763H9.746c-0.425 0 -0.756 0.352 -0.868 0.763 -0.215 0.77 -0.759 1.255 -1.456 1.452 -0.41 0.115 -0.763 0.446 -0.763 0.872v6.176c0 0.427 0.355 0.761 0.758 0.898a2.315 2.315 0 0 1 1.433 1.431c0.14 0.404 0.472 0.759 0.898 0.759h21.616c0.425 0 0.759 -0.355 0.896 -0.759a2.315 2.315 0 0 1 1.433 -1.431c0.404 -0.14 0.759 -0.472 0.759 -0.898Zm-10.808 -3.094a3.089 3.089 0 1 1 -6.174 0 3.089 3.089 0 0 1 6.174 0Z" stroke="#1D1D1D" stroke-width="1.543878" stroke-miterlimit="10" stroke-linecap="round"/></svg>
                                                     </div>
                                                     <template if:true={biweekly}>
                                                         <div style="display: flex;flex-flow: column;">
                                                             <div  class="slds-text-align--center content-text" style="font-family: 'Proxima Nova Bold' !important;font-size: 26px;line-height: 35px;color: rgb(29, 29, 29);" onclick={getBiweekReimbursement}>
-                                                                <div style="float:left;"><template if:true={halfFixedZero}>
+                                                                <div style="float: left;font-family: 'Proxima Nova Bold' !important;
+                                                                font-size: 26px;
+                                                                line-height: 35px;
+                                                                color: rgb(29, 29, 29);"><template if:true={halfFixedZero}>
                                                                     {halfFixedZero}
                                                                 </template>
                                                                 <template if:false={halfFixedZero}>
@@ -221,7 +229,10 @@
                                                     <template if:false={biweekly}>
                                                         <div style="display: flex;flex-flow: column;">
                                                             <div  class="slds-text-align--center content-text" style="font-family: 'Proxima Nova Bold' !important;font-size: 26px;line-height: 35px;color: rgb(29, 29, 29);"  onclick={getMonthReimbursement}>
-                                                                <div style="float:left;"> 
+                                                                <div style="float: left;font-family: 'Proxima Nova Bold' !important;
+                                                                font-size: 26px;
+                                                                line-height: 35px;
+                                                                color: rgb(29, 29, 29);"> 
                                                                     <template if:true={fixedAmountZero}>
                                                                         {fixedAmountZero}
                                                                     </template>
@@ -242,13 +253,17 @@
                                             <div  style="width: 90%;">
                                                 <div class="slds-size--1-of-1 slds-medium-size--1-of-2 slds-large-size--12-of-12">
                                                     <div  class="slds-text-align--center slds-p-right_x-small" style="float: left;">
-                                                        <img  class="middle-icon"
-                                                            src={variableRateIcon} style="max-width: 36px;float: left;">
+                                                        <!-- <img  class="middle-icon"
+                                                            src={variableRateIcon} style="max-width: 36px;float: left;"> -->
+                                                            <svg xmlns="http://www.w3.org/2000/svg" width="42" height="42" viewBox="0 0 42 42" fill="none"><path d="M10.476 21.653c1.412 0 2.559-1.079 2.599-2.42 1.508-.662 2.677-1.867 3.238-3.377.514-1.344 1-3.297 2.397-4.064.985 1.591 3.654 1.472 4.483-.196 1.016.493 1.649 1.46 2.1 2.423a6.095 6.095 0 0 0 3.444 2.915c.353 2.891 4.68 2.961 5.143.092.795-.196 3.486-1.883 2.354-2.738a.672.672 0 0 0-.903.172 3.709 3.709 0 0 1-1.604 1.285c-.801-2.021-3.93-2.066-4.795-.071-1.347-.502-2.276-1.649-2.838-2.901a5.479 5.479 0 0 0-2.607-2.436c-.249-3.28-5.257-3.064-5.185.218a5.357 5.357 0 0 0-2.441 2.809l-.775 2.074a4.704 4.704 0 0 1-2.324 2.557c-1.246-2.257-4.883-1.412-4.889 1.169 0 1.372 1.168 2.489 2.604 2.489Zm20.837-6.224c1.718.044 1.718 2.447 0 2.491-1.717-.042-1.717-2.447 0-2.491ZM20.894 9.205c1.718.044 1.718 2.447 0 2.491-1.717-.042-1.717-2.447 0-2.491Zm-10.419 8.716c1.718.042 1.718 2.447 0 2.489-1.717-.042-1.717-2.447 0-2.489Z" fill="#1D1D1D"/><path d="M2.8 7v27.514h36.011" stroke="#1D1D1D" stroke-width="1.31" stroke-linecap="round"/><path d="M7.573 23.377h5.689c.361 0 .655.294.655.655v10.481h-7v-10.48c0-.362.294-.655.655-.655Zm10.388-3.931h5.689c.361 0 .655.294.655.655v14.413h-7.001V20.101c0-.361.294-.655.655-.655Zm10.387 2.621h5.691c.361 0 .655.294.655.655v11.792h-7V22.722c0-.362.292-.655.654-.655Z" stroke="#1D1D1D" stroke-width="1.31"/></svg>
                                                     </div>
                                                     <div style="display: flex;flex-flow: column;">
                                                         <div  class="slds-text-align--center content-text"
                                                             style="font-family: 'Proxima Nova Bold' !important;font-size: 26px;line-height: 35px;color: rgb(29, 29, 29);"  onclick={getGasPrice}>
-                                                            <div style="float: left;"> 
+                                                            <div style="float: left;font-family: 'Proxima Nova Bold' !important;
+                                                            font-size: 26px;
+                                                            line-height: 35px;
+                                                            color: rgb(29, 29, 29);"> 
                                                                 <template if:true={mileageRateZero}>
                                                                     {mileageRateZero}
                                                                 </template>
@@ -268,13 +283,17 @@
                                             <div  style="width: 50%;">
                                                 <div class="slds-size--1-of-1 slds-medium-size--1-of-2 slds-large-size--12-of-12">
                                                     <div  class="slds-text-align--center  slds-p-right_small" style="float: left;">
-                                                        <img  class="middle-icon"
-                                                            src={fuelIcon} style="max-width: 36px;float: left;">
+                                                        <!-- <img  class="middle-icon"
+                                                            src={fuelIcon} style="max-width: 36px;float: left;"> -->
+                                                            <svg xmlns="http://www.w3.org/2000/svg" width="42" height="42" viewBox="0 0 42 42" fill="none"><path d="M8.4 33.6V8.12a0.42 0.42 0 0 1 0.42 -0.42h15.96a0.42 0.42 0 0 1 0.42 0.42V33.6" stroke="#1D1D1D" stroke-width="1.5400000000000003" stroke-linecap="round"/><path d="M25.2 29.4c2.1 0.467 6.3 0.42 6.3 -3.5V9.8l4.2 -2.1" stroke="#1D1D1D" stroke-width="1.5400000000000003" stroke-linecap="round"/><path d="M6.3 34.3h21" stroke="#1D1D1D" stroke-width="1.5400000000000003" stroke-linecap="round"/><path x="8" y="8" width="8" height="4" rx="0.3" stroke="#1D1D1D" stroke-width="1.5400000000000003" stroke-linecap="round" d="M11.62 11.2h10.359a0.42 0.42 0 0 1 0.42 0.42v4.76a0.42 0.42 0 0 1 -0.42 0.42H11.62a0.42 0.42 0 0 1 -0.42 -0.42v-4.76a0.42 0.42 0 0 1 0.42 -0.42z"/><path d="M11.2 20.3h11.2" stroke="#1D1D1D" stroke-width="1.5400000000000003" stroke-linecap="round"/><path d="M31.5 12.6h2.38a0.42 0.42 0 0 1 0.42 0.42v4.06a0.42 0.42 0 0 1 -0.42 0.42H31.5" stroke="#1D1D1D" stroke-width="1.5400000000000003" stroke-linecap="round"/></svg>
                                                     </div>
                                                     <div style="display: flex;flex-flow: column;">
                                                         <div  class="slds-text-align--center content-text"
                                                         style="font-family: 'Proxima Nova Bold' !important;font-size: 26px;line-height: 35px;color: rgb(29, 29, 29);" onclick={getGasPrice}>
-                                                        <div style="float: left;">
+                                                        <div style="float: left;font-family: 'Proxima Nova Bold' !important;
+                                                        font-size: 26px;
+                                                        line-height: 35px;
+                                                        color: rgb(29, 29, 29);">
                                                             <template if:true={fuelPriceZero}>
                                                                 {fuelPriceZero}
                                                             </template>
@@ -382,7 +401,7 @@
             <div>
                 <template if:true={lastModelList}>
                     <c-user-data-table main-class="slds-table--header-fixed_container modal-height" is-default-sort={paginatedModal} scrollable={isScrollable} is-paginate={paginatedModal}  model-data={lastModelList} search-key={_value}
-                    columns={modalListColumn} options={modalKeyFields} is-sortable={isSortable} is-all-download={download} onview={downloadUserTrips} is-variable={variable}></c-user-data-table>
+                    columns={modalListColumn} options={modalKeyFields} is-sortable={isSortable}  colname={colname} coltype={coltype} sortorder={sortorder} is-all-download={download} onview={downloadUserTrips} is-variable={variable}></c-user-data-table>
                 </template>
             </div>
         </c-user-profile-modal>
@@ -397,7 +416,7 @@
             <div>
                 <template if:true={lastModelList}>
                     <c-user-data-table main-class="modal-height" scrollable={isScrollable} is-sortable={isSortable} is-paginate={paginatedModal} model-data={lastModelList}
-                    columns={modalListColumn} options={modalKeyFields} onrecord={downloadAllRecord} footer-list={reimbursementYtd} is-ytd-biweek={biweekYtd} is-ytd={ytd}></c-user-data-table>
+                    columns={modalListColumn} options={modalKeyFields}  colname={colname} coltype={coltype} sortorder={sortorder} onrecord={downloadAllRecord} footer-list={reimbursementYtd} is-ytd-biweek={biweekYtd} is-ytd={ytd}></c-user-data-table>
                 </template>
             </div>
         </c-user-profile-modal>

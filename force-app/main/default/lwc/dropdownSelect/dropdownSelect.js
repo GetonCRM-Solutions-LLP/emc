@@ -213,6 +213,14 @@ export default class DropdownSelect extends LightningElement {
     ).style.display = "flex";
   }
 
+  @api selection(){
+    this._value = "";
+    this.template.querySelector(".selection__rendered").innerText = this.title;
+    this._selected = this._value;
+    this.removeHighlighted();
+    this._element = undefined
+  }
+
   addHighlighted(selectedVal) {
     let highlightedList = this.template.querySelectorAll(
       ".slds-listbox__option"

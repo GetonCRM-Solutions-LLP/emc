@@ -202,7 +202,7 @@
     -moz-user-select: none;
     -ms-user-select: none;
     user-select: none;
-    padding: 0.475rem 0.85rem 0.475rem 0.5rem !important;
+    padding: 0.475rem 0.85rem 0.475rem 0.65rem !important;
     line-height: 1.5;
     border-radius: 10px;
     color: var(--even-row-color) !important;

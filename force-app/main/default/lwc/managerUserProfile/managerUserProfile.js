@@ -1,3 +1,4 @@
+/* eslint-disable @lwc/lwc/no-async-operation */
 /* eslint-disable no-useless-escape */
 import { LightningElement, wire, api } from "lwc";
 import onboardingStatus from "@salesforce/apex/ManagerDashboardController.onboardingStatus";
@@ -12,25 +13,51 @@ export default class ManagerUserProfile extends LightningElement {
   @api isNotify;
   @api notifyMessageList;
   @api notifyMessage;
+  @api role;
   driverUnapproveList;
   driverVisibleList;
+  driverRiskList;
+  driverMileageList;
   driverTeamVisibleList;
   highRiskMileageDriverList;
   highMileageDriverList;
   complianceList;
   insuranceList;
   locationList;
+  headerText = '';
+  monthText = '';
+  vhHeight = (3 / 5 * 100) + '%';
+  margin = [0,0,0,0];
+  top = 0;
+  bottom = 0;
   myTeamList;
+  paginatedModal = false;
+  navigation = false;
+  isFalse = false;
+  isTrue = false;
   driverIsUnapprove = false;
   driverIsMyteam = false;
   driverIsHighMileage = false;
   driverIsHighRisk = false;
+  isLocation = false;
+  
+  /*Get parameters from URL*/
+  getUrlParamValue(url, key) {
+    return new URL(url).searchParams.get(key);
+  }
+
   @wire(onboardingStatus, {
-    managerId: "$contactId"
+    managerId: "$contactId",
+    accountId: "$accountId",
+    role: "$role"
   })
   status({ data, error }) {
     if (data) {
-      this.complianceList = data;
+      let result = JSON.parse(data);
+      if(typeof result === "object"){
+        let isEmptyCompliance = Object.keys(result).length;
+        this.complianceList = (isEmptyCompliance > 0) ? data : null;
+      }
       console.log("compliance status", data);
     } else {
       console.log("complianceStatus", error);
@@ -38,11 +65,17 @@ export default class ManagerUserProfile extends LightningElement {
   }
 
   @wire(insuranceReport, {
-    managerId: "$contactId"
+    managerId: "$contactId",
+    accountId: "$accountId",
+    role:"$role"
   })
   insurance({ data, error }) {
     if (data) {
-      this.insuranceList = data;
+      let result = JSON.parse(data);
+      if(typeof result === "object"){
+        let isEmptyInsurance = Object.keys(result).length;
+        this.insuranceList = (isEmptyInsurance > 0) ? data : null;
+      }
       console.log("insuranceList status", data)
     } else {
       console.log("insuranceList", error);
@@ -50,7 +83,9 @@ export default class ManagerUserProfile extends LightningElement {
   }
 
   @wire(managerContactData, {
-    managerId: "$contactId"
+    managerId: "$contactId",
+    accountId: "$accountId",
+    role: "$role"
   })
   managerContactData({ data, error }) {
     if (data) {
@@ -62,11 +97,12 @@ export default class ManagerUserProfile extends LightningElement {
         el.lon = el.Address__r
           ? el.Address__r.Location_Lat_Long__Longitude__s
           : 0;
-        el.amount = el.Fixed_Amount__c ? el.Fixed_Amount__c : 0;
+        el.amount = (el.Reimbursement_Frequency__c === "Monthly Reimbursement") ? el.Fixed_Amount__c ? el.Fixed_Amount__c : 0 : el.Half_Fixed_Amount__c ? el.Half_Fixed_Amount__c : 0 ;
         el.address =
           el.MailingCity + ", " + el.MailingState + " " + el.MailingPostalCode;
       });
       this.locationList = dataList;
+      this.isLocation = this.locationList.length > 0 ? true : false;
       console.log("locationList---", this.locationList);
     } else {
       console.log("locationList", error);
@@ -87,6 +123,30 @@ export default class ManagerUserProfile extends LightningElement {
     return object;
   }
 
+
+  getLocation(){
+   // var tablediv = this.template.querySelector("parent");
+    this.navigation = true;
+    this.margin = undefined;
+    this.top = 10;
+    this.bottom = 15;
+    this.vhHeight = (3 / 7 * 100) + '%';
+    this.paginatedModal = true;
+    this.headerText = 'My Team Locations';
+    // if (this.template.querySelector('c-user-profile-modal')) {
+    //       this.template.querySelector('c-user-profile-modal').show();
+    //       //if (tablediv.webkitRequestFullscreen) {
+    //         //tablediv.webkitRequestFullscreen();
+    //     //}
+    // }
+  }
+
+  exitFullscreen(){
+    this.template.querySelector('.parent').classList.remove('overlay-slide-down');
+    this.template.querySelector('.parent').classList.add('overlay-slide-up');
+    this.paginatedModal = false;
+  }
+
   getElementById(data, id) {
     var object = {};
     for (let i = 0; i < data.length; i++) {
@@ -98,10 +158,13 @@ export default class ManagerUserProfile extends LightningElement {
   }
 
   connectedCallback() {
+    const showIsTeam = this.getUrlParamValue(window.location.href, "showteam");
+    let team = showIsTeam === "false" ? false : true;
     getAllDriversLastMonthUnapprovedReimbursementsclone({
       accountId: this.accountId,
       contactId: this.contactId,
-      showTeam: false
+      showTeam: team,
+      role: this.role
     })
       .then((data) => {
         let result = data.replace(/\\'/g, "'");
@@ -128,7 +191,8 @@ export default class ManagerUserProfile extends LightningElement {
     myTeamDetails({
       managerId: this.contactId,
       accountId: this.accountId,
-      showteam: false
+      showteam: team,
+      role: this.role
     })
       .then((data) => {
         let result = data.replace(/\\'/g, "'");
@@ -136,7 +200,7 @@ export default class ManagerUserProfile extends LightningElement {
         this.driverIsMyteam = this.myTeamList.length > 0 ? true : false;
         if (this.myTeamList) {
           this.driverTeamVisibleList =
-            this.myTeamList.length > 7
+            this.myTeamList.length > 12
               ? this.myTeamList.slice(0, 12)
               : this.myTeamList;
         }
@@ -148,14 +212,26 @@ export default class ManagerUserProfile extends LightningElement {
 
       highRiskDriversDetails({
        managerId: this.contactId,
-       highMileage: true
+       accountId: this.accountId,
+       highMileage: true,
+       showTeam: team,
+       role: this.role
       })
       .then((data) => {
-        let result = data.replace(/\\'/g, "'");
-        console.log("highMileageDriversDetails List---", data);
-        this.highMileageDriverList = this.proxyToObject(result);
-        this.driverIsHighMileage =
-          this.highMileageDriverList.length > 0 ? true : false;
+        if(data !== 'No Trips Found More than 250 miles for this contact'){
+          let result = data.replace(/\\'/g, "'");
+          this.highMileageDriverList = this.proxyToObject(result);
+          this.driverIsHighMileage =
+            this.highMileageDriverList.length > 0 ? true : false;
+            if (this.highMileageDriverList) {
+              this.driverMileageList =
+                this.highMileageDriverList.length > 7
+                  ? this.highMileageDriverList.slice(0, 7)
+                  : this.highMileageDriverList;
+            }  
+        }
+
+        console.log("highMileageDriversDetails List---", data, team);
        
       })
       .catch((error) => {
@@ -164,15 +240,25 @@ export default class ManagerUserProfile extends LightningElement {
 
       highRiskDriversDetails({
         managerId: this.contactId,
-        highMileage: false
+        accountId: this.accountId,
+        highMileage: false,
+        showTeam: team,
+        role: this.role
       })
       .then((data) => {
-        let result = data.replace(/\\'/g, "'");
+        if(data !== 'No Trips Found More than 250 miles for this contact'){
+          let result = data.replace(/\\'/g, "'");
+          this.highRiskMileageDriverList = this.proxyToObject(result);
+          this.driverIsHighRisk =
+            this.highRiskMileageDriverList.length > 0 ? true : false;
+            if (this.highRiskMileageDriverList) {
+              this.driverRiskList =
+                this.highRiskMileageDriverList.length > 12
+                  ? this.highRiskMileageDriverList.slice(0, 12)
+                  : this.highRiskMileageDriverList;
+            }
+        }
         console.log("highRiskDriversDetails List---", data);
-        this.highRiskMileageDriverList = this.proxyToObject(result);
-        this.driverIsHighRisk =
-          this.highRiskMileageDriverList.length > 0 ? true : false;
-     
       })
       .catch((error) => {
         console.log("highRiskDriversDetails error", error);
@@ -257,7 +343,7 @@ export default class ManagerUserProfile extends LightningElement {
   }
 
   handleClose(event) {
-    var eId = event.target.dataset.id;
+    var eId = event.currentTarget.dataset.id;
     this.dispatchEvent(
         new CustomEvent("close", {
           detail: eId

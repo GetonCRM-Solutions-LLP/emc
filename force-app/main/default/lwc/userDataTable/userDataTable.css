@@ -108,10 +108,19 @@
     font-family: 'Proxima Nova';
 }
 
+.slds-table tr.rejected {
+    border-top: 2px solid var(--even-row-color);
+    border-bottom: 2px solid var(--even-row-color);
+}
+
 .slds-table tr.rejected .modal-content {
     color: var(--red-color) !important;
-    font-weight: 700 !important;
-    font-family: 'Proxima Nova';
+    font-family: 'Proxima Nova' !important;
+}
+
+
+.slds-table tr.rejected>td {
+    background-color: rgba(250, 120, 0, 0.2) !important;
 }
 
 .model-content.download-td {
@@ -166,13 +175,13 @@
 
 .slds-scrollable_y::-webkit-scrollbar {
     width: 5px;
-    height: 50px;
+    height: 5px;
     background-color: var(--scroll-color);
 }
 
 .slds-scrollable_y::-webkit-scrollbar-thumb {
     border-radius: 100px;
-    height: 50px;
+    height: 5px;
     background-color: var(--active-color)
 }
 

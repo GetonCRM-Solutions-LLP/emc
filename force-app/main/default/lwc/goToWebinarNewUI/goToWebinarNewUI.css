@@ -9,6 +9,11 @@
     color: #7ABB4A;
     font-weight: bold;
 }
+
+.required-p{
+    color: #fa7800;
+    font-size: 13px;
+}
 /* .step_no{
     font-weight: bold;
 } */
@@ -38,13 +43,30 @@
     --sds-c-button-text-color: white;
     --slds-c-button-brand-color-border : #7ABB4A !important;
     --slds-c-button-radius-border : 10px;
+    --slds-c-button-spacing-block-end: 6px;
+    --slds-c-button-spacing-block-start: 6px;
+    --slds-c-button-brand-spacing-inline-end: 58px;
+    --slds-c-button-brand-spacing-inline-start: 58px;
+    --slds-c-button-color-background-active: #7abb4a !important;
+    --slds-c-button-brand-color-background-hover: #7abb4a !important;
+    --slds-c-button-color-border-hover: #7abb4a !important;
+    font-size: 14px !important;
+    font-family: 'Proxima Nova Bold' !important;
 }
 .button2{
     --sds-c-button-text-color: #7ABB4A;
     --slds-c-button-outline-brand-color-border : #7ABB4A !important;
+    --slds-c-button-color-background-active: #fff !important;
+    --slds-c-button-color-background-hover: #fff !important;
+    font-size: 14px !important;
+    font-family: 'Proxima Nova Bold' !important;
     margin-top: 8px;
     margin-bottom: 8px;
     --slds-c-button-radius-border : 10px;
+    --slds-c-button-spacing-block-end: 6px;
+    --slds-c-button-spacing-block-start: 6px;
+    --slds-c-button-outline-brand-spacing-inline-end: 30px;
+    --slds-c-button-outline-brand-spacing-inline-start: 30px;
 }
 .button3{
     --sds-c-button-text-color: #7ABB4A;
@@ -58,7 +80,9 @@
     color: black;
 }
 .field_label{
-    -webkit-text-fill-color: black;
+    --lwc-colorTextLabel: #1d1d1d;
+    --lwc-formLabelFontSize: 14px;
+    --lwc-colorBorderError: #fa7800;
 }
 .second{
     margin:0 auto; 

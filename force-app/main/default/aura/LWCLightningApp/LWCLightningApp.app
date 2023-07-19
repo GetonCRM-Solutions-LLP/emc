@@ -10,4 +10,5 @@
     <aura:dependency resource="c:driverDashboardFrame"/>
     <aura:dependency resource="c:adminDashboardFrame"/>
     <aura:dependency resource="c:managerDashboardFrame"/>
+    <aura:dependency resource="c:onboardingPlanInfo" />
 </aura:application>

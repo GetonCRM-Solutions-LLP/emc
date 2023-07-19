@@ -6,42 +6,43 @@
                     <tr class="slds-line-height_reset">
                         <template if:true={columns}>
                             <template for:each={columns} for:item="head">
-                                <th class="header-title" scope="col" key={head.id}>
-                                    <template if:true={isSortable}>
-                                        <div class="head-title" onclick={sort} title={head.name}
-                                            data-name={head.colName} data-type={head.colType}>
-                                            <a data-name={head.colName} data-type={head.colType} class="head-sort">
-                                                {head.name}
-                                                <template if:false={norecord}>
-                                                    <span class="sort-container">
-                                                        <i class="fa-solid fa-sort-up green_icon"
-                                                            data-name={head.colName} data-type={head.colType}></i>
-                                                        <i class="fa-solid fa-sort-down green_icon"
-                                                            data-name={head.colName} data-type={head.colType}></i>
-                                                        <i class="fa-solid fa-sort-up sort_icon"
-                                                            data-name={head.colName} data-type={head.colType}
-                                                            if:false={head.arrUp}></i>
-                                                        <i class="fa-solid fa-sort-down sort_icon"
-                                                            data-name={head.colName} data-type={head.colType}
-                                                            if:false={head.arrDown}></i>
-                                                    </span>
-                                                </template>
-                                            </a>
-                                        </div>
-                                    </template>
-                                    <template if:false={isSortable}>
-                                        <div class="head-title" title={head.name}>
-                                            <a data-name={head.colName} data-type={head.colType} class="head-sort">
-                                                {head.name}
-                                            </a>
-                                            <span></span>
-                                        </div>
-                                    </template>
-                                </th>
+                                    <th class="header-title" scope="col" key={head.id}>
+                                        <template if:true={isSortable}>
+                                            <div class="head-title" onclick={sort} title={head.name}
+                                                data-name={head.colName} data-type={head.colType}>
+                                                <a data-name={head.colName} data-type={head.colType} class="head-sort">
+                                                    {head.name}
+                                                    <template if:false={norecord}>
+                                                        <span class="sort-container">
+                                                            <i class="fa-solid fa-sort-up green_icon"
+                                                                data-name={head.colName} data-type={head.colType}></i>
+                                                            <i class="fa-solid fa-sort-down green_icon"
+                                                                data-name={head.colName} data-type={head.colType}></i>
+                                                            <i class="fa-solid fa-sort-up sort_icon"
+                                                                data-name={head.colName} data-type={head.colType}
+                                                                if:false={head.arrUp}></i>
+                                                            <i class="fa-solid fa-sort-down sort_icon"
+                                                                data-name={head.colName} data-type={head.colType}
+                                                                if:false={head.arrDown}></i>
+                                                        </span>
+                                                    </template>
+                                                </a>
+                                            </div>
+                                        </template>
+                                        <template if:false={isSortable}>
+                                            <div class="head-title" title={head.name}>
+                                                <a data-name={head.colName} data-type={head.colType} class="head-sort">
+                                                    {head.name}
+                                                </a>
+                                                <span></span>
+                                            </div>
+                                        </template>
+                                    </th>
                             </template>
-                            <template if:true={rowDownload}>
+
+                        </template>
+                        <template if:true={rowDownload}>
                                 <th class="download-th"></th>
-                            </template>
                         </template>
                     </tr>
                 </thead>
@@ -342,34 +343,63 @@
                                 <thead class="">
                                     <tr class="slds-line-height_reset">
                                         <template if:true={columns}>
-                                            <template for:each={columns} for:item="head">
-                                                <th class={headTh} scope="col" key={head.id}>
-                                                    <template if:true={isSortable}>
-                                                        <div class="slds-cell-fixed" onclick={sort} title={head.name}
-                                                            data-name={head.colName} data-type={head.colType}>
-                                                            <a data-name={head.colName} data-type={head.colType}
-                                                                class="head-sort">
-                                                                {head.name}
-                                                                <template if:false={norecord}>
-                                                                    <span class={sortTh}>
-                                                                        <i class="fa-solid fa-sort-up green_icon"
-                                                                            data-name={head.colName}
-                                                                            data-type={head.colType}></i>
-                                                                        <i class="fa-solid fa-sort-down green_icon"
-                                                                            data-name={head.colName}
-                                                                            data-type={head.colType}></i>
-                                                                        <i class="fa-solid fa-sort-up sort_icon"
-                                                                            data-name={head.colName}
-                                                                            data-type={head.colType}
-                                                                            if:false={head.arrUp}></i>
-                                                                        <i class="fa-solid fa-sort-down sort_icon"
-                                                                            data-name={head.colName}
-                                                                            data-type={head.colType}
-                                                                            if:false={head.arrDown}></i>
-                                                                    </span>
-                                                                </template>
-                                                            </a>
+                                            <template if:true={isCheckBoxVisible}>
+                                                <th  class="header-checkbox">
+                                                    <div class="checkbox-toggle select-all-checkbox slds-cell-fixed slds-m-top_small">
+                                                        <div class="slds-checkbox">
+                                                        <input type="checkbox"   id="selectAll"   onchange={handleSelectAll} class="checkbox-input" >
+                                                        <label class="slds-checkbox__label" for="selectAll">
+                                                            <span class="slds-checkbox_faux"></span>
+                                                        </label> 
                                                         </div>
+                                                    </div>
+                                                </th>
+                                            </template>
+                                            <template for:each={columns} for:item="head">
+                                                <th class={headTh} style={head.style} scope="col" key={head.id}>
+                                                    <template if:true={isSortable}>
+                                                        <template if:true={head.isCheckBox}>
+                                                            <div class="slds-cell-fixed">
+                                                                <input type="checkbox"  class="checkbox-input" data-id={mapKey.id} >
+                                                            </div>
+                                                        </template>
+                                                        <template if:false={head.isCheckBox}>
+                                                            <template if:false={head.sort}>
+                                                             <div class="slds-cell-fixed" onclick={sort} title={head.name}
+                                                                data-name={head.colName} data-type={head.colType}>
+                                                                <a data-name={head.colName} data-type={head.colType}
+                                                                    class="head-sort">
+                                                                    {head.name}
+                                                                    <template if:false={norecord}>
+                                                                        <span class={sortTh}>
+                                                                            <i class="fa-solid fa-sort-up green_icon"
+                                                                                data-name={head.colName}
+                                                                                data-type={head.colType}></i>
+                                                                            <i class="fa-solid fa-sort-down green_icon"
+                                                                                data-name={head.colName}
+                                                                                data-type={head.colType}></i>
+                                                                            <i class="fa-solid fa-sort-up sort_icon"
+                                                                                data-name={head.colName}
+                                                                                data-type={head.colType}
+                                                                                if:false={head.arrUp}></i>
+                                                                            <i class="fa-solid fa-sort-down sort_icon"
+                                                                                data-name={head.colName}
+                                                                                data-type={head.colType}
+                                                                                if:false={head.arrDown}></i>
+                                                                        </span>
+                                                                    </template>
+                                                                </a>
+                                                             </div>
+                                                            </template>
+                                                            <template if:true={head.sort}>
+                                                                <div class="slds-cell-fixed" title={head.name}>
+                                                                    <a data-name={head.colName} data-type={head.colType}
+                                                                        class="head-sort">
+                                                                        {head.name}
+                                                                    </a>
+                                                                </div>
+                                                            </template>
+                                                        </template>
                                                     </template>
                                                     <template if:false={isSortable}>
                                                         <div class="slds-cell-fixed" title={head.name}>
@@ -393,47 +423,58 @@
                                     <template if:true={pagedData}>
                                         <template for:each={pagedData} for:item="trip">
                                             <tr key={trip.id} class={trip.rejectedClass}>
+                                                <template if:true={isCheckBoxVisible}>
+                                                    <td class="model-content">
+                                                        <div class="checkbox-toggle">
+                                                            <div class="slds-checkbox">
+                                                                <input type="checkbox" checked={trip.isChecked} id={trip.id} onclick={checkboxHandler} class="checkbox-input" data-id={trip.id} />
+                                                                <label class="slds-checkbox__label" for={trip.id}>
+                                                                    <span class="slds-checkbox_faux"></span>
+                                                                </label> 
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                </template>
                                                 <template for:each={trip.keyFields} for:item="mapKey">
-                                                    <template if:true={mapKey.onlyLink}>
-                                                        <template if:true={mapKey.isLink}>
+                                                    <template if:true={mapKey.onlyIcon}>
+                                                        <template if:true={mapKey.multipleIcon}>
+                                                                <td class="modal-content" key={mapKey.key}>
+                                                                    <template for:each={mapKey.multipleIcon} for:item="icon">
+                                                                        <svg style="margin-right: 14px;" height="20" data-id={trip.id} key={icon.key} data-key={icon.key} onclick={handleMultipleIcon} width="20" xmlns="http://www.w3.org/2000/svg">
+                                                                            <use xlink:href={icon.iconUrl}></use>
+                                                                        </svg>
+                                                                    </template>
+                                                                </td>
+                                                        </template>
+                                                        <template if:false={mapKey.multipleIcon}>
                                                             <td class="modal-content" key={mapKey.key}>
-                                                                <a class="linked" onclick={linkHandler} data-id={mapKey.uId}>{mapKey.value}</a>
+                                                                <svg style="margin-left: 20px;" height="20" data-id={trip.id} data-key={mapKey.key}  onclick={handleIcon} width="20" xmlns="http://www.w3.org/2000/svg">
+                                                                    <use xlink:href={mapKey.iconUrl}></use>
+                                                                </svg>
                                                             </td>
                                                         </template>
                                                     </template>
-                                                    <template if:false={mapKey.onlyLink}>
-                                                        <template if:true={mapKey.isLink}>
-                                                            <td class="modal-content" key={mapKey.key}>
-                                                                <template lwc:if={mapKey.isProcess}>
-                                                                    <a  class="linked" onclick={modalHandler} data-id={mapKey.uId}>{mapKey.value}</a>
-                                                                </template>
-                                                                <template lwc:else>
-                                                                    <a  class="linked" onclick={linkHandler} data-id={mapKey.uId}>{mapKey.value}</a>
-                                                                </template>
-                                                            </td>
-                                                        </template>
-                                                        <template if:false={mapKey.isLink}>
-                                                            <template if:true={mapKey.istwoDecimalCurrency}>
-                                                                <template if:true={mapKey.hasLeadingZero}>
-                                                                    <td class="modal-content" key={mapKey.key}
-                                                                        if:false={mapKey.bold}>
-                                                                        ${mapKey.hasLeadingZero}
-                                                                    </td>
-                                                                    <td class="modal-content bold-text" key={mapKey.key}
-                                                                        if:true={mapKey.bold}>
-                                                                        ${mapKey.hasLeadingZero}
-                                                                    </td>
-                                                                </template>
-                                                                <template if:false={mapKey.hasLeadingZero}>
-                                                                    <td class="modal-content" key={mapKey.key}>
-                                                                        <lightning-formatted-number value={mapKey.value}
-                                                                            format-style="currency" currency-code="USD"
-                                                                            minimum-fraction-digits="2">
-                                                                        </lightning-formatted-number></td>
-                                                                </template>
+                                                    <template if:false={mapKey.onlyIcon}>
+                                                        <template if:true={mapKey.onlyLink}>
+                                                            <template if:true={mapKey.isLink}>
+                                                                <td class="modal-content" key={mapKey.key}>
+                                                                    <a class="linked" onclick={linkHandler} data-id={mapKey.uId}>{mapKey.value}</a>
+                                                                </td>
                                                             </template>
-                                                            <template if:false={mapKey.istwoDecimalCurrency}>
-                                                                <template if:true={mapKey.isfourDecimalCurrency}>
+                                                        </template>
+                                                        <template if:false={mapKey.onlyLink}>
+                                                            <template if:true={mapKey.isLink}>
+                                                                <td class="modal-content" key={mapKey.key}>
+                                                                    <template lwc:if={mapKey.isProcess}>
+                                                                        <a  class="linked" onclick={modalHandler} data-id={mapKey.uId}>{mapKey.value}</a>
+                                                                    </template>
+                                                                    <template lwc:else>
+                                                                        <a  class="linked" onclick={linkHandler} data-id={mapKey.uId}>{mapKey.value}</a>
+                                                                    </template>
+                                                                </td>
+                                                            </template>
+                                                            <template if:false={mapKey.isLink}>
+                                                                <template if:true={mapKey.istwoDecimalCurrency}>
                                                                     <template if:true={mapKey.hasLeadingZero}>
                                                                         <td class="modal-content" key={mapKey.key}
                                                                             if:false={mapKey.bold}>
@@ -448,95 +489,137 @@
                                                                         <td class="modal-content" key={mapKey.key}>
                                                                             <lightning-formatted-number value={mapKey.value}
                                                                                 format-style="currency" currency-code="USD"
-                                                                                minimum-fraction-digits="4">
+                                                                                minimum-fraction-digits="2">
                                                                             </lightning-formatted-number></td>
                                                                     </template>
                                                                 </template>
-                                                                <template if:false={mapKey.isfourDecimalCurrency}>
-                                                                    <template if:true={mapKey.twoDecimal}>
+                                                                <template if:false={mapKey.istwoDecimalCurrency}>
+                                                                    <template if:true={mapKey.isfourDecimalCurrency}>
                                                                         <template if:true={mapKey.hasLeadingZero}>
                                                                             <td class="modal-content" key={mapKey.key}
                                                                                 if:false={mapKey.bold}>
-                                                                                {mapKey.hasLeadingZero}
+                                                                                ${mapKey.hasLeadingZero}
                                                                             </td>
                                                                             <td class="modal-content bold-text" key={mapKey.key}
                                                                                 if:true={mapKey.bold}>
-                                                                                {mapKey.hasLeadingZero}
+                                                                                ${mapKey.hasLeadingZero}
                                                                             </td>
                                                                         </template>
                                                                         <template if:false={mapKey.hasLeadingZero}>
                                                                             <td class="modal-content" key={mapKey.key}>
                                                                                 <lightning-formatted-number value={mapKey.value}
-                                                                                    minimum-fraction-digits="2">
+                                                                                    format-style="currency" currency-code="USD"
+                                                                                    minimum-fraction-digits="4">
                                                                                 </lightning-formatted-number></td>
                                                                         </template>
                                                                     </template>
-                                                                    <template if:false={mapKey.twoDecimal}>
-                                                                        <template if:true={mapKey.icon}>
-                                                                            <td class="modal-content flex-row" key={mapKey.key}
-                                                                                data-name={mapKey.value}>
-                                                                                <div if:true={mapKey.icon} class="navigate-text navigate">
-                                                                                    {mapKey.value}
-                                                                                </div>
-                                                                                <!-- <div if:true={mapKey.icon}
-                                                                                    class="slds-m-top_xx-small slds-m-right_small icon-holder">
-                                                                                    <i
-                                                                                        class="fas fa-xs fa-chevron-right navigate"></i>
-                                                                                </div>{mapKey.value} -->
-                                                                            </td>
-                                                                        </template>
-                                                                        <template if:false={mapKey.icon}>
-                                                                            <template if:true={mapKey.isDate}>
-                                                                                <td class="modal-content" key={mapKey.key}>
-                                                                                    <template if:true={mapKey.isIcon}>
-                                                                                        <div>
-                                                                                            <div class="slds-m-top_xx-small slds-m-right_small icon-holder">
-                                                                                            </div>
-                                                                                            <div class="navigate-text navigate" data-id={mapKey.id}>
-                                                                                                <lightning-formatted-date-time value={mapKey.value}
-                                                                                                    year="2-digit" month="2-digit" day="2-digit">
-                                                                                                </lightning-formatted-date-time>
-                                                                                            </div>
-                                                                                        </div>
-                                                                                    </template>
-                                                                                    <template if:false={mapKey.isIcon}>
-                                                                                        <lightning-formatted-date-time value={mapKey.value}
-                                                                                            year="2-digit" month="2-digit" day="2-digit">
-                                                                                        </lightning-formatted-date-time>
-                                                                                    </template>
+                                                                    <template if:false={mapKey.isfourDecimalCurrency}>
+                                                                        <template if:true={mapKey.twoDecimal}>
+                                                                            <template if:true={mapKey.hasLeadingZero}>
+                                                                                <td class="modal-content" key={mapKey.key}
+                                                                                    if:false={mapKey.bold}>
+                                                                                    {mapKey.hasLeadingZero}
+                                                                                </td>
+                                                                                <td class="modal-content bold-text" key={mapKey.key}
+                                                                                    if:true={mapKey.bold}>
+                                                                                    {mapKey.hasLeadingZero}
                                                                                 </td>
                                                                             </template>
-                                                                            <template if:false={mapKey.isDate}>
-                                                                                <template if:true={mapKey.tooltip}>
-                                                                                    <template if:true={mapKey.truncate}>
-                                                                                        <td class="modal-content tooltipText"
-                                                                                            key={mapKey.key}>
-                                                                                            <div class="slds-truncate"
-                                                                                                style="width: 10rem;">{mapKey.value}
-                                                                                            </div><span class="tooltipValue">
-                                                                                                <div if:true={mapKey.tIcon}><img
-                                                                                                        src={mapKey.tooltipIcon} />
-                                                                                                </div>{mapKey.tooltipText}
-                                                                                            </span>
-                                                                                        </td>
-                                                                                    </template>
-                                                                                    <template if:false={mapKey.truncate}>
-                                                                                        <td class="modal-content tooltipText"
-                                                                                            key={mapKey.key}>{mapKey.value}<span
-                                                                                                class="tooltipValue">
-                                                                                            <!--style="display: grid;
-                                                                                                grid-column: 2;
-                                                                                                grid-template-columns: 1fr 8fr;"-->
-                                                                                                <div>
-                                                                                                    <img class="icon-tooltip" if:true={mapKey.tIcon} src={mapKey.tooltipIcon} />
-                                                                                                    <p style="overflow: auto;">{mapKey.tooltipText}</p>
-                                                                                                </div>
-                                                                                            </span></td>
-                                                                                    </template>
-                                                                                </template>
-                                                                                <template if:false={mapKey.tooltip}>
+                                                                            <template if:false={mapKey.hasLeadingZero}>
+                                                                                <td class="modal-content" key={mapKey.key}>
+                                                                                    <lightning-formatted-number value={mapKey.value}
+                                                                                        minimum-fraction-digits="2">
+                                                                                    </lightning-formatted-number></td>
+                                                                            </template>
+                                                                        </template>
+                                                                        <template if:false={mapKey.twoDecimal}>
+                                                                            <template if:true={mapKey.icon}>
+                                                                                <td class="modal-content flex-row" key={mapKey.key}
+                                                                                    data-name={mapKey.value}>
+                                                                                    <div if:true={mapKey.icon} class="navigate-text navigate">
+                                                                                        {mapKey.value}
+                                                                                    </div>
+                                                                                    <!-- <div if:true={mapKey.icon}
+                                                                                        class="slds-m-top_xx-small slds-m-right_small icon-holder">
+                                                                                        <i
+                                                                                            class="fas fa-xs fa-chevron-right navigate"></i>
+                                                                                    </div>{mapKey.value} -->
+                                                                                </td>
+                                                                            </template>
+                                                                            <template if:false={mapKey.icon}>
+                                                                                <template if:true={mapKey.isDate}>
                                                                                     <td class="modal-content" key={mapKey.key}>
-                                                                                        {mapKey.value}</td>
+                                                                                        <template if:true={mapKey.isIcon}>
+                                                                                            <div>
+                                                                                                <div class="slds-m-top_xx-small slds-m-right_small icon-holder">
+                                                                                                </div>
+                                                                                                <div class="navigate-text navigate" data-id={mapKey.id}>
+                                                                                                    <lightning-formatted-date-time value={mapKey.value}
+                                                                                                        year="2-digit" month="2-digit" day="2-digit">
+                                                                                                    </lightning-formatted-date-time>
+                                                                                                </div>
+                                                                                            </div>
+                                                                                        </template>
+                                                                                        <template if:false={mapKey.isIcon}>
+                                                                                            <lightning-formatted-date-time value={mapKey.value}
+                                                                                                year="2-digit" month="2-digit" day="2-digit">
+                                                                                            </lightning-formatted-date-time>
+                                                                                        </template>
+                                                                                    </td>
+                                                                                </template>
+                                                                                <template if:false={mapKey.isDate}>
+                                                                                    <template if:true={mapKey.tooltip}>
+                                                                                        <template if:true={mapKey.truncate}>
+                                                                                            <td class="modal-content tooltipText"
+                                                                                                key={mapKey.key}>
+                                                                                                <!-- style="width: 10rem;"-->
+                                                                                                <div class="slds-truncate"
+                                                                                                   >{mapKey.value}
+                                                                                                </div>
+                                                                                                <template if:true={mapKey.cIcon}>
+                                                                                                    <span class="tooltipValue">
+                                                                                                        {mapKey.tooltipText}
+                                                                                                        <div style="cursor:pointer" data-id={trip.id} onclick={handleConditionalIcon}>
+                                                                                                            <svg  height="20" width="20" xmlns="http://www.w3.org/2000/svg">
+                                                                                                                <use xlink:href={mapKey.tooltipIcon}></use>
+                                                                                                            </svg>
+                                                                                                            {mapKey.infoText}
+                                                                                                        </div>
+                                                                                                    </span>
+                                                                                                </template>
+                                                                                                <template if:false={mapKey.cIcon}>
+                                                                                                    <span class="tooltipValue">
+                                                                                                        <div if:true={mapKey.tIcon}><img
+                                                                                                                src={mapKey.tooltipIcon} />
+                                                                                                        </div>{mapKey.tooltipText}
+                                                                                                    </span>
+                                                                                                </template>
+                                                                                            </td>
+                                                                                        </template>
+                                                                                        <template if:false={mapKey.truncate}>
+                                                                                            <td class="modal-content tooltipText"
+                                                                                                key={mapKey.key}>{mapKey.value}<span
+                                                                                                    class="tooltipValue">
+                                                                                                <!--style="display: grid;
+                                                                                                    grid-column: 2;
+                                                                                                    grid-template-columns: 1fr 8fr;"-->
+                                                                                                    <div>
+                                                                                                        <img class="icon-tooltip" if:true={mapKey.tIcon} src={mapKey.tooltipIcon} />
+                                                                                                        <p style="overflow: auto;">{mapKey.tooltipText}</p>
+                                                                                                    </div>
+                                                                                                </span></td>
+                                                                                        </template>
+                                                                                    </template>
+                                                                                    <template if:false={mapKey.tooltip}>
+                                                                                        <template if:true={mapKey.isLabel}>
+                                                                                            <td class="modal-content" key={mapKey.key}>
+                                                                                                <div class={mapKey.labelClass}>{mapKey.value}</div></td>
+                                                                                        </template>
+                                                                                        <template if:false={mapKey.isLabel}>
+                                                                                            <td class="modal-content" key={mapKey.key}>
+                                                                                                {mapKey.value}</td>
+                                                                                        </template>
+                                                                                    </template>
                                                                                 </template>
                                                                             </template>
                                                                         </template>
@@ -733,40 +816,52 @@
                         <table class={tableClass}
                             id="tableEditSel">
                             <thead class="">
-                                <tr class="slds-line-height_reset">
+                                <tr class="slds-line-height_reset ">
                                     <template if:true={columns}>
+                                        <template if:true={isCheckBoxVisible}>
+                                            <th  class="header-checkbox">
+                                                <div class="checkbox-toggle select-all-checkbox slds-cell-fixed slds-m-top_small">
+                                                    <div class="slds-checkbox">
+                                                    <input type="checkbox" data-id="selectAll-edit"  id="selectAll-edit" onchange={handleSelectAll} class="checkbox-input selectAll-edit" >
+                                                    <label class="slds-checkbox__label" for="selectAll-edit">
+                                                        <span class="slds-checkbox_faux"></span>
+                                                    </label> 
+                                                    </div>
+                                                </div>
+                                            </th>
+                                        </template>
                                         <template for:each={columns} for:item="head">
                                             <th class={headTh} scope="col" key={head.id}>
                                                 <template if:true={isSortable}>
-                                                    <div class="slds-cell-fixed" onclick={sort} title={head.name}
+                                                        <div class="slds-cell-fixed" onclick={sort} title={head.name}
                                                         data-name={head.colName} data-type={head.colType}>
-                                                        <a data-name={head.colName} data-type={head.colType}
-                                                            class="head-sort">
-                                                            {head.name}
-                                                            <template if:false={norecord}>
-                                                                <span class={sortTh}>
-                                                                    <i class="fa-solid fa-sort-up green_icon"
-                                                                        data-name={head.colName}
-                                                                        data-type={head.colType}></i>
-                                                                    <i class="fa-solid fa-sort-down green_icon"
-                                                                        data-name={head.colName}
-                                                                        data-type={head.colType}></i>
-                                                                    <i class="fa-solid fa-sort-up sort_icon"
-                                                                        data-name={head.colName}
-                                                                        data-type={head.colType}
-                                                                        if:false={head.arrUp}></i>
-                                                                    <i class="fa-solid fa-sort-down sort_icon"
-                                                                        data-name={head.colName}
-                                                                        data-type={head.colType}
-                                                                        if:false={head.arrDown}></i>
-                                                                </span>
-                                                            </template>
-                                                        </a>
-                                                    </div>
-                                                </template>
-                                                <template if:false={isSortable}>
-                                                    <div class="slds-cell-fixed" title={head.name}>
-                                                        <a data-name={head.colName} data-type={head.colType}
+                                                            <a data-name={head.colName} data-type={head.colType}
+                                                                class="head-sort">
+                                                                {head.name}
+                                                                <template if:false={norecord}>
+                                                                    <span class={sortTh}>
+                                                                        <i class="fa-solid fa-sort-up green_icon"
+                                                                            data-name={head.colName}
+                                                                            data-type={head.colType}></i>
+                                                                        <i class="fa-solid fa-sort-down green_icon"
+                                                                            data-name={head.colName}
+                                                                            data-type={head.colType}></i>
+                                                                        <i class="fa-solid fa-sort-up sort_icon"
+                                                                            data-name={head.colName}
+                                                                            data-type={head.colType}
+                                                                            if:false={head.arrUp}></i>
+                                                                        <i class="fa-solid fa-sort-down sort_icon"
+                                                                            data-name={head.colName}
+                                                                            data-type={head.colType}
+                                                                            if:false={head.arrDown}></i>
+                                                                    </span>
+                                                                </template>
+                                                            </a>
+                                                        </div>
+                                                    </template>
+                                                    <template if:false={isSortable}>
+                                                        <div class="slds-cell-fixed" title={head.name}>
+                                                            <a data-name={head.colName} data-type={head.colType}
                                                             class="head-sort">
                                                             {head.name}
                                                         </a>
@@ -781,28 +876,20 @@
                                 <template if:true={pagedData}>
                                     <template for:each={pagedData} for:item="trip">
                                         <tr key={trip.id} class="edit-mode" data-id={trip.id} onclick={handleEditMode}>
+                                            <template if:true={isCheckBoxVisible}>
+                                                <td class="model-content"  onclick={preventEdit}>
+                                                    <div class="checkbox-toggle">
+                                                        <div class="slds-checkbox">
+                                                            <input type="checkbox" id={trip.id} data-input-type="checkbox" checked={trip.isChecked} data-name="checkbox" onchange={checkboxHandler} class="checkbox-input" data-id={trip.id} />
+                                                            <label class="slds-checkbox__label" for={trip.id}>
+                                                                <span class="slds-checkbox_faux"></span>
+                                                            </label> 
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                            </template>
                                             <template for:each={trip.keyFields} for:item="mapKey">
-                                                <template if:true={mapKey.istwoDecimalCurrency}>
-                                                    <template if:true={mapKey.hasLeadingZero}>
-                                                        <td class="modal-content" key={mapKey.key}
-                                                            if:false={mapKey.bold}>
-                                                            ${mapKey.hasLeadingZero}
-                                                        </td>
-                                                        <td class="modal-content bold-text" key={mapKey.key}
-                                                            if:true={mapKey.bold}>
-                                                            ${mapKey.hasLeadingZero}
-                                                        </td>
-                                                    </template>
-                                                    <template if:false={mapKey.hasLeadingZero}>
-                                                        <td class="modal-content" key={mapKey.key}>
-                                                            <lightning-formatted-number value={mapKey.value}
-                                                                format-style="currency" currency-code="USD"
-                                                                minimum-fraction-digits="2">
-                                                            </lightning-formatted-number></td>
-                                                    </template>
-                                                </template>
-                                                <template if:false={mapKey.istwoDecimalCurrency}>
-                                                    <template if:true={mapKey.isfourDecimalCurrency}>
+                                                    <template if:true={mapKey.istwoDecimalCurrency}>
                                                         <template if:true={mapKey.hasLeadingZero}>
                                                             <td class="modal-content" key={mapKey.key}
                                                                 if:false={mapKey.bold}>
@@ -817,91 +904,162 @@
                                                             <td class="modal-content" key={mapKey.key}>
                                                                 <lightning-formatted-number value={mapKey.value}
                                                                     format-style="currency" currency-code="USD"
-                                                                    minimum-fraction-digits="4">
+                                                                    minimum-fraction-digits="2">
                                                                 </lightning-formatted-number></td>
                                                         </template>
                                                     </template>
-                                                    <template if:false={mapKey.isfourDecimalCurrency}>
-                                                        <template if:true={mapKey.twoDecimal}>
+                                                    <template if:false={mapKey.istwoDecimalCurrency}>
+                                                        <template if:true={mapKey.isfourDecimalCurrency}>
                                                             <template if:true={mapKey.hasLeadingZero}>
                                                                 <td class="modal-content" key={mapKey.key}
                                                                     if:false={mapKey.bold}>
-                                                                    {mapKey.hasLeadingZero}
+                                                                    ${mapKey.hasLeadingZero}
                                                                 </td>
                                                                 <td class="modal-content bold-text" key={mapKey.key}
                                                                     if:true={mapKey.bold}>
-                                                                    {mapKey.hasLeadingZero}
+                                                                    ${mapKey.hasLeadingZero}
                                                                 </td>
                                                             </template>
                                                             <template if:false={mapKey.hasLeadingZero}>
                                                                 <td class="modal-content" key={mapKey.key}>
                                                                     <lightning-formatted-number value={mapKey.value}
-                                                                        minimum-fraction-digits="2">
+                                                                        format-style="currency" currency-code="USD"
+                                                                        minimum-fraction-digits="4">
                                                                     </lightning-formatted-number></td>
                                                             </template>
                                                         </template>
-                                                        <template if:false={mapKey.twoDecimal}>
-                                                            <template if:true={mapKey.icon}>
-                                                                <td class="modal-content flex-row" key={mapKey.key}
-                                                                    data-name={mapKey.value}>
-                                                                    <div if:true={mapKey.icon} class="navigate-text navigate">
-                                                                        {mapKey.value}
-                                                                    </div>
-                                                                    <!-- <div if:true={mapKey.icon}
-                                                                        class="slds-m-top_xx-small slds-m-right_small icon-holder">
-                                                                        <i
-                                                                            class="fas fa-xs fa-chevron-right navigate"></i>
-                                                                    </div>{mapKey.value} -->
-                                                                </td>
-                                                            </template>
-                                                            <template if:false={mapKey.icon}>
-                                                                <template if:true={mapKey.isDate}>
-                                                                    <td class="modal-content" key={mapKey.key}>
-                                                                        <template if:true={mapKey.isIcon}>
-                                                                        </template>
-                                                                        <template if:false={mapKey.isIcon}>
-                                                                            <lightning-formatted-date-time value={mapKey.value}
-                                                                              year="2-digit" month="2-digit" day="2-digit">
-                                                                            </lightning-formatted-date-time>
-                                                                        </template>
+                                                        <template if:false={mapKey.isfourDecimalCurrency}>
+                                                            <template if:true={mapKey.twoDecimal}>
+                                                                <template if:true={mapKey.hasLeadingZero}>
+                                                                    <td class="modal-content" key={mapKey.key}
+                                                                        if:false={mapKey.bold}>
+                                                                        {mapKey.hasLeadingZero}
+                                                                    </td>
+                                                                    <td class="modal-content bold-text" key={mapKey.key}
+                                                                        if:true={mapKey.bold}>
+                                                                        {mapKey.hasLeadingZero}
                                                                     </td>
                                                                 </template>
-                                                                <template if:false={mapKey.isDate}>
-                                                                    <template if:true={mapKey.tooltip}>
-                                                                        <template if:true={mapKey.truncate}>
-                                                                            <td if:false={trip.isEdited} class="modal-content tooltipText"
-                                                                                key={mapKey.key}>
-                                                                                <div class="slds-truncate"
-                                                                                    style="width: 350px">{mapKey.value}
-                                                                                </div><span class="tooltipValue">
-                                                                                    <div if:true={mapKey.tIcon}><img
-                                                                                            src={mapKey.tooltipIcon} />
-                                                                                    </div>{mapKey.tooltipText}
-                                                                                </span>
-                                                                            </td>
-                                                                            <td if:true={trip.isEdited}  key={mapKey.key}><input class="content-input" data-name={mapKey.key} value={mapKey.value} onchange={handleInput} oninput={validateInputField} placeholder="Enter..."/></td>
-                                                                        </template>
-                                                                        <template if:false={mapKey.truncate}>
-                                                                            <td class="modal-content tooltipText"
-                                                                                key={mapKey.key}>{mapKey.value}<span
-                                                                                    class="tooltipValue">
-                                                                                    <div>
-                                                                                        <img class="icon-tooltip" if:true={mapKey.tIcon} src={mapKey.tooltipIcon} />
-                                                                                        <p style="overflow: auto;">{mapKey.tooltipText}</p>
-                                                                                    </div>
-                                                                                </span></td>
-                                                                        </template>
+                                                                <template if:false={mapKey.hasLeadingZero}>
+                                                                    <td class="modal-content" key={mapKey.key}>
+                                                                        <lightning-formatted-number value={mapKey.value}
+                                                                            minimum-fraction-digits="2">
+                                                                        </lightning-formatted-number></td>
+                                                                </template>
+                                                            </template>
+                                                            <template if:false={mapKey.twoDecimal}>
+                                                                <template if:true={mapKey.icon}>
+                                                                    <td class="modal-content flex-row" key={mapKey.key}
+                                                                        data-name={mapKey.value}>
+                                                                        <div if:true={mapKey.icon} class="navigate-text navigate">
+                                                                            {mapKey.value}
+                                                                        </div>
+                                                                        <!-- <div if:true={mapKey.icon}
+                                                                            class="slds-m-top_xx-small slds-m-right_small icon-holder">
+                                                                            <i
+                                                                                class="fas fa-xs fa-chevron-right navigate"></i>
+                                                                        </div>{mapKey.value} -->
+                                                                    </td>
+                                                                </template>
+                                                                <template if:false={mapKey.icon}>
+                                                                    <template if:true={mapKey.isDate}>
+                                                                        <td class="modal-content" key={mapKey.key}>
+                                                                            <template if:true={mapKey.isIcon}>
+                                                                                <svg height="20" data-id={trip.id} data-key={mapKey.key} onclick={handleIcon}  width="20" xmlns="http://www.w3.org/2000/svg">
+                                                                                    <use xlink:href={mapKey.iconUrl}></use>
+                                                                                </svg>
+                                                                                {mapKey.value}
+                                                                            </template>
+                                                                            <template if:false={mapKey.isIcon}>
+                                                                                {mapKey.value}
+                                                                            </template>
+                                                                        </td>
                                                                     </template>
-                                                                    <template if:false={mapKey.tooltip}>
-                                                                        <td  if:false={trip.isEdited} class="modal-content" key={mapKey.key}>
-                                                                            {mapKey.value}</td>
-                                                                        <td if:true={trip.isEdited}  key={mapKey.key}><input class="content-input"  data-name={mapKey.key} value={mapKey.value} onchange={handleInput} oninput={validateInputField} placeholder="Enter..."/></td>
+                                                                    <template if:false={mapKey.isDate}>
+                                                                        <template if:true={mapKey.tooltip}>
+                                                                            <template if:true={mapKey.truncate}>
+                                                                                <td if:false={trip.isEdited} class="modal-content tooltipText"
+                                                                                    key={mapKey.key}>
+                                                                                    <div class="slds-truncate"
+                                                                                        style="width: 350px">{mapKey.value}
+                                                                                    </div><span class="tooltipValue">
+                                                                                        <div if:true={mapKey.tIcon}><img
+                                                                                                src={mapKey.tooltipIcon} />
+                                                                                        </div>{mapKey.tooltipText}
+                                                                                    </span>
+                                                                                </td>
+                                                                                <td if:true={trip.isEdited}  key={mapKey.key}><input class="content-input" data-name={mapKey.key} value={mapKey.value} onchange={handleInput} oninput={validateInputField} placeholder="Enter..."/></td>
+                                                                            </template>
+                                                                            <template if:false={mapKey.truncate}>
+                                                                                <td class="modal-content tooltipText"
+                                                                                    key={mapKey.key}>{mapKey.value}<span
+                                                                                        class="tooltipValue">
+                                                                                        <div>
+                                                                                            <img class="icon-tooltip" if:true={mapKey.tIcon} src={mapKey.tooltipIcon} />
+                                                                                            <p style="overflow: auto;">{mapKey.tooltipText}</p>
+                                                                                        </div>
+                                                                                    </span></td>
+                                                                            </template>
+                                                                        </template>
+                                                                        <template if:false={mapKey.tooltip}>
+                                                                            <template if:true={mapKey.onlyLink}>
+                                                                                <template if:true={mapKey.isLink}>
+                                                                                    <td class="modal-content" key={mapKey.key} onclick={preventEdit}>
+                                                                                        <a class="linked" onclick={linkHandler} data-id={trip.id}>{mapKey.value}</a>
+                                                                                    </td>
+                                                                                </template>
+                                                                            </template>
+                                                                            <template if:false={mapKey.onlyLink} >
+                                                                                <!-- <td  if:false={trip.isEdited} class="modal-content" key={mapKey.key}>
+                                                                                    {mapKey.value}</td>
+                                                                                <td if:true={trip.isEdited}  key={mapKey.key}><input class="content-input"  data-name={mapKey.key} value={mapKey.value} onchange={handleInput} oninput={validateInputField} placeholder="Enter..."/></td> -->
+                                                                                <template if:true={mapKey.isDropDown} >
+                                                                                    <td  if:false={trip.isEdited} class="modal-content" key={mapKey.key}>
+                                                                                        {mapKey.value}</td>
+                                                                                        <td if:true={trip.isEdited}  key={mapKey.key}>    
+                                                                                            <c-dropdown-select data-id={trip.id} data-input-type="select" data-name={mapKey.key}  options={mapKey.dropDownList} 
+                                                                                            onchange={handleInput} main-class="default-box-input slds-truncate" selected-value={mapKey.value}></c-dropdown-select>
+                                                                                        </td> 
+                                                                                </template>
+                                                                                <template if:false={mapKey.isDropDown} >
+                                                                                    <template if:true={mapKey.isTag}>
+                                                                                        <td  class="modal-content" key={mapKey.key}>
+                                                                                            <c-tag-state-list tags={mapKey.value} data-id={trip.id}  data-key={mapKey.key} onremove={handleRemoveTag} >
+                                                                                                <svg height="10" data-key={mapKey.key} data-id={trip.id} onclick={handleIcon}  width="20" xmlns="http://www.w3.org/2000/svg">
+                                                                                                    <use xlink:href={mapKey.iconUrl}></use>
+                                                                                                </svg>
+                                                                                            </c-tag-state-list>
+                                                                                        </td>
+                                                                                    </template>
+                                                                                    <template if:false={mapKey.isTag}>
+                                                                                        <template if:true={mapKey.isAddress} >
+                                                                                            <td  if:false={trip.isEdited} class="modal-content" key={mapKey.key}>
+                                                                                                {mapKey.value}</td>
+                                                                                                <td if:true={trip.isEdited}  key={mapKey.key}>
+                                                                                                    <c-edit-address zip-code={mapKey.value} city={mapKey.city} data-name={mapKey.key} data-input-type="address" onupdate={handleInput} ></c-edit-address>
+                                                                                                    <!-- <input class="content-input" data-input-type="input"  data-name={mapKey.key} value={mapKey.value} onchange={handleInput} oninput={validateInputField} placeholder="Enter..."/> -->
+                                                                                                </td>
+                                                                                        </template>
+                                                                                        <template if:false={mapKey.isAddress} >
+                                                                                            <template if:true={mapKey.isNoneEditable}>
+                                                                                                <td class="modal-content" key={mapKey.key}>
+                                                                                                    {mapKey.value}</td>
+                                                                                            </template>
+                                                                                            <template if:false={mapKey.isNoneEditable}>
+                                                                                                <td  if:false={trip.isEdited} class="modal-content" key={mapKey.key}>
+                                                                                                    {mapKey.value}</td>
+                                                                                                <td if:true={trip.isEdited}  key={mapKey.key}><input class="content-input" data-input-type="input"  data-name={mapKey.key} value={mapKey.value} onchange={handleInput} oninput={validateInputField} placeholder="Enter..."/></td>
+                                                                                            </template>
+                                                                                        </template>
+                                                                                    </template>
+                                                                                </template>
+                                                                            </template>
+                                                                        </template>
                                                                     </template>
                                                                 </template>
                                                             </template>
                                                         </template>
                                                     </template>
-                                                </template>
                                             </template>
                                         </tr>
                                     </template>
@@ -953,12 +1111,12 @@
                     </div>
                 </div>
             </div>
-            <template if:true={isPaginate}>
+            <!-- <template if:true={isPaginate}>
                     <template if:false={norecord}>
                         <div class="slds-p-top_large slds-p-bottom_medium">
                         </div>
                     </template>
-            </template>
+            </template> -->
             <template if:true={showFooter}>
                     <slot name="footerFilter"></slot>
             </template>

@@ -1,0 +1,239 @@
+*{
+    font-family: 'Proxima Nova' !important
+    }
+.mileges{
+    left: 537px !important;
+    position: absolute;
+    top: 4px;
+    width: 186px;
+    background-color: transparent !important;
+    /* font-weight: 100; */
+    color: black !important;
+}
+.Driver_name{
+    left: 33px;
+    width: 205px;
+    bottom: 12px;
+    background-color: transparent !important;
+    position: relative;
+    color: black !important;
+    /* font-weight: 100; */
+}
+.driver-label{
+    font-family: 'Proxima Nova Bold' !important;
+    position: relative;
+    bottom: 13px;
+    left: 1px;
+}
+.mileges-label{
+    position: absolute;
+    top: 11px;
+    left: 468px;
+    font-family: 'Proxima Nova Bold' !important;
+}
+.date-label{
+    top: 53px;
+    left: 17px;
+    position: absolute;
+    font-family: 'Proxima Nova Bold' !important;
+}
+.from-label{
+    position: absolute;
+    top: 95px;
+    left: 18px;
+    font-family: 'Proxima Nova Bold' !important;
+}
+.datetime{
+    left: -172px;
+    position: relative;
+    top: 30px;
+    width: 160px;
+    padding-left: 12px;
+    background-color: transparent !important;
+    /* font-weight: bold; */
+    /* font-weight: 100; */
+    color: black !important;
+}
+.from_input{
+    position: absolute;
+    left: 85px;
+    top: 88px;
+    width: 351px;
+    background-color: transparent !important;
+    /* font-weight: bold; */
+    /* font-weight: 100; */
+    color: black !important;
+}
+.to_input{
+    position: absolute;
+    left: 85px;
+    top: 131px;
+    width: 351px;
+    background-color: transparent !important;
+    /* font-weight: bold; */
+    /* font-weight: 100; */
+    color: black !important;
+}
+.activity-label{
+    position: relative;
+    top: 31px;
+    left: -50px;
+    font-family: 'Proxima Nova Bold' !important;
+}
+.activity_input{
+    top: 30px;
+    left: -24px;
+    width: 210px;
+    background-color: transparent !important;
+    position: relative;
+    /* font-weight: bold; */
+    /* font-weight: 100; */
+    color: black !important;
+}
+.to-label{
+    position: relative;
+    top: 53px;
+    left: 2px;
+    font-family: 'Proxima Nova Bold' !important;
+}
+.drivetime_input{
+    position: relative;
+    top: -6px;
+    width: 186px;
+    left: 513px;
+    --lwc-colorBackgroundInputDisabled: transparent;
+    -webkit-text-fill-color: black;
+    /* font-weight: 100; */
+    /* font-weight: bold; */
+}
+.drivetime-label{
+    position: relative;
+    top: 30px;
+    left: -109px;
+    font-family: 'Proxima Nova Bold' !important;
+}
+.staytime-label{
+    position: relative;
+    top: 12px;
+    left: 436px;
+    font-family: 'Proxima Nova Bold' !important;
+}
+.stay_input{
+    position: relative;
+    top: -17px;
+    left: 513px;
+    width: 186px;
+    /* font-weight: 100; */
+}
+.tags-label{
+    position: relative;
+    top: 43px;
+    left: 2px;
+    font-family: 'Proxima Nova Bold' !important;
+}
+.tag_input{
+    position: absolute;
+    top: 170px;
+    left: 77px;
+    width: 213px;
+    /* font-weight: 100; */
+}
+.notes-label{
+    position: relative;
+    /* top: 43px; */
+    left: 424px;
+    font-family: 'Proxima Nova Bold' !important;
+}
+.button_class{
+    top: 66px;
+    position: relative;
+    left: 11px;
+}
+
+.map_creation{
+    position: relative;
+    top: -207px;
+    left: 700px;
+    padding: 10px 39px;
+    border-radius: 11px;
+
+}
+.notes_input{
+    position: absolute;
+    top: 131px;
+    left: 537px;
+    width: 185px;
+}
+.bc-green {
+    background: none !important;
+    background-color: #7ABB4A!important;
+    font-family: 'Proxima Nova Bold' !important;
+    /* font-weight: 700; */
+    color: #FFFFFF;
+}
+
+.bc-black{
+  background: none !important;
+  background-color: #404B5B!important;
+  font-family: 'Proxima Nova Bold' !important;
+  /* font-weight: 700; */
+  color: #FFFFFF;
+}
+.slds-btn{
+    word-wrap: break-word;
+    white-space: normal;
+    cursor: pointer;
+    border: 0;
+    border-radius: .125rem;
+}
+
+.waves-effect:focus {
+    outline: none !important;
+}
+
+.slds-btn-sm {
+  margin: 0 0.4em;
+  padding: 6px 20px;
+  height: 30px;
+  font-size: 12px;
+}
+.btn-trip{
+    border-radius: 6px;
+    
+    text-decoration: none !important;
+    color: #FFFFFF !important;
+}
+.fromtime{
+    left: -165px;
+    position: relative;
+    top: 30px;
+    width: 80px;
+    padding-left: 8px;
+    background-color: transparent !important;
+    /* font-weight: bold; */
+    /* font-weight: 100; */
+    color: black !important;
+}
+.totime{
+    left: -142px;
+    position: relative;
+    top: 30px;
+    width: 80px;
+    padding-left: 8px;
+    background-color: transparent !important;
+    /* font-weight: bold; */
+    /* font-weight: 100; */
+    color: black !important;
+}
+.fromtolabel{
+    top: 53px;
+    left: 338px;
+    position: absolute;
+    font-family: 'Proxima Nova Bold' !important;
+}
+.card_header{
+    height: 245px;
+}
+.text_area{
+    height: 80px;
+}

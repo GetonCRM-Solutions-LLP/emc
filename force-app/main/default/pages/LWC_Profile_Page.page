@@ -1,13 +1,20 @@
 <apex:page showHeader="false" title="Driver" sidebar="false" lightningStylesheets="true" standardStylesheets="false" showChat="false">
-    <link rel="stylesheet" href="{!URLFOR($Resource.LwcDesignCss,'lwcDesign/assets/css/customstyle.css')}" />
+    <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" />
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" />
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="{!URLFOR($Resource.LwcDesignCss,'lwcDesign/assets/css/customstyle.css')}" />
+    <script src="https://code.jquery.com/jquery-2.1.3.min.js"></script>
+    <!-- Css Part Start -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/fontawesome.min.css" />
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v6.1.1/css/all.css" />
+    <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"
+    />
+    <!--Toaster -->
+    <script  src="{!URLFOR($Resource.EMC_Header_Scripts,'EMC_Header_Scripts/js/toastr.min.js')}"></script>
+    <link href="{!URLFOR($Resource.EMC_Header_Scripts,'EMC_Header_Scripts/css/toastr.min.css')}" rel="stylesheet" />
     <apex:slds />
-    <apex:includeLightning />
+    <apex:includeLightning /> 
     <div id="lwcDemo" />
     <style type="text/css">
         body{
@@ -30,14 +37,32 @@
             width: 240px !important;
             font-family: 'Proxima Nova' !important;
         }
+
+        ::-webkit-scrollbar-track {
+                -webkit-box-shadow: inset 0 0 6px #F6F6F6;
+                border-radius: 100px;
+                background-color: #F6F6F6;
+            }
+
+            ::-webkit-scrollbar {
+                width: 5px;
+                height: 50px;
+                background-color:#F6F6F6;
+            }
+
+            ::-webkit-scrollbar-thumb {
+                border-radius: 100px;
+                height: 50px;
+                background-color:#404B5B
+            }
     </style>
     <script>
         $Lightning.use("c:profileLWC", function () {
-                $Lightning.createComponent("c:emcDashboard", {
+            $Lightning.createComponent("c:dynamicDashboard", {
                     //pass parameter values to lwc js controller
                 }, "lwcDemo", function (cmp) {
                     console.log("Component Created Successfully");
-                    this.setOptions = function () {
+                  /* this.setOptions = function () {
                         toastr.options.positionClass = "toast-bottom-right";
                         toastr.options.closeButton = true;
                         toastr.options.progressBar = true;
@@ -46,7 +71,7 @@
                     this.setOptions();
                     this.clear = function () {
                         toastr.clear();
-                    };
+                    };*/
 
                   /*  document.querySelector('c-emc-dashboard').addEventListener('toastformodal', (e) => {
                         console.log('vf event data window listener => ', e.detail);
@@ -86,7 +111,7 @@
                           }
                       });*/
                 }
-                );
+            );
         });
     </script>
 </apex:page>

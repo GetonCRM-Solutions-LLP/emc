@@ -20,6 +20,30 @@
                         <span class="profession">{driverEmail}</span>
                     </div>
                 </div>
+                <template lwc:if={showButtons}>
+                    <div class="dashboard">
+                        <span class="dashboard-name">Dashboards:</span>
+                        <div>
+                            <a class="link-btn admin-btn" href="#" onclick={redirectToProfile}>
+                                <svg class="link-icon" xmlns="http://www.w3.org/2000/svg" width="9" height="10" viewBox="0 0 9 10" fill="none">
+                                    <path d="M7.96664 1.33334V8.66667" stroke="#7ABB4A" stroke-width="1.86667" stroke-linecap="round"/>
+                                    <path d="M4.50003 3.53333L4.50003 8.66665" stroke="#7ABB4A" stroke-width="1.86667" stroke-linecap="round"/>
+                                    <path d="M1.03336 5.73334L1.03336 8.66667" stroke="#7ABB4A" stroke-width="1.86667" stroke-linecap="round"/>
+                                </svg>
+                                <span class="text-dashboard">{adminText}</span>
+                            </a>
+                            <a class="link-btn driver-btn" href="#" onclick={redirectToDriverProfile}>
+                                <svg class="link-icon" xmlns="http://www.w3.org/2000/svg" width="9" height="10" viewBox="0 0 9 10" fill="none">
+                                    <path d="M7.96664 1.33334V8.66667" stroke="#7ABB4A" stroke-width="1.86667" stroke-linecap="round"/>
+                                    <path d="M4.50003 3.53333L4.50003 8.66665" stroke="#7ABB4A" stroke-width="1.86667" stroke-linecap="round"/>
+                                    <path d="M1.03336 5.73334L1.03336 8.66667" stroke="#7ABB4A" stroke-width="1.86667" stroke-linecap="round"/>
+                                </svg>
+                                <span class="text-dashboard">{driverText}</span>
+                            </a>
+                        </div>
+                    </div>
+                </template>
+               
             </div>
 
             <i class='fas fa-chevron-right toggle' onclick={toggleSideBar}></i>

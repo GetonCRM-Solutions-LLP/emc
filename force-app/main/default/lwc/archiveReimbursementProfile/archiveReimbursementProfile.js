@@ -221,7 +221,7 @@ export default class ArchiveReimbursementProfile extends LightningElement {
       }
 
     connectedCallback(){
-        console.log("trip", this.trip);
+        console.log("trip", this.trip, this.driverDetails);
         this.timeAttendance = (this.trip === 'timeAttendance') ? true : false;
         if(this.driverDetails){
             this.getDriverDetail(this.driverDetails);

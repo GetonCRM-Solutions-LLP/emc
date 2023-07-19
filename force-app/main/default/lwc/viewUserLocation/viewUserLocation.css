@@ -93,6 +93,7 @@
   
   .slds-input:focus{
     --slds-c-input-shadow: none !important;
+    box-shadow: none !important;
   }
 
   .search-icon-block{

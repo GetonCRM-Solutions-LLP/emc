@@ -3,8 +3,20 @@
 	<c-dashboard-profile-header user-name={firstName} full-name={contactTitle} unread={unreadCount} page-source={isHomePage} onnotify={viewAllNotification} onlogout={handleLogout} driver-menu={menu} is-navigate="true">
 		<template lwc:if={isProfile}>
 			<div slot="buttons">
-				<button class="slds-btn slds-btn-primary slds-btn-sm waves-effect bc-green waves-light mleft-0 btn-colored">
-					<svg class="svg-space" xmlns="http://www.w3.org/2000/svg" width="14" height="15.273" viewBox="0 0 14 15.273" fill="none"><path d="M6.824 13.189V2.082M1.273 7.636h11.105" stroke="#fff" stroke-width="1.9090909090909092" stroke-linecap="round"/></svg>
+				<button onclick={addUser} class="slds-btn slds-btn-primary slds-btn-sm waves-effect bc-green waves-light mleft-0 btn-colored">
+					<svg fill="none" viewBox="0 0 12 13.091" height="13.091" width="12" xmlns="http://www.w3.org/2000/svg" class="svg-space"><path stroke-linecap="round" stroke-width="1.6363636363636362" stroke="#fff" d="M5.849 11.305V1.785M1.091 6.545h9.519"></path></svg>
+					New user
+				</button>
+				<button class="slds-btn slds-btn-primary slds-btn-sm waves-effect bc-outline--background waves-light mleft-0 btn-outline-green-sm">
+					<svg class="svg-space" xmlns="http://www.w3.org/2000/svg" width="14" height="2.334" viewBox="0 0 14 2.334" fill="none"><path d="M1.911 1.166h10.179" stroke="#7ABB4A" stroke-width="1.75" stroke-linecap="round"/></svg>
+					Remove user
+				</button>
+			</div>
+		</template>
+		<template lwc:if={showUsers}>
+			<div slot="buttons">
+				<button onclick={addUser} class="slds-btn slds-btn-primary slds-btn-sm waves-effect bc-green waves-light mleft-0 btn-colored">
+					<svg fill="none" viewBox="0 0 12 13.091" height="13.091" width="12" xmlns="http://www.w3.org/2000/svg" class="svg-space"><path stroke-linecap="round" stroke-width="1.6363636363636362" stroke="#fff" d="M5.849 11.305V1.785M1.091 6.545h9.519"></path></svg>
 					New user
 				</button>
 				<button class="slds-btn slds-btn-primary slds-btn-sm waves-effect bc-outline--background waves-light mleft-0 btn-outline-green-sm">
@@ -20,7 +32,7 @@
         </template>
         <template lwc:elseif={mileageApproval}>
             <template lwc:if={listOfDriver}>
-                <c-user-mileage-grid contact-id={_contactId} account-id={_accountId} role={userRole} contact-list={listOfDriver} onpreview={getUnapproveMileage} onshow={showSpinner} onhide={hideSpinner} ontoast={showToast} show-team={showTeam} filter={nameFilter} contact-info={userName}></c-user-mileage-grid>
+                <c-user-mileage-grid contact-id={_contactId} account-id={_accountId} role={userRole} is-account-biweek={biweekAccount} contact-list={listOfDriver} onpreview={getUnapproveMileage} onshow={showSpinner} onhide={hideSpinner} ontoast={showToast} show-team={showTeam} filter={nameFilter} contact-info={userName}></c-user-mileage-grid>
             </template>
         </template>
         <template lwc:elseif={teamList}>
@@ -50,28 +62,44 @@
 			<c-user-resource minimums={contactInformation}></c-user-resource>
 		</template>
 		<template  lwc:elseif={showReports}>
-			<c-report-list></c-report-list>
+			<c-report-list onviewreport={redirectToReportDetail} ontoastmessage={handleToastMessage}></c-report-list>
 		</template>
+		<template lwc:elseif={reportDetail}>
+			<template lwc:if={reportId}>
+				<c-report-detail contact-id={_contactId} account-id={_accountId} report-id={reportId} month-list={reportMonthList} onclosemodal={redirectToReports} onprint={handlePrint} oncopy={handleCopy}></c-report-detail>
+			</template>
+        </template>
 		<template  lwc:elseif={showUsers}>
-			<c-users-roster></c-users-roster>
+			<c-users-roster employees={employees} managers={managers} roles={roles} ontoast={showToast} onshow={showSpinner} onhide={hideSpinner} onerror={showErrorToast}></c-users-roster>
 		</template>
 		<template  lwc:elseif={showTools}>
-			<c-user-tools></c-user-tools>
+			<c-user-tools contact-id={_contactId} account-id={_accountId} onshow={showSpinner} onhide={hideSpinner}  ontoast={showToast} onshowloader={showConditionalLoader} onhideloader={hideConditionalLoader}></c-user-tools>
+		</template>
+		<template lwc:elseif={showTools2}>
+			<c-user-tools2 contact-id={_contactId} account-id={_accountId} onshow={showSpinner} onhide={hideSpinner}  ontoast={showToast} onshowloader={showConditionalLoader} onhideloader={hideConditionalLoader}></c-user-tools2>
+		</template>
+		<template  lwc:elseif={resources}>
+			<c-user-resource minimums={contactInformation}></c-user-resource>
 		</template>
         <template lwc:else>
             <template lwc:if={unapproveMileages}>
-                 <c-user-flagging-trip contact-id={_contactId} account-id={_accountId}  header-name={driverName} emailaddress={userEmail} contact-list={unapproveMileages} onback={redirectToMileage} onshow={showSpinner} onhide={hideSpinner} ontoast={showToast} onflagcomplete={handleComplete} onsyncdone={handleSyncDone}></c-user-flagging-trip>
+                 <c-user-flagging-trip contact-id={_contactId} account-id={_accountId}  is-account-biweek={biweekAccount}  header-name={driverName} emailaddress={userEmail} contact-list={unapproveMileages} onback={redirectToMileage} onshow={showSpinner} onhide={hideSpinner} ontoast={showToast} onflagcomplete={handleComplete} onsyncdone={handleSyncDone}></c-user-flagging-trip>
             </template>
         </template>
 		<c-user-profile-modal header={headerModalText} month='' show-footer={isFalse} show-btn={isFalse}
 			modal-class={modalClass} header-class={headerClass} subheader-class={subheaderClass}
-			modal-content-style={modalContent} style-header={styleHeader} close-btn-class={styleClosebtn}
-			onclosedialog={handleCloseModal}>
-			<div class="slds-p-around_large" style="display: flex;flex-flow: column;">
+			modal-content-style={modalContent} style-header={styleHeader} close-btn-class={styleClosebtn} >
+			<template if:true={isAddUser}>
+				<div class="add-employee-container">
+					<c-add-employee accid={_accountId} contactid={_contactId} ontoast={showToast} is-add-employe-modal={isAddEmployeModal} onhide={hideSpinner} onshow={showSpinner} onaddemployee={addEmployee} >
+					</c-add-employee>
+				</div>
+			</template>
+			<!-- <div class="slds-p-around_large" style="display: flex;flex-flow: column;">
 				<div class="slds-align_absolute-center"><i class="fa-solid fa-3x fa-check"></i></div>
 				<div class="slds-align_absolute-center slds-p-around_medium message">{contentMessage}</div>
 				<div class="slds-align_absolute-center sub-message">{subMessage}</div>
-			</div>
+			</div> -->
 		</c-user-profile-modal>
        
 		<template lwc:if={notificationModal}>
