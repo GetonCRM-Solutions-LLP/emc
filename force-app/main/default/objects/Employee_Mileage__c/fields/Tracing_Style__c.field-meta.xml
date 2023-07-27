@@ -3,7 +3,7 @@
     <fullName>Tracing_Style__c</fullName>
     <description>Tracking method for the trips.</description>
     <externalId>false</externalId>
-    <label>Tracing Style</label>
+    <label>Tracking Style</label>
     <length>30</length>
     <required>false</required>
     <trackFeedHistory>false</trackFeedHistory>

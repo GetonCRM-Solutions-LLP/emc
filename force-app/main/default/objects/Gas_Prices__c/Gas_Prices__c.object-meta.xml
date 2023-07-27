@@ -165,6 +165,10 @@
         <customTabListAdditionalFields>City__c</customTabListAdditionalFields>
         <customTabListAdditionalFields>Fuel_Price__c</customTabListAdditionalFields>
         <customTabListAdditionalFields>Month_Year__c</customTabListAdditionalFields>
+        <searchResultsAdditionalFields>City__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>State__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>Month_Year__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>Fuel_Price__c</searchResultsAdditionalFields>
     </searchLayouts>
     <sharingModel>ReadWrite</sharingModel>
     <visibility>Public</visibility>

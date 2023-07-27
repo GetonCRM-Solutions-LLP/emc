@@ -1,121 +1,67 @@
 @isTest
 public with sharing class GetDriverDataTest {
     public static testmethod void method1() {
-        TriggerConfig__c customEmailSetting =  new TriggerConfig__c();
-        customEmailSetting.Name = 'Defaulttrigger';
-        customEmailSetting.ContactTriggersendEmailForNewContact__c = false;
-        customEmailSetting.ContactTriCommunityReimCreate__c = false;
-        insert customEmailSetting;
-        
+        TrueDialog_Keys__c trueDialogCustom = TestDataFactory.createTrueDialog(true);
+        TriggerConfig__c triggerCustomSetting = TestDataFactory.triggerConfigCustomSetting(true);
+        SendEmail__c sendEmailCustomSetting = TestDataFactory.sendEmailCustomSetting(true, 'Send Email For Compliance');
+        SendEmail__c sendEmailCustomSetting1 = TestDataFactory.sendEmailCustomSetting(true, 'ChangeTripStatusinTripLogBatch');
+        IRS_Mileage_Rate__c irsRateObj = TestDataFactory.createIRSRate(true,0);
+        Vehicle_URL_Mapping__c vehicleType = TestDataFactory.createVehicleData(true, 2);
         TriplogPutCall__c customPut = new TriplogPutCall__c();
         customPut.name = 'GetDriverData';
         customPut.TriplogPut__c = true;
         insert customPut;
         
-        List<IRS_Mileage_Rate__c> obj_IRS_Mileage_Rate =  RecordUtilityClass.insertIrsRate();
+        List<IRS_Mileage_Rate__c> obj_IRS_Mileage_Rate =  RecordUtilityClass.insertIrsRate();       
         
-        SendEmail__c customSetting =  new SendEmail__c();
-        customSetting.Name = 'Send Email For Compliance';
-        customSetting.Send_email_from_code__c= true;
-        insert customSetting;
-        
-        SendEmailToMe__c customEmail =  new SendEmailToMe__c();
-        customEmail.Name = 'ChangeTripStatusinTripLogBatch';
-        customEmail.Send_email_to_me__c = false;
-        insert customEmail;
-        
-        Account acc = new Account();
-        acc.Name = 'Anton Paar';
-        acc.Triplog_API__c = 'test1';
-        acc.IsUsingTriplog__c = true;
-        acc.Motor_Vehicle_Record_Check_Document__c = true;
-        insert acc;
+        UserRole uRole = TestDataFactory.getUserRole();
+        Profile profileObj = TestDataFactory.getUserProfile();
+        User admin = TestDataFactory.getSystemAdminUser(uRole.Id);
+        User userObj;
 
-        Vehicle_URL_Mapping__c veh = new Vehicle_URL_Mapping__c();
-        veh.URL__c = 'https://cdn2.hubspot.net/hubfs/2511299/iStock-494093356.jpg';
-        veh.vehicle__c =  'Full-Size Sedan';
-        veh.Year__c = '2019';
-        insert veh;
-        
-        Contact con1 = new Contact();
-        con1.LastName = 'testsdfsdfs';
-        con1.Triplog_UserID__c = 'test';
-        //con1.Deactivated_Date__c =  system.now()-35;
-        con1.isCommunityUser__c = true;
-        con1.External_Email__c = 'test.patel143478@gmail.com';
-        con1.IsDeactivated__c = false;
-        con1.AccountId = acc.Id;
-        con1.Employee_ID__c = 'eid';
-        con1.Role__c = 'Manager';
-        con1.Vehicle_Type__c = '2019 Full-Size Sedan';
-        insert con1;  
+        Account acc;
+        List<Contact> contact;
+        System.runAs(admin) {
+            acc = TestDataFactory.createAccount(True,'Delta account',true);
+            acc.Triplog_API__c = 'fde76cdde14449bea46b321225ac8fd1';
+            acc.Pay_Period_Start_Date__c = System.today().addDays(-100);
+            Acc.Triplog_Status__c = 'U';
+            acc.Pay_Period_Days__c = 13;
+            Update acc;
+            Contact contactObj = TestDataFactory.createCICDContact(true,acc.Id);
+            contact = TestDataFactory.createDriverContact(true,acc.Id, 'Driver', vehicleType.Name, 'paras.patel',  1);
+            userObj = TestDataFactory.createUser(True, profileObj.Id, contact[0].Id);
+        }
+                
+        List<Employee_Reimbursement__c> reimList = TestDataFactory.createPendingReimbursement(true, contact, 2, irsRateObj.id);
+        system.assertEquals(3, reimList.size(),true);
 
-        Contact conList = new Contact();
-        conList.FirstName = 'testFn';
-        conList.LastName = 'testLn';
-        conList.accountid = acc.id;
-        conList.MPG__c = 5;
-        conList.Maintenance_and_Tires__c = 3;
-        conList.Triplog_UserID__c = con1.Triplog_UserID__c;
-        //conList.Deactivated_Date__c = con1.Deactivated_Date__c;
-        conList.External_Email__c = 'testManagr101@gmail.com';
-        conList.IsDeactivated__c = con1.IsDeactivated__c;
-        conList.Manager__c = con1.Id;
-        conList.Fixed_Amount__c = 20;
-        conList.Vehicle1Odometer__c = 10;
-        conList.isCommunityUser__c = true;
-        conList.MailingStreet = 'denverstreet';
-        conList.MailingCity = 'Denver';
-        conList.MailingState = 'CA';
-        conList.MailingPostalCode = '110085';
-        conList.MailingCountry = 'US';
-        conList.compliancestatus__c = 'Yes';
-        conList.Time_Zone__c = 'US/Mountain' ;
-        conList.Vehicle_Type__c = '2019 Full-Size Sedan';
-        conList.Role__c = 'Driver';
-        conList.compliancestatus__c = 'No – Vehicle Value';
-        conList.Monthly_Mileage_Limit__c = 100;
-        insert conList;
+        List<Bi_Weekly_Reimbursement__c> biweeklyReimList = TestDataFactory.createBiweeklyReim(true, contact,  date.valueof(system.today().adddays(-14)),date.valueof(system.today().addDays(-1)), 2, irsRateObj.id);
+        system.debug('biweeklyReimList== '+biweeklyReimList );
+        List<Employee_Mileage__c> mileageList = TestDataFactory.getEmpMileage(false, 1, reimList, biweeklyReimList);
+        mileageList[0].StartTime__c = System.now();
+        mileageList[0].EndTime__c = System.now();
+        insert mileageList[0];
         
-        String lastMonth = Utils.fetchMonths(1, 0)[0]; 
-        Employee_Reimbursement__c er = new Employee_Reimbursement__c();
-        er.Contact_Id__c = conList.Id;
-        er.Name = 'Reimbersment Test';
-        er.Month__c = lastMonth;
-        er.Status__c = 'Pending';
-        er.Fuel_Price__c = 10.00;
-        insert er;
+        String json = '[{\"Id\":\"'+mileageList[0].id+'\",\"employeeEmailId\":\"testManagr101@gmail.com\"}]';
 
-        Employee_Mileage__c emp = new Employee_Mileage__c();
-        emp.EmployeeReimbursement__c = er.id;
-        emp.Contact_Email_Id__c = conList.External_Email__c;
-        emp.Name = 'Test Mileage Record';
-        emp.Trip_Status__c = 'Not Approved Yet';
-        emp.Mileage__c = 10.00;
-        emp.Fuel_price__c = 10.00;
-        emp.StartTime__c = system.now();
-        emp.EndTime__c =  system.now();
-        emp.TimeZone__c = 'US/Mountain';
-        emp.Trip_Date__c = date.today().adddays(-1);
-        insert emp;
-        
-        String json = '[{\"Id\":\"'+emp.id+'\",\"employeeEmailId\":\"testManagr101@gmail.com\"}]';
-
-        GetDriverData.fetchLookUpValues(acc.Id,con1.Id,'AccountId',conList.Id, 'Id', '', 'id', 'contact','Name',true);
-        GetDriverData.fetchMileages(acc.Id,con1.id,1,2);
-        GetDriverData.fetchMileagesSize(acc.Id,con1.id);
+        GetDriverData.fetchLookUpValues(acc.Id,contact[0].Id,'AccountId',contact[0].Id, 'Id', '', 'id', 'contact','Name',true);
+        GetDriverData.fetchMileages(acc.Id,contact[0].id,1,2);
+        GetDriverData.fetchMileagesSize(acc.Id,contact[0].id);
         GetDriverData.buildDateforactivation(System.today());
         GetDriverData.approveMileages(true,json,false,false);
-        GetDriverData.getMilegesData(acc.Id,con1.id,conList.Id,System.today(),System.today()+1,'denverstreet','Denver',true,'10','50','Approved','MagicTrip','magic','abc','Business',1,2);
+        GetDriverData.getMilegesData(acc.Id,contact[0].id,contact[0].Id,System.today(),System.today()+1,'denverstreet','Denver',true,'10','50','Approved','MagicTrip','magic','abc','Business',1,2,true);
+        GetDriverData.getMilegesData(acc.Id,contact[0].id,contact[0].Id,System.today(),System.today()+1,'denverstreet','Denver',true,'10','50','Approved','MagicTrip','magic','abc','Business',1,2,false);
         GetDriverData.fetchWayPointPostAPI(1234555,'apikey');
-        GetDriverData.getMilegesDataSize(acc.Id,con1.id,conList.Id,System.today(),System.today()+1,'denverstreet','Denver',true,'10','50','Approved','MagicTrip','magic','abc','Business');
-        GetDriverData.updateMileages(emp.id,'magic','Business','test');
-        String jsondata = '[{\"id\":"'+emp.id+'",\"adminId\":"'+con1.Id+'",\"tripdate\":\"2021-08-17\",\"conName\":\"NIkita Patel\",\"conEmail\":\"nikita.patel@kiwiqa.com\",\"oldActivity\":\"Business\",\"mileage\":\"100\",\"actualMileage\":\"100\",\"tripId\":2000669507,\"accApi\":\"28beeea973f34daf89050a9b6a3b1a71\"}]';
+        GetDriverData.getMilegesDataSize(acc.Id,contact[0].id,contact[0].Id,System.today(),System.today()+1,'denverstreet','Denver',true,'10','50','Approved','MagicTrip','magic','abc','Business',true);
+        GetDriverData.getMilegesDataSize(acc.Id,contact[0].id,contact[0].Id,System.today(),System.today()+1,'denverstreet','Denver',true,'10','50','Approved','MagicTrip','magic','abc','Business',false);
+        GetDriverData.updateMileages(mileageList[0].id,'magic','Business','test',5);
+        String jsondata = '[{\"id\":"'+mileageList[0].id+'",\"adminId\":"'+contact[0].Id+'",\"tripdate\":\"2021-08-17\",\"conName\":\"NIkita Patel\",\"conEmail\":\"nikita.patel@kiwiqa.com\",\"oldActivity\":\"Business\",\"mileage\":\"100\",\"actualMileage\":\"100\",\"tripId\":2000669507,\"accApi\":\"28beeea973f34daf89050a9b6a3b1a71\"}]';
         GetDriverData.massUpdateActivityEmail('Commute',jsondata);
-        GetDriverData.updateMileagesEmail(con1.id,System.today(),conList.FirstName+' '+ conList.LastName,conList.External_Email__c,'Commute','Business','10','20',1234576,acc.Triplog_API__c);
+        GetDriverData.updateMileagesEmail(contact[0].id,System.today(),contact[0].FirstName+' '+ contact[0].LastName,contact[0].External_Email__c,'Commute','Business','10','20',1234576,acc.Triplog_API__c);
         GetDriverData.deleteMileages(json);
-        GetDriverData.mileageListData(acc.Id,con1.Id,System.today(),System.today()+10);
+        GetDriverData.mileageListData(acc.Id,contact[0].Id,System.today(),System.today()+10);
         GetDriverData.deleteTrips(acc.Id,'05-2021');
-        
+        GetDriverData.getInsuranceStatus(contact[0].id);
     }
 }

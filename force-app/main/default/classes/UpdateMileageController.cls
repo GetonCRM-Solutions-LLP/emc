@@ -200,7 +200,7 @@ public with sharing class UpdateMileageController {
      public void putHTTP() {
        
         String apiToken;
-        String MLOGACCOUNT = System.Label.Triplog_New_URL;
+        String MLOGACCOUNT = System.Label.Triplog_New_URL + ',' + System.Label.Triplog_New_URL2;
         Set<Integer> trip_IDs = new Set<Integer>();
         List<Employee_Reimbursement__c> reimList = [SELECT id,Contact_Id__r.Account.Triplog_API__c FROM Employee_Reimbursement__c where id =: reimbursementId ];
         if(reimList.size() > 0) {

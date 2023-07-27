@@ -33,6 +33,13 @@ public class EmployeeMileagestest {
             em.totalMileages='';
             em.lockdate = '';
             em.isLockDate = false;
+            em.staytime = '';
+            em.drivingtime = '';
+            em.totaltime = '';
+            em.tripActivity = '';
+            em.halfFixedAmount = '';
+            em.fuelVariableRate = '';
+            em.approvalName = '';
         Test.stopTest();
     }
 }

@@ -585,6 +585,10 @@
         .admin-roster-tab-section {
             position: relative !important;
         }
+        /* .index_value{
+            position: relative;
+            z-index: 4;
+        } */
         .card.insurance-declaration-card {
             margin-bottom: 10px;
         }

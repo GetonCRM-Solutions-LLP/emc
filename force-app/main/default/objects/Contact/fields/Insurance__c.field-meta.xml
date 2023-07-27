@@ -41,6 +41,11 @@
                 <default>false</default>
                 <label>Expired</label>
             </value>
+            <value>
+                <fullName>No Expiration Date</fullName>
+                <default>false</default>
+                <label>No Expiration Date</label>
+            </value>
         </valueSetDefinition>
     </valueSet>
 </CustomField>

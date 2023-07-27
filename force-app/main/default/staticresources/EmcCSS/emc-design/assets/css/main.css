@@ -67,6 +67,18 @@ header {
   }
 }
 
+.form-white-divider{
+  border-top: 2px solid #fff;
+}
+
+.m-pd{
+  padding-bottom: 20px;
+}
+
+.m-pt-3{
+  padding-top: 3px;
+}
+
 .sticky + .content {
   padding-top: 102px;
 }
@@ -82,15 +94,15 @@ header {
   color: #ffffff;
   line-height: 30px;
 }
-
 li.nav-item.active {
-  font-family: 'Proxima Nova SemiBold' !important;
+  font-family: 'Proxima Nova' !important;
 }
-
-.sticky .navbar-expand-md .navbar-nav .nav-link {
-  padding: 2px .5rem !important;
+.navbar-nav.flex-row .nav-item.active{
+  border-top: 2px solid #fff;
 }
-
+.navbar-nav.flex-row .nav-item{
+  border-top: 2px solid transparent;
+}
 .sticky .navbar-brand img.img-fluid {
   height: 40px !important;
 }
@@ -328,6 +340,10 @@ body, td {
   border-radius: 0px !important;
 }
 
+.upload-button{
+  font-size: 18px !important;
+}
+
 .btn-secondary:hover {
   color: #fff !important;
   background: #657080 !important;
@@ -377,6 +393,7 @@ body, td {
 #adminroster-pills-tab .nav-item {
   margin-right: 5px !important;
   background: #efefef !important;
+  border-top: none !important;
 }
 
 #adminroster-pills-tab .nav-item a {
@@ -674,9 +691,6 @@ table input[type=text], table select {
   background-color: #0f3c4b;
 }
 
-.box__file {
-  visibility: hidden;
-}
 
 #example_length {
   display: none;
@@ -727,9 +741,14 @@ table input[type=text], table select {
 .form-lable {
   font-family: 'Proxima Nova Bold';
   color: #78bc42;
-  font-size: 18px;
+  font-size: 16px;
 }
-
+.pd-label{
+  padding-left: 15px;
+}
+.pr-10x{
+  padding-right: 10px;
+}
 .form-divider {
   border-top: 2px solid #78bc42;
   margin-top: 40px;

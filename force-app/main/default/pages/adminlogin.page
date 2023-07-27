@@ -1,4 +1,4 @@
-<apex:page showHeader="false" title="mBurse: Login" sidebar="false" docType="html-5.0" controller="adminLoginController" >
+<apex:page showHeader="false" title="mBurse: Login" sidebar="false" docType="html-5.0" standardStylesheets="false" controller="adminLoginController" >
     <html lang="en">
 
     <head>
@@ -10,6 +10,9 @@
         <link rel="stylesheet" href="https://cdn.materialdesignicons.com/4.8.95/css/materialdesignicons.min.css" />
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" />
         <link rel="stylesheet" href="{!URLFOR($Resource.EmcCSS,'emc-design/assets/css/login.css')}" />
+        <link rel="stylesheet" href="{!URLFOR($Resource.EmcCSS,'emc-design/assets/css/main.css')}" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/fontawesome.min.css"  />
+        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v6.1.1/css/all.css"/>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.css" />
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.js"></script>
@@ -18,76 +21,231 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
         <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css" rel="stylesheet" />
         <style>
-           .login-btn{
-                background: none !important;
-                background-color: #000000 !important;
-            }
-            .login-btn:hover{
-                background-color: transparent !important;
-            }
-            .browser-wrapper{
-                margin-bottom: 19px;
-                margin-left: 65px;
-            }
-            .browser-text {
-                font-size: 16px;
-                color: #919aa3;
-            }
-            .btn:disabled{
-                cursor: no-drop;
-            }
-            .b-logo{
-                 height: 24px;
-                width: 24px;
-            }
-            .loginError{
-                padding: 25px 50px 0px;
-                font-size: 18px;
-                color: #FF0000;
-                font-weight: bold;
-            }
-            label.error {
-                color: red;
-                font-size: 1rem;
-                display: block;
-                margin-top: 5px;
-            }
+                img{
+                    height: 60px;
+                }
+                input{
+                    font-family: 'Proxima Nova' !important;
+                }
+                #togglePassword{
+                    display: block;
+                    position: absolute;
+                    right: 0;
+                    padding: 15px;
+                    cursor: pointer;
+                    z-index: 4;
+                }
+                .btn:focus{
+                    box-shadow: none !important;
+                }
+                .form-modal-title{
+                    font-family: 'Proxima Nova';
+                    font-size: 22px;
+                    font-weight: 600;
+                    text-align: center;
+                    margin-bottom: 18px;
+                }
+                .login100-form-title {
+                    text-align: center;
+                    width: 100%;
+                    display: block;
+                }
+                .p-b-35{
+                    padding-bottom: 35px;
+                }
+                .p-t-25{
+                    padding-top: 25px;
+                }
+                .form-control {
+                    box-shadow: none;
+                    background-color: #fff;
+                    border: 1px solid #ffffff;
+                    border-color:  #fff;
+                    padding: 1.375rem 3.75rem !important;
+                }
+                .form-control:focus {
+                    border-color: #4aba70; 
+                    box-shadow: none;
+                }
+                .login-form {
+                    width: 100%;
+                    min-height: 100vh;
+                    display: -webkit-box;
+                    display: -webkit-flex;
+                    display: -moz-box;
+                    display: -ms-flexbox;
+                    display: flex;
+                    flex-wrap: wrap;
+                    justify-content: center;
+                    align-items: center;
+                    padding: 15px;
+                }
+                .login-form form {
+                    color: #434343;
+                    border-radius: 1px;
+                    background: #f2f2f4;
+                    border: 1px solid #f2f2f4;
+                    box-shadow: 0px 0px 14px rgb(12 124 161 / 98%);
+                    padding: 52px 52px 0 52px;
+                }
+                .login-form h4 {
+                    text-align: center;
+                    font-size: 22px;
+                    margin-bottom: 20px;
+                }
+                .login-form .form-group {
+                    margin-bottom: 20px;
+                }
+                .icon {
+                    position: relative;
+                }
 
-            input.error {
-                border: 1px dashed red !important;
-                font-weight: 300 !important;
-                color: red;
-            }
-            .toast-info {
-                background-color: #002366;
-            }
-            .toast-error {
-                background-color: #FF0000 !important;
-            }
-            #toast-container > div {
-            opacity: 5.8 !important;
-            border-radius: 3px 3px 3px 3px !important;
-            width: 100% !important;
-            margin: 10px;
-            
-            }
-            a{
-                cursor: pointer;
-            }
+                .email-icon:before{
+                    background: url("{!URLFOR($Resource.EmcCSS,'emc-design/assets/images/email-svg.svg')}") center / contain no-repeat;
+                }
+                .password-icon:before{
+                    background: url("{!URLFOR($Resource.EmcCSS,'emc-design/assets/images/padlock-svg.svg')}") center / contain no-repeat;
+                }
+                .icon:before {
+                    content: "";
+                    position: absolute;
+                    left: 14px;
+                    top: 0;
+                    bottom: 0;
+                    width: 30px;
+                }
+                .login-form .form-control, .login-form .btn {
+                    min-height: 40px;
+                    border-radius: 0px; 
+                    transition: all 0.5s;
+                }
+                .login-form .close {
+                    position: absolute;
+                    top: 15px;
+                    right: 15px;
+                }
+                .login-form .btn {
+                    background: #4aba70;
+                    border: none;
+                    line-height: normal;
+                }
+                .login-form .btn:hover, .login-form .btn:focus {
+                    background: #42ae68;
+                }
+                .login-form a {
+                    color: #99999d;
+                }
+                .no-space{
+                    margin-right: 0px !important;
+                    margin-left: 1px !important;
+                }
+                .login-btn{
+                        background: none !important;
+                        background-color: #78bc42 !important;
+                        border-radius: 0.25rem !important;
+                        width: 20% !important;
+                        font-size: 16px !important;
+                        margin: 30px 212px !important; 
+                    }
+                    .login-btn:hover{
+                        background-color: #a2df71 !important;
+                        color: #fff !important;
+                    }
+                    .browser-wrapper{
+                        text-align: center;
+                    }
+                    .browser-text {
+                        font-size: 16px;
+                        padding-left: 1px;
+                        color: #919aa3;
+                    }
+                    .btn:disabled{
+                        cursor: no-drop;
+                    }
+                    .b-logo{
+                        height: 20px;
+                        width: 20px;
+                    }
+                    .loginError{
+                        text-align: center;
+                        margin-bottom: 18px;
+                        font-size: 18px;
+                        color: #FF0000;
+                        font-weight: bold;
+                        visibility: hidden;
+                    }
+                    /* label.error {
+                        color: red;
+                        font-size: 1rem;
+                        display: block;
+                        margin-top: 5px;
+                        padding: 5px 0px 5px 10px;
+                        float: left;
+                    } */
+                    label{
+                        float: left;
+                    }
+                    input.error {
+                        border: 1px dashed red !important;
+                        font-weight: 300 !important;
+                        color: red;
+                    }
+                    .toast-info {
+                        background-color: #002366;
+                    }
+                    .toast-error {
+                        background-color: #FF0000 !important;
+                    }
+                    #toast-container > div {
+                        opacity: 5.8 !important;
+                        border-radius: 3px 3px 3px 3px !important;
+                        width: 100% !important;
+                        margin: 10px;
+                    }
+                    a{
+                        cursor: pointer;
+                    }
+
         </style>
         <script>
             $ = jQuery.noConflict();
-
+            var isToggle = false;
             $(document).ready(function () {
+                    //* EMC - 277 Addition of Eye Icon In Password Field */
+                $("#togglePassword").click(function () {
+                        // toggle type attribute
+                        isToggle = true;
+                        var password = document.getElementById('password');
+                        const type = password.getAttribute("type") === "password" ? "text" : "password";
+                            password.setAttribute("type", type);
+                            //toggle eye icon in password field
+                            if($(this).hasClass('fa-solid fa-eye-slash') && password.getAttribute("type") == "text"){
+                                $(this).addClass('fa-eye').removeClass('fa-eye-slash');   
+                            }else{
+                                $(this).removeClass('fa-eye').addClass('fa-eye-slash');   
+                            }
+                           // $(this).toggleClass("fa-eye");
+                })
+
                 var validator = $("form[id='createform']").validate({
-                    debug: true,
+                    debug: false,
+                    // onkeyup: false, 
+                    onfocusout: false,
                     rules: {
                         username: "required",
                         password: "required",
                     },
                     messages: {
-                        username: "Please enter username",
-                        password: "Please enter a password"
+                        username: {
+                            required: function () {
+                                toastr.error('Please enter work email address', 'Error', {timeOut: 4000});
+                            }
+                        },
+                        password:{
+                            required: function () {
+                                toastr.error('Please enter password', 'Error', {timeOut: 4000})
+                            }
+                        }
                     },
                     submitHandler: function (form) {
                         var unameid = document.getElementById('username').value;
@@ -99,6 +257,7 @@
                             function (result, event) {
                                 if (event.status) {
                                     if (result.isValid == 'valid') {
+                               
                                         console.log(result);
                                         if (result.pgReference != null || result.pgReference != undefined) {
                                             var textArea = document.createElement('textarea');
@@ -106,17 +265,20 @@
                                             var urlToLoad = textArea.value;
                                             window.location.href = urlToLoad;
                                         }else{
+                                        
                                             console.log(result);
                                             toastr.error('Your Password Is Incorrect!');
                                             document.getElementById('password').value = "";
                                             var errorArea = document.getElementById('errorMsg');
                                             if(result.remainingAttempt != 0){
                                                 errorArea.innerHTML = "You have "+ result.remainingAttempt  +" attempts before you are locked out."
+                                                errorArea.style.visibility = "visible";
                                             }else{
                                                 let userelement =  document.getElementById('username');
                                                 let passelement =  document.getElementById('password');
                                                 let loginBtn = document.getElementById('login');
                                                 errorArea.innerHTML = "You are locked out for 15 minutes.";
+                                                errorArea.style.visibility = "visible";
                                                 userelement.disabled = true;
                                                 passelement.disabled = true;
                                                 loginBtn.disabled = true;
@@ -136,6 +298,7 @@
                                         }
                                     }
                                    else {
+                                       
                                         console.log(result);
                                         document.getElementById('username').value = "";
                                         document.getElementById('password').value = "";
@@ -186,13 +349,15 @@
             };
 
             forgotPassword = function(){
+                /* EMC - 277 */
+                var h_email = document.getElementById("hidden_email");
+                h_email.value = document.getElementById("username").value;
                 Visualforce.remoting.Manager.invokeAction(
                             '{!$RemoteAction.adminLoginController.redirectToMyVF}',
                             function (result, event) {
                                 if (event.status) {
                                     if (result != null) {
-                                        window.location.href = result;
-                                        console.log(result);
+                                        window.location.href = result + "?email=" + h_email.value;
                                     } else {
                                         $.confirm({
                                             title: 'Encountered an error!',
@@ -228,43 +393,35 @@
     </head>
 
     <body>
-        <main class="d-flex align-items-center min-vh-100 py-3 py-md-0">
-            <div class="container">
-                <div class="card login-card">
-                    <div class="row no-gutters">
-                        <div class="col-md-5">
-                            <img src="{!URLFOR($Resource.EmcCSS,'emc-design/assets/images/login.jpg')}" alt="login" class="login-card-img" />
-                        </div>
-                        <div class="col-md-7">
-                            <div class="loginError" id="errorMsg">
-                            </div>
-                            <div class="card-body">
-                                <div class="brand-wrapper">
-                                    <img src="{!URLFOR($Resource.EmcCSS,'emc-design/assets/images/logo/mBurse-logo.png')}" alt="logo" class="logo" />
-                                </div>
-                                <p class="login-card-description">Sign into your account</p>
-                                <form action="" class="needs-validation" id="createform">
-                                    <div class="form-group">
-                                        <label for="username" class="sr-only">Work Email Address</label>
-                                        <input type="text" name="username" id="username"   class="form-control" placeholder="Work Email Address" required="true" />
-                                    </div>
-                                    <div class="form-group mb-4">
-                                        <label for="password" class="sr-only">Password</label>
-                                        <input type="password" name="password" id="password"  class="form-control" placeholder="***********" required="true" />
-                                    </div>
-                                    <input name="login" id="login" class="btn btn-block login-btn mb-4" type="submit" value="Login" />
-                                </form>
-                                <a href="" class="forgot-password-link" onclick="forgotPassword();return false;">Forgot password?</a>
-                            </div>
-                            <div class="browser-wrapper">
-                                <div class="browser-text">Browser Not Supported</div>
-                                <img src="{!URLFOR($Resource.EmcCSS,'emc-design/assets/images/logo/internet-explorer.png')}" alt="logo" class="b-logo" />
-                            </div>
-                        </div>
-                    </div>
+        <div class="login-form">    
+            <form action="" class="needs-validation" id="createform" autocomplete="off">
+                <input type="hidden" id="hidden_email"/>
+                <div class="login100-form-title p-b-35"><img src="{!URLFOR($Resource.DashboardCSS,'dashboardfinal/images/mBurse.png')}" alt="logo" class="logo" /></div>
+                <p class="form-modal-title">Sign in with your email and password</p>
+                <div class="loginError" id="errorMsg">
+                    You have 6 attempts before you are locked out.
                 </div>
+                <div class="form-group icon email-icon">
+                    <input type="text" class="form-control" name="username" id="username"  placeholder="Work Email Address" required="true"  />
+                </div>
+                <div class="form-group icon password-icon">
+                   <!-- EMC - 277 -->
+                    <i class="fa-solid fa-eye-slash" id="togglePassword"></i>
+                    <input type="text" class="form-control" name="password" id="password" placeholder="Password" required="true" onfocus="if(this.value !='' && !isToggle){setAttribute('type', 'password')}" onkeyup="if(this.value !='' && !isToggle){setAttribute('type', 'password')}" />
+                </div>
+                <input name="login" id="login" class="btn btn-block login-btn" type="submit" value="LOG IN" />     
+                <div style="text-align: center; padding-bottom: 20px;">
+                    <a href="" class="forgot-password-link" onclick="forgotPassword();return false;">Forgot or reset password?</a>
+                </div>
+                <div class="browser-wrapper" style="text-align: center;">
+                    <p>
+                        <img alt="logo" class="b-logo"  src="{!URLFOR($Resource.EmcCSS,'/emc-design/assets/images/logo/internet-explorer.png')}" />
+                        <span class="browser-text">is not a supported browser</span>
+                    </p>
+                
+                </div>
+            </form> 
             </div>
-        </main>
     </body>
 
     </html>

@@ -2,6 +2,7 @@ global class SendMileageReminderforDelta implements Database.batchable<sObject>,
 
     public List<String> listAccount {get;set;}
     public Map<String,List<String>> accountidEmails {get;set;}
+    Global  List<EmailTemplate> emailTemplate;
     public SendMileageReminderforDelta()
     {
         accountidEmails = new Map<String,List<String>>();
@@ -10,23 +11,6 @@ global class SendMileageReminderforDelta implements Database.batchable<sObject>,
         if(accountName != null) {
             listAccount = accountName.split(',');
         }
-        
-       /* String query = 'select Id, External_Email__c,Role__c,AccountId FROM Contact WHERE Account.Name IN: listAccount AND (Role__c = \'Admin\') AND (Deactivated_Date__c = NULL OR Deactivated_Date__c >= LAST_N_DAYS:30)';
-        for(Contact currentContact : (List<Contact>)Database.query(query))
-        {
-            if(accountidEmails.size()>0 && accountidEmails.containsKey(currentContact.AccountId))
-            {
-                List<String> accountEmailAddressList = accountidEmails.get(currentContact.AccountId);
-                accountEmailAddressList.add(currentContact.External_Email__c);
-                accountidEmails.put(currentContact.AccountId,accountEmailAddressList);
-            }
-            else {
-                List<String> accountEmailAddressList = new List<String>();
-                accountEmailAddressList.add(currentContact.External_Email__c);
-                accountidEmails.put(currentContact.AccountId,accountEmailAddressList);
-            }
-        }*/
-
     }
     global Database.QueryLocator start(Database.BatchableContext BC)
     {
@@ -37,7 +21,9 @@ global class SendMileageReminderforDelta implements Database.batchable<sObject>,
    
     global void execute(Database.BatchableContext BC, List<sObject> scope) {
     
-    List<EmailTemplate> emailTemplate = new List<EmailTemplate>([SELECT Id, Subject, body from EmailTemplate WHERE developerName = 'Mileage_Reminder_for_Delta']);
+     emailTemplate = new List<EmailTemplate>([SELECT Id, Subject, body, HTMLValue  
+                                                                    FROM EmailTemplate 
+                                                                        WHERE developerName = 'Monthly_mileage_reminder_New']);
     OrgWideEmailAddress[] owea = [select Id ,address from OrgWideEmailAddress where Address = 'driverservices@mburse.com'];
     List<Messaging.SingleEmailMessage> singleEmailMessageList = new List<Messaging.SingleEmailMessage>();
     SendEmailonDeactivation__c customSettings = SendEmailonDeactivation__c.getValues('SendMileageReminderforDelta');  
@@ -45,17 +31,13 @@ global class SendMileageReminderforDelta implements Database.batchable<sObject>,
         {
             Messaging.SingleEmailMessage mail = new Messaging.SingleEmailMessage();
             List<String> myEmail = new List<String>();
-            List<String> bccEmailaddress = new List<String>();  
-            //myEmail.add('natavar.goc@gmail.com');
-            // myEmail.add(currentContact.External_Email__c);
-            // mail.setToAddresses(myEmail);
-            // mail.setSubject(emailTemplate[0].Subject);
-            // mail.setPlainTextBody(emailTemplate[0].Body);  
-
-
+            List<String> bccEmailaddress = new List<String>(); 
+            string htmlbody = ''; 
+           
             if(customSettings!=null && customSettings.Send_to_Driver__c == true && currentContact.External_Email__c != null){
             myEmail.add(currentContact.External_Email__c);
             mail.setToAddresses(myEmail);
+            system.debug('myEmail==' + myEmail);
             
             if(customSettings.BCCEmailaddresses__c!=null && customSettings.BCCEmailaddresses__c.contains(',')){
                 bccEmailaddress.addAll(customSettings.BCCEmailaddresses__c.split(','));
@@ -75,22 +57,17 @@ global class SendMileageReminderforDelta implements Database.batchable<sObject>,
                 }
             }
 
-
             mail.setSubject(emailTemplate[0].Subject);
-            if(emailTemplate[0].Body.contains('{!Contact.FirstName}') ){
-                emailTemplate[0].Body = emailTemplate[0].Body.replace('{!Contact.FirstName}', currentContact.FirstName);
+            htmlbody = emailTemplate[0].HTMLValue;
+            if(currentContact.FirstName != null){
+                htmlbody = htmlbody.replace('{!Contact.FirstName}', currentContact.FirstName);
+            } else {
+                htmlbody = htmlbody.replace('{!Contact.FirstName}', '');
             }
-            mail.setPlainTextBody(emailTemplate[0].Body); 
-
-            /* if(accountidEmails.containsKey(currentContact.AccountId))
-            {       
-                bccEmailaddress.addAll(accountidEmails.get(currentContact.AccountId));
-                  
-            } */
-            // if(label.Email_To_Address.contains(','))
-            // {
-            //     bccEmailaddress.addAll(label.Email_To_Address.split(','));
-            // } 
+             mail.setPlainTextBody(htmlbody);
+              mail.setHtmlBody(htmlbody);
+             system.debug('htmlbody ==' + htmlbody );
+      
             if(bccEmailaddress.size()>0)
             {
                 mail.setBccAddresses(bccEmailaddress);     

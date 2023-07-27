@@ -7,6 +7,7 @@ import {
 import fetchLookUpValues from '@salesforce/apex/GetDriverData.fetchLookUpValues';
 export default class MultipleDropdownComponent extends LightningElement {
     @track options = [];
+		@track filterOption = [];
     @track searchValue = '';
     @api defaultOption;
     @api searchKey;
@@ -40,6 +41,10 @@ export default class MultipleDropdownComponent extends LightningElement {
         selectElement.style.display = 'none';
         this.template.querySelector('.searchvalue').value = '';
         this.searchValue = '';
+        if (this.searchValue != undefined) {
+            let filterItem = this.filterSearch(this.searchValue);
+            this.options = filterItem;
+        }
         var selectIcon =  this.template.querySelector('.slds-icon-utility-down');
         selectIcon.classList.remove('slds-hide');
         this.template.querySelector('.slds-searchIcon').classList.add('slds-hide');
@@ -81,7 +86,7 @@ export default class MultipleDropdownComponent extends LightningElement {
             const uniqueArr = [...new Map(picklistOptions.map(item => [item[dupkey], item])).values()]
             picklistOptions = uniqueArr;
             picklistOptions = picklistOptions.filter(function(x){return x.value !== undefined})
-       
+       			this.filterOption = picklistOptions;
             this.options = picklistOptions;
 
         } else if (error) {
@@ -117,6 +122,26 @@ export default class MultipleDropdownComponent extends LightningElement {
             .querySelector('.slds-dropdown-trigger')
             .classList.add('slds-is-open');
     }
+		
+		 filterSearch(searchValue) {
+        var searchArr = [];
+        this.filterOption.forEach((opt) => {
+            searchArr.push({
+                key: opt.key,
+                value: opt.value
+            });
+        });
+        const filter = searchValue.toUpperCase();
+        let filSearchArr = searchArr.filter(option => {
+            if (option.value != undefined) {
+                if (option.value.toUpperCase().includes(filter)) {
+                    return option;
+                }
+            }
+        });
+
+        return filSearchArr;
+    }
 
     // On search in dropdown list event
     handleKeyUp(event) {
@@ -125,18 +150,19 @@ export default class MultipleDropdownComponent extends LightningElement {
             // eslint-disable-next-line @lwc/lwc/no-async-operation
 
             this.searchValue = this.searchValue;
-            const filter = this.searchValue.toUpperCase();
-            const span = this.template.querySelector('.slds-listbox_vertical').childNodes;
+            let filterItem = this.filterSearch(this.searchValue);
+            this.options = filterItem;
+           /* const span = this.template.querySelector('.slds-listbox_vertical').childNodes;*/
 
 
-            for (let i = 1; i < span.length; i++) {
+           /* for (let i = 1; i < span.length; i++) {
                 const option = span[i].textContent;
                 if (option.toUpperCase().indexOf(filter) > -1) {
                     span[i].style.display = "";
                 } else {
                     span[i].style.display = "none";
                 }
-            }
+            }*/
 
         }
 
@@ -164,15 +190,19 @@ export default class MultipleDropdownComponent extends LightningElement {
         event.preventDefault();
         const targetname = event.currentTarget.dataset.name;
         this.selectedAccount = event.currentTarget.dataset.name;
+				console.log("selec", this.selectedAccount)
         if (!this.isSelection) {
             this.isSelection = true;
         }
         if(this.template.querySelector('.selectedOption').style.display === 'none') {
             this.template.querySelector('.selectedOption').style.display = 'block';
+						this.template
+								.querySelector('.selectedOption')
+								.classList.remove('slds-hide');
         }else{
-        this.template
-            .querySelector('.selectedOption')
-            .classList.remove('slds-hide');
+						this.template
+								.querySelector('.selectedOption')
+								.classList.remove('slds-hide');
         }
         // this.template
         //     .querySelector('.selectedOption')
@@ -219,7 +249,9 @@ export default class MultipleDropdownComponent extends LightningElement {
         this.dispatchEvent(targetEvent);
         this.template.querySelector('.searchvalue').value = '';
         this.searchValue = '';
-        const span = this.template.querySelector('.slds-listbox_vertical').childNodes;
+				let filterItem = this.filterSearch(this.searchValue);
+        this.options = filterItem;
+       /* const span = this.template.querySelector('.slds-listbox_vertical').childNodes;
 
         for (let i = 0; i < span.length; i++) {
 
@@ -227,7 +259,7 @@ export default class MultipleDropdownComponent extends LightningElement {
 
                 span[i].style.display = "";
             }
-        }
+        }*/
         this.showAccountsListFlag = false;
 
 

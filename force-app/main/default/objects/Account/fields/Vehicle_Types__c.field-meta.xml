@@ -297,6 +297,191 @@
                 <label>2022 Volkswagen Atlas</label>
             </value>
             <value>
+                <fullName>2022 Mid Size SUV</fullName>
+                <default>false</default>
+                <label>2022 Mid Size SUV</label>
+            </value>
+            <value>
+                <fullName>2022 Pick Up Truck</fullName>
+                <default>false</default>
+                <label>2022 Pick Up Truck</label>
+            </value>
+            <value>
+                <fullName>2022 Ford 250</fullName>
+                <default>false</default>
+                <label>2022 Ford 250</label>
+            </value>
+            <value>
+                <fullName>2022 Ford Edge</fullName>
+                <default>false</default>
+                <label>2022 Ford Edge</label>
+            </value>
+            <value>
+                <fullName>2022 Ford Escape</fullName>
+                <default>false</default>
+                <label>2022 Ford Escape</label>
+            </value>
+            <value>
+                <fullName>2022 Full Size Sedan</fullName>
+                <default>false</default>
+                <label>2022 Full Size Sedan</label>
+            </value>
+            <value>
+                <fullName>2022 Full Size SUV</fullName>
+                <default>false</default>
+                <label>2022 Full Size SUV</label>
+            </value>
+            <value>
+                <fullName>2022 Full Size SUV 2</fullName>
+                <default>false</default>
+                <label>2022 Full Size SUV 2</label>
+            </value>
+            <value>
+                <fullName>2022 Mileage Rate</fullName>
+                <default>false</default>
+                <label>2022 Mileage Rate</label>
+            </value>
+            <value>
+                <fullName>2022 AWD Ford Escape</fullName>
+                <default>false</default>
+                <label>2022 AWD Ford Escape</label>
+            </value>
+            <value>
+                <fullName>2022 IRS Mileage Rate</fullName>
+                <default>false</default>
+                <label>2022 IRS Mileage Rate</label>
+            </value>
+            <value>
+                <fullName>2022 SUV</fullName>
+                <default>false</default>
+                <label>2022 SUV</label>
+            </value>
+            <value>
+                <fullName>2022 Mid Size Sedan</fullName>
+                <default>false</default>
+                <label>2022 Mid Size Sedan</label>
+            </value>
+            <value>
+                <fullName>2022 4x4 V6 Pickup Truck</fullName>
+                <default>false</default>
+                <label>2022 4x4 V6 Pickup Truck</label>
+            </value>
+            <value>
+                <fullName>2022 4x4 V8 Pickup Truck</fullName>
+                <default>false</default>
+                <label>2022 4x4 V8 Pickup Truck</label>
+            </value>
+            <value>
+                <fullName>2022 P/U Truck</fullName>
+                <default>false</default>
+                <label>2022 P/U Truck</label>
+            </value>
+            <value>
+                <fullName>2022 Compact SUV</fullName>
+                <default>false</default>
+                <label>2022 Compact SUV</label>
+            </value>
+            <value>
+                <fullName>2022 Midsize SUV 1</fullName>
+                <default>false</default>
+                <label>2022 Midsize SUV 1</label>
+            </value>
+            <value>
+                <fullName>2022 Midsize SUV 2</fullName>
+                <default>false</default>
+                <label>2022 Midsize SUV 2</label>
+            </value>
+            <value>
+                <fullName>2022 Ford F-150</fullName>
+                <default>false</default>
+                <label>2022 Ford F-150</label>
+            </value>
+            <value>
+                <fullName>2022 Ford Explorer</fullName>
+                <default>false</default>
+                <label>2022 Ford Explorer</label>
+            </value>
+            <value>
+                <fullName>2022 Chevrolet Impala</fullName>
+                <default>false</default>
+                <label>2022 Chevrolet Impala</label>
+            </value>
+            <value>
+                <fullName>2022 Dodge Journey</fullName>
+                <default>false</default>
+                <label>2022 Dodge Journey</label>
+            </value>
+            <value>
+                <fullName>2022 CRA Rate</fullName>
+                <default>false</default>
+                <label>2022 CRA Rate</label>
+            </value>
+            <value>
+                <fullName>2022 Chevrolet Malibu</fullName>
+                <default>false</default>
+                <label>2022 Chevrolet Malibu</label>
+            </value>
+            <value>
+                <fullName>2022 Full-Size SUV</fullName>
+                <default>false</default>
+                <label>2022 Full-Size SUV</label>
+            </value>
+            <value>
+                <fullName>2022 Compact Sedan</fullName>
+                <default>false</default>
+                <label>2022 Compact Sedan</label>
+            </value>
+            <value>
+                <fullName>2023 Midsize Sedan</fullName>
+                <default>false</default>
+                <label>2023 Midsize Sedan</label>
+            </value>
+            <value>
+                <fullName>2023 Pickup Truck</fullName>
+                <default>false</default>
+                <label>2023 Pickup Truck</label>
+            </value>
+            <value>
+                <fullName>2023 Midsize SUV</fullName>
+                <default>false</default>
+                <label>2023 Midsize SUV</label>
+            </value>
+            <value>
+                <fullName>2023 Full-Size Sedan</fullName>
+                <default>false</default>
+                <label>2023 Full-Size Sedan</label>
+            </value>
+            <value>
+                <fullName>2023 Mid-size SUV</fullName>
+                <default>false</default>
+                <label>2023 Mid-size SUV</label>
+            </value>
+            <value>
+                <fullName>2023 SUV</fullName>
+                <default>false</default>
+                <label>2023 SUV</label>
+            </value>
+            <value>
+                <fullName>2023 Full-Size SUV</fullName>
+                <default>false</default>
+                <label>2023 Full-Size SUV</label>
+            </value>
+            <value>
+                <fullName>2023 IRS Mileage Rate</fullName>
+                <default>false</default>
+                <label>2023 IRS Mileage Rate</label>
+            </value>
+            <value>
+                <fullName>2023 Compact Sedan</fullName>
+                <default>false</default>
+                <label>2023 Compact Sedan</label>
+            </value>
+            <value>
+                <fullName>2023 P/U Truck</fullName>
+                <default>false</default>
+                <label>2023 P/U Truck</label>
+            </value>
+            <value>
                 <fullName>2016 Chevrolet Malibu</fullName>
                 <default>false</default>
                 <isActive>false</isActive>

@@ -207,10 +207,18 @@
                 $scope.id = url.searchParams.get("id");
                 $scope.showteam = url.searchParams.get("showteam");
                 $scope.accid = url.searchParams.get("accid");
+                $scope.PLMarketing = '{!($Label.PL_Marketing)}';
                 $scope.admindriver = false;
                 $scope.admindriver = url.searchParams.get("admindriver");
                 if($scope.admindriver == undefined || $scope.admindriver == ''){
                     $scope.admindriver = false;
+                }
+                $scope.manId = url.searchParams.get("managerid");
+                $scope.manVisible = false;
+                if ($scope.manId == undefined || $scope.manId == '') {
+                    $scope.manVisible = false;
+                } else {
+                    $scope.manVisible = true;
                 }
                 $scope.managerList = {!AllDrivers};
                 $scope.accountYear = {!AccountYear};
@@ -370,18 +378,43 @@
                                     
                                     <ul class="navbar-nav flex-row">
                                         <li class="nav-item">
-                                             <a class="nav-link text-white"  ng-show="!admindriver" href="/app/admindashboard?accid={{accid}}&id={{id}}">Dashboard</a>
-                                             <a class="nav-link text-white"  ng-show="admindriver" href="/app/admindriverdashboard?accid={{accid}}&id={{id}}&showteam={{showteam}}&admindriver=true">Dashboard</a>
+                                             <a class="nav-link text-white"  ng-show="!admindriver && !manVisible" href="/app/admindashboard?accid={{accid}}&id={{id}}">Dashboard</a>
+                                             <a class="nav-link text-white"  ng-show="admindriver  && !manVisible" href="/app/admindriverdashboard?accid={{accid}}&id={{id}}&showteam={{showteam}}&admindriver=true">Dashboard</a>
+                                             <a class="nav-link text-white" ng-show="!admindriver && manVisible" href="/app/managerdashboardfromadmin?managerid={{manId}}&accid={{accid}}&id={{id}}&showteam={{showteam}}">Dashboard</a>
+                                             <a class="nav-link text-white" ng-show="admindriver && manVisible" href="/app/managerdashboardfromadmindriver?managerid={{manId}}&accid={{accid}}&id={{id}}&showteam={{showteam}}&admindriver=true">Dashboard</a>
                                         </li>
-                                        <li class="nav-item">
+                                        <li class="nav-item" ng-show="!manVisible">
+                                            <a class="nav-link text-white" ng-show="admindriver" href="/app/MileageDashboard?accid={{accid}}&id={{id}}&showteam={{showteam}}&admindriver=true">Mileage</a>
+                                            <a class="nav-link text-white" ng-show="!admindriver" href="/app/MileageDashboard?accid={{accid}}&id={{id}}&showteam={{showteam}}">Mileage</a>
+                                        </li>
+                                        <li class="nav-item" ng-show="!manVisible">
                                              <a class="nav-link text-white"  ng-show="!admindriver" href="/app/roster?accid={{accid}}&id={{id}}&showteam={{showteam}}">Drivers</a>
                                              <a class="nav-link text-white"  ng-show="admindriver" href="/app/roster?accid={{accid}}&id={{id}}&showteam={{showteam}}&admindriver=true">Drivers</a>
                                         </li>
-                                        <li class="nav-item active">
+                                        <li class="nav-item" ng-show="manVisible">
+                                            <a class="nav-link text-white" ng-show="!admindriver" href="/app/roster?managerid={{manId}}&accid={{accid}}&id={{id}}&showteam={{showteam}}">Drivers</a>
+                                            <a class="nav-link text-white" ng-show="admindriver" href="/app/roster?managerid={{manId}}&accid={{accid}}&id={{id}}&showteam={{showteam}}&admindriver=true">Drivers</a>
+                                        </li>
+                                        <li class="nav-item" ng-show="!manVisible">
+                                            <a class="nav-link text-white" ng-show="!admindriver" href="/app/ManageNotification?accid={{accid}}&id={{id}}&showteam={{showteam}}">Communications</a>
+                                            <a class="nav-link text-white" ng-show="admindriver" href="/app/ManageNotification?accid={{accid}}&id={{id}}&showteam={{showteam}}&admindriver=true">Communications</a>
+                                        </li>
+                                        <li class="nav-item" ng-show="manVisible && accid === PLMarketing">
+                                            <a class="nav-link text-white" ng-show="!admindriver" href="/app/ManageNotification?managerid={{manId}}&accid={{accid}}&id={{id}}&showteam={{showteam}}">Communications</a>
+                                            <a class="nav-link text-white" ng-show="admindriver" href="/app/ManageNotification?managerid={{manId}}&accid={{accid}}&id={{id}}&showteam={{showteam}}&admindriver=true">Communications</a>
+                                        </li>
+                                        <li class="nav-item active" ng-show="!manVisible">
                                              <a class="nav-link text-white"  ng-show="!admindriver" href="/app/reportlist?accid={{accid}}&id={{id}}&showteam={{showteam}}">Reports</a>
                                              <a class="nav-link text-white"  ng-show="admindriver" href="/app/reportlist?accid={{accid}}&id={{id}}&showteam={{showteam}}&admindriver=true">Reports</a>
                                         </li>
-                                        <li class="nav-item"> 
+                                        <li class="nav-item active" ng-show="manVisible">
+                                            <a class="nav-link text-white" ng-show="!admindriver" href="/app/reportlist?managerid={{manId}}&accid={{accid}}&id={{id}}&showteam={{showteam}}">Reports</a>
+                                            <a class="nav-link text-white" ng-show="admindriver" href="/app/reportlist?managerid={{manId}}&accid={{accid}}&id={{id}}&showteam={{showteam}}&admindriver=true">Reports</a>
+                                        </li>
+                                        <li class="nav-item" ng-show="manVisible">
+                                            <a class="nav-link text-white" ng-show="admindriver" href="/app/driveradminmanagermydetail?managerid={{manId}}&accid={{accid}}&id={{id}}&showteam={{showteam}}&admindriver=true">My Details</a>
+                                        </li>
+                                        <li class="nav-item" ng-show="!manVisible">
                                             <a class="nav-link text-white" ng-show="admindriver" href="/app/driveradminmanagermydetail?accid={{accid}}&id={{id}}&showteam={{showteam}}&admindriver=true">My Details</a>
                                         </li>
                                         <li class="nav-item">

@@ -1,0 +1,91 @@
+<template>
+    <c-m-burse-navbar margin="85px">
+        <li class="nav-item" if:true={showDashBoard}>
+            <a class="nav-link text-white" href={dashboardUrl}>
+                Dashboard
+            </a>
+        </li>
+        <template if:true={isDriverManager}>
+            <li class="nav-item">
+                <a class="nav-link text-white" href={mileageUrl}>
+                    Mileage
+                </a>
+            </li>
+            <li class="nav-item"  if:true={renderUrl}>
+                <a class="nav-link text-white" href={communicateUrl}>
+                    Communications
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link text-white" href={myDetailUrl}>
+                    My Details
+                </a>
+            </li>
+        </template>
+        <template if:true={isAdminDriver}>
+            <li class="nav-item">
+                <a class="nav-link text-white" href={mileageUrl}>
+                    Mileage
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link text-white" href={rosterUrl}>
+                    Drivers
+                </a>
+            </li>
+            <li class="nav-item"  if:true={renderUrl}>
+                <a class="nav-link text-white" href={communicateUrl}>
+                    Communications
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link text-white" href={reportUrl}>
+                    Reports
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link text-white" href={myDetailUrl}>
+                    My Details
+                </a>
+            </li>
+        </template>
+        <template if:true={isManagerDriver}>
+            <li class="nav-item">
+                <a class="nav-link text-white" href={rosterUrl}>
+                    Drivers
+                </a>
+            </li>
+            <li class="nav-item" if:true={renderUrl}>
+                <a class="nav-link text-white" href={communicateUrl}>
+                    Communications
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link text-white" href={reportUrl}>
+                    Reports
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link text-white" href={myDetailUrl}>
+                    My Details
+                </a>
+            </li>
+        </template>
+        <li class="nav-item">
+            <a  class="btn button_secondary slds-float_right ml-em" href={uploadUrl}>
+                Upload Insurance
+            </a>
+        </li>
+        <li class="nav-item">
+            <a href="/app/secur/logout.jsp" class="nav-link text-white">
+                Logout
+            </a>
+        </li>
+    </c-m-burse-navbar>
+		<template if:true={information}>
+				 <c-dashboard-insurance-view if:false={nextDeclationUpload} expired={insuranceExpired} onnavigate={navigateToDeclaration} video-link={insuranceVideo}></c-dashboard-insurance-view>
+		</template>
+   
+    <c-dashboard-insurance-upload if:true={nextDeclationUpload} is-upload-show={uploadVal} account-id={accountId} contact-id={contactId} attachmentid={attachmentid} contact-name={contactName}
+    contact-email={contactEmail} client={information} onnavigate={navigateToDashboard}  onback={backToInsurance}></c-dashboard-insurance-upload>
+</template>

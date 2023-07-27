@@ -4,27 +4,14 @@ public class GetTripfromTriplogBatchClassTest {
     public static testmethod void GetTriptest() {
         List<Id> contactids = new List<Id>();
         Map<Id, Employee_Reimbursement__c> conReim = new Map<Id, Employee_Reimbursement__c>();
-        
-        TriggerConfig__c customSetting =  new TriggerConfig__c();
-        customSetting.Name = 'Defaulttrigger';
-        customSetting.MappingGasPriceTrigger__c = true;
-        insert customSetting;
-        
-        SendEmailToMe__c sendEmail = new SendEmailToMe__c();
-        sendEmail.Name = 'GetTripCallOutApprovePutCall';
-        sendEmail.Send_email_to_me__c = true;
-        insert sendEmail;
-        
-        Vehicle_URL_Mapping__c veh = new Vehicle_URL_Mapping__c();
-        veh.URL__c = 'https://cdn2.hubspot.net/hubfs/2511299/iStock-494093356.jpg';
-        veh.vehicle__c = 'Mileage Rate';
-        veh.Year__c = '2019';
-        insert veh;
-        
-        SendEmail__c customSetting1 =  new SendEmail__c();
-        customSetting1.Name = 'Send Email For Compliance';
-        customSetting1.Send_email_from_code__c= true;
-        insert customSetting1;
+
+        TriggerConfig__c triggerCustomSetting = TestDataFactory.triggerConfigCustomSetting(true);
+        SendEmail__c customSetting2 = TestDataFactory.sendEmailCustomSetting(true, 'Send Email For Compliance');
+        SendEmail__c customSetting3 = TestDataFactory.sendEmailCustomSetting(true, 'EmployeeReimbursementTrigger');
+        SendEmailToMe__c customSetMail = TestDataFactory.sendEmailToMeCustomSetting(true, 'Defaulttrigger');
+        TrueDialog_Keys__c tdKeys = TestDataFactory.createTrueDialog(true);
+        Vehicle_URL_Mapping__c vehicleType = TestDataFactory.createVehicleData(true, 3);
+        IRS_Mileage_Rate__c createIRSRate = TestDataFactory.createIRSRate(true, 0);
         
         Get_Trip_Date_Settings__c obj_Get_Trip_Date_Settings = new Get_Trip_Date_Settings__c();
         obj_Get_Trip_Date_Settings.Name ='Date Settings';
@@ -33,321 +20,54 @@ public class GetTripfromTriplogBatchClassTest {
         obj_Get_Trip_Date_Settings.Last_N_Days__c ='31';
         insert obj_Get_Trip_Date_Settings;
 
-        Account acc = new Account();           
-        acc.Name = 'Delta account';
-        acc.Triplog_API__c = '123456789';
-        Acc.Triplog_Status__c = 'U';
-        insert Acc;
+        UserRole userRole = TestDataFactory.getUserRole();
+        Profile profileObj = TestDataFactory.getUserProfile();
+        User admin = TestDataFactory.getSystemAdminUser(userRole.Id);
+        User userObj;
+        Account acc ;
+        List<Contact> conList;
+       
+        System.runAs(admin) {
+            Account accountObj = TestDataFactory.createAccount(true,'Test',true);
+            Contact contactObj = TestDataFactory.createCICDContact(true,accountObj.Id);
+
+            acc = TestDataFactory.createAccount(true,'Test',true);
+            acc.Triplog_API__c = 'fde76cdde14449bea46b321225ac8fd1';
+            acc.Pay_Period_Start_Date__c = System.today().addDays(-100);
+            acc.Pay_Period_Days__c = 13;
+            update acc;
+           
+            conList = TestDataFactory.createDriverContact(false, acc.Id, 'Driver', vehicleType.Name, 'paras.dhanani',  1);
+            conList[0].Vehicle_Type__c = vehicleType.Name;
+            conList[0].External_Email__c = 'minkesh.patel1478@gmail.com';
+            Insert conList[0];
+            contactids.add(conList[0].Id);
+            
+            userObj = TestDataFactory.createUser(True, profileObj.Id, conList[0].Id);
+        }
         
-        Contact contact = new Contact();
-        contact.lastname = 'Test Contact';
-        contact.AccountId = Acc.Id;
-        contact.External_Email__c = 'minkesh.patel1478@gmail.com';
-        contact.Email = 'minkesh.patel1478@gmail.com';
-        contact.isCommunityUser__c = true;
-        contact.MailingCity='ahmedabad';
-        contact.Vehicle_Type__c = '2019 Mileage Rate';
-        contact.MailingState='GJ';
-        insert contact;
-        contactids.add(contact.Id);
+        List<Employee_Reimbursement__c> er = TestDataFactory.createPendingReimbursement(False, conList, 1, createIRSRate.Id);
+        er[0].Approved_Date__c = system.today()-4;
+        er[0].Month__c = '09-2017';
+        er[0].Status__c = 'Approved';
+        Insert er[0];
         
-        Contact con = new Contact();
-        con.lastname = 'Test Con';
-        con.AccountId = Acc.Id;
-        con.External_Email__c = 'minkesh.patel1357@gmail.com';
-        con.Email = 'minkesh.patel1357@gmail.com';
-        con.Triplog_Status__c = 'U';
-        con.Vehicle_Type__c = '2019 Mileage Rate';
-        con.isCommunityUser__c = true;
-        insert con;
-        contactids.add(con.Id);
-        
-        Employee_Reimbursement__c er = new Employee_Reimbursement__c();
-        er.Contact_Id__c = contact.Id;
-        
-        er.month__c = '09-2020';
-        er.Name = contact.lastname+':'+er.month__c;
-        er.Status__c = 'Pending';
-        er.Fuel_Price__c = 1;  //String.valueof(er.Fuel_Price__c); // 
-        er.MPG__c = 10.00;
-        er.Maintenance_and_Tires__c = 24;//String.valueof(er.Maintenance_and_Tires__c);
-        er.Fuel_Price__c = 1;
-        er.MPG__c = 10;
-        er.Maintenance_and_Tires__c = 10;
-        er.Fixed_Amount__c = 10.10;
-        er.Triplog_Status__c = 'U';
-        insert er;
-        conReim.put(con.Id,er);
-        
-        Employee_Mileage__c emp = new Employee_Mileage__c();
-        emp.Contact_Email_Id__c = 'test@test.gmail.com';
-        emp.Name = 'Test Mileage Record';
-        emp.EmployeeReimbursement__c = er.id;
-        insert emp;
-        
+        conReim.put(conList[0].Id,er[0]);
+
+        List<Bi_Weekly_Reimbursement__c> br = TestDataFactory.createBiweeklyReim (false, conList, System.today().addDays(-26),System.today().addDays(-13), 1, createIRSRate.Id);
+        br = TestDataFactory.createBiweeklyReim (false, conList, System.today().addDays(-13),System.today().addDays(0), 2, createIRSRate.Id);
+        insert br;       
+        List<Employee_Mileage__c> emp1 = TestDataFactory.getEmpMileage (False, 1, er, br);
+        emp1[0].Trip_Status__c = 'Approved';
+        emp1[0].Approved_Date__c = system.today();
+        Insert emp1[0];
+
         Test.startTest();
         Test.SetMock(HttpCalloutMock.class, new GetTripCalloutMock());
-        GetTripfromTriplogBatchClass obj = new GetTripfromTriplogBatchClass('U');
+        GetTripfromTriplogBatchClass obj = new GetTripfromTriplogBatchClass('U', false);
         GetTripfromTriplogBatchClass obj1 = new GetTripfromTriplogBatchClass(Acc.Id,'U');
         DataBase.executeBatch(obj);
         
         Test.stopTest();
     }
-    public static testmethod void GetTriptest1() {
-        List<Id> contactids = new List<Id>();
-        Map<Id, Employee_Reimbursement__c> conReim = new Map<Id, Employee_Reimbursement__c>();
-        
-        TriggerConfig__c customSetting =  new TriggerConfig__c();
-        customSetting.Name = 'Defaulttrigger';
-        customSetting.MappingGasPriceTrigger__c = true;
-        insert customSetting;
-        
-        Vehicle_URL_Mapping__c veh = new Vehicle_URL_Mapping__c();
-        veh.URL__c = 'https://cdn2.hubspot.net/hubfs/2511299/iStock-494093356.jpg';
-        veh.vehicle__c = 'Mileage Rate';
-        veh.Year__c = '2019';
-        insert veh;
-        
-        SendEmailToMe__c sendEmail = new SendEmailToMe__c();
-        sendEmail.Name = 'GetTripCallOutApprovePutCall';
-        sendEmail.Send_email_to_me__c = true;
-        insert sendEmail;
-        
-        SendEmail__c customSetting1 =  new SendEmail__c();
-        customSetting1.Name = 'Send Email For Compliance';
-        customSetting1.Send_email_from_code__c= true;
-        insert customSetting1;
-        
-        Account acc = new Account();           
-        acc.Name = 'Delta account';
-        acc.Triplog_API__c = '123456789';
-        Acc.Triplog_Status__c = 'A';
-        insert Acc;
-        
-        Contact contact = new Contact();
-        contact.lastname = 'Test Contact';
-        contact.AccountId = Acc.Id;
-        contact.External_Email__c = 'minkesh.patel1478@gmail.com';
-        contact.Email = 'minkesh.patel1478@gmail.com';
-        contact.isCommunityUser__c = true;
-        contact.MailingCity='ahmedabad';
-        contact.Vehicle_Type__c = '2019 Mileage Rate';
-        contact.MailingState='GJ';
-        insert contact;
-        contactids.add(contact.Id);
-        
-        Contact con = new Contact();
-        con.lastname = 'Test Con';
-        con.AccountId = Acc.Id;
-        con.External_Email__c = 'minkesh.patel1357@gmail.com';
-        con.Email = 'minkesh.patel1357@gmail.com';
-        con.Triplog_Status__c = 'A';
-        con.Vehicle_Type__c = '2019 Mileage Rate';
-        con.isCommunityUser__c = true;
-        insert con;
-        contactids.add(con.Id);
-        
-        Employee_Reimbursement__c er = new Employee_Reimbursement__c();
-        er.Contact_Id__c = contact.Id;
-        
-         er.month__c = '09-2020';
-        er.Name = contact.lastname+':'+er.month__c;
-        er.Status__c = 'Pending';
-        er.Fuel_Price__c = 1;  //String.valueof(er.Fuel_Price__c); // 
-        er.MPG__c = 10.00;
-        er.Maintenance_and_Tires__c = 24;//String.valueof(er.Maintenance_and_Tires__c);
-        er.Fuel_Price__c = 1;
-        er.MPG__c = 10;
-        er.Maintenance_and_Tires__c = 10;
-        er.Fixed_Amount__c = 10.10;
-        er.Triplog_Status__c = 'A';
-        insert er;
-        conReim.put(con.Id,er);
-        
-        Employee_Mileage__c emp = new Employee_Mileage__c();
-        emp.Contact_Email_Id__c = 'test@test.gmail.com';
-        emp.Name = 'Test Mileage Record';
-        emp.EmployeeReimbursement__c = er.id;
-        insert emp;
-        
-        Test.startTest();
-        Test.SetMock(HttpCalloutMock.class, new GetTripCalloutMock());
-        GetTripfromTriplogBatchClass obj = new GetTripfromTriplogBatchClass('U');
-        DataBase.executeBatch(obj);
-        
-        Test.stopTest();
-    }
-     public static testmethod void GetTriptest2() {
-        List<Id> contactids = new List<Id>();
-        Map<Id, Employee_Reimbursement__c> conReim = new Map<Id, Employee_Reimbursement__c>();
-        
-        TriggerConfig__c customSetting =  new TriggerConfig__c();
-        customSetting.Name = 'Defaulttrigger';
-        customSetting.MappingGasPriceTrigger__c = true;
-        insert customSetting;
-        
-        SendEmail__c customSetting1 =  new SendEmail__c();
-        customSetting1.Name = 'Send Email For Compliance';
-        customSetting1.Send_email_from_code__c= true;
-        insert customSetting1;
-        
-        Vehicle_URL_Mapping__c veh = new Vehicle_URL_Mapping__c();
-        veh.URL__c = 'https://cdn2.hubspot.net/hubfs/2511299/iStock-494093356.jpg';
-        veh.vehicle__c = 'Mileage Rate';
-        veh.Year__c = '2019';
-        insert veh;
-        
-        SendEmailToMe__c sendEmail = new SendEmailToMe__c();
-        sendEmail.Name = 'GetTripCallOutApprovePutCall';
-        sendEmail.Send_email_to_me__c = true;
-        insert sendEmail;
-         
-        Account acc = new Account();           
-        acc.Name = 'Delta account';
-        acc.Triplog_API__c = '123456789';
-        Acc.Triplog_Status__c = 'S';
-        insert Acc;
-        
-        Contact contact = new Contact();
-        contact.lastname = 'Test Contact';
-        contact.AccountId = Acc.Id;
-        contact.External_Email__c = 'minkesh.patel1478@gmail.com';
-        contact.Email = 'minkesh.patel1478@gmail.com';
-        contact.isCommunityUser__c = true;
-        contact.Vehicle_Type__c = '2019 Mileage Rate';
-        contact.MailingCity='ahmedabad';
-        contact.MailingState='GJ';
-        insert contact;
-        contactids.add(contact.Id);
-        
-        Contact con = new Contact();
-        con.lastname = 'Test Con';
-        con.AccountId = Acc.Id;
-        con.External_Email__c = 'minkesh.patel1357@gmail.com';
-        con.Email = 'minkesh.patel1357@gmail.com';
-        con.Triplog_Status__c = 'S';
-        con.Vehicle_Type__c = '2019 Mileage Rate';
-        con.isCommunityUser__c = true;
-        insert con;
-        contactids.add(con.Id);
-        
-        Employee_Reimbursement__c er = new Employee_Reimbursement__c();
-        er.Contact_Id__c = contact.Id;
-        
-        er.month__c = '09-2020';
-        er.Name = contact.lastname+':'+er.month__c;
-        er.Status__c = 'Pending';
-        er.Fuel_Price__c = 1;  //String.valueof(er.Fuel_Price__c); // 
-        er.MPG__c = 10.00;
-        er.Maintenance_and_Tires__c = 24;//String.valueof(er.Maintenance_and_Tires__c);
-        er.Fuel_Price__c = 1;
-        er.MPG__c = 10;
-        er.Maintenance_and_Tires__c = 10;
-        er.Fixed_Amount__c = 10.10;
-        er.Triplog_Status__c = 'S';
-        insert er;
-        conReim.put(con.Id,er);
-        
-        Employee_Mileage__c emp = new Employee_Mileage__c();
-        emp.Contact_Email_Id__c = 'test@test.gmail.com';
-        emp.Name = 'Test Mileage Record';
-        emp.EmployeeReimbursement__c = er.id;
-        insert emp;
-        
-        Test.startTest();
-        Test.SetMock(HttpCalloutMock.class, new GetTripCalloutMock());
-        GetTripfromTriplogBatchClass obj = new GetTripfromTriplogBatchClass('U');
-        DataBase.executeBatch(obj);
-        
-        Test.stopTest();
-    }
-     public static testmethod void GetTriptest3() {
-        List<Id> contactids = new List<Id>();
-        Map<Id, Employee_Reimbursement__c> conReim = new Map<Id, Employee_Reimbursement__c>();
-        
-        TriggerConfig__c customSetting =  new TriggerConfig__c();
-        customSetting.Name = 'Defaulttrigger';
-        customSetting.MappingGasPriceTrigger__c = true;
-        insert customSetting;
-        
-        SendEmailToMe__c sendEmail = new SendEmailToMe__c();
-        sendEmail.Name = 'GetTripCallOutApprovePutCall';
-        sendEmail.Send_email_to_me__c = true;
-        insert sendEmail;
-        
-        SendEmail__c customSetting1 =  new SendEmail__c();
-        customSetting1.Name = 'Send Email For Compliance';
-        customSetting1.Send_email_from_code__c= true;
-        insert customSetting1;
-        
-        Vehicle_URL_Mapping__c veh = new Vehicle_URL_Mapping__c();
-        veh.URL__c = 'https://cdn2.hubspot.net/hubfs/2511299/iStock-494093356.jpg';
-        veh.vehicle__c = 'Mileage Rate';
-        veh.Year__c = '2019';
-        insert veh;
-        
-        Account acc = new Account();           
-        acc.Name = 'Delta account';
-        acc.Triplog_API__c = '123456789';
-        Acc.Triplog_Status__c = 'U';
-        insert Acc;
-        
-        Contact contact = new Contact();
-        contact.lastname = 'Test Contact';
-        contact.AccountId = Acc.Id;
-        contact.External_Email__c = 'minkesh.patel1478@gmail.com';
-        contact.Email = 'minkesh.patel1478@gmail.com';
-        contact.isCommunityUser__c = true;
-        contact.MailingCity='ahmedabad';
-        contact.Vehicle_Type__c = '2019 Mileage Rate';
-        contact.MailingState='GJ';
-        contact.compliancestatus__c = 'Yes';
-        insert contact;
-        contactids.add(contact.Id);
-        
-        Contact con = new Contact();
-        con.lastname = 'Test Con';
-        con.AccountId = Acc.Id;
-        con.External_Email__c = 'minkesh.patel1357@gmail.com';
-        con.Email = 'minkesh.patel1357@gmail.com';
-        con.Triplog_Status__c = 'U';
-        con.isCommunityUser__c = true;
-        con.Vehicle_Type__c = '2019 Mileage Rate';
-        con.MailingCity='ahmedabad';
-        con.compliancestatus__c = 'Yes';
-        con.MailingState='GJ';
-        insert con;
-        contactids.add(con.Id);
-        
-        Employee_Reimbursement__c er = new Employee_Reimbursement__c();
-        er.Contact_Id__c = contact.Id;
-        
-        er.month__c = '09-2020';
-        er.Name = contact.lastname+':'+er.month__c;
-        er.Status__c = 'Pending';
-        er.Fuel_Price__c = 1;  //String.valueof(er.Fuel_Price__c); // 
-        er.MPG__c = 10.00;
-        er.Maintenance_and_Tires__c = 24;//String.valueof(er.Maintenance_and_Tires__c);
-        er.Fuel_Price__c = 1;
-        er.MPG__c = 10;
-        er.Maintenance_and_Tires__c = 10;
-        er.Fixed_Amount__c = 10.10;
-        er.Triplog_Status__c = 'U';
-        insert er;
-        conReim.put(con.Id,er);
-        
-        Employee_Mileage__c emp = new Employee_Mileage__c();
-        emp.Contact_Email_Id__c = 'test@test.gmail.com';
-        emp.Name = 'Test Mileage Record';
-        emp.EmployeeReimbursement__c = er.id;
-        insert emp;
-        
-        Test.startTest();
-        Test.SetMock(HttpCalloutMock.class, new GetTripCalloutMock());
-        GetTripfromTriplogBatchClass obj = new GetTripfromTriplogBatchClass('U');
-        DataBase.executeBatch(obj);
-        
-        Test.stopTest();
-    }
-    
 }

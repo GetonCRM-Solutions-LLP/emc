@@ -1,108 +1,52 @@
 @isTest
 public class ReportListController_Test {
     public static testmethod void ReportListControllerTestMethod() {
-        Vehicle_URL_Mapping__c veh = new Vehicle_URL_Mapping__c();
-        veh.URL__c = 'https://cdn2.hubspot.net/hubfs/2511299/iStock-494093356.jpg';
-        veh.vehicle__c =  'Full-Size Sedan';
-        veh.Year__c = '2019';
-        insert veh;
-        //sendEmail custom setting
-        SendEmail__c customSetting2 =  new SendEmail__c();
-        customSetting2.Name = 'Send Email For Compliance';
-        customSetting2.Send_email_from_code__c= true;
-        insert customSetting2;
+     
+        TriggerConfig__c triggerCustomSetting = TestDataFactory.triggerConfigCustomSetting(true);
+        SendEmail__c sendEmailCustomSetting = TestDataFactory.sendEmailCustomSetting(true, 'Send Email For Compliance');
+        IRS_Mileage_Rate__c irsRateObj = TestDataFactory.createIRSRate(true,0);
+        TrueDialog_Keys__c tdKeys = TestDataFactory.createTrueDialog(true);
+        List<Address__c> objAddress = TestDataFactory.createAddress(true, 10);
+        Vehicle_URL_Mapping__c vehicleType = TestDataFactory.createVehicleData(true, 3);
+       	vehicleType.Name = '2022 Ford F-150';
+        vehicleType.vehicle__c = 'Ford F-150';
+        vehicleType.Year__c = '2022';
+        Update vehicleType;
 
-        TriggerConfig__c customEmailSetting =  new TriggerConfig__c();
-        customEmailSetting.Name = 'Defaulttrigger';
-        customEmailSetting.ContactTriggersendEmailForNewContact__c = true;
-        insert customEmailSetting;
+        UserRole uRole = TestDataFactory.getUserRole();
+        Profile profileObj = TestDataFactory.getUserProfile();
+        User admin = TestDataFactory.getSystemAdminUser(uRole.Id);
+        User userObj;
 
-        //Account
-        Account acc = new Account();
-        acc.Name = 'Test Account';
-        acc.Triplog_API__c = 'sdffjuhidjdf';
-        insert acc;
-        //Contact driver List
-        List<Contact> driList = new List<Contact>();
-        //Contact Admin
-        Contact con = new Contact();
-        con.FirstName = 'Test';
-        con.LastName = 'Contact Admin';
-        con.AccountId = acc.Id;
-        con.MailingStreet = 'Test Street';
-        con.MailingCity = 'Test City';
-        con.MailingState = 'ON';
-        con.MailingPostalCode = '123';
-        con.MailingCountry = 'CA';
-        con.Phone = '1232434445';
-        con.External_Email__c = 'minkesh.pateladmin01@gmail.com';
-        con.Deactivated_Date__c = null;
-        con.IsCommunityUser__c = true;
-        con.Role__c = 'Admin';
-        con.Monthly_Mileage_Limit__c = 200;
-        con.Vehicle_Type__c = '2019 Full-Size Sedan';
-        insert con;
-        //Contact Manager
-        Contact co = new Contact();
-        co.FirstName = 'Test';
-        co.LastName = 'Contact Manager';
-        co.AccountId = acc.Id;
-        co.MailingStreet = 'Test Street';
-        co.MailingCity = 'Test City';
-        co.MailingState = 'ON';
-        co.MailingPostalCode = '123';
-        co.MailingCountry = 'CA';
-        co.Phone = '1232434445';
-        co.External_Email__c = 'minkesh.patelmanager01@gmail.com';
-        co.Deactivated_Date__c = null;
-        co.IsCommunityUser__c = true;
-        co.Role__c = 'Manager';
-        co.Monthly_Mileage_Limit__c = 210;
-        co.Manager__c = con.Id;
-        co.Vehicle_Type__c = '2019 Full-Size Sedan';
-        insert co;
-        //Contact Driver
-        Contact c;
-        for(Integer i = 0; i<5; i++) {
-            c = new Contact();
-            c.FirstName = 'Test';
-            c.LastName = 'Contact Manager'+i;
-            c.AccountId = acc.Id;
-            c.MailingStreet = 'Test Street';
-            c.MailingCity = 'Test City';
-            c.MailingState = 'ON';
-            c.MailingPostalCode = '123';
-            c.MailingCountry = 'CA';
-            c.Phone = '1232434445';
-            c.External_Email__c = 'minkesh.pateldriver01'+i+'@gmail.com';
-            c.Deactivated_Date__c = null;
-            c.IsCommunityUser__c = true;
-            c.Role__c = 'Driver';
-            c.Monthly_Mileage_Limit__c = 210;
-            c.Manager__c = co.Id;
-            c.Vehicle_Type__c = '2019 Full-Size Sedan';
-            driList.add(c);
+        Account obj_acc;
+        List<Contact> obj_admin_contact;
+        List<Contact> obj_Manager_list;
+        List<Contact> obj_driver_contact;
+        Contact contact_2;
+        System.runAs(admin) {
+
+            Account accountObj = TestDataFactory.createAccount(false,'Frampton Construction',true);
+            insert accountObj;
+            Contact contactObj = TestDataFactory.createCICDContact(true,accountObj.Id);
+
+            obj_acc = TestDataFactory.createAccount(True,'Frampton Construction',true);
+            obj_acc.Triplog_API__c = 'fde76cdde14449bea46b321225ac8fd1';
+            obj_acc.Pay_Period_Start_Date__c = System.today().addDays(-100);
+            obj_acc.Pay_Period_Days__c = 13;
+            obj_acc.Vehicle_Types__c = vehicleType.Name;
+            Update obj_acc;
+           
+            obj_admin_contact = TestDataFactory.createDriverContact(True, obj_acc.Id, 'Admin',  null, 'minkesh.patel', 1);
+            obj_Manager_list = TestDataFactory.createDriverContact(True, obj_acc.Id, 'Manager',  null, 'minkesh.patel1', 1);
+            obj_driver_contact = TestDataFactory.createDriverContact(true,obj_acc.Id, 'Driver', vehicleType.Name, 'paras.patel',  1);
+            /*obj_driver_contact[0].Vehicle_Type__c = '2022 Ford F-150';
+            insert obj_driver_contact ;
+			*/
+            userObj = TestDataFactory.createUser(True, profileObj.Id, obj_driver_contact[0].Id);
         }
-        insert driList;
 
-        Employee_Reimbursement__c er = new Employee_Reimbursement__c();
-        er.Contact_Id__c = driList[0].Id;
-        er.Name = 'Reimbersment Test';
-        er.Month__c = '06-2020';
-        er.Status__c = 'Pending';
-        er.Fuel_Price__c = 10.00;
-        insert er;
-
-        //User
-        Profile p = [SELECT Id FROM Profile WHERE Name='Customer Community Login User - Manager'];
-      
-
-        User u = new User(Alias = 'standt', Email='standarduser@testorg.com', 
-        EmailEncodingKey='UTF-8',FirstName='Test', LastName='Testing', LanguageLocaleKey='en_US',LocaleSidKey='en_US',ProfileId=p.Id,
-        TimeZoneSidKey='America/Los_Angeles', UserName='Testingapexclass@gmail.com',Contactid=driList[0].id);
-    
-        insert u;
-        //Custom report
+        List<Employee_Reimbursement__c> reimList = TestDataFactory.createPendingReimbursement(true, obj_driver_contact, 10, irsRateObj.id);
+        system.assertEquals(11, reimList.size(),true);
 
         Custom_Report__c currentReport = new Custom_Report__c();
         currentReport.Name = 'Variable Reimbursement Report';
@@ -117,45 +61,61 @@ public class ReportListController_Test {
         currentReport.Date_Time_Fields__c = 'Contact_Id_Name__c';
         currentReport.Date_Fields__c = 'Contact_Id_External_Email__c';
         insert currentReport ; 
-
-        // Custom_Report__c rep = new Custom_Report__c();
-        // rep.Name = 'Test Productivity Report';
-        // rep.Report_Category__c = 'My Custom Reports';
-        // rep.Report_For__c = 'tesst';
-        // rep.Report_Soql__c = 'SELECT id,Name,email from contact where Account.name=\'Test Account\'';
-        // rep.Report_Type__c = 'test';
-        // rep.Sort_By__c = 'asc';
-        // rep.Sort_From__c = '2';
-        // insert rep;
-
-        
+               
         Report_Accessibility__c repAcc = new Report_Accessibility__c();
         repAcc.Custom_Report__c = currentReport.Id;
-        repAcc.User__c = u.Id;
+        repAcc.User__c = userObj.Id;
         insert repAcc;
-
-        Test.startTest();
-        Test.setCurrentPage(Page.reportlist);
-        String accId = ApexPages.currentPage().getParameters().put('accid',acc.Id);
-        String conid = ApexPages.currentPage().getParameters().put('id',driList[0].Id);
-        ReportListController mddc = new ReportListController();
-        ReportListController.getAccountid();
-        ReportListController.getContactid();
-        ReportListController.getRedirected();
-        ReportListController.getAllReports();
-        ReportListController.getRole();
-        ReportListController.reimbursementListModal(er.Id);
-        ReportListController.contactListModal(acc.Id);
-        String startDate = '2020-01-01';
-        String endDate = '2020-03-22';
-        ReportListController.postTimeSheetImportAPI(startDate,endDate,con.id);
-        ReportListController.postVariablePaymentAPI(startDate,con.id);
-        ReportListController.updateLockDate(acc.Id,con.id);
-        ReportListController.postFixedAmountAPI(startDate,con.id);
-        ReportListController.postHalfFPFullDriverAPI(startDate,endDate,con.id);
-        ReportListController.CheckStatus(1234567654,'NetchexDeleteCallout');
-        ReportListController.UpdateMileageLockDate(startDate,endDate);
         
+        Custom_Report__c currentReport2 = new Custom_Report__c();
+        currentReport2.Name = 'Variable Reimbursement Report';
+        currentReport2.Sort_By__c = 'asc';
+        currentReport2.Report_For__c = 'Frank Saverino Accessibility';
+        currentReport2.Report_Category__c = 'Reimbursement Reports  ';
+        currentReport2.Report_Type__c = 'Reimbursements Between 2 Dates For Month Range';
+        currentReport2.Use_Manager_List__c = true;
+        currentReport2.Report_Header__c = 'Month,Employee ID,Name,E-mail,Monthly Approved Variable Amount';
+        currentReport2.Report_Soql__c = 'select Month__c,Contact_Id_Employee_ID__c,Contact_Id_Name__c,Contact_Id_External_Email__c,Monthly_Approved_Variable_Amount__c from Employee_Reimbursement__c where Contact_Id_Deactivated_Date__c =null';
+        currentReport2.Numeric_Fields__c = 'Monthly_Approved_Variable_Amount__c';
+        currentReport2.Date_Time_Fields__c = 'Contact_Id_Name__c';
+        currentReport2.Date_Fields__c = 'Contact_Id_External_Email__c';
+        insert currentReport2 ; 
+        Report_Accessibility__c repAcc1 = new Report_Accessibility__c();
+        repAcc1.Custom_Report__c = currentReport2.Id;
+        repAcc1.User__c = userObj.Id;
+        insert repAcc1;
+        
+       Test.startTest();
+        System.runAs(userObj) {
+            Test.setCurrentPage(Page.reportlist);
+            String accId = ApexPages.currentPage().getParameters().put('accid',obj_acc.Id);
+            String conid = ApexPages.currentPage().getParameters().put('id',obj_driver_contact[0].Id);
+            ReportListController mddc = new ReportListController();
+            ReportListController.getAccountid();
+            ReportListController.getContactid();
+            ReportListController.getRedirected();
+            ReportListController.getAllReports();
+            ReportListController.getRole();
+            ReportListController.reimbursementListModal(reimList[0].Id);
+            ReportListController.contactListModal(obj_acc.Id);
+            String startDate = '2020-01-01';
+            String endDate = '2020-03-22';
+            ReportListController.postTimeSheetImportAPI(startDate,endDate,obj_driver_contact[0].id);
+            ReportListController.postVariablePaymentAPI(startDate,obj_driver_contact[0].id);
+            ReportListController.postFixedAmountAPI(startDate,obj_driver_contact[0].id);
+            ReportListController.postHalfFPFullDriverAPI(startDate,endDate,obj_driver_contact[0].id);
+            ReportListController.CheckStatus(1234567654,'NetchexDeleteCallout');
+            ReportListController.UpdateMileageLockDate(startDate,endDate);
+            ReportListController.ErmiDriverList(startDate,endDate, string.valueof(obj_acc.Id));
+            ReportListController.ChangeTripStatus(string.valueof('obj_acc[0].Id'));
+            ReportListController.DeleteNetchexCallout(startDate,endDate);
+            ReportListController.reimbursementWrapper wrapperList = new ReportListController.reimbursementWrapper();
+            ReportListController.taxLiabilityReport(obj_acc.Id);
+            ReportListController.payPeriodDateList(obj_acc.Id);
+            wrapperList.reimbId = obj_driver_contact[0].id;
+            
+            wrapperList.name = 'test';
+         }
         Test.stopTest();
     }
 }

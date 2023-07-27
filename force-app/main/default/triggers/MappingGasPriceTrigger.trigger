@@ -112,6 +112,7 @@ Trigger MappingGasPriceTrigger on Employee_Mileage__c (before insert, before upd
     if(customSetting.MappingGasPriceTriggerUpdateConvertedDat__c){
         if(Trigger.isInsert && Trigger.isBefore) {
             MappingGasPriceTriggerHelper.updateConvertedDates(Trigger.new);
+            //MappingGasPriceTriggerHelper.updateBiweekReimId(Trigger.new);
         }
         else if(Trigger.isBefore && Trigger.isUpdate){
             List<Employee_Mileage__c> updateMileagesList = new List<Employee_Mileage__c>();
@@ -214,7 +215,7 @@ Trigger MappingGasPriceTrigger on Employee_Mileage__c (before insert, before upd
         }
     }
     
-    if(Trigger.isAfter && Trigger.isInsert && customSetting.MappingGasStayTime__c){
+    if(Trigger.isAfter && (Trigger.isInsert || Trigger.isUpdate) && customSetting.MappingGasStayTime__c){
         set<Id> reimbursementIdsSet = new set<Id>();
         List<datetime> tripList = new List<datetime>();
         List<Employee_Mileage__c> mileageList = new List<Employee_Mileage__c>();
@@ -260,6 +261,20 @@ Trigger MappingGasPriceTrigger on Employee_Mileage__c (before insert, before upd
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     if(Trigger.isUpdate && Trigger.isAfter && customSetting.Mileage_Lockdate__c && !Test.isRunningTest()){
         MappingGasPriceTriggerHelper.updateMileagesLockDate(Trigger.new);
+    }
+    
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Ticket No :    EMC-1431                                                                                           //
+    // Author : PARAS DHANANI                                                                                            //
+    // Created Date : 22/03/202                                                                                          //
+    // Mileage update after the lock date                                                                                //
+    //When ANY modifications are made to mileage after the lock date:                                                    //
+    //The mileage needs to move to the next BiWeekly reimbursement whose start date is current biWeekly reimbursement's  //
+    //End Date + 1 as soon as the modification happens after the lock date.                                              //
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    
+    if(Trigger.isUpdate && Trigger.isAfter && customSetting.Mileage_Lockdate__c && !Test.isRunningTest()){
+        MappingGasPriceTriggerHelper.updateMilLockDateBWReim(Trigger.new);
     }
     /*
     if(Trigger.isAfter && Trigger.isUpdate && customSetting.MappingMileage__c){

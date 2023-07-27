@@ -52,6 +52,11 @@
                 <label>Resubmit - Expired Insurance</label>
             </value>
             <value>
+                <fullName>No - Mileage</fullName>
+                <default>false</default>
+                <label>No - Mileage</label>
+            </value>
+            <value>
                 <fullName>No</fullName>
                 <default>false</default>
                 <isActive>false</isActive>

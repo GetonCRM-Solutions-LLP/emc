@@ -1,96 +1,48 @@
 @isTest
 public with sharing class TimeandSummaryReportControllerTest {
-        public static testmethod void test1(){
-            TriggerConfig__c customSetting =  new TriggerConfig__c();
-            customSetting.Name = 'Defaulttrigger';
-            customSetting.MappingGasPriceTrigger__c = true;
-            insert customSetting;
-    
-            SendEmail__c customSetting1 =  new SendEmail__c();
-            customSetting1.Name = 'Send Email For Compliance';
-            customSetting1.Send_email_from_code__c= true;
-            insert customSetting1;
-            
-            daylight_saving_time_config__c customSetting2 =  new daylight_saving_time_config__c();
-            customSetting2.Name = '2021';
-            customSetting2.Start_Date__c = System.today();
-            customSetting2.End_Date__c = System.today() + 60;
-            insert customSetting2;
+    @isTest    
+    public static void test1(){
 
-            Vehicle_URL_Mapping__c veh = new Vehicle_URL_Mapping__c();
-            veh.URL__c = 'https://cdn2.hubspot.net/hubfs/2511299/iStock-494093356.jpg';
-            veh.vehicle__c = 'AWD Ford Escape';
-            veh.Year__c = '2020';
-            insert veh;
-            
-            Account acc = new Account();           
-            acc.Name = 'Delta account';
-            acc.Triplog_API__c = '123456789';
-            Acc.Triplog_Status__c = 'U';
-            Acc.Vehicle_Types__c = '2020 AWD Ford Escape';
-            insert Acc;
-            
-            Contact contact = new Contact();
-            contact.lastname = 'Test Contact';
-            contact.AccountId = Acc.Id;
-            contact.Vehicle_Type__c = '2020 AWD Ford Escape';
-            contact.External_Email__c = 'minkesh.patel1478@gmail.com';
-            contact.Time_Zone__c = 'America/Chicago';
-            contact.MailingCity = 'Abilene';
-            contact.MailingState = 'TX';
-            contact.Driving_States__c = 'TX';
-            contact.Role__c = 'Driver';
-            contact.isCommunityUser__c = true;
-            insert contact;
-            
-            Employee_Reimbursement__c er = new Employee_Reimbursement__c();
-            er.Contact_Id__c = contact.Id;
-            er.month__c = '05-2020';
-            er.Name = contact.lastname+':'+er.month__c;
-            er.Status__c = 'Pending';
-            er.Fuel_Price__c = 1;  
-            er.MPG__c = 10.00;
-            er.Maintenance_and_Tires__c = 24;
-            er.Fuel_Price__c = 1;
-            er.MPG__c = 10;
-            er.Maintenance_and_Tires__c = 10;
-            er.Fixed_Amount__c = 10.10;
-            er.Triplog_Status__c = 'U';
-            insert er;
-            
-            Employee_Mileage__c emp = new Employee_Mileage__c();
-            emp.EmployeeReimbursement__c = er.id;
-            emp.Contact_Email_Id__c = contact.External_Email__c;
-            emp.Name = 'Test Mileage Record';
-            emp.Trip_Status__c = StaticValues.noApprovedYet;
-            emp.TimeZone__c = 'US/Mountain' ;
-            emp.Mileage__c = 10.00;
-            emp.Day_Of_Week__c = 'Mon';
-            emp.Stay_Time__c = 10;
-            emp.Fuel_price__c = 10.00;
-            emp.Trip_Date__c = system.today()-10;
-            emp.StartTime__c = system.now()-10;
-            emp.EndTime__c =  system.now()-10;
-            insert emp;
+            TriggerConfig__c triggerCustomSetting = TestDataFactory.triggerConfigCustomSetting(true);
+            SendEmail__c sendEmailCustomSetting = TestDataFactory.sendEmailCustomSetting(true, 'Send Email For Compliance');
+            daylight_saving_time_config__c  dayLightCustomSetting = TestDataFactory.daylightCustomSetting(true, '2022' ,system.today(), date.valueOf(system.today().addDays(60))); 
+            IRS_Mileage_Rate__c irsRateObj = TestDataFactory.createIRSRate(true,0);
+            Vehicle_URL_Mapping__c vehicleType = TestDataFactory.createVehicleData(false, 2);
+            vehicleType.Name = '2020 AWD Ford Escape';
+            vehicleType.vehicle__c = 'AWD Ford Escape';
+            Insert vehicleType;
 
-            Employee_Mileage__c emp1 = new Employee_Mileage__c();
-            emp1.EmployeeReimbursement__c = er.id;
-            emp1.Contact_Email_Id__c = contact.External_Email__c;
-            emp1.Name = 'Test Mileage Record1';
-            emp1.Trip_Status__c = StaticValues.noApprovedYet;
-            emp1.TimeZone__c = 'US/Mountain' ;
-            emp1.Mileage__c = 102.00;
-            emp1.Day_Of_Week__c = 'Mon';
-            emp1.Stay_Time__c = 15;
-            emp1.Fuel_price__c = 15.00;
-            emp1.Trip_Date__c = system.today()-12;
-            emp1.StartTime__c = system.now()-10;
-            emp1.EndTime__c =  system.now()-10;
-            insert emp1;
+            UserRole uRole = TestDataFactory.getUserRole();
+            Profile profileObj = TestDataFactory.getUserProfile();
+            User admin = TestDataFactory.getSystemAdminUser(uRole.Id);
+            User userObj;
 
+            Account acc;
+            List<Contact> contact;
+            System.runAs(admin) {
+                Account accountObj = TestDataFactory.createAccount(True,'Delta account',true);
+                Contact contactObj = TestDataFactory.createCICDContact(true,accountObj.Id);
+
+                acc = TestDataFactory.createAccount(True,'Delta account',true);
+                acc.Triplog_API__c = 'fde76cdde14449bea46b321225ac8fd1';
+                acc.Pay_Period_Start_Date__c = System.today().addDays(-100);
+                Acc.Triplog_Status__c = 'U';
+                acc.Pay_Period_Days__c = 13;
+                Update acc;
+
+                contact = TestDataFactory.createDriverContact(true,acc.Id, 'Driver', vehicleType.Name, 'paras.patel',  1);
+                userObj = TestDataFactory.createUser(True, profileObj.Id, contact[0].Id);
+            }
+
+            List<Employee_Reimbursement__c> reimList = TestDataFactory.createPendingReimbursement(true, contact, 2, irsRateObj.id);
+            system.assertEquals(3, reimList.size(),true);
+
+            List<Bi_Weekly_Reimbursement__c> biweeklyReimList = TestDataFactory.createBiweeklyReim(true, contact,  date.valueof(system.today().adddays(-14)),date.valueof(system.today().addDays(-1)), 2, irsRateObj.id);
+            List<Employee_Mileage__c> mileageList = TestDataFactory.getEmpMileage(true, 1, reimList, biweeklyReimList);
+            
             Test.startTest();
             Test.setCurrentPage(Page.TimeandSummaryReport);
-            String conId = ApexPages.currentPage().getParameters().put('id',contact.Id);
+            String conId = ApexPages.currentPage().getParameters().put('id',contact[0].Id);
             String startDate = ApexPages.currentPage().getParameters().put('startDate','2021-07-01');
             String endDate = ApexPages.currentPage().getParameters().put('endDate','2021-07-28');
             TimeandSummaryReportController objClass = new TimeandSummaryReportController();

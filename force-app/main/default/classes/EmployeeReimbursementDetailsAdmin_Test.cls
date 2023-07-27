@@ -14,5 +14,7 @@ Public class EmployeeReimbursementDetailsAdmin_Test{
         obj.managerName = 'Doris';
         obj.isSelectedEmailReminder = true;
         obj.reimbursementApproval = true;
+        obj.mileageApproval = 'Minkesh';
+        obj.managerEmail = 'test@gmail.com';
     }
 }

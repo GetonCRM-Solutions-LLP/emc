@@ -43,14 +43,14 @@ public without sharing class adminLoginController {
                                             WHERE UserId =: userid 
                                             AND LoginTime >: Datetime.now().addMinutes(-15)];      
                 System.debug('loginList.size()'+loginList.size());
-                valWrappObj.remainingAttempt = 10 - loginList.size();
+                valWrappObj.remainingAttempt = 5 - loginList.size();
         }
         System.debug('==='+valWrappObj);
         return valWrappObj;
     }
 
     @RemoteAction
-    public static PageReference redirectToMyVF() {	
+    public static PageReference redirectToMyVF() {  
         PageReference myVFPage = new PageReference('/app/ForgotPasswordNewUI');
         myVFPage.setRedirect(true);
         return myVFPage;

@@ -115,5 +115,27 @@ public with sharing class EmployeeDetails
     public String deactivationBy {get;set;}
     public string deptPL {get;set;}
     public string divison {get;set;}
-    
+    public string loaStartDate {get;set;}
+    public string loaEndDate {get;set;}
+    public string payRollPeriod {get;set;}
+    public string loaFixedAmount {get;set;}
+    public boolean isleaveofabsence{get;set;}
+    public string finalPayrollAmount {get;set;}
+    public string firstPayrollPer {get;set;}
+    /*EMC-260 START 
+    This field is used to check that particular driver is monthly or biweekly driver.based on value of checkbox display a data on driver page*/
+    public Boolean monthlyReimbursement{ get; set; }
+    public Boolean biWeekReimbursement{ get; set; }
+    // timeAttandance is only use for ERMI account
+    public Boolean timeAttandance{ get; set; }
+    /* END */
+    /*EMC - 331 */
+    //Below am and an field is used for SurfacePrep account.
+    public string company {get;set;}
+    public string am {get;set;}
+    public string an {get;set;}
+    public string costCode {get;set;}
+    public string appSetting {get;set;}
+    public string Businesshours {get;set;}
+	public String lastSynced {get;set;}
 }

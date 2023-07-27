@@ -4,7 +4,7 @@
  */
 global class DeActivatedUserBatchMileage implements Database.Batchable<sObject>,Database.AllowsCallouts, Database.Stateful {
     
-    private static final String MLOGACCOUNT = System.Label.Triplog_New_URL;
+    private static final String MLOGACCOUNT = System.Label.Triplog_New_URL + ',' + System.Label.Triplog_New_URL2;
     public Integer decider;
 
     // Added by sanjay
@@ -178,10 +178,9 @@ global class DeActivatedUserBatchMileage implements Database.Batchable<sObject>,
 
                 res = !Test.isRunningTest() ? h.send(req) : GetTripCalloutMock.respond(req);  
                 
-                if(res.getStatusCode() == 200) {
-                    TripLogJSONClass.TripLogJSONClassInner tripLog = TripLogJSONClass.parse(res.getBody());
-
-                    for( TripLogJSONClass.Trips trip : tripLog.trips ) {
+                if(res.getStatusCode() == 200) {                    
+                    TripLogDeserializeClass tripLog = TripLogDeserializeClass.parse(res.getBody());
+                    for( TripLogDeserializeClass.Trips trip : tripLog.trips ) {
                         Employee_Mileage__c mil = new Employee_Mileage__c();
                         mil.Name = 'New Trip';
                         mil.Approved_Date__c = null;
@@ -197,34 +196,54 @@ global class DeActivatedUserBatchMileage implements Database.Batchable<sObject>,
                         mil.Mileage__c = trip.mileage;
                         mil.Fuel_price__c = reim.Fuel_Price__c;
                         mil.MPG__c = reim.MPG__c;
-                        mil.Maintenance_and_Tires__c = reim.Maintenance_and_Tires__c;
-                        if(trip.fromLocation != null && trip.fromLocation.display != null) {
-                            mil.Trip_Origin__c = trip.fromLocation.display;
-                            mil.FromLocationId__c = trip.fromLocation.id;
-                            if(trip.fromLocation.display.contains(',')) {
-                                mil.Origin_Name__c = (trip.fromLocation.display.split(','))[0];  
-                            } else if(trip.fromLocation.display.contains(' ')) {
-                                mil.Origin_Name__c = (trip.fromLocation.display.split(' '))[0];
+                        mil.Maintenance_and_Tires__c = reim.Maintenance_and_Tires__c;         
+                        TripLogDeserializeClass.FromLocation fromLocationOfTrip = trip.fromLocation;
+                        if(fromLocationOfTrip != null && fromLocationOfTrip.id != null ) {
+                            mil.FromLocationId__c = fromLocationOfTrip.id;                    
+                            if(fromLocationOfTrip.name != null) {  
+                                mil.Origin_Name__c = String.valueOf(fromLocationOfTrip.name); 
+                                mil.Original_Origin_Name__c = String.valueOf(fromLocationOfTrip.name); 
                             } else {
-                                mil.Origin_Name__c =  trip.fromLocation.display;
+                                mil.Origin_Name__c = fromLocationOfTrip.address;
+                                mil.Original_Origin_Name__c = null;
+                            }
+                            /*if(fromLocationOfTrip.address != null && fromLocationOfTrip.address.contains(',')){
+                                mil.Origin_Name__c = fromLocationOfTrip.address.split(',')[0];
+                            } else if(fromLocationOfTrip.address != null && fromLocationOfTrip.address.contains(' ')){
+                                mil.Origin_Name__c = fromLocationOfTrip.address.split(' ')[0];
+                            } else {
+                                mil.Origin_Name__c = fromLocationOfTrip.address;
+                            }*/
+                            if(fromLocationOfTrip.address != null) {
+                                mil.Trip_Origin__c = fromLocationOfTrip.address;
                             }
                         }
-
-                        
+                        TripLogDeserializeClass.FromLocation toLocationOfTrip = trip.toLocation;
+                        if(toLocationOfTrip != null && toLocationOfTrip.id != null ) {
+                            mil.ToLocationId__c = toLocationOfTrip.id;                    
+                            if(toLocationOfTrip.name != null) {
+                                mil.Destination_Name__c = String.valueOf(toLocationOfTrip.name);  
+                                mil.Original_Destination_Name__c =  String.valueOf(toLocationOfTrip.name);  
+                            } else {
+                                mil.Destination_Name__c = toLocationOfTrip.address;
+                                mil.Original_Destination_Name__c = null;
+                            }
+                            /*if(toLocationOfTrip.address != null && toLocationOfTrip.address.contains(',')){
+                                mil.Destination_Name__c = toLocationOfTrip.address.split(',')[0];
+                            } else if(toLocationOfTrip.address != null && toLocationOfTrip.address.contains(' ')){
+                                mil.Destination_Name__c = toLocationOfTrip.address.split(' ')[0];
+                            } else {
+                                mil.Destination_Name__c = toLocationOfTrip.address;
+                            }*/
+                            if(toLocationOfTrip.address != null) {
+                                mil.Trip_Destination__c = toLocationOfTrip.address;
+                            }
+                        }
+                
                         if(mil.Mileage__c != null ) {
                             totalmileages += Double.valueOf(mil.Mileage__c);
                         }
-                        if( trip.toLocation != null && trip.toLocation.display != null ) {
-                            mil.Trip_Destination__c = trip.toLocation.display;
-                            mil.ToLocationId__c = trip.toLocation.id;
-                            if(trip.toLocation.display.contains(',')) {
-                                mil.Destination_Name__c = (trip.toLocation.display.split(','))[0];  
-                            } else if(trip.toLocation.display.contains(' ')) {
-                                mil.Destination_Name__c = (trip.toLocation.display.split(' '))[0];
-                            } else {
-                                mil.Destination_Name__c =  trip.toLocation.display;
-                            }
-                        }
+                        
                         if(mil.Mileage__c == null || mil.Mileage__c == 0) {
                             mil.Trip_Status__c = 'Approved';
                             mil.Approved_Date__c = System.Today();
@@ -250,10 +269,7 @@ global class DeActivatedUserBatchMileage implements Database.Batchable<sObject>,
                                 mileageset.add(mil);
                         } else {
                             mileageset.add(mil);
-                        }
-                        
-                        
-                        
+                        }                        
                     }
 
                     triplogRecord = new TripsLog__c();
@@ -265,9 +281,7 @@ global class DeActivatedUserBatchMileage implements Database.Batchable<sObject>,
                     triplogRecord.Total_Trips__c= mileageset.size();
                     triplogRecord.Total_Mileages__c = totalmileages;
                     triplogList.add(triplogRecord);
-
                 } else {
-
                     triplogRecord = new TripsLog__c();
                     triplogRecord.Contact__c = reim.Contact_Id__c;
                     triplogRecord.Employee_Reimbursement__c = reim.Id;

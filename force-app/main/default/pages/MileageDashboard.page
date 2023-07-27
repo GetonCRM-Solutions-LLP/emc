@@ -2,6 +2,34 @@
     showChat="false">
 
     <head>
+        <!-- Meta Tag Description -->
+        <meta charset="UTF-8"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+        <meta http-equiv="X-UA-Compatible" content="IE=Edge"/>
+
+        <!-- Meta Tag Description -->
+
+        <!-- favicon icon -->
+        <link rel="apple-touch-icon" sizes="57x57" href="{!URLFOR($Resource.EmcCSS,'emc-design/assets/favicon-icon/apple-icon-57x57.png')}"/>
+        <link rel="apple-touch-icon" sizes="60x60" href="{!URLFOR($Resource.EmcCSS,'emc-design/assets/favicon-icon/apple-icon-60x60.png')}"/>
+        <link rel="apple-touch-icon" sizes="72x72" href="{!URLFOR($Resource.EmcCSS,'emc-design/assets/favicon-icon/apple-icon-72x72.png')}"/>
+        <link rel="apple-touch-icon" sizes="76x76" href="{!URLFOR($Resource.EmcCSS,'emc-design/assets/favicon-icon/apple-icon-76x76.png')}"/>
+        <link rel="apple-touch-icon" sizes="114x114" href="{!URLFOR($Resource.EmcCSS,'emc-design/assets/favicon-icon/apple-icon-114x114.png')}"/>
+        <link rel="apple-touch-icon" sizes="120x120" href="{!URLFOR($Resource.EmcCSS,'emc-design/assets/favicon-icon/apple-icon-120x120.png')}"/>
+        <link rel="apple-touch-icon" sizes="144x144" href="{!URLFOR($Resource.EmcCSS,'emc-design/assets/favicon-icon/apple-icon-144x144.png')}"/>
+        <link rel="apple-touch-icon" sizes="152x152" href="{!URLFOR($Resource.EmcCSS,'emc-design/assets/favicon-icon/apple-icon-152x152.png')}"/>
+        <link rel="apple-touch-icon" sizes="180x180" href="{!URLFOR($Resource.EmcCSS,'emc-design/assets/favicon-icon/apple-icon-180x180.png')}"/>
+        
+        <link rel="icon" type="image/png" sizes="192x192" href="{!URLFOR($Resource.EmcCSS,'emc-design/assets/favicon-icon/android-icon-192x192.png')}"/>
+        <link rel="icon" type="image/png" sizes="32x32" href="{!URLFOR($Resource.EmcCSS,'emc-design/assets/favicon-icon/favicon-32x32.png')}"/>	
+        <link rel="icon" type="image/png" sizes="96x96" href="{!URLFOR($Resource.EmcCSS,'emc-design/assets/favicon-icon/favicon-96x96.png')}"/>	
+        <link rel="icon" type="image/png" sizes="16x16" href="{!URLFOR($Resource.EmcCSS,'emc-design/assets/favicon-icon/favicon-16x16.png')}"/>	
+        <!-- favicon icon -->
+
+        <link rel="manifest" href="{!URLFOR($Resource.EmcCSS,'emc-design/assets/favicon-icon/manifest.json')}"/>
+        <meta name="msapplication-TileColor" content="#ffffff"/>
+        <meta name="msapplication-TileImage" content="/ms-icon-144x144.png"/>
+        <meta name="theme-color" content="#ffffff"/>
         <link rel="stylesheet" href="{!URLFOR($Resource.LwcDesignCss,'lwcDesign/assets/css/customstyle.css')}" />
         <script src="https://code.jquery.com/jquery-2.1.3.min.js"></script>
         <apex:slds />
@@ -103,9 +131,11 @@
             Id = "{!$CurrentPage.parameters.id}",
             showTeam = "{!$CurrentPage.parameters.showteam}",
             admindriver = "{!$CurrentPage.parameters.admindriver}",
+            loginID = ("{!$CurrentPage.parameters.loginAS}" === "") ? null : "{!$CurrentPage.parameters.loginAS}",
+            managerid = ("{!$CurrentPage.parameters.manid}" == '' || "{!$CurrentPage.parameters.manid}" == undefined) ?  "{!$CurrentPage.parameters.managerid}" : "{!$CurrentPage.parameters.manid}",
             ProfileId = "{!$User.ProfileId}";
             plMarketing = '{!($Label.PL_Marketing)}';
-            console.log("ProfileId: " + ProfileId);
+            console.log("ProfileId: " + ProfileId + ": {!$Profile.Name}");
             
         $Lightning.use("c:LWCLightningApp", function () {
             $Lightning.createComponent("c:homePageComponent", {
@@ -116,6 +146,8 @@
                 "admindriver": admindriver,
                 "ProfileId": ProfileId,
                 "plMarketing": plMarketing,
+                "loginId" : loginID,
+                "managerid" : managerid
             }, "lwcDemo", function (cmp) {
                 $("#spinner").hide();
                 console.log("Component Created Successfully");

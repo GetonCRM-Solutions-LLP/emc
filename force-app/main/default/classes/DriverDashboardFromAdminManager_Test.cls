@@ -7,13 +7,12 @@ public class DriverDashboardFromAdminManager_Test {
         customEmailSetting.ContactTriCommunityReimCreate__c = true;
         insert customEmailSetting;
         
-       List<IRS_Mileage_Rate__c> obj_IRS_Mileage_Rate =  RecordUtilityClass.insertIrsRate();
+        List<IRS_Mileage_Rate__c> obj_IRS_Mileage_Rate =  RecordUtilityClass.insertIrsRate();
         RecordUtilityClass.createRecordsforDriverDashboardFromAdminManager();
         Account obj_acc = RecordUtilityClass.getAccount(); // retriving the Accounts 
         Contact obj_admin_contact = RecordUtilityClass.getAdminContact(); // Retriving the Admin with limit 1
         Contact obj_driver_contact = RecordUtilityClass.getDriverContact();
         
-        Test.startTest();
         Test.setCurrentPage(Page.driverdashboardfromadminmanager);
         String adminid = ApexPages.currentPage().getParameters().put('adminid',obj_admin_contact.Id);
         String conId = ApexPages.currentPage().getParameters().put('id',obj_driver_contact.Id);
@@ -36,8 +35,12 @@ public class DriverDashboardFromAdminManager_Test {
         List<Employee_Reimbursement__c> obj_Employee_Reimbursement_List = RecordUtilityClass.getDriverEmployee_Reimbursement(obj_driver_contact.id);
         List<EmployeeReimbursements> obj_list =  RecordUtilityClass.getEmployeeReimbursements(obj_Employee_Reimbursement_List);
         DriverDashboardFromAdminManager.approveReimbursements('2019',obj_driver_contact.Id,obj_acc.Id,JSON.serialize(obj_list));
-        DriverDashboardFromAdminManager.postExpenseReimbursement(obj_acc.Id,'04-2020','abc@gmail.com','222');
-        
+        //DriverDashboardFromAdminManager.postExpenseReimbursement(obj_acc.Id,'04-2020','abc@gmail.com','222');
+        DriverDashboardFromAdminManager.UpdateReimbursementStatus(obj_Employee_Reimbursement_List[0].id );
+        String startDate = '2021-07-28';
+        String endDate = '2021-08-11';
+        DriverDashboardFromAdminManager.getBiweekMileages(startDate ,endDate ,obj_driver_contact.id);
+        DriverDashboardFromAdminManager.ApproveBiweekMileages(startDate ,endDate ,obj_driver_contact.id);
         List<Employee_Mileage__c> obj_list_mileages =  RecordUtilityClass.getMileagesList();
         List<EmployeeMileages> obj_EmployeeMileages_list1=new List<EmployeeMileages>();
         List<EmployeeMileages> obj_EmployeeMileages_list=RecordUtilityClass.getallEmployeeMileages(obj_list_mileages);
@@ -62,6 +65,6 @@ public class DriverDashboardFromAdminManager_Test {
             }
         }
        // DriverDashboardFromAdminManager.approveMileages(JSON.serialize(obj_EmployeeMileages_list1),'April',obj_driver_contact.id);
-        Test.stopTest();
+        
     }
 }

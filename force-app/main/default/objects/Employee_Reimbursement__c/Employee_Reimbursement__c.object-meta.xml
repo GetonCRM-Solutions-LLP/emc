@@ -163,7 +163,9 @@
         <type>Text</type>
     </nameField>
     <pluralLabel>Employee Reimbursements</pluralLabel>
-    <searchLayouts></searchLayouts>
+    <searchLayouts>
+        <lookupDialogsAdditionalFields>Mileage_Lock_Date__c</lookupDialogsAdditionalFields>
+    </searchLayouts>
     <sharingModel>ControlledByParent</sharingModel>
     <visibility>Public</visibility>
 </CustomObject>

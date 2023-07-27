@@ -4,10 +4,12 @@ public with sharing class TimeSheetReportControllerTest {
 
     }
     public static testmethod void test1(){
-        TriggerConfig__c customSetting =  new TriggerConfig__c();
-        customSetting.Name = 'Defaulttrigger';
-        customSetting.MappingGasPriceTrigger__c = true;
-        insert customSetting;
+        TriggerConfig__c customEmailSetting =  new TriggerConfig__c();
+        customEmailSetting.Name = 'Defaulttrigger';
+        customEmailSetting.ContactTriggersendEmailForNewContact__c = true;
+        customEmailSetting.ContactTriCommunityReimCreate__c = true;
+        customEmailSetting.ContactTriBiReimCreate__c = false;
+        insert customEmailSetting;
 
         SendEmail__c customSetting1 =  new SendEmail__c();
         customSetting1.Name = 'Send Email For Compliance';
@@ -15,7 +17,7 @@ public with sharing class TimeSheetReportControllerTest {
         insert customSetting1;
         
         daylight_saving_time_config__c customSetting2 =  new daylight_saving_time_config__c();
-        customSetting2.Name = '2021';
+        customSetting2.Name = '2022';
         customSetting2.Start_Date__c = System.today();
         customSetting2.End_Date__c = System.today() + 60;
         insert customSetting2;
@@ -31,6 +33,8 @@ public with sharing class TimeSheetReportControllerTest {
         acc.Vehicle_Types__c = veh.name;
         acc.Triplog_API__c = '123456789';
         Acc.Triplog_Status__c = 'U';
+        acc.Pay_Period_Start_Date__c = System.today().addDays(-100);
+        acc.Pay_Period_Days__c = 13;
         insert Acc;
         
         Contact contact = new Contact();
@@ -63,12 +67,25 @@ public with sharing class TimeSheetReportControllerTest {
         er.Triplog_Status__c = 'U';
         insert er;
         
+        Bi_Weekly_Reimbursement__c br = new Bi_Weekly_Reimbursement__c();
+            br.Name = system.today()-13 + ' to ' + system.today() ; 
+            br.Contact__c = contact.Id;
+            br.Start_Date__c = system.today()-13;
+            br.End_Date__c = system.today() ;
+            br.MPG__c = contact.MPG__c;
+            br.Maintenance_and_Tires__c = contact.Maintenance_and_Tires__c;
+            br.Fixed_Amount__c = contact.Fixed_Amount__c;
+            br.Status__c = 'Pending';
+            br.Fuel_Price__c = 0;
+        Insert br;
+        
         Employee_Mileage__c emp = new Employee_Mileage__c();
         emp.EmployeeReimbursement__c = er.id;
         emp.Contact_Email_Id__c = contact.External_Email__c;
         emp.Name = 'Test Mileage Record';
         emp.Trip_Status__c = StaticValues.noApprovedYet;
         emp.TimeZone__c = 'US/Mountain' ;
+        emp.Bi_Weekly_Reimbursement__c = br.Id;
         emp.Mileage__c = 10.00;
         emp.Day_Of_Week__c = 'Mon';
         emp.Stay_Time__c = 10;
@@ -86,6 +103,7 @@ public with sharing class TimeSheetReportControllerTest {
         emp1.TimeZone__c = 'US/Mountain' ;
         emp1.Mileage__c = 102.00;
         emp1.Day_Of_Week__c = 'Mon';
+        emp1.Bi_Weekly_Reimbursement__c = br.Id;
         emp1.Stay_Time__c = 15;
         emp1.Fuel_price__c = 15.00;
         emp1.Trip_Date__c = system.today()-12;

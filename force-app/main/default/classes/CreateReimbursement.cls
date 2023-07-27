@@ -11,24 +11,24 @@ global class CreateReimbursement implements  Database.Batchable<Contact>, Databa
         lastMonth = Utils.fetchMonths(1, -1)[0];
     }
     global List<Contact> start(Database.BatchableContext BC) {
-		Date myDate = system.today();
-        system.debug('myDate'+myDate);
+        Date firstDayOfMonth = System.today().toStartOfMonth();
+        Date lastDayOfMonth = firstDayOfMonth.addDays(Date.daysInMonth(firstDayOfMonth.year(), firstDayOfMonth.month()) - 1);
         List<Contact> conList = new List<Contact>();
         if(!Test.isRunningTest()){
             conList = [SELECT Id,name,Role__c,Fixed_Amount__c, Maintenance_and_Tires__c, MPG__c 
                                 FROM contact 
                                 WHERE Role__c != 'Admin' 
                                     AND Role__c != 'Manager' 
-                                    AND Deactivated_Date__c = NULL 
+                                    AND (Deactivated_Date__c = NULL 
+                                    OR (NOT (Deactivated_Date__c < TODAY )))
                                     AND Account.isUsingTriplog__c = true 
-                                    AND Activation_Date__c <= : myDate];
+                                    AND Activation_Date__c <= : lastDayOfMonth];
         } else {
             conList = [SELECT Id,name,Role__c,Fixed_Amount__c, Maintenance_and_Tires__c, MPG__c 
                                 FROM contact 
                                 WHERE Role__c != 'Admin' 
                                     AND Role__c != 'Manager'];
         }
-                system.debug('conList'+conList);
         return conList;
     }
     global Void execute(Database.BatchableContext BC, List<SObject> Scope) { 
@@ -44,6 +44,7 @@ global class CreateReimbursement implements  Database.Batchable<Contact>, Databa
             er.Name = currentContact.Name + ':' + lastMonth;
             er.Month__c = lastMonth;
             er.Fuel_Price__c = 0;
+            er.Number_of_Pay_Period__c = 2;
             if(!objIRSRate.isEmpty()){
                 er.IRS_Mileage_Rate__c = objIRSRate[0].ID;
             }

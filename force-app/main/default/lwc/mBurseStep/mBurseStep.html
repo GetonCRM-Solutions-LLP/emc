@@ -1,0 +1,124 @@
+<template>
+    <div class="slds-grid slds-gutters slds-p-top_small m-left m-right panel">
+        <lightning-layout horizontal-align="spread">
+            <lightning-layout-item padding="around-small">
+                <div class="step">
+                    <img class="step-num" src={number1} />
+                    <img class="p-step" src={step1Url} />
+                    <div class="step-info">Watch the <br/> <strong>Plan Preview</strong></div>
+                </div>
+            </lightning-layout-item>
+            <lightning-layout-item padding="around-small">
+                <div class="step">
+                    <div>
+                        <img class="step-num" src={number2} />
+                        <template if:true={isInsuranceDone}>
+                            <img class="step-check" src={checkmark}/>
+                        </template>
+                    </div>
+                    <template if:true={isInsuranceDone}>
+                        <div class="opacity">
+                            <img class="p-step" src={step2Url} />
+                            <div class="step-info">Upload Your  <br/> <strong>Insurance</strong></div>
+                        </div>
+                    </template>
+                    <template if:false={isInsuranceDone}>
+                        <div>
+                            <img class="p-step" src={step2Url} />
+                            <div class="step-info">Upload Your  <br/> <strong>Insurance</strong></div>
+                        </div>
+                    </template>
+                </div>
+            </lightning-layout-item>
+            <lightning-layout-item padding="around-small">
+                <div class="step">
+                    <div>
+                        <img class="step-num" src={number3} />
+                        <template if:true={isdriverPacketDone}>
+                            <img class="step-check" src={checkmark}/>
+                        </template>
+                    </div>
+                    <template if:true={isdriverPacketDone}>
+                        <div class="opacity">
+                            <img class="p-step" src={step3Url} />
+                            <div class="step-info">Review &amp; Sign your  <br/><strong>Driver Packet</strong></div>
+                        </div>
+                    </template>
+                    <template if:false={isdriverPacketDone}>
+                        <div>
+                            <img class="p-step" src={step3Url} />
+                            <div class="step-info">Review &amp; Sign your  <br/><strong>Driver Packet</strong></div>
+                        </div>
+                    </template>
+                </div>
+            </lightning-layout-item>
+            <lightning-layout-item padding="around-small">
+                <div class="step">
+                    <div>
+                        <img class="step-num" src={number4} />
+                        <template if:true={isAppDone}>
+                            <img class="step-check" src={checkmark}/>
+                        </template>
+                    </div>
+                    <template if:true={isAppDone}>
+                        <div class="opacity">
+                            <img class="p-step" src={step4Url}/>
+                            <div class="step-info" if:true={phone}>Sign into the <br/><strong>mLog app</strong></div>
+                            <div class="step-info" if:false={phone}>Download &amp; Install  <br/><strong>the mLog app</strong></div>
+                        </div>
+                    </template>
+                    <template if:false={isAppDone}>
+                        <div>
+                            <img class="p-step" src={step4Url}/>
+                            <div class="step-info" if:true={phone}>Sign into the <br/><strong>mLog app</strong></div>
+                            <div class="step-info" if:false={phone}>Download &amp; Install  <br/><strong>the mLog app</strong></div>
+                        </div>
+                    </template>
+                </div>
+            </lightning-layout-item>
+            <lightning-layout-item padding="around-small">
+                <div class="step"  if:true={accountType}>
+                    <div>
+                        <img class="step-num" src={number5} />
+                        <template if:true={isSchedule}>
+                            <img class="step-check" src={checkmark}/>
+                        </template>
+                    </div>
+                    <template if:true={isSchedule}>
+                        <div class="opacity">
+                            <img class="p-step" src={step5Url} />
+                            <div class="step-info">Schedule your  <br/> <strong>Driver Meeting</strong></div>
+                        </div>
+                    </template>
+                    <template if:false={isSchedule}>
+                        <div>
+                            <img class="p-step" src={step5Url} />
+                            <div class="step-info">Schedule your  <br/> <strong>Driver Meeting</strong></div>
+                        </div>
+                    </template>
+                </div>
+
+                <div class="step"  if:false={accountType}>
+                    <div>
+                        <img class="step-num" src={number5} />
+                        <template if:true={isRegister}>
+                            <img class="step-check" src={checkmark}/>
+                        </template>
+                    </div>
+                    <template if:true={isRegister}>
+                        <div class="opacity">
+                            <img class="p-step" src={step1Url} />
+                            <div class="step-info">Watch your  <br/> <strong>Driver Meeting</strong></div>
+                        </div>
+                    </template>
+                    <template if:false={isRegister}>
+                        <div>
+                            <img class="p-step" src={step1Url} />
+                            <div class="step-info">Watch your  <br/> <strong>Driver Meeting</strong></div>
+                        </div>
+                    </template>
+                </div>
+            </lightning-layout-item>
+            </lightning-layout>
+    </div>
+</template>

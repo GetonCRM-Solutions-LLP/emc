@@ -8,7 +8,7 @@
  * AI-000435
  */
 global class UploadConcurQuickExpenseTriplog {
-    public static final String MLOGACCOUNT = System.Label.Triplog_New_URL;
+    public static final String MLOGACCOUNT = System.Label.Triplog_New_URL + ',' + System.Label.Triplog_New_URL2;
     Webservice static void postTotalReimbursement(Id accid,String empReMonth,String contactEmail,String totalReimburement){
         List<Account> accountList = [SELECT id,Triplog_API__c  
                                         FROM Account 

@@ -2,6 +2,7 @@
 public class UpdateMileageControllerTest {
     public static testMethod Void UpdateMileageConTestMethod() {
         
+        TrueDialog_Keys__c trueDialogCustom = TestDataFactory.createTrueDialog(true);
         TriggerConfig__c customEmailSetting =  new TriggerConfig__c();
         customEmailSetting.Name = 'Defaulttrigger';
         customEmailSetting.ContactTriggersendEmailForNewContact__c = true;
@@ -27,6 +28,8 @@ public class UpdateMileageControllerTest {
         Account account = new Account();
         account.name = 'Test Account';
         account.Triplog_API__c = '28beeea973f34daf89050a9b6a3b1a71';
+        account.Pay_Period_Start_Date__c = System.today().addDays(-100);
+        account.Pay_Period_Days__c = 6;
         insert account;
            
         Contact contact = new Contact();
@@ -52,6 +55,11 @@ public class UpdateMileageControllerTest {
         erRec.Fixed_Amount__c = 10.10;
         insert erRec;
         
+        Bi_Weekly_Reimbursement__c bob = new Bi_Weekly_Reimbursement__c();
+        bob.name = '9/19/2021 to 10/2/2021';
+        bob.Contact__c = contact.id;
+        insert bob;
+        
         Employee_Mileage__c empMileageRec = new Employee_Mileage__c();
         empMileageRec.Contact_Email_Id__c = 'test1@test1.gmail.com';
         empMileageRec.Name = 'Test Mileage Record';
@@ -60,6 +68,7 @@ public class UpdateMileageControllerTest {
         empMileageRec.Trip_Status__c = 'Approved';
         empMileageRec.Trip_Id__c = 15445445;
         empMileageRec.Approved_Date__c = system.today() - 1;
+        empMileageRec.Bi_Weekly_Reimbursement__c = bob.Id;
         insert empMileageRec;
         
         Test.startTest();

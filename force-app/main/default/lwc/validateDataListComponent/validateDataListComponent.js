@@ -262,7 +262,8 @@ export default class ValidateDataListComponent extends LightningElement {
 
         this.template.querySelector('.searchvalue').value = '';
         this.searchValue = '';
-
+				let filterItem = this.filterSearch(this.searchValue);
+        this.options = filterItem;
         this.showAccountsListFlag = false;
 
         const selectedEvent = new CustomEvent("handleclickevent", {

@@ -82,7 +82,7 @@ global class TransferMileagesBatch implements Database.Batchable<sObject>, Datab
         csvFile.setFileName('Updated Last to Last Month Mileage.csv');
         csvFile.setBody(Blob.valueOf( 'Mileage ID,Reimbersment Name,Maintenance and Tires,MPG,Month,Contact name\n' + filebody ));
         Messaging.SingleEmailMessage email = new Messaging.SingleEmailMessage();
-        String[] toAddresses = new list<string> { 'minkeshp@askemc.com' };
+        String[] toAddresses = new list<string> { System.Label.TransferMileagesBatchEmail };
         email.setSubject('Mileage Status');
         email.setToAddresses(toAddresses);
         if(filebody == '') {

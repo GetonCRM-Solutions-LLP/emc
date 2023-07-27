@@ -27,10 +27,12 @@ export default class DataTableComponent extends LightningElement {
   // tz = TIME_ZONE;
   // ln = LOCALE;
   isRenderCallbackActionExecuted = true;
+  isPdf = false;
   isRowSplitterExcecuted = false;
   isPerPageActionExecuted = false;
   isClicked = false;
   isNoteClicked = false;
+  isStayTimeClicked = false;
   isTagClicked = false;
   selectBool = false;
   tableSpinner = false;
@@ -60,11 +62,11 @@ export default class DataTableComponent extends LightningElement {
     },
     {
       label: "From",
-      fieldName: "TripOrigin",
+      fieldName: "FromLocation",
     },
     {
       label: "To",
-      fieldName: "TripDestination",
+      fieldName: "ToLocation",
     },
     {
       label: "Notes",
@@ -603,12 +605,20 @@ export default class DataTableComponent extends LightningElement {
     rList.value = event.target.value;
   }
 
- 
+  handleStayTimeInput(event){
+    event.target.value = event.target.value.replace(/[^\d]/g, '')
+    this.isStayTimeClicked = true;
+    let sTime = event.currentTarget.dataset.id;
+    let sTimeList = this.template.querySelector(
+      `.stayTime_Input[data-id="${sTime}"]`
+    );
+    sTimeList.value = event.target.value;
+  }
 
   // Accordion Save  Button click event
   handleSave(event) {
-    var tripID, tagName, activity, note, textList, rTagList,conEmail, tripDate, conName, oldActivity, actualMileage, mileage, chMileage, tripLogApi, tripLogId;
-    if(this.isClicked === true || this.isNoteClicked === true || this.isTagClicked === true) {
+    var tripID, tagName, activity, note, stayInput, textList, rTagList, stayTimeList, conEmail, tripDate, conName, oldActivity, actualMileage, mileage, chMileage, tripLogApi, tripLogId;
+    if(this.isClicked === true || this.isNoteClicked === true || this.isTagClicked === true || this.isStayTimeClicked === true) {
       this.tableSpinner = true;
       this.updatingText = "Updating....";
       let tId = event.currentTarget.dataset.id;
@@ -618,10 +628,14 @@ export default class DataTableComponent extends LightningElement {
       textList = this.template.querySelector(
         `textarea[data-id="${tId}"]`
       );
+      stayTimeList = this.template.querySelector(
+        `.stayTime_Input[data-id="${tId}"]`
+      );
       tripID = tId;
       tagName = (rTagList.value === undefined) ? '' : rTagList.value;
       note = (textList.value === undefined) ? '' : textList.value;
       activity = (this.activity === undefined || this.activity === '') ? null : this.activity;
+      stayInput = (stayTimeList.value === undefined || stayTimeList.value === '') ? 0 : stayTimeList.value;
       conEmail = event.currentTarget.dataset.email;
       tripDate = event.currentTarget.dataset.trip;
       conName = event.currentTarget.dataset.name;
@@ -635,12 +649,14 @@ export default class DataTableComponent extends LightningElement {
       listOfData.Tags = (this.isTagClicked === true) ? tagName : listOfData.Tags;
       listOfData.Notes = (this.isNoteClicked === true) ? note : listOfData.Notes;
       listOfData.Activity =  (this.isClicked === true) ? activity : listOfData.Activity;
-    
+      listOfData.StayTime = (this.isStayTimeClicked === true) ? stayInput : listOfData.StayTime;
+
       updateMileages({
           tripId: tripID,
           tripTag: tagName,
           activity: activity,
-          notes: note
+          notes: note,
+          staytime: stayInput
         })
         .then((data) => {
           // console.log("updateMileages List", data);
@@ -678,6 +694,7 @@ export default class DataTableComponent extends LightningElement {
             }
             this.isNoteClicked = false;
             this.isTagClicked = false;
+            this.isStayTimeClicked = false;
           }
         })
         .catch((error) => {
@@ -789,9 +806,9 @@ export default class DataTableComponent extends LightningElement {
         if (header === "Driver") {
           keyName = "Name";
         } else if (header === "From") {
-          keyName = "TripOrigin";
+          keyName = "FromLocation";
         } else if (header === "To") {
-          keyName = "TripDestination";
+          keyName = "ToLocation";
         } else if (header === "Mileage") {
           keyName = "Mileage";
         } else if (header === "Date & Time") {
@@ -808,8 +825,8 @@ export default class DataTableComponent extends LightningElement {
         this.reverse = true;
         if (
           keyName === "Name" ||
-          keyName === "TripOrigin" ||
-          keyName === "TripDestination" ||
+          keyName === "FromLocation" ||
+          keyName === "ToLocation" ||
           keyName === "Tags" ||
           keyName === "Notes" || 
           keyName === "Activity"
@@ -890,6 +907,7 @@ export default class DataTableComponent extends LightningElement {
                 dateB = formatDateB == "" ? "" : new Date(formatDateB.toLowerCase());
               //sort string ascending
               const searchTime12to24 = (time12h, cdate) => {
+							if(typeof cdate === 'object'){
                 const [time, modifier] = time12h.split(' ');
 
                 let [hours, minutes] = time.split(':');
@@ -903,6 +921,7 @@ export default class DataTableComponent extends LightningElement {
                 }
                 let seconds = '00'
                 cdate.setHours(hours, minutes, seconds);
+							}
                 return cdate
                 //return `${hours}:${minutes}`;
               }
@@ -928,19 +947,21 @@ export default class DataTableComponent extends LightningElement {
                 dateB = formatDateB == "" ? "" : new Date(formatDateB.toLowerCase());
 
               const Time12to24 = (time12h, cdate) => {
-                const [time, modifier] = time12h.split(' ');
+                if(typeof cdate === 'object'){
+                  const [time, modifier] = time12h.split(' ');
 
-                let [hours, minutes] = time.split(':');
+                  let [hours, minutes] = time.split(':');
 
-                if (hours === '12') {
-                  hours = '00';
+                  if (hours === '12') {
+                    hours = '00';
+                  }
+
+                  if (modifier === 'PM') {
+                    hours = parseInt(hours, 10) + 12;
+                  }
+                  let seconds = '00'
+                  cdate.setHours(hours, minutes, seconds);
                 }
-
-                if (modifier === 'PM') {
-                  hours = parseInt(hours, 10) + 12;
-                }
-                let seconds = '00'
-                cdate.setHours(hours, minutes, seconds);
                 return cdate
                 //return `${hours}:${minutes}`;
               }
@@ -962,8 +983,8 @@ export default class DataTableComponent extends LightningElement {
         this.reverse = false;
         if (
           keyName === "Name" ||
-          keyName === "TripOrigin" ||
-          keyName === "TripDestination" ||
+          keyName === "FromLocation" ||
+          keyName === "ToLocation" ||
           keyName === "Tags" ||
           keyName === "Notes" || 
           keyName === "Activity"
@@ -1045,19 +1066,22 @@ export default class DataTableComponent extends LightningElement {
                 dateB = formatDateB == "" ? "" : new Date(formatDateB.toLowerCase());
 
               const searchconvertTime12to24 = (time12h, cdate) => {
-                const [time, modifier] = time12h.split(' ');
+								console.log("date--", cdate)
+									if(typeof cdate === 'object'){
+											 const [time, modifier] = time12h.split(' ');
+												let [hours, minutes] = time.split(':');
 
-                let [hours, minutes] = time.split(':');
+												if (hours === '12') {
+													hours = '00';
+												}
 
-                if (hours === '12') {
-                  hours = '00';
-                }
-
-                if (modifier === 'PM') {
-                  hours = parseInt(hours, 10) + 12;
-                }
-                let seconds = '00'
-                cdate.setHours(hours, minutes, seconds);
+												if (modifier === 'PM') {
+													hours = parseInt(hours, 10) + 12;
+												}
+												let seconds = '00'
+												cdate.setHours(hours, minutes, seconds);
+									}
+               
                 return cdate
                 //return `${hours}:${minutes}`;
               }
@@ -1084,19 +1108,21 @@ export default class DataTableComponent extends LightningElement {
                 dateB = formatDateB == "" ? "" : new Date(formatDateB.toLowerCase());
 
               const convertTime12to24 = (time12h, cdate) => {
-                const [time, modifier] = time12h.split(' ');
+										if(typeof cdate === 'object'){
+												const [time, modifier] = time12h.split(' ');
 
-                let [hours, minutes] = time.split(':');
+												let [hours, minutes] = time.split(':');
 
-                if (hours === '12') {
-                  hours = '00';
-                }
+												if (hours === '12') {
+													hours = '00';
+												}
 
-                if (modifier === 'PM') {
-                  hours = parseInt(hours, 10) + 12;
-                }
-                let seconds = '00'
-                cdate.setHours(hours, minutes, seconds);
+												if (modifier === 'PM') {
+													hours = parseInt(hours, 10) + 12;
+												}
+												let seconds = '00'
+												cdate.setHours(hours, minutes, seconds);
+										}
                 return cdate
                 //return `${hours}:${minutes}`;
               }
@@ -1176,7 +1202,7 @@ export default class DataTableComponent extends LightningElement {
     this.rowOffSet = (this.rowOffSet - 1) * this.rowLimit
     this.template.querySelector(".CheckUncheckAll").checked = false;
     if (this.searchData.length != 0) {
-      // console.log("inside row action", this.rowOffSet)
+      console.log("inside row action", this.rowOffSet, this.rowLimit);
       const rowAction = new CustomEvent("rowactionevent", {
         detail: {
           rowLimit: this.rowLimit,
@@ -1185,6 +1211,7 @@ export default class DataTableComponent extends LightningElement {
       })
       this.dispatchEvent(rowAction);
     } else {
+			console.log("inside row action not search", this.rowOffSet, this.rowLimit);
       this.apexMethodCall(undefined, this.rowLimit, this.rowOffSet);
     }
 

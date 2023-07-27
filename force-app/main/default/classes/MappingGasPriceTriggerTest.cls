@@ -2,7 +2,8 @@
 public Class MappingGasPriceTriggerTest{
 
     public static testmethod void test1(){
-    
+        TriggerConfig__c triggerCustomSetting = TestDataFactory.triggerConfigCustomSetting(true);
+        TrueDialog_Keys__c tdKeys = TestDataFactory.createTrueDialog(true);
         TriggerConfig__c customSetting =  new TriggerConfig__c();
         customSetting.Name = 'Defaulttrigger';
         customSetting.MappingGasPriceTrigger__c = true;
@@ -33,7 +34,66 @@ public Class MappingGasPriceTriggerTest{
         customSetting2.End_Date__c = System.today() + 60;
         insert customSetting2;
         
-        Account acc = new Account();
+        UserRole userRole_1 = [SELECT Id FROM UserRole WHERE DeveloperName = 'EMD' LIMIT 1];
+        Profile profile_1 = [SELECT Id FROM Profile WHERE Name = 'Customer Community Login User' LIMIT 1];
+        User admin = [SELECT Id, Username, UserRoleId FROM User WHERE Profile.Name = 'System Administrator' AND UserRoleId = :userRole_1.Id LIMIT 1];
+        User user_1;
+        Account acc;
+        Contact con;
+       
+        System.runAs(admin) {
+            acc = TestUtilityClass.getTestSingleAccount();
+            acc.Triplog_API__c = 'fde76cdde14449bea46b321225ac8fd1';
+            acc.Pay_Period_Start_Date__c = System.today().addDays(-100);
+            acc.Pay_Period_Days__c = 13;
+            acc.Timezone__c = 'US/Eastern';
+            update acc;
+            Contact contact_1 = new Contact(AccountId = acc.Id, LastName = 'xgeek',External_Email__c= 'abc@gmail.com');
+            insert contact_1;
+
+            con = new Contact();
+            con.FirstName = 'Test';
+            con.LastName = 'Contact';
+            con.AccountId = acc.Id;
+            con.Fixed_Amount__c = 10;
+            con.MailingStreet = 'Test Street';
+            con.MailingCity = 'Test City';
+            con.MailingState = 'AL';
+            con.Triplog_UserID__c = '23rcdssf';
+            con.MailingPostalCode = '36310';
+            con.MailingCountry = 'CA';
+            con.Phone = '1232434445';
+            con.External_Email__c = 'minkesh.patel14232378@gmail.com';
+            //con.Deactivated_Date__c = system.today();
+            con.isCommunityUser__c = True;
+            con.Role__c = 'Driver';
+            con.Monthly_Mileage_Limit__c = 0;
+            con.IsCreatedFromCommunity__c = true; 
+            con.Vehicle_Type__c  = '2019 Mileage Rate';
+            con.compliancestatus__c = 'Yes';
+            con.Time_Zone__c = 'US/Eastern';
+            con.Biweek_Reimbursement__c = true;
+            insert con;
+            
+
+            user_1 = new User( 
+                Email = 'yourusername@gmail.com',
+                ProfileId = profile_1.Id, 
+                UserName = 'yourusername@gmail.com', 
+                Alias = 'Test',
+                TimeZoneSidKey = 'America/New_York',
+                EmailEncodingKey = 'ISO-8859-1',
+                LocaleSidKey = 'en_US', 
+                LanguageLocaleKey = 'en_US',
+                ContactId = contact_1.Id,
+                PortalRole = 'Manager',
+                FirstName = 'Firstname',
+                LastName = 'Lastname'
+            );
+            insert user_1;
+        }     
+        
+       /* Account acc = new Account();
         acc.Name = 'PL Marketing';
         acc.Triplog_API__c = 'asasadfdfsdfsdasaddf';
         insert acc;
@@ -52,12 +112,16 @@ public Class MappingGasPriceTriggerTest{
         con.Monthly_Mileage_Limit__c = 100.00;
         insert con;
         
-    
+*/    
         Gas_Prices__c gprice = new Gas_Prices__c();
-        gprice.City__c = 'Abilene';
+        gprice.City__c = 'Test City';
         gprice.Fuel_Price__c = 65;
-        gprice.State__c = 'TX';
+        gprice.State__c = 'AL';
         gprice.Month_Year__c = date.today().adddays(-1);
+        DateTime dtLastMonth = System.today().adddays(-1);
+        String dayval = String.valueOf(dtLastMonth.format('d'));
+        String yearval = String.valueOf(dtLastMonth.format('yyyy'));
+        gprice.Month_State_City__c = gprice.City__c+''+gprice.State__c+''+dayval+''+yearval;
         insert gprice;
         
         Employee_Reimbursement__c er5 = new Employee_Reimbursement__c();
@@ -67,6 +131,29 @@ public Class MappingGasPriceTriggerTest{
         er5.Status__c = 'Pending';
         er5.Fuel_Price__c = 10.00;
         insert er5;
+        
+        Decimal days = acc.Pay_Period_Days__c;
+        List<String> dateRange = new List<String>();
+        String startDate = string.valueof(acc.Pay_Period_Start_Date__c);
+        string[] splitsdate = startDate.split('-');
+        string splitStartDate = splitsdate[1]+'/'+splitsdate[2]+'/'+splitsdate[0];
+        String enddate = String.valueof(date.valueof(startDate).addDays(Integer.valueof(days)));
+        string[] splitdate = enddate.split('-');
+        string splitEndDate = splitdate[1]+'/'+splitdate[2]+'/'+splitdate[0];
+        if(date.valueof(enddate) < date.today()){
+            dateRange.add(splitStartDate+' to '+ splitEndDate);
+        }        
+        
+        Bi_Weekly_Reimbursement__c biReim = new Bi_Weekly_Reimbursement__c();
+        bireim.Approved_Date__c = system.today().addDays(-1);
+        bireim.Contact__c = con.Id;
+        bireim.Status__c = 'Approved';
+        bireim.Name = dateRange[0];
+        bireim.Start_Date__c = Date.parse('10/03/2021');
+        bireim.End_Date__c = Date.parse('10/16/2021');
+        bireim.Contact__c = con.id;
+        bireim.Mileage_Lock_Date__c = system.today();
+        insert bireim;
 
         Employee_Mileage__c emp = new Employee_Mileage__c();
         emp.EmployeeReimbursement__c = er5.id;
@@ -79,6 +166,7 @@ public Class MappingGasPriceTriggerTest{
         emp.StartTime__c = system.now();
         emp.EndTime__c =  system.now();
         emp.Trip_Date__c = date.today().adddays(-1);
+        emp.Bi_Weekly_Reimbursement__c = bireim.Id;
         insert emp;
         
         Employee_Reimbursement__c er1 = new Employee_Reimbursement__c();
@@ -86,8 +174,11 @@ public Class MappingGasPriceTriggerTest{
         er1.Name = 'Reimbersment Test';
         er1.Month__c = '08-2017';
         er1.Status__c = 'Pending';
-        er1.Mileage_Lock_Date__c = system.today()-1;
+        //er1.Mileage_Lock_Date__c = system.today();
         insert er1;
+        
+        er1.Mileage_Lock_Date__c = system.today();
+        update er1;
         
          Employee_Reimbursement__c er = new Employee_Reimbursement__c();
         er.Contact_Id__c = con.Id;
@@ -108,6 +199,7 @@ public Class MappingGasPriceTriggerTest{
         emp1.StartTime__c = system.now();
         emp1.EndTime__c =  system.now();
         emp1.Trip_Date__c =date.today().adddays(-1);
+        emp1.Bi_Weekly_Reimbursement__c = bireim.Id;
         insert emp1;
         
         emp1.Trip_Status__c = 'Rejected';
@@ -125,6 +217,7 @@ public Class MappingGasPriceTriggerTest{
         emp2.TimeZone__c = 'US/Mountain' ;
         emp2.StartTime__c = system.now();
         emp2.EndTime__c =  system.now();
+        emp2.Bi_Weekly_Reimbursement__c = bireim.Id;
         emp2.Trip_Date__c =date.today().adddays(-1);
         insert emp2;
         
@@ -140,5 +233,7 @@ public Class MappingGasPriceTriggerTest{
         MappingGasPriceTriggerHelper.TrackHistory(milMap,mileageNew);
         MappingGasPriceTriggerHelper.updateMileagesLockDate(mileageNew);
         MappingGasPriceTriggerHelper.updateMileages(mileageNew);
+        MappingGasPriceTriggerHelper.updateBiweekReimId(mileageNew);
+         MappingGasPriceTriggerHelper.updateMilLockDateBWReim(mileageNew);
     }
 }

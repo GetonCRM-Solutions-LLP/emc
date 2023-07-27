@@ -6,7 +6,7 @@ import {
 } from 'lwc';
 import getMilegesData from '@salesforce/apex/GetDriverData.getMilegesData';
 import getMilegesDataSize from '@salesforce/apex/GetDriverData.getMilegesDataSize';
-
+import getInsuranceStatus from '@salesforce/apex/GetDriverData.getInsuranceStatus';
 export default class HomePageComponent extends LightningElement {
     ready = false;
     rowLimit;
@@ -18,6 +18,8 @@ export default class HomePageComponent extends LightningElement {
     @api Id;
     @api showTeam;
     @api ProfileId;
+    @api loginId;
+    @api managerid;
     @api plMarketing;
     @api admindriver
     @track dashboardurl;
@@ -28,12 +30,14 @@ export default class HomePageComponent extends LightningElement {
     @track reporturl;
     @track notificationUrl;
     @track myDetailurl;
+    @track myDetailInsuranceurl;
     @api searchList = [];
     @track drivername;
     @track loadingSpinner = false;
     @track isSelectedChecked = false;
     @track optionSelected = false;
     @track isActive = false;
+    isRisk = false;
     @track fromlocation;
     @track tolocation;
     @track field;
@@ -81,6 +85,7 @@ export default class HomePageComponent extends LightningElement {
     managerLoggedIn = false;
     unapproveCheck = false;
     isSyncType = true;
+    isInsurance = false;
     // mileageRecordSize(accId, drId, StDate, EnDate, OrName,
     //     DestName, ActDriver,
     //     StMileage,
@@ -133,6 +138,7 @@ export default class HomePageComponent extends LightningElement {
         this.template.querySelector('.tagList').clearAll();
         this.template.querySelector('.statusList').clearAll();
         this.template.querySelector('.tracingList').clearAll();
+				this.template.querySelector('.activityList').clearAll();
         this.template.querySelector('.lwcstartenddatecomponent').clearAll();
         this.template.querySelector('c-l-w-c-mileages-component').clearAll();
         this.driverId = undefined;
@@ -204,12 +210,13 @@ export default class HomePageComponent extends LightningElement {
 
     // To Get Selected Trip Status
     handleTripStatus(event) {
-        this.trip_status = event.detail;
-        // if (event.detail === 'All Status' || event.detail === "") {
-        //     this.trip_status = null;
-        // } else {
-        //     this.trip_status = event.detail;
-        // }
+				console.log(event.detail);
+        //this.trip_status = event.detail;
+         if (event.detail === 'All Status' || event.detail === "") {
+            this.trip_status = null;
+         } else {
+             this.trip_status = event.detail;
+        }
     }
 
     // To Get Selected Track Method
@@ -244,13 +251,18 @@ export default class HomePageComponent extends LightningElement {
         this.template.querySelector('c-multiple-dropdown-component').getActiveDriver(this.isActive);
     }
 
+    //High risk trips
+    handleHighRiskTrip(event){
+        this.isRisk = event.target.checked;
+    }
+
     // Get Data based on advance search filter
 
     async handleSearchEvent(isSend, rowLt, rowSet) {
         try {
-            if (this.driverId != undefined|| this.getstartDate != undefined || this.getendDate != undefined || this.fromlocation != undefined || this.tolocation != undefined ||
+            if ((this.driverId != undefined|| this.getstartDate != undefined || this.getendDate != undefined || this.fromlocation != undefined || this.tolocation != undefined ||
                 this.tolocation != undefined || this.startMileage != undefined || this.endMileage != undefined || this.trip_status != undefined ||
-                this.track_method != undefined || this.tags != undefined || this.activity != undefined) {
+                this.track_method != undefined || this.tags != undefined || this.activity != undefined) || this.isRisk === true) {
                 var rowLimit, rowOffSet = 0;
                 if (rowLt != undefined || rowLt != null) {
                     rowLimit = rowLt;
@@ -296,7 +308,8 @@ export default class HomePageComponent extends LightningElement {
                     TrackingMethod: this.TrackingMethod,
                     Tag: this.tags,
                     Notes: null,
-                    Activity: this.Activity
+                    Activity: this.Activity,
+                    highrisk: this.isRisk
                 });
                 if (mileageSizeResult != undefined) {
                     this.dataSize = parseInt(mileageSizeResult);
@@ -317,7 +330,8 @@ export default class HomePageComponent extends LightningElement {
                         Notes: null,
                         Activity: this.Activity,
                         limitSize: rowLimit,
-                        offset: rowOffSet
+                        offset: rowOffSet,
+                        highrisk: this.isRisk
                     });
                    this.loadingSpinner = false;
                    console.log("getMilegesData", mileageList);
@@ -338,6 +352,7 @@ export default class HomePageComponent extends LightningElement {
             }
 
         } catch (error) {
+						this.loadingSpinner = false;
             console.log("Error while advance search ", error);
         }
 
@@ -745,6 +760,16 @@ export default class HomePageComponent extends LightningElement {
     }
     connectedCallback() {
         this.ready = true;
+        getInsuranceStatus({
+            conId: this.Id,
+        })
+        .then((data) => {
+            this.isInsurance = data;
+            console.log("from insurance", data);
+        })
+        .catch((error) => {
+            console.log(error);
+        });
         if(this.accountId === this.plMarketing){
             this.showSync = (this.ProfileId === '00e31000001FRDYAA4' ||this.ProfileId === '00e31000001FRDZAA4') ? true : false;
             //this.showSync = false;
@@ -756,14 +781,24 @@ export default class HomePageComponent extends LightningElement {
             this.showUrl = false;
         }
         if (this.ProfileId === '00e31000001FRDYAA4') {
-            this.drivermanagerLoggedIn = false;
-            this.adminLoggedIn = true;
-            this.admindriverLoggedIn = false;
-            this.dashboardurl = "/app/admindashboard?accid=" + this.accountId + "&id=" + this.Id + "&showteam=" + this.showTeam;
-            this.mileageurl = "/app/MileageDashboard?accid=" + this.accountId + "&id=" + this.Id + "&showteam=" + this.showTeam;
-            this.driverurl = "/app/roster?accid=" + this.accountId + "&id=" + this.Id + "&showteam=" + this.showTeam;
-            this.notificationUrl = "/app/ManageNotification?accid=" + this.accountId + "&id=" + this.Id + "&showteam=" + this.showTeam;
-            this.reporturl = "/app/reportlist?accid=" + this.accountId + "&id=" + this.Id + "&showteam=" + this.showTeam;
+            if(this.loginId != null) {
+                this.drivermanagerLoggedIn = true;
+                this.admindriverLoggedIn = false;
+                this.adminLoggedIn = false;
+                this.dashboardurl = "/app/drivermanagerdriverdetails?accid=" + this.accountId + "&id=" + this.Id + "&manid="+ this.managerid + "&showteam=" + this.showTeam + "&loginAS=true";
+                this.mileageurl = "/app/MileageDashboard?accid=" + this.accountId + "&id=" + this.Id + "&manid="+ this.managerid + "&showteam=" + this.showTeam + "&loginAS=true";
+                this.notificationUrl = "/app/ManageNotification?accid=" + this.accountId + "&id=" + this.Id + "&managerid="+ this.managerid + "&showteam=" + this.showTeam + "&loginAS=true";
+                this.myDetailurl = "/app/driveradminmanagermydetail?accid=" + this.accountId + "&id=" + this.Id + "&manid="+ this.managerid + "&showteam=" + this.showTeam + "&loginAS=true";
+            }else{
+                this.drivermanagerLoggedIn = false;
+                this.adminLoggedIn = true;
+                this.admindriverLoggedIn = false;
+                this.dashboardurl = "/app/admindashboard?accid=" + this.accountId + "&id=" + this.Id + "&showteam=" + this.showTeam;
+                this.mileageurl = "/app/MileageDashboard?accid=" + this.accountId + "&id=" + this.Id + "&showteam=" + this.showTeam;
+                this.driverurl = "/app/roster?accid=" + this.accountId + "&id=" + this.Id + "&showteam=" + this.showTeam;
+                this.notificationUrl = "/app/ManageNotification?accid=" + this.accountId + "&id=" + this.Id + "&showteam=" + this.showTeam;
+                this.reporturl = "/app/reportlist?accid=" + this.accountId + "&id=" + this.Id + "&showteam=" + this.showTeam;
+            }
         } else if (this.ProfileId === '00e31000001FRDWAA4') {
             this.drivermanagerLoggedIn = false;
             this.admindriverLoggedIn = false;
@@ -784,16 +819,29 @@ export default class HomePageComponent extends LightningElement {
             this.reporturl = "/app/reportlist?accid=" + this.accountId + "&id=" + this.Id + "&showteam=" + this.showTeam;
             this.notificationUrl = "/app/ManageNotification?accid=" + this.accountId + "&id=" + this.Id + "&showteam=" + this.showTeam;
             this.myDetailurl = "/app/driveradminmanagermydetail?accid=" + this.accountId + "&id=" + this.Id + "&showteam=" + this.showTeam;
+            this.myDetailInsuranceurl = "/app/uploadInsurance?accid="+ this.accountId + "&id=" + this.Id + "&showteam=" + this.showTeam;
         } else if (this.ProfileId === '00e31000001FRDZAA4') {
-            this.admindriverLoggedIn = true;
-            this.drivermanagerLoggedIn = false;
-            this.adminLoggedIn = false;
-            this.dashboardurl = "/app/admindriverdashboard?accid=" + this.accountId + "&id=" + this.Id + "&showteam=" + this.showTeam + "&admindriver=" + this.admindriver
-            this.mileageurl = "/app/MileageDashboard?accid=" + this.accountId + "&id=" + this.Id + "&showteam=" + this.showTeam + "&admindriver=" + this.admindriver;
-            this.driverurl = "/app/roster?accid=" + this.accountId + "&id=" + this.Id + "&showteam=" + this.showTeam + "&admindriver=" + this.admindriver;
-            this.notificationUrl = "/app/ManageNotification?accid=" + this.accountId + "&id=" + this.Id + "&showteam=" + this.showTeam + "&admindriver=" + this.admindriver;
-            this.reporturl = "/app/reportlist?accid=" + this.accountId + "&id=" + this.Id + "&showteam=" + this.showTeam + "&admindriver=" + this.admindriver;
-            this.myDetailurl = "/app/driveradminmanagermydetail?accid=" + this.accountId + "&id=" + this.Id + "&showteam=" + this.showTeam + "&admindriver=" + this.admindriver;
+            if(this.loginId != null) {
+                this.drivermanagerLoggedIn = true;
+                this.admindriverLoggedIn = false;
+                this.adminLoggedIn = false;
+                this.dashboardurl = "/app/drivermanagerdriverdetails?accid=" + this.accountId + "&id=" + this.Id + "&manid="+ this.managerid + "&showteam=" + this.showTeam + "&loginAS=true";
+                this.mileageurl = "/app/MileageDashboard?accid=" + this.accountId + "&id=" + this.Id + "&manid="+ this.managerid + "&showteam=" + this.showTeam + "&loginAS=true";
+                this.notificationUrl = "/app/ManageNotification?accid=" + this.accountId + "&id=" + this.Id + "&managerid="+ this.managerid + "&showteam=" + this.showTeam + "&loginAS=true";
+                this.myDetailurl = "/app/driveradminmanagermydetail?accid=" + this.accountId + "&id=" + this.Id + "&manid="+ this.managerid + "&showteam=" + this.showTeam + "&loginAS=true";
+                this.myDetailInsuranceurl = "/app/uploadInsurance?accid="+ this.accountId + "&id=" + this.Id + "&managerid="+ this.managerid + "&showteam=" + this.showTeam  + "&loginAS=true";
+            }else{
+                this.admindriverLoggedIn = true;
+                this.drivermanagerLoggedIn = false;
+                this.adminLoggedIn = false;
+                this.dashboardurl = "/app/admindriverdashboard?accid=" + this.accountId + "&id=" + this.Id + "&showteam=" + this.showTeam + "&admindriver=" + this.admindriver
+                this.mileageurl = "/app/MileageDashboard?accid=" + this.accountId + "&id=" + this.Id + "&showteam=" + this.showTeam + "&admindriver=" + this.admindriver;
+                this.driverurl = "/app/roster?accid=" + this.accountId + "&id=" + this.Id + "&showteam=" + this.showTeam + "&admindriver=" + this.admindriver;
+                this.notificationUrl = "/app/ManageNotification?accid=" + this.accountId + "&id=" + this.Id + "&showteam=" + this.showTeam + "&admindriver=" + this.admindriver;
+                this.reporturl = "/app/reportlist?accid=" + this.accountId + "&id=" + this.Id + "&showteam=" + this.showTeam + "&admindriver=" + this.admindriver;
+                this.myDetailurl = "/app/driveradminmanagermydetail?accid=" + this.accountId + "&id=" + this.Id + "&showteam=" + this.showTeam + "&admindriver=" + this.admindriver;
+                this.myDetailInsuranceurl = "/app/uploadInsurance?accid="+ this.accountId + "&id=" + this.Id + "&showteam=" + this.showTeam + "&admindriver=" + this.admindriver;
+            }
         }
     }
 

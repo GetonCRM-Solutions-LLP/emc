@@ -1,81 +1,62 @@
 @istest
 public class SendEmailForSubmittedMileageTest {
     public static testmethod void testMethod4(){
-        
 
-        SendEmail__c customSetting1 =  new SendEmail__c();
-        customSetting1.Name = 'SendEmailForSubmittedMileage';
-        customSetting1.Send_email_from_code__c= true;
-        insert customSetting1;
-        
-        TriggerConfig__c customEmailSetting =  new TriggerConfig__c();
-        customEmailSetting.Name = 'Defaulttrigger';
-        customEmailSetting.ContactTriggersendEmailForNewContact__c = true;
-        insert customEmailSetting;
-        
-        SendEmail__c customSetting2 =  new SendEmail__c();
-        customSetting2.Name = 'Send Email For Compliance';
-        customSetting2.Send_email_from_code__c= true;
-        insert customSetting2;
-        
-        SendEmailToMe__c  objSendEmailToMe = new SendEmailToMe__c();
-        objSendEmailToMe.Name = 'SendEmailForSubmittedMileage';
-        objSendEmailToMe.Send_email_to_me__c = true;
-        insert objSendEmailToMe;
+        Set<Id> contactids = new Set<Id>();
+        TriggerConfig__c triggerCustomSetting = TestDataFactory.triggerConfigCustomSetting(true);
+        SendEmail__c customSetting2 = TestDataFactory.sendEmailCustomSetting(true, 'Send Email For Compliance');
+        SendEmail__c customSetting3 = TestDataFactory.sendEmailCustomSetting(true, 'EmployeeReimbursementTrigger');
+        SendEmailToMe__c customSetMail = TestDataFactory.sendEmailToMeCustomSetting(true, 'SendEmailForSubmittedMileage');
+        Vehicle_URL_Mapping__c vehicleType = TestDataFactory.createVehicleData(true, 3);
+        IRS_Mileage_Rate__c createIRSRate = TestDataFactory.createIRSRate(true, 0);
+        TrueDialog_Keys__c tdKeys = TestDataFactory.createTrueDialog(true);
 
-        Account acc = TestUtilityClass.getTestSingleAccount();
-        
-        Vehicle_URL_Mapping__c veh = new Vehicle_URL_Mapping__c();
-        veh.URL__c = 'https://cdn2.hubspot.net/hubfs/2511299/iStock-494093359.jpg';
-        veh.vehicle__c =  'Full-Size Sedan';
-        veh.Year__c = '2019';
-        insert veh;
-        //RecordUtilityClass.vehicleUrlMapping();
+        UserRole userRole = TestDataFactory.getUserRole();
+        Profile profileObj = TestDataFactory.getUserProfile();
+        User admin = TestDataFactory.getSystemAdminUser(userRole.Id);
+        User userObj;
+        Account acc ;
+        List<Contact> conList;
+       
+        System.runAs(admin) {
+            Account accountObj = TestDataFactory.createAccount(true,'Test',true);
+            Contact contactObj = TestDataFactory.createCICDContact(true,accountObj.Id);
 
-        Contact con = RecordUtilityClass.buildAdminContact(acc);
-        con.Role__c = 'Driver';
-        con.Vehicle_Type__c = '2019 Full-Size Sedan';
-        con.Time_Zone__c = 'US/Mountain' ;
-        insert con;
-        //Contact con = TestUtilityClass.getTestSingleContact(acc);
-        //Employee_Reimbursement__c emp = TestUtilityClass.getTestEmployeeReimbursement3(con);
-        
-        IRS_Mileage_Rate__c obj_IRS_Mileage_Rate_3 = new IRS_Mileage_Rate__c();
-        obj_IRS_Mileage_Rate_3.year__c='2020';
-        obj_IRS_Mileage_Rate_3.IRS_Rate__c =0.567;
-        insert obj_IRS_Mileage_Rate_3;
-        
-        Employee_Reimbursement__c empReim = new Employee_Reimbursement__c();
-        RG_InsertLastMonthReimbursement ilmr = new RG_InsertLastMonthReimbursement();
-        
-        empReim.Contact_Id__c = con.id;
-        empReim.Name = 'Test';
-        empReim.Fuel_Price__c = 12;
-        empReim.MPG__c = 45;
-        empReim.Month__c =  ilmr.getLastMonthValue(-1);
-        //empReim.Month__c =  '01-2020';
-        empReim.Approved_Date__c = null;
-        empReim.Monthly_Mileage__c = 50;
-        empReim.IRS_Mileage_Rate__c =obj_IRS_Mileage_Rate_3.id;
-        empReim.Maintenance_and_Tires__c =10;
-        insert empReim;
-        
-        Employee_Mileage__c emp = new Employee_Mileage__c();
-        emp.EmployeeReimbursement__c = empReim.id;
-        emp.Contact_Email_Id__c = con.External_Email__c;
-        emp.Name = 'Test Mileage Record';
-        emp.Trip_Status__c = StaticValues.noApprovedYet;
-        emp.TimeZone__c = 'US/Mountain' ;
-        emp.Mileage__c = 10.00;
-        emp.Day_Of_Week__c = 'Mon';
-        emp.Stay_Time__c = 10;
-        emp.Fuel_price__c = 10.00;
-        emp.StartTime__c = system.now();
-        emp.EndTime__c =  system.now();
-        insert emp;
+            acc = TestDataFactory.createAccount(true,'Test Account',true);
+            acc.Triplog_API__c = 'fde76cdde14449bea46b321225ac8fd1';
+            acc.Pay_Period_Start_Date__c = System.today().addDays(-100);
+            acc.Pay_Period_Days__c = 13;
+            update acc;
+           
+            conList = TestDataFactory.createDriverContact(true, acc.Id, 'Driver', vehicleType.Name, 'paras.dhanani',  1);
+            conList[0].Vehicle_Type__c = vehicleType.Name;
+            conList[0].External_Email__c = 'minkesh.patel1478@gmail.com';
+            update conList[0];
+            contactids.add(conList[0].Id);
             
+            userObj = TestDataFactory.createUser(True, profileObj.Id, conList[0].Id);
+        }
+        
+        String lastMonth = Utils.fetchMonths(1, 0)[0];
+        List<Employee_Reimbursement__c> er = TestDataFactory.createPendingReimbursement(False, conList, 1, createIRSRate.Id);
+        er[0].Approved_Date__c = system.today()-4;
+        er[0].Month__c = lastMonth;
+        er[0].Status__c = 'Approved';
+        Insert er[0];        
+
+        List<Bi_Weekly_Reimbursement__c> br = TestDataFactory.createBiweeklyReim (true, conList, System.today().addDays(-26),System.today().addDays(-13), 1, createIRSRate.Id);
+             
+        List<Employee_Mileage__c> emp1 = TestDataFactory.getEmpMileage (False, 0, er, br);
+        emp1[0].Trip_Status__c = 'Approved';
+        emp1[0].Approved_Date__c = system.today();
+        Insert emp1;
+
+        List<Employee_Mileage__c> emp2 = TestDataFactory.getEmpMileage (False, 0, er, br);
+        emp2[0].Trip_Status__c = 'Approved';
+        emp2[0].Approved_Date__c = system.today();
+        Insert emp2;
         
         SendEmailForSubmittedMileage mil = new SendEmailForSubmittedMileage();
-         Database.executeBatch(mil, 1);
+        Database.executeBatch(mil, 1);
     }
 }

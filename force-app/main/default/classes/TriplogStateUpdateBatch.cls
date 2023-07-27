@@ -1,5 +1,5 @@
 global class TriplogStateUpdateBatch implements Database.Batchable<sObject>, Database.AllowsCallouts, Database.stateful{
-    public static final String MLOGACCOUNT = System.Label.Triplog_New_URL;
+    public static final String MLOGACCOUNT = System.Label.Triplog_New_URL  + ',' + System.Label.Triplog_New_URL2;
     public TriplogStateUpdateBatch() {
     }
 

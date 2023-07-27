@@ -85,27 +85,69 @@ public with sharing class RecordUtilityClass
         sendEmailforCompliance();
         enableMappingGasPriceTrigger();
         vehicleUrlMapping();
-        Account obj_Account = buildAccount();
-        insert obj_Account;
+        TrueDialog_Keys__c tdKeys = TestDataFactory.createTrueDialog(true);
 
-        Contact obj_admincontact = buildAdminContact(obj_Account);
-        insert obj_admincontact;
+        UserRole userRole_1 = [SELECT Id FROM UserRole WHERE DeveloperName = 'EMD' LIMIT 1];
+        Profile profile_1 = [SELECT Id FROM Profile WHERE Name = 'Customer Community Login User' LIMIT 1];
+        User admin = [SELECT Id, Username, UserRoleId FROM User WHERE Profile.Name = 'System Administrator' AND UserRoleId = :userRole_1.Id LIMIT 1];
+        User user_1;
 
-        List<Contact> obj_Manager_list = buildManagerContact(obj_Account,obj_admincontact);
-        insert obj_Manager_list;
+        Account obj_Account;
+        Contact obj_admincontact;
+        List<Contact> obj_Manager_list;
+        List<Contact> obj_Driver_list;
+        System.runAs(admin) {
+            Account account_1 = new Account( Name = 'Community',Pay_Period_Start_Date__c = System.today().addDays(-130),Pay_Period_Days__c = 13);
+            insert account_1;
+            
+            /*Account account_1 = new Account( Name = 'Community');
+            insert account_1;*/
+            
+            Contact contact_1 = new Contact(AccountId = account_1.Id, LastName = 'xgeek',External_Email__c= 'abc@gmail.com',MobilePhone = '9087654323');
+            insert contact_1;
 
-        List<Contact> obj_Driver_list = buildDriverContact(obj_Account,obj_Manager_list[0]);
-        insert obj_Driver_list;
+            obj_Account = RecordUtilityClass.buildAccount();
+            insert obj_Account;
+    
+            obj_admincontact = RecordUtilityClass.buildAdminContact(obj_Account);
+            insert obj_admincontact;       
+    
+            obj_Manager_list = RecordUtilityClass.buildManagerContact(obj_Account,obj_admincontact);
+            insert obj_Manager_list;
+    
+            obj_Driver_list = RecordUtilityClass.buildDriverContact(obj_Account,obj_Manager_list[0]);
+            insert obj_Driver_list;
+            user_1 = new User( 
+                Email = 'yourusername@gmail.com',
+                ProfileId = profile_1.Id, 
+                UserName = 'yourusername@gmail.com', 
+                Alias = 'Test',
+                TimeZoneSidKey = 'America/New_York',
+                EmailEncodingKey = 'ISO-8859-1',
+                LocaleSidKey = 'en_US', 
+                LanguageLocaleKey = 'en_US',
+                ContactId = contact_1.Id,
+                PortalRole = 'Manager',
+                FirstName = 'Firstname',
+                LastName = 'Lastname'
+            );
+            insert user_1;
+        }
+        Test.startTest();
+        System.runAs(user_1) {
+            list<Gas_Prices__c> gaslist = buildGasPrice();
+            insert gaslist;
 
-        list<Gas_Prices__c> gaslist = buildGasPrice();
-        insert gaslist;
-
-        list<Employee_Reimbursement__c> obj_Employee_Reimbursement_list = buildPendingEmployee_Reimbursement(obj_Driver_list);
-        insert obj_Employee_Reimbursement_list;
-
-        List<Employee_Mileage__c> obj_Employee_Mileage_list = buildNoApprovedYetEmployeeMileages(obj_Employee_Reimbursement_list);
-        insert obj_Employee_Mileage_list;
-        
+            list<Employee_Reimbursement__c> obj_Employee_Reimbursement_list = buildPendingEmployee_Reimbursement(obj_Driver_list);
+            insert obj_Employee_Reimbursement_list;
+            
+            list<Bi_Weekly_Reimbursement__c> empBIweekReimbursementList1 = buildPendingBiReimbursement(obj_Driver_list);
+            insert empBIweekReimbursementList1;
+            
+            List<Employee_Mileage__c> obj_Employee_Mileage_list = buildNoApprovedYetEmployeeMileages(obj_Employee_Reimbursement_list,empBIweekReimbursementList1[0].Id);
+            insert obj_Employee_Mileage_list;
+        }
+        Test.stopTest(); 
     }
     public static void createRecordsAdminManagerDriverDashboardCon()
     {
@@ -129,7 +171,7 @@ public with sharing class RecordUtilityClass
     }
     public static Account getAccount()
     {
-        return [Select id,name from Account limit 1];
+        return [Select id,name,Pay_Period_Start_Date__c, Pay_Period_Days__c from Account limit 1];
     }
     public static Contact getAdminContact()
     {
@@ -150,14 +192,18 @@ public with sharing class RecordUtilityClass
     public static Contact getDriverContact()
     {
         return [Select id,Name,Manager__c,FirstName,LastName,Email,MailingAddress,MailingPostalCode,MailingCity,MailingState,Activation_Date__c,Employee_ID__c,Role__c,Manager__r.name,Vehicle_Type__c,Driving_States__c,Deactivated_Date__c,Last_Pay_Date__c,AccountId,Monthly_Mileage_Limit__c from Contact where Role__c='Driver' limit 1];
+    
     }
     public static List<Contact> getManagersContactList()
     {
         return [Select id,Name,Manager__c from Contact where Role__c='Manager'];
     }
+    
     public static List<Employee_Reimbursement__c> getEmployee_Reimbursement(String accid)
     {
-        return [select id,Name, Month__c, Approved_Date__c,Contact_Id__r.Accountid, Contact_Id__c, Contact_Id__r.name, Contact_Id__r.Monthly_Mileage_Limit__c, Total_Approved__c, Total_Mileage__c, Status__c, Total_Variable_Rate__c,(select id,Name,Trip_Status__c,Trip_Date__c,Trip_Origin__c,Trip_Destination__c,Approved_Date__c,Mileage__c,Variable__c,EmployeeReimbursement__c,EmployeeReimbursement__r.month__c,EmployeeReimbursement__r.Contact_Id__c,CreatedDate,Rejected__c from Employees_Mileage__r where Trip_Status__c =: StaticValues.noApprovedYet and Approved_Date__c = null) from Employee_Reimbursement__c where Contact_Id__r.Accountid =: accid and (Contact_Id__r.Deactivated_Date__c = null OR Contact_Id__r.Deactivated_Date__c > TODAY) and Status__c = 'Pending' and Approved_Date__c = null];
+        system.debug('getEmployee_Reimbursement==' + accid);
+       
+        return [select id,Name, Month__c, Approved_Date__c,Contact_Id__r.Accountid, Contact_Id__c, Contact_Id__r.name, Contact_Id__r.Monthly_Mileage_Limit__c, Total_Approved__c, Total_Mileage__c, Status__c, Total_Variable_Rate__c,(select id,Name,Trip_Status__c,Trip_Date__c,Trip_Origin__c,Trip_Destination__c,Approved_Date__c,Mileage__c,Variable__c,EmployeeReimbursement__c,EmployeeReimbursement__r.month__c,EmployeeReimbursement__r.Contact_Id__c,CreatedDate,Rejected__c from Employees_Mileage__r where Trip_Status__c =: StaticValues.noApprovedYet and Approved_Date__c = null) from Employee_Reimbursement__c where Contact_Id__r.Accountid =: accid and (Contact_Id__r.Deactivated_Date__c = null OR Contact_Id__r.Deactivated_Date__c > TODAY) and Status__c = 'Pending' and Approved_Date__c != null];
     }
     public static List<Employee_Reimbursement__c> getDriverEmployee_Reimbursement(String drivercontactid)
     {
@@ -183,8 +229,9 @@ public with sharing class RecordUtilityClass
         }
         return gaslist;
     }
-    public static List<Employee_Mileage__c> buildNoApprovedYetEmployeeMileages(List<Employee_Reimbursement__c> obj_Employee_Reimbursement_list)
+    public static List<Employee_Mileage__c> buildNoApprovedYetEmployeeMileages(List<Employee_Reimbursement__c> obj_Employee_Reimbursement_list,Id biweekly)
     {
+        
         List<Employee_Mileage__c> obj_Employee_Mileage_list = new List<Employee_Mileage__c>();
         for(Employee_Reimbursement__c obj:obj_Employee_Reimbursement_list)
         {
@@ -210,6 +257,7 @@ public with sharing class RecordUtilityClass
                 empMil.Day_Of_Week__c ='';
                 empMil.Destination_Name__c='';
                 empMil.Activity__c = 'Business';
+                empMil.Bi_Weekly_Reimbursement__c = biweekly;
                 obj_Employee_Mileage_list.add(empMil);
             }
         }
@@ -241,12 +289,40 @@ public with sharing class RecordUtilityClass
         }
         return obj_Employee_Reimbursement_list;
     }
+
+    public static List<Bi_Weekly_Reimbursement__c> buildPendingBiReimbursement(List<Contact> obj_Driver_list)
+    {
+        
+        list<Bi_Weekly_Reimbursement__c> obj_Employee_Reimbursement_list = new list<Bi_Weekly_Reimbursement__c>();
+        List<IRS_Mileage_Rate__c> obj_IRS_Mileage_Rate = new List<IRS_Mileage_Rate__c>();
+        
+        obj_IRS_Mileage_Rate = insertIrsRate();
+        for(Contact obj_current_Contact:obj_Driver_list)
+        {
+            for(Integer i=1;i<=12;i++)
+            {
+                Bi_Weekly_Reimbursement__c obj_Employee_Reimbursement = new Bi_Weekly_Reimbursement__c();
+                obj_Employee_Reimbursement.Name = obj_current_Contact.name+':'+getLastMonthValue(-i);               
+                obj_Employee_Reimbursement.Month__c = getLastMonthValue(-i);               
+                obj_Employee_Reimbursement.Contact__c = obj_current_Contact.Id;
+                obj_Employee_Reimbursement.Status__c = 'Pending'; 
+                obj_Employee_Reimbursement.Fixed_Amount__c  = 121;
+                obj_Employee_Reimbursement.Monthly_Fixed_Amount__c = 123;
+                obj_Employee_Reimbursement.Approved_Date__c = Date.today();     
+                obj_Employee_Reimbursement.Number_of_Pay_Period__c = i;
+                obj_Employee_Reimbursement_list.add(obj_Employee_Reimbursement);
+            }
+        }
+        return obj_Employee_Reimbursement_list;
+    }
     public static Account buildAccount()
     {
         Account obj_Account = new Account();
         obj_Account.name='test Account';
         obj_Account.isUsingTriplog__c =  true;
         obj_Account.Triplog_API__c = 'Test';
+        obj_Account.Pay_Period_Start_Date__c = system.today().adddays(-30);
+        obj_Account.Pay_Period_Days__c = 13;
         if(System.Today().Month()<10)
         {
             obj_Account.Last_Reimbursement_Created__c = '0'+System.Today().Month()+'-'+System.Today().Year();
@@ -299,6 +375,9 @@ public with sharing class RecordUtilityClass
             c.Territory__c = 'sed';
             c.Freeze__c = System.today();
             c.Vehicle_Type__c = '2019 Mileage Rate';
+            c.Monthly_Reimbursement__c = true;
+            c.Last_Synced__c = system.today();
+            c.App_Settings__c = 'iOS v1.1.11. Auto start:MagicTrip. Business hours:Mon Tue Wed Thu Fri 3:00 AM-9:00 PM Business. After hours:Personal.';
             obj_Driver_list.add(c);
         }
         return obj_Driver_list;
@@ -322,29 +401,34 @@ public with sharing class RecordUtilityClass
             c.MailingCity = 'Test City';
             c.MailingState = 'ON';
             c.MailingPostalCode = '123';
-            c.MailingCountry = 'CA';            
+            c.MailingCountry = 'CA';  
             c.External_Email__c = 'minkesh.pateldriver01'+i+'@gmail.com';
             c.Deactivated_Date__c = null;
             c.IsCommunityUser__c = true;
             c.Role__c = 'Manager';
-            //c.Vehicle_Type__c = '2019 Full-Size Sedan12';
+            c.Vehicle_Type__c = '2021 Mileage Rate';
             c.email='minkesh.pateldriver01'+i+'@gmail.com';
             c.Monthly_Mileage_Limit__c = 210;
             c.Manager__c = adminContact.Id;
             c.Added_Date__c = System.today();
             c.Activation_Date__c = System.today();
+            c.Monthly_Reimbursement__c = true;
+            c.Company__C = 'Park';
+            c.Last_Synced__c = system.today();
+            c.App_Settings__c = 'iOS v1.1.11. Auto start:MagicTrip. Business hours:Mon Tue Wed Thu Fri 3:00 AM-9:00 PM Business. After hours:Personal.';
             obj_Manager_list.add(c);
         }
         return obj_Manager_list;
     }
     public static List<Contact> buildDriverManagerContact(Account newAccount,Contact adminContact)
     {
-        // Vehicle_URL_Mapping__c veh = new Vehicle_URL_Mapping__c();
-        // veh.URL__c = 'https://cdn2.hubspot.net/hubfs/2511299/iStock-494093356.jpg';
-        // veh.vehicle__c = 'Full-Size Vehicle1';
-        // veh.Year__c = '2015';
-        // insert veh;
-        //vehicleUrlMapping();
+         Vehicle_URL_Mapping__c veh = new Vehicle_URL_Mapping__c();
+        veh.Name = '2021 Test Ford';
+         veh.URL__c = 'https://cdn2.hubspot.net/hubfs/2511299/iStock-494093356.jpg';
+         veh.vehicle__c = 'Test Ford';
+         veh.Year__c = '2021';
+         insert veh;
+
         List<Contact> obj_Manager_list = new List<Contact>();
         for(Integer i=12;i<18;i++)
         {
@@ -364,6 +448,7 @@ public with sharing class RecordUtilityClass
             c.email='minkesh.pateldriver01'+i+'@gmail.com';
             c.Monthly_Mileage_Limit__c = 210;
             c.Manager__c = adminContact.Id;
+            c.Vehicle_Type__c = '2021 Test Ford';
             obj_Manager_list.add(c);
         }
         return obj_Manager_list;
@@ -392,7 +477,10 @@ public with sharing class RecordUtilityClass
         co.IsCreatedFromCommunity__c = true;      
         co.Role__c = 'Admin';
         co.Monthly_Mileage_Limit__c = 210;
-        //co.Vehicle_Type__c = '2019 Mileage Rate';
+        co.Monthly_Reimbursement__c = true;
+        co.showTeamRecord__c = true;
+       	co.App_Settings__c = 'iOS v1.1.11. Auto start:MagicTrip. Business hours:Mon Tue Wed Thu Fri 3:00 AM-9:00 PM Business. After hours:Personal.';
+        co.Last_Synced__c = system.today();
         return co;       
     }
     public static EmployeeReimbursementDetailsAdmin getEmployeeReimbursementDetails(Employee_Reimbursement__c obj_current_Employee_Reimbursement)
@@ -565,14 +653,14 @@ public with sharing class RecordUtilityClass
     {
         return [SELECT id,Name,Trip_Date__c,ConvertedEndTime__c,EmployeeReimbursement__r.Mileage_Lock_Date__c,
                     Trip_Origin__c,Fuel_price__c,EmployeeReimbursement__r.Total_Variable_Rate__c,
-                    Maintenance_and_Tires__c,Origin_Name__c,Tracing_Style__c,StartTime__c,
+                    Maintenance_and_Tires__c,Origin_Name__c,Tracing_Style__c,StartTime__c,Approval_Name__c,
                     EndTime__c,Day_Of_Week__c,Destination_Name__c,Trip_Destination__c,Mileage__c,
-                    Variable__c,Trip_Status__c,Approved_Date__c,EmployeeReimbursement__c,
+                    Variable__c,Trip_Status__c,Approved_Date__c,EmployeeReimbursement__c,Variable_Rate__c,
                     EmployeeReimbursement__r.month__c,EmployeeReimbursement__r.Contact_Id__c,CreatedDate,Rejected__c,
                     EmployeeReimbursement__r.Total_Pending__c,EmployeeReimbursement__r.Monthly_Variable_Amount__c,
                     EmployeeReimbursement__r.Contact_Id__r.External_Email__c,EmployeeReimbursement__r.Total_Rejected__c,
-                    EmployeeReimbursement__r.Total_Mileage__c,Notes__c,ConvertedStartTime__c,Stay_Time__c,
-                    Driving_Time__c,Total_Time__c,Tag__c,Activity__c,Mileage_Lock_Date__c 
+                    EmployeeReimbursement__r.Total_Mileage__c,Notes__c,ConvertedStartTime__c,Stay_Time__c,Original_Destination_Name__c,
+                    Driving_Time__c,Total_Time__c,Tag__c,Activity__c,Mileage_Lock_Date__c,Fuel_Variable_Rate__c,Original_Origin_Name__c 
                 FROM Employee_Mileage__c];
     } 
     public static List<EmployeeMileages> getallEmployeeMileages(List<Employee_Mileage__c> obj_list_Employee_Mileage)
@@ -666,4 +754,5 @@ public with sharing class RecordUtilityClass
         }
         return '';
     }
+  
 }

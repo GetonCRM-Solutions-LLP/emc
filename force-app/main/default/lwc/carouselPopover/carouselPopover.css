@@ -1,0 +1,117 @@
+*{
+    font-family: 'Proxima Nova' !important;
+}
+.slds-popover{
+    border: 0 !important;
+    box-shadow: none !important;
+    position: absolute;
+}
+.position-relative{
+    position: relative !important;
+}
+.slds-popover__header{
+    -webkit-box-pack: justify;
+    justify-content: space-between;
+    align-items: flex-start;
+    border-bottom-left-radius: 0px;
+    border-bottom-right-radius: 0px;
+    padding: 16px 24px;
+    border-top-right-radius: inherit;
+    border-top-left-radius: inherit;
+    color: rgb(255, 255, 255);
+}
+.bg-dark-blue{
+    background: #191468;
+}
+.bg-green{
+    background: #78bc42;
+}
+.slds-nubbin_top:before{
+    background: #78bc42;
+    pointer-events: none;
+}
+.slds-nubbin_left-top:before{
+    background: #191468;
+    pointer-events: none;
+}
+.slds-nubbin_left-top:after{
+    box-shadow: none !important;
+}
+.slds-popover__footer{
+    border-bottom-right-radius: inherit;
+    border-bottom-left-radius: inherit;
+    border-top-left-radius: 0px;
+    border-top-right-radius: 0px;
+    padding: 0px 24px 16px;
+    text-align: left;
+    border-top: 1px solid rgb(203, 214, 226);
+    background: #fff;
+}
+.border-footer{
+    border-top: none !important;
+    border: 1px solid rgb(203, 214, 226);
+}
+.ui-popover-info{
+    margin-top: 12px;
+    font-weight: 600;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    transition: all .15s ease-out;
+    color: #0091ae;
+    text-decoration: none;
+    cursor: pointer;
+}
+.ui-flex{
+    display: flex;
+    -webkit-box-flex: 1;
+    flex-grow: 1;
+    -webkit-box-align: center;
+    align-items: center;
+    -webkit-box-pack: center;
+    justify-content: center;
+    max-width: 100%;
+    width: 100%;
+    margin-top: 12px;
+    font-weight: 600;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    transition: all .15s ease-out;
+    font-family: 'Proxima Nova' !important;
+    color: #000;
+}
+.small-ui-popover-info{ 
+    font-size: 12px;
+    line-height: 18px;
+}
+.close-popover{
+    color: #fff;
+    text-shadow: 0 1px 0 #fff;
+    padding: 0px 16px !important;
+    background-color: transparent !important;
+    border: 0 !important;
+    opacity: 1;
+    float: right;
+    z-index: 999;
+    font-size: 2rem;
+    position: relative;
+}
+
+.c_popover{
+    left: 55px;
+    top: -8px;
+}
+
+.p_all{
+    padding: 12px 15px !important;
+}
+
+h4{ 
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.border{
+    border-left: 1px solid rgb(203, 214, 226);
+    border-right:  1px solid rgb(203, 214, 226);
+    border-bottom:  1px solid rgb(203, 214, 226);
+}

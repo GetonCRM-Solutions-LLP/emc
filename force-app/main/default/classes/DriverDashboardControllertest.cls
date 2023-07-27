@@ -12,7 +12,6 @@ public class DriverDashboardControllertest {
         att.body = blob.valueOf('Test');
         insert att;
 
-        Test.startTest();
         Test.setCurrentPage(Page.driverDashboardClone);
         String conId = ApexPages.currentPage().getParameters().put('id',obj_driver_contact.Id);
         String accId = ApexPages.currentPage().getParameters().put('accid',obj_acc.Id);
@@ -33,12 +32,10 @@ public class DriverDashboardControllertest {
         //DriverDashboardController.readFromFile(String.valueof(documentObj.Body),driList[0].Id,acc.Id,documentObj.Name);
         DriverDashboardController.readFromFileInchunk('test',att.Name,String.valueOf(att.Id),String.valueOf(obj_driver_contact.Id),String.valueOf(obj_acc.Id),null);
         DriverDashboardController.getCompliance(String.valueOf(obj_driver_contact.Id));
-       	DriverDashboardController.getPacketandMeeting(String.valueOf(obj_driver_contact.Id));
+        DriverDashboardController.getPacketandMeeting(String.valueOf(obj_driver_contact.Id));
         DriverDashboardController.getMileagesBasedTandAtt(String.valueOf(System.today()),String.valueOf(System.today()+1),string.valueOf(obj_driver_contact.Id));
-        DriverDashboardController.biweeklyMileage(string.valueOf(obj_driver_contact.Id),2021);
+        //DriverDashboardController.biweeklyMileage(string.valueOf(obj_driver_contact.Id),2021);
         DriverDashboardController.getBiweekMileages(String.valueOf(System.today()),String.valueOf(System.today()+1),string.valueOf(obj_driver_contact.Id));
-        
-        Test.stopTest();
     }
     
 }

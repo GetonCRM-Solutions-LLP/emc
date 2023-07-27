@@ -3,9 +3,9 @@
     <fullName>Fuel_price__c</fullName>
     <externalId>false</externalId>
     <label>Fuel price</label>
-    <precision>10</precision>
+    <precision>11</precision>
     <required>false</required>
-    <scale>2</scale>
+    <scale>3</scale>
     <trackFeedHistory>false</trackFeedHistory>
     <trackHistory>true</trackHistory>
     <trackTrending>false</trackTrending>

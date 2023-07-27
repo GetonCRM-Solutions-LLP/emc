@@ -12,16 +12,19 @@ public class CalculateImputedIncome
         {
             monthList = getReimbursementMonths(year);            
         } 
+        system.debug('contactIdList==' + contactIdList);
+        system.debug('year==' + year);
+        system.debug('monthList ==' + monthList );
         if(contactIdList.size()>0 && monthList.size()>0)
         {
             
-            for(Employee_Reimbursement__c currentReimbursement : [Select id,Imputed_Amount_for_Year__c,Month__c,Contact_Id__c,Contact_Id__r.Imputed_Amount__c,Total_Approved__c,Total_Monthly_Reimbursement__c,Max_IRS_Allowable__c From Employee_Reimbursement__c Where Contact_Id__c In: contactIdList and Month__c In: monthList Order By Contact_Id__c Limit 10000])
+            for(Employee_Reimbursement__c currentReimbursement : [Select id,Imputed_Amount_for_Year__c,Month__c,Contact_Id__c,Contact_Id__r.Imputed_Amount__c,Total_Approved__c,Total_Monthly_Reimbursement__c,Max_IRS_Allowable__c From Employee_Reimbursement__c Where Contact_Id__c In: contactIdList and Month__c In: monthList and Approved_Date__c != null Order By Contact_Id__c Limit 10000])
             {               
                 if(!imputedAmountMap.containsKey(currentReimbursement.Contact_Id__c))
                 {
                     imputedAmountMap.put(currentReimbursement.Contact_Id__c,currentReimbursement.Imputed_Amount_for_Year__c);
                     approveMieageMap.put(currentReimbursement.Contact_Id__c,currentReimbursement.Total_Approved__c);                    
-					totalReimburseMap.put(currentReimbursement.Contact_Id__c,currentReimbursement.Total_Monthly_Reimbursement__c);
+                    totalReimburseMap.put(currentReimbursement.Contact_Id__c,currentReimbursement.Total_Monthly_Reimbursement__c);
                     maxIrsAllowMap.put(currentReimbursement.Contact_Id__c,currentReimbursement.Max_IRS_Allowable__c);                    
                 }
                 else
@@ -29,14 +32,14 @@ public class CalculateImputedIncome
                     Decimal imputedAmount = imputedAmountMap.get(currentReimbursement.Contact_Id__c);
                     imputedAmountMap.put(currentReimbursement.Contact_Id__c,imputedAmount + currentReimbursement.Imputed_Amount_for_Year__c);                    
                     imputedAmount = 0;
-					imputedAmount = approveMieageMap.get(currentReimbursement.Contact_Id__c);
-					approveMieageMap.put(currentReimbursement.Contact_Id__c,imputedAmount + currentReimbursement.Total_Approved__c);                    
+                    imputedAmount = approveMieageMap.get(currentReimbursement.Contact_Id__c);
+                    approveMieageMap.put(currentReimbursement.Contact_Id__c,imputedAmount + currentReimbursement.Total_Approved__c);                    
                     imputedAmount = 0;
-					imputedAmount = totalReimburseMap.get(currentReimbursement.Contact_Id__c);
-					totalReimburseMap.put(currentReimbursement.Contact_Id__c,imputedAmount + currentReimbursement.Total_Monthly_Reimbursement__c);                    
+                    imputedAmount = totalReimburseMap.get(currentReimbursement.Contact_Id__c);
+                    totalReimburseMap.put(currentReimbursement.Contact_Id__c,imputedAmount + currentReimbursement.Total_Monthly_Reimbursement__c);                    
                     imputedAmount = 0;
                     imputedAmount = maxIrsAllowMap.get(currentReimbursement.Contact_Id__c);
-					maxIrsAllowMap.put(currentReimbursement.Contact_Id__c,imputedAmount + currentReimbursement.Max_IRS_Allowable__c);                    
+                    maxIrsAllowMap.put(currentReimbursement.Contact_Id__c,imputedAmount + currentReimbursement.Max_IRS_Allowable__c);                    
                 }                
             }
             for(String currentContactId : imputedAmountMap.keySet())

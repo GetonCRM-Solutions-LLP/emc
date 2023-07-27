@@ -1,39 +1,26 @@
 @isTest
+
 public class TriplogUserIdUpdateBatchTest {
        @isTest static void myUnitTest() {
         
         //Insert Custom setting data
-        Vehicle_URL_Mapping__c veh = new Vehicle_URL_Mapping__c();
-        veh.URL__c = 'https://cdn2.hubspot.net/hubfs/2511299/iStock-494093356.jpg';
-        veh.vehicle__c =  'Full-Size Sedan';
-        veh.Year__c = '2019';
-        insert veh;
-
-        SendEmail__c customSetting =  new SendEmail__c();
-        customSetting.Name = 'Send Email For Compliance';
-        customSetting.Send_email_from_code__c= true;
-        insert customSetting;
-
-        SendEmail__c customSetting1 =  new SendEmail__c();
-        customSetting1.Name = 'TriplogUserIdUpdateBatch';
-        customSetting1.Send_email_from_code__c= true;
-        insert customSetting1;
-
-        //Insert Account data Using Utility class
-        Account acc = new Account();
-        
-        acc.Name = 'Delta';
-        acc.BillingStreet = 'Test Street';
-        acc.BillingCity = 'Test City';
-        acc.BillingState = 'ON';
-        acc.BillingPostalCode = '123';
-        acc.BillingCountry = 'CA';
-        acc.Type='Analyst';
-        acc.isUsingTriplog__c = True;
-        acc.Triplog_API__c= 'abc';        
-        acc.Enable_Email_For_Managers__c = True;
-        insert acc;
+        TriggerConfig__c triggerCustomSetting = TestDataFactory.triggerConfigCustomSetting(true);
+        SendEmail__c customSetting2 = TestDataFactory.sendEmailCustomSetting(true, 'Send Email For Compliance');
+        TrueDialog_Keys__c trueDialogCustom = TestDataFactory.createTrueDialog(true);
+        IRS_Mileage_Rate__c irsRateObj = TestDataFactory.createIRSRate(true,0);
+        Vehicle_URL_Mapping__c vehicleType = TestDataFactory.createVehicleData(true, 3);
        
+        Account acc = new Account();     
+        List<Contact> conList = new List<Contact>();
+
+        UserRole userRole = TestDataFactory.getUserRole();
+        Profile profileObj = TestDataFactory.getUserProfile();
+        User admin = TestDataFactory.getSystemAdminUser(userRole.Id);
+        User userObj;
+        System.runAs(admin) {
+            
+            acc = TestDataFactory.createAccount(true,'Test Accounts',false);
+        Contact contactObj = TestDataFactory.createCICDContact(true,acc.Id);
         //Insert Contact data 
         Contact con = new Contact();
         con.FirstName = 'Test1';
@@ -52,7 +39,7 @@ public class TriplogUserIdUpdateBatchTest {
         con.Role__c = 'Driver';
         con.Monthly_Mileage_Limit__c = 100;
         con.IsCreatedFromCommunity__c = true; 
-        con.Vehicle_Type__c  = '2019 Full-Size Sedan';
+        con.Vehicle_Type__c  = vehicleType.Name;
         insert con;
 
         contact con2 = new contact();
@@ -72,9 +59,12 @@ public class TriplogUserIdUpdateBatchTest {
         con2.Role__c = 'Driver';
         con2.Monthly_Mileage_Limit__c = 100;
         con2.IsCreatedFromCommunity__c = true; 
-        con2.Vehicle_Type__c  = '2019 Full-Size Sedan';
+        con2.Vehicle_Type__c  = vehicleType.Name;
         insert con2;
-
+        
+        conList = TestDataFactory.createDriverContact(true, acc.Id, 'Driver', vehicleType.Name, 'test.email', 1);
+        userObj = TestDataFactory.createUser(true, profileObj.Id, conList[0].Id);
+        }
         Map<String,Contact> contactMap = new Map<String,Contact>();
         for(Contact currentContact : [Select id,Name,FirstName,Triplog_UserID__c,External_Email__c,Deactivated_Date__c From Contact Where Account.id =: acc.Id])
         {

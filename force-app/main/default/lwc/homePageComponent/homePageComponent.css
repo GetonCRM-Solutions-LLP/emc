@@ -233,7 +233,7 @@
 }
 
 .bar-item_active {
-    font-weight: 600;
+    border-top: 2px solid #fff !important;
     font-family: 'Proxima Nova' !important;
 }
 
@@ -292,6 +292,7 @@
     white-space: nowrap;
     position: relative;
     max-width: 15rem;
+    border-top: 2px solid transparent;
     transition: background-color .25s cubic-bezier(0.39, 0.575, 0.565, 1);
 }
 
@@ -310,6 +311,7 @@
     margin-bottom: 0.25rem;
     margin-top: 0.25rem;
     flex-direction: row-reverse;
+    padding: 10px 0px !important;
 }
 
 .img-fluid {

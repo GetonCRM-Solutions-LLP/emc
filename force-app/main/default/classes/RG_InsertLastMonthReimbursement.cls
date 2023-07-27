@@ -1,4 +1,4 @@
-global class RG_InsertLastMonthReimbursement implements Database.Batchable<Contact>, Database.Stateful {
+Public class RG_InsertLastMonthReimbursement implements Database.Batchable<Contact>, Database.Stateful {
 
     public string attachementString = 'City, State, Date\n'; 
     public String month;
@@ -9,29 +9,32 @@ global class RG_InsertLastMonthReimbursement implements Database.Batchable<Conta
     List<String> yearList = new List<String>();
     IRS_Mileage_Rate__c objIRSRate;
     
-    public RG_InsertLastMonthReimbursement()
-    {
+    public RG_InsertLastMonthReimbursement() {
         yearList.add(getLastMonth());
-        objIRSRate = [SELECT id,year__c,IRS_Rate__c FROM IRS_Mileage_Rate__c Where year__c =: yearList Limit 1];
+        objIRSRate = [SELECT id,year__c,IRS_Rate__c 
+                        FROM IRS_Mileage_Rate__c 
+                        WHERE year__c =: yearList Limit 1];
         
         fuelPriceMap = new  Map<String, Decimal>(); 
         missingfuelpricemap = new Map<String,Decimal>();      
         setFuelPriceInMap(Date.today().addmonths(-1).tostartofmonth());
     }
-    public RG_InsertLastMonthReimbursement(String passedMonth)
-    {   
+    public RG_InsertLastMonthReimbursement(String passedMonth)  {   
         yearList.add(getLastMonth());
-        objIRSRate = [SELECT id,year__c,IRS_Rate__c FROM IRS_Mileage_Rate__c Where year__c =: yearList Limit 1];
+        objIRSRate = [SELECT id,year__c,IRS_Rate__c 
+                        FROM IRS_Mileage_Rate__c 
+                        WHERE year__c =: yearList Limit 1];
             
         month = passedMonth;
         fuelPriceMap = new  Map<String, Decimal>();
         missingfuelpricemap = new Map<String,Decimal>();         
         setFuelPriceInMap(getDate(passedMonth));
     }
-    public RG_InsertLastMonthReimbursement(String passedMonth,String paasedEmailaddress)
-    {
+    public RG_InsertLastMonthReimbursement(String passedMonth,String paasedEmailaddress)    {
         yearList.add(getLastMonth());
-        objIRSRate = [SELECT id,year__c,IRS_Rate__c FROM IRS_Mileage_Rate__c Where year__c =: yearList Limit 1];
+        objIRSRate = [SELECT id,year__c,IRS_Rate__c 
+                            FROM IRS_Mileage_Rate__c 
+                            WHERE year__c =: yearList Limit 1];
        
         emailaddress = paasedEmailaddress;
         month = passedMonth;
@@ -39,35 +42,31 @@ global class RG_InsertLastMonthReimbursement implements Database.Batchable<Conta
         missingfuelpricemap = new Map<String,Decimal>();  
         setFuelPriceInMap(getDate(passedMonth));
     }
-    global List<Contact> start(Database.BatchableContext BC) {    
-           
-        List<Contact> allActiveContacts = new List<Contact>([SELECT Id, Name, Account.Name, isCommunityUser__c, Fixed_Amount__c, Maintenance_and_Tires__c, MPG__c, MailingState, MailingCity FROM
-            Contact WHERE (Deactivated_Date__c = NULL OR Deactivated_Date__c > Today) AND (Role__c = 'Driver' OR Role__c = 'Driver/Manager' OR Role__c =: StaticValues.roleAdminDriver) AND (Driver_Type__c != 'Driver - Part Time' OR Driver_Type__c != 'Driver - Full Time')]);
-        
-        if(Test.isRunningTest()) {
-            List<Contact> allActiveContactsTemp = new List<Contact>();
-            if(allActiveContacts.size() >= 1) {
-                allActiveContactsTemp.add(allActiveContacts[0]);
-            }
-            allActiveContacts = new List<Contact>(allActiveContactsTemp);            
-        }        
+    Public List<Contact> start(Database.BatchableContext bc) {    
+            List<Contact> allActiveContacts = new List<Contact>([SELECT Id, Name, Account.Name, isCommunityUser__c, Fixed_Amount__c, Maintenance_and_Tires__c, MPG__c, MailingState, MailingCity 
+                                                                    FROM Contact 
+                                                                    WHERE (Deactivated_Date__c = NULL OR Deactivated_Date__c > Today) 
+                                                                            AND (Role__c = 'Driver' OR Role__c = 'Driver/Manager' OR Role__c =: StaticValues.roleAdminDriver) 
+                                                                            AND (Driver_Type__c != 'Driver - Part Time' OR Driver_Type__c != 'Driver - Full Time')  
+                                                                            //AND AccountId != '0010Z00001ygUen'
+                                                                            AND Account.Name != 'Test Accounts'  
+                                                                            AND Account.isUsingTriplog__c = true
+                                                                            AND MailingState != null
+                                                                            AND MailingCity != null ]); 
         return allActiveContacts;
     }
     
-    global Void execute(Database.BatchableContext BC, List<SObject> Scope) {
+    Public Void execute(Database.BatchableContext bc, List<SObject> scope) {
         
         reimToInsert   = new List<Employee_Reimbursement__c>();
-        if(month!=null)
-        {
-            for(Contact currentContact : (List<Contact>) Scope) 
-            {
+        if(month!=null) {
+            for(Contact currentContact : (List<Contact>) scope) {
                Decimal fuelPrice = emptyFuelPrice(currentContact);
             }
         }
         else {
             String lastMonth = getLastMonthValue(-1);
-            for(Contact contact : (List<Contact>) Scope) 
-            {
+            for(Contact contact : (List<Contact>) scope) {
                 Decimal fuelPrice = emptyFuelPrice(contact); 
                                
                 Employee_Reimbursement__c er = new Employee_Reimbursement__c();
@@ -87,8 +86,7 @@ global class RG_InsertLastMonthReimbursement implements Database.Batchable<Conta
             insert reimToInsert;
         }
     }
-    
-    global String getLastMonthValue(Integer value) {
+    Public String getLastMonthValue(Integer value) {
         String tempDate = date.today().addMonths(value).Month() + '-' + date.today().addMonths(value).Year();
         String lastMonth = tempDate.left(2);
         if(lastMonth.contains('-')) {
@@ -98,59 +96,50 @@ global class RG_InsertLastMonthReimbursement implements Database.Batchable<Conta
         }
         return lastMonth;
     }
-    
-    global String getLastMonth(){
+    Public String getLastMonth()    {
         Integer currentMonth = date.today().Month();
         string tempYear = String.valueOf(date.today().Year());
-        if(currentMonth == 1){
+        if(currentMonth == 1)   {
             tempYear = String.valueOf(date.today().addMonths(-1).Year());
         }
         return tempYear;
     }
     
-    public Decimal emptyFuelPrice(Contact currentContact)
-    {
+    Public Decimal emptyFuelPrice(Contact currentContact)   {
         Decimal fuelPrice = 0;
         String conString = currentContact.Mailingcity + '-' + currentContact.MailingState;
         conString = conString.toUpperCase();
         if(fuelPriceMap.containsKey(conString)) {
             fuelPrice = fuelPriceMap.get(conString);
         }
-        if(fuelPrice==0)
-        {
+        if(fuelPrice==0)    {
             missingfuelpricemap.put(conString,0);
         }
         return fuelPrice;
     }
-    public Date getDate(String passedMonth)
-    {
+    Public Date getDate(String passedMonth) {
         Date fuelpricedate = date.newinstance(Integer.valueOf(month.split('-')[1]),Integer.valueOf(month.split('-')[0]), 1);
         return fuelpricedate;
     }
-    public void setFuelPriceInMap(Date fuelpricedate)
-    {
-        for(Gas_Prices__c currentFuelPrice : [SELECT Fuel_Price__c, Month_State_City__c, Month_Year__c, State__c, City__c FROM Gas_Prices__c WHERE Month_Year__c = :fuelpricedate]) 
-        {
+    Public void setFuelPriceInMap(Date fuelpricedate)   {
+        for(Gas_Prices__c currentFuelPrice : [SELECT Fuel_Price__c, Month_State_City__c, Month_Year__c, State__c, City__c 
+                                                FROM Gas_Prices__c 
+                                                WHERE Month_Year__c = :fuelpricedate]) {
             String temp = currentFuelPrice.city__c + '-' + currentFuelPrice.State__c;
             fuelPriceMap.put(temp.touppercase(), currentFuelPrice.Fuel_Price__c);
         }
     }
-    global Void finish(Database.BatchableContext BC) {
+    Public Void finish(Database.BatchableContext bc) {
         //Sending Mail
-        for(String currentcitystate : missingfuelpricemap.keySet())
-        {
+        for(String currentcitystate : missingfuelpricemap.keySet()) {
             String splittedCityState='';
-            if(currentcitystate.contains('-'))
-            {
-                if(!String.isBlank(month))
-                {
+            if(currentcitystate.contains('-'))  {
+                if(!String.isBlank(month))  {
                     splittedCityState=currentcitystate.split('-')[0] + ','+ currentcitystate.split('-')[1] + ','+String.valueOf(month.split('-')[0])+'/'+'2'+'/'+String.valueOf(month.split('-')[1])+'\n';
-                    
                 }
                 else {
                     splittedCityState=currentcitystate.split('-')[0] + ','+ currentcitystate.split('-')[1] + ','+String.valueOf(Date.today().addmonths(-1).month())+'/'+'2'+'/'+String.valueOf(Date.today().addmonths(-1).year())+'\n';
-                }
-                
+                }  
             }
             attachementString = attachementString + splittedCityState;
         }
@@ -161,26 +150,20 @@ global class RG_InsertLastMonthReimbursement implements Database.Batchable<Conta
         csvAttc.setBody(csvBlob);
         Messaging.SingleEmailMessage email = new Messaging.SingleEmailMessage();
         List<String> emails = new List<String>();
-        if(!String.isBlank(emailaddress))
-        {
-            if(emailaddress.contains(','))
-            {
+        if(!String.isBlank(emailaddress))   {
+            if(emailaddress.contains(','))  {
                 emails = emailaddress.split(',');                
             }
-            else 
-            {
+            else {
                 emails.add(emailaddress);                
             }
             email.setToAddresses(emails);
         }
-        else 
-        {
+        else {
             String toAddresses = '';
             toAddresses = Label.Email_To_Address;
-            if(!String.isBlank(toAddresses))
-            {
-                if(toAddresses.contains(','))
-                {
+            if(!String.isBlank(toAddresses))    {
+                if(toAddresses.contains(','))   {
                     emails = toAddresses.split(',');                   
                 }
                 else {
@@ -189,34 +172,18 @@ global class RG_InsertLastMonthReimbursement implements Database.Batchable<Conta
                 email.setToAddresses(emails);
             }
         }
-        if(!String.isBlank(month))
-        {
+        if(!String.isBlank(month))  {
             email.setSubject('Missing Fuel Price for '+month);
         }
-        else 
-        {
+        else {
             email.setSubject('Missing Fuel Price for '+getLastMonthValue(-1));
         }                 
         email.setPlainTextBody('Hi, Please Find the CSV for Missing Details. Thank you.');
         email.setFileAttachments(new Messaging.EmailFileAttachment[]{csvAttc});
         
-        if(!Test.isRunningTest()) 
-        {
+        if(!Test.isRunningTest()) {
             Messaging.SendEmailResult [] sendSinglemail = Messaging.sendEmail(new Messaging.SingleEmailMessage[] {email});
         }
         GetTripBatchClass getTrip = new GetTripBatchClass('U');
-            if(!Test.isRunningTest()) {
-            //   Database.executeBatch(getTrip, 1);
-            }
-        /*Batch_Setup__c batchsetupConfig = new Batch_Setup__c();
-        batchsetupConfig = [Select GetTripBatch__c,InsertLastMonthReimbursement__c From Batch_Setup__c ];
-        if(batchsetupConfig.InsertLastMonthReimbursement__c == false){
-            batchsetupConfig.InsertLastMonthReimbursement__c = true;
-            update batchsetupConfig;
-        }
-        if(batchsetupConfig.GetTripBatch__c == True){
-            batchsetupConfig.GetTripBatch__c = false;             
-            update batchsetupConfig;            
-        }*/
     }
 }

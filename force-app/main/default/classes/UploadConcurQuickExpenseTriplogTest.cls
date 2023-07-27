@@ -1,7 +1,7 @@
 @isTest
 public with sharing class UploadConcurQuickExpenseTriplogTest {
     public static testmethod void testMethod1() {
-        
+        TrueDialog_Keys__c trueDialogCustom = TestDataFactory.createTrueDialog(true);
         SendEmail__c customSetting =  new SendEmail__c();
         customSetting.Name = 'Send Email For Compliance';
         customSetting.Send_email_from_code__c= true;
@@ -23,6 +23,8 @@ public with sharing class UploadConcurQuickExpenseTriplogTest {
         acc.Enable_Email_For_Managers__c = true;
         acc.Triplog_API__c = '75b59c50cefa4f8f9c3b5e824944ffe5';
         acc.Approval_Template_Message__c = 'test message';
+        acc.Pay_Period_Start_Date__c = System.today().addDays(-100);
+        acc.Pay_Period_Days__c = 6;
         insert acc;
 
         Contact cont = new Contact();

@@ -1,95 +1,81 @@
 @isTest
 public class BiweeklyPayPeriodTest {
     public BiweeklyPayPeriodTest() {
-
     }
     public static testmethod void test1(){
-     //Insert Custom setting data
-        TriggerConfig__c customEmailSetting =  new TriggerConfig__c();
-        customEmailSetting.Name = 'Defaulttrigger';
-        customEmailSetting.ContactTriggersendEmailForNewContact__c = true;
-        customEmailSetting.ContactTriCommunityReimCreate__c = true;
-        insert customEmailSetting;
+        TriggerConfig__c triggerCustomSetting = TestDataFactory.triggerConfigCustomSetting(true);
+        SendEmail__c sendEmailCustomSetting1 = TestDataFactory.sendEmailCustomSetting(true,'Send Email For Compliance');
+        TrueDialog_Keys__c tdKeys = TestDataFactory.createTrueDialog(true);
+        Vehicle_URL_Mapping__c vehicleObj = TestDataFactory.createVehicleData(true,0);
+        IRS_Mileage_Rate__c irsRateObj = TestDataFactory.createIRSRate(true,0);
         
-        SendEmail__c customSetting1 =  new SendEmail__c();
-        customSetting1.Name = 'Send Email For Compliance';
-        customSetting1.Send_email_from_code__c= true;
-        insert customSetting1;
+        Account acc = new Account();     
+        List<Contact> conList = new List<Contact>();
+        List<Contact> adminConList = new List<Contact>();
         
-        TriggerConfig__c customSetting =  new TriggerConfig__c();
-        customSetting.Name = 'Defaulttrigger';
-        customSetting.MappingGasPriceTrigger__c = true;
-        customSetting.MappingGasStayTime__c = true;
-        customSetting.ContactTriggersendEmailForNewContact__c = true;
-        customSetting.ContactTriCommunityReimCreate__c = true;
-        insert customSetting;
-        
-        Vehicle_URL_Mapping__c veh = new Vehicle_URL_Mapping__c();
-        veh.URL__c = 'https://cdn2.hubspot.net/hubfs/2511299/iStock-494093356.jpg';
-        veh.vehicle__c = 'Full-Size Sedan';
-        veh.Year__c = '2019';
-        insert veh;
+        UserRole userRole = TestDataFactory.getUserRole();
+        Profile profileObj = TestDataFactory.getUserProfile();
+        User admin = TestDataFactory.getSystemAdminUser(userRole.Id);
+        User userObj;
+        System.runAs(admin) {
+            Account accountObj = TestDataFactory.createAccount(true,'Test',true);
+            Contact contactObj = TestDataFactory.createCICDContact(true,accountObj.Id);
+            acc = TestDataFactory.createAccount(true,'Test',true);
+            conList = TestDataFactory.createDriverContact(true, acc.Id, 'Driver', vehicleObj.Name, 'test.email', 1);
+            conList[0].Activation_Date__c = system.today();
+            conList[0].Fixed_Amount__c = 371.28;
+            conList[0].MailingCity = 'Abilene';
+            conList[0].MailingState = 'TX';
+            conList[0].Time_Zone__c = 'US/Mountain' ;
+            conList[0].Driving_States__c = 'TX';
+            conList[0].Fixed_Amount__c = 322.00;
+            conList[0].Maintenance_and_Tires__c = 1.2;
+            conList[0].MPG__c= 10.00;
+            conList[0].Monthly_Mileage_Limit__c = 100.00;
 
-        
-        Account acc = new Account();
-        acc.Name = 'Test Account';
-        insert acc;
-        
-        
-        Contact con = new Contact();
-        con.LastName = 'TestContact';
-        con.Role__c = 'Driver';
-        con.Car_Image__c = veh.URL__c;
-        con.Vehicle_Type__c = veh.Year__c +' '+veh.vehicle__c;
-        con.AccountId = acc.Id;
-        con.Deactivated_Date__c = null;
-        con.External_Email__c = 'test@email.com';
-        con.Fixed_Amount__c = 371.28;
-        con.MailingCity = 'Abilene';
-        con.MailingState = 'TX';
-        con.Time_Zone__c = 'US/Mountain' ;
-        con.Driving_States__c = 'TX';
-        con.Fixed_Amount__c = 322.00;
-        con.Maintenance_and_Tires__c = 1.2;
-        con.MPG__c= 10.00;
-        
-        //con.Time_Zone__c = 'America/Chicago';
-        con.Monthly_Mileage_Limit__c = 100.00;
-        insert con;
-        
-        IRS_Mileage_Rate__c objIRSRate = new IRS_Mileage_Rate__c();
-        objIRSRate.year__c = '2021';
-        objIRSRate.IRS_Rate__c= 12.0;
-        insert objIRSRate;
+            update conList;
 
-        Employee_Reimbursement__c er = new Employee_Reimbursement__c();
-        er.Contact_Id__c = con.Id;
-        er.Name = 'Reimbersment Test';
-        er.Month__c = '03-2021';
-        er.Status__c = 'Pending';
-        er.Fuel_Price__c = 10.00; 
-        er.Fixed_Amount__c = con.Fixed_Amount__c;
-        er.Status__c = 'Pending';
-        er.Maintenance_and_Tires__c = con.Maintenance_and_Tires__c;
-        er.MPG__c = con.MPG__c;
-        insert er;
+            adminConList = TestDataFactory.createDriverContact(true, acc.Id, 'Admin', vehicleObj.Name, 'test1.email', 1);
+            userObj = TestDataFactory.createUser(true, profileObj.Id, conList[0].Id);
+        }
+        
+        String lastMonth = Utils.fetchMonths(1, 0)[0];
+        List<Employee_Reimbursement__c> er = TestDataFactory.createPendingReimbursement(False, conList, 1, irsRateObj.Id);
+        er[0].Approved_Date__c = system.today()-4;
+        er[0].Month__c = lastMonth;
+        er[0].Status__c = 'Approved';
+        Insert er[0];        
 
-        Employee_Mileage__c emp = new Employee_Mileage__c();
-        emp.EmployeeReimbursement__c = er.id;
-        emp.Contact_Email_Id__c = con.External_Email__c;
-        emp.Name = 'Test Mileage Record';
-        emp.Trip_Status__c = StaticValues.noApprovedYet;
-        emp.Mileage__c = 10.00;
-        emp.Fuel_price__c = 10.00;
-        emp.TimeZone__c = 'US/Mountain' ;
-        emp.StartTime__c = system.now();
-        emp.EndTime__c =  system.now();
-        emp.Trip_Date__c = date.today().adddays(-1);
-        insert emp;
+        List<Bi_Weekly_Reimbursement__c> br = TestDataFactory.createBiweeklyReim (true, conList, System.today().addDays(-26),System.today().addDays(-13), 1, irsRateObj.Id);
+        List<Employee_Mileage__c> emp1 = TestDataFactory.getEmpMileage (True, 0, er, br);
+        emp1[0].Trip_Date__c =  date.today().adddays(-1);
+        emp1[0].Trip_Status__c = 'Approved';
+        emp1[0].Approved_Date__c = system.today();
+        Update emp1;
 
-        BiweeklyPayPeriod.getTimeAndAttendance(con.Id, '2021');
-        BiweeklyPayPeriod.getBiweeklyMileage(con.Id, 2021);
-        BiweeklyPayPeriod.getMileages1(system.today()-1, system.today(), con.Id);
-       BiweeklyPayPeriod.ApproveTrips(system.today()-1, system.today(), con.Id);
+        //List<Employee_Mileage__c> emp2 = TestDataFactory.getEmpMileage (True, 0, er, br);
+        //emp2[0].Trip_Date__c = date.today().adddays(-1);
+        //emp2[0].Trip_Status__c = 'Approved';
+        //emp2[0].Approved_Date__c = system.today();
+        //Update emp2;     
+        
+        Test.startTest();
+        System.runAs(userObj) {
+            integer i = 0;
+        BiweeklyPayPeriod.getTimeAndAttendance(conList[0].Id, '2022');
+        BiweeklyPayPeriod.getTimeAndAttendance(conList[0].Id, '2023');
+        BiweeklyPayPeriod.getTimeAndAttendance(conList[0].Id, '2021');
+        BiweeklyPayPeriod.getPayPeriodDates(conList[0].Id, 2023);
+        BiweeklyPayPeriod.getBiweeklyMileage(conList[0].Id, 2023);
+        BiweeklyPayPeriod.getMileages1(system.today()-1, system.today(), conList[0].Id);
+        BiweeklyPayPeriod.getAllBiweekMileages1(system.today()-1, system.today(), conList[0].Id);
+        BiweeklyPayPeriod.ApproveTrips(system.today()-1, system.today(), conList[0].Id);
+        BiweeklyPayPeriod.calculateBiweekMil (String.valueof(system.today()-1),String.valueof(system.today()), conList[0].Id);
+        BiweeklyPayPeriod.getBiweeklyReimbursement(String.valueOf(conList[0].Id) ,2022);
+        BiweeklyPayPeriod.getBiweekMileages1(string.valueOf(br));
+        BiweeklyPayPeriod.ApproveBiWeekTrips(string.valueOf(br));
+        BiweeklyPayPeriod.payPeriodDateList(string.valueOf(acc.Id));    
+      }
+        Test.stopTest();
     }
 }

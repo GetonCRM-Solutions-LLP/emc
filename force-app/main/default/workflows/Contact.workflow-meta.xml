@@ -17,6 +17,30 @@
         <template>unfiled$public/Deactivated_Date_Alert</template>
     </alerts>
     <alerts>
+        <fullName>If_any_driver_s_insurance_attachment_id_is_update_at_that_notification_mail_is_s</fullName>
+        <ccEmails>Eizelp@mburse.com</ccEmails>
+        <description>Insurance attachment id field is updated, Notified to will Hanson.</description>
+        <protected>false</protected>
+        <recipients>
+            <recipient>willh@mburse.com</recipient>
+            <type>user</type>
+        </recipients>
+        <senderType>CurrentUser</senderType>
+        <template>unfiled$public/Insurance_Update_notification</template>
+    </alerts>
+    <alerts>
+        <fullName>LOA_Fixed_Amount_Changed</fullName>
+        <ccEmails>willh@mburse.com</ccEmails>
+        <description>LOA Fixed Amount Changed</description>
+        <protected>false</protected>
+        <recipients>
+            <recipient>william@askemc.com</recipient>
+            <type>user</type>
+        </recipients>
+        <senderType>DefaultWorkflowUser</senderType>
+        <template>unfiled$public/LOA_Fixed_Amount_Value_changed_Mail</template>
+    </alerts>
+    <alerts>
         <fullName>Send_email_notification_to_admin</fullName>
         <ccEmails>jocelyn.rivera@valetliving.com</ccEmails>
         <ccEmails>hr@valetliving.com</ccEmails>
@@ -26,6 +50,17 @@
         <senderAddress>driverservices@mburse.com</senderAddress>
         <senderType>OrgWideEmailAddress</senderType>
         <template>unfiled$public/Fixed_Amount_Notification_for_Valetwaste</template>
+    </alerts>
+    <alerts>
+        <fullName>Send_mail_to_Driver</fullName>
+        <description>Send mail to Driver</description>
+        <protected>false</protected>
+        <recipients>
+            <field>Email</field>
+            <type>email</type>
+        </recipients>
+        <senderType>CurrentUser</senderType>
+        <template>unfiled$public/New_Driver_s_Fixed_Amount_Rates_Notification</template>
     </alerts>
     <alerts>
         <fullName>Sending_the_reminder_notifications</fullName>
@@ -80,7 +115,7 @@
         <description>send email to notify contact changes happen</description>
         <protected>false</protected>
         <recipients>
-            <recipient>will.hanson@blaisetech.com</recipient>
+            <recipient>willh@mburse.com</recipient>
             <type>user</type>
         </recipients>
         <senderAddress>driverservices@askemc.com</senderAddress>
@@ -148,6 +183,27 @@
         <reevaluateOnChange>false</reevaluateOnChange>
     </fieldUpdates>
     <fieldUpdates>
+        <fullName>Update_Driver_Packet_Status</fullName>
+        <description>IF Hello Sign Driver Status is signed than automatically updated Driver Packet Status as uploaded.</description>
+        <field>Driver_Packet_Status__c</field>
+        <literalValue>Uploaded</literalValue>
+        <name>Update Driver Packet Status</name>
+        <notifyAssignee>false</notifyAssignee>
+        <operation>Literal</operation>
+        <protected>false</protected>
+        <reevaluateOnChange>false</reevaluateOnChange>
+    </fieldUpdates>
+    <fieldUpdates>
+        <fullName>change_Insurance_status</fullName>
+        <field>Insurance_Declaration_Status__c</field>
+        <literalValue>Uploaded</literalValue>
+        <name>change Insurance status</name>
+        <notifyAssignee>false</notifyAssignee>
+        <operation>Literal</operation>
+        <protected>false</protected>
+        <reevaluateOnChange>false</reevaluateOnChange>
+    </fieldUpdates>
+    <fieldUpdates>
         <fullName>email_update</fullName>
         <field>Email</field>
         <formula>External_Email__c</formula>
@@ -178,6 +234,23 @@
             <timeLength>0</timeLength>
             <workflowTimeTriggerUnit>Hours</workflowTimeTriggerUnit>
         </workflowTimeTriggers>
+    </rules>
+    <rules>
+        <fullName>Email for Update LOA Fixed Amount</fullName>
+        <active>false</active>
+        <formula>AND(NOT(ISBLANK(LOA_Fixed_Amount__c)), ISCHANGED(LOA_Fixed_Amount__c))</formula>
+        <triggerType>onAllChanges</triggerType>
+    </rules>
+    <rules>
+        <fullName>First payroll and last payroll amount field value change email</fullName>
+        <active>false</active>
+        <criteriaItems>
+            <field>Account.Name</field>
+            <operation>equals</operation>
+            <value>PL Marketing</value>
+        </criteriaItems>
+        <description>IF any changes made in First Payroll and Last Payroll Amount field of contact at that time email is fire</description>
+        <triggerType>onCreateOrTriggeringUpdate</triggerType>
     </rules>
     <rules>
         <fullName>Jan is True</fullName>
@@ -246,6 +319,26 @@
         </workflowTimeTriggers>
     </rules>
     <rules>
+        <fullName>New Driver%27s Fixed Amount Rates Notification</fullName>
+        <actions>
+            <name>Send_mail_to_Driver</name>
+            <type>Alert</type>
+        </actions>
+        <active>false</active>
+        <booleanFilter>1 AND 2</booleanFilter>
+        <criteriaItems>
+            <field>Contact.Fixed_Amount__c</field>
+            <operation>notEqual</operation>
+        </criteriaItems>
+        <criteriaItems>
+            <field>Contact.Fixed_Amount__c</field>
+            <operation>notEqual</operation>
+            <value>0</value>
+        </criteriaItems>
+        <description>If any driver is added or his Fixed amount is null and update his fixed amount at that time mail send to particular driver.</description>
+        <triggerType>onCreateOrTriggeringUpdate</triggerType>
+    </rules>
+    <rules>
         <fullName>Reminder Notification</fullName>
         <actions>
             <name>Sending_the_reminder_notifications</name>
@@ -256,12 +349,28 @@
         <triggerType>onCreateOrTriggeringUpdate</triggerType>
     </rules>
     <rules>
+        <fullName>Send Mail to client if  LOA Fixed Amount Change</fullName>
+        <actions>
+            <name>LOA_Fixed_Amount_Changed</name>
+            <type>Alert</type>
+        </actions>
+        <active>true</active>
+        <description>If LOA Amount is changes at that time send a mail to client with updated amount.</description>
+        <formula>OR(
+AND(ISCHANGED( LOA_Fixed_Amount__c),NOT(ISBLANK(LOA_Fixed_Amount__c))),
+AND(ISCHANGED(LOA_Start_Date__c),NOT(ISBLANK(LOA_Start_Date__c))), 
+AND(ISCHANGED(LOA_End_Date__c),NOT(ISBLANK(LOA_End_Date__c))), 
+AND(ISCHANGED(Payroll_Period__c),NOT(ISBLANK(Payroll_Period__c)))
+)</formula>
+        <triggerType>onAllChanges</triggerType>
+    </rules>
+    <rules>
         <fullName>SendnotificationtoAdmin</fullName>
         <actions>
             <name>Send_email_notification_to_admin</name>
             <type>Alert</type>
         </actions>
-        <active>true</active>
+        <active>false</active>
         <formula>IF(AND(!ISNULL(Fixed_Amount__c),  UPPER(Account.Name)=&apos;COMMUNITY ACCOUNT&apos;) ,true, false)</formula>
         <triggerType>onCreateOrTriggeringUpdate</triggerType>
     </rules>
@@ -305,16 +414,31 @@
         <triggerType>onCreateOrTriggeringUpdate</triggerType>
     </rules>
     <rules>
-        <fullName>update email field</fullName>
+        <fullName>Update Driver Packet Status</fullName>
         <actions>
-            <name>email_update</name>
+            <name>Update_Driver_Packet_Status</name>
             <type>FieldUpdate</type>
         </actions>
-        <active>false</active>
+        <active>true</active>
         <criteriaItems>
-            <field>Contact.External_Email__c</field>
-            <operation>notEqual</operation>
+            <field>Contact.Hello_Sign_Status__c</field>
+            <operation>equals</operation>
+            <value>signed</value>
         </criteriaItems>
+        <triggerType>onAllChanges</triggerType>
+    </rules>
+    <rules>
+        <fullName>UpdateInsuranceNotification</fullName>
+        <actions>
+            <name>If_any_driver_s_insurance_attachment_id_is_update_at_that_notification_mail_is_s</name>
+            <type>Alert</type>
+        </actions>
+        <actions>
+            <name>change_Insurance_status</name>
+            <type>FieldUpdate</type>
+        </actions>
+        <active>true</active>
+        <formula>AND(ISCHANGED( Insurance_Attachment_Id__c),NOT(ISBLANK(Insurance_Attachment_Id__c)))</formula>
         <triggerType>onAllChanges</triggerType>
     </rules>
 </Workflow>

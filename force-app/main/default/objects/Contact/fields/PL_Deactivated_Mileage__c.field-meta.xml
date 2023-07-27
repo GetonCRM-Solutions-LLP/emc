@@ -3,9 +3,9 @@
     <fullName>PL_Deactivated_Mileage__c</fullName>
     <externalId>false</externalId>
     <label>PL Deactivated Mileage</label>
-    <precision>10</precision>
+    <precision>12</precision>
     <required>false</required>
-    <scale>0</scale>
+    <scale>2</scale>
     <trackFeedHistory>false</trackFeedHistory>
     <trackHistory>false</trackHistory>
     <type>Number</type>

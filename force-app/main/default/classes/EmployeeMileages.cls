@@ -12,6 +12,8 @@ public with sharing class EmployeeMileages
     public String status {get;set;}
     public String origin {get;set;}
     public String originname {get;set;}
+    public String originalOriginName {get;set;}
+    public String OriginalDestinationName {get;set;}
     public String destination {get;set;}
     public String destinationname {get;set;}
     public String mileage {get;set;}
@@ -37,6 +39,9 @@ public with sharing class EmployeeMileages
     public String drivingtime {get;set;}
     public String totaltime {get;set;}
     public String tripActivity {get;set;}
+    public String halfFixedAmount {get; set;}
+    public String fuelVariableRate{get; set;}
+    public String approvalName{get; set;}
     public EmployeeMileages() 
     {
         

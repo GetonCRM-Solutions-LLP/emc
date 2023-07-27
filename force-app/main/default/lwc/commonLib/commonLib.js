@@ -41,7 +41,7 @@ const formatData = (data, pID, aID) => {
     data.forEach((row) => {
         var dayOfWeek;
         let rowData = {};
-        let formatDate = fullDateFormat(row);
+        let formatDate = fullDateFormat(row, pID, aID);
         let userDate = dateFormat(row);
         if (row.Day_Of_Week__c != undefined) {
             dayOfWeek = row.Day_Of_Week__c.toString().slice(0, 3);
@@ -72,7 +72,9 @@ const formatData = (data, pID, aID) => {
   
         rowData.TrackingMethod = row.Tracing_Style__c;
         rowData.FromLocation = row.Origin_Name__c;
+        rowData.OriginalFromLocation = row.Original_Origin_Name__c;
         rowData.ToLocation = row.Destination_Name__c;
+        rowData.OriginalToLocation = row.Original_Destination_Name__c;
         rowData.Day = dayOfWeek;
         rowData.userdate = userDate.toString();
         rowData.tripDate = (row.Trip_Date__c === undefined) ? '' : row.Trip_Date__c;
@@ -136,9 +138,9 @@ const excelData = (exlData) => {
     exportData.ActualMileage = exlData.ActualMileage
    }
    exportData.Mileage = exlData.Mileage,
-   exportData.FromLocationName = exlData.FromLocation,
+   exportData.FromLocationName = exlData.OriginalFromLocation,
    exportData.FromLocationAddress = exlData.TripOrigin,
-   exportData.ToLocationName = exlData.ToLocation,
+   exportData.ToLocationName = exlData.OriginalToLocation,
    exportData.ToLocationAddress = exlData.TripDestination,
    exportData.State = exlData.State,
    exportData.Tags = exlData.Tags,
@@ -162,9 +164,9 @@ const changeKeyObjects = (csvData) => {
   replaceKey["Total Time"] = excel.TotalTime;
   replaceKey["Activity"] = excel.Activity;
   replaceKey["Mileage (mi)"] = excel.Mileage;
-  replaceKey["From Location Name"] = excel.FromLocation;
+  replaceKey["From Location Name"] = excel.OriginalFromLocation;
   replaceKey["From Location Address"] = excel.TripOrigin;
-  replaceKey["To Location Name"] = excel.ToLocation;
+  replaceKey["To Location Name"] = excel.OriginalToLocation;
   replaceKey["To Location Address"] = excel.TripDestination;
   replaceKey["State"] = excel.State;
   replaceKey["Tags"] = excel.Tags;
@@ -218,24 +220,54 @@ const yearMonthDate = (ydt) => {
   var yearDateReturn = yyy + "-" + ymm + "-" + ydd;
   return yearDateReturn;
 }
+
+const dateString = (dt) =>{
+  var dateArr = dt.split('-');
+  var yyyy, mm, dd
+  if(dateArr.length === 3){
+    yyyy = dateArr[0];
+    mm = dateArr[1].replace(/^0+/, '');
+    dd = dateArr[2];
+  }
+
+  return mm + '/' + dd + '/' + yyyy;
+}
    // function to format date with week day
-  const fullDateFormat=(rowObj) => {
-    if (rowObj.ConvertedStartTime__c != undefined) {
-      let newdate = new Date(rowObj.ConvertedStartTime__c);
-      let dayofweek;
-      let dd = newdate.getDate();
-      let mm = newdate.getMonth() + 1;
-      let yy = newdate.getFullYear();
-      if (rowObj.Day_Of_Week__c != undefined) {
-        dayofweek = rowObj.Day_Of_Week__c.toString().slice(0, 3);
+  const fullDateFormat=(rowObj, plmarketing, accountId) => {
+    if(plmarketing === accountId) {
+      if (rowObj.Trip_Date__c != undefined) {
+        let tripDate = dateString(rowObj.Trip_Date__c);
+        let dayofweek;
+        if (rowObj.Day_Of_Week__c != undefined) {
+          dayofweek = rowObj.Day_Of_Week__c.toString().slice(0, 3);
+        } else {
+          dayofweek = "";
+          dayofweek = dayofweek.toString();
+        }
+
+        return tripDate + " " + dayofweek;
       } else {
-        dayofweek = "";
-        dayofweek = dayofweek.toString();
+        return "";
       }
-      return mm + "/" + ("0" + dd).slice(-2) + "/" + yy + " " + dayofweek;
-    } else {
-      return "";
+    }else{
+      if (rowObj.ConvertedStartTime__c != undefined) {
+        let newdate = new Date(rowObj.ConvertedStartTime__c);
+        let dayofweek;
+        let dd = newdate.getDate();
+        let mm = newdate.getMonth() + 1;
+        let yy = newdate.getFullYear();
+        if (rowObj.Day_Of_Week__c != undefined) {
+          dayofweek = rowObj.Day_Of_Week__c.toString().slice(0, 3);
+        } else {
+          dayofweek = "";
+          dayofweek = dayofweek.toString();
+        }
+        return mm + "/" + ("0" + dd).slice(-2) + "/" + yy + " " + dayofweek;
+      } else {
+        return "";
+      }
     }
+    
   }
   // function to format date
   const dateFormat = (rowObj) => {
@@ -285,6 +317,38 @@ const yearMonthDate = (ydt) => {
       return tripSate;
     }
 
+    const formatDateOfMessage = (date) => {
+      var d = new Date(date),
+          month = '' + (d.getMonth() + 1),
+          day = '' + d.getDate(),
+          year = d.getFullYear();
+  
+      if (month.length < 2) 
+          month = '0' + month;
+      if (day.length < 2) 
+          day = '0' + day;
+  
+      return [year, month, day].join('-');
+  }
+
+    const formatList = (reList) => {
+      if (reList.length > 0) {
+        const newData = [...new Set(reList.map(d => d.Date))].map(Dt => {
+          return {
+            Dt,
+            Title: (Dt === formatDateOfMessage(new Date())) ? 'Today' : (Dt === formatDateOfMessage((new Date(Date.now() - 1000 * 60 * 60 * 24)))) ? 'Yesterday' : Date.parse(Dt),
+            Messages: reList.filter(d => d.Date === Dt).map(d => d)
+          }
+        })
+  
+        for (let i = 0; i < newData.length; i++) {
+          newData[i].aId = newData[i].messageId;
+          newData[i].isString = (newData[i].Title === 'Today' || newData[i].Title === 'Yesterday') ? true : false;
+        }
+        return newData
+      }
+    }
+
 export 
 {
     showMessage,
@@ -296,5 +360,6 @@ export
     changeKeyObjects,
     dateTypeFormat,
     yearMonthDate,
-    typeOfTrip
+    typeOfTrip,
+    formatList
 }

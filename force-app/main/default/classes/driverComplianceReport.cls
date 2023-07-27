@@ -8,11 +8,7 @@ public with sharing class driverComplianceReport
     public Decimal totalmileages  {get;set;}
     String accountId;
     public List<wrapperTaxReport> obj_wrapperTaxReport {get;set;}
-    public List<String> listofmonths {get;set;}
-
-    public List<IRS_Mileage_Rate__c> irsrate {get;set;}
-    public Map<String,Double> obj_irsrate {get;set;}
-    public Map<String,Contact> obj_contact_map{get;set;}
+    
     public String xlsHeader{
         get{
             String strHeader = '';
@@ -23,156 +19,98 @@ public with sharing class driverComplianceReport
     }
     public driverComplianceReport() 
     {
-        
-        accountId = ApexPages.currentPage().getParameters().get('accId');
-        List<String> obj_date = Label.dateofIRS.split('-');
-        currentdate = date.newinstance(Integer.valueOf(obj_date[2]),Integer.valueOf(obj_date[1]), Integer.valueOf(obj_date[0]));
-
-        listofmonths = new List<String>();
-        List<String> listcomplincemonth =  new List<String>();
         obj_wrapperTaxReport = new List<wrapperTaxReport>();
-
-        irsrate = new List<IRS_Mileage_Rate__c>();
-        obj_irsrate = new Map<String,Double>();
-        obj_contact_map = new Map<String,Contact>();
-
-        if(currentdate.month()!=12)
-        {
-            listofmonths.add(String.valueOf((currentdate.year())-1));             
+        List<String> conIdList = new List<String>();
+        accountId = ApexPages.currentPage().getParameters().get('accId');
+        List<String> complianceCalculationList ;
+        
+        Map<Id,String> mapOfResult = new Map<Id,String>();
+        List<wrapperTaxReport> obj_ListwrapperTaxReport ;
+        
+        for(contact con : [SELECT id, compliancestatus__c, Name, Employee_ID__c, External_Email__c 
+                                FROM Contact 
+                                WHERE
+                                Deactivated_Date__c = null 
+                                AND AccountId =: accountId 
+                                AND (Role__c =: StaticValues.roleAdminDriver OR Role__c='Driver' OR Role__c='Driver/Manager') LIMIT 30]){
+                                    conIdList.add(con.Id);
+                                    complianceCalculationList = new List<String>();
+                                    Integer year = Date.today().year() - 1;
+                                    complianceCalculationList.addAll(WrapperUtils.getComplianceCalculation(con.Id, String.valueOf(year)));
+                                    System.debug('complianceCalculationList=='+complianceCalculationList);
+                                    System.debug('complianceCalculationList.size()=='+complianceCalculationList.size());
+                                    If(complianceCalculationList.size() > 3){
+                                        String summaryData = complianceCalculationList[4];
+                                        if(summaryData != null) {
+                                            mapOfResult.put(con.Id,summaryData);
+                                        }
+                                    }
         }
-        listofmonths.add(String.valueOf(currentdate.year()));
-
-        Integer month = currentdate.month();
-        if(month==12)
-        {
-          listcomplincemonth.add(String.valueOf(month)+'-'+currentdate.year());              
+                                        If(mapOfResult != null){
+                                            for(String mapKey : mapOfResult.keySet()){
+                                                obj_ListwrapperTaxReport = new List<wrapperTaxReport>();
+                                                obj_ListwrapperTaxReport = (List<wrapperTaxReport>)Json.deserialize(mapOfResult.get(mapKey),List<wrapperTaxReport>.class);
+                                                wrapperTaxReport objw = new wrapperTaxReport();
+                                                objw.drivername = obj_ListwrapperTaxReport[0].drivername;
+                                                if(obj_ListwrapperTaxReport[0].employeeid != null){
+                                                    objw.employeeid = obj_ListwrapperTaxReport[0].employeeid;
+                                                }
+                                                objw.emailid = obj_ListwrapperTaxReport[0].emailid;
+                                                objw.imputedincome =obj_ListwrapperTaxReport[0].imputedincome;
+                                                obj_wrapperTaxReport.add(objw); 
+                                                System.debug('objw=='+objw);
+                                            }
+                                        }
         }
-        else
-        {
-            listcomplincemonth.add(String.valueOf(12)+'-'+(currentdate.year()-1));
-            for(Integer i=1;i<=month;i++)
-            {
-                if(i<10)
-                {
-                    listcomplincemonth.add('0'+String.valueOf(i)+'-'+currentdate.year()); 
-                } 
-                else if((i==10)||(i==11))
-                {
-                    listcomplincemonth.add(String.valueOf(i)+'-'+(currentdate.year()));
-                }          
+
+        Public Static String downloadAnnualComplianceReport(string condata, string year){
+            List<ReportListController.reimbursementWrapper> reimWrapper = new List<ReportListController.reimbursementWrapper>();
+            List<String> complianceCalculationList ;
+            Map<Id,String> mapOfResult = new Map<Id,String>();
+            List<wrapperTaxReport> objListwrapperTax ;
+            List<wrapperTaxReport> obj_complianceReport = new  List<wrapperTaxReport>();
+            List<String> contactIds = new List<String>();
+            if(condata != null){
+                //reimWrapper = (List<ReportListController.reimbursementWrapper>)Json.deserialize(condata , List<ReportListController.reimbursementWrapper>.class);
+                contactIds = (List<String>) System.JSON.deserialize(condata, List<String>.class);
             }
-        }
-        irsrate = [select id,year__c,IRS_Rate__c from IRS_Mileage_Rate__c where year__c =: listofmonths];
-        for(IRS_Mileage_Rate__c rate:irsrate)
-        {
-            obj_irsrate.put(rate.year__c,Double.valueOf(rate.IRS_Rate__c));
-        }
-        getComplianceContacts(listcomplincemonth);
-
-    }
-    public void getComplianceContacts(List<String> listcomplincemonth)
-    {
-        System.debug('listcomplincemonth'+listcomplincemonth);
-        List<Contact> obj_contact = new List<Contact>();
-        obj_contact = [SELECT id, compliancestatus__c, Name, Employee_ID__c, External_Email__c FROM Contact WHERE (compliancestatus__c ='Yes')and Deactivated_Date__c = null and AccountId =: accountId AND (Role__c =: StaticValues.roleAdminDriver OR Role__c='Driver' OR Role__c='Driver/Manager')];
-        List<ID> obj_list_id = new List<ID>();
-        for(Contact c:obj_contact)
-        {
-            obj_list_id.add(c.id);
-            if(!obj_contact_map.containsKey(c.id))
-            {
-                obj_contact_map.put(c.id,c);    
-            }
-        }
-        List<Employee_Reimbursement__c> listEmployeeReimbursement= new List<Employee_Reimbursement__c>();
-        listEmployeeReimbursement=[SELECT id, Total_Mileage__c, Total_Monthly_Reimbursement__c, Contact_Id__c, Contact_Id__r.Name,
-                                            Contact_Id__r.Employee_ID__c, Contact_Id__r.External_Email__c, Month__c,Approved_Date__c  
-                                        FROM Employee_Reimbursement__c 
-                                        WHERE Contact_Id__c =: obj_list_id AND Month__c =: listcomplincemonth AND Approved_Date__c != null];
-        Map<String,List<Employee_Reimbursement__c>> obj_map_Employee_Reimbursement = new Map<String,List<Employee_Reimbursement__c>>();
-        for(Employee_Reimbursement__c e:listEmployeeReimbursement)
-        {
-            if(obj_map_Employee_Reimbursement.containsKey(e.Contact_Id__c))
-            {
-                obj_map_Employee_Reimbursement.get(e.Contact_Id__c).add(e);
-            }
-            else
-            {
-                obj_map_Employee_Reimbursement.put(e.Contact_Id__c, new List<Employee_Reimbursement__c> {e});
-            }
-        }
-        System.Debug(obj_map_Employee_Reimbursement);
-        if(obj_map_Employee_Reimbursement.size()>0)
-        {
-            obj_wrapperTaxReport = complianceStatus(obj_map_Employee_Reimbursement);
-        }
-
-    }
-    public List<wrapperTaxReport> complianceStatus(Map<String,List<Employee_Reimbursement__c>> obj_map_Employee_Reimbursement)
-    {
-        List<wrapperTaxReport> obj_ListwrapperTaxReport = new List<wrapperTaxReport>();
-        for(String s:obj_map_Employee_Reimbursement.keySet())
-        {
-            List<String> months = new List<String>();
-            if(obj_map_Employee_Reimbursement.get(s).size()>0)
-            {
-                totalmileages =0;
-                TotalActualReimbursements=0;
-                MaximumAllowable=0;
-                AnnualTaxLiability=0;
-
-                for(Employee_Reimbursement__c obj:obj_map_Employee_Reimbursement.get(s))
-                {
-                    if((obj.Month__c!=null)&&(obj.Month__c.contains('-')))
-                    {
-                        months = obj.Month__c.split('-');
-
-                        /*wrapperTaxReport objw = new wrapperTaxReport();
-                        objw.drivername = obj.Contact_Id__r.Name;
-                        objw.employeeid =obj.Contact_Id__r.Employee_ID__c;
-                        objw.emailid = obj.Contact_Id__r.External_Email__c;*/
-                        if(months.size()>0)
-                        {
-                            if(obj.Total_Mileage__c!=null)
-                            {
-                              totalmileages = totalmileages +  obj.Total_Mileage__c.setScale(2);
-                            }
-                            
-                            if(obj.Total_Monthly_Reimbursement__c!=null)
-                            {
-                                TotalActualReimbursements = TotalActualReimbursements + obj.Total_Monthly_Reimbursement__c.setScale(2);
-                            }
-                            
-                            if((obj.Total_Mileage__c!=null)&&(obj_irsrate.containsKey(String.valueOf(months[1]))))
-                            {
-                                MaximumAllowable = MaximumAllowable + (((obj.Total_Mileage__c.setScale(2))*(obj_irsrate.get(String.valueOf(months[1])))));
-                            }                      
-                            if((obj.Total_Monthly_Reimbursement__c !=null)&&(obj.Total_Mileage__c!=null)&&(obj_irsrate.containsKey(String.valueOf(months[1]))))
-                            {
-                                AnnualTaxLiability=AnnualTaxLiability + ((obj.Total_Monthly_Reimbursement__c.setScale(2))-((obj.Total_Mileage__c.setScale(2))*obj_irsrate.get(String.valueOf(months[1]))));
-                            } 
-                            System.Debug(AnnualTaxLiability);   
+            System.debug('contactIds =='+contactIds );
+            if(contactIds.size() > 0){
+               
+                for(String lstwrapper : contactIds ){
+                System.debug('lstwrapper =='+lstwrapper );
+                    complianceCalculationList = new List<String>();
+                    complianceCalculationList.addAll(WrapperUtils.getComplianceCalculation(lstwrapper, year));
+                    System.debug('complianceCalculationList=='+complianceCalculationList);
+                    System.debug('complianceCalculationList.size()=='+complianceCalculationList.size());
+                    If(complianceCalculationList.size() > 3){
+                    System.debug('complianceCalculationList==');
+                        String summaryData = complianceCalculationList[4];
+                        if(summaryData != null) {
+                            mapOfResult.put(lstwrapper,summaryData);
                         }
-                        
-                       /* objw.month =Integer.valueOf(months[0]);
-                        objw.year =String.valueOf(months[1]);*/
                     }
                 }
-                
-                if(obj_contact_map.containsKey(s))
-                {
-                    wrapperTaxReport objw = new wrapperTaxReport();
-                    objw.drivername = obj_contact_map.get(s).Name;
-                    objw.employeeid =obj_contact_map.get(s).Employee_ID__c;
-                    objw.emailid = obj_contact_map.get(s).External_Email__c;
-                    objw.imputedincome = Decimal.valueOf(AnnualTaxLiability).setScale(2);
-                    obj_ListwrapperTaxReport.add(objw);
+                If(mapOfResult != null){
+                    for(String mapKey : mapOfResult.keySet()){
+                        objListwrapperTax = new List<wrapperTaxReport>();
+                        objListwrapperTax = (List<wrapperTaxReport>)Json.deserialize(mapOfResult.get(mapKey),List<wrapperTaxReport>.class);
+                        wrapperTaxReport objw = new wrapperTaxReport();
+                        objw.drivername = objListwrapperTax[0].drivername;
+                        if(objListwrapperTax[0].employeeid != null){
+                            objw.employeeid = objListwrapperTax[0].employeeid;
+                        }
+                        objw.emailid = objListwrapperTax[0].emailid;
+                        objw.imputedincome = objListwrapperTax[0].imputedincome;
+                        obj_complianceReport.add(objw); 
+                        System.debug('objw=='+objw);
+                    }
                 }
-            }           
-
+            }
+             System.debug('obj_complianceReport=='+obj_complianceReport);
+            return Json.serialize(obj_complianceReport);
         }
-        return obj_ListwrapperTaxReport;
-    }
+       
     public class wrapperTaxReport
     {
         public String drivername {get;set;}
@@ -189,4 +127,5 @@ public with sharing class driverComplianceReport
     
         }
     }
+
 }

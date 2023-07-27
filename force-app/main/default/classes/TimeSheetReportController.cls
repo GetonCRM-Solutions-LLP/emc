@@ -18,7 +18,7 @@ public with sharing class TimeSheetReportController {
     }
     public TimeSheetReportController() {
         String startDate = ApexPages.currentPage().getParameters().get('startDate');
-        List<Employee_Mileage__c  > milList = new List<Employee_Mileage__c   >();
+        /*List<Employee_Mileage__c  > milList = new List<Employee_Mileage__c   >();
         for(Employee_Mileage__c  currentAccount : [select id,name,Origin_Name__c, Destination_Name__c,Driving_Time__c, Stay_Time__c 
                                                     from Employee_Mileage__c 
                                                     where Trip_Date__c >= : Date.valueOf(startDate)
@@ -33,7 +33,7 @@ public with sharing class TimeSheetReportController {
         
         if(milList.size()> 0){
             update milList;    
-        }        
+        } */       
         TimeSheet();
     }
     public void TimeSheet(){

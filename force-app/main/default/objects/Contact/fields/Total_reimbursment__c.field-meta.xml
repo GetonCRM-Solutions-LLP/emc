@@ -8,7 +8,12 @@
     <summaryFilterItems>
         <field>Employee_Reimbursement__c.Year__c</field>
         <operation>equals</operation>
-        <value>2021</value>
+        <value>2022</value>
+    </summaryFilterItems>
+    <summaryFilterItems>
+        <field>Employee_Reimbursement__c.Remove_Reimbursement__c</field>
+        <operation>notEqual</operation>
+        <value>True</value>
     </summaryFilterItems>
     <summaryForeignKey>Employee_Reimbursement__c.Contact_Id__c</summaryForeignKey>
     <summaryOperation>sum</summaryOperation>

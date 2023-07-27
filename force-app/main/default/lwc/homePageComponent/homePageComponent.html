@@ -44,11 +44,20 @@
                                 <span class="slds-truncate" title="Menu Item">Communications</span>
                             </a>
                         </li>
-                        <li class="slds-context-bar-item">
-                            <a href={myDetailurl} class="slds-context-bar__label-action" title="Menu Item">
-                                <span class="slds-truncate" title="Menu Item">My Details</span>
-                            </a>
-                        </li>
+                        <template if:true={isInsurance}>
+                            <li class="slds-context-bar-item">
+                                <a href={myDetailurl} class="slds-context-bar__label-action" title="Menu Item">
+                                    <span class="slds-truncate" title="Menu Item">My Details</span>
+                                </a>
+                            </li>
+                        </template>
+                        <template if:false={isInsurance}>
+                            <li class="slds-context-bar-item">
+                                <a href={myDetailInsuranceurl} class="slds-context-bar__label-action" title="Menu Item">
+                                    <span class="slds-truncate" title="Menu Item">My Details</span>
+                                </a>
+                            </li>
+                        </template>
                     </template>
                     <template if:true={adminLoggedIn}>
                         <li class="slds-context-bar-item">
@@ -84,11 +93,21 @@
                                 <span class="slds-truncate" title="Menu Item">Reports</span>
                             </a>
                         </li>
-                        <li class="slds-context-bar-item">
-                            <a href={myDetailurl} class="slds-context-bar__label-action" title="Menu Item">
-                                <span class="slds-truncate" title="Menu Item">My Details</span>
-                            </a>
-                        </li>
+                        <template if:true={isInsurance}>
+                            <li class="slds-context-bar-item">
+                                <a href={myDetailurl} class="slds-context-bar__label-action" title="Menu Item">
+                                    <span class="slds-truncate" title="Menu Item">My Details</span>
+                                </a>
+                            </li>
+                        </template>
+                        <template if:false={isInsurance}>
+                            <li class="slds-context-bar-item">
+                                <a href={myDetailInsuranceurl} class="slds-context-bar__label-action" title="Menu Item">
+                                    <span class="slds-truncate" title="Menu Item">My Details</span>
+                                </a>
+                            </li>
+                        </template>
+                       
                     </template>
 
                     <li class="slds-context-bar-item">
@@ -125,13 +144,27 @@
                                         </tr>
                                         <tr>
                                             <td colspan="2">
-                                                <lightning-input style="position: absolute;top: 9px;left: 78px;"
-                                                    type="checkbox" name="driverchk" onchange={handleActiveDriver}
-                                                    checked>
-                                                </lightning-input>
-                                                <label class="slds-form-element__label" style="font-size: 13px;
-                                                padding-left: 96px;">Show
-                                                    only active drivers</label>
+                                                <div>
+                                                    <div>
+                                                        <lightning-input style="position: absolute;top: 9px;left: 78px;"
+                                                        type="checkbox" name="driverchk" onchange={handleActiveDriver}
+                                                        checked>
+                                                    </lightning-input>
+                                                    <label class="slds-form-element__label" style="font-size: 13px;
+                                                    padding-left: 96px;">Show
+                                                        only active drivers</label>
+                                                    </div>
+                                                    <div>
+                                                        <lightning-input style="position: absolute;top: 34px;left: 78px;"
+                                                        type="checkbox" name="driverchk" onchange={handleHighRiskTrip}
+                                                        >
+                                                    </lightning-input>
+                                                    <label class="slds-form-element__label" style="font-size: 13px;
+                                                    padding-left: 96px;">Show
+                                                        high risk trips</label>
+                                                    </div>
+                                                </div>
+                                            
                                             </td>
                                         </tr>
                                     </tbody>
@@ -247,7 +280,7 @@
                                     acc-field="EmployeeReimbursement__r.Contact_Id__r.AccountId" admin-id=''
                                     acc-id={accountId} object-name="Employee_Mileage__c" search-key="Activity__c"
                                     id-of-driver='' where-field='' default-option="All Activities"
-                                    class="tracingList" dynamic-placeholder="All Activities"
+                                    class="activityList" dynamic-placeholder="All Activities"
                                     onhandleselectevent={handleActivity}>
                                 </c-multiple-dropdown-component>
                             </td>

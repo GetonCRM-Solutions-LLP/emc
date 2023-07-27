@@ -29,38 +29,4 @@
         <senderType>CurrentUser</senderType>
         <template>unfiled$public/Status_change_Ready_for_Review</template>
     </alerts>
-    <rules>
-        <fullName>New ActionItem Record create</fullName>
-        <actions>
-            <name>New_ActionItem_record_create_Email_Alert</name>
-            <type>Alert</type>
-        </actions>
-        <active>false</active>
-        <criteriaItems>
-            <field>ActionItem__c.Name</field>
-            <operation>notEqual</operation>
-        </criteriaItems>
-        <description>When new ActionItem Record create</description>
-        <triggerType>onCreateOnly</triggerType>
-    </rules>
-    <rules>
-        <fullName>Status change On ActionItem Object</fullName>
-        <actions>
-            <name>Status_field_change_on_ActionItem_object_than_Email</name>
-            <type>Alert</type>
-        </actions>
-        <active>true</active>
-        <booleanFilter>1 OR 2</booleanFilter>
-        <criteriaItems>
-            <field>ActionItem__c.Status__c</field>
-            <operation>equals</operation>
-            <value>Move to Production</value>
-        </criteriaItems>
-        <criteriaItems>
-            <field>ActionItem__c.Status__c</field>
-            <operation>equals</operation>
-            <value>Ready for Review for Client</value>
-        </criteriaItems>
-        <triggerType>onAllChanges</triggerType>
-    </rules>
 </Workflow>

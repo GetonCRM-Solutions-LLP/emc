@@ -61,7 +61,7 @@
             padding: 10px;
         }
         .p-23{
-            padding: 24px !important;
+            padding: 10px !important;
         }
     </style>
     <script>
@@ -85,6 +85,18 @@
                 }
             } 
         });
+
+
+        app.filter('currencyFormat', ["$filter",  function($filter){
+            return function(amount, currencySymbol){
+                var currency = $filter('currency');
+                if(amount < 0){
+                    return currency(amount, currencySymbol).replace("(", "-").replace(")", "");
+                }
+
+                return currency(amount, currencySymbol);
+            }
+        }]);
         
         app.directive('excelExportFile',function () {
             return {
@@ -154,6 +166,28 @@
                 }
             };
         });
+
+        app.directive('excelExportCustomFile',function () {
+            return {
+                restrict: 'A',
+                scope: {
+                },
+                replace: true,
+                template: '<button class="btn btn-primary float-right" ng-click="download()">Download </button>',
+                link: function (scope, element) {
+                    var url_string = $(location).attr("href");
+                    var url = new URL(url_string);
+                    var host = url.host;
+                    scope.accid = url.searchParams.get("accid");
+                    scope.id = url.searchParams.get("id");
+                    scope.download = function() {
+                        var window_url;
+                        window_url = 'https://' + host + '/app/BiWeeklyComplianceReport?id=' + scope.id;
+                        window.open(window_url, '_blank');
+                    }
+                }
+            };
+        });
     </script>
     <div class="col-12 col-lg-12 col-xl-12 col-md-12 col-sm-12 ml-16 mt-35">
         <div class="row">
@@ -179,7 +213,7 @@
                         </tr>
                         <tr>
                             <td class="font-weight-bold">Q{{compliance.quarterno}} Tax Liability</td>
-                            <td>{{compliance.ImputedAmount| currency:"$":2}}</td>
+                            <td>{{compliance.ImputedAmount | currencyFormat: "$":2}}</td>
                         </tr>
                     </tbody>
                 </table>
@@ -206,7 +240,7 @@
                         </tr>
                         <tr>
                             <td class="font-weight-bold">Annual Tax Liability</td>
-                            <td>{{taxliablity| currency:"$":2}}</td>
+                            <td>{{taxliablity| currencyFormat:"$":2}}</td>
                         </tr>
                     </tbody>
                 </table>
@@ -228,6 +262,17 @@
                             <td class="font-weight-bold p-10">Annual Tax Liability Summary Report</td>
                             <td class="p-0">
                             <div excel-export-file="true" export-data="summaryreportfordownload" file-name="{{fileNameforsummary}}"/> </td>
+                        </tr>
+
+                        <tr ng-if="accid === PLMarketing">
+                            <td class="p-23"></td>
+                            <td class="pd-0"></td>
+                        </tr>
+                        <!-- Biweekly Report For Pl Marketing -->
+                        <tr style="height:49px" ng-if="accid === PLMarketing">
+                            <td class="font-weight-bold p-10">Bi-Weekly Tax Liability Detail Report</td>
+                            <td class="p-0">
+                            <div excel-export-custom-file="true" /> </td>
                         </tr>
                     </tbody>
                 </table>

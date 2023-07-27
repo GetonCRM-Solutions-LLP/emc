@@ -1,7 +1,7 @@
 global class UpdateTripsStatusBatch implements Database.Batchable<sObject>, Database.AllowsCallouts {
     
     public String query;
-    private static final String MLOGACCOUNT = System.Label.Triplog_New_URL;
+    private static final String MLOGACCOUNT = System.Label.Triplog_New_URL + ',' + System.Label.Triplog_New_URL2;
     
     global UpdateTripsStatusBatch (String empReimId) {
         if(Test.isRunningTest()) {

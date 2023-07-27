@@ -4,7 +4,7 @@
 *  @Version:         1.0.0
 */
 global class LoadMileageLocationBatch implements Database.Batchable<sObject>,Database.AllowsCallouts{
-    public static final String MLOGACCOUNT = System.Label.Triplog_New_URL;
+    public static final String MLOGACCOUNT = System.Label.Triplog_New_URL + ',' + System.Label.Triplog_New_URL2;
     //global static final string LOC_URL = Label.Triplog_Location_API;
     global Set<Id> mileageIds;
     global Set<Id> reimbersumentIds;
@@ -75,8 +75,8 @@ global class LoadMileageLocationBatch implements Database.Batchable<sObject>,Dat
             mil.From_Location__latitude__s = (Decimal)locMap.get('latitude');
             mil.From_Location__longitude__s = (Decimal)locMap.get('longitude');
         } else {
-            mil.To_Location__latitude__s = (Decimal)locMap.get('latitude');
-            mil.To_Location__longitude__s = (Decimal)locMap.get('longitude');
+            mil.To_Location__latitude__s = (Decimal)locMap.get('latitude') ;
+            mil.To_Location__longitude__s = (Decimal)locMap.get('longitude') ;
         }
     }
 

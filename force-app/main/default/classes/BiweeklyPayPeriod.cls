@@ -1,115 +1,5 @@
 public with sharing class BiweeklyPayPeriod {
-    public BiweeklyPayPeriod() {
-        
-        //getEmployeeMileages();
-    }
-
-    /*public static List<MileageWrap> getEmployeeMileages() {
-        List<String> dateRange = new List<String>();
-        List<String> startEnddate = new List<String>();
-        List<MileageWrap> milWrapList = new List<MileageWrap>();
-        MileageWrap obj;
-        if(System.Label.PayPeriodDate!=null)
-        {
-            if(System.Label.PayPeriodDate.contains(','))
-            {
-                dateRange = System.Label.PayPeriodDate.split(',');
-            }
-            Integer i=0;    
-            for(String s : dateRange)
-            {
-                String startdate;
-                String enddate;
-                s = s.trim();
-                if(s.contains('to'))
-                {
-                    startEnddate = s.split('to');
-                    startdate = startEnddate[0].trim();
-                    enddate = startEnddate[1].trim();
-                    String contactid = '0033r00003f3UaKAAU';
-                    Date d1 = Date.today();
-                    Date d2 = date.valueof(startdate);
-                    if(d2 < d1){
-                        obj = calculateReim(startdate,enddate,contactid);
-                        milWrapList.add(obj);
-                    }
-                    
-                }
-                
-            }
-        }
-        System.debug('milWrapList=='+milWrapList);
-        return milWrapList;
-    }*/
-
-    /*public static MileageWrap calculateReim (String startdate,String enddate,String contactid){
-        List<mileageWrap> milWrapList = new List<mileageWrap>();
-        Map<Id, Decimal> mileageMap = new Map<Id, Decimal>();
-        Map<Id, Decimal> fixedAmountMap = new Map<Id, Decimal>();
-        //Map<Id, Decimal> totalVariAmountMap = new Map<Id, Decimal>();
-        Decimal fuelprice ;
-        Decimal fixed;
-        Decimal totalVariableRate;
-        Decimal monthlyVariableAmount;
-        for(Employee_Mileage__c objMil : [SELECT EmployeeReimbursement__r.Contact_Id__c,
-                                                    EmployeeReimbursement__r.Fixed_Amount__c, 
-                                                    EmployeeReimbursement__r.Total_Variable_Rate__c,
-                                                    EmployeeReimbursement__r.Fuel_Price__c,
-                                                    Mileage__c
-                                            FROM Employee_Mileage__c 
-                                            WHERE   EmployeeReimbursement__r.Contact_Id__c =: contactid
-                                                    AND Trip_Date__c >= : Date.valueOf(startDate)
-                                                    AND Trip_Date__c <= : Date.valueOf(endDate)
-                                                    //AND Trip_Status__c = 'Approved' 
-                                                    //AND Approved_Date__c != null
-                                          ]) {
-
-            
-            fuelprice = objMil.EmployeeReimbursement__r.Fuel_Price__c;
-            
-            fixed = objMil.EmployeeReimbursement__r.Fixed_Amount__c;
-            totalVariableRate = objMil.EmployeeReimbursement__r.Total_Variable_Rate__c;
-
-            if(mileageMap.size() > 0 && mileageMap.containsKey(objMil.EmployeeReimbursement__r.Contact_Id__c)){
-                double mileage = mileageMap.get(objMil.EmployeeReimbursement__r.Contact_Id__c);
-                mileage = mileage + objMil.Mileage__c ;
-                mileageMap.put(objMil.EmployeeReimbursement__r.Contact_Id__c, mileage);
-            } else {
-                mileageMap.put(objMil.EmployeeReimbursement__r.Contact_Id__c, objMil.Mileage__c);
-            }
-
-        }
-        
-        MileageWrap milObj = new MileageWrap();
-        milObj.dates = startdate +' to '+ enddate;
-        if(fuelprice == null){
-            fuelprice = 0;
-        }
-        milObj.fuel = fuelprice;
-        System.debug('mileageMap=='+mileageMap);
-        if(mileageMap.containsKey(contactid)){
-            milObj.approvemileage = mileageMap.get(contactid);
-           
-        } else {
-           
-            milObj.approvemileage = 0;
-        }
-        if(totalVariableRate == null){
-            totalVariableRate = 0;
-        }
-        milObj.totalvariable = totalVariableRate;
-        milObj.fixedamount = fixed;
-        monthlyVariableAmount = milObj.approvemileage * milObj.totalvariable;
-        if(monthlyVariableAmount == null){
-            monthlyVariableAmount = 0;
-        }
-        if(milObj.fixedamount == null){
-            milObj.fixedamount = 0;
-        }
-        milObj.totalReim = monthlyVariableAmount + milObj.fixedamount;
-        System.debug(milObj);
-        return milObj;
-    }*/
+    public BiweeklyPayPeriod() { }
 
     public static List<TimeAttedanceWrap> getTimeAndAttendance(String contactid,String year) {
         List<String> dateRange = new List<String>();
@@ -118,10 +8,16 @@ public with sharing class BiweeklyPayPeriod {
         TimeAttedanceWrap obj;
         String payPeriodDate;
         if(year == '2021' && System.Label.PayPeriodDate2021 != null) {
+            //payPeriodDate = getDateListAsString(System.Label.PayPeriodDate2021);
             payPeriodDate = System.Label.PayPeriodDate2021;
         } else if(year == '2022' && System.Label.PayPeriodDate2022 != null) {
-            payPeriodDate = System.Label.PayPeriodDate2022;
+            payPeriodDate = getDateListAsString(System.Label.PayPeriodDate2022);
+            //payPeriodDate = System.Label.PayPeriodDate2022;
+        } else if(year == '2023' && System.Label.PayPeriodDate2023 != null) {
+          payPeriodDate = getDateListAsString(System.Label.PayPeriodDate2023);
+            //payPeriodDate = System.Label.PayPeriodDate2022;
         } else if(year == '2020' && System.Label.PayPeriodDate2020 != null) {
+            //payPeriodDate = getDateListAsString(System.Label.PayPeriodDate2020);
             payPeriodDate = System.Label.PayPeriodDate2020; 
         }
         if(payPeriodDate != null)
@@ -154,11 +50,64 @@ public with sharing class BiweeklyPayPeriod {
         System.debug('timeWrapList=='+timeWrapList);
         return timeWrapList;
     }
+    
+     public static String getDateListAsString(String dateList){
+        String dateString = '';
+        
+        List<String> startEnddate = new List<String>();
+        String startdate;
+        String enddate;
+        
+        System.debug('date:'+dateList);
+        
+        startEnddate = dateList.split('to');
+        startdate = startEnddate[0].trim();
+        enddate = startEnddate[1].trim();
+        
+        //System.debug('start date: '+startdate);
+        //System.debug('end date: '+enddate);
+        Date startdt = Date.valueOf(startdate);
+        Date enddt = Date.valueOf(enddate);
+        integer startdtForcheck = startdt.year();
+        
+        System.debug('start date: '+startdt);
+        System.debug('end date: '+enddt);
+        
+        Integer numberOfDays = startdt.daysBetween(enddt);
+        System.debug('numberOfDays : '+numberOfDays);
+      
+        for(integer i=0;startdt.year() == startdtForcheck;i++){
+           
+                startdt = startdt + numberOfDays+1;
+                enddt = enddt +numberOfDays+1;
+                if(startdt.year() == startdtForcheck){
+                    dateString = dateString + String.valueOf(startdt)+' to '+String.valueOf(enddt)+',';
+            }
+        }
+        dateString = dateList+','+dateString;
+        System.debug('string of date : '+dateString);
+        return dateString;
+    }
+    
     public static TimeAttedanceWrap calculateTimeAtt (String startdates,String enddates,String contactid){
-        Map<Id,Decimal> tripdateDrivingTimeMap = new Map<Id,Decimal>();
-        Map<Id,Decimal> tripStayTimeMap = new Map<Id,Decimal>();
-        Map<Id,Decimal> tripTotalTimeMap = new Map<Id,Decimal>();
-        for(AggregateResult ar : [SELECT EmployeeReimbursement__r.Contact_Id__c cid, SUM(Driving_Time__c) rtotal, 
+        TimeAttedanceWrap  objWrap;
+        for(Bi_Weekly_Reimbursement__c biReim : [SELECT id,Start_Date__c, End_Date__c, 
+                                                    Total_Drive_Time__c, Total_Stay_Time__c, Total_Time__c, Approved_Date__c 
+                                                    FROM Bi_Weekly_Reimbursement__c
+                                                    WHERE  Contact__c =: contactid
+                                                        AND Start_Date__c >= : Date.valueOf(startdates)
+                                                        AND End_Date__c <= : Date.valueOf(enddates)]){
+                
+                                                            objWrap = new TimeAttedanceWrap();
+                objWrap.startDate = startdates;
+                objWrap.endDate = enddates;
+                objWrap.totaldrivingTime = Utils.ConvertMinuteToHours(Integer.valueOf(biReim.Total_Drive_Time__c));
+                objWrap.totalStayTime = Utils.ConvertMinuteToHours(Integer.valueOf(biReim.Total_Stay_Time__c));
+                objWrap.totalTime = Utils.ConvertMinuteToHours(Integer.valueOf(biReim.Total_Time__c));
+                objWrap.approvalDate = string.valueOf(biReim.Approved_Date__c); 
+
+        }
+        /*for(AggregateResult ar : [SELECT EmployeeReimbursement__r.Contact_Id__c cid, SUM(Driving_Time__c) rtotal, 
                                         SUM(Stay_Time__c) stay , SUM(Total_Time__c) ttime
                                     FROM Employee_Mileage__c 
                                     WHERE EmployeeReimbursement__r.Contact_Id__c =: contactid 
@@ -175,52 +124,28 @@ public with sharing class BiweeklyPayPeriod {
         objWrap.totaldrivingTime = Utils.ConvertMinuteToHours(Integer.valueOf(tripdateDrivingTimeMap.get(contactid)));
         objWrap.totalStayTime = Utils.ConvertMinuteToHours(Integer.valueOf(tripStayTimeMap.get(contactid)));
         objWrap.totalTime = Utils.ConvertMinuteToHours(Integer.valueOf(tripTotalTimeMap.get(contactid)));
+        */
         return objWrap;
     }
-    //Total Variable Rate    * Total Approved   = Monthly Variable Amount
-    //Monthly Variable Amount + Fixed Amount = Total Monthly Reimbursement
-    /*public class MileageWrap {
-        public string dates { get; set; }
-        public decimal fuel { get; set; }
-        public Decimal approvemileage { get; set; }
-        public decimal totalvariable { get; set; }
-        public decimal fixedamount { get; set; }
-        public decimal totalReim { get; set; }
-    }*/
 
     public class TimeAttedanceWrap {
         public string startDate { get; set; }
         public string endDate { get; set; }
         public String totaldrivingTime { get; set; }
         public String totalStayTime { get; set; }
-        public String totalTime { get; set; }
+        public String totalTime { get; set; }   
+        public String approvalDate { get; set; }
     }
     
     public static List<BiweeklyWrap> getBiweeklyMileage(String contactid,Integer years) {
-        List<String> newDateRange = new List<String>();
+        system.debug('contactid=='+ contactid);
+        system.debug('years=='+ years);
         List<String> startEnddate = new List<String>();
         List<BiweeklyWrap> timeWrapList = new List<BiweeklyWrap>();
         BiweeklyWrap obj;
-        List <Contact> conList = [SELECT id,Deactivated_Date__c FROM Contact WHERE Id =: contactid];
         List<String> dateRange = new List<String>();
-        String startDate = '2021-07-25';
-        for(integer i=0; i<=dateRange.size(); i++ ){      
-            if(years == date.valueof(startDate).year()){                
-                String enddate = String.valueof(date.valueof(startDate).addDays(13));
-                // if(date.valueof(startdate) < Date.today()) {
-                //                 dateRange.add(startDate+' to '+ enddate);
-                // }
-                if(conList.size() > 0 && conList[0].Deactivated_Date__c != null && ((date.valueof(startdate) < date.valueOf(conList[0].Deactivated_Date__c))) ) {
-                    dateRange.add(startDate+' to '+ enddate);
-                    System.debug('dateRange1'+dateRange);
-                } else if (conList.size() > 0 && conList[0].Deactivated_Date__c == null && (date.valueof(startdate) < Date.today()) ){
-                    dateRange.add(startDate+' to '+ enddate);
-                    System.debug('dateRange2'+dateRange);
-                }
-                startDate = String.valueof(date.valueof(enddate).addDays(1));   
-            }
-        }
-    
+        dateRange = getPayPeriodDates (contactid,years);
+        system.debug('dateRange=='+ dateRange);
         if(!dateRange.isEmpty())
         {
             Integer i = 0;    
@@ -253,28 +178,17 @@ public with sharing class BiweeklyPayPeriod {
         Date startdate = date.valueof(startdates);
         Date enddate = date.valueof(enddates);
         String reimStartMonth,reimEndMonth;
-        if(startdate.month() < 10 ) {
-           reimStartMonth = '0'+String.valueOf(startdate.month())+'-'+startdate.year();
-        }
-        if(enddate.month() < 10 ) {
-           reimEndMonth = '0'+String.valueOf(enddate.month())+'-'+enddate.year();
-        }
+        reimStartMonth = startdate.month() < 10 ?  '0'+String.valueOf(startdate.month())+'-'+startdate.year() : String.valueOf(startdate.month())+'-'+startdate.year();
+        reimEndMonth = enddate.month() < 10 ? '0'+String.valueOf(enddate.month())+'-'+enddate.year() : String.valueOf(enddate.month())+'-'+enddate.year();
         for(AggregateResult ar : [SELECT EmployeeReimbursement__r.Contact_Id__c cid,
-                                     SUM(Variable__c) vtotal
+                                     SUM(Variable__c) vtotal,SUM(Mileage__c) rtotal
                                     FROM Employee_Mileage__c 
                                     WHERE EmployeeReimbursement__r.Contact_Id__c =: contactid 
                                     AND Trip_Date__c >= : Date.valueOf(startdates)
                                     AND Trip_Date__c <= : Date.valueOf(enddates) 
                                     AND Trip_Status__c = 'Approved' 
                                     AND Approved_Date__c != null group by EmployeeReimbursement__r.Contact_Id__c ]) {
-                                        variableMap.put((Id)ar.get('cid'),(Decimal)ar.get('vtotal'));                      
-        }
-        for(AggregateResult ar : [SELECT EmployeeReimbursement__r.Contact_Id__c cid, SUM(Mileage__c) rtotal
-                                    FROM Employee_Mileage__c 
-                                    WHERE EmployeeReimbursement__r.Contact_Id__c =: contactid 
-                                    AND Trip_Date__c >= : Date.valueOf(startdates)
-                                    AND Trip_Date__c <= : Date.valueOf(enddates)  
-                                    group by EmployeeReimbursement__r.Contact_Id__c ]) {
+                                        variableMap.put((Id)ar.get('cid'),(Decimal)ar.get('vtotal'));  
                                         mileageMap.put((Id)ar.get('cid'),(Decimal)ar.get('rtotal'));                     
         }
         List<Employee_Reimbursement__c> reimList = new List<Employee_Reimbursement__c>();
@@ -293,57 +207,83 @@ public with sharing class BiweeklyPayPeriod {
                                                 AND Approved_Date__c = null
                                                 AND Trip_Date__c >= : Date.valueOf(startdates)
                                                 AND Trip_Date__c <= : Date.valueOf(enddates)
-                                                AND EmployeeReimbursement__r.Contact_Id__c =: contactid ]){
-            if(mil.Mileage_Lock_Date__c == null){
-                objWrap.checkPendingTrip = true;
-            }                             
+                                                AND EmployeeReimbursement__r.Contact_Id__c =: contactid ]){   
+            objWrap.checkPendingTrip = mil.Mileage_Lock_Date__c == null ?  true : false;                          
         }
-        System.debug('mileageMap'+ mileageMap);
         objWrap.startDate = startdates.trim();
         objWrap.endDate = enddates.trim();
         if(reimList.size() > 0 ){
-            objWrap.fuel = String.valueof(reimList[0].Fuel_Price__c);
-            objWrap.fixedAmount = String.valueof(reimList[0].Half_Fixed_Amount__c);
-            //objWrap.mileage = String.valueof(reimList[0].Total_Mileage__c );
-            if(mileageMap.containskey(contactid)){
-                objWrap.mileage = String.valueof(mileageMap.get(contactid));
-            } else {
-                objWrap.mileage = String.valueof(0);
-            }
-            System.debug(' objWrap.mileage'+ objWrap.mileage);
-            if(variableMap.containskey(contactid)){
-                objWrap.variable = String.valueof(variableMap.get(contactid));
-            } else {
-                objWrap.variable = String.valueof(0);
-            }
-            if(variableMap.containskey(contactid)){
-                objWrap.totalReim = String.valueof(reimList[0].Half_Fixed_Amount__c + variableMap.get(contactid));
-            } else {
-                 objWrap.totalReim = String.valueof(reimList[0].Half_Fixed_Amount__c + 0);
-            }
-           
-        }
-        
+            objWrap.fuel = reimList[0].Fuel_Price__c != null ?  String.valueOf(reimList[0].Fuel_Price__c) : '0';
+            objWrap.fixedAmount = reimList[0].Half_Fixed_Amount__c != null ?  String.valueOf(reimList[0].Half_Fixed_Amount__c) : '0';
+            objWrap.mileage = mileageMap.containskey(contactid) ?  String.valueof(mileageMap.get(contactid)) : '0';
+            objWrap.variable = variableMap.containskey(contactid) ?  String.valueof(variableMap.get(contactid)) : '0';
+            objWrap.totalReim = variableMap.containskey(contactid) ?  String.valueof(reimList[0].Half_Fixed_Amount__c + variableMap.get(contactid)) : String.valueof(reimList[0].Half_Fixed_Amount__c + 0);           
+        }        
         return objWrap;
     }
     
     public class BiweeklyWrap {
+        public string biweekId { get; set; }
         public string startDate { get; set; }
         public string endDate { get; set; }
         public String fuel { get; set; }
         public String fixedAmount { get; set; }
         public String mileage { get; set; }
         public String variable { get; set; }
+        public String variableRate { get; set; }
         public String totalReim { get; set; }
         public Boolean checkPendingTrip { get; set; }
+        public String totalApproved { get; set; }
+        public String totalPending { get; set; }
     }
+    public static List<BiweeklyWrap> getBiweeklyReimbursement(String contactid,Integer years) {
+        List<BiweeklyWrap> timeWrapList = new List<BiweeklyWrap>();
 
-    public static List<String> getMileages1(date startdate,date enddate,String did)
+        for(Bi_Weekly_Reimbursement__c biweekReim : [SELECT id,name,Start_Date__c, End_Date__c,Total_Approved__c,Total_Pending__c,
+                                                        Fuel_Price__c, Half_Fixed_Amount__c,Status__c,Total_Variable_Rate__c,
+                                                        Total_Mileage__c,Total_Monthly_Approved_Variable__c,
+                                                        Total_Monthly_Reimbursement__c,Mileage_Lock_Date__c                                             
+                                                    FROM Bi_Weekly_Reimbursement__c 
+                                                    WHERE Contact__c =:contactid ]){
+            if(biweekReim.Start_Date__c != null && biweekReim.Start_Date__c.year() == years){
+                
+                BiweeklyWrap objWrap = new BiweeklyWrap();
+                objWrap.checkPendingTrip = false;
+                objWrap.biweekId = biweekReim.id;
+                objWrap.startDate = biweekReim.Start_Date__c != null ?  String.valueOf(biweekReim.Start_Date__c) : '';
+                objWrap.endDate = biweekReim.End_Date__c != null ?  String.valueOf(biweekReim.End_Date__c) : '';
+                objWrap.fuel = biweekReim.Fuel_Price__c != null ?  String.valueOf(biweekReim.Fuel_Price__c) : '0';
+                objWrap.fixedAmount = biweekReim.Half_Fixed_Amount__c != null ?  String.valueOf(biweekReim.Half_Fixed_Amount__c) : '0';
+                objWrap.variable = biweekReim.Total_Monthly_Approved_Variable__c != null ?  String.valueOf(biweekReim.Total_Monthly_Approved_Variable__c) : '0';
+                objWrap.variableRate = biweekReim.Total_Variable_Rate__c != null ?  String.valueOf(biweekReim.Total_Variable_Rate__c) : '0';
+                objWrap.totalReim = biweekReim.Total_Monthly_Reimbursement__c != null ?  String.valueOf(biweekReim.Total_Monthly_Reimbursement__c) : '0';
+                objWrap.totalApproved = biweekReim.Total_Approved__c != null ?  String.valueOf(biweekReim.Total_Approved__c) : '0';
+                objWrap.totalPending = biweekReim.Total_Pending__c != null ?  String.valueOf(biweekReim.Total_Pending__c) : '0';
+                objWrap.mileage = biweekReim.Total_Mileage__c != null ?  String.valueOf(biweekReim.Total_Mileage__c) : '0';
+                
+                /*if(biweekReim.End_Date__c != null && biweekReim.Total_Mileage__c != null && biweekReim.End_Date__c.month() == System.today().month() && biweekReim.End_Date__c.year() == System.today().year()){
+                    objWrap.mileage = String.valueOf(biweekReim.Total_Mileage__c );
+                } else if(biweekReim.End_Date__c != null && biweekReim.End_Date__c.month() == System.today().month() && biweekReim.End_Date__c.year() == System.today().year()){
+                     objWrap.mileage = '0';
+                } else if(biweekReim.Total_Approved__c != null){
+                    objWrap.mileage = String.valueOf(biweekReim.Total_Approved__c);
+                } else {
+                    objWrap.mileage = '0';
+                }*/              
+                objWrap.checkPendingTrip = biweekReim.Status__c == 'Pending' ?  true : false; 
+                timeWrapList.add(objWrap);
+            }
+        }
+        return timeWrapList;
+    }
+    /* This method is used to get Mileage and reimbursement data based on startdate and end date of trips and contact id.
+    Author : Sanket Goswami */
+    public static List<String> getMileages1(date startdate,date enddate,String contactId)
     {
        
         //String month = WrapperUtils.getMonthno(clickedMonth);      
         //month = month +'-'+year;
-        List<Employee_Mileage__c> employeeMileageList = [SELECT id,Name,Trip_Date__c,Trip_Origin__c,
+        List<Employee_Mileage__c> employeeMileageList = [SELECT id,Name,Trip_Date__c,Approval_Name__c,Original_Origin_Name__c,Original_Destination_Name__c,Trip_Origin__c,
                                                             Stay_Time__c,Trip_Destination__c,Mileage__c,
                                                             Variable__c,Trip_Status__c,Approved_Date__c,
                                                             EmployeeReimbursement__c,EmployeeReimbursement__r.month__c,
@@ -359,18 +299,19 @@ public with sharing class BiweeklyPayPeriod {
                                                             EmployeeReimbursement__r.Total_Rejected__c,Notes__c,
                                                             TimeZone__c,EmployeeReimbursement__r.Mileage_Lock_Date__c,
                                                             ConvertedStartTime__c,ConvertedEndTime__c,Driving_Time__c,
-                                                            Total_Time__c,Tag__c,Mileage_Lock_Date__c 
+                                                            Total_Time__c,Tag__c,Mileage_Lock_Date__c,Variable_Rate__c,
+                                                            EmployeeReimbursement__r.Fuel_Variable_Rate__c,Fuel_Variable_Rate__c
+                                                             
                                                         FROM Employee_Mileage__c 
                                                         WHERE Trip_Date__c >=: startdate 
                                                             AND Trip_Date__c <=: enddate 
-                                                            AND EmployeeReimbursement__r.Contact_Id__c =: did ] ;
+                                                            AND EmployeeReimbursement__r.Contact_Id__c =: contactId ] ;
         System.Debug(employeeMileageList);
         List<String> mileagesList = new List<String>();    
         double mileages=0;
         double variableamount=0;
         List<EmployeeMileages> reimbursementList = new List<EmployeeMileages>();
-        for(Employee_Mileage__c currentMileage : employeeMileageList)
-        {
+        for(Employee_Mileage__c currentMileage : employeeMileageList) {
             mileages = mileages + (currentMileage.Mileage__c != null ? currentMileage.Mileage__c : 0);
             variableamount = variableamount + (currentMileage.Variable__c != null ? currentMileage.Variable__c : 0);
             reimbursementList.add(WrapperUtils.getMileagesOfReimbursement(currentMileage));
@@ -379,17 +320,121 @@ public with sharing class BiweeklyPayPeriod {
         mileagesList.add(String.valueOf(mileages));
         mileagesList.add(String.valueOf(variableamount)); 
         system.Debug(mileagesList[0]);       
-        if(mileagesList.size() > 0) 
-        {
+        if(mileagesList.size() > 0) {
             return mileagesList;
-        }
-        else
-        {
+        } else {
             return mileagesList;
         }
     }
-
-    public static string ApproveTrips(date startdate,date enddate,String did){
+    /* This method is used to get Mileage and biweekly reimbursement data based on biweekly reimbursement Id.
+    Author : Sanket Goswami */
+    public static List<String> getBiweekMileages1(String biWeekId)
+    {
+        List<Employee_Mileage__c> employeeMileageList = [SELECT id,Name,Trip_Date__c,Trip_Origin__c,
+                                                            Stay_Time__c,Trip_Destination__c,Mileage__c,
+                                                            Variable__c,Trip_Status__c,Approved_Date__c,
+                                                            Bi_Weekly_Reimbursement__c,Bi_Weekly_Reimbursement__r.month__c,
+                                                            Bi_Weekly_Reimbursement__r.Contact__c,CreatedDate,
+                                                            Rejected__c,Bi_Weekly_Reimbursement__r.Total_Variable_Rate__c,
+                                                            Bi_Weekly_Reimbursement__r.Total_Pending__c,Origin_Name__c,
+                                                            Tracing_Style__c,StartTime__c,EndTime__c,Day_Of_Week__c,
+                                                            Destination_Name__c,Bi_Weekly_Reimbursement__r.Contact__r.External_Email__c,
+                                                            Bi_Weekly_Reimbursement__r.Monthly_Variable_Amount__c,
+                                                            Bi_Weekly_Reimbursement__r.Monthly_Approved_Variable_Amount__c,
+                                                            Maintenance_and_Tires__c,Fuel_price__c,Activity__c,
+                                                            Bi_Weekly_Reimbursement__r.Total_Mileage__c,
+                                                            Bi_Weekly_Reimbursement__r.Half_Fixed_Amount__c,
+                                                            Bi_Weekly_Reimbursement__r.Total_Rejected__c,Notes__c,
+                                                            TimeZone__c,Bi_Weekly_Reimbursement__r.Mileage_Lock_Date__c,
+                                                            ConvertedStartTime__c,ConvertedEndTime__c,Driving_Time__c,
+                                                            Total_Time__c,Tag__c,Mileage_Lock_Date__c,EmployeeReimbursement__c 
+                                                        FROM Employee_Mileage__c 
+                                                        WHERE  Bi_Weekly_Reimbursement__c =: biWeekId] ;
+        System.Debug(employeeMileageList);
+        List<String> mileagesList = new List<String>();    
+        double mileages = 0;
+        double variableamount = 0;
+        List<EmployeeMileages> reimbursementList = new List<EmployeeMileages>();
+        for(Employee_Mileage__c currentMileage : employeeMileageList) {
+            mileages = mileages + (currentMileage.Mileage__c != null ? currentMileage.Mileage__c : 0);
+            variableamount = variableamount + (currentMileage.Variable__c != null ? currentMileage.Variable__c : 0);
+            reimbursementList.add(BiWeeklyWrapperUtils.getMileagesOfReimbursement(currentMileage));
+        }
+        mileagesList.add(JSON.serialize(reimbursementList));
+        mileagesList.add(String.valueOf(mileages));
+        mileagesList.add(String.valueOf(variableamount)); 
+        system.Debug(mileagesList[0]);       
+        if(mileagesList.size() > 0) {
+            return mileagesList;
+        } else {
+            return mileagesList;
+        }
+    }
+    /* This method is used to get Mileage and reimbursement data based on startdate and end date of trips and contact id.
+    Author : Sanket Goswami */
+    public static List<String> getAllBiweekMileages1(date startdate,date enddate,String contactId)
+    {
+        List<Employee_Mileage__c> employeeMileageList = [SELECT id,Name,Trip_Date__c,Trip_Origin__c,
+                                                            Stay_Time__c,Trip_Destination__c,Mileage__c,
+                                                            Variable__c,Trip_Status__c,Approved_Date__c,
+                                                            Bi_Weekly_Reimbursement__c,Bi_Weekly_Reimbursement__r.month__c,
+                                                            Bi_Weekly_Reimbursement__r.Contact__c,CreatedDate,
+                                                            Rejected__c,Bi_Weekly_Reimbursement__r.Total_Variable_Rate__c,
+                                                            Bi_Weekly_Reimbursement__r.Total_Pending__c,Origin_Name__c,
+                                                            Tracing_Style__c,StartTime__c,EndTime__c,Day_Of_Week__c,
+                                                            Destination_Name__c,Bi_Weekly_Reimbursement__r.Contact__r.External_Email__c,
+                                                            Bi_Weekly_Reimbursement__r.Monthly_Variable_Amount__c,
+                                                            Bi_Weekly_Reimbursement__r.Monthly_Approved_Variable_Amount__c,
+                                                            Maintenance_and_Tires__c,Fuel_price__c,Activity__c,
+                                                            Bi_Weekly_Reimbursement__r.Total_Mileage__c,
+                                                            Bi_Weekly_Reimbursement__r.Total_Rejected__c,Notes__c,
+                                                            TimeZone__c,Bi_Weekly_Reimbursement__r.Mileage_Lock_Date__c,
+                                                            ConvertedStartTime__c,ConvertedEndTime__c,Driving_Time__c,
+                                                            Total_Time__c,Tag__c,Mileage_Lock_Date__c,EmployeeReimbursement__c,
+                                                            Bi_Weekly_Reimbursement__r.Half_Fixed_Amount__c 
+                                                        FROM Employee_Mileage__c 
+                                                        WHERE Trip_Date__c >=: startdate 
+                                                                AND Trip_Date__c <=: enddate 
+                                                                AND Bi_Weekly_Reimbursement__r.Contact__c =: contactId] ;
+        System.Debug(employeeMileageList);
+        List<String> mileagesList = new List<String>();    
+        double mileages = 0;
+        double variableamount = 0;
+        List<EmployeeMileages> reimbursementList = new List<EmployeeMileages>();
+        for(Employee_Mileage__c currentMileage : employeeMileageList) {
+            mileages = mileages + (currentMileage.Mileage__c != null ? currentMileage.Mileage__c : 0);
+            variableamount = variableamount + (currentMileage.Variable__c != null ? currentMileage.Variable__c : 0);
+            reimbursementList.add(BiWeeklyWrapperUtils.getMileagesOfReimbursement(currentMileage));
+        }
+        mileagesList.add(JSON.serialize(reimbursementList));
+        mileagesList.add(String.valueOf(mileages));
+        mileagesList.add(String.valueOf(variableamount)); 
+        system.Debug(mileagesList[0]);       
+        if(mileagesList.size() > 0) {
+            return mileagesList;
+        } else {
+            return mileagesList;
+        }
+    }
+    /* This method is used to approve biweekly reimbursement.
+    Author : Sanket Goswami */
+    public static string ApproveBiWeekTrips(String biWeekId){
+        List<Bi_Weekly_Reimbursement__c> reimToApprove = new List<Bi_Weekly_Reimbursement__c>();
+        for(Bi_Weekly_Reimbursement__c mileage : [SELECT id,Approved_Date__c,Status__c 
+                                            FROM Bi_Weekly_Reimbursement__c 
+                                            WHERE Id =: biWeekId]) {
+                                                mileage.Status__c = 'Approved';
+                                                mileage.Approved_Date__c = System.today();
+            reimToApprove.add(mileage);
+        }
+        if(reimToApprove.size() > 0 ) {
+            update reimToApprove;
+        }
+        return 'sucess';
+    }
+    /* This method is used to approve mileages.
+    Author : Sanket Goswami */
+    public static string ApproveTrips(date startdate,date enddate,String contactId){
         List<String> approvedIdList = new List<String>();
         List<Employee_Mileage__c> mileagesToApprove = new List<Employee_Mileage__c>();
         for(Employee_Mileage__c mileage :[SELECT id,Trip_Status__c,Trip_Date__c
@@ -397,7 +442,7 @@ public with sharing class BiweeklyPayPeriod {
                                             WHERE Trip_Date__c >=: startdate 
                                                 AND Trip_Date__c <=: enddate 
                                                 AND Trip_Status__c = 'Not Approved Yet'
-                                                AND EmployeeReimbursement__r.Contact_Id__c =: did ]){
+                                                AND EmployeeReimbursement__r.Contact_Id__c =: contactId ]){
             approvedIdList.add(mileage.id);
         }
         if(approvedIdList.size() > 0 ){
@@ -408,5 +453,66 @@ public with sharing class BiweeklyPayPeriod {
             update mileagesToApprove;
         }
         return 'sucess';
+    }
+    
+     public static List<String> getPayPeriodDates (String contactid,Integer years){
+        List<String> dateRange = new List<String>();
+        String startDate;
+        date activationdate;
+        List <Contact> conList = [SELECT id,Activation_Date__c,Deactivated_Date__c,Account.Pay_Period_Start_Date__c 
+                                        FROM Contact 
+                                        WHERE Id =: contactid ];
+        if(conList[0].Account.Pay_Period_Start_Date__c != null && conList[0].Activation_Date__c != null){
+            startDate = String.valueOf(conList[0].Account.Pay_Period_Start_Date__c);
+            activationdate = date.valueOf(conList[0].Activation_Date__c);
+        }
+        
+        for(integer i=0; i<=27; i++ ) {  
+            if(years == date.valueof(startDate).year()) {            
+                String enddate = String.valueof(date.valueof(startDate).addDays(13));  
+                if(  conList.size() > 0 && conList[0].Deactivated_Date__c != null && activationdate != null && ( date.valueof(startdate) < date.valueOf(conList[0].Deactivated_Date__c) ) ) {  
+                    //if(date.valueof(startdate) <= activationdate && date.valueof(enddate) >= activationdate){
+                    if(activationdate <  date.valueof(enddate)) {
+                        dateRange.add(startDate+' to '+ enddate);
+                    }                    
+                } else if (conList.size() > 0 && conList[0].Deactivated_Date__c == null && (date.valueof(startdate) < Date.today()) ){
+                    if(activationdate <  date.valueof(enddate)) {
+                        dateRange.add(startDate+' to '+ enddate);
+                    }
+                }                        
+                startDate = String.valueof(date.valueof(enddate).addDays(1));                            
+            }
+        }
+        return dateRange;         
+     }
+      @AuraEnabled
+    public static string payPeriodDateList(String accId){
+        String dateList;
+        Account acc = [Select Id,Name,Pay_Period_Start_Date__c,Pay_Period_Days__c FROM Account where Id =: accId];
+        Date startDt = acc.Pay_Period_Start_Date__c;
+        Integer days = Integer.valueOf(acc.Pay_Period_Days__c);
+        Integer yearVal = System.today().year();
+        Date endDt = startDt + days;
+        System.debug('startDt: '+startDt);
+        System.debug('endtDt: '+endDt);
+
+        Date startDate = Date.valueOf(startDt);
+        Date endDate = Date.valueOf(endDt);
+
+        if(startDate < System.today() && endDate.year() == yearVal){
+            dateList = String.valueOf(startDate)+' to '+String.valueOf(endDate)+',';
+        } else{
+            dateList = '';
+        }
+
+        for(Integer i=0;startDate.year() <= yearVal;i++){
+            startDate = startDate + days+1;
+            endDate = endDate +days+1;
+            if(startDate < System.today() && endDate.year() == yearVal){
+                dateList = dateList + String.valueOf(startDate)+' to '+String.valueOf(endDate)+',';
+            }
+        }
+        String updatedDateList = dateList.Substring(0,dateList.length()-1);
+        return updatedDateList;
     }
 }

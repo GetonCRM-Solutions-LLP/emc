@@ -1,7 +1,8 @@
 public without sharing class MappingGasPriceTriggerHelper{
 
     public static void updateConvertedDates(List<Employee_Mileage__c> mileagesList){
-        
+        String strTime;
+        String endTime;
         Map<String,String> timeZoneMap = new Map<String,String>();
         set<Id> reimIds = new Set<Id>();
         daylight_saving_time_config__c DSTzconfig = daylight_saving_time_config__c.getValues(String.valueOf(System.today().year()));
@@ -29,27 +30,116 @@ public without sharing class MappingGasPriceTriggerHelper{
                 timeZoneMap.put(currentReimbursement.id,currentReimbursement.Contact_Id__r.Time_Zone__c);
             } 
         }
-        for(Employee_Mileage__c currentMileage : mileagesList)
-        {
+        for(Employee_Mileage__c currentMileage : mileagesList) {
             
-            if(timeZoneMap.containsKey(currentMileage.EmployeeReimbursement__c))
-            {
+            if(timeZoneMap.containsKey(currentMileage.EmployeeReimbursement__c)) {
                 currentMileage.TimeZone__c = timeZoneMap.get(currentMileage.EmployeeReimbursement__c);
                 if(currentMileage.StartTime__c != null) 
                 {
                     currentMileage.ConvertedStartTime__c = ConvertDateTimeGMT(currentMileage.StartTime__c, currentMileage.TimeZone__c).addHours(HoursToAdjust(currentMileage.StartTime__c, DSTzconfig, currentMileage.TimeZone__c));
                     currentMileage.Trip_Date__c = currentMileage.ConvertedStartTime__c.date();
                     currentMileage.Day_Of_Week__c = currentMileage.ConvertedStartTime__c.format('EEEE');
+                    System.debug('currentMileage.ConvertedStartTime__c: '+currentMileage.ConvertedStartTime__c);
+                    strTime = getConvertTime(currentMileage.ConvertedStartTime__c);
+                    System.debug('strTime : '+strTime );
                 }
                 
-                if(currentMileage.EndTime__c != null )
-                {
+                if(currentMileage.EndTime__c != null ) {
                     currentMileage.ConvertedEndTime__c = ConvertDateTimeGMT(currentMileage.EndTime__c, currentMileage.TimeZone__c).addHours(HoursToAdjust(currentMileage.EndTime__c, DSTzconfig, currentMileage.TimeZone__c));
+                    System.debug('currentMileage.ConvertedEndTime__c: '+currentMileage.ConvertedEndTime__c);
+                    endTime= getConvertTime(currentMileage.ConvertedEndTime__c);
+                    System.debug('endTime: '+endTime);
                 }
+                if(strTime != null && endTime != null){
+                    currentMileage.Time_In_High_Risk__c = checkTimeVal(strTime,endTime);
+                }                
             }
         }
     }
+    
+    public static string getConvertTime(Datetime dt){
+        String str;
+        System.debug('dt.time(): '+dt.time());
+        DateTime convertTime = dt;
+        str = convertTime.format('h:mm a','America/Panama');
+        System.debug('STR: '+str );
+        return str;
+    }
+    
+    public static Boolean checkTimeVal(String strTime, String endTime){
+        String startTimeStr;
+        String endTimeStr;
+        list<String> timeRange = new list<String>{'10 PM','11 PM','12 PM','1 AM','2 AM'};
+        
+        list<String> lstStrTime = strTime.split('[: ]');
+        list<String> lstendTime = endTime.split('[: ]');
+        System.debug('lstStrTime : '+lstStrTime);
+        System.debug('lstendTime : '+lstendTime );
+        
+        startTimeStr= lstStrTime [0]+' '+lstStrTime [2] ;
+        endTimeStr= lstendTime[0]+' '+lstendTime[2] ;
+        
+        System.debug('lststartTimeStr : '+startTimeStr);
+        System.debug('lstendTimeStr : '+endTimeStr);
+        
+        if(timeRange.contains(startTimeStr) && timeRange.contains(endTimeStr)){
+            System.debug('true');
+            return true;
+        } else{
+            System.debug('false');
+            return false;
+        }
+    }
 
+    public static void updateBiweekReimId(List<Employee_Mileage__c> mileagesList){
+        System.debug('***updateBiweekReimId***');
+        set<Id> reimIds = new Set<Id>();
+        Map<String,String> reimContactID = new Map<String,String>();
+        Map<String,Date> reimAccPayDates = new Map<String,Date>();
+        Map<String,Integer> reimAccPayDays = new Map<String,Integer>();
+        for(Employee_Mileage__c currentMileage : mileagesList) {
+            reimIds.add(currentMileage.EmployeeReimbursement__c);
+        }
+        for(Employee_Reimbursement__c currentReimbursement : [SELECT id, Contact_Id__c,Contact_Id__r.Account.Pay_Period_Start_Date__c,Contact_Id__r.Account.Pay_Period_Days__c FROM Employee_Reimbursement__c WHERE id IN: reimIds])
+        {   
+            if(!reimContactID.containsKey(currentReimbursement.id)) {
+                reimContactID.put(currentReimbursement.id,currentReimbursement.Contact_Id__c);
+                reimAccPayDates.put(currentReimbursement.id, currentReimbursement.Contact_Id__r.Account.Pay_Period_Start_Date__c);
+                reimAccPayDays.put(currentReimbursement.id,Integer.valueOf(currentReimbursement.Contact_Id__r.Account.Pay_Period_Days__c));
+            } 
+        }
+        for(Employee_Mileage__c currentMileage : mileagesList)
+        {
+            currentMileage.Bi_Weekly_Reimbursement__c = getBiweekReimId(reimContactID.get(currentMileage.EmployeeReimbursement__c), reimAccPayDates.get(currentMileage.EmployeeReimbursement__c), reimAccPayDays.get(currentMileage.EmployeeReimbursement__c), currentMileage.Trip_Date__c);
+        }
+    }
+    public static string getBiweekReimId (String contactId,Date payStartdate,Integer paydays,Date tripdate){
+        System.debug('***getBiweekReimId***');
+        String biWeekId;
+        Date endDate;
+        List<Date> dtList = new list<Date>();
+        do {
+            endDate = payStartdate.addDays(paydays);
+            if(payStartdate <= tripdate && tripdate <= endDate) {
+                dtList.add(payStartdate);
+                dtList.add(endDate);
+            }
+            payStartdate = endDate.addDays(1);
+        } while(endDate <= System.today());
+        System.debug('***dtList***'+dtList);
+        if(dtList.size() > 0){
+            for(Bi_Weekly_Reimbursement__c biWeekObj: [SELECT id,Start_Date__c, End_Date__c,Contact__c 
+                                                    FROM Bi_Weekly_Reimbursement__c 
+                                                    WHERE Contact__c =: contactId 
+                                                        AND Start_Date__c =: date.valueof(dtList[0])
+                                                        AND End_Date__c =: date.valueof(dtList[1])] ) {
+                                                            System.debug('***inside for  ***');
+                                                            biWeekId = biWeekObj.Id;
+            }
+        }
+        System.debug('***biWeekId***'+biWeekId);
+        return biWeekId;
+    }
     static Integer getPacificOffset(Integer year, Integer month, Integer day, String timezonestr)
     {
         return TimeZone.getTimeZone(timezonestr)
@@ -168,6 +258,66 @@ public without sharing class MappingGasPriceTriggerHelper{
             update emToUpdate;
         }
     }
+
+    /*
+    EMC - 1431  
+    This method is used to update biweekly reimbursement for approved and rejected mileages 
+        while update mileage and Mileage lockdate field is not null and date is less than or equal to today
+    */
+    public static void updateMilLockDateBWReim(List<Employee_Mileage__c> mileagesList){
+        Set<Id> biWeekReimIds = new Set<Id>();
+        string contactStartDate;
+        Map<Id,Bi_Weekly_Reimbursement__c> reimMap = new Map<Id,Bi_Weekly_Reimbursement__c>();
+        set<id> conIds = new set<id>();
+        Map<string,Id> erNameMap = new Map<string,Id>();
+        
+        for(Employee_Mileage__c empMil : mileagesList){
+            biWeekReimIds.add(empMil.Bi_Weekly_Reimbursement__c);
+        }
+        for(Bi_Weekly_Reimbursement__c reimObj : [SELECT id,Name,Mileage_Lock_Date__c,Contact__c,Contact__r.Name,Start_Date__c, End_Date__c 
+                                                  FROM Bi_Weekly_Reimbursement__c 
+                                                  WHERE Mileage_Lock_Date__c != null
+                                                  AND Contact__r.Biweek_Reimbursement__c  = true 
+                                                  AND Mileage_Lock_Date__c <=: date.today() 
+                                                  AND ID IN: biWeekReimIds
+                                                 ]){
+                                                     reimMap.put(reimObj.Id,reimObj);
+                                                     conIds.add(reimObj.Contact__c);
+                                                 }
+        if(!conIds.isEmpty()){
+            List<Employee_Mileage__c> milList = new List<Employee_Mileage__c>();
+            for(Bi_Weekly_Reimbursement__c er : [SELECT id,Name,Mileage_Lock_Date__c,Contact__c,Contact__r.Name,Start_Date__c 
+                                                 FROM Bi_Weekly_Reimbursement__c 
+                                                 WHERE Contact__c IN:conIds]){
+                                                     erNameMap.put(er.Contact__r.Name + '-' + string.valueof(er.Start_Date__c),er.id);
+                                                 }
+            list<Employee_Mileage__c> emToUpdate = new list<Employee_Mileage__c>();
+            for(Employee_Mileage__c empMil : [SELECT id,Trip_Date__c,Trip_Status__c,Bi_Weekly_Reimbursement__c 
+                                              FROM Employee_Mileage__c 
+                                              WHERE Bi_Weekly_Reimbursement__c =: biWeekReimIds]){
+                                                  if(empMil.Trip_Status__c == 'Approved' || empMil.Trip_Status__c == 'Rejected'){
+                                                      if(reimMap.containsKey(empMil.Bi_Weekly_Reimbursement__c)){
+                                                          contactStartDate = reimMap.get(empMil.Bi_Weekly_Reimbursement__c).Contact__r.Name + '-' + string.valueOf(reimMap.get(empMil.Bi_Weekly_Reimbursement__c).End_Date__c.addDays(1));
+                                                          
+                                                          if(erNameMap.containsKey(contactStartDate)){
+                                                              Employee_Mileage__c em = new Employee_Mileage__c();
+                                                              em.id = empMil.id;
+                                                              em.Bi_Weekly_Reimbursement__c = erNameMap.get(contactStartDate);
+                                                              if(StaticValues.isCalledFromBiWeekReimTri == true){
+                                                                  emToUpdate.add(em);
+                                                              }
+                                                          }
+                                                          
+                                                      }
+                                                  }
+                                              }
+            
+            if(!emToUpdate.isEmpty()){
+                update emToUpdate;
+            }
+        }
+    }
+
     //This method is used for deduction of 30 miles from first and last trip of the day on PL marketing account.
     public static void updateMileages(List<Employee_Mileage__c> mileagesList){
         set<Id> reimbursementIdsSet = new set<Id>();

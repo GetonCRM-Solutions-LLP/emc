@@ -9,7 +9,7 @@
  */
 global class TriplogAppVersionUpdateBatch implements Database.Batchable<sObject>, Database.AllowsCallouts, Database.stateful {
 
-    public static final String MLOGACCOUNT = System.Label.Triplog_New_URL;
+    public static final String MLOGACCOUNT = System.Label.Triplog_New_URL + ',' + System.Label.Triplog_New_URL2;
     global String responseOfAPICall = '';
     global TriplogAppVersionUpdateBatch() {}
 
@@ -61,9 +61,12 @@ global class TriplogAppVersionUpdateBatch implements Database.Batchable<sObject>
                             currentContact.Triplog_UserID__c = String.valueOf(currentUser.id);
                             currentContact.App__c = currentUser.appVersion;
                             if(currentUser.timeZone != null){
-                                List<String> resZone = currentUser.timeZone.split(',');                                
-                                currentContact.Time_Zone__c = resZone[0].substringAfter('=').replace('\"', '');
-                            }                             
+                                //List<String> resZone = currentUser.timeZone.split(',');                                
+                                //currentContact.Time_Zone__c = resZone[0].substringAfter('=').replace('\"', '');
+                                currentContact.Time_Zone__c = currentUser.timeZone;
+                            }               
+                            currentContact.Last_Synced__c = !GetTripCallout.CheckNull(currentUser.lastSynced) ? Utils.ConvertToDateAndTime(String.valueOf(currentUser.lastSynced)) : null;  
+                            currentContact.App_Settings__c = currentUser.appSettings != null ? currentUser.appSettings : null;
                             contactToUpdateList.add(currentContact);
                         }
                     }
@@ -73,11 +76,11 @@ global class TriplogAppVersionUpdateBatch implements Database.Batchable<sObject>
                 }
             }
         }
-
     }
 
     global void finish(Database.BatchableContext bc){}
 
+   
     public static String getTripIds(String passedApikey)
     {
         String baseURL = !MLOGACCOUNT.Contains(passedApikey) ? StaticValues.TRIPLOG_BASEURL : StaticValues.MLOG_BASEURL;

@@ -1,36 +1,33 @@
 public without sharing class ContactTriggerHelper {
     public static Boolean isRecursive = false;
     public static Boolean isFirstTime = true;
+    Public static date fuelPriceDate;
+    Public static string[] splitdate;
+    Public static map<string, Decimal> monthStateCityVsFuelPriceMap = new map<string, Decimal>(); 
+    Public static map<string, Decimal> monthStateCityVsFuelPricereimMap = new map<string, Decimal>(); 
     
-    public static void CheckVehicalYearAndModel(List<Contact> contactList){
+
+    public static void checkVehicalYearAndModel(List<Contact> contactList){
         Map<String,String> urlMap = new Map<String,String>();
         set<String> vehicleNamesset = new set<String>();
-
-        for(Contact conRec : contactList)
-        {
-            if(conRec.Vehicle_Type__c!=null)
-            {
+        
+        for(Contact conRec : contactList) {
+            if(conRec.Vehicle_Type__c!=null) {
                 vehicleNamesset.add(conRec.Vehicle_Type__c.replace(' ','').toUpperCase());
             }            
         }
-        for(Vehicle_URL_Mapping__c u : [SELECT Id, Year__c, Vehicle__c, URL__c,Vehicle_Mapping__c FROM Vehicle_URL_Mapping__c where Vehicle_Mapping__c IN: vehicleNamesset]){
+        for(Vehicle_URL_Mapping__c u : [SELECT Id, Year__c, Vehicle__c, URL__c,Vehicle_Mapping__c FROM Vehicle_URL_Mapping__c WHERE Vehicle_Mapping__c IN: vehicleNamesset]){
             if((u.URL__c != null || u.URL__c != '') &&(!urlMap.containsKey(u.Vehicle_Mapping__c))){
                 urlMap.put(u.Vehicle_Mapping__c,u.URL__c);
             }
         } 
         
-        for(Contact conRec : contactList)
-        {
-            if(conRec.Role__c=='Driver' || conRec.Role__c=='Driver/Manager' || conRec.Role__c == StaticValues.roleAdminDriver )
-            {
-                if(conRec.Vehicle_Type__c != '')
-                {
-                    if(urlMap.containsKey(conRec.Vehicle_Type__c.replace(' ','').toUpperCase()))
-                    {
+        for(Contact conRec : contactList) {
+            if(conRec.Role__c == StaticValues.ROLE_DRIVER || conRec.Role__c == StaticValues.ROLE_DRIVERMANAGER || conRec.Role__c == StaticValues.roleAdminDriver ) {
+                if(conRec.Vehicle_Type__c != '') {
+                    if(urlMap.containsKey(conRec.Vehicle_Type__c.replace(' ','').toUpperCase())) {
                         conRec.Car_Image__c = urlMap.get(conRec.Vehicle_Type__c.replace(' ','').toUpperCase());
-                    } 
-                    else 
-                    {
+                    } else {
                         conRec.addError('Please Enter Valid Standard Vehicle Make Model and Year');
                     }
                 }
@@ -40,18 +37,14 @@ public without sharing class ContactTriggerHelper {
     }
     
     @Future(callout = true)
-    public static void putHTTPUpdateUserPhoneTriplog(Map<String,String> tripIdWisePhone,Map<String,String> triplogidwiseAPIkey) 
-    {
+    public static void putHTTPUpdateUserPhoneTriplog(Map<String,String> tripIdWisePhone,Map<String,String> triplogidwiseAPIkey) {
         Http h;
         HttpRequest req;
         HttpResponse res;
-        String MLOGACCOUNT = System.Label.Triplog_New_URL;
-
-        for(String currentUserId : triplogidwiseAPIkey.keySet())
-        {
-            String baseURL = !MLOGACCOUNT.Contains( triplogidwiseAPIkey.get(currentUserId) ) ? StaticValues.TRIPLOG_BASEURL : StaticValues.MLOG_BASEURL;
-            if(tripIdWisePhone.containsKey(currentUserId) && tripIdWisePhone.get(currentUserId) != null)
-            {
+        String mLOGACCOUNT = System.Label.Triplog_New_URL + ',' + System.Label.Triplog_New_URL2;
+        for(String currentUserId : triplogidwiseAPIkey.keySet()) {
+            String baseURL = !mLOGACCOUNT.Contains( triplogidwiseAPIkey.get(currentUserId) ) ? StaticValues.TRIPLOG_BASEURL : StaticValues.MLOG_BASEURL;
+            if(tripIdWisePhone.containsKey(currentUserId) && tripIdWisePhone.get(currentUserId) != null) {
                 JSONGenerator gen = JSON.createGenerator(true);
                 gen.writeStartObject();
                 gen.writeStringField('phone',tripIdWisePhone.get(currentUserId));
@@ -64,86 +57,52 @@ public without sharing class ContactTriggerHelper {
                 req.setbody(gen.getAsString());
                 req.setHeader('Content-Type', 'application/json');
                 req.setHeader('Authorization', 'apikey '+ triplogidwiseAPIkey.get(currentUserId));
-                if(!Test.isRunningTest())
-                {
+                if(!Test.isRunningTest()) {
                     res = h.send(req);            
                 }
-            }
-           
+            }           
         }
     }
-
+    
     public static void  CommunityUserCreate(List<Contact> contactList) {
         List<User> createUserList = new List<User>();
-
-        /*if(Trigger.isBefore) {
-            map<string, Id> conemailtoid = new  map<string, ID>();
-
-            for(Contact conObj: [SELECT
-                                    id, 
-                                    Manager__c, 
-                                    External_Email__c, 
-                                    Email
-                                FROM
-                                    Contact
-                                WHERE External_Email__c != '']) {
-                    conemailtoid.put(conObj.External_Email__c.touppercase(), conObj.id);
-                
+        list<Profile> profileList = [SELECT
+                                     Id, 
+                                     Name
+                                     FROM
+                                     Profile
+                                     WHERE
+                                     Name = 'Customer Community Login User - Driver' OR 
+                                     Name = 'Customer Community Login User - Manager' OR 
+                                     Name = 'Customer Community Login User - Super Manager' OR 
+                                     Name = 'Customer Community Login User - Manager/Driver' OR 
+                                     Name = 'Customer Community Login User - Super Manager/Driver'];
+        
+        Map<string,Id> profilemap = new Map<string,ID>();
+        for(Profile profileObj : profileList){
+            if(profileObj.Name == 'Customer Community Login User - Driver' ){
+                profilemap.put('Driver',profileObj.id);
+            } else if(profileObj.Name == 'Customer Community Login User - Manager'){
+                profilemap.put('Manager',profileObj.id);
+            } else if(profileObj.Name == 'Customer Community Login User - Manager/Driver'){
+                profilemap.put('Driver/Manager',profileObj.id);
+            } else if(profileObj.Name == 'Customer Community Login User - Super Manager/Driver'){
+                profilemap.put(StaticValues.roleAdminDriver ,profileObj.id); 
+            }  else if(profileObj.Name == 'Customer Community Login User - Super Manager'){
+                profilemap.put('Admin',profileObj.id);
             }
-            for(Contact cc: contactList) {
-                if(string.isNotBlank(cc.Manager_External_Email__c)) {
-                    if(conemailtoid.containsKey(cc.Manager_External_Email__c.touppercase())) {
-                        cc.Manager__c = conemailtoid.get(cc.Manager_External_Email__c.touppercase());
-                    }
-                }
+        }
+        for(Contact conObj : contactList) {
+            if(conObj.IsCreatedFROMCommunity__c == true && profilemap.containskey(conObj.Role__c))  {
+                createUserList.add(CreateUserFROMCommunity(conObj,profilemap.get(conObj.Role__c)));
             }
-        }*/
-
-        // if(Trigger.isAfter) {
-            list<Profile> profileList = [SELECT
-                                            Id, 
-                                            Name
-                                        FROM
-                                            Profile
-                                        WHERE
-                                            Name = 'Customer Community Login User - Driver' OR 
-                                            Name = 'Customer Community Login User - Manager' OR 
-                                            Name = 'Customer Community Login User - Super Manager' OR 
-                                            Name = 'Customer Community Login User - Manager/Driver' OR 
-                                            Name = 'Customer Community Login User - Super Manager/Driver'];
-            
-            Map<string,Id> profilemap = new Map<string,ID>();
-            for(Profile profileObj : profileList){
-                if(profileObj.Name == 'Customer Community Login User - Driver' ){
-                   profilemap.put('Driver',profileObj.id);
-                } 
-                else if(profileObj.Name == 'Customer Community Login User - Manager'){
-                   profilemap.put('Manager',profileObj.id);
-                }
-                else if(profileObj.Name == 'Customer Community Login User - Manager/Driver'){
-                    profilemap.put('Driver/Manager',profileObj.id);
-                }
-                else if(profileObj.Name == 'Customer Community Login User - Super Manager/Driver'){
-                   profilemap.put(StaticValues.roleAdminDriver ,profileObj.id); 
-                }
-                else if(profileObj.Name == 'Customer Community Login User - Super Manager'){
-                   profilemap.put('Admin',profileObj.id);
-                }
-            }
-            
-            for(Contact conObj : contactList) {
-                if(conObj.IsCreatedFromCommunity__c == true && profilemap.containskey(conObj.Role__c))  {
-                    createUserList.add(CreateUserFromCommunity(conObj,profilemap.get(conObj.Role__c)));
-                }
-            }
-            if(createUserList.size()>0)
-            {
-                insert createUserList;
-            }            
-        // }
+        }
+        if(createUserList.size()>0) {
+            insert createUserList;
+        }            
     }
-
-    public static User CreateUserFromCommunity(Contact contObj, Id profileId){
+    
+    public static User CreateUserFROMCommunity(Contact contObj, Id profileId){
         User userObj = new User();
         userObj.FirstName = contObj.FirstName;
         userObj.LastName = contObj.LastName; 
@@ -158,73 +117,8 @@ public without sharing class ContactTriggerHelper {
         userObj.ContactId = contObj.id;
         return userObj;
     }
-   /* 
-    @future
-    public static Void changeProfileRole(Set<Id> conIds,Map<String,String> conIdRole) {
-        string str = 'true';
-        if(str.equalsIgnoreCase(Label.Is_Update_User_Profile)) {
-            
-            Map<string, string> roleToProfileId = new  Map<string, string>();
-            List<User> users = new  List<User>();            
-            
-
-            for(Profile profile: [SELECT Id, Name FROM Profile]) {
-                if(profile.Name == 'Customer Community Login User - Driver') {
-                    roleToProfileId.put('Driver', profile.Id);
-                }
-                if(profile.Name == 'Customer Community Login User - Manager') {
-                    roleToProfileId.put('Manager', profile.Id);
-                }
-                if(profile.Name == 'Customer Community Login User - Manager/Driver') {
-                    roleToProfileId.put('Driver/Manager', profile.Id);
-                }
-                if(profile.Name == 'Customer Community Login User - Super Manager') {
-                    roleToProfileId.put('Admin', profile.Id);
-                }
-            }
-            for(User user: [SELECT Id, ContactId, ProfileId FROM USER WHERE ContactId IN : conIds]) {
-                if(conIdRole.containsKey(user.ContactId) && roleToProfileId.containsKey(conIdRole.get(user.ContactId))) {
-                    user.profileId = roleToProfileId.get(conIdRole.get(user.ContactId));
-                }
-            }
-            if(!users.isEmpty()) {
-                Update users;
-            }
-        }
-    }
-    public static Void setAdminAsManager(List<Contact> newContacts) {
-        Set<Id> accountIds = new  Set<Id>();
-        //List<Contact> contacts = new  List<Contact>();
-        List<Contact> contactsToInsert = new  List<Contact>();
-        Map<Id, Id> accountToContact = new  Map<Id, Id>();
-        for(Contact contact: newContacts) {
-            if(contact.Manager__c == null && contact.Role__c != 'Admin') {
-                accountIds.add(contact.AccountId);
-                //contacts.add(contact);
-            }
-        }
-        for(Contact contact: [SELECT Id, AccountId FROM Contact WHERE AccountId in: accountIds AND Role__c = 'Admin']) {
-            accountToContact.put(contact.AccountId, contact.Id);
-        }
-        for(Contact contact: newContacts) {
-            if(accountToContact.containsKey(contact.AccountId)) {
-                Contact contactClone = contact.clone(false, false, false, false);
-                contactClone.Id = contact.Id;
-                contactClone.Manager__c = accountToContact.get(contact.AccountId);
-                contactsToInsert.add(contactClone);
-            }
-        }
-        if(!contactsToInsert.isEmpty()) {
-            isRecursive = true;
-            update contactsToInsert;
-            isRecursive = false;
-        }
-    }*/
     
     public static void updateComplianceStatus(List<Contact> newCon, Map<ID, Contact> conOldMap) {
-    System.Debug(newCon[0].compliancestatus__c);
-    System.Debug(conOldMap.get(newCon[0].id).compliancestatus__c);
-    
         List<String> emails = new List<String>();
         EmailTemplate emTmp = new EmailTemplate();
         Messaging.SingleEmailMessage mail;
@@ -235,7 +129,8 @@ public without sharing class ContactTriggerHelper {
             nameWithTemplate.put(e.developerName, e);
         }
         OrgWideEmailAddress[] owea;
-        owea = [select Id, address from OrgWideEmailAddress where Address = 'driverservices@mburse.com'];
+        owea = [SELECT Id, address FROM OrgWideEmailAddress WHERE Address = 'driverservices@mburse.com'];
+        
         for(Contact con : newCon) {
             if(con.Role__c == 'Driver' && (conOldMap.get(con.id).compliancestatus__c != con.compliancestatus__c)) {
                 emails.add(con.External_Email__c);
@@ -254,14 +149,10 @@ public without sharing class ContactTriggerHelper {
                 } else{
                     emTmp = null;
                 }
-                system.debug('=====emTmp===>'+emTmp);
-                //system.debug('=====emTmp===>'+emTmp);
                 if(!emails.isEmpty() && emTmp != null) {
                     mail = new Messaging.SingleEmailMessage();
                     mail.setToAddresses(emails);
-                    //Set Email Subject
                     mail.setSubject(emTmp.Subject);
-                    //Body of Email
                     mail.setPlainTextBody(emTmp.Body.replace('{!Contact.FirstName}', con.FirstName));
                     if(owea.size()>0) {
                         mail.setOrgWideEmailAddressId(owea.get(0).Id);
@@ -273,38 +164,87 @@ public without sharing class ContactTriggerHelper {
         }
         //Sending the Email
         SendEmail__c  objSendEmail = SendEmail__c.getValues('Send Email For Compliance');
-        if(objSendEmail.Send_email_from_code__c==true)
-        {
+        if(objSendEmail.Send_email_FROM_code__c==true) {
             Messaging.sendEmail(mails);
         }
-           
-    }
-
-    //This method is used when deactivate date is removed and create a new reimbursement for that driver.
-    public static void createReimRecord(List<Contact> newCon, Map<ID, Contact> conOldMap) {
         
+    }
+    
+    //This method is used when deactivate date is removed and create a new reimbursement for that driver.
+    public static void createReimRecord(List<Contact> newCon, Map<ID, Contact> conOldMap) { 
         List<Employee_Reimbursement__c> reimToInsert   = new List<Employee_Reimbursement__c>();
+        List<Bi_Weekly_Reimbursement__c> bireimToInsert   = new List<Bi_Weekly_Reimbursement__c>();
+        map<string, Decimal> gasPriceMap = GetGasPrice();
+        Boolean monthlyReimValue;
+
         for(Contact con : newCon) {
-            if(conOldMap.get(con.id).Deactivated_Date__c != null && (conOldMap.get(con.id).Deactivated_Date__c != con.Deactivated_Date__c) && con.Activation_Date__c <= System.today()){
-              
+            if (con.Monthly_Reimbursement__c == true) {
+                monthlyReimValue = true;
+            }
+            else{
+                monthlyReimValue = false;
+            }
+
+            if(conOldMap.get(con.id).Deactivated_Date__c != null  && con.Deactivated_Date__c == null && (conOldMap.get(con.id).Deactivated_Date__c != con.Deactivated_Date__c) && con.Activation_Date__c <= System.today()){
                 if(con.Role__c != 'Admin' && con.Role__c != 'Manager') {
                     TriggerConfig__c customSetting = TriggerConfig__c.getInstance('Defaulttrigger');
-                    if(customSetting.ContactTriCommunityReimCreate__c == true){
-                        reimToInsert.add(CreateReimbursement(con));
+                    if(customSetting.ContactTriCommunityReimCreate__c == true) {
+                        reimToInsert.add(CreateReimbursement(con,gasPriceMap));
+                        if(customSetting.ContactTriBiReimCreate__c == true) {
+                            bireimToInsert.add(CreateBiweekReimbursement(con,gasPriceMap,monthlyReimValue));
+                        }
                     }
                 }
             }
-            if(reimToInsert.size() > 0){
-                upsert reimToInsert;
-                ContactTriggerHelper.putHTTPEnableUserTriplog(con.id);
+            if(!reimToInsert.isEmpty()){
+                try{
+                    upsert reimToInsert;
+                    if(!bireimToInsert.isEmpty()){
+                        upsert bireimToInsert;
+                    } 
+                } catch (DMLException e) {
+                    system.debug('DMLException='+e);
+                }
+                
+                ContactTriggerHelper.putHTTPEnableUserTriplog(con.id,false);
                 RosterController.resetPassword(con.id);
                 putHTTP(con.AccountId,con.External_Email__c);
             }
         }
     }
     
-    public static Employee_Reimbursement__c CreateReimbursement(Contact con){
-        List<IRS_Mileage_Rate__c> objIRSRate = [SELECT id,year__c,IRS_Rate__c FROM IRS_Mileage_Rate__c Where year__c =: String.valueOf(System.today().year()) Limit 1];
+    public static map<string, Decimal> GetGasPrice(){
+        map<string, Decimal> fuelPricereimMap = new map<string, Decimal>();
+        String currentDate = String.valueOf(system.today());
+        String[] splitDate = currentDate.split('-');
+        
+        if(integer.valueOf(splitDate[1]) == 01){
+            fuelPriceDate = date.valueOf(string.valueOf(integer.valueOf(splitDate[0])-1) + '-12' + '-01' );   
+        } else {
+            fuelPriceDate = date.valueOf(splitDate[0] + '-' + string.valueOf(integer.valueOf(splitDate[1])-1) + '-01');
+        } 
+        SYSTEM.DEBUG('fuelPriceDate===' + fuelPriceDate);
+        for(Gas_Prices__c objGasPrice : [SELECT id,
+                                         name,
+                                         City__c,
+                                         State__c, 
+                                         Fuel_Price__c, 
+                                         Month_Year__c,
+                                         Month_State_City__c 
+                                         FROM Gas_Prices__c 
+                                         WHERE  Month_Year__c =: date.valueOf(fuelPriceDate)
+                                         ]) {
+                                             fuelPricereimMap.put(objGasPrice.Month_State_City__c, objGasPrice.Fuel_Price__c); 
+                                         }
+         return fuelPricereimMap;
+    }
+    
+    public static Employee_Reimbursement__c CreateReimbursement(Contact con, map<string, Decimal> monthFuelPricereimMap){
+        //EMC-283 Update Fuel Price based on the contact city and state as past month's fuel price FROM Gas price object. 
+        
+        String currentDate = String.valueOf(system.today());
+        String[] splitDate = currentDate.split('-');
+        List<IRS_Mileage_Rate__c> objIRSRate = [SELECT id,year__c,IRS_Rate__c FROM IRS_Mileage_Rate__c WHERE year__c =: String.valueOf(System.today().year()) Limit 1];
         String lastMonth = Utils.fetchMonths(1, -1)[0];
         Employee_Reimbursement__c er = new Employee_Reimbursement__c();
         er.Fixed_Amount__c = con.Fixed_Amount__c;
@@ -314,79 +254,210 @@ public without sharing class ContactTriggerHelper {
         er.Contact_Id__c = con.id;
         er.Name = con.Name__c + ':' + lastMonth;
         er.Month__c = lastMonth;
-        er.Fuel_Price__c = 0;
-        if(objIRSRate.size() > 0){
-            er.IRS_Mileage_Rate__c = objIRSRate[0].ID;
+        
+        if(integer.valueOf(splitDate[1]) == 01){
+            if (monthFuelPricereimMap.containsKey(con.MailingCity+ con.MailingState + '12' + string.valueOf(integer.valueOf(splitDate[0])-1)) ) {
+                er.Fuel_Price__c = monthFuelPricereimMap.get(con.MailingCity+ con.MailingState + '12' + string.valueOf(integer.valueOf(splitDate[0])-1)) ;
+            }   else {
+                er.Fuel_Price__c = 0;
+            }
+        }   else {   
+            if (monthFuelPricereimMap.containsKey(con.MailingCity + con.MailingState + string.valueOf(integer.valueOf(splitDate[1])-1) + splitDate[0]) ) {
+                er.Fuel_Price__c = monthFuelPricereimMap.get(con.MailingCity + con.MailingState + string.valueOf(integer.valueOf(splitDate[1])-1) + splitDate[0]);
+            }   else {
+                er.Fuel_Price__c = 0;
+            }
         }
+        er.IRS_Mileage_Rate__c = objIRSRate.size() > 0 ? objIRSRate[0].ID : null;
         return er;
+    }    
+    public static void  communityReimCreate(List<Contact> contactList) {
+        List<Employee_Reimbursement__c> reimToInsert   = new List<Employee_Reimbursement__c>();
+        List<Bi_Weekly_Reimbursement__c> bireimToInsert   = new List<Bi_Weekly_Reimbursement__c>();
+        map<string, Decimal> gasPriceMap = GetGasPrice();
+        Boolean monthlyReimValue;
+
+        TriggerConfig__c customSetting = TriggerConfig__c.getInstance('Defaulttrigger');
+        for(Contact con : contactList){
+            if (con.Monthly_Reimbursement__c == true) {
+                monthlyReimValue = true;
+            }
+            else{
+                monthlyReimValue = false;
+            }
+
+            if(!System.isBatch()){
+                putHTTP(con.AccountId,con.External_Email__c);
+            }
+            if(con.Role__c != 'Admin' && con.Role__c != 'Manager' && con.Deactivated_Date__c == null) {
+                if(con != null && customSetting.ContactTriCommunityReimCreate__c == true) {
+                    reimToInsert.add(CreateReimbursement(con,gasPriceMap));
+                    if(customSetting.ContactTriBiReimCreate__c == true) {
+                        bireimToInsert.add(CreateBiweekReimbursement(con,gasPriceMap,monthlyReimValue)); 
+                    }
+                }               
+            }
+        }
+        if(!reimToInsert.isEmpty()) {
+            insert reimToInsert;            
+        }
+        if(!bireimToInsert.isEmpty()){
+            insert bireimToInsert;
+        }
     }
 
-    public static void  CommunityReimCreate(List<Contact> contactList) {
-        List<Employee_Reimbursement__c> reimToInsert   = new List<Employee_Reimbursement__c>();
-        for(Contact con : contactList){
-            putHTTP(con.AccountId,con.External_Email__c);
-            if(con.Role__c != 'Admin' && con.Role__c != 'Manager' && con.Deactivated_Date__c == null) {
-                reimToInsert.add(CreateReimbursement(con));
+   /* public static map<string, Decimal> CreateBiweekReimbursementForMap(){
+        map<string, Decimal> monthlyFuelPriceMap = new map<string, Decimal>(); 
+        List<String> dtList = new list<String>();
+        string splitEndDate;
+        splitdate = dtList[1].split('-');
+        splitEndDate = splitdate[1]+'/'+splitdate[2]+'/'+splitdate[0];
+
+        if(integer.valueOf(splitdate[1]) == 01){
+            fuelPriceDate = date.valueOf(string.valueOf(integer.valueOf(splitdate[0])-1) + '-12' + '-01' );   
+        } else {
+            fuelPriceDate = date.valueOf(splitdate[0] + '-' + string.valueOf(integer.valueOf(splitdate[1])-1) + '-01');
+        } 
+        
+        for(Gas_Prices__c objGasPrice : [SELECT id,
+                                         name,
+                                         City__c,
+                                         State__c, 
+                                         Fuel_Price__c, 
+                                         Month_Year__c,
+                                         Month_State_City__c 
+                                         FROM Gas_Prices__c 
+                                         WHERE  Month_Year__c =: date.valueOf(fuelPriceDate)]) {
+                                             
+                                            monthlyFuelPriceMap.put(objGasPrice.Month_State_City__c, objGasPrice.Fuel_Price__c); 
+                                         }
+        return monthlyFuelPriceMap;
+    }*/
+    //This method is used to create a Bi-Weekly reimbursment
+    public static Bi_Weekly_Reimbursement__c CreateBiweekReimbursement(Contact con, map<string, Decimal> monthlyFuelPriceMap, Boolean monthlyReimbursecheckValue){        
+        contact contest = [select id,account.Pay_Period_Days__c,account.Pay_Period_Start_Date__c FROM contact WHERE id =: con.id];
+        List<String> dtList = new list<String>();
+        Date payStartDate = contest.Account.Pay_Period_Start_Date__c;
+        Date endDate;
+        do {
+            endDate = payStartdate.addDays(Integer.valueof(contest.Account.Pay_Period_Days__c));
+            if(payStartdate != null && payStartdate <= System.today() && System.today() <= endDate) {
+                dtList.add(String.valueof(payStartdate));
+                dtList.add(String.valueof(endDate));
             }
+            payStartdate = endDate.addDays(1);
+        } while(endDate <= System.today());
+        string splitStartDate;
+        string splitEndDate;
+        if(dtList.size() > 0){
+            string[] splitsdate = dtList[0].split('-');
+            splitStartDate = splitsdate[1]+'/'+splitsdate[2]+'/'+splitsdate[0];
+            splitdate = dtList[1].split('-');
+            splitEndDate = splitdate[1]+'/'+splitdate[2]+'/'+splitdate[0];
+            //EMC -283 use to update fuel price of biweekly reim based on the contact city and state of past month's fuel price FROM gas price object
+            
         }
-        if(reimToInsert.size() > 0){
-            insert reimToInsert;
+        Bi_Weekly_Reimbursement__c er = new Bi_Weekly_Reimbursement__c();
+        er.Fixed_Amount__c = con.Fixed_Amount__c;
+        er.Status__c = 'Pending';
+        er.Maintenance_and_Tires__c = con.Maintenance_and_Tires__c;
+        er.MPG__c = con.MPG__c;
+        er.Contact__c = con.id;
+        er.Name = splitStartDate+' to '+ splitEndDate;
+        er.Count_Error_Check__c = 0;
+        if(monthlyReimbursecheckValue != true){
+            if(integer.valueOf(splitdate[1]) == 01){
+                if (monthlyFuelPriceMap.containsKey(con.MailingCity+ con.MailingState + '12' + string.valueOf(integer.valueOf(splitdate[0])-1)) ) {
+                    er.Fuel_Price__c = monthlyFuelPriceMap.get(con.MailingCity+ con.MailingState + '12' + string.valueOf(integer.valueOf(splitdate[0])-1)) ;
+                }   else {
+                    er.Fuel_Price__c = 0;
+                }
+            }   else {
+                if (monthlyFuelPriceMap.containsKey(con.MailingCity+ con.MailingState + string.valueOf(integer.valueOf(splitdate[1])-1) + splitdate[0]) ) {
+                    er.Fuel_Price__c = monthlyFuelPriceMap.get(con.MailingCity+ con.MailingState + string.valueOf(integer.valueOf(splitdate[1])-1) + splitdate[0]);
+                }   else {
+                    er.Fuel_Price__c = 0;
+                }
+            }
+        } else{
+            er.Fuel_Price__c = 0;
         }
+        er.Start_Date__c = Date.valueOf(dtList[0]);
+        er.End_Date__c = Date.valueOf(dtList[1]);
+        return er;
     }
-    //This method is used send a welcome email from triplog or mlog to install a application.
+    //This method is used send a welcome email FROM triplog or mlog to install a application.
     @future (callout=true)
     Public static void putHTTP(String accountID,String empEmail) {
-        String MLOGACCOUNT = System.Label.Triplog_New_URL;
-        
-        String body, apiToken;
-        List<Account> accountList = [SELECT id,Triplog_API__c  
-                                        FROM Account 
-                                            WHERE Id =: accountID];
-        if(accountList.size() > 0 ){
-            apiToken = accountList[0].Triplog_API__c;
-        }
-        String jsonSubset;
-        String baseURL;
-        if(apiToken != null){
-            baseURL = !MLOGACCOUNT.Contains(apiToken) ? StaticValues.TRIPLOG_BASEURL : StaticValues.MLOG_BASEURL;
-        }
-        String rosterURL = baseURL + StaticValues.WELCOME_SUFFIX;
-        body = '{"emails":[';
-        body = body + String.valueof(empEmail) +']}';
-        system.debug('body'+body);
-        TriplogPutCall__c objTriplog = TriplogPutCall__c.getValues('RosterControllerPutCall');
-         HttpRequest putReq = new HttpRequest();
-         Http putHTTP = new Http();
-         HttpResponse putRes = new HttpResponse();
-       
-         putReq.setEndpoint(rosterURL);
-         putReq.setMethod('PUT');                 
-         putReq.setBody(body);
-         putReq.setTimeout(120000);
-         putReq.setHeader('Authorization', 'apikey ' + apiToken);
-         putReq.setHeader('Content-Type', 'application/json');
-        
-        if(!Test.isRunningTest() && objTriplog.TriplogPut__c == true){
-             if(objTriplog.TriplogPut__c == true){
-                 putRes = putHTTP.send(putReq);
-                 system.debug('putRes'+putRes.getBody());
-                 Map<String,Object> jsonMap = (Map<String, Object>)JSON.deserializeUntyped(putRes.getBody());
-                 jsonSubset = JSON.serialize(jsonMap.get('message'));
-            }
-         }   
+        putHTTPCallout(AccountId, empEmail);
     }
+    
+    Public static void putHTTPCallout(String accountID,String empEmail) {
+        List<Account> accountList = [SELECT id,Triplog_API__c,MburseDashboardRedirect__c  
+                                     FROM Account 
+                                     WHERE Id =: accountID];
+         if(accountList.size() > 0 && accountList[0].MburseDashboardRedirect__c == false){
+            String MLOGACCOUNT = System.Label.Triplog_New_URL  + ',' + System.Label.Triplog_New_URL2;        
+            String body, apiToken;
+            
+            if(accountList.size() > 0 ){
+                apiToken = accountList[0].Triplog_API__c;
+            }
+            String jsonSubset;
+            String baseURL;
+            if(apiToken != null){
+                baseURL = !mLOGACCOUNT.Contains(apiToken) ? StaticValues.TRIPLOG_BASEURL : StaticValues.MLOG_BASEURL;
+            }
+            String rosterURL = baseURL + StaticValues.WELCOME_SUFFIX;
+            body = '{"emails":[';
+            body = body + String.valueof(empEmail) +']}';
+            TriplogPutCall__c objTriplog = TriplogPutCall__c.getValues('RosterControllerPutCall');
+            HttpRequest putReq = new HttpRequest();
+            Http putHTTP = new Http();
+            HttpResponse putRes = new HttpResponse();
+            
+            putReq.setEndpoint(rosterURL);
+            putReq.setMethod('PUT');                 
+            putReq.setBody(body);
+            putReq.setTimeout(120000);
+            putReq.setHeader('Authorization', 'apikey ' + apiToken);
+            putReq.setHeader('Content-Type', 'application/json');
+            if(!Test.isRunningTest() && objTriplog.TriplogPut__c == true){
+                if(objTriplog.TriplogPut__c == true){
+                    putRes = putHTTP.send(putReq);
+                    Map<String,Object> jsonMap = (Map<String, Object>)JSON.deserializeUntyped(putRes.getBody());
+                    jsonSubset = JSON.serialize(jsonMap.get('message'));
+                }
+            } 
+         }
+          
+    }
+
+/**
+ * @Date: 11-01-2023 | Niraj Sahedani
+ * @description: This Method is used to Deacivate user in mLog if user change their role in salesforce
+ */
+    @InvocableMethod(label='Get Role Change Value' description='Returns the list of Role Change Contacts' category='Contact')
+    public static void roleChange(List<String> ids){
+        System.debug('Call Method from Flow');
+        ContactTriggerHelper.putHTTPEnableUserTriplog(ids[0],true);
+    }
+
     @Future(callout = true)
-    public static void putHTTPEnableUserTriplog(String conId) {
+    public static void putHTTPEnableUserTriplog(String conId, Boolean userStatus) {
+        System.debug('putHTTPEnableUserTriplog: '+ conId);
         Http h;
         HttpRequest req;
         HttpResponse res;
-        String MLOGACCOUNT = System.Label.Triplog_New_URL;
-        for(Contact conObj : [SELECT id,Triplog_UserID__c, Account.Triplog_API__c  FROM Contact WHERE id =: conId]) {
+        String mLOGACCOUNT = System.Label.Triplog_New_URL + ',' + System.Label.Triplog_New_URL2; 
+        for(Contact conObj : [SELECT id,Triplog_UserID__c,Email, Account.Triplog_API__c  FROM Contact WHERE id =: conId]) {
             if(conObj.Triplog_UserID__c != null && conObj.Account.Triplog_API__c != null){
-                String baseURL = !MLOGACCOUNT.Contains( conObj.Account.Triplog_API__c ) ? StaticValues.TRIPLOG_BASEURL : StaticValues.MLOG_BASEURL;
+                String baseURL = !mLOGACCOUNT.Contains( conObj.Account.Triplog_API__c ) ? StaticValues.TRIPLOG_BASEURL : StaticValues.MLOG_BASEURL;
                 JSONGenerator gen = JSON.createGenerator(true);
                 gen.writeStartObject();
-                gen.writeBooleanField('disabled',false);
+                gen.writeBooleanField('disabled',userStatus);
+                System.debug('mail id: '+ conObj.Email);
+                gen.writeStringField('email',conObj.Email);
                 gen.writeEndObject();
                 h = new Http();
                 req = new HttpRequest();
@@ -396,8 +467,6 @@ public without sharing class ContactTriggerHelper {
                 req.setbody(gen.getAsString());
                 req.setHeader('Content-Type', 'application/json');
                 req.setHeader('Authorization', 'apikey '+ conObj.Account.Triplog_API__c);
-                System.debug('conObj.Triplog_UserID__c'+conObj.Triplog_UserID__c);
-                System.debug('conObj.Account.Triplog_API__c'+conObj.Account.Triplog_API__c);
                 if(!Test.isRunningTest())
                 {
                     res = h.send(req);            
@@ -412,19 +481,17 @@ public without sharing class ContactTriggerHelper {
         for(Account objAccount : [SELECT ID,Name FROM account WHERE isUsingTriplog__c = true]){
             accountNameMap.put(objAccount.id,objAccount.Name);
         }
-
+        
         EmailTemplate templateId = [SELECT Id, Subject,HtmlValue, body FROM EmailTemplate WHERE developerName = 'New_Contact_Inform_Driver_Services' Limit 1];
         List<Messaging.SingleEmailMessage> mails = new List<Messaging.SingleEmailMessage>();
-        OrgWideEmailAddress[] owea = [SELECT Id,Address from OrgWideEmailAddress where Address = 'driverservices@mburse.com'];
+        OrgWideEmailAddress[] owea = [SELECT Id,Address FROM OrgWideEmailAddress WHERE Address = 'driverservices@mburse.com'];
         for(Contact contObj : contactList){
             String newemailBody = templateId.HtmlValue;
             Messaging.SingleEmailMessage mail =  new Messaging.SingleEmailMessage();
             mail.setTargetObjectId(contObj.OwnerId);
             string[] toAddresses = new string[]{System.Label.DriverServicesEmail};
-            mail.setToAddresses(toAddresses);
-            mail.setReplyTo('mburse@driverservices.com');
-            system.debug(contObj);
-            
+                mail.setToAddresses(toAddresses);
+            mail.setReplyTo('mburse@driverservices.com');            
             if(accountNameMap.get(contObj.AccountId) != null){
                 newemailBody = newemailBody.replace('{!Account.Name}',accountNameMap.get(contObj.AccountId));
             }
@@ -449,51 +516,45 @@ public without sharing class ContactTriggerHelper {
     
     //Track History of Contact
     public static void TrackHistory(Map<ID,Contact> conOld,List<Contact> contactListNew,Map<String,String> managerNames){
-        
         //Map for Manager Name
-        
         //Audit Trial
         list<AuditTrail__c> newAuditTrialCreate=new list<AuditTrail__c>();
         for(Contact c:contactListNew){
-            if(c.id==conOld.get(c.id).id){
-                if(c.Fixed_Amount__c!=conOld.get(c.id).Fixed_Amount__c)
-                newAuditTrialCreate.add(new AuditTrail__c(Field__c='Fixed Amount',Timestamp__c=Datetime.now(),Modifiedby__c=UserInfo.getFirstName()+' '+UserInfo.getLastName(),NewValue__c=string.valueof(c.Fixed_Amount__c),OldValue__c=String.Valueof(conOld.get(c.id).Fixed_Amount__c),Contact__c=c.id));
-                if(c.Maintenance_and_Tires__c!=conOld.get(c.id).Maintenance_and_Tires__c)
-                    newAuditTrialCreate.add(new AuditTrail__c(Field__c='Maintenance and Tires',Timestamp__c=Datetime.now(),Modifiedby__c=UserInfo.getFirstName()+' '+UserInfo.getLastName(),NewValue__c=String.valueof(c.Maintenance_and_Tires__c),OldValue__c=string.valueof(conOld.get(c.id).Maintenance_and_Tires__c),Contact__c=c.id));
-                if(c.Vehicle1Odometer__c!=conOld.get(c.id).Vehicle1Odometer__c)
-                    newAuditTrialCreate.add(new AuditTrail__c(Field__c='Vehicle 1 Odometer',Timestamp__c=Datetime.now(),Modifiedby__c=UserInfo.getFirstName()+' '+UserInfo.getLastName(),NewValue__c=String.Valueof(c.Vehicle1Odometer__c),OldValue__c=String.Valueof(conOld.get(c.id).Vehicle1Odometer__c),Contact__c=c.id));
-                if(c.Vehicle2Odometer__c!=conOld.get(c.id).Vehicle2Odometer__c)
-                    newAuditTrialCreate.add(new AuditTrail__c(Field__c='Vehicle 2 Odometer',Timestamp__c=Datetime.now(),Modifiedby__c=UserInfo.getFirstName()+' '+UserInfo.getLastName(),NewValue__c=String.Valueof(c.Vehicle2Odometer__c),OldValue__c=String.Valueof(conOld.get(c.id).Vehicle2Odometer__c),Contact__c=c.id));
-                if(c.MailingStreet!=conOld.get(c.id).MailingStreet || c.MailingCity!=conOld.get(c.id).MailingCity || c.MailingState!=conOld.get(c.id).MailingState || c.MailingPostalCode!=conOld.get(c.id).MailingPostalCode || c.MailingCountry!=conOld.get(c.id).MailingCountry ){
-                    string newval=(c.MailingStreet!=null?c.MailingStreet:'') +' '+ (c.MailingCity!=null?c.MailingCity:'') +' '+ (c.MailingState!=null?c.MailingState:'') +' '+ (c.MailingPostalCode!=null?c.MailingPostalCode:'') +' '+ (c.MailingCountry!=null?c.MailingCountry:'');
-                    string oldVal=(conOld.get(c.id).MailingStreet!=null?conOld.get(c.id).MailingStreet:'') +' '+ (conOld.get(c.id).MailingCity!=null?conOld.get(c.id).MailingCity:'') +' '+ (conOld.get(c.id).MailingState!=null?conOld.get(c.id).MailingState:'') +' '+ (conOld.get(c.id).MailingPostalCode!=null?conOld.get(c.id).MailingPostalCode:'') +' '+ (conOld.get(c.id).MailingCountry!=null?conOld.get(c.id).MailingCountry:'');
-                    newAuditTrialCreate.add(new AuditTrail__c(Field__c='Address',Timestamp__c=Datetime.now(),Modifiedby__c=UserInfo.getFirstName()+' '+UserInfo.getLastName(),NewValue__c=newval,OldValue__c=oldVal,Contact__c=c.id));
+            if(c.id == conOld.get(c.id).id){
+                if(c.Fixed_Amount__c != conOld.get(c.id).Fixed_Amount__c)
+                    newAuditTrialCreate.add(new AuditTrail__c(Field__c = 'Fixed Amount',Timestamp__c = Datetime.now(),Modifiedby__c = UserInfo.getFirstName()+' '+UserInfo.getLastName(),NewValue__c = string.valueof(c.Fixed_Amount__c),OldValue__c = String.Valueof(conOld.get(c.id).Fixed_Amount__c),Contact__c=c.id));
+                if(c.Maintenance_and_Tires__c != conOld.get(c.id).Maintenance_and_Tires__c)
+                    newAuditTrialCreate.add(new AuditTrail__c(Field__c = 'Maintenance and Tires',Timestamp__c=Datetime.now(),Modifiedby__c=UserInfo.getFirstName()+' '+UserInfo.getLastName(),NewValue__c=String.valueof(c.Maintenance_and_Tires__c),OldValue__c=string.valueof(conOld.get(c.id).Maintenance_and_Tires__c),Contact__c=c.id));
+                if(c.Vehicle1Odometer__c != conOld.get(c.id).Vehicle1Odometer__c)
+                    newAuditTrialCreate.add(new AuditTrail__c(Field__c = 'Vehicle 1 Odometer',Timestamp__c = Datetime.now(),Modifiedby__c = UserInfo.getFirstName()+' '+UserInfo.getLastName(),NewValue__c = String.Valueof(c.Vehicle1Odometer__c),OldValue__c = String.Valueof(conOld.get(c.id).Vehicle1Odometer__c),Contact__c = c.id));
+                if(c.Vehicle2Odometer__c != conOld.get(c.id).Vehicle2Odometer__c)
+                    newAuditTrialCreate.add(new AuditTrail__c(Field__c = 'Vehicle 2 Odometer',Timestamp__c = Datetime.now(),Modifiedby__c = UserInfo.getFirstName()+' '+UserInfo.getLastName(),NewValue__c = String.Valueof(c.Vehicle2Odometer__c),OldValue__c = String.Valueof(conOld.get(c.id).Vehicle2Odometer__c),Contact__c = c.id));
+                if(c.MailingStreet != conOld.get(c.id).MailingStreet || c.MailingCity != conOld.get(c.id).MailingCity || c.MailingState != conOld.get(c.id).MailingState || c.MailingPostalCode != conOld.get(c.id).MailingPostalCode || c.MailingCountry != conOld.get(c.id).MailingCountry ){
+                    string newval = (c.MailingStreet != null?c.MailingStreet:'') +' '+ (c.MailingCity != null?c.MailingCity:'') +' '+ (c.MailingState != null?c.MailingState:'') +' '+ (c.MailingPostalCode != null?c.MailingPostalCode:'') +' '+ (c.MailingCountry != null?c.MailingCountry:'');
+                    string oldVal = (conOld.get(c.id).MailingStreet != null?conOld.get(c.id).MailingStreet:'') +' '+ (conOld.get(c.id).MailingCity != null?conOld.get(c.id).MailingCity:'') +' '+ (conOld.get(c.id).MailingState!=null?conOld.get(c.id).MailingState:'') +' '+ (conOld.get(c.id).MailingPostalCode!=null?conOld.get(c.id).MailingPostalCode:'') +' '+ (conOld.get(c.id).MailingCountry!=null?conOld.get(c.id).MailingCountry:'');
+                    newAuditTrialCreate.add(new AuditTrail__c(Field__c='Address',Timestamp__c = Datetime.now(),Modifiedby__c=UserInfo.getFirstName()+' '+UserInfo.getLastName(),NewValue__c=newval,OldValue__c=oldVal,Contact__c=c.id));
                 }
-                if(c.MPG__c!=conOld.get(c.id).MPG__c)
-                    newAuditTrialCreate.add(new AuditTrail__c(Field__c='Miles per Gallon',Timestamp__c=Datetime.now(),Modifiedby__c=UserInfo.getFirstName()+' '+UserInfo.getLastName(),NewValue__c=String.Valueof(c.MPG__c),OldValue__c=String.Valueof(conOld.get(c.id).MPG__c),Contact__c=c.id));
-                if(c.Manager__c!=conOld.get(c.id).Manager__c) 
-                    newAuditTrialCreate.add(new AuditTrail__c(Field__c='Manager',Timestamp__c=Datetime.now(),Modifiedby__c=UserInfo.getFirstName()+' '+UserInfo.getLastName(),NewValue__c=managerNames.get(c.Manager__c),OldValue__c=managerNames.get(conOld.get(c.id).Manager__c),Contact__c=c.id));
-                if(c.compliancestatus__c!=conOld.get(c.id).compliancestatus__c)
-                    newAuditTrialCreate.add(new AuditTrail__c(Field__c='Compliance Status',Timestamp__c=Datetime.now(),Modifiedby__c=UserInfo.getFirstName()+' '+UserInfo.getLastName(),NewValue__c=String.Valueof(c.compliancestatus__c),OldValue__c=String.Valueof(conOld.get(c.id).compliancestatus__c),Contact__c=c.id));
-                if(c.Vehicle_Type__c!=conOld.get(c.id).Vehicle_Type__c)
-                    newAuditTrialCreate.add(new AuditTrail__c(Field__c='Standard Vehicle Make Model and Year',Timestamp__c=Datetime.now(),Modifiedby__c=UserInfo.getFirstName()+' '+UserInfo.getLastName(),NewValue__c=c.Vehicle_Type__c,OldValue__c=conOld.get(c.id).Vehicle_Type__c,Contact__c=c.id));
-                }
-                if(c.Deactivated_Date__c != conOld.get(c.Id).Deactivated_Date__c)
-                    newAuditTrialCreate.add(new AuditTrail__c(Field__c='Deactivation Date',Timestamp__c=Datetime.now(),Modifiedby__c=UserInfo.getFirstName()+' '+UserInfo.getLastName(),NewValue__c=String.valueOf(c.Deactivated_Date__c),OldValue__c=String.valueOf(conOld.get(c.id).Deactivated_Date__c),Contact__c=c.id));
-                
-            //for(String ConOldMap:conOld.keySet()){
-                
-           // }
+                if(c.MPG__c != conOld.get(c.id).MPG__c)
+                    newAuditTrialCreate.add(new AuditTrail__c(Field__c = 'Miles per Gallon',Timestamp__c = Datetime.now(),Modifiedby__c=UserInfo.getFirstName()+' '+UserInfo.getLastName(),NewValue__c = String.Valueof(c.MPG__c),OldValue__c = String.Valueof(conOld.get(c.id).MPG__c),Contact__c = c.id));
+                if(c.Manager__c != conOld.get(c.id).Manager__c) 
+                    newAuditTrialCreate.add(new AuditTrail__c(Field__c = 'Manager',Timestamp__c = Datetime.now(),Modifiedby__c = UserInfo.getFirstName()+' '+UserInfo.getLastName(),NewValue__c = managerNames.get(c.Manager__c),OldValue__c = managerNames.get(conOld.get(c.id).Manager__c),Contact__c = c.id));
+                if(c.compliancestatus__c != conOld.get(c.id).compliancestatus__c)
+                    newAuditTrialCreate.add(new AuditTrail__c(Field__c = 'Compliance Status',Timestamp__c = Datetime.now(),Modifiedby__c = UserInfo.getFirstName()+' '+UserInfo.getLastName(),NewValue__c = String.Valueof(c.compliancestatus__c),OldValue__c = String.Valueof(conOld.get(c.id).compliancestatus__c),Contact__c = c.id));
+                if(c.Vehicle_Type__c != conOld.get(c.id).Vehicle_Type__c)
+                    newAuditTrialCreate.add(new AuditTrail__c(Field__c = 'Standard Vehicle Make Model and Year',Timestamp__c = Datetime.now(),Modifiedby__c = UserInfo.getFirstName()+' '+UserInfo.getLastName(),NewValue__c=c.Vehicle_Type__c,OldValue__c = conOld.get(c.id).Vehicle_Type__c,Contact__c=c.id));
+            }
+            if(c.Deactivated_Date__c != conOld.get(c.Id).Deactivated_Date__c)
+                newAuditTrialCreate.add(new AuditTrail__c(Field__c = 'Deactivation Date',Timestamp__c=Datetime.now(),Modifiedby__c = UserInfo.getFirstName()+' '+UserInfo.getLastName(),NewValue__c = String.valueOf(c.Deactivated_Date__c),OldValue__c = String.valueOf(conOld.get(c.id).Deactivated_Date__c),Contact__c = c.id));
         }
-    
+        
         if(newAuditTrialCreate.Size()>0)
             upsert newAuditTrialCreate; 
     }
     
     //Populate Contact Fields
     public static void populatestaticValue(List<Contact> conList){
-        Boolean isEMCUser = [select UserRole.name from User where Id=:userinfo.getUserId()].UserRole.Name == 'EMC' ? true : false;
-
+        Boolean isEMCUser = [select UserRole.name FROM User WHERE Id=:userinfo.getUserId()].UserRole.Name == 'EMC' ? true : false;
+        
         for(Contact c : conList) {
             if(!isEMCUser){
                 c.Pay_Number__c = '3';
@@ -510,6 +571,180 @@ public without sharing class ContactTriggerHelper {
                 c.Adjust_Ded_Code_Variable__c = String.IsBlank(c.Adjust_Ded_Code_Variable__c) ? 'VR' : c.Adjust_Ded_Code_Variable__c;
                 c.Special_Action__c = String.IsBlank(c.Special_Action__c) ? 'W' : c.Special_Action__c;  
             } 
+        }
+    }
+    
+    /* EMC - 333
+* This Method is used to when driver is insert, driver packet is  automatically added in file section 
+* FROM his Account's file section.
+*/
+    Public Static void insertDriverAggrementFile(Map<Id, Contact> conNewMap) {
+        Map<id, List<ID>> mapOfAccountIDvsCon  = new Map<ID, List<Id>>();
+        List<ID> accIdList = new List<ID>();
+        Map<ID, contact> mapConIdvsCon = new Map<ID, Contact>();
+        set<Id> lstConId = new set<Id>();
+        Map<Id, Id> mapConIdvsCdlId = new Map<Id, Id>();
+        
+        for(Contact objcon : [SELECT id,name,Account.isUsingTriplog__c,AccountID 
+                              FROM Contact
+                              WHERE id in: conNewMap.keyset()]){
+                                  accIdList.add(objcon.AccountID);
+                                  mapConIdvsCon.put(objcon.Id, objcon);
+                                  lstConId.add(objcon.Id);
+                                  if(!mapOfAccountIDvsCon.containsKey(objCon.AccountID)){
+                                      mapOfAccountIDvsCon.put(objCon.AccountID, new List<Id> { objCon.ID });
+                                  }else{
+                                      mapOfAccountIDvsCon.get(objCon.AccountID).add(objCon.ID);
+                                  }   
+                              }
+        List<ContentDocumentLink> lstContentDocumentLink = new List<ContentDocumentLink>();
+        if(accIdList != null && accIdList.size() > 0){
+            for(ContentDocumentLink cdl : [SELECT ContentDocument.title,LinkedEntityId,ContentDocumentId 
+                                           FROM ContentDocumentLink 
+                                           WHERE LinkedEntityId IN :  lstConId
+                                           AND ContentDocument.Title like '%Driver Agreement%'
+                                           ORDER BY ContentDocument.CreatedDate]){
+                                               mapConIdvsCdlId.put(cdl.LinkedEntityId, cdl.Id);
+                                           }
+            for(ContentDocumentLink cdl : [SELECT ContentDocument.title,LinkedEntityId,ContentDocumentId 
+                                           FROM ContentDocumentLink 
+                                           WHERE LinkedEntityId IN :  accIdList
+                                           AND ContentDocument.Title like '%Driver Agreement%'
+                                           ORDER BY ContentDocument.CreatedDate DESC LIMIT 1]) {
+                                               
+                                               if(mapOfAccountIDvsCon.containsKey(cdl.LinkedEntityId)){
+                                                   for(ID obj: mapOfAccountIDvsCon.get(cdl.LinkedEntityId)){
+                                                       if(!mapConIdvsCdlId.containsKey(obj)){
+                                                           ContentDocumentLink objCDL = new ContentDocumentLink();
+                                                           objCDL.ContentDocumentId = cdl.ContentDocumentId;
+                                                           objCDL.LinkedEntityId = obj;
+                                                           objCDL.ShareType = 'I'; 
+                                                           objCDL.Visibility = 'AllUsers'; 
+                                                           lstContentDocumentLink.add(objCDL);
+                                                       }
+                                                   }        
+                                               }
+                                           }
+        }
+        if(lstContentDocumentLink != null && lstContentDocumentLink.size() > 0){
+            Insert lstContentDocumentLink;
+        }
+    }
+    
+    /* EMC - 357 
+New Contact is created at that time we have to update plan parameter section's field 
+(Insurance Plan,Plan Years,Vehicle Value and Business Use) value update automatically based on account's same fields .
+*/
+    public static void updatePlanParameter(Set<String> conIdList, Set<String> setaccountid) {
+        Map<Id,String> mapIdvsInsplan = new Map<Id, String>();
+        Map<Id,Decimal> mapIdvsPlanyear = new Map<Id, Decimal>();
+        Map<Id,Decimal> mapIdvsBusinessUse = new Map<Id, Decimal>();
+        Map<String,Decimal> mapVehicleValue = new Map<String, Decimal>();
+        String[] splitactivationdate ; 
+       
+        // monthvsCompMilieageMap is used for count compliance mileages.
+        Map<String,Decimal> monthvsCompMilieageMap = new Map<String,Decimal> {'12' => 4583.3334, '01' => 4166.6668, '02' => 3750, '03' => 3333.3336, '04' => 2916.667,
+                                                                                    '05' => 2500, '06' => 2083.3334, '07' => 1666.6668, '08' => 1250, '09' => 833.3334,
+                                                                                    '10' => 416.6668, '11' => 0};
+        
+        
+        for (Vehicle_Value__c vehValue : [SELECT id,Account__c, Vehicle_URL_Mapping__r.Name,Value__c  
+                                          FROM Vehicle_Value__c 
+                                          WHERE Account__c IN :setaccountid]){
+                                              mapVehicleValue.put(vehValue.Account__c + '-' + vehValue.Vehicle_URL_Mapping__r.Name.toUpperCase() , vehValue.Value__c);
+                                          }
+        for(Account acc : [SELECT id,name,Insurance_Plan__c, Plan_Years__c, Vehicle_Types__c, Business_Use__c 
+                           FROM Account 
+                           WHERE ID IN :setaccountid]){
+                               mapIdvsInsplan.put(acc.ID, acc.Insurance_Plan__c);
+                               mapIdvsPlanyear.put(acc.ID, acc.Plan_Years__c);
+                               mapIdvsBusinessUse.put(acc.ID, acc.Business_Use__c);
+                           }
+        List<contact> updateConList = new List<Contact>();
+        if(conIdList.size() > 0) {
+        for(Contact con : [SELECT id,name,AccountId,Activation_Date__c,Vehicle_Type__c,Insurance_Plan__c, Plan_Years__c,Business_Use__c,Role__c 
+                            FROM contact 
+                            WHERE Id IN :conIdList]) {
+                                if(mapIdvsInsplan.containsKey(con.AccountId)){
+                                    con.Insurance_Plan__c = mapIdvsInsplan.get(con.AccountID);
+                                    con.Plan_Years__c = mapIdvsPlanyear.get(con.AccountID);
+                                    con.Business_Use__c = mapIdvsBusinessUse.get(con.AccountID);
+                                }
+                                if(mapVehicleValue.containsKey(con.AccountId + '-' + con.Vehicle_Type__c.toUpperCase())){
+                                    con.Vehicle_Value__c = mapVehicleValue.get(con.AccountId + '-' + con.Vehicle_Type__c.toUpperCase());
+                                }    else {
+                                    con.Vehicle_Value__c = null;
+                                }
+/*
+        EMC-372        
+based On the activation date of drivers compliance mileages auto calculate.
+Maximum Compliance Mileages per year is 5000 mileage.
+
+for single month compliance mileages are  5000/12 =  416.66666
+now if the contact is activated from 1st date of the moth to 7th date of the month than compliance mileages for that month is  416.66666
+if Driver is activate from 8th to 15th date of the month than compliance mileages for that month is (416.6666/4) * 3 = 312.495(three week of proration)
+if Driver is activate from 16th to 23th date of the month than compliance mileages for that month is (416.6666/4) * 2 = 208.33(Two week of proration)
+And if Driver is activate after 23th date of the month than compliance mileages for that month is 416.6666/4 = 104.165(One week of proration)
+
+Example :- 
+if any driver is activate on the 5th of march than Compliance Mileages are 10(From March to December )*416.6666 = 416.666
+if driver is activate on the 8th of march than Compliance Mileages are (9 (From April to December )* 416.6666) + 312.495(March month 3 Weeks of Prorations) = 4062.4944
+if driver is activate on the 20th of march than Compliance Mileages are (9(From April to December )* 416.6666) + 208.33 (March month's 2 Weeks of Prorations) = 3958.33
+if driver is activate on the 28th of march than Compliance Mileages are (9 (From April to December )* 416.6666) + 104.165 (March month's 1 Weeks of Prorations) = 3854.1644
+*/
+                                if(con.Activation_Date__c != null){
+                                   splitactivationdate = String.valueOf(con.Activation_Date__c).split('-');
+                                    system.debug('splitactivationdate==' + splitactivationdate[1]);
+                                    system.debug('date==' + splitactivationdate[2]);
+                                    system.debug('year==' + splitactivationdate[0]);
+                                    if(Integer.valueOf(splitactivationdate[0]) == System.today().year()){
+                                        if(monthvsCompMilieageMap.containsKey(splitactivationdate[1])){
+                                            if(Integer.valueOf(splitactivationdate[2]) < 8){
+                                                con.Compliance_Mileage__c = (monthvsCompMilieageMap.get(splitactivationdate[1])) + 416.6666;
+                                            }   else if (Integer.valueOf(splitactivationdate[2]) >= 8 && Integer.valueOf(splitactivationdate[2]) <= 15) {
+                                                    con.Compliance_Mileage__c = (monthvsCompMilieageMap.get(splitactivationdate[1])) + 312.495;
+                                            }   else if (Integer.valueOf(splitactivationdate[2]) >= 16 && Integer.valueOf(splitactivationdate[2]) <= 23) {
+                                                    con.Compliance_Mileage__c = (monthvsCompMilieageMap.get(splitactivationdate[1])) + 208.33;
+                                            }   else {
+                                                    con.Compliance_Mileage__c = (monthvsCompMilieageMap.get(splitactivationdate[1])) + 104.165;
+                                            }
+                                        }
+                                    } else if(Integer.valueOf(splitactivationdate[0]) < System.today().year()){
+                                        if(splitactivationdate[1] == '12'){
+                                           // con.Compliance_Mileage__c = 5000;
+                                           if(Integer.valueOf(splitactivationdate[2]) < 8){
+                                                con.Compliance_Mileage__c = (monthvsCompMilieageMap.get(splitactivationdate[1])) + 416.6666;
+                                            }   else if (Integer.valueOf(splitactivationdate[2]) >= 8 && Integer.valueOf(splitactivationdate[2]) <= 15) {
+                                                    con.Compliance_Mileage__c = (monthvsCompMilieageMap.get(splitactivationdate[1])) + 312.495;
+                                            }   else if (Integer.valueOf(splitactivationdate[2]) >= 16 && Integer.valueOf(splitactivationdate[2]) <= 23) {
+                                                    con.Compliance_Mileage__c = (monthvsCompMilieageMap.get(splitactivationdate[1])) + 208.33;
+                                            }   else {
+                                                    con.Compliance_Mileage__c = (monthvsCompMilieageMap.get(splitactivationdate[1])) + 104.165;
+                                            }
+                                        } else {
+                                            con.Compliance_Mileage__c = 5000;
+                                        }
+                                        
+                                    }  else if(Integer.valueOf(splitactivationdate[0]) > System.today().year()){                                            
+                                            if(Integer.valueOf(splitactivationdate[2]) < 8){
+                                                con.Compliance_Mileage__c = (monthvsCompMilieageMap.get(splitactivationdate[1])) + 416.6666;
+                                            }   else if (Integer.valueOf(splitactivationdate[2]) >= 8 && Integer.valueOf(splitactivationdate[2]) <= 15) {
+                                                    con.Compliance_Mileage__c = (monthvsCompMilieageMap.get(splitactivationdate[1])) + 312.495;
+                                            }   else if (Integer.valueOf(splitactivationdate[2]) >= 16 && Integer.valueOf(splitactivationdate[2]) <= 23) {
+                                                    con.Compliance_Mileage__c = (monthvsCompMilieageMap.get(splitactivationdate[1])) + 208.33;
+                                            }   else {
+                                                    con.Compliance_Mileage__c = (monthvsCompMilieageMap.get(splitactivationdate[1])) + 104.165;
+                                            }
+                                    }
+                                    /*else if(Integer.valueOf(splitactivationdate[0]) > System.today().year() || Integer.valueOf(splitactivationdate[0]) < System.today().year()){
+                                        con.Compliance_Mileage__c = 5000;
+                                    }*/
+                                } 
+                                    updateConList.add(con);
+                            }   
+        }
+        if(updateConList.size() > 0){
+            Update updateConList;
         }
     }
 }

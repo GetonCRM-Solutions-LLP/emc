@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomMetadata xmlns="http://soap.sforce.com/2006/04/metadata" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <label>G2W oAuth</label>
+    <protected>false</protected>
+    <values>
+        <field>Access_Token__c</field>
+        <value xsi:type="xsd:string">eyJraWQiOiI2MjAiLCJhbGciOiJSUzUxMiJ9.eyJzYyI6ImNhbGwtY29udHJvbC52MS5jYWxscy5jb250cm9sIGNhbGxzLnYyLmluaXRpYXRlIG1lc3NhZ2luZy52MS53cml0ZSByZWFsdGltZS52Mi5ub3RpZmljYXRpb25zLm1hbmFnZSBmYXgudjEucmVhZCBtZXNzYWdpbmcudjEubm90aWZpY2F0aW9ucy5tYW5hZ2UgbWVzc2FnaW5nLnYxLnNlbmQgZmF4LnYxLndyaXRlIGlkZW50aXR5OiBtZXNzYWdpbmcudjEucmVhZCB3ZWJydGMudjEucmVhZCB3ZWJydGMudjEud3JpdGUgY29sbGFiOiBjci52MS5yZWFkIGZheC52MS5ub3RpZmljYXRpb25zLm1hbmFnZSB1c2Vycy52MS5saW5lcy5yZWFkIiwic3ViIjoiMTE1MDY2NDU4OTIxMzI1MTU5MCIsImF1ZCI6IjY4OGRiZGM0LTdiOTQtNDFkZS04NDM1LTljOTczNmQ3NGNmOCIsIm9nbiI6InB3ZCIsInR5cCI6ImEiLCJleHAiOjE2ODU5NDgxMDAsImlhdCI6MTY4NTk0NDUwMCwianRpIjoiY2NhMmQ3ZjgtMzY0MS00ODkzLWI5YjAtNjRjOWRkMGI3ZTBmIn0.Ke1bmy4-mSFG66iAwXTmbf7twwf6SHmKYyKvT_Y3g7U9p3v60xZiyMhNWmxJCUosHLq2Jc7QITy-ZQ2f94hUlhv5gR13ll4E8DqvWbOY2FZiskTtv8zVizz0-wk-Q0MOq6OHx0DYswD_KEWE5-Jaw_jHX8_wcXSlg8MNrfsAfYK7WYwlssz7fcDLGxaDcWBRX0XaOMjZWog4rzdG-yFE4RImFbGy2gQkl0_86FY46jzzL8QYRJ691XImYhbdMhMMSRWHcIHM5syaOKs7-0pzs7iDbbN93EUC0uUMchqNc3cMwTqxoZggvOmpHCfhIZo56cMWtbIe8eXOaj9ZFwqNqA</value>
+    </values>
+    <values>
+        <field>Account_Key__c</field>
+        <value xsi:nil="true"/>
+    </values>
+    <values>
+        <field>Authentication_Endpoint__c</field>
+        <value xsi:type="xsd:string">https://authentication.logmeininc.com/oauth/</value>
+    </values>
+    <values>
+        <field>Client_Id__c</field>
+        <value xsi:type="xsd:string">688dbdc4-7b94-41de-8435-9c9736d74cf8</value>
+    </values>
+    <values>
+        <field>Client_Secret__c</field>
+        <value xsi:type="xsd:string">uyqIROUJ05lItPluJNbdG8AH</value>
+    </values>
+    <values>
+        <field>Endpoint__c</field>
+        <value xsi:type="xsd:string">https://api.getgo.com/G2W/rest/v2/</value>
+    </values>
+    <values>
+        <field>Organizer_Key__c</field>
+        <value xsi:type="xsd:string">1150664589213251590</value>
+    </values>
+    <values>
+        <field>Redirect_URL__c</field>
+        <value xsi:type="xsd:string">https://mburse.my.salesforce.com/apex/GoToWebinarAuthorization</value>
+    </values>
+    <values>
+        <field>Refresh_Token__c</field>
+        <value xsi:type="xsd:string">eyJraWQiOiI2MjAiLCJhbGciOiJSUzUxMiJ9.eyJzYyI6ImNhbGwtY29udHJvbC52MS5jYWxscy5jb250cm9sIGNhbGxzLnYyLmluaXRpYXRlIG1lc3NhZ2luZy52MS53cml0ZSByZWFsdGltZS52Mi5ub3RpZmljYXRpb25zLm1hbmFnZSBmYXgudjEucmVhZCBtZXNzYWdpbmcudjEubm90aWZpY2F0aW9ucy5tYW5hZ2UgbWVzc2FnaW5nLnYxLnNlbmQgZmF4LnYxLndyaXRlIGlkZW50aXR5OiBtZXNzYWdpbmcudjEucmVhZCB3ZWJydGMudjEucmVhZCB3ZWJydGMudjEud3JpdGUgY29sbGFiOiBjci52MS5yZWFkIGZheC52MS5ub3RpZmljYXRpb25zLm1hbmFnZSB1c2Vycy52MS5saW5lcy5yZWFkIiwic3ViIjoiMTE1MDY2NDU4OTIxMzI1MTU5MCIsImF1ZCI6IjY4OGRiZGM0LTdiOTQtNDFkZS04NDM1LTljOTczNmQ3NGNmOCIsIm9nbiI6InB3ZCIsInR5cCI6InIiLCJleHAiOjE2ODc0OTc4NzgsImlhdCI6MTY4NDkwNTg3OCwianRpIjoiZjlmZDBmNzYtMmQ0NC00NjlmLTg5ZGItMGYyMTE4OWE0ZGI5In0.ONCe_VgSaS3zg82BjsGiC3Zf7U1moy1Q3AlEp1wz_TPQ_LzTqfAAHtPIh_vKMYtaB3sUvMdAMZfoZIuIHQOap2xheb6KPmJpT8WdGDBpyUJ5vOCqU7LRqkHDb7izkM7f2WqMC3rFW8-V90CLt7258s7NaODy__ORDNwCVbIjJLuUzZG_L5zKB9klTvY2r9bixnjpZK-59O4jddHQWj2VKWOIeu8ddI6bHyxWDYu_B-KexJENFKEZx77ul4tA5KvRP4COJkTqy99mVG6hA9yfD9Uwgg3QgARh8cJtrEPzzRX8z5ALKCG3QHEX1jY8S5rGsQYe7RzWrXYtTftqUbII2g</value>
+    </values>
+    <values>
+        <field>Site_URL__c</field>
+        <value xsi:type="xsd:string">https://mburse.my.salesforce-sites.com/GoToWebinar/services/apexrest/gotowebinar/webhook</value>
+    </values>
+    <values>
+        <field>Token_Created_Time__c</field>
+        <value xsi:type="xsd:dateTime">2023-06-05T05:55:00.000Z</value>
+    </values>
+    <values>
+        <field>Token_Expire_Time__c</field>
+        <value xsi:type="xsd:dateTime">2023-06-05T06:55:00.000Z</value>
+    </values>
+    <values>
+        <field>Webhook_Key_Added__c</field>
+        <value xsi:type="xsd:string">3b796423-23b6-4928-89de-2ea4047a9f1e</value>
+    </values>
+    <values>
+        <field>Webhook_Key_Joined__c</field>
+        <value xsi:type="xsd:string">8b2f9006-6a69-4a23-b0f6-1bee103d3d1e</value>
+    </values>
+</CustomMetadata>

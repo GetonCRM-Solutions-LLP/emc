@@ -136,6 +136,61 @@
                 <default>false</default>
                 <label>Order Fulfillment Superv</label>
             </value>
+            <value>
+                <fullName>Inspector/Consultant</fullName>
+                <default>false</default>
+                <label>Inspector/Consultant</label>
+            </value>
+            <value>
+                <fullName>Director of Safety</fullName>
+                <default>false</default>
+                <label>Director of Safety</label>
+            </value>
+            <value>
+                <fullName>Environmental Consultant</fullName>
+                <default>false</default>
+                <label>Environmental Consultant</label>
+            </value>
+            <value>
+                <fullName>Area Manager</fullName>
+                <default>false</default>
+                <label>Area Manager</label>
+            </value>
+            <value>
+                <fullName>Safety Consultant</fullName>
+                <default>false</default>
+                <label>Safety Consultant</label>
+            </value>
+            <value>
+                <fullName>VP of Environmental</fullName>
+                <default>false</default>
+                <label>VP of Environmental</label>
+            </value>
+            <value>
+                <fullName>VP of Florida Region</fullName>
+                <default>false</default>
+                <label>VP of Florida Region</label>
+            </value>
+            <value>
+                <fullName>Manager</fullName>
+                <default>false</default>
+                <label>Manager</label>
+            </value>
+            <value>
+                <fullName>Sales</fullName>
+                <default>false</default>
+                <label>Sales</label>
+            </value>
+            <value>
+                <fullName>Admin</fullName>
+                <default>false</default>
+                <label>Admin</label>
+            </value>
+            <value>
+                <fullName>Service</fullName>
+                <default>false</default>
+                <label>Service</label>
+            </value>
         </valueSetDefinition>
     </valueSet>
 </CustomField>

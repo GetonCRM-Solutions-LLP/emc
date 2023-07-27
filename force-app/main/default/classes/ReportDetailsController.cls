@@ -7,9 +7,15 @@ public with sharing class ReportDetailsController
     public static String getdataofmanager {get;set;}
     public static String managerdriverlist{get;set;} 
     //public static String getPaymentStatusList{get;set;} 
+    public static Integer AccountYear{get;set;} 
+
     public ReportDetailsController()
     {
+        List<Account> accList = [SELECT id,name,CreatedDate FROM Account WHERE id =:getAccountid()];
         
+        if(accList.size() > 0){
+            AccountYear = Date.valueof(accList[0].CreatedDate).year();
+        }        
         reportname='';
         getdataofdriver ='nodata';
         getdataofmanager ='nodata';
@@ -22,6 +28,7 @@ public with sharing class ReportDetailsController
         {
             String reportid = ApexPages.CurrentPage().getparameters().get('reportid');
             obj_current_reportStr = getReportDetail(reportid);
+            System.debug('obj_current_reportStr: '+obj_current_reportStr);
             if(obj_current_report!=null)
             {
                 if(obj_current_report.Use_Driver_List__c==true)
@@ -53,9 +60,12 @@ public with sharing class ReportDetailsController
     }
     public static String getReportDetail(String reportid)
     {
+        System.debug('inside getReportDetail: '+reportid);
         List<String> obj_list_of_headers = new List<String>();
-        String query = 'Select id,Name,Report_Type__c,Report_Soql__c,Report_Header__c,Date_Fields__c,Date_Time_Fields__c,Date_Time_To_Time__c,Numeric_Fields__c,Report_Category__c,Use_Bussiness_Unit__c,Use_Driver_List__c,Use_Manager_List__c from Custom_Report__c where id=\''+reportid+'\'';
+        String query = 'Select id,Name,Report_Type__c,Report_Soql__c,Report_Header__c,Date_Fields__c,Two_Decimal_Places__c,Boolean_Field__c,Date_Time_Fields__c,Date_Time_To_Time__c,Numeric_Fields__c,Report_Category__c,Use_Bussiness_Unit__c,Use_Driver_List__c,Use_Manager_List__c from Custom_Report__c where id=\''+reportid+'\'';
+        System.debug('query: '+query );
         obj_current_report = (Custom_Report__c)(((List<Custom_Report__c>)ExecuteQueryUtil.getRecordListFromsObject(query))[0]);
+        System.debug('obj_current_report : '+obj_current_report);
         return String.escapeSingleQuotes(JSON.serialize(obj_current_report)); 
        // return '';     
     }
@@ -624,7 +634,7 @@ public with sharing class ReportDetailsController
                     {   // yes
                         query = query + ' AND CreatedDate>='+buildDate(tripStartDate)+' AND CreatedDate<='+buildDate(tripEndDate) + ' AND EmployeeReimbursement__r.Contact_Id__r.accountid=\''+accountid+'\'';
                     }
-                   
+                    query += ' LIMIT 5000';
                     List<Employee_Mileage__c> obj_contact_list = Database.query(query);                    
                     return JSON.serialize(obj_contact_list);
                 }            
@@ -653,6 +663,7 @@ public with sharing class ReportDetailsController
                         }
                     }                    
                     System.debug(query);
+                    query += ' LIMIT 5000';
                     List<Employee_Mileage__c> obj_contact_list = Database.query(query);
                     return JSON.serialize(obj_contact_list);
                 }
@@ -671,6 +682,7 @@ public with sharing class ReportDetailsController
                         query = query + ' AND EmployeeReimbursement__r.Contact_Id__r.Deactivated_Date__c>='+buildDate(tripStartDate)+' AND EmployeeReimbursement__r.Contact_Id__r.Deactivated_Date__c<='+buildDate(tripEndDate)+ ' AND EmployeeReimbursement__r.Contact_Id__r.accountid=\''+accountid+'\'';
                     }
                     System.debug(query);
+                    query += ' LIMIT 5000';
                     List<Employee_Mileage__c> obj_contact_list = Database.query(query);
                     return JSON.serialize(obj_contact_list);
                 }            
@@ -700,6 +712,7 @@ public with sharing class ReportDetailsController
                     }
                     
                     System.debug(query);
+                    query += ' LIMIT 5000';
                     List<Employee_Mileage__c> obj_contact_list = Database.query(query);
                     return JSON.serialize(obj_contact_list);
                 }
@@ -733,6 +746,7 @@ public with sharing class ReportDetailsController
                         }
                     }
                     System.debug(query);
+                    query += ' LIMIT 5000';
                     List<Employee_Mileage__c> obj_contact_list = Database.query(query);
                     return JSON.serialize(obj_contact_list);
                 }            
@@ -782,6 +796,7 @@ public with sharing class ReportDetailsController
                     }
                     
                     System.debug(query);
+                    query += ' LIMIT 5000';
                     List<Employee_Mileage__c> obj_contact_list = Database.query(query);
                     return JSON.serialize(obj_contact_list);
                 }
@@ -805,7 +820,7 @@ public with sharing class ReportDetailsController
                         query = query + ' AND EmployeeReimbursement__r.Month__c IN '+ monthquery+ ' AND EmployeeReimbursement__r.Contact_Id__r.accountid=\''+accountid+'\'';                        
                        
                     }
-                   
+                   query += ' LIMIT 5000';
                    List<Employee_Mileage__c> obj_contact_list = Database.query(query);
                     return JSON.serialize(obj_contact_list);
                 }            
@@ -836,6 +851,7 @@ public with sharing class ReportDetailsController
                         } 
                     }                    
                    System.debug(query);
+                   query += ' LIMIT 5000';
                     List<Employee_Mileage__c> obj_contact_list = Database.query(query);
                     system.debug('obj_contact_list========'+obj_contact_list);
                     return JSON.serialize(obj_contact_list);
@@ -866,6 +882,7 @@ public with sharing class ReportDetailsController
                     }
                     
                     System.debug(query);
+                    query += ' LIMIT 5000';
                     List<Employee_Mileage__c> obj_contact_list = Database.query(query);
                     system.debug('obj_contact_list========'+obj_contact_list);
                     return JSON.serialize(obj_contact_list);
@@ -881,6 +898,7 @@ public with sharing class ReportDetailsController
                         query = query + ' AND EmployeeReimbursement__r.Contact_Id__r.accountid=\''+accountid+'\'';                       
                     }
                    System.debug(query);
+                   query += ' LIMIT 5000';
                    List<Employee_Mileage__c> obj_contact_list = Database.query(query);
                     return JSON.serialize(obj_contact_list);
                 }
@@ -927,13 +945,44 @@ public with sharing class ReportDetailsController
                         query = query + ' AND EmployeeReimbursement__r.Contact_Id__r.accountid=\''+accountid+'\'';                       
                     }
                    System.debug(query);
+                   System.debug(Limits.getHeapSize());
+                   query += ' LIMIT 7500';
+                   
                    List<Employee_Mileage__c> obj_contact_list = Database.query(query);
+                   System.debug(Limits.getHeapSize());
                     return JSON.serialize(obj_contact_list);
                 }
                 
                List<Employee_Mileage__c> obj_contact_list = Database.query(query);
                 return JSON.serialize(obj_contact_list);
             }  
+        }
+        else if(query.contains('from Bi_Weekly_Reimbursement__c')) {
+            if(reporttype =='BiWeek Reimbursement Start and EndDate') {
+                if(selectedManager == null || selectedManager == '') {
+                    if(!query.contains('where')) {
+                        query = query+ ' where Start_Date__c ='+buildDateforactivation(tripStartDate)+' AND End_Date__c ='+buildDateforactivation(tripEndDate) + ' AND Contact__r.AccountId=\''+accountid+'\'';                        
+                    } else {
+                        query = query + ' AND Start_Date__c ='+buildDateforactivation(tripStartDate)+' AND End_Date__c ='+buildDateforactivation(tripEndDate) + ' AND Contact__r.AccountId=\''+accountid+'\''; 
+                    }                   
+                } else {
+                    if(driverormanager == 'Manager') {
+                        if(!query.contains('where')) {
+                            query = query+ ' where Start_Date__c ='+buildDateforactivation(tripStartDate)+' AND End_Date__c ='+buildDateforactivation(tripEndDate)+' AND Contact__r.Manager__c=\''+selectedManager+'\'' + ' AND Contact__r.accountid=\''+accountid+'\'';                    
+                        } else {
+                            query = query + ' AND Start_Date__c ='+buildDateforactivation(tripStartDate)+' AND End_Date__c ='+buildDateforactivation(tripEndDate)+' AND Contact__r.Manager__c=\''+selectedManager+'\'' + ' AND Contact__r.accountid=\''+accountid+'\''; 
+                        }
+                    } else {
+                        if(!query.contains('where')) {
+                            query = query+ ' where Start_Date__c ='+buildDateforactivation(tripStartDate)+' AND End_Date__c ='+buildDateforactivation(tripEndDate)+' AND Contact__c=\''+selectedManager+'\'' + ' AND Contact__r.AccountId=\''+accountid+'\'';                    
+                        } else {
+                            query = query + ' AND Start_Date__c ='+buildDateforactivation(tripStartDate)+' AND End_Date__c ='+buildDateforactivation(tripEndDate)+' AND Contact__c=\''+selectedManager+'\'' + ' AND Contact__r.AccountId=\''+accountid+'\''; 
+                        }
+                    }                    
+                }
+                List<Bi_Weekly_Reimbursement__c> obj_contact_list = Database.query(query);                    
+                return JSON.serialize(obj_contact_list);
+            }
         }
         return '';
     }

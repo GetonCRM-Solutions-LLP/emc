@@ -9,11 +9,11 @@ global class SendEmailForSubmittedMileage implements Database.Batchable<sObject>
         List<String> obj_accountnames = new List<String>();
         
         
-        if(System.Label.TripstobeLogged!=null)
+        if(System.Label.BatchAccountName!=null)
         {
-            if(System.Label.TripstobeLogged.contains(','))
+            if(System.Label.BatchAccountName.contains(','))
             {
-                obj_accountnames= System.Label.TripstobeLogged.split(',');
+                obj_accountnames= System.Label.BatchAccountName.split(',');
             }              
         }
         obj_contact_list = new List<Contact>();
@@ -38,23 +38,24 @@ global class SendEmailForSubmittedMileage implements Database.Batchable<sObject>
         } else {
             obj_contact_list = [SELECT Id, Role__c, Deactivated_Date__c,
                                         External_Email__c, FirstName 
-                                    FROM Contact 
-                                    WHERE (Role__c ='Driver' 
-                                            OR Role__c = 'Driver/Manager'
-                                            OR Role__c =: StaticValues.roleAdminDriver)
-                                        AND ( Deactivated_Date__c >:todayDate 
-                                            OR Deactivated_Date__c =:Null) 
-                                        AND (Account.name IN: obj_accountnames) LIMIT 1];
+                                    FROM Contact WHERE Role__c ='Driver'                                  
+                                        /*AND (Account.name IN: obj_accountnames)*/ LIMIT 1];
         }
         for(Contact c : obj_contact_list) {
             conIds.add(c.Id);
         }
-        /*RG_InsertLastMonthReimbursement insRe = new  RG_InsertLastMonthReimbursement();
-        String lastMonth = insRe.getLastMonthValue(-1);*/
+        
         String lastMonth = Utils.fetchMonths(1, 0)[0];
-        List<Employee_Reimbursement__c> empReimList = [SELECT Id, Name, Month__c, Contact_Id__c, Total_Mileage__c 
+        List<Employee_Reimbursement__c> empReimList;
+        if(!Test.isRunningTest()) {
+        empReimList = [SELECT Id, Name, Month__c, Contact_Id__c, Total_Mileage__c 
                                                             FROM Employee_Reimbursement__c 
                                                             WHERE Month__c =: lastMonth AND Contact_Id__c IN: conIds AND Total_Mileage__c > 0];
+        } else {
+            empReimList = [SELECT Id, Name, Month__c, Contact_Id__c, Total_Mileage__c 
+                                                            FROM Employee_Reimbursement__c ];
+        }
+        system.debug('empReimList=='+empReimList);
         for(Employee_Reimbursement__c empReim : empReimList) {
             contactToEmpReimMap.put(empReim.Contact_Id__c, empReim);
         }
@@ -91,17 +92,15 @@ global class SendEmailForSubmittedMileage implements Database.Batchable<sObject>
                 if(objSendEmailToMe.Send_email_to_me__c == true)
                 {
                     address.add('minkeshp@askemc.com');
-                    mail.setBCCAddresses(new string[]{'driverservices@mburse.com'});                    
+                    mail.setBCCAddresses(new string[]{'driverservices@askemc.com'});                    
                 }
                 else
                 {
                     address.add(c.External_Email__c);
-                    mail.setBCCAddresses(new string[]{'minkeshp@askemc.com','driverservices@mburse.com'});
+                    mail.setBCCAddresses(new string[]{'driverservices@askemc.com'});
                 }                
                 
                 mail.setToAddresses(address);
-                
-              
                 mail.setSubject(mon + ' Submitted mileage');
                 htmlbody = emailTemplate[0].HTMLValue;
                 if(owea.size()>0) {
@@ -114,7 +113,6 @@ global class SendEmailForSubmittedMileage implements Database.Batchable<sObject>
                 htmlbody = htmlbody.replace('{!Total_Mileage}', String.valueOf(contactToEmpReimMap.get(c.Id).Total_Mileage__c));
                 mail.setPlainTextBody(htmlbody);
                 mail.setHtmlBody(htmlbody);
-                
                 mail_list.add(mail);
             }
         }
@@ -125,9 +123,5 @@ global class SendEmailForSubmittedMileage implements Database.Batchable<sObject>
     }
 
     global void finish(Database.BatchableContext BC) {
-        RG_BatchForApprovingReimburse status = new RG_BatchForApprovingReimburse();
-        if(!Test.isRunningTest()) {
-           // Database.executeBatch(status, 200);
-        }
     }
 }

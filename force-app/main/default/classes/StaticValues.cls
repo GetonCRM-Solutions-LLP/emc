@@ -51,4 +51,5 @@ global class StaticValues
     // This Value used EmployeeReimbursementTriggerHandler class Line No:- 77
     //This value is used in MappingGasPriceTrigger for check the reimbursement status Approved or not in EmployeeReimbursementTriggerHandler class.
     public static Boolean isCalledFromReimTri = true;
+    public static Boolean isCalledFromBiWeekReimTri = true;
 }
