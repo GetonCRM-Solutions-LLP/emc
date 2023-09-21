@@ -1,222 +1,113 @@
-<apex:page showHeader="false" title="My Weekly Timesheet" lightningStylesheets="false"  sidebar="false" controller="ConfirmTripTimeERMIController">
-    <!--  Added By Megha : EMC - 210  UI Protect For Group Of Ermi Drivers , For hourly employees -->
-    <html lang="en">
+<apex:page showHeader="false" title="My Weekly Timesheet" sidebar="false" lightningStylesheets="true" controller="ConfirmTripTimeERMIController"
+    standardStylesheets="false" showChat="false">
+
     <head>
-        <apex:include pageName="EMC_Common_Head" />
-        <link rel="stylesheet" href="{!URLFOR($Resource.EMC_Header_Scripts,'EMC_Header_Scripts/css/bootstrap.min.css')}" />
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.13.3/css/selectize.css"  crossorigin="anonymous" referrerpolicy="no-referrer" />
-        <apex:include pageName="EMC_Common_Scripts" />
-        <script src="{!URLFOR($Resource.dirPagination)}"></script>
+        <meta charset="UTF-8" />
+        <link rel="stylesheet" href="{!URLFOR($Resource.LwcDesignCss,'lwcDesign/assets/css/customstyle.css')}" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/fontawesome.min.css" />
+        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v6.1.1/css/all.css" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+        <script src="https://code.jquery.com/jquery-2.1.3.min.js"></script>
+        <!--Toaster -->
+        <script src="{!URLFOR($Resource.EMC_Header_Scripts,'EMC_Header_Scripts/js/toastr.min.js')}"></script>
+        <link href="{!URLFOR($Resource.EMC_Header_Scripts,'EMC_Header_Scripts/css/toastr.min.css')}" rel="stylesheet" />
         <style type="text/css">
-            /* Media Queries */
-            @media only screen and (max-width: 1024px){
-                .weekly-info {
-                     top: 55% !important;
+
+            ::-webkit-scrollbar-track {
+                -webkit-box-shadow: inset 0 0 6px #F6F6F6;
+                border-radius: 100px;
+                background-color: #F6F6F6;
+            }
+
+            ::-webkit-scrollbar {
+                width: 5px;
+                height: 50px;
+                background-color:#F6F6F6;
+            }
+
+            ::-webkit-scrollbar-thumb {
+                border-radius: 100px;
+                height: 50px;
+                background-color:#404B5B
+            }
+
+            body {
+                font-family: 'Proxima Nova' !important;
+                max-width: 100%;
+            }
+
+            @-moz-keyframes spinner-border {
+                from {
+                    -moz-transform: rotate(0deg);
                 }
-                .card-header {
-                    font-size: 18px !important;
-                }
-                .card-title{
-                    font-size: 1rem !important;
-                }
-                .align_items {
-                    width: 85% !important;
-                }
-                .sync-info{
-                    transform: translate(-50%, -43%) !important;
-                }
-                .align_items td {
-                    padding: 0.15rem !important;
-                }
-                iframe{
-                    height: 187px !important;
+                to {
+                    -moz-transform: rotate(360deg);
                 }
             }
-            body{
-                background-color: rgb(203, 207, 212);
+
+            @-webkit-keyframes spinner-border {
+                from {
+                    -webkit-transform: rotate(0deg);
+                }
+                to {
+                    -webkit-transform: rotate(360deg);
+                }
             }
-            .a-setcolor-pointer {
-                color: #78bc42 !important;
-                text-decoration: none !important;
-                cursor: pointer;
+
+            @keyframes spinner-border {
+                from {
+                    transform: rotate(0deg);
+                }
+                to {
+                    transform: rotate(360deg);
+                }
             }
-            .head-pad{
-                padding: 0.45rem 1.25rem !important;
+
+            .text-light {
+                color: #f8f9fa!important;
             }
-            .footer-pad{
-                padding: 0.25rem 1.25rem !important;
+
+            .spinner-border {
+                display: inline-block;
+                width: 2rem;
+                height: 2rem;
+                vertical-align: text-bottom;
+                border: .25em solid currentColor;
+                border-right-color: transparent;
+                border-radius: 50%;
+                -webkit-animation: spinner-border .75s linear infinite;
+                animation: spinner-border .75s linear infinite;
             }
-            .head-font{
-                color: #78bc42;
-            }
-            .align_items{
-                width: 70%;
-            }
-            .table thead th {
-                border-bottom: none !important;
-                border: 1px solid #000 !important;
-            }
-            .table td{
-                border: 1px solid #000 !important
-            }
-            .width-of-table{
-                width: 50%;
-            }
-            .sPadding{
-                padding-top: 8px;
-            }
-            .td-all td{
-                padding: 0.45rem !important
-            }
-            .table-borderless{
-                margin:  0 auto;
-            }
-            .valign-middle{
-                vertical-align: middle !important;
-            }
-           .table-borderless td{
-               border: 0 !important;
-           }
-           .align_items td{
-               text-align:  left;
-               padding: 0.25rem !important;
-               font-size: 16px !important;
-           }
-           .text-td{
-                text-align: left;
-           }
-           .fs-18{
-               font-size: 18px !important;
-           }
-           .green-text{
-               color: #78bc42 !important;
-           }
-           .font-style{
-               color: #000000 !important;
-           }
-           input[type="checkbox"]{
-            width: 1em;
-            height: 1em;
-           }
-            header{
-                margin-bottom: 100px;
-                display: flex;
-                width: 100%;
-                position: relative;
-            }
-            .container-fluid {
-                width: 100% !important;
-                padding-right: 40px !important;
-                padding-left: 40px !important;
-            }
-            .toast-info {
-                background-color: #002366;
-             }
-            .toast-error {
-                background-color: #FF0000 !important;
-            }
-            #toast-container > div {
-                opacity: 5.8 !important;
-                border-radius: 3px 3px 3px 3px !important;
-                width: 100% !important;
-                margin: 10px;
-             }
-            .alignitemscenter {
-                align-items: center;
-            }
-    
-            .displayblock {
-                display: block !important;
-            }
-    
-            .displaynone {
-                display: none !important;
-            }
-    
-            .table-nodata {
-                text-align: center;
-            }
-            .underline {
-                text-decoration: underline;
-            }
-    
-            .greenText {
-                font-size: 14px;
-                font-weight: 600;
-                color: #78bc42;
-                position: relative;
-                top: 36px;
-                left: 88px;
-            }
-    
-            .greenText2 {
-                position: relative;
-                font-size: 14px;
-                font-weight: 600;
-                color: #78bc42;
-                top: 53px;
-                left: 28px;
-            }
-    
-            .redText {
-                position: absolute;
-                top: 78px;
-                right: 80px;
-                font-size: 9px;
-                color: #ff0000;
-                font-weight: 600;
-            }
-    
-            .mr-11 {
-                margin-right: 12px !important;
-            }
-    
-            .card-header{
-                font-size: 22px;
-            }
-            .image-cardtext {
-                right: 30px;
-                top: 0px;
-            }
-    
-            .fileupload-title {
-                color: #000000 !important;
-                font-size: 18px !important;
-            }
-    
-            .check-input{
-                color: #000000;
-                padding: 7px;
-            }
-            .fileupload-title-2 {
-                color: #78bc42 !important;
-            }
-    
-            .insDiv {
-                width: 157%;
-                margin-left: -80px;
-            }
-    
-            .tagquestion {
-                top: -14px;
-                position: relative;
-                color: #78bc42;
-                right: 5px;
-                font-size: 14px;
-            }
-    
-            .image-Insurancetext {
-                position: absolute;
-                top: 0px;
-            }
+
             .spinner-background {
-                width: 100%;
+                /* width: 100%;
                 height: 100%;
                 background: #000;
                 opacity: 0.4;
                 top: 0px;
                 left: 0px;
                 position: fixed;
+                z-index: 1000000; */
+                width: 100%;
+                height: 100%;
+                background: #FFF;
+                opacity: 1;
+                top: 0px;
+                left: 0px;
+                position: fixed;
+                z-index: 1000000;
+            }
+
+            .loader{
+                position: fixed;
+                top: 0;
+                left: 0;
+                height: 100%;
+                width: 100%;
+                display: flex;
+                flex-flow: column nowrap;
+                justify-content: center;
+                align-items: center;
                 z-index: 1000000;
             }
 
@@ -226,615 +117,183 @@
                 left: 49%;
                 z-index: 1000000;
             }
-            .box__dragndrop:hover {
-                background-color: #6c757d !important;
-            }
-    
-            .box__dragndrop:hover .uploadtxt {
-                color: #fff;
-            }
-    
-            .uploadtxt {
-                color: #6c757d;
-                text-transform: uppercase;
-            }
-    
-            .box__dragndrop {
-                color: #dddddd !important;
-                display: inline-block !important;
-                background-image: none !important;
-                background: none !important;
-                border-radius: 0px !important;
-                border: 3px solid !important;
-                float: right;
-                margin-right: 120px !important;
-                padding: .375rem .75rem !important;
-                transition: color .15s ease-in-out, background-color .15s ease-in-out, border-color .15s ease-in-out, box-shadow .15s ease-in-out !important;
-            }
-    
-            .modal-backdrop.fade {
-                opacity: 0.4 !important;
-            }
-    
-            .fade:not(.show) {
-                opacity: 1;
-            }
-    
-            .modal-dialog {
-                z-index: 1057;
-            }
-    
-            .w-100 {
-                cursor: pointer;
-            }
-    
-            .successMsg {
-                top: 124px !important;
-                left: 230px !important;
-                position: absolute !important;
-                font-weight: bold;
-                font-size: 14px !important;
-                color: #78bc42 !important;
-            }
-            .d_fluid{
-                width: 100%;
-            }
-            .fluid{
-                position: relative;
-                margin: 0 auto;
-                /* width: 100%;
-                height: 100vh;
-                background-color: rgb(203, 207, 212); */
-            }
-            .f-center{
+
+            .sr-only {
+                border: 0;
+                clip: rect(0, 0, 0, 0);
+                height: 1px;
+                margin: -1px;
+                overflow: hidden;
+                padding: 0;
                 position: absolute;
-                left: 50%;
-                top: 50%;
-                transform: translate(-50%, -50%);
+                width: 1px;
             }
-            .navbar{
-                padding : 0 !important;
+
+            .mbloader-text{
+                font-weight: 400;
+                font-size: 22px;
+                line-height: 19px;
+                padding-top: 20px;
+                color: #1D1D1D;
+                font-family: 'Proxima Nova' !important;
             }
-            .weekly-info{
-                position: relative;
-                margin: 0 auto;
-                /* position: fixed;
-                top: 50%;
-                left: 50%; */
-                /* bring your own prefixes */
-                /* transform: translate(-50%, -50%); */
+
+            .text-loading{
+                font-family: 'Proxima Nova Bold' !important;
+                font-size: 30px;
+                line-height: 39px;
+                display: flex;
+                align-items: center;
+                text-align: center;
+                color: #78BC42;
             }
-            .sync-info{
-                position: relative;
-                margin: 0 auto;
-                /* position: fixed;
-                top: 50%;
-                left: 50%; */
-                /* bring your own prefixes */
-                /* transform: translate(-50%, -44%); */
+
+            .svg-container{
+                padding-top: 20px;
             }
-            .cd-pad{
-                padding: 0.5rem !important;
+
+            /* #toast-container>.toast-success{
+                opacity: 1 !important;
+                background-color: #7ABB4A !important
             }
-            .mt-05{
-                margin-top: 0.5rem !important;
+
+            #toast-container>.toast-error{
+                opacity: 1 !important;
+                background-color: #FA7800!important
+            } */
+            #toast-container>div{
+                /*background-position: top 15px left 10px !important;*/
+                box-shadow: none !important;
             }
-            .mt-1{
-                margin-top: 1rem !important;
+
+            .toast-message{
+                color: #fff;
+                font-family: 'Proxima Nova' !important;
+                padding: 0 16px 0 12px;
+            }
+
+            .toast-success,.toast-info,.toast-warning,.toast-error{
+                    opacity: 1 !important;
+                    width: 343px !important;
+                    font-size: 13px;
+                    border-radius: 12px !important;
+                    background-color:#404b5a !important;
+                    color:#ffffff !important;
+                    border-color:transparent !important;
+                    font-family: 'Proxima Nova' !important;
+                    overflow: inherit !important;
+                    padding: 25px 15px 25px 42px !important;
+            }
+
+
+            .toast-close-button{
+                font-size: 30px !important;
+                opacity: 1 !important;
+                font-weight: 500 !important;
+                color: #fff !important;
+                text-shadow: none !important;
+                font-family: 'Proxima Nova' !important;
+                right: 0em !important;
+                top: -0.78em !important;
+            }
+
+            #toast-container>.toast-error {
+                    background-image:  url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" viewBox="0 0 30 30" fill="none"><path d="M7.60156 21.9948L21.995 7.60144" stroke="%23FA7800" stroke-width="2.91497" stroke-linecap="round"/><path d="M7.60156 7.61179L21.995 22.0052" stroke="%23FA7800" stroke-width="2.91497" stroke-linecap="round"/></svg>') !important;
+            }
+
+            .toast.toast-success {
+                background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='25' height='19.643' viewBox='0 0 25 19.643' fill='none'%3e%3cpath d='M9.802 14.245 20.918 0.978l0.005 -0.009a1.393 1.393 0 0 1 2.083 0 1.664 1.664 0 0 1 0.003 2.212L10.857 17.597l-0.005 0.007a1.408 1.408 0 0 1 -1.041 0.468 1.409 1.409 0 0 1 -1.041 -0.468l-6.776 -7.337a1.664 1.664 0 0 1 0 -2.214l7.808 6.189Zm0 0 -5.725 -6.192a1.393 1.393 0 0 0 -2.083 0l7.808 6.191Z' fill='%237ABB4A' stroke='%237ABB4A' stroke-width='0.42857142857142855'/%3e%3c/svg%3e") !important;
             }
         </style>
-        <script>
-                var app = angular.module('driverDashboardWeeklyModule',['ui.bootstrap','angularUtils.directives.dirPagination']);
-                app.controller('ConfirmTripTimeERMIController', ['$scope','$filter','$timeout',
-                    function($scope,$filter,$timeout) {
-                        var url_string = $(location).attr("href");
-                        var referrer = window.performance.navigation.type;
-                        console.log("mileageDetailWrapper", {!mileageDetailWrapper})
-                        //console.log(url_string);
-                        var url = new URL(url_string);
-                        $scope.id = url.searchParams.get("id");
-                        $scope.accid = url.searchParams.get("accid");
-                        $scope.showteam = url.searchParams.get("showteam");
-                        $scope.admindriver = url.searchParams.get("admindriver");
-                        $scope.syncParam = url.searchParams.get("sync");
-                        $scope.role = url.searchParams.get("role");
-                        $scope.exportReimDetailList = [];
-                        $scope.mileageDetail = {!mileageDetailWrapper}
-                        $scope.typeOfDriver = ($scope.mileageDetail[0] != null || $scope.mileageDetail[0] != undefined) ? $scope.mileageDetail[0].driverType : "";
-                        $scope.showDownload = ($scope.mileageDetail[0] != null) ? ($scope.mileageDetail[0].biWeekId != undefined) ? true : false : false;
-                        $scope.errorMessage = ($scope.typeOfDriver != 'Driver - Salary') ? 'There are errors on my time/mileage' : 'There are errors with my mileage';
-                        $scope.confirmMessage = ($scope.typeOfDriver != 'Driver - Salary') ? 'I confirm the hours are correct for this week' : 'I confirm the mileage is correct for this week';
-                        var url_locate = "/app/driverDashboardClone?accid="+$scope.accid+"&id="+$scope.id;
-                        var driverManager_url = "/app/drivermanagerdashboard?accid="+$scope.accid+"&id="+$scope.id+"&showteam="+$scope.showteam;
-                        var admindriver_url = "/app/admindriverdashboard?accid="+$scope.accid+"&id="+$scope.id+"&admindriver="+$scope.admindriver+"&showteam="+$scope.showteam;
-                        var choosenfileType = '';
-                        var chooseFileName = '';
-                        $scope.notAccurate = false;
-                        $scope.isHours = true;
-                        $scope.payPeriodName = ($scope.mileageDetail[0] != undefined && $scope.mileageDetail[0].biWeekPayperiod != undefined) ? $scope.mileageDetail[0].biWeekPayperiod :  "";
-                        $('#spinner').hide();
-                        if ($scope.typeOfDriver != 'Driver - Salary') {
-                                if ($scope.mileageDetail[0] != undefined && $scope.mileageDetail[0].countErrorCheck === 3) { // 2
-                                    $scope.errorMessage =  "There are still errors on my Weekly Time Sheet Contact Support"
-                                }
-                        }
-                        else {
-                                if ($scope.mileageDetail[0] != undefined && $scope.mileageDetail[0].countErrorCheck === 3) {//2
-                                    $scope.errorMessage = "There are still errors with my mileage Contact Support"
-                                }
-                        }
-                      
-                       
-                        if (window.performance.navigation.type != 1 && $scope.syncParam != undefined) {
-                            Visualforce.remoting.Manager.invokeAction('{!$RemoteAction.ConfirmTripTimeERMIController.sendErrorEmail}', $scope.mileageDetail[0].driverEmail, $scope.mileageDetail[0].driverName, $scope.mileageDetail[0].biWeekPayperiod,
-                                $scope.mileageDetail[0].mileage, $scope.mileageDetail[0].driveTime, $scope.mileageDetail[0].stayTime, $scope.mileageDetail[0].totalTime, $scope.mileageDetail[0].countErrorCheck, $scope.mileageDetail[0].driverType,
-                                function (result, event) {
-                                    if (event.status) {
-                                    } else {
-                                    }
-                                    $scope.$apply();
-                                },
-                                { escape: false }
-                            )
-                        } 
-                        this.setOptions = function () {
-                            toastr.options.positionClass = "toast-bottom-right";
-                            toastr.options.closeButton = true;
-                            toastr.options.progressBar = true;
-                            toastr.options.timeOut = 4000;
-                        };
-                        this.setOptions();
-                        this.clear = function () {
-                            toastr.clear();
-                        };
-                        // if($scope.mileageDetail[0].errorCheck){
-                        //     $scope.notAccurate = true;
-                        //     $scope.isHours = false;
-                        // }else{
-                        //     $scope.notAccurate = false;
-                        //     $scope.isHours = true;
-                        // }
-                        /* excel download ---*/
-                        $scope.downloadToExcel = function (sheetData, excelfile) {
-                            function datenum(v, date1904) {
-                                if (date1904) v += 1462;
-                                var epoch = Date.parse(v);
-                                return (epoch - new Date(Date.UTC(1899, 11, 30))) / (24 * 60 * 60 * 1000);
-                            };
-
-                            function getSheet(sheetData, opts) {
-                                var ws = {};
-                                var range = { s: { c: 10000000, r: 10000000 }, e: { c: 0, r: 0 } };
-                                for (var R = 0; R != sheetData.length; ++R) {
-                                    for (var C = 0; C != sheetData[R].length; ++C) {
-                                        if (range.s.r > R) range.s.r = R;
-                                        if (range.s.c > C) range.s.c = C;
-                                        if (range.e.r < R) range.e.r = R;
-                                        if (range.e.c < C) range.e.c = C;
-                                        var cell = { v: sheetData[R][C] };
-                                        if (cell.v == null) continue;
-                                        var cell_ref = XLSX.utils.encode_cell({ c: C, r: R });
-
-                                        if (typeof cell.v === 'number') cell.t = 'n';
-                                        else if (typeof cell.v === 'boolean') cell.t = 'b';
-                                        else if (cell.v instanceof Date) {
-                                            cell.t = 'n'; cell.z = XLSX.SSF._table[14];
-                                            cell.v = datenum(cell.v);
-                                        }
-                                        else cell.t = 's';
-                                        ws[cell_ref] = cell;
-                                    }
-                                }
-                                if (range.s.c < 10000000) ws['!ref'] = XLSX.utils.encode_range(range);
-                                return ws;
-                            };
-
-                            function Workbook() {
-                                if (!(this instanceof Workbook)) return new Workbook();
-                                this.SheetNames = [];
-                                this.Sheets = {};
-                            }
-                            var wb = new Workbook(), ws = getSheet(sheetData);
-                            /* add worksheet to workbook */
-                            wb.SheetNames.push(excelfile);
-                            wb.Sheets[excelfile] = ws;
-                            var wbout = XLSX.write(wb, { bookType: 'xlsx', bookSST: true, type: 'binary' });
-                            function s2ab(s) {
-                                var buf = new ArrayBuffer(s.length);
-                                var view = new Uint8Array(buf);
-                                for (var i = 0; i != s.length; ++i) view[i] = s.charCodeAt(i) & 0xFF;
-                                return buf;
-                            }
-                            saveAs(new Blob([s2ab(wbout)], { type: "application/octet-stream" }), excelfile + '.xlsx');
-                        }
-                        $scope.submitRequestBtn = true;
-                        $scope.submitRequestSyncBtn = true;
-                        $scope.completeChange = function(co){
-                            $scope.submitRequestSyncBtn = (co === true) ? false : true;
-                        }
-                        $scope.confirmChange = function(c){
-                            $scope.mileageDetail[0].confirmCheck = c;
-                            $scope.mileageDetail[0].errorCheck = false;
-                            $scope.errorCheck = false;
-                            $scope.submitRequestBtn = ($scope.mileageDetail[0].confirmCheck === true) ? false : true;
-                        }
-
-                        $scope.errorChange = function(e){
-                            $scope.mileageDetail[0].errorCheck = e;
-                            $scope.mileageDetail[0].confirmCheck = false;
-                            $scope.confirmCheck = false;
-                            $scope.submitRequestBtn = ($scope.mileageDetail[0].errorCheck === true) ? false : true;
-                        }
-
-                        $scope.submitRequestSync = function(){
-                            $('#spinner').show();
-                            var  _stDate , _endDate, _splitList;
-                            _splitList =   $scope.mileageDetail[0].biWeekPayperiod.split(" to ");
-                            _stDate = _splitList[0];
-                            _endDate = _splitList[1];
-                            Visualforce.remoting.Manager.invokeAction('{!$RemoteAction.ConfirmTripTimeERMIController.deleteTripsForErmi}', $scope.id, _stDate, _endDate,
-                                    function(result, event) {
-                                            if(result === 'success') {
-                                                 Visualforce.remoting.Manager.invokeAction('{!$RemoteAction.ConfirmTripTimeERMIController.syncTripsForErmi}', $scope.id, _stDate, _endDate,
-                                                    function(result, event) {
-                                                        if(result === 'sucess'){
-                                                            $scope.errorCheck = false;
-                                                            $scope.submitRequestBtn = true;
-                                                            $("#spinner").hide();
-                                                            if ($scope.admindriver === "true") {
-                                                                window.location.href =  "/app/driverDashboardWeekly?accid="+$scope.accid+"&admindriver="+$scope.admindriver+"&id="+$scope.id+"&showteam="+$scope.showteam+"&sync="+$scope.mileageDetail[0].countErrorCheck;
-                                                            } else if ($scope.role === "managerdriver") {
-                                                                window.location.href =  "/app/driverDashboardWeekly?accid="+$scope.accid+"&id="+$scope.id+"&role="+$scope.role+"&showteam="+$scope.showteam+"&sync="+$scope.mileageDetail[0].countErrorCheck;
-                                                            } else {
-                                                                window.location.href =  "/app/driverDashboardWeekly?accid="+$scope.accid+"&id="+$scope.id+"&sync="+$scope.mileageDetail[0].countErrorCheck;
-                                                            }
-                                                        //  location.reload();
-                                                        }else{
-                                                            $("#spinner").hide();
-                                                        }
-                                                        $scope.$apply();  
-                                                    },
-                                                    {escape: false}
-                                                )
-                                            }else{
-                                                console.log("error", result)
-                                            }
-                                            $scope.$apply();  
-                                    },
-                                    {escape: false}
-                            )
-                           
-                        }
-
-                        $scope.submitRequest = function(){
-                            $('#spinner').show();
-                            $scope.requestInfo = [];
-                            $scope.mileageDetail[0].countErrorCheck =  ($scope.mileageDetail[0].errorCheck === true) ? (($scope.mileageDetail[0].countErrorCheck) + 1) : $scope.mileageDetail[0].countErrorCheck;
-                            angular.forEach($scope.mileageDetail, function(md){
-                                var m = {}
-                                m.biWeekId = md.biWeekId;
-                                m.confirmCheck = md.confirmCheck;
-                                m.errorCheck = md.errorCheck;
-                                m.countErrorCheck = md.countErrorCheck;
-                                m.driverEmail = md.driverEmail;
-                                m.driverName = md.driverName;
-                                m.biWeekPayperiod = md.biWeekPayperiod;
-                                m.mileage = md.mileage;
-                                m.driveTime = md.driveTime;
-                                m.stayTime = md.stayTime;
-                                m.totalTime = md.totalTime;
-                                m.driverType = md.driverType;
-                                $scope.requestInfo.push(m);
-                            })
-                          
-                            Visualforce.remoting.Manager.invokeAction('{!$RemoteAction.ConfirmTripTimeERMIController.updateBiWeekData}', JSON.stringify($scope.requestInfo),
-                                        function(result, event) {
-                                            if(event.status){
-                                                $("#spinner").hide();
-                                                    if ($scope.requestInfo[0].errorCheck === true && $scope.requestInfo[0].countErrorCheck < 4) {//3
-                                                            $scope.notAccurate = true;
-                                                            $scope.completeSync = false;
-                                                            $scope.submitRequestSyncBtn = true;
-                                                            $scope.isHours = false;
-                                                    } else {
-                                                        if($scope.requestInfo[0].errorCheck === true && $scope.requestInfo[0].countErrorCheck === 4){//3
-                                                            toastr.info("A support team member will contact you M-F between 7:00 am - 6:00 pm MST.")
-                                                            document.getElementById("weekly-time").style.pointerEvents = "none";
-                                                            setTimeout(function() {
-                                                                if($scope.admindriver === "true") {
-                                                                    location.assign(url_locate);
-                                                                }else if($scope.role === "managerdriver"){
-                                                                    location.assign(url_locatel);
-                                                                }else{
-                                                                    location.assign(url_locate);
-                                                                }
-                                                            }, 3000)
-                                                        }else{
-                                                            if ($scope.admindriver === "true") {
-                                                                location.assign(url_locate);
-                                                            } else if ($scope.role === "managerdriver") {
-                                                                location.assign(url_locate);
-                                                            } else {
-                                                                location.assign(url_locate);
-                                                            }
-                                                        }
-                                                     
-                                                    }
-                                             }
-                                                $scope.$apply();  
-                                        },
-                                        {escape: false}
-                            )
-                           
-                        }
-
-                        $scope.downloadReport = function(){
-                            var biDetailList = [];
-                            $scope.exportReimDetailList = [];
-                            $('#spinner').show();
-                            Visualforce.remoting.Manager.invokeAction('{!$RemoteAction.ConfirmTripTimeERMIController.reimMileages}',   $scope.mileageDetail[0].biWeekId,
-                                        function(result, event) {
-                                            if(event.status){
-                                                $("#spinner").hide();
-                                                if(result){
-                                                    console.log("Result---", result);
-                                                    biDetailList = JSON.parse(result);
-                                                    if (biDetailList.length > 0) {
-                                                        $scope.exportReimDetailList.push(["Contact Email", "Tracing Style", "Day Of Week", "Trip Date", "Start Time", "End Time", "Trip Origin", "Trip Destination", "Mileage", "Status", "Date Submitted", "Date Approved", "Maint/Tires", "Fuel Rate", "Variable Rate", "Variable", "Fixed Amount", "Trip Type", "Drive Time", "Stay Time", "Total Time", "Notes", "Tags"]);
-                                                        angular.forEach(biDetailList, function (item, key) {
-                                                            $scope.exportReimDetailList.push([item.emailaddress, item.tracingstyle, item.dayofweek, item.tripdate, item.starttime, item.endtime, item.origin, item.destination, item.mileage, item.status, item.submitteddate, item.approveddate, item.maintTyre, item.fuelVariableRate, item.variablerate, item.variableamount, item.halfFixedAmount, item.tripActivity, item.drivingtime, item.staytime, item.totaltime, item.notes, item.tag]);
-                                                        });
-                                                        detailFileName = $scope.mileageDetail[0].driverName + '\'s Detail Report';
-                                                        $scope.downloadToExcel($scope.exportReimDetailList, detailFileName);
-                                                    } else {
-                                                        toastr.error("No Mileages Found");
-                                                    }
-                                                }
-                                             
-                                               
-                                            }else{
-                                                $("#spinner").hide();
-                                                toastr.error(result);
-                                            }
-                                            $scope.$apply();  
-                                        },
-                                        {escape: false}
-                            )
-                        }
-
-                        $scope.showToast = function(message, error) {
-                            if(error)
-                                toastr.error(message);
-                            else
-                                toastr.success(message);
-                        }
-
-                    }
-                ]);
-        </script>
     </head>
-
-    <body ng-app="driverDashboardWeeklyModule" ng-controller="ConfirmTripTimeERMIController" ng-cloak="true" id="theBody">
-        <header>
-            <div class="main-header sticky" id="myHeader">
-                <div class="container-fluid">
-                    <div class="row">
-                        <div class="col-md-12 p-0">
-                            <nav class="navbar navbar-expand-md my-0 my-md-1 px-0">
-                                <a class="navbar-brand col-6 col-sm-6 col-md-3 col-lg-3 col-xl-3 px-0" href="/app/driverDashboardBiweekly?accid={{accid}}&id={{id}}&showteam={{showteam}}">
-                                    <img src="{!URLFOR($Resource.EmcCSS,'emc-design/assets/images/logo/mBurse-logo_rev.png')}" class="img-fluid" href="javascript:void(0)"
-                                        alt="logo" />
-                                </a>
-                                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsibleNavbar">
-                                    <span class="navbar-toggler-icon">
-                                        <i class="fa fa-bars"></i>
-                                    </span>
-                                </button>
-
-                                <div class="collapse navbar-collapse flex-column col-12 col-sm-6 col-md-9 col-lg-9 col-xl-9 ml-3 ml-sm-0 ml-lg-0 align-items-end"
-                                    id="collapsibleNavbar">
-                                    <ul class="navbar-nav flex-row alignitemscenter">
-                                        <!-- <li class="nav-item">
-                                            <a data-toggle="modal" data-target="#driver-dashboard-upload-insurancebtn" class="btn btn-secondary float-right" ng-click="displymodal()">
-                                                Upload Insurance
-                                            </a>
-                                        </li> -->
-                                        <li class="nav-item">
-                                            <a class="nav-link text-white" href="/app/secur/logout.jsp">Logout</a>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </nav>
-                        </div>
+    <!-- <div id="spinner">
+        <div class="spinner-background"></div>
+        <div class="spinner-load">
+            <div class="spinner-border text-light" role="status">
+                <span class="sr-only">Loading...</span>
+            </div>
+        </div>
+    </div> -->
+     <div id="spinner">
+        <div class="spinner-background"></div>
+            <div class="loader">
+                <span class="text-loading">Loading data...</span>
+                <div class="mbloader-text">It will take a few seconds</div>
+                <div class="svg-container">
+                    <div style="position:relative">
+                        <img style="width: 180px;" src="{!URLFOR($Resource.mBurseCss,'mburse/assets/mBurse-Icons/Bar-style.gif')}" />
                     </div>
                 </div>
             </div>
-        </header>
-
-        <div id="spinner">
-            <div class="spinner-background"></div>
-            <div class="spinner-load">
-                <div class="spinner-border text-light" role="status">
-                    <span class="sr-only">Loading...</span>
-                </div>
-            </div>
-        </div>
-        <!-- Weekly Timesheet -->
-        <section class="d_fluid" ng-show="isHours">
-            <div class="fluid">
-                <div class="weekly-info col-12 col-sm-6 col-md-8" id="weekly-time">
-                    <div class="card text-center">
-                        <div class="card-header" ng-if="typeOfDriver != 'Driver - Salary'">
-                            Weekly Time Sheet
-                        </div>
-                        <div class="card-header" ng-if="typeOfDriver === 'Driver - Salary'">
-                            Weekly Mileage Approval
-                        </div>
-                        <div class="card-body">
-                            <h5 class="card-title">{{payPeriodName}}</h5>
-                            <div class="mt-1" ng-if="typeOfDriver != 'Driver - Salary'">
-                                <table class="table">
-                                    <thead>
-                                        <th>Mileage</th>
-                                        <th>Drive Time</th>
-                                        <th>Stay Time</th>
-                                        <th>Total Time</th>
-                                      </thead>
-                                      <tbody>
-                                        <tr  ng-repeat="m in mileageDetail">
-                                          <td>{{m.mileage}}</td>
-                                          <td>{{m.driveTime}}</td>
-                                          <td>{{m.stayTime}}</td>
-                                          <td>{{m.totalTime}}</td>
-                                        </tr>
-                                      </tbody>
-                                </table>
-                            </div>
-                            <div class="mt-1" ng-if="typeOfDriver === 'Driver - Salary'">
-                                <table class="table" style="margin: 0 auto; width: 28%">
-                                    <thead>
-                                        <th>Mileage</th>
-                                      </thead>
-                                      <tbody>
-                                        <tr  ng-repeat="m in mileageDetail">
-                                          <td>{{m.mileage}}</td>
-                                        </tr>
-                                      </tbody>
-                                </table>
-                            </div>
-                            <div ng-class="{'sPadding': typeOfDriver === 'Driver - Salary'}">
-                                <table class="table table-borderless width-of-table">
-                                    <tr>
-                                        <td class="font-style text-td">{{confirmMessage}}</td>
-                                        <td><div class="check-input"><input type="checkbox" name="confirm-checkbox"  ng-model="confirmCheck" ng-change="confirmChange(confirmCheck)"/ ></div></td>
-                                    </tr>
-                                    <tr>
-                                        <td class="font-style text-td" id="Error_td" >{{errorMessage}}</td>
-                                        <td><div class="check-input"><input type="checkbox"  name="error-checkbox"  ng-model="errorCheck" ng-change="errorChange(errorCheck)"/ ></div></td>
-                                    </tr>
-                                </table>
-                            </div>
-                        </div>
-                        <div class="card-footer text-muted">
-                            <button class="btn btn-primary"  type="button" ng-click="downloadReport()" ng-show="showDownload">
-                                Download Detailed Report
-                            </button>
-                            <button class="btn btn-primary"  type="button" ng-click="submitRequest()" ng-disabled="submitRequestBtn">
-                                Submit
-                            </button>
-                        </div>
-                    </div> 
-                </div>
-                </div>
-          
-        </section>
-
-        <section class="d_fluid" ng-show="notAccurate"> 
-            <div class="fluid">
-                <div class="sync-info col-12 col-sm-6 col-md-8">
-                    <div class="card text-center">
-                        <div class="card-header font-weight-bold head-font head-pad">
-                            Instructions
-                        </div>
-                        <div class="card-body cd-pad">
-                            <h5 class="card-title font-weight-bold" ng-if="typeOfDriver != 'Driver - Salary'">Please follow these instructions to correct your weekly time and attendance</h5>
-                            <h5 class="card-title font-weight-bold" ng-if="typeOfDriver === 'Driver - Salary'">Please follow these instructions to correct your weekly mileage</h5>
-                            <div class="mt-05">
-                                <table class="table table-borderless align_items">
-                                      <tbody>
-                                        <tr>
-                                          <td>Step 1. </td>
-                                          <td>Review your trips (Ensure all trips are categorized properly)</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Step 2. </td>
-                                            <td>Add or edit your mileage</td>
-                                          </tr>
-                                          <tr>
-                                            <td>Step 3. </td>
-                                            <td>
-                                                <p>Resync your mileage</p>
-                                                <iframe width="457" height="215" src="https://www.youtube.com/embed/Yc21UqzygTU" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen="allowfullscreen"></iframe>
-                                            </td>
-                                          </tr>
-                                          <tr>
-                                            <td>Step 4. </td>
-                                            <td class="font-weight-bold text-uppercase">Do not close this window until your sync is complete</td>
-                                          </tr>
-                                      </tbody>
-                                </table>
-                            </div>
-                            <div>
-                                <table class="table table-borderless width-of-table td-all">
-                                    <tr>
-                                        <td class="text-td green-text fs-18 font-weight-bold">I have completed all of the steps</td>
-                                        <td><div class="check-input"><input type="checkbox"   name="complete-checkbox"  ng-model="completeSync" ng-change="completeChange(completeSync)"/ ></div></td>
-                                    </tr>
-                                </table>
-                            </div>
-                        </div>
-                        <div class="card-footer text-muted footer-pad">
-                            <button class="btn btn-primary"  type="button" ng-click="submitRequestSync()" ng-disabled="submitRequestSyncBtn">
-                                Submit
-                            </button>
-                        </div>
-                    </div> 
-                </div>
-                </div>
-          
-        </section>
-        <!-- The Import file Modal -->
-        <div class="modal fade adminrosterImportProcess" tabindex="-1" role="dialog" aria-labelledby="adminrosterImportProcess" id="adminrosterImportProcess">
-            <div class="modal-dialog modal-lg modal-dialog-centered">
-                <div class="modal-content rounded-0">
-                    <!-- <button type="button" class="close popup-close-btn" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button> -->
-
-                    <div class="modal-body text-center">
-                        <h4 class="fileupload-title-2">We review and assess compliance status monthly. Your compliance status will not potentially affect
-                            your reimbursement amount until the end of the year.</h4>
-                        <div class="w-100">
-                            <img src="{!URLFOR($Resource.EmcCSS,'emc-design/assets/images/adminroster-importfile-loader.svg')}" width="15%" class="img-fluid"
-                                alt="Admin roster import file loader" />
-                        </div>
-                        <p class="fileupload-title-2 font-weight-bold">New to the program and have not received your driver packet? We will email it within two business
-                            days.</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <apex:include pageName="EMC_Common_footer" />
-
-        <script type="text/javascript">
-            $(document).ready(function () {
-                $('.box__input').bind('drop', function (evt) {
-                    evt.stopPropagation();
-                    evt.preventDefault();
-                    //let fileType = 'application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document';
-                    let fileType = 'application/pdf';
-                    if (evt.originalEvent.dataTransfer.files.length > 1) {
-                        angular.element('#theBody').scope().showToast('Please select only one file.', true);
-                        return;
-                    }
-                    var files = evt.originalEvent.dataTransfer.files;
-                    if (fileType.indexOf(files[0].type) == -1) {
-                        angular.element('#theBody').scope().showToast('Please select valid file.', true);
-                        return;
-                    }
-                    //angular.element('#theBody').scope().loadDropfile(files);
-                    ($('#file'))[0].files = evt.originalEvent.dataTransfer.files;
-                    //alert($('#file').files.size);
-                    $('#file').siblings()[1].innerHTML = files[0].name;
-                    $('#file').trigger('change');
-                })
-            });
-
-            $('#uploadBtn').click(function () {
-                $('#file').trigger('click');
-            });
-        </script>
+    </div>
+    <apex:includeLightning />
+    <apex:slds />
+    <body oncontextmenu="return false;" onload="init()">
+        <div id="lightning"></div>
     </body>
-    </html>
-    <!-- End Default Content REMOVE THIS -->
+    <script>
+        $("#spinner").show();
+        /* Toaster Option */
+      
+        this.setOptions = function () {
+            toastr.options.positionClass = "toast-top-right";
+            toastr.options.closeButton = true;
+            toastr.options.progressBar = true;
+           // toastr.options.timeOut= 0;
+            toastr.options.fadeOut = 100000;
+            //toastr.options.fadeOut = 9500//100000;
+        };
+
+        this.setOptions();
+        this.clear = function () {
+            toastr.clear();
+        };
+        
+        fetch("/app/c/LWCLightningApp.app?aura.format=JSON&aura.formatAdapter=LIGHTNING_OUT")
+        .then(function (response) {
+                if (response.status !== 200) {
+                    $("#spinner").hide();
+                    toastr.error("This site can't be reached. Please try again to login");
+                    setTimeout(() => {window.location.href = "/app/secur/logout.jsp"}, 5000);
+                }
+        })
+        .catch(function (error) {
+                ///if status code 401...
+        });
+        function init(){
+                var ProfileId, Role
+                ProfileId = "{!$User.ProfileId}";
+                Role = (ProfileId === '00e31000001FRDWAA4') ? 'Manager' : (ProfileId === '00e31000001FRDXAA4') ? 'Manager/Driver' : (ProfileId === '00e31000001FRDYAA4') ? 'Admin' : (ProfileId === '00e31000001FRDZAA4') ? 'Admin/Driver' : 'Driver';
+                $Lightning.use("c:LWCLightningApp", function () {
+                    $Lightning.createComponent("c:dashboardWeekly", {
+                        //pass parameter values to lwc js controller
+                        profile: ProfileId,
+                        userRole: Role
+                    }, "lightning", function (cmp) {
+                    // setTimeout(()=>{$("#spinner").hide();}, 1000);
+                        $("#spinner").hide();
+                        console.log("component created successfully");
+                        // do some stuff
+                        document.querySelector('c-dashboard-weekly').addEventListener('show', (e) => {
+                            $("#spinner").show();
+                        })
+
+                        document.querySelector('c-dashboard-weekly').addEventListener('hide', (e) => {
+                            $("#spinner").hide();
+                        })
+
+                        document.querySelector('c-dashboard-weekly').addEventListener('toast', (e) => {
+                                if(e.detail.type === 'error'){
+                                    toastr.error(e.detail.message)
+                                }else if(e.detail.type === 'success'){
+                                    toastr.success(e.detail.message)
+                                }else if(e.detail.type === 'info'){
+                                    toastr.info(e.detail.message)
+                                }
+                        })
+                    }
+                    );
+                });
+        }
+    </script>
 </apex:page>

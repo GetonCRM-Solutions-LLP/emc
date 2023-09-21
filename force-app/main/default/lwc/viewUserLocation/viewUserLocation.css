@@ -101,3 +101,11 @@
     border-top-left-radius: 10px;
     border-bottom-left-radius: 10px;
   }
+
+  .close-btn{
+    background: var(--color-white);
+    position: absolute;
+    right: 7px;
+    top: 9px;
+    cursor: pointer;
+  }

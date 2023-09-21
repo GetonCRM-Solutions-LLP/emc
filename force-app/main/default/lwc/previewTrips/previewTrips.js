@@ -15,14 +15,17 @@ export default class PreviewTrips extends LightningElement {
     @api endDate;
     @api contactInfo;
     sortable = true;
+    isSearchEnable = true;
     recordDisplay = false;
-    classToTable = 'slds-table--header-fixed_container p-top-v1';
+    classToTable = 'fixed-container';
+    noMessage = 'There is no data available';
     modelList;
     originalModelList;
     modalKeyFields;
     modalListColumn;
     isScrollable;
     isSort = true;
+    _value = ""
     monthColumn = [{
             id: 1,
             name: "Trip date",
@@ -111,7 +114,7 @@ export default class PreviewTrips extends LightningElement {
                     let singleValue = {}
                     if (keyFields.includes(key) !== false) {
                         singleValue.key = key;
-                        singleValue.value = element[key];
+                        singleValue.value = (key === 'status' || key === 'originname' || key === 'destinationname') ? (element[key] === null || element[key] === undefined || element[key] === "") ? "—" : element[key] : element[key];
                         singleValue.truncate = (key === 'originname' || key === 'destinationname') ? true : false;
                         singleValue.tooltip = (key === 'status' || key === 'originname' || key === 'destinationname') ? true : false;
                         singleValue.tooltipText = (key === 'originname') ? (element.origin != null ? element.origin : 'This trip was manually entered without an address.') : (key === 'destinationname') ? (element.destination != null ? element.destination : 'This trip was manually entered without an address.') : (element.status === 'Rejected') ? (element.approvalName !== null && element.approvalName === 'Tom Honkus') ? 'Your mileage was automatically flagged by the system on ' + element.approveddate :  ((element.approvalName !== null ? element.approvalName : '') + ' flagged on ' + element.approveddate) : (element.status === 'Approved') ? (element.approvalName !== null && element.approvalName === 'Tom Honkus') ? 'Your mileage was automatically approved by the system on ' + element.approveddate : ((element.approvalName !== null ? element.approvalName : '') + ' approved on ' + element.approveddate) : 'Unapproved';
@@ -140,12 +143,21 @@ export default class PreviewTrips extends LightningElement {
         });
     }
 
+    handleClearInput(){
+        this._value = "";
+        this.isSearchEnable = this._value === "" ? true : false;
+        this.template
+        .querySelector("c-user-preview-table")
+        .searchByKey(this._value);
+    }
+
     backToDashboard(){
         events(this, '')
     }
 
     handleChange(event) {
 		this._value = event.target.value;
+        this.isSearchEnable = this._value === "" ? true : false;
         this.template.querySelector('c-user-preview-table').searchByKey(this._value, this.modelList)
 	}
 
@@ -224,7 +236,7 @@ export default class PreviewTrips extends LightningElement {
             }).then(data => {
                 let resultData = data[0].replace(/\\/g, '');
                 this.modelList = this.proxyToObject(resultData);
-                this.classToTable = this.modelList.length > 5 ? 'slds-table--header-fixed_container preview-height p-top-v1' : 'slds-table--header-fixed_container p-top-v1'
+                this.classToTable = this.modelList.length > 5 ? 'fixed-container' : 'fixed-container'
                 this.originalModelList = this.proxyToObject(resultData);
                 this.modalListColumn = this.monthColumn;
                 this.modalKeyFields = this.monthKeyFields;
@@ -242,7 +254,7 @@ export default class PreviewTrips extends LightningElement {
             }).then(data => {
                 let resultData = data[0].replace(/\\/g, '');
                 this.modelList = this.proxyToObject(resultData);
-                this.classToTable = this.modelList.length > 5 ? 'slds-table--header-fixed_container preview-height' : 'slds-table--header-fixed_container'
+                this.classToTable = this.modelList.length > 5 ? 'fixed-container' : 'fixed-container'
                 this.originalModelList = this.proxyToObject(resultData);
                 this.modalListColumn = this.monthColumn;
                 this.modalKeyFields = this.monthKeyFields;

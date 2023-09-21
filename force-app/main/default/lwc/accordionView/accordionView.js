@@ -29,6 +29,7 @@ export default class AccordionView extends LightningElement {
   isReimbursementView = false;
   isScrollable = false;
   listOfRecord = false;
+  noMessage = 'There is no data available';
  @track listVisible = false;
   isRowDn = true;
   sortable =  false;
@@ -110,14 +111,17 @@ export default class AccordionView extends LightningElement {
           singleValue.icon = (!this.isTandA) ? (key === "month" || key === "startDate") ? true : false : false;
           singleValue.bold = (key === "totalReimbursements" || key === "totalReim") ? true : false;
           singleValue.twoDecimal = (key === "mileage") ? true : false;
-          singleValue.isDate = (key === "startDate" || key === "endDate") ? true : false;
-          singleValue.isfourDecimalCurrency = (key === 'variableRate' || key === 'VariableRate') ? true : false;
+          singleValue.isDate = (key === "startDate" || key === "endDate" || key === "approvalDate") && (element[key] !== null) ? true : false;
+          singleValue.isfourDecimalCurrency = (key === 'variableRate' || key === 'VariableRate')  && (element[key] !== null) ? true : false;
           singleValue.istwoDecimalCurrency = (key === "fuel" ||
             key === "fixedAmount" ||
+            key === "fixed1" ||
+            key === "fixed2" ||
+            key === "fixed3" ||
             key === "totalReimbursements" ||
             key === "varibleAmount" ||
             key === "totalReim" ||
-            key === "variable") ? true : false;
+            key === "variable") ? (element[key] === "null" || element[key] === null) ? false : true : false;
           singleValue.hasLeadingZero = ((key === "fuel" ||
             key === "fixedAmount" ||
             key === "totalReimbursements" ||
@@ -127,7 +131,6 @@ export default class AccordionView extends LightningElement {
             key === "variable" || key === "mileage" ||
             key === "fixed1" || key === "fixed2" ||
             key === "fixed3") && ((element[key] !== "null" || element[key] !== null) && (singleValue.value !== '0.00') && (singleValue.value !== '0.0000')) && (/^0+/).test(singleValue.value) === true) ? (singleValue.value).replace(/^0+/, '') : null;
-          singleValue.isDate = (key === "startDate" || key === "endDate") ? true : false;
           model.push(singleValue);
         }
         //use key and value here

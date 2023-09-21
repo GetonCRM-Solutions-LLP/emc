@@ -138,27 +138,35 @@
                 opacity: 1 !important;
                 background-color: #FA7800!important
             } */
-            .toast-message{
-                color: #ffffff;
-                font-size: 16px;
-                font-family: 'Proxima Nova' !important;
-            }
+        
 
             .toast-progress {
-                background-color: #fff !important;
-                opacity: 1 !important;
+                    background-color: #fff !important;
+                    opacity: 1 !important;
+            }
+
+            #toast-container>div{
+               /* background-position: top 15px left 10px !important; */
+                box-shadow: none !important;
+            }
+
+            .toast-message{
+                color: #fff;
+                font-family: 'Proxima Nova' !important;
+                padding: 0 16px 0 12px;
             }
 
             .toast-success,.toast-info,.toast-warning,.toast-error{
-                opacity: 1 !important;
-                width:400px !important;
-                font-size:0.9rem;
-                border-radius:1rem !important;
-                background-color:#404b5a !important;
-                color:#ffffff !important;
-                border-color:transparent !important;
-                font-family: 'Proxima Nova' !important;
-                overflow: inherit !important;
+                    opacity: 1 !important;
+                    width: 343px !important;
+                    font-size: 13px;
+                    border-radius: 12px !important;
+                    background-color:#404b5a !important;
+                    color:#ffffff !important;
+                    border-color:transparent !important;
+                    font-family: 'Proxima Nova' !important;
+                    overflow: inherit !important;
+                    padding: 25px 15px 25px 42px !important;
             }
 
 
@@ -170,12 +178,17 @@
                 text-shadow: none !important;
                 font-family: 'Proxima Nova' !important;
                 right: 0em !important;
-                top: -0.61em !important;
+                top: -0.78em !important;
             }
 
             #toast-container>.toast-error {
-                background-image:  url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 30 30" fill="none"><path d="M7.60156 21.9948L21.995 7.60144" stroke="%23FA7800" stroke-width="2.91497" stroke-linecap="round"/><path d="M7.60156 7.61179L21.995 22.0052" stroke="%23FA7800" stroke-width="2.91497" stroke-linecap="round"/></svg>') !important;
+                    background-image:  url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" viewBox="0 0 30 30" fill="none"><path d="M7.60156 21.9948L21.995 7.60144" stroke="%23FA7800" stroke-width="2.91497" stroke-linecap="round"/><path d="M7.60156 7.61179L21.995 22.0052" stroke="%23FA7800" stroke-width="2.91497" stroke-linecap="round"/></svg>') !important;
             }
+
+            .toast.toast-success {
+              background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='25' height='19.643' viewBox='0 0 25 19.643' fill='none'%3e%3cpath d='M9.802 14.245 20.918 0.978l0.005 -0.009a1.393 1.393 0 0 1 2.083 0 1.664 1.664 0 0 1 0.003 2.212L10.857 17.597l-0.005 0.007a1.408 1.408 0 0 1 -1.041 0.468 1.409 1.409 0 0 1 -1.041 -0.468l-6.776 -7.337a1.664 1.664 0 0 1 0 -2.214l7.808 6.189Zm0 0 -5.725 -6.192a1.393 1.393 0 0 0 -2.083 0l7.808 6.191Z' fill='%237ABB4A' stroke='%237ABB4A' stroke-width='0.42857142857142855'/%3e%3c/svg%3e") !important;
+            }
+
 
             ::-webkit-scrollbar-track {
                 -webkit-box-shadow: inset 0 0 6px #F6F6F6;
@@ -245,14 +258,16 @@
  
 
     <script>
-          var nameOfUser, ProfileId,  performanceProfile, url , path, userLogin;
+          var nameOfUser, ProfileId, videoWrapper, performanceProfile, url , path, meeting, userLogin;
           url = location;
           path = url.origin + url.pathname + url.search;
+          videoWrapper = {!videoCustom};
           performanceProfile = window.performance.getEntriesByType("navigation")[0].type;
           nameOfUser = '{!contactName}';
           userLogin = '{!userLoginCount}';
           ProfileId = "{!$User.ProfileId}";
-          console.log("Profile", ProfileId, '{!$Profile.Name}', userLogin);
+          meeting = '{!ScheduleGotoMeeting}';
+          console.log("Profile", ProfileId, '{!$Profile.Name}', userLogin, meeting);
             // if(window.performance.navigation.type === 1){
             //     //location.replace(path);
             // }
@@ -383,7 +398,9 @@
                 $Lightning.createComponent("c:driverDashboardFrame", {
                     //pass parameter values to lwc js controller
                     "chartData": chartDataValue,
-                     profile: ProfileId
+                     profile: ProfileId,
+                     driverMeeting: meeting,
+                     customSetting: videoWrapper
                     }, "mainLwc", function (cmp) {
                             console.log("Component Created Successfully");
                             document.querySelector('c-driver-dashboard-frame').addEventListener('show', (e) => {
@@ -407,6 +424,21 @@
                             document.querySelector('c-driver-dashboard-frame').addEventListener('toast', (e) => {
                                 toastr.error('No mileage');
                               //  toastr.success('Your mileage have been approved successfully', 'Success Message');
+                            });
+
+
+                            document.querySelector('c-driver-dashboard-frame').addEventListener('sent', (e) => {
+                                if(e.detail.contactEmail != undefined && e.detail.contactPhone != undefined){
+                                    toastr.success("The email was sent to "+ e.detail.contactEmail + " as well as a text message to " + e.detail.contactPhone +". Please check your email and text message to get started.") //  + " as well as a text message to " + contactPhone  Please check your email and text message to get started
+                                }else{
+                                    if(e.detail.contactEmail != undefined){
+                                        toastr.success("The email was sent to "+ e.detail.contactEmail +". Please check your email to get started.")
+                                    }
+                                }
+                            });
+
+                            document.querySelector('c-driver-dashboard-frame').addEventListener('senterror', (e) => {
+                                toastr.error(e.detail)
                             });
 
                             document.querySelector('c-driver-dashboard-frame').addEventListener('location', (e) => {

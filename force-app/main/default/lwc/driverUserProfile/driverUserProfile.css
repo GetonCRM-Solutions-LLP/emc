@@ -589,11 +589,25 @@
     color: #1D1D1D;
 }
 
-.content-text:hover{
+
+.content-text>*:has(+ .arrow-svg:hover){
+    color: var(--green-color) !important;
+}
+
+.content-text:has(+ .arrow-svg:hover){
     color: #7ABB4A !important;
 }
 
 .content-text{
+    pointer-events: none;
+}
+
+.content-text + div{
+   cursor: pointer;;
+}
+
+.arrow-svg{
+    margin: 0 0 1px 2px;
     cursor: pointer;
 }
 
@@ -672,11 +686,15 @@
 }
 
 .no-data-message{
-    font-size: 24px;
+    font-size: 15px;
     line-height: 29px;
     text-align: center;
     color: var( --link-color);
     font-family: 'Proxima Nova Semibold' !important;
+}
+
+.opaque{
+    opacity: 0.4;
 }
 
 .bold-text{
@@ -691,4 +709,50 @@
     font-family:'Proxima Nova Bold' !important;
     line-height: 17px;
     color: var(--link-color) !important;
+}
+
+.slds-checkbox_toggle [type=checkbox]:checked+.slds-checkbox_faux_container .slds-checkbox_faux{
+    border-color: var(--active-color) !important;
+    background-color: var(--active-color) !important;
+}
+
+.slds-checkbox_toggle .slds-checkbox_faux.toogle-input{
+    border-color: var(--active-color) !important;
+    background-color: var(--active-color) !important;
+}
+
+.slds-checkbox_toggle [type=checkbox]:checked+.slds-checkbox_faux_container+.input-label .map--canada{
+    color: #1D1D1D;
+    font-family: 'Proxima Nova Bold' !important;
+}
+
+.slds-checkbox_toggle [type=checkbox]:checked+.slds-checkbox_faux_container+.input-label .map--us{
+    color: rgba(29, 29, 29, 0.50);
+    font-family: 'Proxima Nova' !important;
+}
+
+.slds-checkbox_toggle [type=checkbox]+.slds-checkbox_faux_container+.input-label .map--canada{
+    color: rgba(29, 29, 29, 0.50);
+    font-family: 'Proxima Nova' !important;
+}
+
+.slds-checkbox_toggle [type=checkbox]+.slds-checkbox_faux_container+.input-label .map--us{
+    color: #1D1D1D;
+    font-family: 'Proxima Nova Bold' !important;
+}
+
+.slds-checkbox_toggle .slds-checkbox_faux{
+    box-shadow: none !important;
+}
+
+.map-label{
+    font-size: 14px;
+    line-height: 136.8%;
+}
+
+.close-btn{
+    background: var(--even-row-color);
+    position: absolute;
+    right: 7px;
+    top: 9px;
 }

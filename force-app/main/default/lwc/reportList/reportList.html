@@ -59,6 +59,7 @@
         </div>
     </div>
     <template lwc:if={progressbar}>
+        <div class="progress-background" ></div>
         <lightning-progress-bar value={progress}></lightning-progress-bar>
     </template>
    
@@ -132,14 +133,16 @@
         </template>
     </div>
     <template lwc:if={progressbar}>
+        <div class="progress-background" ></div>
         <lightning-progress-bar value={progress}></lightning-progress-bar>
     </template>
-    <div class="slds-backdrop slds-backdrop_open"></div>
+    <!-- <div class="slds-backdrop slds-backdrop_open"></div> -->
     <div class="button_class_modal slds-align_absolute-center" >
             <template lwc:if={downloadBtn}>
                 <button type="button"
                 class="slds-btn slds-btn-primary slds-btn-sm waves-effect bc-green waves-light mleft-0 btn-trip" disabled={isAreaDisabled} onclick={handledownloadsummary}>
-                Download</button>
+                <svg  class="download-svg" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="3 0 12 14" fill="none"><path  d="M3.42685 5.66718L3.42684 5.66717C3.1633 5.40363 3.1633 4.97864 3.42685 4.71511C3.69039 4.45156 4.11538 4.45156 4.37891 4.71511L6.28511 6.62131V0.816062C6.28511 0.444945 6.5864 0.143652 6.95752 0.143652C7.32864 0.143652 7.62993 0.444945 7.62993 0.816062V6.62131L9.53613 4.71511C9.79967 4.45156 10.2247 4.45156 10.4882 4.71511C10.7517 4.97865 10.7517 5.40364 10.4882 5.66717L7.43365 8.72173C7.40101 8.75436 7.36607 8.78115 7.33186 8.80475L7.33131 8.80512C7.32183 8.8114 7.31252 8.81605 7.3052 8.81971L7.30461 8.82001C7.29674 8.82394 7.29103 8.82684 7.28549 8.83051L7.28471 8.83103L7.28471 8.83102L7.28383 8.83156C7.26428 8.84381 7.241 8.85839 7.21403 8.86748C7.21383 8.86755 7.21362 8.86762 7.21342 8.86769L7.20202 8.8335C7.18994 8.83802 7.17792 8.84167 7.16537 8.84547C7.15671 8.8481 7.1478 8.8508 7.13845 8.85392L3.42685 5.66718ZM3.42685 5.66718L6.48211 8.72173L6.48219 8.72181C6.51154 8.75097 6.54645 8.78071 6.58467 8.80527M3.42685 5.66718L6.58467 8.80527M6.58467 8.80527C6.58459 8.80522 6.58452 8.80517 6.58445 8.80512L6.60436 8.77508M6.58467 8.80527C6.58474 8.80531 6.58482 8.80536 6.58489 8.80541L6.60436 8.77508M6.60436 8.77508C6.56867 8.75218 6.53564 8.72412 6.50759 8.69625L6.69829 8.86607C6.69799 8.86592 6.69769 8.86577 6.69739 8.86562L6.71373 8.8335C6.69974 8.82732 6.68667 8.82014 6.67401 8.81318C6.66594 8.80875 6.65804 8.80441 6.65017 8.80047C6.63489 8.79283 6.61962 8.7852 6.60436 8.77508ZM7.28849 8.78778C7.29612 8.78396 7.30376 8.78014 7.31139 8.77508L7.28849 8.78778ZM7.28849 8.78778C7.28085 8.7916 7.27322 8.79541 7.26559 8.80047L7.28849 8.78778ZM12.9508 11.1841V11.184C12.9506 10.8128 12.6497 10.5117 12.2784 10.5117H1.63637C1.26526 10.5117 0.963965 10.8129 0.963965 11.1841C0.963965 11.5552 1.26526 11.8565 1.63637 11.8565H12.2784C12.6495 11.8565 12.9508 11.5552 12.9508 11.1841Z" fill="white" stroke="white" stroke-width="0.0720703"></path>
+                </svg>Download</button>
             </template>
             <template lwc:if={byweeksubmit}>
                 <button type="button"
@@ -171,6 +174,7 @@
         </div>
     </div>
     <template lwc:if={progressbar}>
+        <div class="progress-background" ></div>
         <lightning-progress-bar value={progress}></lightning-progress-bar>
     </template>
     <!-- <div class="slds-backdrop slds-backdrop_open"></div> -->
@@ -183,7 +187,7 @@
     </div>
 </c-user-profile-modal>
 
-<c-user-profile-modal class="modal_position"  data-id='anual_tax_liability' header='Contact List' month=''  show-btn={isFalse}
+<c-user-profile-modal class="modal_position"  data-id='anual_tax_liability'  month=''  show-btn={isFalse}
     modal-class={modalclass}
     header-class={headerclass}
     modal-content-style={modalcontentstyle}
@@ -191,20 +195,17 @@
     subheader-class={subheaderClass}
     close-btn-class={closebtnclass} onclosedialog={handleCloseModal}>
     <div class="modal_header" data-id="tax_liability">
-        <label class="slds-form-element__label date_label date_label_02" for="mileageInput-01">Year:</label> 
-        <div class="year_list">
-            <c-dropdown-select class="header_dropdown"
-                options={yearList}
-                title="Select Year"
-                onchange={handleselectYear}
-                main-class="default-box-input-small slds-truncate">
-            </c-dropdown-select>
-        </div>
-
+        
+        <template lwc:if={backbutton}>
+            <div>
+                <lightning-icon class=" back_button " icon-name="utility:back" size="xx-small" onclick={handleClose} ></lightning-icon>
+            </div>
+        </template>
+        <div class="Contact_List">Contact List</div>
         <div>
             <div class="display_div">
                 <div class="slds-checkbox checkbox_style">
-                    <input type="checkbox" class="" data-element-type="checkbox" name="options" id="1" data-id="1"
+                    <input type="checkbox" class="checkbox_all" data-element-type="checkbox" name="options" id="1" data-id="1"
                         tabindex="0"
                         aria-labelledby="check-select-all-label column-group-header"
                         onclick={handleCheckboxAll} />
@@ -214,6 +215,19 @@
                         <!-- <span class="slds-form-element__label slds-assistive-text">Select All</span> -->
                     </label>
                 </div><li class="tax_name">Select All</li>
+                <div class="year_div">
+                    <template lwc:if={yeardropdown}>
+                        <label class="slds-form-element__label date_label date_label_02" for="mileageInput-01">Year:</label> 
+                        <div class="year_list">
+                            <c-dropdown-select class="header_dropdown"
+                                options={yearList}
+                                title="Select Year"
+                                onchange={handleselectYear}
+                                main-class="default-box-input-small slds-truncate">
+                            </c-dropdown-select>
+                        </div>
+                    </template>
+                </div>
             </div>    
             <template for:each={visibleAccounts} for:item="acc">
                 
@@ -240,7 +254,9 @@
         
             <button type="button"
             class="slds-btn slds-btn-primary slds-btn-sm waves-effect bc-green waves-light mleft-0 btn-trip" disabled={isAreaDisabled} onclick={handleDownloadExcel}>
-            Download</button>
+                <svg  class="download-svg" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="3 0 12 14" fill="none"><path  d="M3.42685 5.66718L3.42684 5.66717C3.1633 5.40363 3.1633 4.97864 3.42685 4.71511C3.69039 4.45156 4.11538 4.45156 4.37891 4.71511L6.28511 6.62131V0.816062C6.28511 0.444945 6.5864 0.143652 6.95752 0.143652C7.32864 0.143652 7.62993 0.444945 7.62993 0.816062V6.62131L9.53613 4.71511C9.79967 4.45156 10.2247 4.45156 10.4882 4.71511C10.7517 4.97865 10.7517 5.40364 10.4882 5.66717L7.43365 8.72173C7.40101 8.75436 7.36607 8.78115 7.33186 8.80475L7.33131 8.80512C7.32183 8.8114 7.31252 8.81605 7.3052 8.81971L7.30461 8.82001C7.29674 8.82394 7.29103 8.82684 7.28549 8.83051L7.28471 8.83103L7.28471 8.83102L7.28383 8.83156C7.26428 8.84381 7.241 8.85839 7.21403 8.86748C7.21383 8.86755 7.21362 8.86762 7.21342 8.86769L7.20202 8.8335C7.18994 8.83802 7.17792 8.84167 7.16537 8.84547C7.15671 8.8481 7.1478 8.8508 7.13845 8.85392L3.42685 5.66718ZM3.42685 5.66718L6.48211 8.72173L6.48219 8.72181C6.51154 8.75097 6.54645 8.78071 6.58467 8.80527M3.42685 5.66718L6.58467 8.80527M6.58467 8.80527C6.58459 8.80522 6.58452 8.80517 6.58445 8.80512L6.60436 8.77508M6.58467 8.80527C6.58474 8.80531 6.58482 8.80536 6.58489 8.80541L6.60436 8.77508M6.60436 8.77508C6.56867 8.75218 6.53564 8.72412 6.50759 8.69625L6.69829 8.86607C6.69799 8.86592 6.69769 8.86577 6.69739 8.86562L6.71373 8.8335C6.69974 8.82732 6.68667 8.82014 6.67401 8.81318C6.66594 8.80875 6.65804 8.80441 6.65017 8.80047C6.63489 8.79283 6.61962 8.7852 6.60436 8.77508ZM7.28849 8.78778C7.29612 8.78396 7.30376 8.78014 7.31139 8.77508L7.28849 8.78778ZM7.28849 8.78778C7.28085 8.7916 7.27322 8.79541 7.26559 8.80047L7.28849 8.78778ZM12.9508 11.1841V11.184C12.9506 10.8128 12.6497 10.5117 12.2784 10.5117H1.63637C1.26526 10.5117 0.963965 10.8129 0.963965 11.1841C0.963965 11.5552 1.26526 11.8565 1.63637 11.8565H12.2784C12.6495 11.8565 12.9508 11.5552 12.9508 11.1841Z" fill="white" stroke="white" stroke-width="0.0720703"></path>
+                </svg>Download
+            </button>
         
     </div>
 </c-user-profile-modal>

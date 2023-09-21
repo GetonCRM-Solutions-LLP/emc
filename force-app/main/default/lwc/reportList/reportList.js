@@ -3,13 +3,16 @@ import getReports from '@salesforce/apex/ReportListController.getAllReports';
 import updatelockdate from '@salesforce/apex/ReportListController.updateLockDate';
 // import getpayperiodDate from '@salesforce/apex/BiweeklyPayPeriod.getPayPeriodDates';
 import { NavigationMixin } from 'lightning/navigation';
-import accountMonthList from "@salesforce/apex/ManagerDashboardController.accountMonthList";
+// import accountMonthList from "@salesforce/apex/ManagerDashboardController.accountMonthList";
+import accountMonthList from "@salesforce/apex/ReportDetailsController.monthList";
 import { loadStyle , loadScript } from 'lightning/platformResourceLoader';
 import jQueryMinified from '@salesforce/resourceUrl/jQueryMinified';
 import datepicker from '@salesforce/resourceUrl/calendar';
 import customMinifiedDP  from '@salesforce/resourceUrl/modalCalDp';
 import REPORT_LIST_STYLE from '@salesforce/resourceUrl/ReportListResource';
 import ERMIPayPeriod from '@salesforce/label/c.ERMIPayPeriodDate';
+import PayPeriodDatelabel from '@salesforce/label/c.PayPeriodDate';
+import TripDetailReport from '@salesforce/apex/ReportListController.TripDetailReport';
 import monthPicklist from '@salesforce/label/c.Ermi_Tax_Report_month_picklist';
 import employeeTypePicklist from '@salesforce/label/c.Ermi_Tax_Report_employee_type_picklist';
 import biweekpayperiod from '@salesforce/apex/ReportListController.payPeriodDateList';
@@ -23,6 +26,14 @@ import downloadExcel from '@salesforce/apex/ReportListController.downLoadComplia
 import postHalfFPFullDriverAPI  from '@salesforce/apex/ReportListController.postHalfFPFullDriverAPI';
 import ErmiDriverList  from '@salesforce/apex/ReportListController.ErmiDriverList';
 import CheckStatus  from '@salesforce/apex/ReportListController.CheckStatus';
+
+import ERMI_ADMIN_ID from '@salesforce/label/c.ERMI_ADMIN_ID';
+import Bi_Weekly_Payment_Report from '@salesforce/label/c.Bi_Weekly_Payment_Report';
+import AISAccount from '@salesforce/label/c.AISAccount';
+import FramptonConstruction from '@salesforce/label/c.FramptonConstruction';
+import ERMI_Account from '@salesforce/label/c.ERMI_Account';
+
+
 
 
 export default class ReportList extends NavigationMixin(LightningElement) {
@@ -75,6 +86,9 @@ export default class ReportList extends NavigationMixin(LightningElement) {
     progressbar = false;
     year ;
     isAreaDisabled = true;
+    yeardropdown = false;
+    BiWeekly_Payment;
+    ERMI_ACCOUNT;
     // intervalId;
     // data;
    
@@ -108,11 +122,12 @@ export default class ReportList extends NavigationMixin(LightningElement) {
       }
   
     connectedCallback(){
-      
+       
         this._accid  = this.getUrlParamValue(window.location.href, 'accid')
         this._adminid  = this.getUrlParamValue(window.location.href, 'id')
         this.getYear();
         this.getAccountMonthList();
+        this.getCustomLabelArray();
         getReports({contactId : this._adminid})
         .then(result => {
             this.reportdata = JSON.parse(result);
@@ -122,17 +137,39 @@ export default class ReportList extends NavigationMixin(LightningElement) {
                     this.reportdetailname.push({name:element.categoryName , reportname : index.reportName })
                 })
             });
-            this.reportdetailname.push({name:"Reimbursement Reports" , reportname : "Bi-Weekly Payment Report" })
-                this.reportdetailname.push({name:"Reimbursement Reports" , reportname : "Time and Attendance Detail Report" })
-                this.reportdetailname.push({name:"Reimbursement Reports" , reportname : "Time, Attendance and Mileage Summary Report" })
-                this.reportdetailname.push({name:"Reimbursement Reports" , reportname : "Monthly Tax Report" })
-                this.reportdetailname.push({name:"NetChex Payable Reports" , reportname : "Bi-weekly Time and Attendance Payment" })
-                this.reportdetailname.push({name:"NetChex Payable Reports" , reportname : "Bi-weekly Salary and Full Time Fixed Payment" })
-                this.reportdetailname.push({name:"NetChex Payable Reports" , reportname : "Monthly NetChex Variable Payment" })
-                this.reportdetailname.push({name:"NetChex Payable Reports" , reportname : "Monthly Part Time Fixed Amount Payment" })
-                this.reportdetailname.push({name:"NetChex Payable Reports" , reportname : "Delete NetChex Report" })
+                this.ERMI_ACCOUNT.forEach(eermiacct => {
+                    if(eermiacct == this._accid){
+                        this.reportdetailname.push({name:"Reimbursement Reports" , reportname : "Time and Attendance Detail Report" })
+                        this.reportdetailname.push({name:"Reimbursement Reports" , reportname : "Time, Attendance and Mileage Summary Report" })
+                        this.reportdetailname.push({name:"Reimbursement Reports" , reportname : "Monthly Tax Report" })
+                        this.reportdetailname.push({name:"NetChex Payable Reports" , reportname : "Bi-weekly Time and Attendance Payment" })
+                        this.reportdetailname.push({name:"NetChex Payable Reports" , reportname : "Bi-weekly Salary and Full Time Fixed Payment" })
+                        this.reportdetailname.push({name:"NetChex Payable Reports" , reportname : "Monthly NetChex Variable Payment" })
+                        this.reportdetailname.push({name:"NetChex Payable Reports" , reportname : "Monthly Part Time Fixed Amount Payment" })
+                        this.reportdetailname.push({name:"NetChex Payable Reports" , reportname : "Delete NetChex Report" })
+                    }
+                })
+               
+                this.BiWeekly_Payment.forEach(biweekpay => {
+                    if(biweekpay == this._accid){
+                        this.reportdetailname.push({name:"Reimbursement Reports" , reportname : "Bi-Weekly Payment Report" })
+                    }
+                })
+                // this.reportdetailname.push({name:"Reimbursement Reports" , reportname : "Biweekly Mileage Reimbursement Report" })
+                
+
                 this.reportdetailname.push({name:"Tax Liability Reports" , reportname : "Annual Tax Liability Report" })
                 this.reportdetailname.push({name:"Tax Liability Reports" , reportname : "Tax Liability" })
+                this.reportdetailname.push({name:"Reimbursement Reports" , reportname : "Variable Reimbursement Report" })
+               
+                if(FramptonConstruction == this._accid){
+                    this.reportdetailname.push({name:"My Custom Reports" , reportname : "Job Costing Summary Report" })
+                }
+                if(ERMI_Account == this._accid){
+                    this.reportdetailname.push({name:"My Custom Reports" , reportname : "Trip Detail Report" })
+                }
+                // this.reportdetailname.push({name:"Reimbursement Reports" , reportname : "Bi-Weekly Reimbursement Report" })
+
 
             let reports =JSON.parse(JSON.stringify(this.reportdetailname));
             console.log("reports")
@@ -146,18 +183,39 @@ export default class ReportList extends NavigationMixin(LightningElement) {
             console.log("error",error)
         })
     }
+    getCustomLabelArray(){
+        var clabel = new Array();
+        clabel = ERMI_ADMIN_ID.split(",");
+        this.ERMI_ACCOUNT =JSON.parse(JSON.stringify(clabel));
 
-    // handleCopyEvent(event){
-    //     this.dispatchEvent(
-    //         new CustomEvent("copycontent", {
-    //           detail: event.detail
-    //         })
-    //     );
-    // }
-
+        var clabel1 = new Array();
+        clabel1 = Bi_Weekly_Payment_Report.split(",");
+        this.BiWeekly_Payment =JSON.parse(JSON.stringify(clabel1));
+    }
     getPayPeriodOption(){
         var headerarry = new Array();
         headerarry = ERMIPayPeriod.split(",");
+        const dateArray =JSON.parse(JSON.stringify(headerarry));
+        const currentDate = new Date();
+        const currentMonth = currentDate.getMonth() + 1;
+        const lastMonth = currentMonth === 1 ? 12 : currentMonth - 1;
+        const nextMonth = currentMonth === 1 ? 12 : currentMonth + 1;
+        const filteredDates = dateArray.filter(dateRange => {
+            const startDate = dateRange.split(' to ')[0];
+            const endDate = dateRange.split(' to ')[1];
+           return (startDate.split('-')[1] ==  currentMonth && endDate.split('-')[1] == currentMonth) || (startDate.split('-')[1] ==  lastMonth && endDate.split('-')[1] == lastMonth) || (startDate.split('-')[1] ==  nextMonth && endDate.split('-')[1] == nextMonth)||
+           (startDate.split('-')[1] ==  currentMonth && endDate.split('-')[1] == nextMonth) || 
+           (startDate.split('-')[1] ==  lastMonth && endDate.split('-')[1] == currentMonth)
+          });
+        let finaldata = JSON.parse(JSON.stringify(filteredDates));
+        finaldata.forEach(element => {
+            this.payperiodList.push({label:element,value:element});
+        })
+        this.payperiodList = JSON.parse(JSON.stringify(this.payperiodList))
+    }
+    getPayPeriodlabel(){
+        var headerarry = new Array();
+        headerarry = PayPeriodDatelabel.split(",");
         const dateArray =JSON.parse(JSON.stringify(headerarry));
         const currentDate = new Date();
         const currentMonth = currentDate.getMonth() + 1;
@@ -194,10 +252,14 @@ export default class ReportList extends NavigationMixin(LightningElement) {
         AccountYear({accountId : this._accid})
         .then(result => {
             let account = JSON.parse(JSON.stringify(result));
-            // console.log("year",account)
-            // account.forEach(year => {
+            let currentYear = new Date().getFullYear();
+            if(account != currentYear){
+                for(let i = account; i <= currentYear ;i++){
+                    this.yearList.push({label:i.toString() , value:i.toString()})
+                }
+            }else{
                 this.yearList.push({label:account.toString() , value:account.toString()})
-            // })
+            }
             this.yearList = JSON.parse(JSON.stringify(this.yearList))
             
          })
@@ -205,6 +267,25 @@ export default class ReportList extends NavigationMixin(LightningElement) {
              console.log("error",error)
          })
     }
+
+    // getbiweekpayperiod(){
+    //     console.log("in report")
+    //     biweekpayperiod({accId:this._accid})
+    //         .then(result => {
+    //             console.log("in report")
+    //             var payarray1 = new Array();
+    //             payarray1 = result.split(",");
+    //             let finaldata =JSON.parse(JSON.stringify(payarray1));
+    //             finaldata.forEach(element => {
+    //                 this.payperiodList.push({label:element,value:element});
+    //             })
+    //             this.payperiodList = JSON.parse(JSON.stringify(this.payperiodList))
+    //             console.log("in report",this.payperiodList)
+    //         })
+    //         .catch(error => {
+    //             console.log("error",error)
+    //         })
+    // }
     
     handleReportopen(event){
         this.currentReport = event.target.dataset.item;
@@ -213,7 +294,7 @@ export default class ReportList extends NavigationMixin(LightningElement) {
             row.currentReports.forEach(item => {
                 if(item.reportName == this.currentReport){
                 this.reportID = item.reportId;
-                    if(item.lockDate == true){
+                    if(item.lockDate == true && (!item.mileageLockDate) ){
                         if (this.template.querySelector('c-user-profile-modal')) {
                             this.template.querySelector('c-user-profile-modal[data-id="mileges"]').show();
                         }
@@ -232,6 +313,7 @@ export default class ReportList extends NavigationMixin(LightningElement) {
             // console.log("in else",item.reportName)
             this.buttonLabel = 'Submit';
             this.title = 'Contact List';
+            this.isAreaDisabled = false;
             if (this.template.querySelector('c-user-profile-modal')) {
                 this.template.querySelector('c-user-profile-modal[data-id="attendance_detail_report"]').show();
                 setTimeout(() => {
@@ -240,27 +322,43 @@ export default class ReportList extends NavigationMixin(LightningElement) {
                     }
                   },1000);
             }
-        }else if(this.currentReport == 'Bi-Weekly Payment Report'){
-            biweekpayperiod({accId:this._accid})
-            .then(result => {
-                var payarray = new Array();
-                payarray = result.split(",");
-                let finaldata =JSON.parse(JSON.stringify(payarray));
-                finaldata.forEach(element => {
-                    this.payperiodList.push({label:element,value:element});
-                })
-                this.payperiodList = JSON.parse(JSON.stringify(this.payperiodList))
-            })
-            .catch(error => {
-                console.log("error",error)
-            })
-            this.title = 'Bi-Weekly Payment Report';
+        }else if(this.currentReport == 'Biweekly Mileage Reimbursement Report'){
+            this.getPayPeriodlabel();
+            this.title = 'Biweekly Mileage Reimbursement Report';
             this.payperioddropdown = true;
             this.downloadBtn = true;
             if (this.template.querySelector('c-user-profile-modal')) {
                 this.template.querySelector('c-user-profile-modal[data-id="attendance_summary_report"]').show();
             }
-        }else if(this.currentReport == 'Time, Attendance and Mileage Summary Report'){
+        }else if(this.currentReport == 'Bi-Weekly Payment Report' || this.currentReport == 'Variable Reimbursement Report'){
+            biweekpayperiod({accId:this._accid})
+            .then(result => {
+                console.log("in report")
+                var payarray1 = new Array();
+                payarray1 = result.split(",");
+                let finaldata1 =JSON.parse(JSON.stringify(payarray1));
+                finaldata1.forEach(element => {
+                    this.payperiodList.push({label:element,value:element});
+                })
+                this.payperiodList = JSON.parse(JSON.stringify(this.payperiodList))
+                this.payperioddropdown = true;
+                this.downloadBtn = true;
+                console.log("in report",this.payperiodList)
+            })
+            .catch(error => {
+                console.log("error",error)
+            })
+                if(this.currentReport == 'Bi-Weekly Payment Report'){
+                    this.title = 'Bi-Weekly Payment Report';
+                }else if(this.currentReport == 'Variable Reimbursement Report'){
+                    this.title = 'Variable Reimbursement Report';
+                }
+                
+                
+                if (this.template.querySelector('c-user-profile-modal')) {
+                    this.template.querySelector('c-user-profile-modal[data-id="attendance_summary_report"]').show();
+                }    
+        } else if(this.currentReport == 'Time, Attendance and Mileage Summary Report'){
             this.getPayPeriodOption();
             this.title = 'Time, Attendance and Mileage Summary Report';
             this.payperioddropdown = true;
@@ -325,6 +423,7 @@ export default class ReportList extends NavigationMixin(LightningElement) {
         }else if(this.currentReport == 'Delete NetChex Report'){
             this.buttonLabel = 'Delete';
             this.title = 'Delete Netchex Report';
+            this.isAreaDisabled = false;
             if (this.template.querySelector('c-user-profile-modal')) {
                 this.template.querySelector('c-user-profile-modal[data-id="attendance_detail_report"]').show();
                 setTimeout(() => {
@@ -333,11 +432,35 @@ export default class ReportList extends NavigationMixin(LightningElement) {
                     }
                   },1000);
             }
-        }
-        else if(this.currentReport == 'Annual Tax Liability Report'){
+        }else if(this.currentReport == 'Job Costing Summary Report'){
+            this.buttonLabel = 'Submit';
+            this.backbutton = true;
+            this.title = 'Job Costing Summary Report';
+            this.isAreaDisabled = false;
+            if (this.template.querySelector('c-user-profile-modal')) {
+                this.template.querySelector('c-user-profile-modal[data-id="attendance_detail_report"]').show();
+                setTimeout(() => {
+                    if(this.template.querySelectorAll('.date-selector').length > 0){
+                      this.intializeDatepickupnew();
+                    }
+                  },1000);
+            }
+        }else if(this.currentReport == 'Trip Detail Report'){
+            this.buttonLabel = 'Download';
+            this.title = 'Trip Detail Report';
+            this.isAreaDisabled = false;
+            if (this.template.querySelector('c-user-profile-modal')) {
+                this.template.querySelector('c-user-profile-modal[data-id="attendance_detail_report"]').show();
+                setTimeout(() => {
+                    if(this.template.querySelectorAll('.date-selector').length > 0){
+                      this.intializeDatepickupnew();
+                    }
+                  },1000);
+            }
+        }else if(this.currentReport == 'Annual Tax Liability Report'){
             // this.buttonLabel = 'Delete';
             // this.title = 'Delete Netchex Report';
-           
+            this.yeardropdown = true;
             taxLiabilityReport({accId:this._accid})
             .then(result => {
                console.log("taxLiabilityReport",JSON.parse(result))
@@ -360,8 +483,16 @@ export default class ReportList extends NavigationMixin(LightningElement) {
     }
 
     handlemodalSubmit(){
+        this.dispatchEvent(
+            new CustomEvent("show", { detail :''})
+          );
         updatelockdate({accountId : this._accid , contactId : this._adminid})
         .then(result => {
+            setTimeout(() => {
+                this.dispatchEvent(
+                  new CustomEvent("hide", { detail : ''})
+                );
+              },3000); 
             this.closeModal();
             this.dispatchEvent(
                 new CustomEvent("viewreport", {
@@ -375,82 +506,204 @@ export default class ReportList extends NavigationMixin(LightningElement) {
     }
 
     handlemodalDelete(){
-        this.template.querySelector(`.flat-container[data-id="from"]`).classList.add('area_disable');
-        this.template.querySelector(`.flat-container[data-id="to"]`).classList.add('area_disable');
+        if(this.fromdate && this.todate){
+            this.template.querySelector(`.flat-container[data-id="from"]`).classList.add('area_disable');
+            this.template.querySelector(`.flat-container[data-id="to"]`).classList.add('area_disable');
 
-        this.isAreaDisabled = true;
-        if(this.currentReport == 'Time and Attendance Detail Report'){
-            ErmiDriverList({startDate:this.fromdate,endDate:this.todate,accountId:this._accid})
-            .then(result => {
-                if (this.template.querySelector('c-user-profile-modal')) {
-                    this.template.querySelector('c-user-profile-modal[data-id="attendance_detail_report"]').hide();
-                }
-                this.message = "Succesfully send data to netchex.";
-                this.toastmsg = true;
-                setTimeout(() => {
-                    this.toastmsg = false;
-                }, 2000);
-            })
-            .catch(error => {
-                this.message = "Failed to send data.";
-                this.toastmsg = true;
-                setTimeout(() => {
-                    this.toastmsg = false;
-                }, 2000);
-            })
-        }else if(this.currentReport == 'Delete NetChex Report'){
-            this.progressbar = true;
-            DeleteNetchexCallout({startDate:this.fromdate,endDate:this.todate})
-            .then(result => {
-                this.progress = 20;
-                let intervalId;
-                const callCheckStatus = () => {
-                    CheckStatus({longtime:Date.parse(result),batchName:'NetchexDeleteCallout'})
-                    .then((acc) => {
-                        this.progress = this.progress + 20;
-                        let successresult = JSON.parse(acc);
-                        console.log("status", successresult.enablePollar);
-                        if (successresult.enablePollar == false) {
-                            this.progress = 100;
-                            clearInterval(intervalId);
-                            this.template.querySelector(`.flat-container[data-id="from"]`).classList.remove('area_disable');
-                            this.template.querySelector(`.flat-container[data-id="to"]`).classList.remove('area_disable');
+            this.isAreaDisabled = true;
+            if(this.currentReport == 'Time and Attendance Detail Report'){
+                ErmiDriverList({startDate:this.fromdate,endDate:this.todate,accountId:this._accid})
+                .then(result => {
+                    let parsedata = JSON.parse(result);
+                    if(parsedata.length > 0){
+                        if (this.template.querySelector('c-user-profile-modal')) {
+                            this.template.querySelector('c-user-profile-modal[data-id="attendance_detail_report"]').hide();
+                        }
+                        
+                        if (this.template.querySelector('c-user-profile-modal')) {
+                            this.template.querySelector('c-user-profile-modal[data-id="anual_tax_liability"]').show();
+                        }
+                        this.anual_tax_detail = parsedata;
+                        this.template.querySelector('c-simple-pagination').updateRecords(this.anual_tax_detail,10)
+                        
+                    }else{
+                        this.dispatchEvent(
+                            new CustomEvent("toastmessage", {
+                            detail: {
+                                errormsg: "error",
+                                message:"None of the driver has trips for your selected dates. Please change the dates"
+                            } 
+                            })
+                        )
+                        this.template.querySelector(`.flat-container[data-id="from"]`).classList.remove('area_disable');
+                        this.template.querySelector(`.flat-container[data-id="to"]`).classList.remove('area_disable');
+                        this.isAreaDisabled = false;
+                    }
+                
                     
-                            this.isAreaDisabled = false;
+                })
+                .catch(error => {
+                    this.dispatchEvent(
+                        new CustomEvent("toastmessage", {
+                        detail: {
+                            errormsg: "error",
+                            message:"Failed to send data."
+                        } 
+                        })
+                    )
+                })
+            }else if(this.currentReport == 'Delete NetChex Report'){
+                this.progressbar = true;
+                DeleteNetchexCallout({startDate:this.fromdate,endDate:this.todate})
+                .then(result => {
+                    this.progress = 20;
+                    let intervalId;
+                    console.log("Delete",result)
+                   
+
+                    const callCheckStatus = () => {
+                        CheckStatus({longtime:Date.parse(result),batchName:'NetchexDeleteCallout'})
+                        .then((acc) => {
+                            this.progress = this.progress + 20;
+                            let successresult = JSON.parse(acc);
+                            console.log("status", JSON.parse(JSON.stringify(acc)));
+                            if (successresult.enablePollar == false) {
+                                this.progress = 100;
+                                clearInterval(intervalId);
+                                this.template.querySelector(`.flat-container[data-id="from"]`).classList.remove('area_disable');
+                                this.template.querySelector(`.flat-container[data-id="to"]`).classList.remove('area_disable');
+                        
+                                this.isAreaDisabled = false;
+                                if (this.template.querySelector('c-user-profile-modal')) {
+                                    this.template.querySelector('c-user-profile-modal[data-id="attendance_detail_report"]').hide();
+                                }
+                                this.dispatchEvent(
+                                    new CustomEvent("toastmessage", {
+                                    detail: {
+                                        errormsg: "success",
+                                        message:"Successfully deleted data."
+                                    } 
+                                    })
+                                )
+                                this.template.querySelector(`.date-selector[data-id="from_date"]`).value = '';
+                                this.template.querySelector(`.date-selector[data-id="to_date"]`).value = '';
+                                this.fromdate = null;
+                                this.todate = null;
+                                this.progressbar = false;
+                                this.progress = 0;
+                            
+                            }
+                            // this.executeCheckStatusfordetail("Successfully deleted data.")
+                        })
+                        .catch(error => {
+                            console.log("CheckStatus",JSON.parse(JSON.stringify(error)))
+                        })
+                    };  
+                    callCheckStatus();
+                    intervalId = setInterval(callCheckStatus, 5000);
+
+                })
+                .catch(error => {
+                    this.dispatchEvent(
+                        new CustomEvent("toastmessage", {
+                        detail: {
+                            errormsg: "error",
+                            message:"Failed deleted data."
+                        } 
+                        })
+                    )
+                })
+            }else if(this.currentReport == 'Job Costing Summary Report'){
+            
+                    ErmiDriverList({startDate:this.fromdate,endDate:this.todate,accountId:this._accid})
+                    .then(result => {
+                        let parsedata = JSON.parse(result);
+                        if(parsedata.length > 0){
                             if (this.template.querySelector('c-user-profile-modal')) {
                                 this.template.querySelector('c-user-profile-modal[data-id="attendance_detail_report"]').hide();
                             }
-                            this.message = "Successfully deleted data.";
-                            this.toastmsg = true;
-                            setTimeout(() => {
-                              this.toastmsg = false;
-                            }, 2000);
-                            this.progressbar = false;
-                            this.progress = 0;
-                           
+                            
+                            if (this.template.querySelector('c-user-profile-modal')) {
+                                this.template.querySelector('c-user-profile-modal[data-id="anual_tax_liability"]').show();
+                            }
+                            this.anual_tax_detail = parsedata;
+                            this.template.querySelector('c-simple-pagination').updateRecords(this.anual_tax_detail,10)
+                            
+                        }else{
+                            this.dispatchEvent(
+                                new CustomEvent("toastmessage", {
+                                detail: {
+                                    errormsg: "error",
+                                    message:"None of the driver has trips for your selected dates. Please change the dates"
+                                } 
+                                })
+                            )
+                            this.template.querySelector(`.flat-container[data-id="from"]`).classList.remove('area_disable');
+                            this.template.querySelector(`.flat-container[data-id="to"]`).classList.remove('area_disable');
+                            this.isAreaDisabled = false;
                         }
-                        // this.executeCheckStatusfordetail("Successfully deleted data.")
                     })
                     .catch(error => {
-                        console.log("CheckStatus",error)
                     })
-                };  
-                callCheckStatus();
-                intervalId = setInterval(callCheckStatus, 5000);
-
-            })
-            .catch(error => {
-                this.message = "Failed deleted data.";
-                this.toastmsg = true;
-                setTimeout(() => {
-                    this.toastmsg = false;
-                }, 2000);
-            })
+               
+                
+            }else if(this.currentReport == 'Trip Detail Report'){
+                TripDetailReport({tripStartDate:this.fromdate,tripEndDate:this.todate,id:this._accid})
+                .then(result => {
+                    let parsedata = JSON.parse(result);
+                    console.log("trip detail",parsedata)
+                    if(parsedata.length > 0){
+                        if (this.template.querySelector('c-user-profile-modal')) {
+                            this.template.querySelector('c-user-profile-modal[data-id="attendance_detail_report"]').hide();
+                        }
+                        let tripdetail = [];
+                        parsedata.forEach(index => {
+                            tripdetail.push({Driver:index.driverName,Email:index.driverEmail,Date:index.tripDate,Day:index.tripDay,StartTime:index.startTime,
+                                EndTime:index.endTime,Mileage:index.mileage,FromLocation:index.FLocationName,FromLocationAddress:index.FLocationAdd,
+                                ToLocation:index.TLocationName,ToLocationAddress:index.TLocationAdd,Notes:index.notes,TrackingMethod:index.trackingMethod,
+                            fromlat:index.FLocationLatitude,fromlon:index.FLocationLongitude,tolat:index.TLocationLatitude,tolong:index.TLocationLongitude})
+                        })
+                        tripdetail = JSON.parse(JSON.stringify(tripdetail))
+                        let summaryheadernew = ["Driver",  "Email", "Date", "Day", "Start Time", "End Time", "Mileage (mi)", "From Location Name", "From Location Address",
+                        "To Location Name", "To Location Address", "Notes", "Tracking Method", "From Location Lat", "From Location Long", "To Location Lat", "To Location Long"];
+                        
+                        let tempheader = [];
+                        let tempworkSheetNameList = [];
+                        let tempxlsData = [];
+                        let name = '';
+                        //push data , custom header , filename and worksheetname for detail xlsx file
+                        tempheader.push(summaryheadernew);
+                        tempworkSheetNameList.push("Trip Detail Report Report");
+                        tempxlsData.push(tripdetail);
+                        name = 'Trip Detail Report.xlsx';
+                        //Download Summary report(xlsx file)
+                            if(tempxlsData.length > 0){
+                                console.log("in if")
+                                this.callcreatexlsxMethod(tempheader ,name, tempworkSheetNameList , tempxlsData);
+                                this.template.querySelector(`.date-selector[data-id="from_date"]`).value = '';
+                                this.template.querySelector(`.date-selector[data-id="to_date"]`).value = '';
+                                this.fromdate = null;
+                                this.todate = null;
+                            }
+                    }else{
+                        this.dispatchEvent(
+                            new CustomEvent("toastmessage", {
+                            detail: {
+                                errormsg: "error",
+                                message:"None of the driver has trips for your selected dates. Please change the dates"
+                            } 
+                            })
+                        )
+                    }
+                })
+                .catch(error => {
+                })
+            }
+        }else{
+            this.template.querySelector(`.flat-container[data-id="from"]`).classList.remove('area_disable');
+                    this.template.querySelector(`.flat-container[data-id="to"]`).classList.remove('area_disable');
+                    this.isAreaDisabled = false;
         }
-        this.template.querySelector(`.date-selector[data-id="from_date"]`).value = '';
-        this.template.querySelector(`.date-selector[data-id="to_date"]`).value = '';
-        this.fromdate = null;
-        this.todate = null;
     }
 
     closeModal(){
@@ -472,19 +725,21 @@ export default class ReportList extends NavigationMixin(LightningElement) {
 
     getAccountMonthList() {
         accountMonthList({
-          accountId: '0010Z00001ygUen'
-        }).then((data) => {
+          accountId: this._accid
+        })
+        .then((data) => {
           if (data) {
-            // let mileageAccount = data ? this.removeDuplicateValue(this.proxyToObject(data)) : [];
-            let month = JSON.parse(data)
-            console.log("monthoption",month)
-            month.forEach(row => {
-                this.monthoption.push({label : row , value : row})
-            })
+            console.log("monthoption",data)
+            this.monthoption = Object.entries(data).map(([label, value]) => ({ label, value }));
+            // console.log("monthoption",this.monthoption)
+
             this.monthoption = JSON.parse(JSON.stringify( this.monthoption))
             console.log("monthoption",this.monthoption)
           }
-        });
+        })
+        .catch(error => {
+            console.log("monthlist error",error)
+        })
     }
     handleselectPayPeriod(event){
         this.payperioddate = event.detail.value;
@@ -514,6 +769,11 @@ export default class ReportList extends NavigationMixin(LightningElement) {
                 window.open("https://"+window.location.host+"/app/PayDateReport?id="+this._accid+"&endDate="+this.payperioddate.split(' to ')[0]+"&startDate="+this.payperioddate.split(' to ')[1])
             }
             this.payperioddropdown = false; 
+        }else if(this.currentReport == 'Variable Reimbursement Report'){
+            if(this.payperioddate){
+                window.open("https://"+window.location.host+"/app/PayDateReport?id="+this._accid+"&startDate="+this.payperioddate.split(' to ')[0]+"&endDate="+this.payperioddate.split(' to ')[1])
+            }
+            this.payperioddropdown = false; 
         }else if(this.currentReport == 'Monthly Tax Report'){
             if(this.empMonth &&  this.empType){
                 window.open("https://"+window.location.host+"/app/TaxReportPage?month="+this.empMonth+"&empType="+this.empType)
@@ -525,7 +785,17 @@ export default class ReportList extends NavigationMixin(LightningElement) {
             }
             this.payperioddropdown = false; 
             this.byweeksubmit = false;
-        }     
+        }  else if(this.currentReport == 'Biweekly Mileage Reimbursement Report'){
+            if(this.payperioddate){
+                // if (scope.accid === AISAccount) {
+                    // window_url = 'https://' + host + '/app/MileagesforAISAccountReport?startDate=' + scope.startDate + '&endDate=' + scope.endDate;
+                // } else {
+                    // window_url = 'https://' + host + '/app/TimeSheetNetchexReport?startDate=' + scope.startDate + '&endDate=' + scope.endDate;
+                // }
+                window.open("https://"+window.location.host+"/app/MileagesforAISAccountReport?startDate="+this.payperioddate.split(' to ')[0]+"&endDate="+this.payperioddate.split(' to ')[1])
+            }
+            this.payperioddropdown = false;
+        }   
          
         if (this.template.querySelector('c-user-profile-modal')) {
             this.template.querySelector('c-user-profile-modal[data-id="attendance_summary_report"]').hide();
@@ -538,9 +808,10 @@ export default class ReportList extends NavigationMixin(LightningElement) {
         // this.isAreaDisabled = true;
         this.progressbar = true;
         if(this.currentReport == 'Bi-weekly Time and Attendance Payment'){
-            
+            console.log("Bi-weekly Time and Attendance Payment",this.payperioddate.split(' to ')[0])
             postTimeSheetImportAPI({startDate:this.payperioddate.split(' to ')[0],endDate:this.payperioddate.split(' to ')[1],adminId:this._adminid})
             .then((data) => {
+                console.log("TimeSheetImportNetchexBatch",data)
                 this.progress = 20;
                 let intervalId;
                 const callCheckStatus = () => {
@@ -560,11 +831,15 @@ export default class ReportList extends NavigationMixin(LightningElement) {
                             if (this.template.querySelector('c-user-profile-modal')) {
                                 this.template.querySelector('c-user-profile-modal[data-id="attendance_summary_report"]').hide();
                             }
-                            this.message = "Succesfully send data to netchex.";
-                            this.toastmsg = true;
-                            setTimeout(() => {
-                              this.toastmsg = false;
-                            }, 2000);
+                            this.dispatchEvent(
+                                new CustomEvent("toastmessage", {
+                                  detail: {
+                                    errormsg: "success",
+                                    message:"Succesfully send data to netchex."
+                                  } 
+                                })
+                            )
+                           
                             this.progressbar = false;
                             this.progress = 0;
                             this.byweeksubmit = false;
@@ -580,11 +855,15 @@ export default class ReportList extends NavigationMixin(LightningElement) {
                 
             })
             .catch(error => {
-                this.message = "Faild send data to netchex.";
-                this.toastmsg = true;
-                setTimeout(() => {
-                    this.toastmsg = false;
-                }, 2000);
+               
+                this.dispatchEvent(
+                    new CustomEvent("toastmessage", {
+                      detail: {
+                        errormsg: "error",
+                        message:"Faild send data to netchex."
+                      } 
+                    })
+                )
             })
            
         }else if(this.currentReport == 'Bi-weekly Salary and Full Time Fixed Payment'){
@@ -610,11 +889,15 @@ export default class ReportList extends NavigationMixin(LightningElement) {
                             if (this.template.querySelector('c-user-profile-modal')) {
                                 this.template.querySelector('c-user-profile-modal[data-id="attendance_summary_report"]').hide();
                             }
-                            this.message = "Full Time Fixed Amount Payment is succesfully send to netchex.";
-                            this.toastmsg = true;
-                            setTimeout(() => {
-                              this.toastmsg = false;
-                            }, 2000);
+                            this.dispatchEvent(
+                                new CustomEvent("toastmessage", {
+                                  detail: {
+                                    errormsg: "success",
+                                    message:"Full Time Fixed Amount Payment is succesfully send to netchex."
+                                  } 
+                                })
+                            )
+                           
                             this.progressbar = false;
                             this.progress = 0;
                             this.byweeksubmit = false;
@@ -630,11 +913,14 @@ export default class ReportList extends NavigationMixin(LightningElement) {
                 intervalId = setInterval(callCheckStatus, 5000);
             })
             .catch(error => {
-                this.message = "Faild send data to netchex.";
-                this.toastmsg = true;
-                setTimeout(() => {
-                    this.toastmsg = false;
-                }, 2000);
+                this.dispatchEvent(
+                    new CustomEvent("toastmessage", {
+                      detail: {
+                        errormsg: "error",
+                        message:"Faild send data to netchex."
+                      } 
+                    })
+                )
             })
             
         }
@@ -668,11 +954,15 @@ export default class ReportList extends NavigationMixin(LightningElement) {
                             if (this.template.querySelector('c-user-profile-modal')) {
                               this.template.querySelector('c-user-profile-modal[data-id="netchex_variable_payment"]').hide();
                             }
-                            this.message = "Variable Payment is successfully sent to Netchex.";
-                            this.toastmsg = true;
-                            setTimeout(() => {
-                              this.toastmsg = false;
-                            }, 2000);
+                            this.dispatchEvent(
+                                new CustomEvent("toastmessage", {
+                                  detail: {
+                                    errormsg: "success",
+                                    message:"Variable Payment is successfully sent to Netchex."
+                                  } 
+                                })
+                            )
+                           
                             this.progressbar = false;
                             this.progress = 0;
                         }
@@ -686,11 +976,14 @@ export default class ReportList extends NavigationMixin(LightningElement) {
                
             })
             .catch(error => {
-                this.message = "Variable Payment is failed send to netchex.";
-                this.toastmsg = true;
-                setTimeout(() => {
-                    this.toastmsg = false;
-                }, 2000);
+                this.dispatchEvent(
+                    new CustomEvent("toastmessage", {
+                      detail: {
+                        errormsg: "error",
+                        message:"Variable Payment is failed send to netchex."
+                      } 
+                    })
+                )
             })
         }else if(this.currentReport == 'Monthly Part Time Fixed Amount Payment'){
             postFixedAmountAPI({startDate:this.netchexDate ,adminId:this._adminid})
@@ -715,11 +1008,15 @@ export default class ReportList extends NavigationMixin(LightningElement) {
                             if (this.template.querySelector('c-user-profile-modal')) {
                               this.template.querySelector('c-user-profile-modal[data-id="netchex_variable_payment"]').hide();
                             }
-                            this.message = "Fixed Amount Payment is succesfully send to netchex.";
-                            this.toastmsg = true;
-                            setTimeout(() => {
-                              this.toastmsg = false;
-                            }, 2000);
+                            this.dispatchEvent(
+                                new CustomEvent("toastmessage", {
+                                  detail: {
+                                    errormsg: "success",
+                                    message:"Fixed Amount Payment is succesfully send to netchex."
+                                  } 
+                                })
+                            )
+                           
                             this.progressbar = false;
                             this.progress = 0;
                         }
@@ -732,11 +1029,15 @@ export default class ReportList extends NavigationMixin(LightningElement) {
                 intervalId = setInterval(callCheckStatus, 5000);
             })
             .catch(error => {
-                this.message = "Fixed Amount Payment is failed send to netchex.";
-                this.toastmsg = true;
-                setTimeout(() => {
-                    this.toastmsg = false;
-                }, 2000);
+                this.dispatchEvent(
+                    new CustomEvent("toastmessage", {
+                      detail: {
+                        errormsg: "error",
+                        message:"Fixed Amount Payment is failed send to netchex."
+                      } 
+                    })
+                )
+              
             })
         }
     }
@@ -901,11 +1202,15 @@ export default class ReportList extends NavigationMixin(LightningElement) {
 
         handlePageEvent(event) {
             this.visibleAccounts=[...event.detail.records]
+            let checkboxes = this.template.querySelector('.checkbox_all')
+           
+              checkboxes.checked = false;
+           
         }
         handleselectYear(event){
             this.year = event.detail.value;
             console.log("year",this.year)
-            this.isAreaDisabled = true;
+            // this.isAreaDisabled = false;
         }
         handleCheckboxAll(event){
             let checked = event.target.checked;
@@ -913,72 +1218,125 @@ export default class ReportList extends NavigationMixin(LightningElement) {
             for(let i=0; i<checkboxes.length; i++) {
               checkboxes[i].checked = checked;
             }
+            if(checked){
+                this.isAreaDisabled = false;
+            }
         }
         handleCheckbox(event){
-
+            if(event.target.checked == true){
+                this.isAreaDisabled = false;
+            }
         }
         handleDownloadExcel(){
             let selectedId =[];
-            let checkboxes = this.template.querySelectorAll('.checkboxCheckUncheckSearch')
-            for(let i=0; i<checkboxes.length; i++) {
-                console.log("checkboxes[i].checked",checkboxes[i].checked)
-              if(checkboxes[i].checked  == true){
-                selectedId.push(this.visibleAccounts[i].reimbId)
-              }
-            }
-            console.log(JSON.stringify(selectedId))
-            downloadExcel({condata: JSON.stringify(selectedId),year:this.year})
-            .then((data) => {
-            let arrOfSummry = [];
-            let summaryxlsData = [] ;
-            // let tempheader = [];
-            let resultdata = JSON.parse(data);
-            console.log("resultdata",resultdata.length)
-            if(resultdata.length > 0){
-                this.template.querySelector('.modal_header').classList.add('area_disable');
-                this.isAreaDisabled = true;
-                resultdata.forEach(element =>{
-                    arrOfSummry.push({drivername:element.drivername,employeeid:element.employeeid,emailid:element.emailid,imputedincome:element.imputedincome})
-                    return arrOfSummry;
-                })
-                summaryxlsData = JSON.parse(JSON.stringify(arrOfSummry))
-                console.log("in if",summaryxlsData)
+            console.log("currentreport",this.currentReport)
+           
+            if(this.currentReport == "Annual Tax Liability Report"){
+                let checkboxes = this.template.querySelectorAll('.checkboxCheckUncheckSearch')
+                for(let i=0; i<checkboxes.length; i++) {
+                    console.log("checkboxes[i].checked",checkboxes[i].checked)
+                if(checkboxes[i].checked  == true){
+                    selectedId.push(this.visibleAccounts[i].reimbId)
+                }
+                }
+                console.log(JSON.stringify(selectedId))
+                downloadExcel({condata: JSON.stringify(selectedId),year:this.year})
+                .then((data) => {
+                let arrOfSummry = [];
+                let summaryxlsData = [] ;
+                // let tempheader = [];
+                let resultdata = JSON.parse(data);
+                console.log("resultdata",resultdata.length)
+                if(resultdata.length > 0){
+                    this.template.querySelector('.modal_header').classList.add('area_disable');
+                    this.isAreaDisabled = true;
+                    resultdata.forEach(element =>{
+                        arrOfSummry.push({drivername:element.drivername,employeeid:element.employeeid,emailid:element.emailid,imputedincome:element.imputedincome})
+                        return arrOfSummry;
+                    })
+                    summaryxlsData = JSON.parse(JSON.stringify(arrOfSummry))
+                    console.log("in if",summaryxlsData)
 
-                let summaryheadernew = [ "Employee Name","Employee ID","Employee Email","Imputed Income"];
-                let tempheader = [];
-                let tempworkSheetNameList = [];
-                let tempxlsData = [];
-                let name = '';
-                //push data , custom header , filename and worksheetname for detail xlsx file
-                tempheader.push(summaryheadernew);
-                tempworkSheetNameList.push("Annual Tax Liability Report");
-                tempxlsData.push(summaryxlsData);
-                name = 'Annual Tax Liability Report.xlsx';
-                //Download Summary report(xlsx file)
-                    if(tempxlsData.length > 0){
-                        console.log("in if")
-                        this.callcreatexlsxMethod(tempheader ,name, tempworkSheetNameList , tempxlsData);
-                    }
-                    this.template.querySelector('.modal_header').classList.remove('area_disable');
-                    this.isAreaDisabled = false;
+                    let summaryheadernew = [ "Employee Name","Employee ID","Employee Email","Imputed Income"];
+                    let tempheader = [];
+                    let tempworkSheetNameList = [];
+                    let tempxlsData = [];
+                    let name = '';
+                    //push data , custom header , filename and worksheetname for detail xlsx file
+                    tempheader.push(summaryheadernew);
+                    tempworkSheetNameList.push("Annual Tax Liability Report");
+                    tempxlsData.push(summaryxlsData);
+                    name = 'Annual Tax Liability Report.xlsx';
+                    //Download Summary report(xlsx file)
+                        if(tempxlsData.length > 0){
+                            console.log("in if")
+                            this.callcreatexlsxMethod(tempheader ,name, tempworkSheetNameList , tempxlsData);
+                        }
+                        this.template.querySelector('.modal_header').classList.remove('area_disable');
+                        this.isAreaDisabled = false;
+                        if (this.template.querySelector('c-user-profile-modal')) {
+                            this.template.querySelector('c-user-profile-modal[data-id="anual_tax_liability"]').hide();
+                            this.yeardropdown = false;
+                        } 
+
+                }else{
                     if (this.template.querySelector('c-user-profile-modal')) {
                         this.template.querySelector('c-user-profile-modal[data-id="anual_tax_liability"]').hide();
+                        this.yeardropdown = false;
                     } 
-
-            }else{
+                    this.dispatchEvent(
+                        new CustomEvent("toastmessage", {
+                        detail: {
+                            errormsg: "success",
+                            message:"No data found for this driver."
+                        } 
+                        })
+                    )
+                
+                }        
+                })
+                .catch(error => {
+                    console.log("error",error)
+                })
+            }else if(this.currentReport == "Job Costing Summary Report" ){
+                console.log("in if")
+                // let remid =[];
+                let checkboxes = this.template.querySelectorAll('.checkboxCheckUncheckSearch')
+                for(let i=0; i<checkboxes.length; i++) {
+                    if(checkboxes[i].checked  == true){
+                        // remid.push(this.visibleAccounts[i].reimbId);
+                        window.open("https://"+window.location.host+"/app/JobCostingSummary?id="+this.visibleAccounts[i].reimbId+"&startDate="+this.fromdate+"&endDate="+this.todate);
+                    }
+                }
+                console.log("console",this.fromdate + this.todate)
+               
                 if (this.template.querySelector('c-user-profile-modal')) {
                     this.template.querySelector('c-user-profile-modal[data-id="anual_tax_liability"]').hide();
-                } 
-                this.message = "No data found for this driver";
-                this.toastmsg = true;
-                setTimeout(() => {
-                    this.toastmsg = false;
-                }, 2000);
-            }        
-            })
-            .catch(error => {
-                console.log("error",error)
-            })
+                }
+                this.template.querySelector(`.date-selector[data-id="from_date"]`).value = '';
+                this.template.querySelector(`.date-selector[data-id="to_date"]`).value = '';
+                this.fromdate = null;
+                this.todate = null;
+            } else if(this.currentReport == "Time and Attendance Detail Report" ){
+                console.log("in if")
+                // let remid =[];
+                let checkboxes = this.template.querySelectorAll('.checkboxCheckUncheckSearch')
+                for(let i=0; i<checkboxes.length; i++) {
+                    if(checkboxes[i].checked  == true){
+                        // remid.push(this.visibleAccounts[i].reimbId);
+                        window.open("https://"+window.location.host+"/app/TimeandSummaryReport?id="+this.visibleAccounts[i].reimbId+"&startDate="+this.fromdate+"&endDate="+this.todate);
+                    }
+                }
+                console.log("console",this.fromdate + this.todate)
+               
+                if (this.template.querySelector('c-user-profile-modal')) {
+                    this.template.querySelector('c-user-profile-modal[data-id="anual_tax_liability"]').hide();
+                }
+                this.template.querySelector(`.date-selector[data-id="from_date"]`).value = '';
+                this.template.querySelector(`.date-selector[data-id="to_date"]`).value = '';
+                this.fromdate = null;
+                this.todate = null;
+            } 
         }
         callcreatexlsxMethod(headerList , filename , worksheetNameList , sheetData ){
             //Download Summary report(xlsx file)
@@ -986,11 +1344,11 @@ export default class ReportList extends NavigationMixin(LightningElement) {
             console.log("in xl")
             this.template.querySelector("c-download-C-S-V-File").download(headerList , filename , worksheetNameList , sheetData);
         }
-        // handleprint(event){
-        //     this.dispatchEvent(
-        //         new CustomEvent("printtable", {
-        //           detail: event.detail
-        //         })
-        //       );
-        // }
+        handleClose(){
+            if (this.template.querySelector('c-user-profile-modal')) {
+                this.template.querySelector('c-user-profile-modal[data-id="anual_tax_liability"]').hide();
+                this.yeardropdown = false;
+                this.backbutton = false;
+            } 
+        }
 }

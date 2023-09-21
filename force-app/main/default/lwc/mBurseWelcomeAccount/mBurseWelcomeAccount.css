@@ -78,13 +78,33 @@
     display: flex;
 }
 
+.header-text{
+    color: #1D1D1D;
+    text-align: center;
+    font-family: 'Proxima Nova Semibold' !important;
+    font-size: 32px;
+    padding: 0 0 12px 0;
+}
+
 .info-text{
     text-align: left;
     display: flex;
-    font-size: 22px;
-    width: 186px;
-    font-weight: 600;
+    font-size: 24px;
+    width: 229px;
+    font-family: 'Proxima Nova Bold' !important;
     color: #7ABB4A;
+}
+
+.p_bottom{
+    padding: 0 0 58px 0;
+}
+
+.content{
+    padding: 81px 0 0 0;
+}
+
+.footer-padding{
+    padding: 59px 0 0 0;
 }
 
 .slds-btn-primary {
@@ -96,7 +116,7 @@
     font-size: 1.20vw;
 }
 .footer-text {
-    font-size: 1.12vw;
+    font-size: 14px;
 }
 .m-left{
     margin-left: 176px;

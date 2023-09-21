@@ -1,9 +1,16 @@
 import { LightningElement, api } from 'lwc';
+import LEFT_ICON from '@salesforce/resourceUrl/leftCarouselIcon'; 
+import RIGHT_ICON from '@salesforce/resourceUrl/rightCarouselIcon';
 
 export default class Carousel extends LightningElement {
     /* default page number */
     currentPage =1
 
+    @api countStyle = 'is--text--help'
+    @api leftIcon = `${LEFT_ICON}#leftIcon`;
+    @api rightIcon = `${RIGHT_ICON}#rightIcon`;
+    // @api isIconSlider = false;
+    isIconSlider = true;
     /* Store data from parent component */
     totalRecords
 

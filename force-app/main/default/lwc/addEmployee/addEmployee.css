@@ -15,10 +15,17 @@
   opacity: 1;
 }
 
+.disabled-input {
+  pointer-events: none;
+  background-color: #f1f1f1;
+  color: #808080;
+}
+
 .slds-btn-sm {
     padding: 0.475rem 0.95rem 0.575rem 0.95rem;
     font-size: 16px;
     font-family: 'Proxima Nova Bold' !important;
+    margin: 0 !important;
   }
   
   .slds-btn-md {
@@ -50,7 +57,7 @@
     padding: 10px 0 10px 9px !important;
     width: 100%;
     border-radius: 10px;
-    font-size: 14px !important;
+    font-size: 12px !important;
     font-family: 'Proxima Nova' !important;
 }
 
@@ -58,11 +65,11 @@
     outline-color: rgba(108, 108, 108, 0.43) !important;
 }
 .content-input-error {
-  border: 1px solid red !important;
+  border: 1px solid #EB7612 !important;
   padding: 10px 0 10px 9px !important;
   width: 100%;
   border-radius: 10px;
-  font-size: 14px !important;
+  font-size: 12px !important;
   font-family: 'Proxima Nova Bold' !important;
 }
 
@@ -76,7 +83,7 @@
   padding: 10px 0 10px 9px !important;
   width: 100%;
   border-radius: 10px;
-  font-size: 14px !important;
+  font-size: 12px !important;
   font-family: 'Proxima Nova Bold' !important;
 }
 
@@ -165,7 +172,7 @@
   flex: 1;
   border: none;
   outline: none;
-  font-size: 14px;
+  font-size: 12px;
   background-color: transparent;
   box-shadow: none;
   font-family: 'Proxima Nova' !important;
@@ -206,4 +213,24 @@
 
 .state-popover::before {
   display: none;
+}
+
+.error-text {
+  color: red;
+}
+
+@media (max-width: 1199px) {
+  .add-employee {
+    display: block;
+    margin: 0 auto 0px !important;
+  }
+
+  .linked {
+    display: table;
+    margin: 15px auto 0;
+    text-align: center;
+  }
+  .add-employee-container .slds-size_6-of-12 {
+    width: 100%;
+  }
 }

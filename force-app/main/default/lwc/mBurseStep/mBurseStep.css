@@ -120,6 +120,14 @@
 	-ms-transition: all .6s ease-in-out;
 	transition: all .6s ease-in-out;
 }
+
+.panel{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+
 .donut.multi{
     border-bottom-color: #979fd0;
 }
@@ -143,6 +151,7 @@
     background: #FFFFFF;
     border: 1px solid #D7D7D7;
     border-radius: 20px;
+    margin: 0 12px 0 12px;
     position: relative;
 }
 .step-info-detail{
@@ -181,7 +190,7 @@
 }
 
 .step-padding{
-    padding-top: 0.4rem;
+    padding-top: 0.688rem;
 }
 
 .step-padding-v1{
@@ -257,5 +266,5 @@
 } */
 
 .opacity{
-    opacity: 0.2;
+    opacity: 0.4 !important;
 }

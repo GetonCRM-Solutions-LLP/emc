@@ -275,6 +275,13 @@
   border-color: #78bc42;
 }
 
+.bc-outline{
+  color: #7abb4a;
+  background-color: #fff;
+  border: 1px solid #7abb4a !important;
+  padding: 10px 20px !important;
+}
+
 .back-position {
   position: relative;
 }

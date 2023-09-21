@@ -18,7 +18,7 @@
 .slds-listbox__item{
     /*padding-left: 6px !important;*/
     color: var(--color-white) !important;
-    font-size: 14px !important;
+    font-size: 12px !important;
     padding: 14px 16px;
     text-align: center;
     justify-content: center !important;
@@ -40,9 +40,9 @@
 }
 
 .slds-listbox__option {
-    font-size: 13px !important;
+    font-size: 12px !important;
     color: var(--color-white) !important;
-    line-height: 16px;
+    line-height: 10px;
 }
 
 .slds-combobox_container{
@@ -123,7 +123,7 @@
 
 .default-box-input{
     border: 1px solid #d7d7d7!important;
-    border-radius: 10px;
+    border-radius: 8px;
     font-family: 'Proxima Nova' !important;
     padding-left: 12px;
     padding-right: 12px;
@@ -131,10 +131,11 @@
     box-sizing: border-box;
     cursor: pointer;
     display: block;
-    min-height: calc(1.875rem + (var(--lwc-borderWidthThin) * 6));
-    line-height: 34.62px;
+    min-height: calc(1.675rem + (var(--lwc-borderWidthThin) * 6));
+    line-height: 30.62px;
     font-weight: 400;
-    font-size: 13px;
+    font-size: 12px;
+    height: 30px;
     color: #1d1d1d !important;
 }
 

@@ -20,6 +20,8 @@ export default class UserMileageGrid extends LightningElement {
   @api filter;
   @api role;
   @api isAccountBiweek;
+  @api singleUser;
+  @api userList;
   sortable = true;
   modalOpen = false;
   isRecord = false;
@@ -28,6 +30,7 @@ export default class UserMileageGrid extends LightningElement {
   _flag = false;
   isFalse = false;
   typeFilter = "";
+  _value = ""
   unapprovereimbursements = [];
   headerModalText = "";
   modalClass = "";
@@ -36,7 +39,8 @@ export default class UserMileageGrid extends LightningElement {
   modalContent = "";
   styleHeader = "";
   styleClosebtn = "";
-  classToTable = "slds-table--header-fixed_container p-top-v1";
+  classToTable = "fixed-container";
+  noMessage = 'There is no data available';
   originalSelectList = [];
   allReimbursementList = [];
   selectList = [
@@ -241,6 +245,10 @@ export default class UserMileageGrid extends LightningElement {
     });
   }
 
+  @api singleUserList(){
+     this.singleUser = true
+  }
+
   resetMileage(list) {
     var count = 0;
     let element = this.originalModelList;
@@ -327,6 +335,14 @@ export default class UserMileageGrid extends LightningElement {
       this.selectList.splice(0, 0, pageItem);
     }
     //console.log("event-->", JSON.parse(event.detail), JSON.parse(event.detail).length);
+  }
+
+  handleClearInput(){
+    this._value = "";
+    this.isSearchEnable = this._value === "" ? true : false;
+    this.template
+    .querySelector("c-user-preview-table")
+    .searchByKey(this._value);
   }
 
   handleSearchEvent(event) {
@@ -748,6 +764,14 @@ export default class UserMileageGrid extends LightningElement {
     }
   }
 
+  getAllUsers(){
+    this.singleUser = false;
+    if(this.userList){
+      let b = JSON.parse(this.userList)
+      this.resetViewList(b)
+    }
+  }
+
   resetViewList(b) {
     var count = 0;
     let element = b;
@@ -756,7 +780,7 @@ export default class UserMileageGrid extends LightningElement {
     this.originalModelList = element;
     if (this.typeFilter === "High Risk") {
       this.highRiskList = element.filter(function (m) {
-        return m.totalHighRiskMileages !== 0;
+        return (m.totalHighRiskMileages > "0.00" && m.totalHighRiskMileages != null)
       });
       this.tripColumn[1].colName = "totalHighRiskMileages";
       this.tripListColumn[1].colName = "totalHighRiskMileages";
@@ -849,6 +873,12 @@ export default class UserMileageGrid extends LightningElement {
               })
             );
             this.unapprovereimbursements = [];
+            // if(this.singleUser){
+            //   const redirectEvent = new CustomEvent("resetuser", {
+            //     detail: ''
+            //   });
+            //   this.dispatchEvent(redirectEvent);
+            // }
             if (this.modelList !== undefined) {
               console.log("inside modal list");
               for (let i = 0; i < this.modelList.length; i++) {
@@ -859,10 +889,11 @@ export default class UserMileageGrid extends LightningElement {
             }
             this.msg = "";
             this.msg = "Mileage has been approved.";
+            this.singleUser = false
             UpdatedReimList({
               did: this.contactId,
               accid: this.accountId,
-              showTeamRecord: false,
+              showTeamRecord: this.showTeam,
               role: this.role
             })
               .then((a) => {
@@ -1017,7 +1048,7 @@ export default class UserMileageGrid extends LightningElement {
       mileages: JSON.stringify(this.myTeamReimbursement),
       did: this.contactId,
       accid: this.accountId,
-      showTeamRecord: false
+      showTeamRecord: this.showTeam
     })
       .then((result) => {
         if (result != null) {
@@ -1096,7 +1127,7 @@ export default class UserMileageGrid extends LightningElement {
       let lockDate = this.modelList[0].lockDate;
       let currentDateLocked = new Date(lockDate);
       console.log("date", lockDate, currentDateLocked)
-      let lockedMonth = currentDateLocked.toLocaleString('default', { month: 'long' });
+      //let lockedMonth = currentDateLocked.toLocaleString('default', { month: 'long' });
       this.islockdate = true;
       this.headerModalText = "Mileage Lock Date";
       this.modalClass = "slds-modal modal_info slds-fade-in-open";
@@ -1106,7 +1137,7 @@ export default class UserMileageGrid extends LightningElement {
       this.styleHeader = "slds-modal__container slds-m-top_medium";
       this.styleClosebtn = "close-notify";
       this.contentMessage =
-        "You approved mileage after the "+ lockedMonth + " month reimbursement report was run. This mileage will be applied to the next reimbursement period report";
+        "This mileage is being processed after the report was closed. Any changes will be applied to the next reimbursement period.";
       if (this.template.querySelector("c-user-profile-modal")) {
         this.template.querySelector("c-user-profile-modal").show();
       }
@@ -1219,6 +1250,15 @@ export default class UserMileageGrid extends LightningElement {
     this.excelToExport(mileage, fileName, sheetName);
   }
 
+  revertHandler(){
+    this.dispatchEvent(
+      new CustomEvent("back", {
+          detail: ''
+      })
+   );
+   // window.history.go(window.history.length - window.history.length - 1);
+  }
+
   renderedCallback() {
     console.log(
       "Rendered---",
@@ -1251,7 +1291,7 @@ export default class UserMileageGrid extends LightningElement {
         }
       }
     }
-    console.log(this.filter);
+    console.log("rendered---", this.typeFilter, this.filter);
     if (this.filter === "High Risk" && this.typeFilter === "High Risk") {
       if (
         this.template.querySelector('c-dropdown-select[data-id="typeSelect"]')
@@ -1277,11 +1317,38 @@ export default class UserMileageGrid extends LightningElement {
           this.template
             .querySelector('c-dropdown-select[data-id="typeSelect"]')
             .toggleSelected("All Trips");
-          this.template
-            .querySelector('c-dropdown-select[data-id="typeSelect"]')
-            .removeHidden("High Risk");
+          // this.template
+          //   .querySelector('c-dropdown-select[data-id="typeSelect"]')
+          //   .removeHidden("High Risk");
+        }
+      } else {
+        if (this.typeFilter === 'High Risk') {
+            if (this.template.querySelector('c-dropdown-select[data-id="typeSelect"]')) {
+              this.template.querySelector(
+                'c-dropdown-select[data-id="typeSelect"]'
+              ).selectedValue = "High Risk";
+              this.template
+                .querySelector('c-dropdown-select[data-id="typeSelect"]')
+                .toggleSelected("High Risk");
+              this.template
+                .querySelector('c-dropdown-select[data-id="typeSelect"]')
+                .removeHidden("All Trips");
+          }
+       } else {
+          if (this.template.querySelector('c-dropdown-select[data-id="typeSelect"]')) {
+            this.template.querySelector(
+              'c-dropdown-select[data-id="typeSelect"]'
+            ).selectedValue = "All Trips";
+            this.template
+              .querySelector('c-dropdown-select[data-id="typeSelect"]')
+              .toggleSelected("All Trips");
+            this.template
+              .querySelector('c-dropdown-select[data-id="typeSelect"]')
+              .removeHidden("High Risk");
+          }
         }
       }
+      
     }
 
     //    let selectedValue = sessionStorage.getItem("selected");
@@ -1312,6 +1379,7 @@ export default class UserMileageGrid extends LightningElement {
     let count = 0;
     this.isScrollable = true;
     this.paginatedModal = true;
+    //this.isSort = false;
     this.isCheckbox = true;
     this.modalListColumn = [];
     this.modalKeyFields = [];
@@ -1320,8 +1388,7 @@ export default class UserMileageGrid extends LightningElement {
       this.originalModelList = this.proxyToObject(this.contactList);
       this.classToTable =
         this.modelList.length > 5
-          ? "slds-table--header-fixed_container preview-height"
-          : "slds-table--header-fixed_container";
+          ? 'fixed-container' : 'fixed-container overflow-none';
       if (this.filter === "High Risk") {
         this.typeFilter = this.filter;
         let element = this.originalModelList;

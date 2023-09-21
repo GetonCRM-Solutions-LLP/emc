@@ -82,7 +82,7 @@
                                     reversed: true,
                                     align: 'right',
                                     layout: 'vertical',
-                                    // itemMarginLeft: 5,
+                                   // itemMarginLeft: 30,
                                     itemMarginTop: 5,
                                     itemMarginBottom: 5,
                                     symbolHeight: 15,
@@ -125,7 +125,7 @@
                                             connectorPadding: 0,
                                             connectorWidth: 0,
                                             // x: 5,
-                                            // y: -8,
+                                            //y: -8,
                                             verticalAlign: 'middle',
                                             color: '#000',
                                             style: {
@@ -213,6 +213,7 @@
                                         showInLegend: true,
                                         dataLabels: {
                                             alignTo: 'plotEdges',
+                                            overflow: 'allow',
                                             style: {
                                                 fontSize: '14px'
                                             }
@@ -249,6 +250,7 @@
                                             brightness: -0.3
                                         }
                                     },
+                           
                                     size: '90%',
                                     innerSize: '70%',
                                     colorByPoint: true,
@@ -264,11 +266,12 @@
                                     dataLabels: {
                                         connectorShape: 'crookedLine',
                                         connectorWidth: 0,
-                                     //   distance: 2,
+                                        //distance: 10,
                                         padding: 0,
                                         connectorPadding: 0,
-                                        x: 5,
-                                        y: -8,
+                                        distance: -16,
+                                       // x: 2,
+                                       // y: 15,
                                         style: {
                                                 fontSize: '14px',
                                                 fontFamily: 'Proxima Nova',

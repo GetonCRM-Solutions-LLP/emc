@@ -1,4 +1,3 @@
-
 p{
     font-weight: 400;
     font-size: 16px;
@@ -43,12 +42,12 @@ p{
 }
 .is--text--help {
     color: #516f90;
-    font-size: 15px;
+    font-size: 16px;
     line-height: 18px;
     display: block;
     margin: 0px 8px;
     text-align: center;
-    font-family: 'Proxima Nova' !important;
+    font-family: 'Proxima Nova Bold' !important;
 }
 .layout-grid-item-2{
     flex-basis: calc(100% - 104px);
@@ -59,7 +58,7 @@ p{
 .layout-grid{
     display: grid;
     flex-wrap: wrap;
-    column-gap: 20px;
+    column-gap: 1px;
     grid-template-areas:
         "header header header"
         ". steps ."
@@ -68,8 +67,11 @@ p{
         ". footer .";
     grid-template-columns: auto 1fr auto;
     max-width: 826px;
-    padding: 0px 20px 20px;
+    /* padding: 0px 20px 20px; */
     position: relative;
+}
+.carousel_inner>p>span{
+    font-size: 14px;
 }
 .layout-grid-item-1{
     align-self: center;
@@ -98,4 +100,12 @@ button[disabled]{
     border-color: #eaf0f6!important;
     color: #b0c1d4!important;
     cursor: not-allowed;
+}
+
+.total-font-style {
+    color: black;
+}
+
+.right-icon {
+    margin-left: 16px;
 }

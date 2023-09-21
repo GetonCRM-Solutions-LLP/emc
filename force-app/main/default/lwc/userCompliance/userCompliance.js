@@ -23,8 +23,14 @@ export default class UserCompliance extends LightningElement {
     complianceStatus = '';
     annualMileage = '';
     annualReimbursement = '';
-    @api contactId;
+    complianceVideoUrl = '';
+    // width of video
+    videoWidth = "100%";
 
+    // height of video
+    videoHeight = "332px";
+    @api contactId;
+    @api settings;
     
     proxyToObject(e) {
         return JSON.parse(e)
@@ -40,6 +46,8 @@ export default class UserCompliance extends LightningElement {
     })driverDetailInfo({data,error}) {
         if (data) {
             let contactList = this.proxyToObject(data);
+            let settings = this.settings;
+            this.complianceVideoUrl = settings.Compliance__c;
             this.contactDetails = contactList;
             this.planInsurance = (this.contactDetails[0].Insurance__c !== undefined) ? (this.contactDetails[0].Insurance__c === 'Yes') ? true : false : false;
           //  this.planMileage =    (this.contactDetails[0].Mileage_Meet__c !== undefined) ? (this.contactDetails[0].Mileage_Meet__c === 'Yes') ? true : false : false;

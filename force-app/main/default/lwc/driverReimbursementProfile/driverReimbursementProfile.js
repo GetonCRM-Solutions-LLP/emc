@@ -9,6 +9,8 @@ import getReimbursementData from "@salesforce/apex/DriverDashboardLWCController.
 import getFuelVariableRate from "@salesforce/apex/DriverDashboardLWCController.getFuelVariableRate";
 import getPacketandMeeting from "@salesforce/apex/DriverDashboardLWCController.getPacketandMeeting";
 import getDrivingState from "@salesforce/apex/DriverDashboardLWCController.getDrivingState";
+import canadaStates from '@salesforce/label/c.canada_driving_states';
+import usaDrivingStates from '@salesforce/label/c.usa_driving_states';
 import { events, openEvents, toastEvents, toggleEvents } from "c/utils";
 export default class DriverReimbursementProfile extends LightningElement {
   @api driverDetails;
@@ -26,7 +28,16 @@ export default class DriverReimbursementProfile extends LightningElement {
   modalLength = false;
   ytd = false;
   biweekYtd = false;
+  multipleMap = false;
+  checkAll = false;
+  _value = "";
+  isSearchEnable = true;
+  typeMap = 'USA';
   monthText = "";
+  canadaStatesList = '';
+  usaDrivingStates = '';
+  usStatesList = '';
+  mapCountry = '';
   lastMonth = "";
   subTitle = "";
   thisMonth = "";
@@ -35,6 +46,7 @@ export default class DriverReimbursementProfile extends LightningElement {
   address = "";
   insuranceRate = "";
   maintenance = "";
+  variablefuelprice = "";
   states = "";
   tires = "";
   miles = "";
@@ -452,6 +464,15 @@ export default class DriverReimbursementProfile extends LightningElement {
     //   });
   }
 
+  
+  handleClearInput(){
+    this._value = "";
+    this.isSearchEnable = this._value === "" ? true : false;
+    this.template
+    .querySelector("c-user-data-table")
+    .searchByKey(this._value);
+}
+
   handlePlanInfo() {
     this.myPlanInfo = true;
     this.myTrip = false;
@@ -565,7 +586,7 @@ export default class DriverReimbursementProfile extends LightningElement {
               key === "totalFixedAmount" ||
               key === "totalReim" ||
               key === "variable"
-                ? true
+                ? (element[key] === "null" || element[key] === null || element[key] === "") ? false : true
                 : false;
             singleValue.isfourDecimalCurrency =
               key === "variableRate" || key === "VariableRate" ? true : false;
@@ -670,6 +691,15 @@ export default class DriverReimbursementProfile extends LightningElement {
       })
     );
   }
+
+  handleMap(event){
+    this.checkAll = event.target.checked;
+    this.typeMap = (!this.checkAll) ? 'USA' : 'CANADA'
+    let state = (!this.checkAll) ? this.drivingState_US : this.drivingState_canada
+    this.states = (state !== undefined) ? state.join(', ') : '';
+    this.template.querySelector('c-choropleth-map').type = this.typeMap;
+    this.template.querySelector('c-choropleth-map').reloadChart()
+ }
 
   getLastMonthMileage() {
     // this.viewAllNotification = false;
@@ -1047,6 +1077,7 @@ export default class DriverReimbursementProfile extends LightningElement {
 
   handleChange(event) {
     this._value = event.target.value;
+    this.isSearchEnable = this._value === "" ? true : false;
     this.template
       .querySelector("c-user-data-table")
       .searchByKey(this._value, this.lastModelList);
@@ -1123,6 +1154,8 @@ export default class DriverReimbursementProfile extends LightningElement {
         : false;
     this.contact = contactList[0];
     this.contactName = contactList[0].Name;
+    this.mapCountry = (contactList[0].Map_Country__c !== undefined) ? contactList[0].Map_Country__c : 'USA';
+    this.typeMap = this.mapCountry;
     this.attachmentInsurance =
       contactList[0].Insurance_Attachment_Id__c != null
         ? contactList[0].Insurance_Attachment_Id__c
@@ -1143,10 +1176,6 @@ export default class DriverReimbursementProfile extends LightningElement {
       contactList[0].Tires__c === null || contactList[0].Tires__c === undefined
         ? 0
         : contactList[0].Tires__c;
-    this.miles =
-      this.variablefuelprice != null
-        ? parseFloat(this.variablefuelprice) + this.maintenance + this.tires
-        : this.maintenance + this.tires;
     this.license =
       contactList[0].License_Ragistration__c === null ||
       contactList[0].License_Ragistration__c === undefined
@@ -1181,13 +1210,47 @@ export default class DriverReimbursementProfile extends LightningElement {
         : this.fixedCostAdjustment + this.totalMonthlyAmount;
         this.address = (contactList[0].MailingCity !== undefined ? contactList[0].MailingCity + ', ' : '') + (contactList[0].MailingState !== undefined ? contactList[0].MailingState : '') +' '+ (contactList[0].MailingPostalCode !== undefined ? contactList[0].MailingPostalCode : '');
 
-    // console.log(
-    //   "Driver details reimbursement",
-    //   data,
-    //   this.totalMonthlyFixedCost,
-    //   this.fixedCostAdjustment,
-    //   this.totalMonthlyAmount
-    // );
+        getFuelVariableRate({
+          contactId: this.contactId
+        }).then((v) => {
+          console.log("getFuelVariableRate---", v);
+          if (v) {
+            let gasrate = JSON.parse(v);
+            console.log("getFuelVariableRate 2---", gasrate);
+            if (gasrate != null && gasrate !== "") {
+              if (gasrate[0] !== undefined) {
+                if (gasrate[0].Fuel_Price__c == null) {
+                  this.variablefuelprice = JSON.stringify(gasrate);
+                } else {
+                  this.variablefuelprice = null;
+                }
+              } else {
+                this.variablefuelprice = gasrate;
+              }
+            } else {
+              this.variablefuelprice = null;
+            }
+
+            this.miles =
+            this.variablefuelprice != null
+              ? parseFloat(this.variablefuelprice) + this.maintenance + this.tires
+              : this.maintenance + this.tires;
+            console.log("Miles", this.miles, this.variablefuelprice, this.maintenance, this.tires)
+          }else{
+            this.miles = this.maintenance + this.tires;
+          }
+        }).catch((error)=>{
+          this.miles = this.maintenance + this.tires;
+          console.log("getFuelVariableRate--", JSON.stringify(error))
+        });
+  }
+
+  revertHandler(){
+    this.dispatchEvent(
+      new CustomEvent("back", {
+          detail: ''
+      })
+   );
   }
 
   connectedCallback() {
@@ -1206,6 +1269,8 @@ export default class DriverReimbursementProfile extends LightningElement {
       previousMonthNo > 0
         ? this.getMonthName(previousMonthNo)
         : this.getMonthName(11);
+    this.canadaStatesList = canadaStates;
+    this.usaDrivingStates = usaDrivingStates;
     getDrivingState({
       contactId: this.contactId
     }).then((result) => {
@@ -1213,31 +1278,20 @@ export default class DriverReimbursementProfile extends LightningElement {
         let drivingState = this.proxyToObject(result);
         if (drivingState.length > 0) {
           if (drivingState[0].Driving_States__c !== undefined) {
-            let states = drivingState[0].Driving_States__c.split(";");
-            this.states = states.join(", ");
+            let canadaState = this.canadaStatesList.split(',');
+            let usAState = this.usaDrivingStates.split(',');
+            let states = drivingState[0].Driving_States__c.split(';');
+            this.usStatesList = drivingState[0].Driving_States__c;
+            let usState = (states !== undefined) ? states : []
+            let candaState = (canadaState !== undefined) ? canadaState : []
+            this.drivingState_US = usState.filter(item => !candaState.includes(item));
+            this.drivingState_canada = usState.filter(item => candaState.includes(item));
+            let C = canadaState.some(elem => states.includes(elem));
+            let U = usAState.some(elem => states.includes(elem));
+            this.states = (this.typeMap === 'CANADA') ? this.drivingState_canada.join(', ') : this.drivingState_US.join(', ')
+            this.multipleMap = (C === true && U === true) ? true : false;
+            this.checkAll = (this.typeMap === 'CANADA') ? true : false;
           }
-        }
-      }
-    });
-
-    getFuelVariableRate({
-      contactId: this.contactId
-    }).then((data) => {
-      console.log("getFuelVariableRate---", data);
-      if (data) {
-        let gasrate = JSON.parse(data);
-        if (gasrate != null && gasrate !== "") {
-          if (gasrate[0] !== undefined) {
-            if (gasrate[0].Fuel_Price__c == null) {
-              this.variablefuelprice = JSON.stringify(gasrate);
-            } else {
-              this.variablefuelprice = null;
-            }
-          } else {
-            this.variablefuelprice = gasrate;
-          }
-        } else {
-          this.variablefuelprice = null;
         }
       }
     });

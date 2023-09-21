@@ -1,3 +1,4 @@
+/* eslint-disable @lwc/lwc/no-async-operation */
 import { LightningElement, api, wire } from 'lwc';
 import carImage from '@salesforce/resourceUrl/EmcCSS';
 import resourceImage from '@salesforce/resourceUrl/mBurseCss';
@@ -7,6 +8,8 @@ import getMileages from "@salesforce/apex/DriverDashboardLWCController.getMileag
 import getGasPriceandRate from "@salesforce/apex/DriverDashboardLWCController.getGasPriceandRate";
 import getAllReimbursements from "@salesforce/apex/DriverDashboardLWCController.getAllReimbursements";
 import getDrivingState  from '@salesforce/apex/DriverDashboardLWCController.getDrivingState';
+import canadaStates from '@salesforce/label/c.canada_driving_states';
+import usaDrivingStates from '@salesforce/label/c.usa_driving_states';
 import {
     events
 } from 'c/utils';
@@ -40,8 +43,12 @@ export default class DriverUserProfile extends LightningElement {
     @api excelYtd;
     headerModalText = '';
     ytd = false;
+    checkAll = false;
+    typeMap = 'USA';
+    mapCountry = '';
     biweekYtd = false;
     modalLength = false;
+    multipleMap = false;
     modalStyle = '';
     headerText = '';
     monthText = '';
@@ -50,12 +57,17 @@ export default class DriverUserProfile extends LightningElement {
     thisMonth = '';
     vehicleType = '';
     planYear = '';
+    canadaStatesList = '';
+    usaDrivingStates = '';
+    usStatesList = '';
     complianceMileage = '';
     vehicleValue = '';
     insurancePlan = '';
     complianceStatus = '';
     annualMileage = '';
     annualReimbursement = '';
+    drivingState_US;
+    drivingState_canada;
     templateName = '';
     lastMonthMiles = '';
     thisMonthMiles = '';
@@ -80,6 +92,8 @@ export default class DriverUserProfile extends LightningElement {
     colname="name";
     coltype="String";
     sortorder="desc";
+    _value = "";
+    isSearchEnable = true;
     renderedInitialized = false;
     planInsurance = false;
     planMileage = false;
@@ -424,7 +438,8 @@ export default class DriverUserProfile extends LightningElement {
                         key === 'fixed3' || 
                         key === 'totalFixedAmount' ||
                         key === "totalReim" ||
-                        key === "variable") ? true : false;
+                        key === "variable") ? (element[key] === "null" || element[key] === null || element[key] === "") ? false : true
+                        : false;
                         
                         singleValue.hasLeadingZero = ((key === "fuel" ||
                         key === "fixedAmount" ||
@@ -470,6 +485,7 @@ export default class DriverUserProfile extends LightningElement {
 
     handleChange(event) {
 		this._value = event.target.value;
+        this.isSearchEnable = this._value === "" ? true : false;
         this.template.querySelector('c-user-data-table').searchByKey(this._value, this.lastModelList)
 	}
 
@@ -723,6 +739,24 @@ export default class DriverUserProfile extends LightningElement {
       
     }
 
+    
+    handleClearInput(){
+        this._value = "";
+        this.isSearchEnable = this._value === "" ? true : false;
+        this.template
+        .querySelector("c-user-data-table")
+        .searchByKey(this._value);
+    }
+
+    handleMap(event){
+        this.checkAll = event.target.checked;
+        this.typeMap = (!this.checkAll) ? 'USA' : 'CANADA'
+        let state = (!this.checkAll) ? this.drivingState_US : this.drivingState_canada
+        this.subTitle = (state !== undefined) ? state.join(', ') : '';
+        this.template.querySelector('c-choropleth-map').type = this.typeMap;
+        this.template.querySelector('c-choropleth-map').reloadChart()
+    }
+
     dataReimbursement(reimbursementData){
         this.lastMilesZero = (reimbursementData.lastmonthmiles !== '0.00' && (/^0+/).test(reimbursementData.lastmonthmiles) === true) ? (reimbursementData.lastmonthmiles).replace(/^0+/, '') : null;
         this.thisMilesZero = (reimbursementData.currentmonthmiles !== '0.00' && (/^0+/).test(reimbursementData.currentmonthmiles) === true) ? (reimbursementData.currentmonthmiles).replace(/^0+/, '') : null;
@@ -741,6 +775,7 @@ export default class DriverUserProfile extends LightningElement {
     driverListOfDetail(contactList){
         this.vehicleImage = contactList[0].Car_Image__c;
         this.vehicleType = contactList[0].Vehicle_Type__c;
+        this.mapCountry = (contactList[0].Map_Country__c !== undefined) ? contactList[0].Map_Country__c : 'USA';
         this.contactName = contactList[0].Name;
         this.address = (contactList[0].MailingCity !== undefined ? contactList[0].MailingCity + ', ' : '') + (contactList[0].MailingState !== undefined ? contactList[0].MailingState : '') +' '+ (contactList[0].MailingPostalCode !== undefined ? contactList[0].MailingPostalCode : '');
         this.planInsurance = (contactList[0].Insurance__c !== undefined) ? (contactList[0].Insurance__c === 'Yes') ? true : false : false;
@@ -758,6 +793,7 @@ export default class DriverUserProfile extends LightningElement {
         this.isValid = parseFloat(this.annualMileage) >= parseFloat(this.complianceMileage) ? true : false;
         this.planMileage =   (this.isValid) ?  true : false;
         this.biweekly = (contactList[0].Reimbursement_Frequency__c === 'Bi-Weekly Reimbursement') ? true : false;
+        this.typeMap = this.mapCountry;
     }
 
     @wire(getDriverDetails, {
@@ -765,7 +801,7 @@ export default class DriverUserProfile extends LightningElement {
     })driverDetailInfo({data,error}) {
         if (data) {
             let contactList = this.proxyToObject(data);
-           this.driverListOfDetail(contactList);
+            this.driverListOfDetail(contactList);
             console.log("getDriverDetails data", data)
         }else if(error){
             console.log("getDriverDetails error", error.message)
@@ -791,27 +827,42 @@ export default class DriverUserProfile extends LightningElement {
         this.year = currDate.getFullYear();
         this.thisMonth = this.getMonthName(monthNo);
         this.lastMonth = (previousMonthNo > 0) ? this.getMonthName(previousMonthNo) : this.getMonthName(11);
-        console.log(this.thisMonth, this.lastMonth)
+       // console.log(this.thisMonth, this.lastMonth)
         if(this.chartInfo){
-            console.log("chart",this.chartInfo[0])
+          //  console.log("chart",this.chartInfo[0])
             this.chartList = this.chartInfo[0]
         }
         this.headerModalText = 'Notifications';
-
+        this.canadaStatesList = canadaStates;
+        this.usaDrivingStates = usaDrivingStates;
         getDrivingState({
             contactId: this.contactId
         }).then((result) =>{
             if(result){
-                console.log("Driving state", result)
+                //console.log("Driving state", result)
                 let drivingState = this.proxyToObject(result);
                 if(drivingState.length > 0){
                     if(drivingState[0].Driving_States__c !== undefined){
+                        let canadaState = this.canadaStatesList.split(',');
+                        let usAState = this.usaDrivingStates.split(',');
                         let states = drivingState[0].Driving_States__c.split(';');
-                        this.subTitle = states.join(', ')
+                        this.usStatesList = drivingState[0].Driving_States__c;
+                        let usState = (states !== undefined) ? states : []
+                        let candaState = (canadaState !== undefined) ? canadaState : []
+                        this.drivingState_US = usState.filter(item => !candaState.includes(item));
+                        this.drivingState_canada = usState.filter(item => candaState.includes(item));
+                        let C = canadaState.some(elem => states.includes(elem));
+                        let U = usAState.some(elem => states.includes(elem));
+                        setTimeout(()=>{
+                            this.subTitle = (this.typeMap === 'CANADA') ? this.drivingState_canada.join(', ') : this.drivingState_US.join(', ')
+                            this.multipleMap = (C === true && U === true) ? true : false;
+                            this.checkAll = (this.typeMap === 'CANADA') ? true : false;
+                        }, 2000)
+                       
                     }
                 }
               
-                console.log("Driving state", result)
+                //console.log("Driving state", result, this.typeMap)
             }
         })
 

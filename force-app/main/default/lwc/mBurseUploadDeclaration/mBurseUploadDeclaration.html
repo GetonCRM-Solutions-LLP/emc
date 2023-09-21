@@ -75,7 +75,7 @@
                             <a 
                             name="buttonBackwards"
                             label="Previous" 
-                            title="" 
+                            title="Back" 
                             onclick={backToPrevious}  >
                             <i class="fa-solid fa-arrow-left fa-lg navigate-icon"></i>
                             </a>
@@ -123,7 +123,7 @@
                                         <td>
                                             <lightning-formatted-number value={client.propertyDamage}
                                                 format-style="currency" currency-code="USD"
-                                                minimum-fraction-digits="2">
+                                                minimum-fraction-digits="0">
                                             </lightning-formatted-number>
                                         </td>
                                     </tr>
@@ -133,7 +133,7 @@
                                         <td>
                                             <lightning-formatted-number value={client.comprehensive}
                                                 format-style="currency" currency-code="USD"
-                                                minimum-fraction-digits="2">
+                                                minimum-fraction-digits="0">
                                             </lightning-formatted-number>
                                         </td>
                                     </tr>
@@ -143,7 +143,7 @@
                                         <td>
                                             <lightning-formatted-number value={client.collision}
                                                 format-style="currency" currency-code="USD"
-                                                minimum-fraction-digits="2">
+                                                minimum-fraction-digits="0">
                                             </lightning-formatted-number>
                                         </td>
                                     </tr>
@@ -153,7 +153,7 @@
                                         <td>
                                             <lightning-formatted-number value={client.umbrella}
                                                 format-style="currency" currency-code="USD"
-                                                minimum-fraction-digits="2">
+                                                minimum-fraction-digits="0">
                                             </lightning-formatted-number>
                                         </td>
                                     </tr>
@@ -285,28 +285,24 @@
                     <template if:false={packet}>
                         <button class="slds-btn slds-btn-primary slds-btn-sm waves-effect bc-blue waves-light"
                             onclick={nextDriverPacket}>
-                            Go to sign driver packet
+                            Go to Driver Packet
                         </button>
                     </template>
                     <template if:true={packet}>
                         <template if:false={dPacket}>
                             <button class="slds-btn slds-btn-primary slds-btn-sm waves-effect bc-blue waves-light"
                                 onclick={nextmLog}>
-                                Go to mLog preview
+                                Go to mLog Preview
                             </button>
                         </template>
                         <template if:true={dPacket}>
-                            <button class="slds-btn slds-btn-primary slds-btn-sm waves-effect bc-blue waves-light" onclick={redirectToDashboard} if:false={afterRegister}>
+                            <!-- <button class="slds-btn slds-btn-primary slds-btn-sm waves-effect bc-blue waves-light" onclick={redirectToDashboard} if:false={afterRegister}>
                                 {renderText}
-                            </button>
+                            </button> -->
                             <template if:true={allowRedirect}>
-                                <button class="slds-btn slds-btn-primary slds-btn-sm waves-effect bc-blue waves-light packet_btn"
-                                onclick={takeMeToDashboard} if:true={afterRegister}>
-                                    Go to my account
-                                </button>
-                                <button class="slds-btn slds-btn-primary slds-btn-sm waves-effect bc-blue waves-light packet_btn"
-                                onclick={takeMeToDashboard} if:true={showWatchBtn}>
-                                    Go to my account
+                                <button class="slds-btn bc-outline slds-btn-sm waves-effect bc-blue waves-light packet_btn"
+                                onclick={takeMeToDashboard}>
+                                    Go to Dashboard
                                 </button>
                             </template>
                         </template>

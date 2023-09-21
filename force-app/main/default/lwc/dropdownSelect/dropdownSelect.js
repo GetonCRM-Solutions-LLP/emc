@@ -75,6 +75,16 @@ export default class DropdownSelect extends LightningElement {
     ).style.display = "none";
   }
 
+  @api toggleStyle(boolean){
+    if(boolean){
+      this.template.querySelector('.slds-dropdown_fluid').classList.add('dropdown_width');
+      this.template.querySelector('.slds-listbox_vertical').classList.add('listbox_css');
+    }else{
+      this.template.querySelector('.slds-dropdown_fluid').classList.remove('dropdown_width');
+      this.template.querySelector('.slds-listbox_vertical').classList.remove('listbox_css');
+    }
+  }
+
   set selectedValue(val) {
     console.log("inside selected");
     this._selected = val;
@@ -121,8 +131,8 @@ export default class DropdownSelect extends LightningElement {
     this.isOpen = true;
   }
 
-  fireChange(val) {
-    this.dispatchEvent(new CustomEvent("change", { detail: { value: val } }));
+  fireChange(val, key) {
+    this.dispatchEvent(new CustomEvent("change", { detail: { value: val, key : key } }));
     //this._value = ""
   }
 
@@ -276,7 +286,7 @@ export default class DropdownSelect extends LightningElement {
       event.currentTarget.dataset.label;
     this._selected = event.currentTarget.dataset.label;
     //this.addHighlighted(event.currentTarget.dataset.label);
-    this.fireChange(event.currentTarget.dataset.label);
+    this.fireChange(event.currentTarget.dataset.label, event.currentTarget?.dataset.id);
     this.isOpen = false;
   }
 

@@ -313,6 +313,13 @@ table tr td {
   font-family: 'Proxima Nova' !important;
 }
 
+.bc-outline{
+  color: #7abb4a;
+  background-color: #fff;
+  border: 1px solid #7abb4a !important;
+  padding: 10px 20px !important;
+}
+
 .slds-btn {
   margin: .375rem;
   word-wrap: break-word;
@@ -452,16 +459,16 @@ table tr td {
 }
 
 
-.file-upload-img{
+.file-upload-img {
   text-align: center;
 }
 
-.insurance{
+.insurance {
   border: 1px solid #D7D7D7;
   border-radius: 20px;
 }
 
-.bordered-table tbody td{
+.bordered-table tbody td {
   border-bottom: 2px solid #D7D7D7;
   /* padding-left: 0 !important;
   padding-right: 0 !important; */
@@ -472,7 +479,7 @@ table tr td {
   color: #1D1D1D !important;
 }
 
-.insurance-header{
+.insurance-header {
   font-family: 'Proxima Nova';
   font-style: normal;
   text-align: center;
@@ -482,42 +489,42 @@ table tr td {
   color: #1D1D1D;
 }
 
-.summary{
+.summary {
   border: 1px solid #D7D7D7;
   border-radius: 20px;
   padding: 2rem 1rem 2rem 1rem;
 }
 
-.text-divider{
+.text-divider {
   border: 1px solid #7ABB4A;
   height: 140px;
 }
 
-.bordered-table tr>td:first-child{
+.bordered-table tr>td:first-child {
   font-weight: 400;
   padding-left: 0 !important;
 }
 
-.bordered-table tr>td:last-child{
+.bordered-table tr>td:last-child {
   font-weight: 700;
   text-align: right;
   padding-left: 4rem !important;
   padding-right: 0 !important;
 }
 
-.bordered-table tbody tr:last-child>td{
+.bordered-table tbody tr:last-child>td {
   border-bottom: 0 !important;
 }
 
-.bordered-table tbody tr:hover>td{
+.bordered-table tbody tr:hover>td {
   background-color: #FFFFFF !important;
 }
 
-.fa-check{
+.fa-check {
   color: #7ABB4A;
 }
 
-.fa-2x{
+.fa-2x {
   font-size: 1.6em !important;
 }
 
@@ -528,19 +535,24 @@ table tr td {
 }
 
 
-.navigate-icon{
+.navigate-icon {
   color: #7ABB4A !important;
 }
 
-.slds-item.navigate{
+.slds-item.navigate {
   border: 1px solid #D7D7D7;
   border-radius: 10px;
 }
 
-.slds-item.navigate a{
+.slds-item.navigate a {
   padding: 0.85rem !important;
 }
 
-.fa-lg{
+.fa-lg {
   line-height: 1.05em !important;
+}
+
+.thanksImg {
+  display: flex;
+  justify-content: center;
 }

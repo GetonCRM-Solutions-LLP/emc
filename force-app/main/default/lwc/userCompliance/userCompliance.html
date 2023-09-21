@@ -6,10 +6,13 @@
         <div class="slds-grid slds-grid_align-center">
             <div class="slds-grid slds-grid_vertical">
                 <div class="slds-col">
-                    <video id="video-source"
+                    <video id="video-source" width={videoWidth} height={videoHeight} 
                         class="video-frame slds-col slds-size_1-of-1 slds-medium-size_6-of-12 slds-large-size_12-of-12"
-                        controls="controls" controlslist="noplaybackrate  nodownload" style="object-fit: cover;">
-                        <source type="video/mp4" src={videoLink} />
+                        controls="controls" controlslist="noplaybackrate  nodownload" style="object-fit: cover;border-bottom-right-radius: 20px;
+                        border-bottom-left-radius: 20px;
+                        border-top-right-radius: 20px;
+                        border-top-left-radius: 20px;">
+                        <source type="video/mp4" src={complianceVideoUrl} />
                     </video>
                 </div>
                 <div class="slds-col slds-p-top_x-large">
@@ -260,8 +263,7 @@
                         <div class="slds-p-left_large footer-text-content">
                             <div class="plan-info-icon"><img src={exclaimIcon} loading="eager" /></div>
                             <div class="info-text">
-                                You should meet the following plan parameters, if not you will be considered
-                                "non-compliant" and could be exposed to end of the year taxation.
+                                You are not meeting the guidelines and are out of compliance. There may be an end-of-the-year reduced tax amount.
                             </div>
                         </div>
                     </div>

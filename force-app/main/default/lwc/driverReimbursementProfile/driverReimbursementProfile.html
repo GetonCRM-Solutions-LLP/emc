@@ -6,58 +6,53 @@
                     <div class="middle-block slds-p-around_small slds-col slds-size_12-of-12">
                         <div class="grid-block">
                             <div class="vehicle-info">
-                                <div style="display: flex;
-                                flex-direction: row;position:relative;">
-                                    <div class="slds-p-horizontal_x-small slds-p-vertical_small" style="display: flex;
-                                    flex-direction: column;">
+                                <div class="vehicle_1">
+                                    <div class="slds-p-horizontal_x-small slds-p-vertical_small vehicle_1-1">
                                         <div
                                             class="slds-col slds-size_12-of-12 slds-p-left_xx-small slds-p-right_small slds-p-bottom_large">
-                                            <div style="
-                                            font-family: 'Proxima Nova Bold' !important;
-                                            font-size: 16px;
-                                            line-height: 16px;
-                                            color: #1D1D1D;">Your Reimbursement Vehicle:</div>
-                                            <div class="slds-p-top_x-small" style="
+                                            <div class="vehicle_font">Your Reimbursement Vehicle:</div>
+                                            <div class="slds-p-top_x-small vehicle_font_1" style="
                                             font-weight: 400;
                                             font-size: 14px;
                                             line-height: 14px;color: #6C6C6C;">{vehicleType}</div>
                                         </div>
-
+                                        <!--slds-col slds-size_12-of-12 -->
                                         <div class="slds-col slds-size_12-of-12 slds-p-right_small slds-p-left_xx-small">
-                                            <div style="
-                                            font-family: 'Proxima Nova Bold' !important;
-                                            font-size: 16px;
-                                            line-height: 16px;
-                                            color: #1D1D1D;">Home:</div>
-                                            <div class="slds-p-top_x-small" style="font-family: 'Proxima Nova';
-                                            font-style: normal;
-                                            font-weight: 400;
-                                            font-size: 14px;
-                                            line-height: 14px;color: #6C6C6C;">{address}</div>
+                                            <div class="vehicle_font">Home:</div>
+                                            <div class="slds-p-top_x-small vehicle_font_1">{address}</div>
                                         </div>
                                     </div>
-                                    <div id="spacer" style="width: 200px;height: 25px;margin-right:0px;"></div>
-                                    <div  class="carProfile">
-                                        <!-- <div class="slds-size_4-of-4 carProfile" style="position: absolute;
-                                            top: 21px;
-                                            left: 143px;"> -->
+                                    <div id="spacer" class="spacer_1"></div>
+                                    <div class="">
+                                        <div class="carProfile">
                                             <img style="height: inherit !important;" src={vehicleImage} />
-                                        <!-- </div> -->
+                                        </div>
                                     </div>
-
                                 </div>
                             </div>
                             <div class="map-state">
-                                <div style="display: flex;flex-direction:column;flex-wrap:wrap;flex-basis:115px;">
-                                    <div style="font-size: 16px; font-family: 'Proxima Nova Bold' !important; color: #1D1D1D">Driving States</div>
-                                    <div style="font-weight: 400;
-                                    font-size: 14px;
-                                    line-height: 14px;
-                                    color: #6C6C6C;">{states}</div>
+                                <div class="map-state_1">
+                                    <div class="map-state-font">Driving States</div>
+                                    <div class="map-state-font_1">{states}</div>
                                 </div>
                                 <div class="choropleth map-config">
                                     <c-choropleth-map contact-id={contactId} width="160" height="127"
-                                        background="#F7F7F7" border-color="#F7F7F7"></c-choropleth-map>
+                                        background="#F7F7F7" border-color="#F7F7F7" type={typeMap} canada={canadaStatesList}></c-choropleth-map>
+                                </div>
+                                <div class="view-map slds-p-around_xx-small" lwc:if={multipleMap}>
+                                    <div>
+                                        <div class="slds-form-element">
+                                          <label class="slds-checkbox_toggle slds-grid_vertical">
+                                            <input type="checkbox" name="checkbox-toggle-16" value="checkbox-toggle-16" aria-describedby="checkbox-toggle-16" onchange={handleMap} checked={checkAll}/>
+                                            <span id="checkbox-toggle-16" class="slds-checkbox_faux_container" aria-live="assertive">
+                                              <span class="slds-checkbox_faux toogle-input"></span>
+                                              <span class="slds-checkbox_on"></span>
+                                              <span class="slds-checkbox_off"></span>
+                                            </span>
+                                            <span class="slds-form-element__label slds-m-bottom_none input-label"><span class="map-label map--us">USA</span> <span class="map-label map--canada">/ Canada</span></span>
+                                          </label>
+                                        </div>
+                                      </div>
                                 </div>
                             </div>
                             <!-- <div style="display: flex;">
@@ -142,7 +137,7 @@
                             </div>
                             </div> -->
 
-                            
+
                             <div  class="slds-p-left_small miles-view">
                                 <div  class="slds-grid slds-grid--pull-padded">
                                     <div  class="slds-col--padded">
@@ -157,7 +152,7 @@
                                                     <div style="display: flex;flex-flow: column;">
                                                         <div  class="slds-text-align--center content-text"
                                                         style="font-family: 'Proxima Nova Bold' !important;font-size: 26px;line-height: 35px;color: rgb(29, 29, 29);"
-                                                        onclick={getLastMonthMileage}>
+                                                        >
                                                             <div style="float: left;font-family: 'Proxima Nova Bold' !important;
                                                             font-size: 26px;
                                                             line-height: 35px;
@@ -173,7 +168,11 @@
                                                                 style="font-size: 16px; line-height: 35px; cursor: pointer;float:left;z-index: 4;
                                                                 position: relative;" onclick={getLastMonthMileage}></i> -->
                                                         </div>
-                                                        <div  style="font-family: Proxima Nova;font-style: normal;font-weight: 400;font-size: 14px;line-height: 18px;color: rgb(108, 108, 108);text-align:start">Miles last month</div>
+                                                        <div  style="font-family: Proxima Nova;font-style: normal;font-weight: 400;font-size: 14px;line-height: 18px;color: #00AFE8;text-align: start;" onclick={getLastMonthMileage}>Miles last month
+                                                         <!-- <svg xmlns="http://www.w3.org/2000/svg" width="7" height="10" class="arrow-svg"  viewBox="0 0 7 10" fill="none" >
+                                                            <path d="M1 1L6.00087 4.78742C6.14176 4.89412 6.14176 5.10588 6.00087 5.21258L1 9" stroke="#7ABB4A" stroke-width="1.77778" stroke-linecap="round"/>
+                                                        </svg> -->
+                                                        </div>
                                                     </div>
                                                 </div>
                                                 <div class="slds-size--1-of-1 slds-medium-size--1-of-2 slds-large-size--6-of-12"
@@ -182,7 +181,7 @@
                                                     <div style="display: flex;flex-flow: column;">
                                                         <div class="slds-p-left_x-small content-text"
                                                         style="font-family: 'Proxima Nova Bold' !important;font-size: 26px; line-height: 35px; color: rgb(29, 29, 29)"
-                                                        onclick={getThisMonthMileage}>
+                                                       >
                                                             <div style="float: left;font-family: 'Proxima Nova Bold' !important;
                                                             font-size: 26px;
                                                             line-height: 35px;
@@ -190,15 +189,19 @@
                                                                 {thisMilesZero}
                                                             </template>
                                                             <template if:false={thisMilesZero}>
-                                                                <lightning-formatted-number style="font-family: 'Proxima Nova Bold' !important;" value={thisMonthMiles}></lightning-formatted-number> 
+                                                                <lightning-formatted-number style="font-family: 'Proxima Nova Bold' !important;" value={thisMonthMiles}></lightning-formatted-number>
                                                             </template> </div>
                                                             <!-- <i class="fa-solid slds-p-left_x-small fa-arrow-right-from-bracket"
                                                             style="font-size: 16px; line-height: 35px; cursor: pointer;float:left" onclick={getThisMonthMileage}></i> -->
                                                         </div>
-                                                        <div  style="font-family: Proxima Nova;font-style: normal;font-weight: 400;font-size: 14px;line-height: 18px;color: rgb(108, 108, 108);text-align: start;
-                                                        padding-left: 8px;">Miles this month</div>
+                                                        <div  style="font-family: Proxima Nova;font-style: normal;font-weight: 400;font-size: 14px;line-height: 18px;color: #00AFE8;text-align: start;
+                                                        padding-left: 8px;"  onclick={getThisMonthMileage}>Miles this month 
+                                                        <!-- <svg xmlns="http://www.w3.org/2000/svg" width="7" height="10" class="arrow-svg"  viewBox="0 0 7 10" fill="none" >
+                                                            <path d="M1 1L6.00087 4.78742C6.14176 4.89412 6.14176 5.10588 6.00087 5.21258L1 9" stroke="#7ABB4A" stroke-width="1.77778" stroke-linecap="round"/>
+                                                        </svg> -->
+                                                       </div>
                                                     </div>
-                                                  
+
                                                 </div>
                                             </div>
                                             <div  style="width: 50%;">
@@ -209,7 +212,7 @@
                                                     </div>
                                                     <template if:true={biweekly}>
                                                         <div style="display: flex;flex-flow: column;">
-                                                            <div  class="slds-text-align--center content-text" style="font-family: 'Proxima Nova Bold' !important;font-size: 26px;line-height: 35px;color: rgb(29, 29, 29);" onclick={getBiweekReimbursement}>
+                                                            <div  class="slds-text-align--center content-text" style="font-family: 'Proxima Nova Bold' !important;font-size: 26px;line-height: 35px;color: rgb(29, 29, 29);">
                                                                 <div style="float: left;font-family: 'Proxima Nova Bold' !important;
                                                                 font-size: 26px;
                                                                 line-height: 35px;
@@ -222,17 +225,21 @@
                                                                  <!-- <i class="fa-solid fa-arrow-right-from-bracket slds-p-left_x-small"
                                                                     style="font-size: 16px; line-height: 35px; cursor: pointer;float:left" onclick={getBiweekReimbursement}></i> -->
                                                             </div>
-                                                            <div  style="font-family: Proxima Nova;font-style: normal;font-weight: 400;font-size: 14px;line-height: 18px;color: rgb(108, 108, 108);text-align: start;
-                                                            ">/biweek</div>
+                                                            <div onclick={getBiweekReimbursement}  style="font-family: Proxima Nova;font-style: normal;font-weight: 400;font-size: 14px;line-height: 18px;color: #00AFE8;text-align: start;
+                                                            ">Biweek
+                                                             <!-- <svg xmlns="http://www.w3.org/2000/svg" width="7" height="10" class="arrow-svg"  viewBox="0 0 7 10" fill="none" >
+                                                                <path d="M1 1L6.00087 4.78742C6.14176 4.89412 6.14176 5.10588 6.00087 5.21258L1 9" stroke="#7ABB4A" stroke-width="1.77778" stroke-linecap="round"/>
+                                                            </svg> -->
+                                                            </div>
                                                         </div>
                                                     </template>
                                                     <template if:false={biweekly}>
                                                         <div style="display: flex;flex-flow: column;">
-                                                            <div  class="slds-text-align--center content-text" style="font-family: 'Proxima Nova Bold' !important;font-size: 26px;line-height: 35px;color: rgb(29, 29, 29);"  onclick={getMonthReimbursement}>
+                                                            <div  class="slds-text-align--center content-text" style="font-family: 'Proxima Nova Bold' !important;font-size: 26px;line-height: 35px;color: rgb(29, 29, 29);" >
                                                                 <div style="float: left;font-family: 'Proxima Nova Bold' !important;
                                                                 font-size: 26px;
                                                                 line-height: 35px;
-                                                                color: rgb(29, 29, 29);"> 
+                                                                color: rgb(29, 29, 29);">
                                                                     <template if:true={fixedAmountZero}>
                                                                         {fixedAmountZero}
                                                                     </template>
@@ -242,8 +249,12 @@
                                                                 </div> <!--<i class="fa-solid fa-arrow-right-from-bracket slds-p-left_x-small"
                                                                     style="font-size: 16px; line-height: 35px; cursor: pointer;float:left" onclick={getMonthReimbursement}></i>-->
                                                             </div>
-                                                            <div  style="font-family: Proxima Nova;font-style: normal;font-weight: 400;font-size: 14px;line-height: 18px;color: rgb(108, 108, 108);text-align: start;
-                                                            ">/month</div>
+                                                            <div onclick={getMonthReimbursement}  style="font-family: Proxima Nova;font-style: normal;font-weight: 400;font-size: 14px;line-height: 18px;color: #00AFE8;text-align: start;
+                                                            ">Month 
+                                                            <!-- <svg xmlns="http://www.w3.org/2000/svg" width="7" height="10" class="arrow-svg"  viewBox="0 0 7 10" fill="none" >
+                                                                <path d="M1 1L6.00087 4.78742C6.14176 4.89412 6.14176 5.10588 6.00087 5.21258L1 9" stroke="#7ABB4A" stroke-width="1.77778" stroke-linecap="round"/>
+                                                            </svg> -->
+                                                           </div>
                                                         </div>
                                                     </template>
                                                 </div>
@@ -259,25 +270,29 @@
                                                     </div>
                                                     <div style="display: flex;flex-flow: column;">
                                                         <div  class="slds-text-align--center content-text"
-                                                            style="font-family: 'Proxima Nova Bold' !important;font-size: 26px;line-height: 35px;color: rgb(29, 29, 29);"  onclick={getGasPrice}>
+                                                            style="font-family: 'Proxima Nova Bold' !important;font-size: 26px;line-height: 35px;color: rgb(29, 29, 29);" >
                                                             <div style="float: left;font-family: 'Proxima Nova Bold' !important;
                                                             font-size: 26px;
                                                             line-height: 35px;
-                                                            color: rgb(29, 29, 29);"> 
+                                                            color: rgb(29, 29, 29);">
                                                                 <template if:true={mileageRateZero}>
                                                                     {mileageRateZero}
                                                                 </template>
                                                                 <template if:false={mileageRateZero}>
-                                                                    <lightning-formatted-number style="font-family: 'Proxima Nova Bold' !important;" value={lastMonthMileageRate} format-style="currency" currency-code="USD"></lightning-formatted-number> 
+                                                                    <lightning-formatted-number style="font-family: 'Proxima Nova Bold' !important;" value={lastMonthMileageRate} format-style="currency" currency-code="USD"></lightning-formatted-number>
                                                                 </template>
                                                             </div>
-                                                            <!-- <i 
+                                                            <!-- <i
                                                                 class="fa-solid fa-arrow-right-from-bracket slds-p-left_x-small"
                                                                 style="font-size: 16px; line-height: 35px; cursor: pointer;float:left" onclick={getGasPrice}></i> -->
                                                         </div>
-                                                        <div  style="font-family: Proxima Nova;font-style: normal;font-weight: 400;font-size: 14px;line-height: 18px;color: rgb(108, 108, 108);text-align: start;">/mile</div>
+                                                        <div onclick={getGasPrice} style="font-family: Proxima Nova;font-style: normal;font-weight: 400;font-size: 14px;line-height: 18px;color: #00AFE8;text-align: start;">Mile 
+                                                            <!-- <svg xmlns="http://www.w3.org/2000/svg" width="7" height="10" class="arrow-svg"  viewBox="0 0 7 10" fill="none"  >
+                                                            <path d="M1 1L6.00087 4.78742C6.14176 4.89412 6.14176 5.10588 6.00087 5.21258L1 9" stroke="#7ABB4A" stroke-width="1.77778" stroke-linecap="round"/>
+                                                            </svg> -->
+                                                        </div>
                                                     </div>
-                                                   
+
                                                 </div>
                                             </div>
                                             <div  style="width: 50%;">
@@ -289,7 +304,7 @@
                                                     </div>
                                                     <div style="display: flex;flex-flow: column;">
                                                         <div  class="slds-text-align--center content-text"
-                                                        style="font-family: 'Proxima Nova Bold' !important;font-size: 26px;line-height: 35px;color: rgb(29, 29, 29);" onclick={getGasPrice}>
+                                                        style="font-family: 'Proxima Nova Bold' !important;font-size: 26px;line-height: 35px;color: rgb(29, 29, 29);">
                                                         <div style="float: left;font-family: 'Proxima Nova Bold' !important;
                                                         font-size: 26px;
                                                         line-height: 35px;
@@ -301,11 +316,15 @@
                                                                 <lightning-formatted-number style="font-family: 'Proxima Nova Bold' !important;" value={monthfuelPrice} format-style="currency" currency-code="USD"></lightning-formatted-number>
                                                             </template>
                                                         </div>
-                                                        <!-- <i 
+                                                        <!-- <i
                                                             class="fa-solid fa-arrow-right-from-bracket slds-p-left_x-small"
                                                             style="font-size: 16px; line-height: 35px; cursor: pointer;float:left" onclick={getGasPrice}></i> -->
                                                         </div>
-                                                        <div  style="font-family: Proxima Nova;font-style: normal;font-weight: 400;font-size: 14px;line-height: 18px;color: rgb(108, 108, 108);text-align: start;">/gallon</div>
+                                                        <div onclick={getGasPrice} style="font-family: Proxima Nova;font-style: normal;font-weight: 400;font-size: 14px;line-height: 18px;color: #00AFE8;text-align: start;">Gallon 
+                                                            <!-- <svg xmlns="http://www.w3.org/2000/svg" width="7" height="10" class="arrow-svg"  viewBox="0 0 7 10" fill="none"  onclick={getGasPrice}>
+                                                            <path d="M1 1L6.00087 4.78742C6.14176 4.89412 6.14176 5.10588 6.00087 5.21258L1 9" stroke="#7ABB4A" stroke-width="1.77778" stroke-linecap="round"/>
+                                                            </svg> -->
+                                                       </div>
                                                     </div>
                                                 </div>
                                             </div>
@@ -320,18 +339,18 @@
         </lightning-layout-item>
         <lightning-layout-item size="12">
             <lightning-layout>
-                <lightning-layout-item class="slds-p-horizontal_medium slds-p-vertical_x-large slds-size_12-of-12">
+                <lightning-layout-item class="slds-p-horizontal_medium slds-p-vertical_large slds-size_12-of-12">
                     <div class="flex-row">
                         <div class="slds-m-right_small"><button
                                 class="slds-btn slds-btn-primary slds-btn-sm waves-effect bc-white waves-light mleft-0 my-trip btn-toggle is-active"
                                 onclick={handleMyTrip}>
                                 My trips</button></div>
-                        <div class="slds-m-left_small slds-m-right_small"><button
+                        <div class="slds-m-right_small"><button
                                 class="slds-btn slds-btn-primary slds-btn-sm waves-effect bc-white waves-light mleft-0 my-plan btn-toggle"
                                 onclick={handlePlanInfo}>
                                 Plan info</button></div>
                         <template if:true={myTA}>
-                            <div class="slds-m-left_small"><button
+                            <div class=""><button
                                     class="slds-btn slds-btn-primary slds-btn-sm waves-effect bc-white waves-light mleft-0 my-ta btn-toggle"
                                     onclick={handleTimeAttendance}>
                                     T &amp; A</button></div>
@@ -341,44 +360,47 @@
             </lightning-layout>
         </lightning-layout-item>
     </div>
-    <div class="slds-p-horizontal_medium animate__animated animate__slideInLeft animate__faster">
-        <template if:true={myTrip}>
-            <template if:true={lengthOfContact}>
-                <c-accordion-view accordion-data={accordionList} is-tand-a={timeAttendance} contact-id={contactId} is-download-all={hrBorder} hr-class={hrBorder} show-arrow-icon={isIcon}
-                    account-id={accountId} contact-info={contact} onnavigate={fromAccordion} ontoast={onToast} onshow={getSpinner}>
-                </c-accordion-view>
+    <div>
+        <div class="slds-p-horizontal_medium animate__animated animate__slideInLeft animate__faster">
+            <template if:true={myTrip}>
+                <template if:true={lengthOfContact}>
+                    <c-accordion-view accordion-data={accordionList} is-tand-a={timeAttendance} contact-id={contactId} is-download-all={hrBorder} hr-class={hrBorder} show-arrow-icon={isIcon}
+                        account-id={accountId} contact-info={contact} onnavigate={fromAccordion} ontoast={onToast} onshow={getSpinner}>
+                    </c-accordion-view>
+                </template>
             </template>
-            <div if:true={isArchive} style="padding-top: 34px;">
+        </div>
+        <div class="slds-p-horizontal_medium animate__animated animate__slideInLeft animate__faster">
+            <template if:true={timeAttendance}>
+                <template if:true={lengthOfContact}>
+                    <c-accordion-view accordion-data={accordionList} is-tand-a={timeAttendance} contact-id={contactId} is-download-all={hrBorder}  hr-class={hrBorder} show-arrow-icon={isIcon}
+                        account-id={accountId} contact-info={contact} onnavigate={fromAccordion} ontoast={onToast}  onshow={getSpinner}>
+                    </c-accordion-view>
+                </template>
+            </template>
+        </div>
+        <div class="slds-p-horizontal_medium animate__animated animate__slideInLeft animate__faster">
+            <template if:true={myPlanInfo}>
+                <c-user-plan-info contact-id={contactId} insurance-attachment-id={attachmentInsurance}
+                    insurance-rate={insuranceRate} maintenance={maintenance} license={license} taxes={taxes}
+                    depreciation={depreciation} monthly-cost={totalCost} business-use={businessUse}
+                    total-monthly-amount={totalMonthlyAmount} fixedcostadjustment={fixedCostAdjustment}
+                    total-monthly-fixed-cost={totalMonthlyFixedCost} variablefuelprice={variablefuelprice} tires={tires}
+                    miles={miles} business-percent={percent} packet-status1={packetStatus1} packet-status2={packetStatus2}
+                    packet-status3={packetStatus3} packet-status4={packetStatus4} meeting-status1={meetingStatus1}
+                    meeting-status2={meetingStatus2} meeting-status3={meetingStatus3}></c-user-plan-info>
+            </template>
+        </div>
+        <div class="slds-m-top_medium slds-m-left_medium">
+            <button class="slds-btn waves-effect btn-grey slds-back-btn slds-btn-sm" onclick={revertHandler}><i
+                    class="fas fa-arrow-left"></i></button>
+        </div>
+        <template if:false={myPlanInfo}>
+            <div if:true={isArchive} style="padding-top: 134px;padding-left: 16px;">
                 <button class="slds-btn slds-btn-primary slds-btn-sm waves-effect bc-green waves-light mleft-0 btn-trip"
                     onclick={archiveReimbursement}>
                     Go to archive</button>
             </div>
-        </template>
-    </div>
-    <div class="slds-p-horizontal_medium animate__animated animate__slideInLeft animate__faster">
-        <template if:true={timeAttendance}>
-            <template if:true={lengthOfContact}>
-                <c-accordion-view accordion-data={accordionList} is-tand-a={timeAttendance} contact-id={contactId} is-download-all={hrBorder}  hr-class={hrBorder} show-arrow-icon={isIcon}
-                    account-id={accountId} contact-info={contact} onnavigate={fromAccordion} ontoast={onToast}  onshow={getSpinner}>
-                </c-accordion-view>
-            </template>
-            <div if:true={isArchive} style="padding-top: 34px;">
-                <button class="slds-btn slds-btn-primary slds-btn-sm waves-effect bc-green waves-light mleft-0 btn-trip"
-                    onclick={archiveReimbursement}>
-                    Go to archive</button>
-            </div>
-        </template>
-    </div>
-    <div class="slds-p-horizontal_medium animate__animated animate__slideInLeft animate__faster">
-        <template if:true={myPlanInfo}>
-            <c-user-plan-info contact-id={contactId} insurance-attachment-id={attachmentInsurance}
-                insurance-rate={insuranceRate} maintenance={maintenance} license={license} taxes={taxes}
-                depreciation={depreciation} monthly-cost={totalCost} business-use={businessUse}
-                total-monthly-amount={totalMonthlyAmount} fixedcostadjustment={fixedCostAdjustment}
-                total-monthly-fixed-cost={totalMonthlyFixedCost} variablefuelprice={variablefuelprice} tires={tires}
-                miles={miles} business-percent={percent} packet-status1={packetStatus1} packet-status2={packetStatus2}
-                packet-status3={packetStatus3} packet-status4={packetStatus4} meeting-status1={meetingStatus1}
-                meeting-status2={meetingStatus2} meeting-status3={meetingStatus3}></c-user-plan-info>
         </template>
     </div>
     <template if:true={paginatedModal}>
@@ -393,7 +415,10 @@
                     <div class="slds-float_right slds-p-right_small">
                         <div  class="slds-input-has-icon slds-input-has-icon_right search-holder">
                             <img class="search-icon" src={searchIcon} />
-                            <input  class="slds-input filter-input" type="text" placeholder="Search"  onkeyup={handleChange}/>
+                            <div class="close-btn" if:false={isSearchEnable} onclick={handleClearInput}>
+                                <svg class="close-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M4.815 14.46 14.458 4.818m-9.643 0.011 9.643 9.642" stroke="#929497" stroke-width="2" stroke-linecap="round"/></svg>
+                            </div>
+                            <input  class="slds-input filter-input" type="text" placeholder="Search" value={_value}  onkeyup={handleChange}/>
                         </div>
                     </div>
                 </template>

@@ -40,6 +40,7 @@ export default class UserPlanInfo extends LightningElement {
   driverPacketId;
   contentVersionUrl;
   totalApprovedMileage;
+  milesZero = "";
   isPacketDownload = false;
 
   @api contactId;
@@ -118,6 +119,16 @@ export default class UserPlanInfo extends LightningElement {
     this.driverReimbursement = false;
   }
 
+  removeLeadingZero(){
+    if(this.miles){
+      if(typeof this.miles === 'number'){
+        let miles = this.miles.toFixed(4)
+        this.milesZero =
+        miles !== "0.00" &&  /^0+/.test(miles) === true ? miles.replace(/^0+/, "$") : 0;
+      }
+    }
+  }
+
   renderedCallback() {
     console.log('Synthetic?', !!this.template.synthetic)
     const tabItem = this.template.querySelectorAll('.slds-tabs_default__item');
@@ -184,6 +195,7 @@ export default class UserPlanInfo extends LightningElement {
         // eslint-disable-next-line no-restricted-globals
         let origin = location.origin;
         this.urlToInsurance = origin + '/app/servlet/servlet.FileDownload?file=' + this.insuranceAttachmentId
+        this.removeLeadingZero();
         getPlanParameter({
         contactId: this.contactId
         })

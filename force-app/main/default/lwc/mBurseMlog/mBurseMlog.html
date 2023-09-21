@@ -32,17 +32,17 @@
                             <a 
                             name="buttonBackwards"
                             label="Previous" 
-                            title="" 
+                            title="Back" 
                             onclick={backToPage}  >
                             <i class="fa-solid fa-arrow-left fa-lg navigate-icon"></i>
                             </a>
                         </li>
                         <li>
                             <button if:false={render} class="slds-btn slds-btn-primary slds-btn-sm waves-effect bc-blue waves-light" onclick={mLogDownload}>
-                                Go to download mLog
+                                Go to Download mLog
                             </button>
                             <button if:true={render} class="slds-btn slds-btn-primary slds-btn-sm waves-effect bc-blue waves-light" onclick={mLogDownload}>
-                                Go to sign in to mLog
+                                Go to Sign in to mLog
                             </button>
                         </li>
                     </ul>

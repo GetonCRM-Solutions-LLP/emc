@@ -9,7 +9,7 @@ export default class ViewUserLocation extends LightningElement {
     @api location;
     @track locationModelList;
     @track updateList;
-    classToTable = 'slds-table--header-fixed_container';
+    classToTable = 'fixed-container';
     column;
     noMessage = 'There is no location data available'
     refreshList;
@@ -43,7 +43,9 @@ export default class ViewUserLocation extends LightningElement {
         }
     ];
     isSortable = false;
+    _value = "";
     isScrollable = false;
+    isSearchEnable = true;
     paginatedModal = false;
     editableView = false;
     searchIcon = resourceImage + '/mburse/assets/mBurse-Icons/Vector.png';
@@ -62,6 +64,14 @@ export default class ViewUserLocation extends LightningElement {
         });
 
         return array;
+    }
+
+    handleClearInput(){
+        this._value = "";
+        this.isSearchEnable = this._value === "" ? true : false;
+        this.template
+        .querySelector("c-user-preview-table")
+        .searchByKey(this._value);
     }
 
     dynamicBinding(data, keyFields) {
@@ -88,6 +98,7 @@ export default class ViewUserLocation extends LightningElement {
 
     handleChange(event) {
 		this._value = event.target.value;
+        this.isSearchEnable = this._value === "" ? true : false;
         this.template.querySelector('c-user-preview-table').searchByKey(this._value, this.locationModelList)
 	}
 
@@ -157,7 +168,7 @@ export default class ViewUserLocation extends LightningElement {
             this.isSortable = true;
             this.editableView = true;
             if (this.locationModelList !== undefined) {
-                this.classToTable = this.locationModelList.length > 6 ? 'slds-table--header-fixed_container preview-height' : 'slds-table--header-fixed_container p-top-v2 overflow-none';
+                this.classToTable = this.locationModelList.length > 6 ? 'fixed-container' : 'fixed-container overflow-none';
                 this.isScrollable = this.locationModelList.length > 6 ? true : false;
                 this.paginatedModal = true;
                 this.dynamicBinding(this.locationModelList, this.keyFields);

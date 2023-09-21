@@ -14,11 +14,13 @@ export default class UserViewMileage extends LightningElement {
     @api accountYear;
     @api monthYear;
     @api filter;
+    @api role;
     sortable = true;
     isFalse = false;
     isRecord = false;
     monthYearList;
-    classToTable = 'slds-table--header-fixed_container p-top-v1';
+    classToTable = 'fixed-container';
+    noMessage = 'There is no data available';
     searchIcon = resourceImage + '/mburse/assets/mBurse-Icons/Vector.png';
     teamList = [{
         "id": 1,
@@ -36,7 +38,9 @@ export default class UserViewMileage extends LightningElement {
     originalModelList;
     modalKeyFields;
     modalListColumn;
+    _value = "";
     isScrollable = false;
+    isSearchEnable = true;
     isSort = true;
     isCheckbox = true;
     // tripColumn = [{
@@ -120,10 +124,10 @@ export default class UserViewMileage extends LightningElement {
                         singleValue.key = key;
                         singleValue.value = (element[key] === "null" || element[key] === null) ? "" : element[key];
                         singleValue.uId = (element.contactid) ? element.contactid : element.id;
-                        singleValue.isDate = (key === "activationDate") ? true : false;
+                        singleValue.isDate = (key === "activationDate" && element[key] !== null) ? true : false;
                         singleValue.isLink = (key === 'name') ? true : false;
                         singleValue.twoDecimal = (key === "mileage" || key === "rejectedMileges" || key === "totalMileages" || key === "approvedMileages" || key === "totalHighRiskMileages" || key === "highRiskTotalRejected" || key === "highRiskTotalApproved") ? true : false;
-                        singleValue.istwoDecimalCurrency = (key === 'fixedamount') ? true : false;
+                        singleValue.istwoDecimalCurrency = (key === 'fixedamount') ? (element[key] === "null" || element[key] === null) ? false : true  : false;
                         // singleValue.hasLeadingZero = ((
                         // key === "fixedamount") && ((element[key] !== "null" || element[key] !== null))) ? singleValue.value : null;
                         model.push(singleValue);
@@ -220,7 +224,24 @@ export default class UserViewMileage extends LightningElement {
 
     handleChange(event) {
         this._value = event.target.value;
+        this.isSearchEnable = this._value === "" ? true : false;
         this.template.querySelector('c-user-preview-table').searchByKey(this._value)
+    }
+
+    handleClearInput(){
+        this._value = "";
+        this.isSearchEnable = this._value === "" ? true : false;
+        this.template
+        .querySelector("c-user-preview-table")
+        .searchByKey(this._value);
+    }
+
+    revertHandler(){
+        this.dispatchEvent(
+          new CustomEvent("back", {
+              detail: ''
+          })
+       );
     }
 
     redirectModal(event) {
@@ -277,7 +298,7 @@ export default class UserViewMileage extends LightningElement {
         if (this.contactList) {
             this.modelList = this.proxyToObject(this.contactList);
             this.originalModelList = this.proxyToObject(this.contactList);
-            this.classToTable = this.modelList.length > 5 ? 'slds-table--header-fixed_container preview-height' : 'slds-table--header-fixed_container'
+            this.classToTable = this.modelList.length > 5 ? 'fixed-container' : 'fixed-container overflow-none'
             this.modalListColumn = this.tripColumn;
             this.modalKeyFields = this.tripKeyFields;
             this.dynamicBinding(this.modelList, this.modalKeyFields)

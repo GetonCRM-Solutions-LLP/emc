@@ -179,8 +179,8 @@
                             <td class="no-bold">{footerList.fixed3Calc}</td>
                             <td class="no-bold"><lightning-formatted-number value={footerList.totalReim} format-style="currency"
                                 currency-code="USD" minimum-fraction-digits="2"></lightning-formatted-number></td>
-                            <td class="no-bold"><lightning-formatted-number value={footerList.totalAVGCalc} format-style="currency"
-                                currency-code="USD" minimum-fraction-digits="2"></lightning-formatted-number></td>
+                             <td class="no-bold"><!--<lightning-formatted-number value={footerList.totalAVGCalc} format-style="currency"
+                                currency-code="USD" minimum-fraction-digits="2"></lightning-formatted-number>--></td>
                         </tr>
                         <tr lwc:else>
                             <td class="bold-text">YTD</td>
@@ -194,8 +194,8 @@
                                 currency-code="USD" minimum-fraction-digits="2"></lightning-formatted-number></td>
                             <td class="no-bold"><lightning-formatted-number value={footerList.totalReim} format-style="currency"
                                 currency-code="USD" minimum-fraction-digits="2"></lightning-formatted-number></td>
-                            <td class="no-bold"><lightning-formatted-number value={footerList.totalAVGCalc} format-style="currency"
-                                    currency-code="USD" minimum-fraction-digits="2"></lightning-formatted-number></td>
+                            <td class="no-bold"><!--<lightning-formatted-number value={footerList.totalAVGCalc} format-style="currency"
+                                    currency-code="USD" minimum-fraction-digits="2"></lightning-formatted-number>--></td>
                         </tr>
                     </template>
                 </template>
@@ -230,7 +230,7 @@
                                             </defs>
                                         </svg>
                                      </div>
-                                    <div class="slds-align_absolute-center slds-p-top_medium slds-p-bottom_x-large no-data-message">There is no historical reimbursement data available</div>
+                                    <div class="slds-align_absolute-center slds-p-top_medium slds-p-bottom_x-large no-data-message">There is no data available</div>
                                 </td>
                             </tr>
                     </template>
@@ -249,14 +249,14 @@
     <template lwc:if={scrollable}>
         <div class={mainClass}> <!-- height: calc(100vh - 244px); -->
             <div class={className}>
-                <table class="slds-table slds-table--header-fixed slds-table_cell-buffer slds-table_striped" id="tableSel" >
+                <table class="slds-table slds-table_cell-buffer slds-table_striped fixed-table" id="tableSel" >
                     <thead class="">
                         <tr class="slds-line-height_reset">
                             <template lwc:if={columns}>
                                 <template for:each={columns} for:item="head">
                                     <th class="header-title" scope="col" key={head.id}>
                                         <template lwc:if={isSortable}>
-                                            <div class="slds-cell-fixed" onclick={sort} title={head.name} data-name={head.colName} data-type={head.colType}>
+                                            <div class="" onclick={sort} title={head.name} data-name={head.colName} data-type={head.colType}>
                                                 <a  data-name={head.colName} data-type={head.colType} class="head-sort">
                                                     {head.name}
                                                     <template if:false={norecord}>
@@ -271,7 +271,7 @@
                                             </div>
                                         </template>
                                         <template lwc:else>
-                                            <div class="slds-cell-fixed"  title={head.name} >
+                                            <div class=""  title={head.name} >
                                                 <a   class="head-sort">
                                                     {head.name}
                                                 </a>
@@ -418,7 +418,7 @@
                                             </defs>
                                         </svg>
                                      </div>
-                                    <div class="slds-align_absolute-center slds-p-top_medium slds-p-bottom_x-large no-data-message">There is no historical reimbursement data available</div>
+                                    <div class="slds-align_absolute-center slds-p-top_medium slds-p-bottom_x-large no-data-message">There is no data available</div>
                                 </td>
                             </tr>
                         </template>
@@ -431,26 +431,31 @@
     <template lwc:if={isPaginate}>
         <template if:false={norecord}>
             <div class="slds-p-top_medium slds-p-bottom_small footer-container">
-                <div class="slds-float_left">
-                    <table>
-                        <tr>
-                            <td class="footer-heading slds-p-top_x-small">Total: </td>
-                            <td class="sub-value"><span class="sub-value-1">{perPageMileage}</span><span class="sub-value-2">/{totalMileage}</span></td>
-                            <td class="sub-value" lwc:if={isVariable}><span class="sub-value-1">${perPageVariable}</span><span class="sub-value-2">/${totalVarAmount}</span></td>
-                        </tr>
-                        <tr>
-                            <td></td>
-                            <td class="sub-text">Mileage</td>
-                            <td class="sub-text" lwc:if={isVariable}>Variable Amount</td>
-                        </tr>
-                    </table>
-                </div>
+                <template lwc:if={filter}>
+                    <slot></slot>
+                </template>
+                <template lwc:else>
+                    <div class="slds-float_left">
+                        <table>
+                            <tr>
+                                <td class="footer-heading slds-p-top_x-small">Total: </td>
+                                <td class="sub-value"><span class="sub-value-1">{perPageMileage}</span><span class="sub-value-2">/{totalMileage}</span></td>
+                                <td class="sub-value" lwc:if={isVariable}><span class="sub-value-1">${perPageVariable}</span><span class="sub-value-2">/${totalVarAmount}</span></td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <td class="sub-text">Mileage</td>
+                                <td class="sub-text" lwc:if={isVariable}>Variable Amount</td>
+                            </tr>
+                        </table>
+                    </div>
+                </template>
             
                 <template lwc:if={pagedData}>
                     <div class="slds-clearfix">
                         <span class="slds-float_right slds-p-top_small">
                             <ul class="slds-list_horizontal  slds-has-block-links_space border-radius">
-                                <li class="slds-item navigate">
+                                <li class="slds-item">
                                     <a 
                                     name="buttonBackwards"
                                     label="Previous" 
@@ -458,7 +463,7 @@
                                     onclick={handleButtonPrevious}  
                                     class={cssPreviousText}
                                     disabled={disabledPreviousButton}>
-                                    <i class="fa-solid fa-arrow-left fa-lg navigate-icon"></i>
+                                    <i class="fa-solid fa-chevron-left fa-lg slds-p-horizontal_x-small slds-p-vertical_x-small navigate-icon"></i>
                                     </a>
                                 </li>
                                 <li class="slds-item">
@@ -466,7 +471,7 @@
                                         {currentPage}
                                     </div>
                                 </li>
-                                <li class="slds-item navigate">
+                                <li class="slds-item">
                                     <a 
                                     name="buttonForwards" 
                                     label="Next" 
@@ -474,7 +479,7 @@
                                     onclick={handleButtonNext} 
                                     class={cssText}
                                     disabled={disabledNextButton}>
-                                    <i class="fa-solid fa-arrow-right fa-lg navigate-icon"></i>
+                                        <i class="fa-solid fa-chevron-right fa-lg slds-p-horizontal_x-small slds-p-vertical_x-small navigate-icon"></i>
                                     </a>
                                 </li>
                             </ul>

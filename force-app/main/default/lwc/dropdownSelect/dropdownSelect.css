@@ -27,10 +27,11 @@
 }
 
 .slds-listbox__option {
-    font-size: 13px !important;
+    font-size: 12px !important;
     color: #fff !important;
     line-height: 16px;
     padding-left: 1.1rem !important;
+    font-weight: 400 !important;
 }
 
 .no-message{
@@ -125,7 +126,7 @@
 
 .default-box-input{
     border: 1px solid var(--grey-color);
-    border-radius: 10px;
+    border-radius: 8px;
     font-family: 'Proxima Nova' !important;
     padding-left: 12px;
     padding-right: 12px;
@@ -133,10 +134,11 @@
     box-sizing: border-box;
     cursor: pointer;
     display: block;
-    min-height: calc(1.875rem + (var(--lwc-borderWidthThin) * 6));
-    line-height: 34.62px;
+    min-height: calc(1.675rem + (var(--lwc-borderWidthThin) * 6)); /** 1.875*/
+    line-height: 30.62px;
     font-weight: 400;
-    font-size: 14px;
+    font-size: 12px;
+    height: 30px;
     color: #1d1d1d !important;
 }
 
@@ -150,7 +152,7 @@
 
 .default-box-input-small{
     border: 1px solid var(--grey-color) !important;
-    border-radius: 10px;
+    border-radius: 8px;
     font-family: 'Proxima Nova' !important;
     padding-left: 12px;
     padding-right: 12px;
@@ -158,11 +160,21 @@
     box-sizing: border-box;
     cursor: pointer;
     display: block;
-    min-height: calc(1.75rem + (var(--lwc-borderWidthThin) * 6));
+    min-height: calc(1.6rem + (var(--lwc-borderWidthThin) * 6));
     line-height: 30.62px;
     font-weight: 400;
     font-size: 12px;
+    height: 30px;
     color: #1d1d1d !important;
+}
+
+.dropdown_width{
+    min-width: 18rem !important;
+}
+
+.listbox_css{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
 }
 
 .filter-input::placeholder{

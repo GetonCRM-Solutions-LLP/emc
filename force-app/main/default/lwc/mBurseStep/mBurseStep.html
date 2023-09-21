@@ -1,6 +1,6 @@
 <template>
-    <div class="slds-grid slds-gutters slds-p-top_small m-left m-right panel">
-            <div class="slds-col" padding="around-small" style="flex: 0 0 20% !important">
+    <div class="panel">
+        <!-- <div class="slds-col" padding="around-small" style="flex: 0 0 20% !important">
                 <div class="step">
                         <h2 class="step-count">1</h2>
                         <div class="step-inner step-margin-1">
@@ -8,95 +8,124 @@
                             <div class="step-info">Watch the <br/> <strong>Plan Preview</strong></div>
                         </div>
                 </div>
+            </div> -->
+        <template if:true={isRegister}>
+            <div class="step background-blurry">
+                <div class="plan-info-top">
+                    <h2 class="step-count opaque">1</h2>
+                    <h2 class="step-complete">Completed<span class="info-check"><i
+                                class="fa-solid fa-lg fa-check"></i></span></h2>
+                </div>
+
+                <div class="opacity">
+                    <div class="step-inner step-margin-2">
+                        <img class="i-size" src={step1Url} loading="eager">
+                        <div class="step-info step-padding">Watch your <br /> <strong>Driver Meeting</strong></div>
+                    </div>
+                </div>
             </div>
-            <div class="slds-col" padding="around-small" style="flex: 0 0 20% !important">
-                    <template if:true={isInsuranceDone}>
-                        <div class="step background-blurry">
-                            <div class="plan-info-top">
-                                <h2 class="step-count opaque">2</h2>
-                                <h2 class="step-complete">Complete<span class="info-check"><i
+        </template>
+        <template if:false={isRegister}>
+            <div class="step">
+                <h2 class="step-count">1</h2>
+                <div class="step-inner step-margin-2">
+                    <img class="i-size" src={step1Url} loading="eager">
+                    <div class="step-info">Watch your <br /> <strong>Driver Meeting</strong></div>
+                </div>
+            </div>
+        </template>
+        <div>
+            <template if:true={isInsuranceDone}>
+                <div class="step background-blurry">
+                    <div class="plan-info-top">
+                        <h2 class="step-count opaque">2</h2>
+                        <h2 class="step-complete">Completed<span class="info-check"><i
                                     class="fa-solid fa-lg fa-check"></i></span></h2>
-                            </div>
-                            
-                                <div class="opacity">
-                                    <div class="step-inner step-margin-2">
-                                        <img class="i-size" src={step2Url}  loading="eager">
-                                        <div class="step-info">Upload Your  <br/> <strong>Insurance</strong></div>
-                                    </div>
-                                </div>
+                    </div>
+
+                    <div class="opacity">
+                        <div class="step-inner step-margin-2">
+                            <img class="i-size" src={step2Url} loading="eager">
+                            <div class="step-info">Upload Your <br /> <strong>Insurance</strong></div>
                         </div>
-                    </template>
-                    <template if:false={isInsuranceDone}>
-                        <div class="step">
-                            <h2 class="step-count">2</h2>
-                            <div class="step-inner step-margin-2">
-                                <img class="i-size" src={step2Url}  loading="eager">
-                                <div class="step-info">Upload Your  <br/> <strong>Insurance</strong></div>
-                            </div>
-                        </div>
-                    </template>
-            </div>
-            <div class="slds-col" padding="around-small" style="flex: 0 0 20% !important">
-                    <template if:true={isdriverPacketDone}>
-                        <div class="step background-blurry">
-                            <div class="plan-info-top">
-                                <h2 class="step-count opaque">3</h2>
-                                <h2 class="step-complete">Complete<span class="info-check"><i
+                    </div>
+                </div>
+            </template>
+            <template if:false={isInsuranceDone}>
+                <div class="step">
+                    <h2 class="step-count">2</h2>
+                    <div class="step-inner step-margin-2">
+                        <img class="i-size" src={step2Url} loading="eager">
+                        <div class="step-info">Upload Your <br /> <strong>Insurance</strong></div>
+                    </div>
+                </div>
+            </template>
+        </div>
+        <div>
+            <template if:true={isdriverPacketDone}>
+                <div class="step background-blurry">
+                    <div class="plan-info-top">
+                        <h2 class="step-count opaque">3</h2>
+                        <h2 class="step-complete">Completed<span class="info-check"><i
                                     class="fa-solid fa-lg fa-check"></i></span></h2>
-                            </div>
-                          
-                            <div class="opacity">
-                                <div class="step-inner step-margin-3">
-                                    <img class="i-size" src={step3Url}  loading="eager">
-                                    <div class="step-info step-padding{">Review &amp; Sign your  <br/><strong>Driver Packet</strong></div>
-                                </div>
-                            </div>
+                    </div>
+
+                    <div class="opacity">
+                        <div class="step-inner step-margin-3">
+                            <img class="i-size" src={step3Url} loading="eager">
+                            <div class="step-info step-padding">Review &amp; Sign your <br /><strong>Driver
+                                    Packet</strong></div>
                         </div>
-                    </template>
-                    <template if:false={isdriverPacketDone}>
-                        <div class="step">
-                            <h2 class="step-count">3</h2>
-                            <div class="step-inner step-margin-3">
-                                <img class="i-size" src={step3Url}  loading="eager">
-                                <div class="step-info step-padding">Review &amp; Sign your  <br/><strong>Driver Packet</strong></div>
-                            </div>
+                    </div>
+                </div>
+            </template>
+            <template if:false={isdriverPacketDone}>
+                <div class="step">
+                    <h2 class="step-count">3</h2>
+                    <div class="step-inner step-margin-3">
+                        <img class="i-size" src={step3Url} loading="eager">
+                        <div class="step-info step-padding">Review &amp; Sign your <br /><strong>Driver Packet</strong>
                         </div>
-                    </template>
-            </div>
-            <div class="slds-col" padding="around-small" style="flex: 0 0 20% !important">
-                    <template if:true={isAppDone}>
-                        <div class="step background-blurry">
-                            <div class="plan-info-top">
-                                <h2 class="step-count opaque">4</h2>
-                                <h2 class="step-complete">Complete<span class="info-check"><i
+                    </div>
+                </div>
+            </template>
+        </div>
+        <div>
+            <template if:true={isAppDone}>
+                <div class="step background-blurry">
+                    <div class="plan-info-top">
+                        <h2 class="step-count opaque">4</h2>
+                        <h2 class="step-complete">Completed<span class="info-check"><i
                                     class="fa-solid fa-lg fa-check"></i></span></h2>
-                            </div>
-                                <div class="opacity">
-                                    <div class="step-inner step-margin-2">
-                                        <img class="i-size" src={step4Url}  loading="eager">
-                                        <div class="step-info" if:true={phone}>Sign into the <br/><strong>mLog app</strong></div>
-                                        <div class="step-info" if:false={phone}>Download &amp; Install  <br/><strong>the mLog app</strong></div>
-                                    </div>
-                                </div>
-                        </div>   
-                    </template>
-                    <template if:false={isAppDone}>
-                        <div class="step">
-                            <h2 class="step-count">4</h2>
-                            <div class="step-inner step-margin-2">
-                                <img class="i-size" src={step4Url}  loading="eager">
-                                <div class="step-info step-padding-v1" if:true={phone}>Sign into the <br/><strong>mLog app</strong></div>
-                                <div class="step-info step-padding-v1" if:false={phone}>Download &amp; Install  <br/><strong>the mLog app</strong></div>
-                            </div>
+                    </div>
+                    <div class="opacity">
+                        <div class="step-inner step-margin-2">
+                            <img class="i-size" src={step4Url} loading="eager">
+                            <div class="step-info" if:true={phone}>Sign into the <br /><strong>mLog app</strong></div>
+                            <div class="step-info" if:false={phone}>Download &amp; Install <br /><strong>the mLog
+                                    app</strong></div>
                         </div>
-                    </template>
-            </div>
-            <div class="slds-col" padding="around-small" style="flex: 0 0 20% !important">
+                    </div>
+                </div>
+            </template>
+            <template if:false={isAppDone}>
+                <div class="step">
+                    <h2 class="step-count">4</h2>
+                    <div class="step-inner step-margin-2">
+                        <img class="i-size" src={step4Url} loading="eager">
+                        <div class="step-info" if:true={phone}>Sign into the <br /><strong>mLog app</strong></div>
+                        <div class="step-info" if:false={phone}>Download &amp; Install <br /><strong>the mLog
+                                app</strong></div>
+                    </div>
+                </div>
+            </template>
+        </div>
+        <!-- <div class="slds-col" padding="around-small" style="flex: 0 0 20% !important">
                     <template if:true={isSchedule}>
                         <div class="step background-blurry"  if:true={accountType}>
                             <div class="plan-info-top">
                                 <h2 class="step-count opaque">5</h2>
-                                <h2 class="step-complete">Complete<span class="info-check"><i
+                                <h2 class="step-complete">Completed<span class="info-check"><i
                                     class="fa-solid fa-lg fa-check"></i></span></h2>
                             </div>
                             <div class="opacity">
@@ -138,6 +167,6 @@
                             </div>
                         </div>
                     </template>
-            </div>
+            </div> -->
     </div>
 </template>

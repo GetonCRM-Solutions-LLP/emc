@@ -6,6 +6,32 @@
     box-shadow: none !important;
     position: absolute;
 }
+
+.slds-popover-import {
+    border-radius: 12px !important;
+    border: 1px solid #C9C9C9 !important;
+    width: auto !important;
+}
+
+.slds-popover-resource{
+    border-radius: 20px !important;
+    background: #FFF;
+    box-shadow: 0px 0px 20px 0px rgba(0, 0, 0, 0.15) !important;
+    width: 390px;
+    height: 219px;
+}
+
+.slds-popover-import  .close-popover {
+    color: #78bc42;
+}
+
+.slds-nubbin_left-top:before {
+    background: #ffffff;
+    pointer-events: none;
+    border-left: 1px solid #C9C9C9;
+    border-bottom: 1px solid #C9C9C9;
+}
+
 .position-relative{
     position: relative !important;
 }
@@ -26,14 +52,31 @@
 .bg-green{
     background: #78bc42;
 }
+
+.bg-while {
+    background: rgb(255, 255, 255);
+    color: #78bc42;
+    align-items: center;
+    display: flex;
+    /* align-items: center; */
+    /* justify-content: center; */
+    flex-direction: column;
+    font-family: 'Proxima Nova Bold' !important;
+    left: 22px;
+    padding-bottom: 0;
+}
 .slds-nubbin_top:before{
     background: #78bc42;
     pointer-events: none;
+    display: none !important;
 }
-.slds-nubbin_left-top:before{
+.slds-nubbin_top:after{
+    display: none !important;
+}
+/* .slds-nubbin_left-top:before{
     background: #191468;
     pointer-events: none;
-}
+} */
 .slds-nubbin_left-top:after{
     box-shadow: none !important;
 }
@@ -44,7 +87,8 @@
     border-top-right-radius: 0px;
     padding: 0px 24px 16px;
     text-align: left;
-    border-top: 1px solid rgb(203, 214, 226);
+    border-top: 0 !important;
+    /* border-top: 1px solid rgb(203, 214, 226); */
     background: #fff;
 }
 .border-footer{
@@ -77,15 +121,15 @@
     -moz-osx-font-smoothing: grayscale;
     transition: all .15s ease-out;
     font-family: 'Proxima Nova' !important;
-    color: #000;
+    color: rgba(29, 29, 29, 0.42);
 }
 .small-ui-popover-info{ 
     font-size: 12px;
     line-height: 18px;
 }
 .close-popover{
-    color: #fff;
-    text-shadow: 0 1px 0 #fff;
+    color: #7abb4a;
+    text-shadow: 0 1px 0 #7abb4a;
     padding: 0px 16px !important;
     background-color: transparent !important;
     border: 0 !important;
@@ -114,4 +158,9 @@ h4{
     border-left: 1px solid rgb(203, 214, 226);
     border-right:  1px solid rgb(203, 214, 226);
     border-bottom:  1px solid rgb(203, 214, 226);
+}
+
+a{
+    color: #7abb4a !important;
+    font-family: 'Proxima Nova Bold' !important;
 }

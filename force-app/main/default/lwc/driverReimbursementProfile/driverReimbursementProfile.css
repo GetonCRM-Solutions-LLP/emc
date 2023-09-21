@@ -40,6 +40,116 @@
     } */
 }
 
+@media only screen 
+and (min-device-width: 768px) 
+and (max-device-width: 1024px) {
+    .vehicle-info{
+        flex-basis: 380px !important;
+    }
+
+    .vehicle_1{
+        flex-direction: column !important;
+    }
+
+    .vehicle_1-1{
+        flex-direction: row !important;
+        width: 209px;
+    }
+
+    .map-state{
+        flex-direction: column !important;
+    }
+
+    .miles-view{
+        padding-top: 63px;
+    }
+
+    .slds-p-left_small.miles-view:before {
+        border-top: 1px solid #d7d7d7;
+        content: "";
+        width: 100%;
+        display: block;
+        padding-bottom: 23px;
+    }
+
+    .carProfile{
+        position: inherit !important;
+        margin: 0 auto;
+    }
+
+    .map-config{
+        position: inherit !important;
+        top: 0 !important;
+        left: 0 !important;
+    }
+
+    .view-map{
+        bottom: -32px !important;
+    }
+
+    .map-state_1{
+        flex-basis: 93px !important;
+        padding-top: 10px;
+    }
+
+    .spacer_1{
+        height: 12px !important;
+    }
+
+    .vehicle_font{
+        font-size: 16px !important;
+        line-height: 16px !important;
+    }
+
+    .vehicle_font_1{
+        font-size: 14px !important;
+        line-height: 14px !important;
+    }
+
+    .map-state-font{
+        font-size: 16px !important;
+        line-height: 16px !important;
+    }
+
+    .map-state-font_1{
+        font-size: 14px !important;
+        line-height: 14px !important;
+    }
+
+}
+
+/* ipad Mini Portrait */
+@media only screen and (min-width: 768px) and (orientation: portrait) {
+    .vehicle-info{
+        flex-basis: 323px !important;
+    }
+
+    .vehicle_font{
+        font-size: 14px !important;
+        line-height: 14px !important;
+    }
+
+    .vehicle_font_1{
+        font-size: 12px !important;
+        line-height: 12px !important;
+    }
+
+    .map-state-font{
+        font-size: 14px !important;
+        line-height: 14px !important;
+    }
+
+    .map-state-font_1{
+        font-size: 12px !important;
+        line-height: 12px !important;
+    }
+
+    .vehicle_1-1{
+        flex-direction: row !important;
+        width: 176px;
+    }
+}
+
 .flex-row {
     display: flex;
     flex-flow: row;
@@ -54,8 +164,13 @@
     position: absolute;
     width: 180px;
     height: 93px;
-    top: 34px;
+    top: 20px;
     left: 40%
+}
+
+.arrow-svg{
+    margin: 0 0 1px 2px;
+    cursor: pointer;
 }
 
 .map-state{
@@ -65,21 +180,73 @@
     position: relative;
     flex-basis: 248px;
     flex-grow: 1;
-    margin: 0 0px 35px 0px;
+    /* margin: 0 0px 35px 0px; */
 }
 
 .vehicle-info{
     flex-basis: 310px;
     flex-grow: 1;
     margin: 0 15px 35px 0;
+    position:relative;
+}
+
+.vehicle_1{
+    display: flex;
+    flex-direction: row;
+}
+
+.vehicle_1-1{
+    display: flex;
+    flex-direction: column;
+}
+
+.map-state_1{
+    display: flex;
+    flex-direction:column;
+    flex-wrap:wrap;
+    flex-basis:115px;
+}
+
+.spacer_1{
+    width: 200px;
+    height: 25px;
+    margin-right:0px;
 }
 
 .carProfile{
-    left: 42%;
+    left: 49%;
     top: 40px;
     width: 189px;
     height: inherit;
     position: absolute;
+}
+
+.map-state-font{
+    font-size: 16px; 
+    font-family: 'Proxima Nova Bold' !important; 
+    color: #1D1D1D;
+}
+
+.map-state-font_1{
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 14px;
+    color: #6C6C6C;
+}
+
+.vehicle_font{
+    font-family: 'Proxima Nova Bold' !important;
+    font-size: 16px;
+    line-height: 16px;
+    color: #1D1D1D;
+}
+
+.vehicle_font_1{
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 14px;
+    color: #6C6C6C;
+    font-family: 'Proxima Nova' !important
 }
 
 .fa,
@@ -166,13 +333,13 @@
 }
 
 .btn-toggle {
-    border-radius: 10px;
+    border-radius: 8px;
     display: flex;
     flex-direction: row;
     justify-content: flex-end;
     align-items: center;
-    font-size: 14px;
-    padding: .5rem 1.5rem !important;
+    font-size: 12px;
+    padding: .4rem 1.5rem !important;
     border: 1px solid var(--green-color) !important;
     font-family: 'Proxima Nova Bold' !important;
     color: var(--green-color);
@@ -209,13 +376,17 @@
     box-shadow: none !important;
 }
 
-.content-text {
+/* .content-text {
     cursor: pointer;
 }
 
 .content-text:hover {
     color: var(--green-color) !important;
 }
+
+.content-text>*:hover {
+    color: var(--green-color) !important;
+} */
 
 .content-text>*{
     font-family: 'Proxima Nova Bold' !important; 
@@ -224,10 +395,90 @@
     color: rgb(29, 29, 29);
 }
 
+.content-text + div{
+    cursor: pointer;;
+ }
+ 
+
 .grid-block{
     display: flex;
     flex-wrap: wrap;
     width: 100%;
+}
+
+.vehicle-container{
+    position: relative;
+    width: auto;
+    margin: 36px 0px 0 169px;
+    /* margin: 0 auto; */
+}
+
+.slds-checkbox_toggle [type=checkbox]:checked+.slds-checkbox_faux_container .slds-checkbox_faux{
+    border-color: var(--active-color) !important;
+    background-color: var(--active-color) !important;
+}
+
+.slds-checkbox_toggle .slds-checkbox_faux.toogle-input{
+    border-color: var(--active-color) !important;
+    background-color: var(--active-color) !important;
+}
+
+.slds-checkbox_toggle [type=checkbox]:checked+.slds-checkbox_faux_container+.input-label .map--canada{
+    color: #1D1D1D;
+    font-family: 'Proxima Nova Bold' !important;
+}
+
+.slds-checkbox_toggle [type=checkbox]:checked+.slds-checkbox_faux_container+.input-label .map--us{
+    color: rgba(29, 29, 29, 0.50);
+    font-family: 'Proxima Nova' !important;
+}
+
+.slds-checkbox_toggle [type=checkbox]+.slds-checkbox_faux_container+.input-label .map--canada{
+    color: rgba(29, 29, 29, 0.50);
+    font-family: 'Proxima Nova' !important;
+}
+
+.slds-checkbox_toggle [type=checkbox]+.slds-checkbox_faux_container+.input-label .map--us{
+    color: #1D1D1D;
+    font-family: 'Proxima Nova Bold' !important;
+}
+
+.slds-checkbox_toggle .slds-checkbox_faux{
+    box-shadow: none !important;
+}
+
+.map-label{
+    font-size: 14px;
+    line-height: 136.8%;
+}
+
+.view-map{
+    position: absolute;
+    bottom: 0;
+}
+
+.slds-back-btn{
+    font-family: 'Proxima Nova Bold' !important;
+    font-size: 14px;
+    line-height: 17px;
+    text-align: center;
+    padding: 1rem 1rem !important;
+    border-radius: 10px !important;
+    box-shadow: none !important;
+}
+
+.btn-grey{
+    color: var(--green-color) !important;
+    border: 1px solid var(--grey-color) !important;
+    background: var(--even-row-color) !important;
+}
+
+
+.close-btn{
+    background: var(--even-row-color);
+    position: absolute;
+    right: 7px;
+    top: 9px;
 }
 
 /* .breadcrumb {

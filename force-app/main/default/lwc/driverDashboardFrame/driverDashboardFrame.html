@@ -1,5 +1,5 @@
 <template>
-		<c-navigation-menu driver-menu-item={driverProfileMenu} onsidebar={handleSidebarToggle} driver-name={userName} driver-email={userEmail} onlogout={handleLogout} profile-id={profile}></c-navigation-menu><!-- onopen={takeMeToMenu} -->
+		<c-navigation-menu driver-menu-item={driverProfileMenu} onsidebar={handleSidebarToggle} driver-name={userName} driver-email={userEmail} onlogout={handleLogout} profile-id={profile}></c-navigation-menu>
 		<c-dashboard-profile-header user-name={firstName} full-name={userName} unread={unreadCount} driver-menu={menu} page-source={isHomePage} onredirect={navigateToInsurance}  onresourcenavigate={navigateToResource} onnotify={viewAllNotification} company-logo={companyLogoUrl} expiration-date={dateOfExpiration} 
 			onlogout={handleLogout} is-navigate="true"></c-dashboard-profile-header>
 		<section class={section} id="default">
@@ -9,8 +9,7 @@
 					biweek-id={biweekId} biweek-value={biweek}></c-preview-trips>
 				</template>
 				<template lwc:else>
-					<c-manual-entry contact-id={_contactId} account-id={_accountId}></c-manual-entry>
-					<!-- <c-driver-reimbursement-profile contact-id={_contactId}  account-id={_accountId} my-trip={isTrip} is-archive={archive} time-attendance={isAttendance} driver-details={contactInformation} reimbursement-ytd={ytdList} excel-ytd={excelYtdList} onnavigate={reimbursementArchived} onopen={myTripDetail} ontoast={handleToast} onshow={showSpinner} ontoggle={toggleHandler}></c-driver-reimbursement-profile> -->
+					<c-driver-reimbursement-profile contact-id={_contactId}  account-id={_accountId} my-trip={isTrip} is-archive={archive} time-attendance={isAttendance} driver-details={contactInformation} reimbursement-ytd={ytdList} excel-ytd={excelYtdList} onnavigate={reimbursementArchived} onopen={myTripDetail} ontoast={handleToast} onshow={showSpinner} ontoggle={toggleHandler} onback={backToDashboard}></c-driver-reimbursement-profile>
 				</template>
 			</template> 
 			<template lwc:else>
@@ -29,7 +28,7 @@
 				<c-driver-user-profile contact-id={_contactId} chart-info={chartData} account-id={_accountId} onnavigate={navigateToPage} onredirectview={viewPage} reimbursement-ytd={ytdList} excel-ytd={excelYtdList} notify-message-list={notificationList} notify-message={notifyList} is-notify={isNotify} onclose={handleNotification} onmodal={viewAllNotification}></c-driver-user-profile>
 			</template>
 			<template lwc:elseif={complianceView}>
-				<c-user-compliance contact-id={_contactId} onredirect={switchToLiability}></c-user-compliance>
+				<c-user-compliance contact-id={_contactId} onredirect={switchToLiability} settings={customSetting}></c-user-compliance>
 			</template>
 			<template lwc:elseif={liabilityView}>
 				<c-user-tax-liability contact-id={_contactId} onredirect={switchToCompliance}></c-user-tax-liability>
@@ -41,7 +40,7 @@
 				<c-user-location contact-id={_contactId} account-id={_accountId} user-triplog-id={userTriplogId} ontoast={showToastEvent} onmodal={showModalEvent} onlistmodal={showModalListEvent} onerror={throwError}></c-user-location>
 			</template>
 			<template  lwc:elseif={resources}>
-				<c-user-resource minimums={contactInformation}></c-user-resource>
+				<c-user-resource minimums={contactInformation} onback={backToDashboard} settings={customSetting} onsend={emailSent} driver-meeting={driverMeeting}></c-user-resource>
 			</template>
 			<c-user-profile-modal header={headerModalText} month='' show-footer={isFalse} show-btn={isFalse}
 				modal-class={modalClass}

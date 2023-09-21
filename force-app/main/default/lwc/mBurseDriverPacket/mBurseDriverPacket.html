@@ -182,18 +182,14 @@
         <div class="slds-clearfix slds-p-top_large slds-align_absolute-center"> <!--m-top m-right-->
             <div class="footer-button slds-float_right">
                 <template if:true={isAppDone}>
-                    <button class="slds-btn slds-btn-primary slds-btn-sm waves-effect bc-blue waves-light"
+                    <!-- <button class="slds-btn slds-btn-primary slds-btn-sm waves-effect bc-blue waves-light"
                         onclick={goToDashboard} if:false={afterRegister}>
                         {renderBtnText}
-                    </button>
+                    </button> -->
                     <template if:true={allowRedirect}>
-                        <button class="slds-btn slds-btn-primary slds-btn-sm waves-effect bc-blue waves-light"
-                        onclick={redirectToDashboard} if:true={afterRegister}>
-                            Go to my account
-                        </button>
-                        <button class="slds-btn slds-btn-primary slds-btn-sm waves-effect bc-blue waves-light"
-                        onclick={redirectToDashboard} if:true={showWatchBtn}>
-                            Take me to the dashboard
+                        <button class="slds-btn bc-outline slds-btn-sm waves-effect bc-blue waves-light"
+                        onclick={redirectToDashboard}>
+                            Go to Dashboard
                         </button>
                     </template>
                 </template>

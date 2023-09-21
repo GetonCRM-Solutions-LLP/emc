@@ -1,4 +1,4 @@
-import { LightningElement, api } from 'lwc';
+import { LightningElement, api, wire } from 'lwc';
 import getlistAllEmployees from '@salesforce/apex/RosterController.getlistAllEmployees';
 import resourceImage from '@salesforce/resourceUrl/mBurseCss';
 import EDIT_ICON from '@salesforce/resourceUrl/editAction';
@@ -11,7 +11,11 @@ import getDepartment from '@salesforce/apex/RosterController.getDepartment';
 import updateLockDate from '@salesforce/apex/RosterController.updateLockDate';
 import sendSignatureRequestForDriver from '@salesforce/apex/NewAccountDriverController.sendSignatureRequestForDriver';
 import getPickListValuesIntoList from '@salesforce/apex/RosterController.getPickListValuesIntoList'
-
+import empNoneEditableField from '@salesforce/label/c.employeeNoneEditableFields'
+import MassSyncTrips from '@salesforce/apex/RosterController.MassSyncTrips';
+import getCustomAddEmployeeSettings from '@salesforce/apex/RosterController.getCustomAddEmployeeSettings';
+import putHTTPMassWlcmMail from '@salesforce/apex/RosterController.putHTTPMassWlcmMail';
+import getCustomRedirectURLSettings from '@salesforce/apex/RosterController.getCustomRedirectURLSettings';
 
 
 import {
@@ -22,104 +26,14 @@ import {
 
 export default class UsersRoster extends LightningElement {
 
-    @api employeeColumn = [
-        {
-          "id": 2,
-          "name": "Name",
-          "colName": "name",
-          "colType": "String",
-          "arrUp": false,
-          "arrDown": false,
-		  "isChecked": true,
-		  "isCheckBox": false
-        },
-        {
-          "id": 3,
-          "name": "Email",
-          "colName": "email",
-          "colType": "String",
-          "arrUp": false,
-          "arrDown": false,
-		  "isChecked": false,
-		  "isCheckBox": false
-        },
-        {
-          "id": 4,
-          "name": "Deactivation",
-          "colName": "deactivaedDate",
-          "colType": "Date",
-          "arrUp": false,
-          "arrDown": false,
-		  "isChecked": false,
-		  "isCheckBox": false
-        },
-        {
-          "id": 5,
-          "name": "Role",
-          "colName": "role",
-          "colType": "String",
-          "arrUp": false,
-          "arrDown": false,
-		  "isChecked": false,
-		  "isCheckBox": false
-        },
-        {
-          "id": 6,
-          "name": "Freeze",
-          "colName": "freeze",
-          "colType": "String",
-          "arrUp": false,
-          "arrDown": false,
-		  "isChecked": false,
-		  "isCheckBox": false
-        },
-        {
-          "id": 7,
-          "name": "Manager",
-          "colName": "managerName",
-          "colType": "String",
-          "arrUp": false,
-          "arrDown": false,
-		  "isChecked": false,
-		  "isCheckBox": false
-        },
-        {
-          "id": 8,
-          "name": "Zip Code",
-          "colName": "zipCode",
-          "colType": "String",
-          "arrUp": false,
-          "arrDown": false,
-		  "isChecked": false,
-		  "isCheckBox": false
-        },
-        {
-          "id": 9,
-          "name": "App version",
-          "colName": "appVersion",
-          "colType": "String",
-          "arrUp": false,
-          "arrDown": false,
-		  "isChecked": false,
-		  "isCheckBox": false
-        },
-        {
-          "id": 10,
-          "name": "Driving State",
-          "colName": "drivingStates",
-          "colType": "String",
-          "arrUp": false,
-          "arrDown": false,
-		  "isChecked": false,
-		  "isCheckBox": false
-        }
-      ];
-	@api activities = ["Activity","Mass Deactivate", "Freeze", "UnFreeze", "Send Driver Packet", "Concur", "Mass Reset Password", "Enable User", "Mileage Lock Date"];
+    @api employeeColumn = [];
+	@api activities = [];
 	@api activityList = [];
     isSort = true;
     @api employeeList;
 	@api employees
-    @api empKeyFields = ["name", "email", "deactivaedDate", "role", "freeze", "managerName", "zipCode", "appVersion", "drivingStates", ];
+    @api empKeyFields;
+    // @api empKeyFields = ["name", "email", "deactivaedDate", "role", "freeze", "managerName", "zipCode", "appVersion", "drivingStates", ];
     sortable = true;
     isdataLoaded = false;
     @api editableView = false;
@@ -138,8 +52,18 @@ export default class UsersRoster extends LightningElement {
 	@api showModal = false;
     @api roles;
     @api managers;
+	@api jobTitles;
+	@api departments;
+	@api companies;
+	@api vehicleType;
+	@api driverTypes;
 	managersList;
 	roleList;
+	jobTitleList
+	departmentList;
+	companyList;
+	vehicleTypeList;
+	driverTypeList;
 	@api accid;
 	@api contactid;
     isFalse = false;
@@ -150,12 +74,10 @@ export default class UsersRoster extends LightningElement {
 	isDeactivateDateModal = false;
 	isMileageLockDateModal = false;
 	isMassDeactivationModal = false;
+	isSyncAllModal = false;
 	massDeactivationDate  = '';
 	validStateList = [];
 	currentModalRecord;
-	@api jobTitles;
-	@api departments;
-	@api companies;
 	@api deactivaedDate;
 	@api payRollAmount;
 	@api isSubmitVisible = false;
@@ -163,9 +85,23 @@ export default class UsersRoster extends LightningElement {
 	lockDateList = [];
 	@api reiMonth;
 	@api lockDate;
-	@api vehicleTypeList;
+	@api syncMonth;
+	@api syncStartDate;
+	@api syncEndDate;
 	currentRecord;
-	
+	isFieldDataLoaded = false;
+	noneEditableField = [];
+	@api addEmpFormField = [];
+	@api redirectUserId;
+	@api fieldType = {};
+	@api isFieldTypeLoaded = false;
+	@api employeeFilterOption = ["Active", "Disabled", "All"];
+	currentFilter = "Active";
+	@api editRecordIdList = [];
+	@api exportFields = [];
+	isLoginAsVisible = false;
+	redirectPageName;
+	isClearIconEnable = true;
     
     dynamicBinding(data, keyFields) {
         data.forEach(element => {
@@ -175,30 +111,21 @@ export default class UsersRoster extends LightningElement {
                     let singleValue = {}
                     if (keyFields.includes(key) !== false) {
                         singleValue.key = key;
-                        if(key === "drivingStates") {
-                          if(element[key]) {
-                            singleValue.value = element[key];
-                          }else {
-							singleValue.value = []
-						  }
-                        }else {
-                          singleValue.value = element[key];
-                        }
+						singleValue.value = this.getValue(key, element);
 						singleValue.isIcon = key === "deactivaedDate" ? true : false;
-						singleValue.isDate = key === "deactivaedDate" ? true : false;
-                        singleValue.isDropDown = (key === "role" || key === "managerName") ? true : false;
+						singleValue.isDate = (this.fieldType && this.fieldType?.date?.includes(key)) ? true : false;
+                        singleValue.isDropDown = (this.fieldType && this.fieldType?.select?.includes(key) && !this.noneEditableField?.includes(key)) ? true : false; //select
 						singleValue.isTag = key === "drivingStates" ? true : false;
 						singleValue.isAddress = key === "zipCode" ? true : false;
 						singleValue.city = key === "zipCode" ? element['city'] : '';
-						singleValue.isNoneEditable = (key === "appVersion" || key === "freeze") ?  true : false;
+						singleValue.isNoneEditable = (this.noneEditableField && this.noneEditableField.includes(key)) ?  true : false;
 						singleValue.toggle = false;
 						// singleValue.isToggle = 
 						// Drop down keys
-                        if(key === "role") {
-                            singleValue.dropDownList = this.roleList;
-                        } else if(key === "managerName") {
-                            singleValue.dropDownList = this.managersList;
-                        }
+						if(this.fieldType?.select?.includes(key)){
+							singleValue.dropDownList = this.getDropDown(key);
+						}
+                       
 						// icon keys
 						if(key === "deactivaedDate") {
 							singleValue.iconUrl = this.editIconUrl;	
@@ -226,6 +153,38 @@ export default class UsersRoster extends LightningElement {
 		this.employeeList = data;
     }
 
+	getValue(key, element) {
+		if(key === "drivingStates") {
+			if(element[key]) {
+				return element[key];
+			}else {
+			  	return [];
+			}
+		  } else if(this.fieldType?.date?.includes(key)) {
+			return element[key] ? this.convertDateFormat(element[key]) : '';
+		  } else {
+			return element[key];
+		  }
+	}
+
+	getDropDown(key) {
+		if(key === "role") {
+			return this.roleList;
+		} else if(key === "managerName") {
+			return this.managersList;
+		} else if(key === "jobtitle"){
+			return this.jobTitleList;
+		} else if(key === "department") {
+			return this.departmentList
+		} else if(key === "company") {
+			return this.companyList;
+		} else if(key === "vehicalType") {
+			return this.vehicleTypeList;
+		} else if(key === "driverType") {
+			return this.driverTypeList;
+		}
+	}
+
     mapOrder(array, order, key) {
         array.sort(function (a, b) {
             var A = a[key],
@@ -242,29 +201,54 @@ export default class UsersRoster extends LightningElement {
     connectedCallback() {
         this.accid = this.getUrLParam('accid');
         this.contactid = this.getUrLParam('id');
+		// this.activityList = this.formatArray(this.activities);
+		this.employeeFilterOption = this.formatArray(this.employeeFilterOption);
+		this.getDrivingStatesList();
+		this.getFieldType();
+		this.noneEditableField = empNoneEditableField ? empNoneEditableField.split(',') : [];
+    }
+
+	initailizeTable() {
+		
 		this.activityList = this.formatArray(this.activities);
-		this.getListOfDropDownData();
 		if(this.managers && this.roles) {
 			this.managersList = this.proxyToObject(this.managers);
 			this.roleList = this.proxyToObject(this.roles)
 		}
+		if(this.jobTitles) {
+			this.jobTitleList = this.proxyToObject(this.jobTitles);
+		}
+		if(this.departments) {
+			this.departmentList = this.proxyToObject(this.departments);
+		}
+		if(this.companies){
+			this.companyList = this.proxyToObject(this.companies);
+		}
+		if(this.vehicleType){
+			this.vehicleTypeList = this.proxyToObject(this.vehicleType);
+		}
+		if(this.driverTypes){
+			this.driverTypeList = this.proxyToObject(this.driverTypes);
+		}
 		if(this.employees && this.employees.length){
-			this.employeeList = this.proxyToObject(this.employees);
+
+			this.employeeList = this.proxyToObject(this.employees.filter(emp => !emp.deactivaedDate));
 			this.dynamicBinding(this.employeeList, this.empKeyFields);
             this.isdataLoaded = true;
             this.editableView = true;
 			this.paginated = true;
 			this.isScrollable = true;
 			this.isCheckbox = true;
+			if(this.redirectUserId) {
+				let event = {
+					detail : this.redirectUserId
+				}
+				this.editEmployee(event);
+			}
 		} else {
-			// this.startSpinner();
 			this.getEmployees();
-			// this.editableView = true;
-			// this.paginated = true;
-			// this.isScrollable = true;
-			// this.isCheckbox = true;
 		}
-    }
+	}
 
     proxyToObject(data) {
         return JSON.parse(JSON.stringify(data));
@@ -275,8 +259,12 @@ export default class UsersRoster extends LightningElement {
 		return url.searchParams.get(param);
 	}
     
-	editMode(){
+	editMode(event){
         this.isEditMode = true;
+		let id = event.detail;
+		if(id && !this.editRecordIdList.includes(id)){
+			this.editRecordIdList.push(id);
+		}
     }
 
 	cancelEditMode(){
@@ -284,6 +272,7 @@ export default class UsersRoster extends LightningElement {
         if(this.template.querySelector('.filter-input')){
             this.template.querySelector('.filter-input').value = "";
         }
+		this.editRecordIdList = [];
 		this.startSpinner();
 		this.getEmployees();
         // this.template.querySelector('c-user-preview-table').refreshTable(this.employeeList);
@@ -294,97 +283,176 @@ export default class UsersRoster extends LightningElement {
     }
 
 	async updateEmployee() {
-		this.startSpinner();
-		editInlineNewEmployee({
-			listofemployee: JSON.stringify(this.employeeList),
-			accid: this.accid ,
-			contactid: this.contactid
-		})
-		.then(response => {
-			let result = JSON.parse(response);
-			if(result?.hasError) {
-				this.stopSpinner();
-				console.error(result.message);
-				let toastError = { type: "error", message: "Something went wrong." };
-				toastEvents(this, toastError);
+		// if(this.edit)
+		if(!this.editRecordIdList.length){
+			this.startSpinner();
+			editInlineNewEmployee({
+				listofemployee: JSON.stringify(this.employeeList),
+				accid: this.accid ,
+				contactid: this.contactid
+			})
+			.then(response => {
+				let result = JSON.parse(response);
+				if(result?.hasError) {
+					this.stopSpinner();
+					console.error(result.message);
+					let toastError = { type: "error", message: "Something went wrong." };
+					toastEvents(this, toastError);
+				}
+				if(!result?.hasError) {
+					this.dynamicBinding(this.employeeList, this.empKeyFields);
+					this.template.querySelector('c-user-preview-table').refreshTable(this.employeeList);
+					this.isEditMode = false;
+					this.stopSpinner();
+					let updateEmpMessage = `Records updated`;
+					let toastSuccess = { type: "success", message: updateEmpMessage };
+					toastEvents(this, toastSuccess);
+				}
+				// this.getEmployees();
+			})
+			.catch(err=> {
+				console.log(this.proxyToObject(err));
+			})
+		} else {
+			let inValidRecordEmail =  [];
+			let inValidRecordZip = [];
+			let inValidRecordCity = [];
+			let inValidrecordNameEmail = [];
+			let inValidrecordNameZip = [];
+			let invalidrecordNameCity = [];
+			this.editRecordIdList.forEach(id=> {
+				let singleRecord = this.getSingleEmployee(id);
+				if(singleRecord?.email && !this.isValidEmail(singleRecord?.email)){
+					inValidRecordEmail.push(singleRecord);
+					inValidrecordNameEmail.push(singleRecord?.name);
+				}
+				if(singleRecord?.role && (singleRecord?.role !== "Manager" && singleRecord?.role !== "Admin")) {
+					if(!singleRecord?.zipCode) {
+						inValidRecordZip.push(singleRecord);
+						inValidrecordNameZip.push(singleRecord?.name);
+					}
+					if(!singleRecord?.state) {
+						inValidRecordCity.push(singleRecord);
+						invalidrecordNameCity.push(singleRecord?.name);
+					}
+				}
+			});
+			if(inValidRecordEmail.length){
+				let event = {
+					detail : {
+						type : "error",
+						message : `Please add valid email for ${inValidrecordNameEmail.toString()}`
+					}
+				}
+				this.showToast(event)
+			} else if(inValidRecordZip.length){
+				let event = {
+					detail : {
+						type : "error",
+						message : `Please add valid Zip code for ${inValidrecordNameZip.toString()}`
+					}
+				}
+				this.showToast(event)
+			} else if(inValidRecordCity.length) {
+				let event = {
+					detail : {
+						type : "error",
+						message : `Please select  city for ${invalidrecordNameCity.toString()}`
+					}
+				}
+				this.showToast(event)
+			} else {
+				let recordToBeUpdate = [];
+				this.editRecordIdList.forEach(id => {
+					recordToBeUpdate.push(this.getSingleEmployee(id))
+				})
+				this.startSpinner();
+				editInlineNewEmployee({
+					listofemployee: JSON.stringify(recordToBeUpdate),
+					accid: this.accid ,
+					contactid: this.contactid
+				})
+				.then(response => {
+					let result = JSON.parse(response);
+					if(result?.hasError) {
+						this.stopSpinner();
+						console.error(result.message);
+						let toastError = { type: "error", message: "Something went wrong." };
+						toastEvents(this, toastError);
+					}
+					if(!result?.hasError) {
+						let employees = this.proxyToObject(this.employees)
+						for (const updatedRecord of recordToBeUpdate) {
+							const index = employees.findIndex((record) => record.userid === updatedRecord.id);
+							if (index !== -1) {
+								employees[index] = updatedRecord;
+							}
+						}
+						this.employees = employees;
+						this.getFilterEmployee(this.currentFilter);
+						this.dynamicBinding(this.employeeList, this.empKeyFields);
+						this.template.querySelector('c-user-preview-table').refreshTable(this.employeeList);
+						this.isEditMode = false;
+						this.stopSpinner();
+						let updateEmpMessage = `Records updated`;
+						let toastSuccess = { type: "success", message: updateEmpMessage };
+						this.editRecordIdList = [];
+						toastEvents(this, toastSuccess);
+					}
+					// this.getEmployees();
+				})
+				.catch(err=> {
+					console.log(this.proxyToObject(err));
+				})
 			}
-			if(!result?.hasError) {
-				this.dynamicBinding(this.employeeList, this.empKeyFields);
-				this.template.querySelector('c-user-preview-table').refreshTable(this.employeeList);
-				this.isEditMode = false;
-				this.stopSpinner();
-				let updateEmpMessage = `Records updated`;
-				let toastSuccess = { type: "success", message: updateEmpMessage };
-				toastEvents(this, toastSuccess);
-			}
-			// this.getEmployees();
-		})
-		.catch(err=> {
-			console.log(this.proxyToObject(err));
-		})
+		}
+	}
+
+	isValidEmail(email) {
+		if(email) {
+			const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  			return emailRegex.test(email);
+		}
+		return false;
 	}
 
 	handleChange(event) {
-		this._value = event.target.value;
-        this.template.querySelector('c-user-preview-table').searchByKey(this._value, this.employeeList)
+		let searchKey = event.target.value;
+		this.isClearIconEnable = searchKey ? true : false;
+        this.template.querySelector('c-user-preview-table').searchByKey(searchKey, this.employeeList);
+	}
+	handleClearInput(){
+		let searchKey = "";
+		if(this.template.querySelector('.filter-input')){
+            this.template.querySelector('.filter-input').value = "";
+        }
+		this.isClearIconEnable = false;
+		this.template.querySelector("c-user-preview-table").searchByKey(searchKey, this.employeeList);
 	}
 
 	downloadAllEmployee(){
 		let employee = [];
-		let filename = this.dateTime(new Date());
+		let filename = `Plan Participants ${this.dateTime(new Date())}`;
 		let sheetName = "Employee"
 		let employeeList = this.sort(this.employeeList, "name");
-		employee.push([
-			"First Name",
-			"Last Name",
-			"Company",
-			"Email",
-			"City",
-			"State",
-			"Zip Code",
-			"Cell Phone",
-			"Driving States",
-			"Activation Date",
-			"Frozen Date",
-			"Deactivation Date",
-			"Role",
-			"Manager",
-			"Standard Vehicle",
-			"Fixed Amount",
-			"Compliance",
-			"Average Monthly Reimbursement",
-			"Average Monthly Mileage",
-			"App Version",
-			"App Setting",
-			"Business and After Hours",
-			"Last Trip Date",
-		]);
+		let excelLabel = [];
+		let excelField = [];
+		this.exportFields.forEach(field => {
+			excelLabel.push(field.label);
+			excelField.push(field.name);
+		});
+		// let exelLable = this.exportFields.map(f => ({}))
+		employee.push(excelLabel);
 		employeeList.forEach(emp => {
-			employee.push([
-				emp.firstName,
-				emp.lastName,
-				emp.company,
-				emp.email,
-				emp.city,
-				emp.state,
-				emp.zipCode,
-				emp.cellphone,
-				(emp.drivingStates && emp.drivingStates.length) ? emp.drivingStates.join(";") : '',
-				emp.activationDate,
-				emp.deactivaedDate,
-				emp.deactivaedDate,
-				emp.role,
-				emp.managerName,
-				emp.vehicalType,
-				emp.fixedamount,
-				emp.compliancestatus,
-				"Average Monthly Reimbursement",
-				"Average Monthly Mileage",
-				emp.appVersion,
-				emp.appSetting,
-				emp.Businesshours,
-				"lastTripdate"
-			]);
+			let singleRecord = []
+			for (const field of excelField) {
+				if(field === "drivingStates" && emp[field]?.length) {
+					singleRecord.push(emp[field].join(','));
+				}else{
+					singleRecord.push(emp[field]);
+				}
+			};
+			employee.push(singleRecord)
 		});
 		this.template.querySelector("c-export-excel").download(employee, filename, sheetName);
 	}
@@ -393,14 +461,24 @@ export default class UsersRoster extends LightningElement {
 		let tab = event.currentTarget.dataset.id;
 		if(tab === 'employee'){
 			this.currentRecord = '';
+			if(!this.isListEmployeetab){
+				this.cancelEditMode();
+			}
 			this.isListEmployeetab = true;
 			this.isAddEmployeeTab = false;
 			this.isImportTab = false;
+			this.isLoginAsVisible = false
+			this.redirectPageName = '';
 		}
 		if(tab === 'add') {
 			this.isListEmployeetab = false;
 			this.isImportTab = false;
+			if(this.isAddEmployeeTab) {
+				this.isLoginAsVisible = false;
+				this.redirectPageName = '';
+			}
 			this.isAddEmployeeTab = true;
+			this.resetAddEmployeeFields();
 		}
 
 		if(tab === 'import') {
@@ -408,6 +486,8 @@ export default class UsersRoster extends LightningElement {
 			this.isListEmployeetab = false;
 			this.isAddEmployeeTab = false;
 			this.isImportTab = true;
+			this.isLoginAsVisible = false;
+			this.redirectPageName = '';
 		}
 		const buttons = this.template.querySelectorAll('.tab-btn');
         buttons.forEach(button => {
@@ -419,17 +499,24 @@ export default class UsersRoster extends LightningElement {
         clickedButton.classList.add('is-active');
 	}
 
+	resetAddEmployeeFields() {
+		if(this.template.querySelector('c-add-employee')) {
+			this.template.querySelector('c-add-employee').resetFormData();
+		}
+	}
+
 	handleModal(event) {
     	this.template.querySelector('c-user-profile-modal').show();
 		if(event && event.detail ) {
 			let key = event.detail.key;
 			let id = event.detail.id;
 			this.currentModalRecord = id;
+			let singleEmp = this.getSingleEmployee(id);
 			if(key === "drivingStates") {
 				this.isDrivingStateModal = true;
-				let singleEmp = this.getSingleEmployee(id);
 				this.tags = (singleEmp && singleEmp.drivingStates) ? singleEmp.drivingStates : [];
 			} else if(key === "deactivaedDate") {
+				this.deactivaedDate = (singleEmp && singleEmp?.deactivaedDate) ? singleEmp?.deactivaedDate : '';
 				this.isDeactivateDateModal = true;
 			}
 		}
@@ -442,11 +529,17 @@ export default class UsersRoster extends LightningElement {
 		this.massDeactivationDate = ''
 		this.reiMonth = '';
 		this.lockDate = '';
+		this.syncMonth = '';
+		this.syncStartDate = '';
+		this.syncEndDate = '';
 		this.template.querySelector('c-user-profile-modal').hide();
+		this.disableCheckbox();
+		this.isSubmitVisible = false;
 		this.isDeactivateDateModal = false;
 		this.isDrivingStateModal = false;
 		this.isMileageLockDateModal = false;
 		this.isMassDeactivationModal = false;
+		this.isSyncAllModal = false;
 	}
 
 	handleCancel() {
@@ -471,7 +564,10 @@ export default class UsersRoster extends LightningElement {
 	handleRemoveTag(event) {
 		const tagToRemove = this.proxyToObject(event.detail);
 		if(tagToRemove && tagToRemove.hasOwnProperty('record')) {
-			this.editMode();
+			let recordId = {
+				detail : tagToRemove.record
+			}
+			this.editMode(recordId);
 			let recordIndex = this.employeeList.findIndex((emp => emp.userid == tagToRemove.record));
 			let stateList = this.employeeList[recordIndex].drivingStates;
 			if(stateList && stateList.length && stateList.includes(tagToRemove.tag)) {
@@ -498,7 +594,13 @@ export default class UsersRoster extends LightningElement {
 	getEmployees() {
 		getlistAllEmployees({accid: this.accid, contactid: this.contactid})
         .then(response => {
-            this.employeeList = JSON.parse(response);
+			this.employees = JSON.parse(response);
+			if(this.currentFilter) {
+				this.getFilterEmployee(this.currentFilter);
+			} else {
+				this.employeeList = this.employees
+			}
+			console.log("SINGLE_EMP",this.proxyToObject(this.employeeList));
             this.dynamicBinding(this.employeeList, this.empKeyFields);
 			this.isdataLoaded = true;
             this.editableView = true;
@@ -507,19 +609,12 @@ export default class UsersRoster extends LightningElement {
 			this.isCheckbox = true;
 			this.template.querySelector('c-user-preview-table').refreshTable(this.employeeList);
 			// this.cancelEditMode();
+			this.dispatchEvent(new CustomEvent('updateemployee', {}));
 			this.stopSpinner();
         })
         .catch(err => {
             console.log(this.proxyToObject(err));
         });
-	}
-
-	updateEmployeeList(empList, updateEmpMessage) {
-		this.employeeList = this.proxyToObject(empList);
-		this.stopSpinner();
-		this.dynamicBinding(JSON.parse(this.employeeList), this.empKeyFields);
-		let toastSuccess = { type: "success", message: updateEmpMessage };
-		toastEvents(this, toastSuccess);
 	}
 
 	getSingleEmployee(id) {
@@ -536,7 +631,9 @@ export default class UsersRoster extends LightningElement {
 		this.template.querySelector(".tab-wrapper .employee").click();
 		let updateEmpMessage = event?.detail?.updateEmpMessage;
 		let result = event?.detail?.result;
-		this.updateEmployeeList(result, updateEmpMessage);
+		this.getEmployees();
+		let toastSuccess = { type: "success", message: updateEmpMessage };
+		toastEvents(this, toastSuccess);
 	}
 
 	startSpinner() {
@@ -631,7 +728,7 @@ export default class UsersRoster extends LightningElement {
 		}
 	}
 
-	getListOfDropDownData() {
+	getDrivingStatesList() {
 		getDrivingStates()
 		.then(response => {
 			let stateList = JSON.parse(response);
@@ -642,42 +739,6 @@ export default class UsersRoster extends LightningElement {
 		.catch(err => {
 			console.log(err)
 		});
-		getJobTitle()
-		.then(responce => {
-			this.jobTitles = this.formatArray(JSON.parse(responce));
-			// this.template.querySelector('c-add-employee').updateJobList(this.jobTitles);
-			console.log("drop-data", this.proxyToObject(this.jobTitles));
-		})
-		.catch(err => {
-			console.log("JOBLISTERRR",err);
-		});
-		getDepartment()
-		.then(responce => {
-			this.departments = this.formatArray(JSON.parse(responce));
-			
-		})
-		.catch(err => {
-			console.log({err});
-		});
-		getCompany()
-		.then(responce => {
-			console.log("drop-data", this.proxyToObject(responce));
-			this.companies = this.formatArray(JSON.parse(responce));
-		})
-		.catch(err => {
-			console.log({err});
-		});
-		getPickListValuesIntoList({accid:this.accid})
-		.then(responce => {
-			console.log("drop-data", this.proxyToObject(responce));
-			let vehicles = JSON.parse(responce);
-			if(vehicles && vehicles.length && Array.isArray(vehicles)) {
-				this.vehicleTypeList = this.formatArray(vehicles[1].split(";"));
-			}
-		})
-		.catch(err => {
-			console.log(this.proxyToObject(err));
-		})
 		this.generateLockDateMonthList()
 	}
 
@@ -716,15 +777,10 @@ export default class UsersRoster extends LightningElement {
 		this.deactivaedDate = event.detail;
 	}
 
-	handlePayRoll(event) {
-		this.payRollAmount = event.target.value;
-	}
-
 	updateDeactivationDate() {
 		let id = this.currentModalRecord;
 		let recordIndex = this.employeeList.findIndex(emp => emp.userid === id);
 		this.employeeList[recordIndex].deactivaedDate = this.deactivaedDate;
-		this.employeeList[recordIndex].finalPayrollAmount = this.payRollAmount;
 		this.updateEmp(id);
 		this.handleCloseModal();
 	}
@@ -760,19 +816,24 @@ export default class UsersRoster extends LightningElement {
 		} else if(this.currentActivity === "Mileage Lock Date"){
 			this.isMileageLockDateModal = true;
 			this.template.querySelector('c-user-profile-modal').show();
+		}else if(this.currentActivity === "Sync All"){
+			this.isSyncAllModal = true;
+			this.template.querySelector('c-user-profile-modal').show();
 		} else {
 			this.template.querySelector('c-user-preview-table').toggleCheckBox(true);
 			if(event && event.detail && event.detail.value) {
 				this.currentActivity = event.detail.value;
 			}
-			if(this.currentActivity === "Mass Deactivate") {
-				this.isMassDeactivationModal = true;
-			}
 		}
+
+		// else if(this.currentActivity === "Resend mLog App" ) {
+		// 	this.sendWelcomeEmail(this.accid);
+		// } 
 	}
 
 	disableCheckbox(event) {
 		this.isSubmitVisible = false;
+		this.isDeactivateDateModal = false
 		this.template.querySelector('c-user-preview-table').toggleCheckBox(false);
 	}
 
@@ -786,6 +847,7 @@ export default class UsersRoster extends LightningElement {
 	submitActivity(event) {
 		let employeeList = this.getSelectedRecords();
 		if(this.currentActivity === "Mass Deactivate") {
+			this.isMassDeactivationModal = true;
 			this.template.querySelector('c-user-profile-modal').show();
 		} else {
 			this.template.querySelector('c-activity-actions').handleActivity(this.currentActivity, employeeList, this.accid, this.contactid);
@@ -798,15 +860,33 @@ export default class UsersRoster extends LightningElement {
 		return selectedEmployee;
 	}
 
+	// sendWelcomeEmail(accId) {
+	// 	this.startSpinner()
+	// 	let empEmailList = this.employeeList.map(item => item.email);
+	// 	putHTTPMassWlcmMail({accountID: accId, empEmail : JSON.stringify(empEmailList) })
+	// 	.then(responce => {
+	// 		console.log(this.proxyToObject(responce));
+	// 		this.stopSpinner();
+	// 	})
+	// 	.catch(err => {
+	// 		console.log(this.proxyToObject(err));
+	// 		this.stopSpinner();
+	// 	})
+	// }
+
 	sendPacket(accId) {
         if(accId) {
             this.startSpinner()
             sendSignatureRequestForDriver({accountID: accId})
             .then(responce => {
+				let toastSuccess = { type: "success", message: "Driver packet was sent" };
+                toastEvents(this, toastSuccess);
                 this.stopSpinner();
             })
             .catch(err => {
-                this.stopSpinner()
+				let toastSuccess = { type: "error", message: "Something went wrong" };
+                toastEvents(this, toastSuccess);
+                this.stopSpinner();
             })
         }
     }
@@ -825,13 +905,11 @@ export default class UsersRoster extends LightningElement {
 
 	handleLockDate(event) {
 		this.startSpinner()
-		console.log(this.proxyToObject({accountId: this.accid, lockDate: this.lockDate, reiMonth: this.reiMonth}));
 		updateLockDate({accountId: this.accid, lockDate: this.lockDate, reiMonth: this.reiMonth})
 		.then(responce => {
-			console.log(this.proxyToObject(responce));
-			this.handleCloseModal();
 			this.stopSpinner();
 			if(this.proxyToObject(responce) == "Success") {
+				this.handleCloseModal();
 				let toastSuccess = { type: "success", message: "Mileage has been locked." };
                     toastEvents(this, toastSuccess);
 			} else {
@@ -848,9 +926,29 @@ export default class UsersRoster extends LightningElement {
 
 	editEmployee(event) {
 		let record = this.getSingleEmployee(event?.detail);
-		this.template.querySelector('.tab-wrapper .add-employee').click();
+		if(record) {
+			let role = record?.role;
+			getCustomRedirectURLSettings()
+			.then(response => {
+				let redirectSettings = this.proxyToObject(response);
+				let roles = redirectSettings[0]?.roles__c.split(',');
+				let roleFieldName = `${role.replace(/\//g, '_')}__c`;
+				this.redirectPageName = redirectSettings[0][`${roleFieldName}`];
+				if(roles.includes(role) && this.redirectPageName){
+					this.isLoginAsVisible = true;
+				}
+			})
+			.catch(err => {
+				console.log(this.proxyToObject(err))
+			})
+		}
 		this.currentRecord = record;
-
+		let intervalID = setInterval(()=> {
+			if(this.template.querySelector('.tab-wrapper .add-employee')) {
+				this.template.querySelector('.tab-wrapper .add-employee').click();
+				clearInterval(intervalID);
+			}
+		},500);
 	}
 
 	handleMassDeactivationDate(event) {
@@ -899,4 +997,183 @@ export default class UsersRoster extends LightningElement {
 
 	}
 
+	convertDateFormat(dateString) {
+		let dateParts = dateString.split('/');
+		let month = dateParts[0].padStart(2, '0'); // Add leading zero if necessary
+  		let day = dateParts[1].padStart(2, '0');
+		let year = dateParts[2];
+	  
+		let formattedDate = year + '-' + month + '-' + day;
+		return formattedDate;
+	}
+
+	handleTableField(event) {
+		let fieldData = this.proxyToObject(event.detail);
+		this.employeeColumn = fieldData?.column;
+		this.empKeyFields = fieldData?.key;
+		this.activities = fieldData?.activities;
+		this.exportFields = fieldData?.export;
+		this.isFieldDataLoaded = true;
+		this.initailizeTable();
+	}
+
+	handleFormField(event) {
+		let addEmpFormData = this.proxyToObject(event.detail);
+		this.addEmpFormField = addEmpFormData?.column;
+	}
+
+	handleSyncAllMonth(event) {
+		if(event && event.detail) {
+			this.syncMonth = event.detail.value;
+			let dates = this.getStartAndEndDate(this.syncMonth);
+			this.syncStartDate = dates?.startDate;
+			this.syncEndDate = dates?.endDate;
+		}
+	}	
+
+	handleUnSubscribe(){
+		if(this.syncStartDate && this.syncEndDate && this.syncMonth) {
+			this.startSpinner();
+			MassSyncTrips({
+				accountId: this.accid, 
+				startDate: this.syncStartDate, 
+				endDate: this.syncEndDate, 
+				month : this.syncMonth,
+				tripStatus: "U"
+			})
+			.then(responce => {
+				this.handleSubscribe();
+			})
+			.catch(err=> {
+				this.stopSpinner()
+				console.log(this.proxyToObject(err));
+			})
+		} else {
+			let toastError = { type: "error", message: "something went wrong..!" };
+            toastEvents(this, toastError);
+		}
+	}
+
+	handleSubscribe() {
+		MassSyncTrips({
+			accountId: this.accid, 
+			startDate: this.syncStartDate, 
+			endDate: this.syncEndDate, 
+			month : this.syncMonth,
+			tripStatus: "S"
+		})
+		.then(responce => {
+			console.log("responce --> handleSubscribe",this.proxyToObject(responce));
+			let toastSuccess = { type: "success", message: "Sync All successfull" };
+            toastEvents(this, toastSuccess);
+			this.handleCloseModal();
+			this.getEmployees();
+		})
+		.catch(err=> {
+			console.log(this.proxyToObject(err));
+		})
+	}
+
+	getStartAndEndDate(dateString) {
+		const [month, year] = dateString.split('-');
+		const startDate = new Date(year, month - 1, 1);
+		const endDate = new Date(year, month, 0);
+	  
+		const formattedStartDate = `${(startDate.getMonth() + 1).toString().padStart(2, '0')}/${startDate.getDate().toString().padStart(2, '0')}/${startDate.getFullYear()}`;
+		const formattedEndDate = `${(endDate.getMonth() + 1).toString().padStart(2, '0')}/${endDate.getDate().toString().padStart(2, '0')}/${endDate.getFullYear()}`;
+	  
+		return { startDate: formattedStartDate, endDate: formattedEndDate };
+	}
+
+	resetRedirectUser(){
+		this.redirectUserId = '';
+	}
+
+	getFieldType() {
+		getCustomAddEmployeeSettings()
+		.then(responce => {
+			let result = this.proxyToObject(responce);
+            if(result?.length) {
+                result.forEach(res => {
+                    if(res?.Name === "addEmployee") {
+						this.fieldType = { 
+							text : res?.text__c ? res?.text__c.split(',') : [],
+							select : res?.select__c ? res?.select__c.split(',') : [],
+							date : res?.date__c ? res?.date__c.split(',') : [],
+							required : res?.required__c ? res?.required__c.split(',') : [],
+						}
+                    }
+                });
+				this.isFieldTypeLoaded = true;
+            }
+		})
+		.catch(err => {
+			console.log(this.proxyToObject(err));
+		})
+	}
+
+	handleBack(){
+		this.template.querySelector(".tab-wrapper .employee").click();
+		this.cancelEditMode();
+	}
+
+	disconnectedCallback(){
+		this.isFieldTypeLoaded = false;
+	}
+
+	handleEmployeeFilter(event) {
+		let filter = event?.detail?.value;
+		if(filter){
+			this.currentFilter = filter;
+			this.getFilterEmployee(this.currentFilter);
+			this.dynamicBinding(this.employeeList, this.empKeyFields);
+			this.template.querySelector('c-user-preview-table').tableListRefresh(this.employeeList);
+		}
+	}
+
+
+	getFilterEmployee(filter){
+		if(filter === "Active") {
+			this.employeeList =  this.proxyToObject(this.employees.filter(emp => !emp.deactivaedDate));
+		}else if(filter === "Disabled") {
+			this.employeeList = this.proxyToObject(this.employees.filter(emp => emp.deactivaedDate));
+		} else if(filter === "All") {
+			this.employeeList = this.proxyToObject(this.employees);
+		}
+	}
+
+	handleLoginAs() {
+		let url = new URL(location.href);
+		let newUrlSearch = this.updateIdOfLoginUser(url.search);
+		let targetUrl = `${this.redirectPageName}${newUrlSearch}`;
+		window.open(targetUrl, '_blank');
+	}
+
+	updateIdOfLoginUser(inputString) {
+		// Input string
+		// var inputString = "?accid=0010Z00001ygUenQAE&id=0030Z00003NFLRoQAP&showteam=true";
+
+		// New value for the 'id' parameter
+		var newIdValue = this.currentRecord?.id;
+
+		// Split the input string by '&' to separate the parameters
+		var params = inputString.split("&");
+
+		// Iterate through the parameters to find and replace the 'id' parameter
+		for (var i = 0; i < params.length; i++) {
+		var param = params[i].split("=");
+		if (param[0] === "id") {
+			param[1] = newIdValue; // Replace the value with the new value
+			params[i] = param.join("=");
+			break; // No need to continue iterating once 'id' is found and replaced
+		}
+		}
+
+		// Join the parameters back together with '&' and create the updated string
+		return params.join("&");
+	}
+
+	handleBackToDashboard() {
+		this.dispatchEvent(new CustomEvent('backtodashboard', {}));
+	}
 }

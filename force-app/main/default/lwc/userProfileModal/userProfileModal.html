@@ -60,6 +60,17 @@
                 
             </div>
         </section>
-        <div class="slds-backdrop slds-backdrop_open animate__animated animate__fadeInTopLeft animate__faster"></div>
+        <template lwc:if={mDashboarding}>
+            <div class="slds-backdrop slds-backdrop_open dark-background animate__animated animate__fadeInTopLeft animate__faster"></div>
+        </template>
+        <template lwc:else>
+            <template if:false={isDisabledBG}>
+                <div class="slds-backdrop slds-backdrop_open light-background animate__animated animate__fadeInTopLeft animate__faster"></div>
+            </template>
+            <div if:true={isDisabledBG} class="modal-inside-modal">
+                <div class="slds-backdrop slds-backdrop_open light-background animate__animated animate__fadeInTopLeft animate__faster"></div>
+            </div>
+        </template>
+       
     </template>
 </template>

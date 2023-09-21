@@ -480,8 +480,8 @@ export default class MBurseSMS extends LightningElement {
         //     console.log(document.body.childNodes[0].childNodes[0].src)
         // })
         // eslint-disable-next-line @lwc/lwc/no-async-operation
-        //this._interval = //setInterval(() => {
-           // this.progress = this.progress + 1000;
+        this._interval = setInterval(() => {
+        this.progress = this.progress + 1000;
             getAllMessageByContact({
                 contactId: _self.driverId,
             }).then((result) => {
@@ -495,9 +495,9 @@ export default class MBurseSMS extends LightningElement {
             }).catch(error => {
                 console.log("error from getAllMessageByContact", error)
             })
-           // if (this.progress === 1260000) {
-              //  clearInterval(this._interval);
-           // }
-       // }, this.progress);
+           if (this.progress === 1260000) {
+               clearInterval(this._interval);
+           }
+         }, this.progress);
     }
 }

@@ -1,3 +1,4 @@
+/* eslint-disable @lwc/lwc/no-api-reassignments */
 /* eslint-disable no-restricted-globals */
 /* eslint-disable @lwc/lwc/no-async-operation */
 /* eslint-disable vars-on-top */
@@ -16,22 +17,28 @@ export default class UserFlaggingTrip extends LightningElement {
     @api headerName;
     @api emailaddress;
     @api isAccountBiweek;
+    @api redirectDashboard;
+    @api role;
+    @api element;
     isRecord = false;
     sortable = true;
     modalOpen = false;
     endProcess = false;
     _flag = false;
     isFalse = false;
+    isSearchEnable = true;
     unapprovereimbursements = [];
     allReimbursementList = [];
     headerModalText = '';
     modalClass = '';
+    _value = "";
     headerClass = '';
     subheaderClass = '';
     modalContent = '';
     styleHeader = '';
     styleClosebtn = '';
-    classToTable = 'slds-table--header-fixed_container p-top-v1';
+    noMessage = 'There is no data available';
+    classToTable = 'fixed-container';
     originalSelectList = [];
     selectList = [{
         "id": 1,
@@ -149,7 +156,7 @@ export default class UserFlaggingTrip extends LightningElement {
                     let singleValue = {}
                     if (keyFields.includes(key) !== false) {
                         singleValue.key = key;
-                        singleValue.value = element[key];
+                        singleValue.value = (key === 'status' || key === 'originname' || key === 'destinationname') ? (element[key] === null || element[key] === undefined || element[key] === "") ? "—" : element[key] : element[key];
                         singleValue.truncate = (key === 'originname' || key === 'destinationname') ? true : false;
                         singleValue.tooltip = (key === 'originname' || key === 'destinationname') ? true : false;
                         singleValue.tooltipText = (key === 'originname') ? (element.origin != null ? element.origin : 'This trip was manually entered without an address.') : (key === 'destinationname') ? (element.destination != null ? element.destination : 'This trip was manually entered without an address.') : (element.status === 'Rejected') ? (element.approvalName !== null && element.approvalName === 'Tom Honkus') ? 'Your mileage was automatically flagged by the system on ' + element.approveddate :  ((element.approvalName !== null ? element.approvalName : '') + ' flagged on ' + element.approveddate) : (element.status === 'Approved') ? (element.approvalName !== null && element.approvalName === 'Tom Honkus') ? 'Your mileage was automatically approved by the system on ' + element.approveddate : ((element.approvalName !== null ? element.approvalName : '') + ' approved on ' + element.approveddate) : 'Unapproved';
@@ -167,6 +174,7 @@ export default class UserFlaggingTrip extends LightningElement {
     handleChange(event){
         var pageItem = { "id": 1, "label": "This Page", "value": "This Page" }
         this._value = event.target.value;
+        this.isSearchEnable = this._value === "" ? true : false;
         this.isRecord = this._value === "" ? true : false;
         this.template.querySelector('c-user-preview-table').searchByKey(this._value)
         if (this.selectList.length < 2) {
@@ -323,9 +331,10 @@ export default class UserFlaggingTrip extends LightningElement {
     }
 
     revertHandler(){
+        let backTo = (this.redirectDashboard) ? 'Dashboard' : '';
         this.dispatchEvent(
             new CustomEvent("back", {
-                detail: ""
+                detail: backTo
             })
         );
     }
@@ -482,7 +491,7 @@ export default class UserFlaggingTrip extends LightningElement {
                     );
                     this.dispatchEvent(
                         new CustomEvent("flagcomplete", {
-                            detail: ""
+                            detail: this.element
                         })
                     );
                     toast = { type: 'success', message: message }
@@ -532,6 +541,14 @@ export default class UserFlaggingTrip extends LightningElement {
         console.log("unapprove", unapproveTrip);
     }
 
+    handleClearInput(){
+        this._value = "";
+        this.isSearchEnable = this._value === "" ? true : false;
+        this.template
+        .querySelector("c-user-preview-table")
+        .searchByKey(this._value);
+    }
+
     cancelFlagging(){
         if (this.template.querySelector("c-user-profile-modal")) {
           this.template.querySelector("c-user-profile-modal").hide();
@@ -564,7 +581,7 @@ export default class UserFlaggingTrip extends LightningElement {
             let lockDate = this.modelList[0].lockdate;
             let currentDateLocked = new Date(lockDate);
             console.log("date", lockDate, currentDateLocked)
-            let lockedMonth = currentDateLocked.toLocaleString('default', { month: 'long' });
+           // let lockedMonth = currentDateLocked.toLocaleString('default', { month: 'long' });
             this.islockdate = true;
             this.headerModalText = "Mileage Lock Date";
             this.modalClass = "slds-modal modal_info slds-fade-in-open";
@@ -574,7 +591,7 @@ export default class UserFlaggingTrip extends LightningElement {
             this.styleHeader = "slds-modal__container slds-m-top_medium";
             this.styleClosebtn = "close-notify";
             this.contentMessage =
-                "You approved mileage after the "+ lockedMonth + " month reimbursement report was run. This mileage will be applied to the next reimbursement period report";
+                "This mileage is being processed after the report was closed. Any changes will be applied to the next reimbursement period.";
                 if (this.template.querySelector("c-user-profile-modal")) {
                     this.template.querySelector("c-user-profile-modal").show();
                 }
@@ -589,11 +606,12 @@ export default class UserFlaggingTrip extends LightningElement {
         this.isCheckbox = true;
         this.modelList = [];
         console.log("Contact ---", this.contactList)
+        console.log("Version---", this.element)
         if (this.contactList) {
             this.modelList = this.proxyToObject(this.contactList);
             console.log('inside modal list',JSON.stringify(this.modelList));
             this.originalModelList = this.proxyToObject(this.contactList);
-            this.classToTable = this.modelList.length > 5 ? 'slds-table--header-fixed_container preview-height' : 'slds-table--header-fixed_container'
+            this.classToTable = this.modelList.length > 5 ? 'fixed-container' : 'fixed-container overflow-none'
             this.modalListColumn = this.unapproveTripColumn;
             this.modalKeyFields = this.unapproveTripKeyFields;
             this.dynamicBinding(this.modelList, this.modalKeyFields)

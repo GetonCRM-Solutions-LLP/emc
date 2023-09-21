@@ -1,12 +1,13 @@
 import { LightningElement,api } from 'lwc';
 import  emcUrl from '@salesforce/resourceUrl/mBurseCss';
+import  svgFile from '@salesforce/resourceUrl/SvgFiles';
 import driverDetails from  '@salesforce/apex/NewAccountDriverController.getContactDetail';
 export default class MBurseStep extends LightningElement {
-    step1Url = emcUrl + '/mburse/assets/Watch.png';
-    step2Url = emcUrl + '/mburse/assets/Upload.png';
-    step3Url = emcUrl + '/mburse/assets/Sign.png';
-    step4Url = emcUrl + '/mburse/assets/App.png';
-    step5Url = emcUrl + '/mburse/assets/Calendar.png';
+    step1Url = svgFile + '/onBoarding/SVG/1.svg';
+    step2Url = svgFile + '/onBoarding/SVG/2.svg';
+    step3Url = svgFile + '/onBoarding/SVG/3.svg';
+    step4Url = svgFile + '/onBoarding/SVG/4.svg';
+    step5Url = emcUrl + '/mburse/assets/onBoarding/5.png';
     number1 = emcUrl + '/mburse/assets/Numbers/1.png';
     number2 = emcUrl + '/mburse/assets/Numbers/2.png';
     number3 = emcUrl + '/mburse/assets/Numbers/3.png';
@@ -47,7 +48,7 @@ export default class MBurseStep extends LightningElement {
                     this.isAppDone = driverDetailList[0].mlogApp;
                     this.isdriverPacketDone = (driverDetailList[0].driverPacketStatus === 'Uploaded') ? true  : false;
                     this.isSchedule = (driverDetailList[0].driverMeeting === 'Scheduled') ? true : false;
-                    this.isRegister = (driverDetailList[0].driverMeeting === 'Attended') ? true : false;
+                    this.isRegister = (driverDetailList[0].watchMeetingOnBoarding) ? true : false;
                 }
          })
         .catch((error) => {

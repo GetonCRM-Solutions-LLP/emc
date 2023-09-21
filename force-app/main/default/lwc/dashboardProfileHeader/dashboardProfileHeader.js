@@ -1,5 +1,6 @@
 import { LightningElement,api } from 'lwc';
 import logo from '@salesforce/resourceUrl/EmcCSS';
+
 export default class DashboardProfileHeader extends LightningElement {
     @api userName;
     @api pageSource;
@@ -9,7 +10,9 @@ export default class DashboardProfileHeader extends LightningElement {
     @api isNavigate;
     @api expirationDate;
     @api unread;
+    
     notificationlogo = logo + '/emc-design/assets/images/Icons/PNG/Green/Notifications.png';
+  
     @api setSource(value){
         // eslint-disable-next-line @lwc/lwc/no-api-reassignments
         this.pageSource = value;
@@ -17,7 +20,7 @@ export default class DashboardProfileHeader extends LightningElement {
     }
 
     @api styleHeader(value){
-        if(value === 'sidebar close'){
+        if(value === 'sidebar'){
               this.template.querySelector('.welcome-msg').classList.add('extend');
               this.template.querySelector('.welcome-msg').classList.remove('enclose');
               this.template.querySelector('.header-inner').classList.add('expand');
@@ -82,4 +85,5 @@ export default class DashboardProfileHeader extends LightningElement {
         const logoutEvent = new CustomEvent('logout', {detail: 'logout'});
         this.dispatchEvent(logoutEvent);
     }
+
 }

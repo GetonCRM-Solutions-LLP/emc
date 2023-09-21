@@ -699,9 +699,9 @@ textarea:focus-visible{
   border-bottom-left-radius: 10px;
 }
 .modal-container{
-  overflow: hidden;
+  /* overflow: hidden;
   overflow-y: auto;
-  height: calc(100vh - 164px);
+  height: calc(100vh - 164px); */
   display: grid;
   grid-template-columns: auto;
   grid-template-rows: auto;

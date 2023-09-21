@@ -73,7 +73,6 @@ const formatData = (data, pID, aID) => {
           rowData.waypoint = row.Way_Points__c;
         }
   
-        rowData.TrackingMethod = row.Tracing_Style__c;
         rowData.FromLocation = row.Origin_Name__c;
         rowData.OriginalFromLocation = row.Original_Origin_Name__c;
         rowData.ToLocation = row.Destination_Name__c;
@@ -93,6 +92,7 @@ const formatData = (data, pID, aID) => {
         rowData.Tags = (row.Tag__c === undefined) ? '' : row.Tag__c;
         rowData.Notes = (row.Notes__c === undefined) ? '' : row.Notes__c; 
         rowData.Activity = (row.Activity__c === undefined) ? '' : row.Activity__c;
+        rowData.TrackingMethod = row.Tracing_Style__c;
         rowData.DriveTime = (row.Driving_Time__c === undefined) ? '' : row.Driving_Time__c;
         rowData.StayTime = (row.Stay_Time__c === undefined) ? '' : row.Stay_Time__c;
         rowData.TotalTime = (row.Drive_Stay_Time__c === undefined) ? '' : row.Drive_Stay_Time__c;
@@ -166,6 +166,7 @@ const changeKeyObjects = (csvData) => {
   replaceKey["Drive Time"] = excel.DriveTime;
   replaceKey["Total Time"] = excel.TotalTime;
   replaceKey.Activity = excel.Activity;
+  replaceKey["Tracking Method"] = excel.TrackingMethod;
   replaceKey["Mileage (mi)"] = excel.Mileage;
   replaceKey["From Location Name"] = excel.OriginalFromLocation;
   replaceKey["From Location Address"] = excel.TripOrigin;
@@ -174,7 +175,6 @@ const changeKeyObjects = (csvData) => {
   replaceKey.State = excel.State;
   replaceKey.Tags = excel.Tags;
   replaceKey.Notes = excel.Notes;
-  replaceKey["Tracking Method"] = excel.TrackingMethod;
   filterCSVData.push(replaceKey);
 
   });

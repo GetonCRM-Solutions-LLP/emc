@@ -10,15 +10,17 @@ import redirectionURL from '@salesforce/apex/NewAccountDriverController.loginRed
 import getAllReimbursements from "@salesforce/apex/DriverDashboardLWCController.getAllReimbursements";
 import getDriverDetails from '@salesforce/apex/DriverDashboardLWCController.getDriverDetailsClone';
 import getCompanyLogoUrl from '@salesforce/apex/DriverDashboardLWCController.getCompanyLogoUrl';
-import getCustomSettings from '@salesforce/apex/DriverDashboardLWCController.getCustomSettings';
 import getNotificationMessageList from '@salesforce/apex/NewdriverdashboardController.getNotificationMessageList';
 import updateNotificationMessage from '@salesforce/apex/NewdriverdashboardController.updateNotificationMessage';
+import sendMlogWelcomeEmail from '@salesforce/apex/ResourceController.sendMlogWelcomeEmail';
 import {validateDate} from 'c/commonLib';
 export default class DriverDashboardFrame extends LightningElement {
     @track notifyList;
     @track notificationList;
     @api chartData;
     @api profile;
+    @api customSetting;
+    @api driverMeeting;
     section = 'content-wrapper main';
     unreadCount;
     insuranceVideo;
@@ -80,24 +82,24 @@ export default class DriverDashboardFrame extends LightningElement {
         "menuItem": [{
             "menuId": 101,
             "menu": "Mileage",
-            "menuLabel" : "Mileage",
+            "menuLabel" : "Plan Info / Mileage",
             "menuClass": "active",
-            "logo": logo + '/emc-design/assets/images/Icons/PNG/Green/Mileage.png',
-            "logoHov": logo + '/emc-design/assets/images/Icons/PNG/White/Mileage.png'
+            "logo": logo + '/emc-design/assets/images/Icons/SVG/Green/Mileage.svg#mileage',
+            "logoHov": logo + '/emc-design/assets/images/Icons/SVG/White/Mileage.svg#mileage'
         }, {
             "menuId": 102,
             "menu": "Archive",
             "menuLabel" : "Archive",
             "menuClass": "",
-            "logo": logo + '/emc-design/assets/images/Icons/PNG/Green/Archive.png',
-            "logoHov": logo + '/emc-design/assets/images/Icons/PNG/White/Archive.png'
+            "logo": logo + '/emc-design/assets/images/Icons/SVG/Green/Archive.svg#archive',
+            "logoHov": logo + '/emc-design/assets/images/Icons/SVG/White/Archive.svg#archive'
           }//,  {
         //     "menuId": 103,
         //     "menu": "Manual-Entry",
         //     "menuLabel" : "Manual Entry",
         //     "menuClass": "",
-        //     "logo": logo + '/emc-design/assets/images/Icons/PNG/Green/Manual_Entry.png',
-        //     "logoHov": logo + '/emc-design/assets/images/Icons/PNG/White/Manual_Entry.png'
+        //     "logo": logo + '/emc-design/assets/images/Icons/SVG/Green/Manual_Entry.svg',
+        //     "logoHov": logo + '/emc-design/assets/images/Icons/SVG/White/Manual_Entry.svg'
         // }
     ]
     },
@@ -109,29 +111,29 @@ export default class DriverDashboardFrame extends LightningElement {
             "menu": "Insurance-Upload",
             "menuLabel" : "Insurance Upload",
             "menuClass": "",
-            "logo": logo + '/emc-design/assets/images/Icons/PNG/Green/Insurance_Upload.png',
-            "logoHov": logo + '/emc-design/assets/images/Icons/PNG/White/Insurance_Upload.png'
+            "logo": logo + '/emc-design/assets/images/Icons/SVG/Green/Insurance_Upload.svg#insurance',
+            "logoHov": logo + '/emc-design/assets/images/Icons/SVG/White/Insurance_Upload.svg#insurance'
         }, {
             "menuId": 202,
             "menu": "Locations",
             "menuLabel" : "Locations",
             "menuClass": "",
-            "logo": logo + '/emc-design/assets/images/Icons/PNG/Green/Locations.png',
-            "logoHov": logo + '/emc-design/assets/images/Icons/PNG/White/Locations.png'
+            "logo": logo + '/emc-design/assets/images/Icons/SVG/Green/Locations.svg#location',
+            "logoHov": logo + '/emc-design/assets/images/Icons/SVG/White/Locations.svg#location'
         }, {
             "menuId": 203,
             "menu": "Compliance",
             "menuLabel" : "Compliance",
             "menuClass": "",
-            "logo": logo + '/emc-design/assets/images/Icons/PNG/Green/Compliance.png',
-            "logoHov": logo + '/emc-design/assets/images/Icons/PNG/White/Compliance.png'
+            "logo": logo + '/emc-design/assets/images/Icons/SVG/Green/Compliance.svg#compliance',
+            "logoHov": logo + '/emc-design/assets/images/Icons/SVG/White/Compliance.svg#compliance'
         }, {
             "menuId": 204,
             "menu": "Tax-Liability",
             "menuLabel" : "Tax Liability",
             "menuClass": "",
-            "logo": logo + '/emc-design/assets/images/Icons/PNG/Green/Tax_Liability.png',
-            "logoHov": logo + '/emc-design/assets/images/Icons/PNG/White/Tax_Liability.png'
+            "logo": logo + '/emc-design/assets/images/Icons/SVG/Green/Tax_Liability.svg#tax',
+            "logoHov": logo + '/emc-design/assets/images/Icons/SVG/White/Tax_Liability.svg#tax'
         }]
     }, {
         "id": 3,
@@ -141,15 +143,15 @@ export default class DriverDashboardFrame extends LightningElement {
             "menu": "Notifications",
             "menuLabel" : "Notifications",
             "menuClass": "",
-            "logo": logo + '/emc-design/assets/images/Icons/PNG/Green/Notifications.png',
-            "logoHov": logo + '/emc-design/assets/images/Icons/PNG/White/Notifications.png'
+            "logo": logo + '/emc-design/assets/images/Icons/SVG/Green/Notifications.svg#notification',
+            "logoHov": logo + '/emc-design/assets/images/Icons/SVG/White/Notifications.svg#notification'
         },{
             "menuId": 302,
             "menu": "Videos",
             "menuLabel" : "Videos/Training",
             "menuClass": "",
-            "logo": logo + '/emc-design/assets/images/Icons/PNG/Green/Driver_Videos_Training.png',
-            "logoHov": logo + '/emc-design/assets/images/Icons/PNG/White/Driver_Videos_Training.png'
+            "logo": logo + '/emc-design/assets/images/Icons/SVG/Green/Driver_Videos_Training.svg#videos',
+            "logoHov": logo + '/emc-design/assets/images/Icons/SVG/White/Driver_Videos_Training.svg#videos'
         }]
     }]
 
@@ -249,6 +251,16 @@ export default class DriverDashboardFrame extends LightningElement {
         if(!this.notificationViewClicked){
             this.closeNotification();
         }   
+    }
+
+    handleKeyDown = (event) =>{
+        if (event.keyCode === 27) {
+           // console.log('Esc key pressed.');
+            if(!this.notificationViewClicked){
+              this.closeNotification();
+            }  
+        }
+     // console.log("keyboard###", event, this.notificationViewClicked)
     }
 
     handleLiveNotification = (event) => {
@@ -598,9 +610,9 @@ export default class DriverDashboardFrame extends LightningElement {
 
     handleSidebarToggle(event) {
         console.log("From navigation", event.detail)
-        this.section = (event.detail === 'sidebar close') ? 'content-wrapper sidebar-open' : 'content-wrapper main';
-        this.contentCss = (event.detail === 'sidebar close') ? "slds-align_absolute-center content-flex content-open" : "slds-align_absolute-center content-padding2-close content-flex";
-        this.videoCss = (event.detail === 'sidebar close') ?   "slds-align_absolute-center video-container video-padding" : "slds-align_absolute-center video-container video-padding-close"
+        this.section = (event.detail === 'sidebar') ? 'content-wrapper sidebar-open' : 'content-wrapper main';
+        this.contentCss = (event.detail === 'sidebar') ? "slds-align_absolute-center content-flex content-open" : "slds-align_absolute-center content-padding2-close content-flex";
+        this.videoCss = (event.detail === 'sidebar') ?   "slds-align_absolute-center video-container video-padding" : "slds-align_absolute-center video-container video-padding-close"
         this.template.querySelector('c-dashboard-profile-header').styleHeader(event.detail);
         if (this.template.querySelector('c-driver-reimbursement-profile')) {
             this.template.querySelector('c-driver-reimbursement-profile').styleElement(event.detail);
@@ -708,6 +720,31 @@ export default class DriverDashboardFrame extends LightningElement {
         this.isTripType = event.detail;
         this.isTrip = (this.isTripType === 'MyTrip') ? true : false;
         this.isAttendance = (this.isTripType === 'timeAttendance') ? true : false;
+    }
+
+    backToDashboard(){
+        this.isHomePage = false;
+        this.notificationModal = false;
+        this.notificationViewClicked = false;
+        if (this.template.querySelector('c-user-profile-modal')) {
+            this.template.querySelector('c-user-profile-modal').hide();
+        }
+        this.myProfile = true;
+        this.reimbursementView = false;
+        this.manualEntryView = false;
+        this.reimbursementArchive = false;
+        this.complianceView = false;
+        this.insuranceView = false;
+        this.resources = false;
+        this.liabilityView = false;
+        this.locationUploadView = false;
+        // eslint-disable-next-line @lwc/lwc/no-async-operation
+          setTimeout(() => {
+            this.template.querySelector('c-dashboard-profile-header').styleLink('');
+            this.template
+            .querySelector("c-navigation-menu")
+            .toggleStyle('');
+        }, 10)
     }
 
     switchToCompliance() {
@@ -1229,6 +1266,44 @@ export default class DriverDashboardFrame extends LightningElement {
         console.log("month change-",  this.defaultMonth);
     }
 
+    emailSent(event){
+        var emailOfContact
+        if(event.detail.contactEmail !== '' && event.detail.contactEmail != null && event.detail.contactEmail !== undefined){
+            emailOfContact = event.detail.contactEmail;
+            sendMlogWelcomeEmail({
+                accountID: this._accountId,
+                empEmail: emailOfContact
+            })
+            .then((result) => {
+                if (result === "\"OK\"") {
+                    this.dispatchEvent(
+                        new CustomEvent("sent", {
+                            detail: event.detail
+                        })
+                    );
+                }else{
+                    this.dispatchEvent(
+                        new CustomEvent("senterror", {
+                            detail: 'Error While Sending Email'
+                        })
+                    );
+                }
+                console.log(result);
+            })
+        }else{
+            this.dispatchEvent(
+                new CustomEvent("senterror", {
+                    detail: 'Please provide your email address'
+                })
+            );
+        }
+    }
+
+    constructor() {
+        super();
+        this.handleKeyDown = this.handleKeyDown.bind(this);
+    }
+
     connectedCallback() {
         var currentDay = new Date(), currentYear = '', selectedYear = '';
         const idParamValue = this.getUrlParamValue(window.location.href, 'id');
@@ -1243,17 +1318,10 @@ export default class DriverDashboardFrame extends LightningElement {
         this._accountId = aidParamValue;
         this.isHomePage = false;
         this.yearList = this.getLastYear();
-
+        this.insuranceVideo = this.customSetting.Insurance_Link__c;
         window.addEventListener('click', this._handler = this.handleOutsideClick.bind(this));
+        window.addEventListener('keydown', this.handleKeyDown);
         window.addEventListener('popstate', this.popStateMessage);
-        getCustomSettings()
-            .then((result) => {
-                this.insuranceVideo = result.Insurance_Link__c;
-                console.log("getCustomSettings", result)
-            }).catch((error) => {
-                console.log("getCustomSettings", error)
-            })
-
             if (currentDay.getMonth() === 0) {
                 currentYear = currentDay.getFullYear() - 1;
                 selectedYear = currentYear.toString();
@@ -1268,14 +1336,13 @@ export default class DriverDashboardFrame extends LightningElement {
                 if (data) {
                     let contactList = this.proxyToObject(data);
                     this.contactInformation = data;
-                    console.log("contact--->", this.contactInformation);
+                    // console.log("contact--->", this.contactInformation);
                     this.userTriplogId = contactList[0].Triplog_UserID__c;
                     this.userEmail = contactList[0].External_Email__c;
                     this.userName = contactList[0].Name;
                     this.firstName = contactList[0].FirstName;
                     this.dateOfExpiration = contactList[0].Expiration_Date__c;
-                    console.log("Name", this.userName, this.userEmail)
-                    this.getContactNotification();
+                    // console.log("Name", this.userName, this.userEmail)
                     getAllReimbursements({
                         year: selectedYear,
                         contactId: this._contactId,
@@ -1286,6 +1353,7 @@ export default class DriverDashboardFrame extends LightningElement {
                         this.mileageList = reimbursementList;
                         this.excelYtdList = this.proxyToObject(result[1]);
                         this.ytdList = this.proxyToObject(result[1]);
+                        this.getContactNotification();
                         if (this.ytdList) {
                             this.ytdList.varibleAmountCalc = (this.ytdList.varibleAmountCalc) ? this.ytdList.varibleAmountCalc.replace(/\$/g, "") : this.ytdList.varibleAmountCalc;
                             this.ytdList.totalFixedAmountCalc = (this.ytdList.totalFixedAmountCalc) ? this.ytdList.totalFixedAmountCalc.replace(/\$/g, "") : this.ytdList.totalFixedAmountCalc;

@@ -3,10 +3,10 @@
      <head>
         <style>
             #container{
-                margin: 0 auto;
+                margin: 0;
             }
             .chart {
-                margin: 0 auto;
+                margin: 0;
             }
             .highcharts-title {
                 fill: #434348;
@@ -28,7 +28,7 @@
         <script src="{!URLFOR($Resource.HighChart,'/offline-exporting.js')}"></script>
         <script>
              var lexOrigin = location.origin;
-             var postData, chartData, states, chartstates = [], chloChart;
+             var postData, chartData, states, chartstates = [], chloChart, typeBasedUrl;
             window.addEventListener("message", function (event) {
                 console.log('Origin ' + event.origin);
                 console.log('data ' + event.data);
@@ -37,9 +37,13 @@
                 }
                 postData = JSON.parse(event.data)
                 chartData = JSON.parse(postData.modal);
+                typeBasedUrl = (postData.mapType === 'CANADA') ? 'https://code.highcharts.com/mapdata/countries/ca/ca-all.topo.json' : 'https://code.highcharts.com/mapdata/countries/us/us-all.topo.json' ;
                 if(chartData.length > 0){
                     if(chartData[0].Driving_States__c !== undefined){
-                        states = chartData[0].Driving_States__c.split(';');
+                        chartstates = []
+                        let drivingList = chartData[0].Driving_States__c.split(';')
+                        const canadaDrivingState = drivingList.filter(value => postData.arrayList.includes(value));
+                        states = (postData.mapType === 'CANADA') ? canadaDrivingState : drivingList;
                         subtitle = states.join(', ')
                         states.forEach((item, index) =>{
                             let object = {}
@@ -58,20 +62,39 @@
                 //https://code.highcharts.com/mapdata/countries/us/custom/us-all-territories.topo.json
                 //https://code.highcharts.com/mapdata/countries/us/us-all.topo.json
                //https://code.highcharts.com/mapdata/countries/us/custom/us-small.topo.json
-                Highcharts.getJSON('https://code.highcharts.com/mapdata/countries/us/us-all.topo.json', function (topology) {
+                Highcharts.getJSON(typeBasedUrl, function (topology) {
                     chloChart =  Highcharts.mapChart(containerChart, {
                         chart: {
+                            renderTo: 'container',
                             map: topology,
                             borderColor:postData.border,
                             backgroundColor: postData.background,
                           //  height: postData.height, //250
-                            height: (3 / 5 * 100) + '%',
-                            //width: postData.width, // 360
-                            margin: [0,0,0,0],
+                            height: (3 / 4 * 100) + '%',
+                           // width: 300, // 360
+                            marginTop: 0,
+                            marginBottom: 0,
+                            marginLeft: 0,
+                            marginRight: 0,
                             spacingTop: 0,
                             spacingBottom: 0,
                             spacingLeft: 0,
-                            spacingRight: 0
+                            spacingRight: 0,
+                            // events: {
+                            //     render: function() {
+                            //         const chart = this,
+                            //             group = chart.series[0].group,
+                            //             bBox = group.getBBox(),
+                            //             ratio = bBox.width / bBox.height;
+                                    
+                            //         if(!chart.allowUpdate) {
+                            //             chart.allowUpdate = true;
+                            //             console.log("chart##", chart.plotSizeX, ratio)
+                            //             chart.setSize(null, (chart.plotSizeX) / ratio, false);
+                            //             chart.allowUpdate = false;
+                            //         }
+                            //     }
+				            // }
                             //styledMode: true
                         },
                         
@@ -151,7 +174,6 @@
                                 allowOverlap: false,
                                 enabled: true,
                                 formatter: function(){
-                                    console.log("formatter", this)
                                     if(this.point.options.code === "DC")
                                         return this.point.options.code;
                                 },
@@ -164,7 +186,7 @@
                                 }
                             },
                             tooltip: {
-                                pointFormat: '{point.code}: {point.name}' // : {point.value}/km²
+                                pointFormat: '{point.name}' // : {point.value}/km²
                             }
                         }],
 

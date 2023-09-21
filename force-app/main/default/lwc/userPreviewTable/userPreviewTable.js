@@ -20,6 +20,7 @@ export default class UserPreviewTable extends LightningElement {
     downloadIcon = resourceImage + '/mburse/assets/mBurse-Icons/Plan-Info/download.png';
     downloadAllIcon = resourceImage + '/mburse/assets/mBurse-Icons/download-all.png';
     @api flagPreview;
+    @api userRole;
     @api dFlex;
     @api viewName;
     @api colname;
@@ -61,75 +62,80 @@ export default class UserPreviewTable extends LightningElement {
     @api isDefaultSort = false;
     @track isCheckBoxVisible = false;
     sortedData = [];
-     // Current page of results on display
-     currentPage = 1;
+    // Current page of results on display
+    currentPage = 1;
 
-     // Current maximum pages in sourceData set
-     maxPages = 1;
- 
-     //per page count
-     displayRecordCount = 20;
-     
-     //search
-     search = false;
-     searchData = [];
-     totalPage = [];
-     // Indicators to disable the paging buttons
-     disabledPreviousButton = false;
-     disabledNextButton = false;
-     librariesLoaded = false;
-     sortedColName = '';
-     accId;
-     contactId;
+    // Current maximum pages in sourceData set
+    maxPages = 1;
 
-    @api searchByKey(_keyValue){
+    //per page count
+    displayRecordCount = 20;
+
+    //search
+    search = false;
+    searchData = [];
+    totalPage = [];
+    // Indicators to disable the paging buttons
+    disabledPreviousButton = false;
+    disabledNextButton = false;
+    librariesLoaded = false;
+    sortedColName = '';
+    accId;
+    contactId;
+
+    get subClass(){
+        return this.inlineCheckbox ? 'sub-value-left' : 'sub-value-left-no'
+    }
+
+    get subClass_next(){
+        return this.inlineCheckbox ? 'sub-value-right' : 'sub-value-right-no'
+    }
+
+    @api searchByKey(_keyValue) {
         var searchList;
-        if(_keyValue && _keyValue.length > 0 ) {
-            console.log(_keyValue);
-                this.search = true;
-                this.searchData = [];
-                let data = this.modelData;
-                let result = [];
-                for (const key in data) {
-                    if (Object.prototype.hasOwnProperty.call(data, key)) {
-                        let res;
-                        console.log("options--", this.options, data[key])
-                        for (const item in data[key]) {
-                            if (this.options.includes(item)) {
-                                //hasOwnProperty : Returns true if the object has the specified property as own property; false otherwise.
-                                if (data[key].hasOwnProperty.call(data[key], item)) {
-                                    const element = data[key][item];
-                                    console.log("element", element)
-                                    if (element) {
-                                        res = element.toString().toLowerCase().includes(_keyValue.toLowerCase());
-                                        if (res) {
-                                            result.push(data[key]);
-                                            break;
-                                        }
+        if (_keyValue && _keyValue.length > 0) {
+            this.search = true;
+            this.searchData = [];
+            let data = this.modelData;
+            let result = [];
+            for (const key in data) {
+                if (Object.prototype.hasOwnProperty.call(data, key)) {
+                    let res;
+                    for (const item in data[key]) {
+                        if (this.options.includes(item)) {
+                            //hasOwnProperty : Returns true if the object has the specified property as own property; false otherwise.
+                            if (data[key].hasOwnProperty.call(data[key], item)) {
+                                const element = data[key][item];
+                                if (element) {
+                                    res = element.toString().toLowerCase().includes(_keyValue.toLowerCase());
+                                    if (res) {
+                                        result.push(data[key]);
+                                        break;
                                     }
                                 }
                             }
                         }
                     }
                 }
+            }
             this.norecord = (!result.length) ? true : false
-            this.tableClass = (this.norecord) ? 'slds-table slds-table--header-fixed slds-table_cell-buffer slds-table_striped' : 'slds-table slds-table--header-fixed slds-table_cell-buffer slds-table_fixed-layout slds-max-medium-table_stacked-horizontal slds-table_striped'
-            this.className = (result.length > 6) ? this.originalClass : 'slds-p-right_small'
+            // this.tableClass = (this.norecord) ? 'slds-table slds-table_cell-buffer slds-table_striped' : 'slds-table slds-table_cell-buffer slds-table_striped fixed-table'
+            // this.className = (result.length > 6) ? this.originalClass : 'slds-p-right_small'
             this.pagedData = result;
             this.searchData = result;
             this.sortedDirection = this.previousIcon;
-        }else{
-          //  console.log("search key --- ", this.modelData);
-            this.tableClass = 'slds-table slds-table--header-fixed slds-table_cell-buffer slds-table_fixed-layout slds-max-medium-table_stacked-horizontal slds-table_striped'
+        } else {
+            //  console.log("search key --- ", this.modelData);
+            this.tableClass = 'slds-table slds-table_cell-buffer slds-table_striped fixed-table'
             this.search = false;
             this.norecord = false;
             this.className = this.originalClass;
             this.sortedDirection = this.previousIcon;
             this.pagedData = this.modelData;
         }
-        searchList = {content: this.pagedData, search: this.search}
-        if( this.searchData.length > 0){
-            this.mainClass = (this.searchData.length > 6) ?  this.mainClass : 'slds-table--header-fixed_container p-top-v1 overflow-none';
+        searchList = { content: this.pagedData, search: this.search }
+        if (this.searchData.length > 0) {
+            this.mainClass = (this.searchData.length > 6) ? this.mainClass : 'fixed-container';
         }
         searchEvents(this, JSON.stringify(searchList));
         this.displaySortIcon(this.sortedColName, this.sortedDirection);
@@ -139,6 +145,19 @@ export default class UserPreviewTable extends LightningElement {
         //console.log("total pages", this.maxPages)
     }
 
+    @api clearSearch(){
+        this.tableClass = 'slds-table slds-table_cell-buffer slds-table_striped fixed-table'
+        this.mainClass = 'fixed-container';
+        this.search = false;
+        this.norecord = false;
+        this.className = this.originalClass;
+        this.sortedDirection = this.previousIcon;
+        this.pagedData = this.modelData;
+        this.displaySortIcon(this.sortedColName, this.sortedDirection);
+        this.gotoPage(this.currentPage, this.pagedData)
+        this.totalPages(this.maxPages);
+    }
+
 
     @api
     viewData(data) {
@@ -146,105 +165,110 @@ export default class UserPreviewTable extends LightningElement {
         this.currentPage = 1
         this.gotoPage(this.currentPage, this.modelData)
         this.setPages();
-        if(this.modelData.length > 8){
+        if (this.modelData.length > 8) {
             this.searchVisible = true;
-        }else{
+        } else {
             this.searchVisible = false;
         }
-        this.mainClass = (this.scrollable) ? (this.modelData.length > 6) ? 'slds-table--header-fixed_container p-top-v1' : 'slds-table--header-fixed_container p-top-v1 overflow-none' : this.mainClass;
+        this.className = (this.scrollable) ? (this.modelData.length > 6) ? 'scrollable_wrapper slds-p-right_small' : (this.viewName === 'User') ? 'scrollable_wrapper slds-p-right_small' : 'scrollable_wrapper overflow-none slds-p-right_small' : 'slds-p-right_small';
+        this.mainClass = (this.scrollable) ? 'fixed-container' : this.mainClass;
         if (!this.modelData.length) {
             this.norecord = true;
             this.nopagedata = true;
-            this.tableClass = 'slds-table slds-table--header-fixed slds-table_cell-buffer slds-table_striped'
-        }else{
+            // this.tableClass = 'slds-table slds-table_cell-buffer slds-table_striped'
+        } else {
             this.norecord = false;
-            this.tableClass = 'slds-table slds-table--header-fixed slds-table_cell-buffer slds-table_fixed-layout slds-max-medium-table_stacked-horizontal slds-table_striped';
+            this.tableClass = 'slds-table slds-table_cell-buffer slds-table_striped fixed-table';
         }
         pageEvents(this, this.maxPages);
-        // if(this.isDefaultSort){
-        //     this.defaultSort(this.colname, this.coltype, this.sortorder) 
-        // }
-    }
-
-   @api tableListRefresh(data){
-    this.modelData = [...data];
-    this.tableClass = 'slds-table slds-table--header-fixed slds-table_cell-buffer slds-table_fixed-layout slds-max-medium-table_stacked-horizontal slds-table_striped';
-    if(this.modelData){
-        this.originalClass = (this.scrollable) ? (this.modelData.length > 6)  ? ((this.viewName === 'Team') ? 'slds-scrollable_y scroll-modal-height-v2 slds-p-right_small' : 'slds-scrollable_y scroll-modal-height slds-p-right_small') : 'slds-p-right_small' : 'slds-p-right_small';
-        this.className = (this.scrollable) ? (this.modelData.length > 6)  ? ((this.viewName === 'Team') ? 'slds-scrollable_y scroll-modal-height-v2 slds-p-right_small' : 'slds-scrollable_y scroll-modal-height slds-p-right_small') : 'slds-p-right_small' : 'slds-p-right_small';
-        this.mainClass = (this.scrollable) ? (this.modelData.length > 6) ? 'slds-table--header-fixed_container p-top-v1' : 'slds-table--header-fixed_container p-top-v1 overflow-none' : this.mainClass;
-        if(this.isPaginate){
-            this.sortedColumn = this.columns[0].colName;
-            this.gotoPage(this.currentPage, this.modelData);
-          //  this.totalPages(this.maxPages);
-            this.setPages();
-        }else{
-            this.pagedData = [];
-            this.pagedData = this.modelData;
-        }
-        pageEvents(this, this.maxPages);
-        if (!this.modelData.length) {
-            this.norecord = true;
-            this.nopagedata = true;
-            this.tableClass = 'slds-table slds-table--header-fixed slds-table_cell-buffer slds-table_striped'
-        }else{
-            this.norecord = false;
-            this.tableClass = 'slds-table slds-table--header-fixed slds-table_cell-buffer slds-table_fixed-layout slds-max-medium-table_stacked-horizontal slds-table_striped';
-        }
-        if(this.modelData.length > 8){
-            this.searchVisible = true;
-        }else{
-            this.searchVisible = false;
-        }
-      
         if(this.isDefaultSort){
             this.defaultSort(this.colname, this.coltype, this.sortorder) 
         }
     }
-   } 
 
-    @api refreshTable(_data){
-		this.search = false;
+    @api tableListRefresh(data) {
+        this.modelData = [...data];
+        this.tableClass = 'slds-table slds-table_cell-buffer slds-table_striped fixed-table';
+        if (this.modelData) {
+            this.originalClass = (this.scrollable) ? (this.modelData.length > 6) ? 'scrollable_wrapper slds-p-right_small' : (this.viewName === 'User') ? 'scrollable_wrapper slds-p-right_small' : 'scrollable_wrapper overflow-none slds-p-right_small' : 'slds-p-right_small';
+            this.className = (this.scrollable) ? (this.modelData.length > 6) ? 'scrollable_wrapper slds-p-right_small' : (this.viewName === 'User') ? 'scrollable_wrapper slds-p-right_small' : 'scrollable_wrapper overflow-none slds-p-right_small' : 'slds-p-right_small';
+            this.mainClass = (this.scrollable) ? 'fixed-container' : this.mainClass;
+            // this.originalClass = (this.scrollable) ? (this.modelData.length > 6)  ? ((this.viewName === 'Team') ? 'scrollable_wrapper slds-p-right_small' : 'scrollable_wrapper  slds-p-right_small') : 'slds-p-right_small' : 'slds-p-right_small';
+            // this.className = (this.scrollable) ? (this.modelData.length > 6)  ? ((this.viewName === 'Team') ? 'scrollable_wrapper slds-p-right_small' : 'scrollable_wrapper  slds-p-right_small') : 'slds-p-right_small' : 'slds-p-right_small';
+            // this.mainClass = (this.scrollable) ? (this.modelData.length > 6) ? 'fixed-container ' : 'fixed-container  overflow-none' : this.mainClass;
+            console.log("PAGINATE", this.isPaginate);
+            if (this.isPaginate) {
+                this.sortedColumn = this.columns[0].colName;
+                this.gotoPage(this.currentPage, this.modelData);
+                //  this.totalPages(this.maxPages);
+                this.setPages();
+            } else {
+                this.pagedData = [];
+                this.pagedData = this.modelData;
+            }
+            pageEvents(this, this.maxPages);
+            if (!this.modelData.length) {
+                this.norecord = true;
+                this.nopagedata = true;
+                // this.tableClass = 'slds-table slds-table_cell-buffer slds-table_striped'
+            } else {
+                this.norecord = false;
+                this.tableClass = 'slds-table slds-table_cell-buffer slds-table_striped fixed-table';
+            }
+            if (this.modelData.length > 8) {
+                this.searchVisible = true;
+            } else {
+                this.searchVisible = false;
+            }
+
+            if (this.isDefaultSort) {
+                this.defaultSort(this.colname, this.coltype, this.sortorder)
+            }
+        }
+    }
+
+    @api refreshTable(_data) {
+        this.search = false;
         this.modelData = _data;
         this.pagedData = _data;
         this.gotoPage(this.currentPage, this.pagedData)
     }
 
-    @api resetView(_data, key){
+    @api resetView(_data, key) {
         var refresh = [], search = [];
         this.pagedData = _data;
         refresh = this.modelData.map(obj => this.pagedData.find(o => o[key] === obj[key]) || obj);
-    //    if(this.search){
-            search = this.searchData.map(obj => this.pagedData.find(o => o[key] === obj[key]) || obj);
-            this.searchData = search;
-      //  }
+        //    if(this.search){
+        search = this.searchData.map(obj => this.pagedData.find(o => o[key] === obj[key]) || obj);
+        this.searchData = search;
+        //  }
         this.modelData = refresh;
-       // console.log(" this.searchData-----",  JSON.stringify(this.searchData));
-       // console.log(" this.modelData----",  JSON.stringify(this.modelData));
-    
-      //  this.pagedData = _data;
+        // console.log(" this.searchData-----",  JSON.stringify(this.searchData));
+        // console.log(" this.modelData----",  JSON.stringify(this.modelData));
+
+        //  this.pagedData = _data;
         this.gotoPage(this.currentPage, this.pagedData)
     }
 
-    @api resetPageView(_data, key){
+    @api resetPageView(_data, key) {
         var list = [], sList = [];
-       // console.log("page data", _data, this.modelData);
+        // console.log("page data", _data, this.modelData);
         this.pagedData = _data;
         list = this.modelData.map(obj => this.pagedData.find(o => o[key] === obj[key]) || obj);
         sList = this.searchData.map(obj => this.pagedData.find(o => o[key] === obj[key]) || obj);
         this.searchData = sList;
         this.modelData = list;
-    //  console.log(" this.modelData----",  this.modelData);
-    
-      //  this.pagedData = _data;
+        //  console.log(" this.modelData----",  this.modelData);
+
+        //  this.pagedData = _data;
         this.gotoPage(this.currentPage, this.modelData)
-        this.defaultSort(this.colname, this.coltype, this.sortorder) 
+        this.defaultSort(this.colname, this.coltype, this.sortorder)
     }
 
-    getElement(data, id){
+    getElement(data, id) {
         var object = {};
         for (let i = 0; i < data.length; i++) {
-            if(data[i].contactid === id){
+            if (data[i].contactid === id) {
                 object = data[i];
             }
         }
@@ -257,7 +281,6 @@ export default class UserPreviewTable extends LightningElement {
         var maximumPages = this.maxPages;
 
         maximumPages = this.getMaxPages(source);
-
         // Validate that desired page number is available
         if (pageNumber > maximumPages || pageNumber < 0) {
             this.currentPage = 1;
@@ -302,9 +325,9 @@ export default class UserPreviewTable extends LightningElement {
                         varmout.push(tempData.variableamount);
                     }
 
-                  //  this.template.querySelectorAll('.page-num-block').forEach(item=>{
-                    
-                  //  })
+                    //  this.template.querySelectorAll('.page-num-block').forEach(item=>{
+
+                    //  })
                     // Add data element for the data to bind
                     this.pagedData.push(arrayElement);
                 }
@@ -325,7 +348,6 @@ export default class UserPreviewTable extends LightningElement {
             this.totalMileage = this.numberWithCommas(this.totalMileage);
             // Set global current page to the new page
             this.currentPage = pageNumber;
-
             // If current page is the final page then disable the next button
             if (maximumPages === this.currentPage) {
                 this.disabledNextButton = true;
@@ -336,29 +358,29 @@ export default class UserPreviewTable extends LightningElement {
                 this.disabledPreviousButton = true;
                 this.cssPreviousText = 'cPadding disabled'
             }
-
         }
     }
 
-      // On next click
-      handleButtonNext() {
+    // On next click
+    handleButtonNext() {
         var nextPage = this.currentPage + 1;
         var maxPages = this.getMaxPages(this.getSource());
         var pageBlock = this.template.querySelectorAll('.page-num-block');
+        console.log("HANDLE NEXT");
         if (nextPage > 0 && nextPage <= maxPages) {
-            pageBlock.forEach(item=>{
-                if(item.dataset.id){
+            pageBlock.forEach(item => {
+                if (item.dataset.id) {
                     // eslint-disable-next-line radix
-                    if(parseInt(item.dataset.id) === nextPage){
+                    if (parseInt(item.dataset.id) === nextPage) {
                         item.classList.add('active')
-                    }else{
+                    } else {
                         item.classList.remove('active')
                     }
                 }
             })
-            
+
             this.gotoPage(nextPage, this.getSource());
-       
+
         }
     }
     // On previous click
@@ -367,12 +389,12 @@ export default class UserPreviewTable extends LightningElement {
         var maxPages = this.getMaxPages(this.getSource());
         var pageBlock = this.template.querySelectorAll('.page-num-block');
         if (nextPage > 0 && nextPage <= maxPages) {
-            pageBlock.forEach(item=>{
-                if(item.dataset.id){
+            pageBlock.forEach(item => {
+                if (item.dataset.id) {
                     // eslint-disable-next-line radix
-                    if(parseInt(item.dataset.id) === nextPage){
+                    if (parseInt(item.dataset.id) === nextPage) {
                         item.classList.add('active')
-                    }else{
+                    } else {
                         item.classList.remove('active')
                     }
                 }
@@ -382,7 +404,7 @@ export default class UserPreviewTable extends LightningElement {
 
     }
 
-    handlePageChanged(event){
+    handlePageChanged(event) {
         var number = parseInt(event.target.dataset.id)
         console.log(number, this.currentPage)
     }
@@ -414,13 +436,13 @@ export default class UserPreviewTable extends LightningElement {
         return result;
     }
 
-    totalPages(maxPage){
+    totalPages(maxPage) {
         var j;
         this.pages = [];
-        for(j = 1;j<=maxPage;j++){
+        for (j = 1; j <= maxPage; j++) {
             this.pages.push(j)
         }
-        if(this.pages.length > 10){
+        if (this.pages.length > 10) {
             this.mapPages();
         }
     }
@@ -433,34 +455,34 @@ export default class UserPreviewTable extends LightningElement {
             this.pages.push(index);
             this.paginate.push(index);
         }
-        if(this.pages.length > 10){
+        if (this.pages.length > 10) {
             this.mapPages();
         }
     }
 
 
-    mapPages(){
+    mapPages() {
         var pagelen = this.pages.length;
         var indexlen = pagelen - (this.maxPage + 1)
-        if(this.pages.length > this.maxPage){
-            this.pages.splice(this.maxPage,indexlen,"...");
+        if (this.pages.length > this.maxPage) {
+            this.pages.splice(this.maxPage, indexlen, "...");
         }
     }
 
-    onLastPage(index){
+    onLastPage(index) {
         let pageSkip = index - 10;
         this.pages = this.paginate.slice();
-        this.pages.splice(1,pageSkip,'...');
+        this.pages.splice(1, pageSkip, '...');
     }
 
-       /* When user moves back while filter pagination*/
+    /* When user moves back while filter pagination*/
     reverseEndPaginate(index, nextClick) {
-        if(nextClick === undefined){
+        if (nextClick === undefined) {
             nextClick = this.paginate.length;
         }
         if (index < nextClick) {
             if (index >= 10) {
-              //  console.log("inside paginateChange")
+                //  console.log("inside paginateChange")
                 this.paginateChange(index);
             } else {
                 this.maxPage = 10;
@@ -495,7 +517,7 @@ export default class UserPreviewTable extends LightningElement {
                 this.pages.splice(1, this.minPage, '...');
             }
         }
-      //console.log(this.pages);
+        //console.log(this.pages);
     }
 
     onPageClick = (e) => {
@@ -515,28 +537,28 @@ export default class UserPreviewTable extends LightningElement {
                 this.onLastPage(nowPage);
             }
         }
-   
+
         if (nowPage > 0 && nowPage <= maxPages) {
-            pageBlock.forEach(item=>{
-                if(item.dataset.id){
+            pageBlock.forEach(item => {
+                if (item.dataset.id) {
                     // eslint-disable-next-line radix
-                    if(parseInt(item.dataset.id) === nowPage){
+                    if (parseInt(item.dataset.id) === nowPage) {
                         item.classList.add('active')
-                    }else{
+                    } else {
                         item.classList.remove('active')
                     }
                 }
             })
             this.gotoPage(nowPage, this.getSource());
         }
-     // console.log("pagecount", nowPage, this.maxPages)
+        // console.log("pagecount", nowPage, this.maxPages)
     }
 
-      /* increments the page number. */
-      onNext = () => {
+    /* increments the page number. */
+    onNext = () => {
         var pageNo = this.currentPage + 1;
         this.handleButtonNext()
-      //  console.log(this.paginate.length, pageNo)
+        //  console.log(this.paginate.length, pageNo)
         if (this.paginate.length > this.shortPaginate) {
             if (pageNo > 10) {
                 this.nextPrevChange(pageNo);
@@ -557,34 +579,34 @@ export default class UserPreviewTable extends LightningElement {
                 }
             }
         }
-      
+
 
     }
 
-    noPageChange(index){
+    noPageChange(index) {
         this.maxPage = 10;
         let pagelen = this.paginate.length;
         let indexlen = pagelen - (this.maxPage + 1)
-        if(index === this.maxPage){
+        if (index === this.maxPage) {
             this.pages = this.paginate.slice();
-            this.pages.splice(this.maxPage,indexlen,'...');
+            this.pages.splice(this.maxPage, indexlen, '...');
         }
     }
 
-    nextPrevChange(index){
+    nextPrevChange(index) {
         var len = this.paginate.length;//46
-        if(index !== len ){
-            this.pages = this.paginate.slice(); 
+        if (index !== len) {
+            this.pages = this.paginate.slice();
             let startP = index + this.moveNext;
             let skiplen = len - (startP + 1);
             let inclen = index - this.moveBefore;
-            if(startP < len){
-                    this.pages.splice(startP,skiplen,'...');
-                    this.pages.splice(1,inclen,'...');
-            }else{
-                this.pages.splice(1,inclen,'...');
+            if (startP < len) {
+                this.pages.splice(startP, skiplen, '...');
+                this.pages.splice(1, inclen, '...');
+            } else {
+                this.pages.splice(1, inclen, '...');
             }
-          //console.log("pages",JSON.stringify(this.pages));
+            //console.log("pages",JSON.stringify(this.pages));
         }
     }
 
@@ -599,7 +621,7 @@ export default class UserPreviewTable extends LightningElement {
         return totalVar;
     }
 
-    getTotalMileage(){
+    getTotalMileage() {
         let data = this.proxyToObj(this.modelData);
         let totalAmt = 0;
         if (data) {
@@ -627,11 +649,11 @@ export default class UserPreviewTable extends LightningElement {
             colName = this.sortedColumn;
 
         data = this.getSource();
-        if(colType !== undefined){
+        if (colType !== undefined) {
             this.pagedData = JSON.parse(JSON.stringify(data)).sort((a, b) => {
                 if (colType === "Decimal") {
                     a[colName] = (typeof a[colName] === 'string') ? ((a[colName].indexOf('$') > -1) ? a[colName].replace(/\$/g, "") : a[colName]) : a[colName];
-                    b[colName] =  (typeof b[colName] === 'string') ? ((b[colName].indexOf('$') > -1) ? b[colName].replace(/\$/g, "") : b[colName]) : b[colName];
+                    b[colName] = (typeof b[colName] === 'string') ? ((b[colName].indexOf('$') > -1) ? b[colName].replace(/\$/g, "") : b[colName]) : b[colName];
                     a = (a[colName] == null || a[colName] === 'null') ? '' : parseFloat(a[colName])
                     b = (b[colName] == null || b[colName] === 'null') ? '' : parseFloat(b[colName])
                     return a > b ? 1 * isReverse : -1 * isReverse;
@@ -641,32 +663,32 @@ export default class UserPreviewTable extends LightningElement {
                     b = (b[colName] == null || b[colName] === 'null') ? '' : parseInt(b[colName])
                     return a > b ? 1 * isReverse : -1 * isReverse;
                 }
-                if(colType === "Date"){
+                if (colType === "Date") {
                     a = (a[colName] == null) ? '' : new Date(a[colName].toLowerCase())
                     b = (b[colName] == null) ? '' : new Date(b[colName].toLowerCase())
                     return a > b ? 1 * isReverse : -1 * isReverse;
                 }
-                    a = (a[colName] == null || a[colName] === '') ? '' : a[colName].toLowerCase();
-                    b = (b[colName] == null || b[colName] === '') ? '' : b[colName].toLowerCase();
-                    return a > b ? 1 * isReverse : -1 * isReverse;
-                
+                a = (a[colName] == null || a[colName] === '') ? '' : a[colName].toLowerCase();
+                b = (b[colName] == null || b[colName] === '') ? '' : b[colName].toLowerCase();
+                return a > b ? 1 * isReverse : -1 * isReverse;
+
             });
             //this.sortedData = this.pagedData
             if (!this.search) {
                 this.previousIcon = this.sortedDirection
                 this.modelData = this.pagedData;
-            }else{
+            } else {
                 this.searchPreviousIcon = this.sortedDirection
             }
             this.sortedColName = colName;
             this.displaySortIcon(colName, this.sortedDirection);
             this.gotoPage(this.currentPage, this.pagedData);
         }
-     
+
     }
 
-    @api defaultSort(column, type, sortDirect){
-       // console.log("default", column, type);
+    @api defaultSort(column, type, sortDirect) {
+        // console.log("default", column, type);
         let colName = column ? column : undefined;
         let colType = type ? type : undefined;
         // eslint-disable-next-line vars-on-top
@@ -687,33 +709,33 @@ export default class UserPreviewTable extends LightningElement {
         this.pagedData = JSON.parse(JSON.stringify(data)).sort((a, b) => {
             if (colType === "Decimal") {
                 a[colName] = (typeof a[colName] === 'string') ? ((a[colName].indexOf('$') > -1) ? a[colName].replace(/\$/g, "") : a[colName]) : a[colName];
-                b[colName] =  (typeof b[colName] === 'string') ? ((b[colName].indexOf('$') > -1) ? b[colName].replace(/\$/g, "") : b[colName]) : b[colName];
+                b[colName] = (typeof b[colName] === 'string') ? ((b[colName].indexOf('$') > -1) ? b[colName].replace(/\$/g, "") : b[colName]) : b[colName];
                 a = (a[colName] == null || a[colName] === 'null') ? '' : parseFloat(a[colName])
                 b = (b[colName] == null || b[colName] === 'null') ? '' : parseFloat(b[colName])
                 return a > b ? 1 * isReverse : -1 * isReverse;
             }
-            if(colType === "Date"){
+            if (colType === "Date") {
                 a = (a[colName] == null) ? '' : new Date(a[colName].toLowerCase())
                 b = (b[colName] == null) ? '' : new Date(b[colName].toLowerCase())
                 return a > b ? 1 * isReverse : -1 * isReverse;
             }
-                a = (a[colName] == null || a[colName] === '') ? '' : a[colName].toLowerCase();
-                b = (b[colName] == null || b[colName] === '') ? '' : b[colName].toLowerCase();
-                return a > b ? 1 * isReverse : -1 * isReverse;
-            
+            a = (a[colName] == null || a[colName] === '') ? '' : a[colName].toLowerCase();
+            b = (b[colName] == null || b[colName] === '') ? '' : b[colName].toLowerCase();
+            return a > b ? 1 * isReverse : -1 * isReverse;
+
         });
         //this.sortedData = this.pagedData
         if (!this.search) {
             this.previousIcon = this.sortedDirection
             this.modelData = this.pagedData;
-        }else{
+        } else {
             this.searchPreviousIcon = this.sortedDirection
         }
         this.sortedColName = colName;
         this.displaySortIcon(colName, this.sortedDirection);
         this.gotoPage(this.currentPage, this.pagedData);
     }
-    
+
     displaySortIcon(colName, sortOrder) {
         let data = this.proxyToObj(this.columns);
         if (data) {
@@ -728,150 +750,203 @@ export default class UserPreviewTable extends LightningElement {
                     }
 
                 }
-            } 
+            }
         }
         // eslint-disable-next-line @lwc/lwc/no-api-reassignments
         this.columns = data;
     }
 
     getSource() {
-            if (this.search) {
-                return this.searchData;
-            } 
-                return this.modelData;
+        if (this.search) {
+            return this.searchData;
+        }
+        return this.modelData;
     }
 
-    linkHandler(event){
+    linkHandler(event) {
         let id = event.currentTarget.dataset.id;
-        let element =  this.getElement(this.modelData, id);
-        const linkEvent = new CustomEvent('access', {detail: JSON.stringify(element)});
+        let element = this.getElement(this.modelData, id);
+        const linkEvent = new CustomEvent('access', { detail: JSON.stringify(element) });
         this.dispatchEvent(linkEvent);
-        const editRecord = new CustomEvent('edit', { detail: id});
+        this.dispatchEdit(id);
+    }
+
+    dispatchEdit(id) {
+        const editRecord = new CustomEvent('edit', { detail: id });
         this.dispatchEvent(editRecord);
     }
 
-    modalHandler(){
-        const showProcess = new CustomEvent('approvalprocess', {detail: ''});
+    modalHandler() {
+        const showProcess = new CustomEvent('approvalprocess', { detail: '' });
         this.dispatchEvent(showProcess);
     }
 
-    validateInputField(event){
+    validateInputField(event) {
         let _name = event.currentTarget.dataset.name;
-        if(_name === 'range'){
+        if (_name === 'range') {
             event.target.value = event.target.value
-            .replace(/[^\d]/g, '')             // numbers only
-            .replace(/(^\.*)\./g, '$1')          // single dot retricted
-            .replace(/(^[\d]{5})[\d]/g, '$1')   // not more than 4 digits at the beginning
+                .replace(/[^\d]/g, '')             // numbers only
+                .replace(/(^\.*)\./g, '$1')          // single dot retricted
+                .replace(/(^[\d]{5})[\d]/g, '$1')   // not more than 4 digits at the beginning
+        } else if (_name === 'Integer') {
+            event.target.value = event.target.value
+                .replace(/[^\d.]/g, '')             // numbers and decimals only
+                .replace(/(^\.*)\./g, '$1')          // single dot retricted
+                .replace(/(^[\d]{5})[\d]/g, '$1')   // not more than 4 digits at the beginning
+                .replace(/(\..*)\./g, '$1')          // decimal can't exist more than once
+                .replace(/(\.[\d]{2})./g, '$1');    // not more than 2 digits after decimal
         }
     }
 
-    handleInput(event){
+    handleProratedInput(event){
+        let id = event.currentTarget.dataset.id ;
+        let tripid = event.currentTarget.dataset.tripid;
+        let data = this.modelData;
+        var object = {};
+        for (let i = 0; i < data.length; i++) {
+            if(id === undefined){
+                if (data[i].Id === tripid) {
+                    object = data[i];
+                }
+            }else{
+             if (data[i].id === id) {
+                object = data[i];
+            }
+           }
+        }
+        const eventD = new CustomEvent('update', { detail: {list : JSON.stringify(object) , inputValue: event.target.value, key: event.currentTarget.dataset.key}});
+        this.dispatchEvent(eventD);
+    }
+
+    keyPressInput(){
+        this.dispatchEvent(
+            new CustomEvent("keyinputpress", {
+                detail: ''
+            })
+        );
+    }
+
+    handleInput(event) {
+        this.validateInputField(event);
         let inputType = event.currentTarget.dataset.inputType;
         let keyName = event.currentTarget.dataset.name;
         let input;
-        if(inputType === "select" || inputType === "address"){
+        if (inputType === "select" || inputType === "address") {
             input = event.detail.value;
-            if(event.detail.key) {
-                keyName = event.detail.key;
+            if (event.detail.fieldName) {
+                keyName = event.detail.fieldName;
             }
-        }else if(inputType === "input") {
+        } else if (inputType === "input") {
             input = event.target.value;
         }
-        
         let dataList = (this.search) ? this.proxyToObj(this.searchData) : this.proxyToObj(this.modelData);
         let updatedList = [];
-       // let element = dataList.find(ele  => ele.id === this.rowId);
+        // let element = dataList.find(ele  => ele.id === this.rowId);
         for (let i = 0; i < dataList.length; i++) {
-            if(dataList[i].id === this.rowId){
+            if (dataList[i].id === this.rowId) {
                 let keyList = dataList[i].keyFields;
                 dataList[i][keyName] = (input !== null) ? (keyName === 'range') ? parseInt(input) : input : input;
-                for(let j = 0; j < keyList.length; j++){
-                    if(keyList[j].key === keyName){
+                if (keyName === "managerName") {
+                    let manager = this.proxyToObj(event.detail);
+                    dataList[i].managerId = manager?.key;
+                }
+                for (let j = 0; j < keyList.length; j++) {
+                    if (keyList[j].key === keyName) {
                         keyList[j].value = input;
                     }
                 }
             }
         }
         updatedList = dataList;
-       if(this.search){
+        if (this.search) {
             this.modelData = dataList;
             this.searchData = dataList;
-		}else{
-			this.modelData = dataList;
-		}
+        } else {
+            this.modelData = dataList;
+        }
         this.pagedData = dataList;
         this.gotoPage(this.currentPage, this.pagedData)
         this.dispatchEvent(
             new CustomEvent("update", {
-              detail: JSON.stringify(updatedList)
+                detail: JSON.stringify(updatedList)
             })
-          );
+        );
+        if (keyName === "role") {
+            this.dispatchEdit(this.rowId);
+        }
     }
 
-    handleEditMode(event){
+    handleEditMode(event) {
         console.log("handleEditMode");
         let targetId = (event.currentTarget) ? event.currentTarget.dataset.id : undefined;
         this.rowId = targetId;
         let data = (this.search) ? this.proxyToObj(this.searchData) : this.proxyToObj(this.modelData);
-        if(targetId){
+        if (targetId) {
             this.dispatchEvent(
                 new CustomEvent("editmode", {
-                  detail: ''
+                    detail: targetId
                 })
             );
             if (data) {
-              for (let i = 0; i < data.length; i++) {
-                if (data[i].id === targetId) {
-                  data[i].isEdited = true;
-                } else {
-                  data[i].isEdited = !data[i].isEdited ? false : true;
+                for (let i = 0; i < data.length; i++) {
+                    if (data[i].id === targetId) {
+                        data[i].isEdited = true;
+                    } else {
+                        data[i].isEdited = !data[i].isEdited ? false : true;
+                    }
                 }
-              }
-              if (this.search) {
-                this.modelData = data;
-                this.searchData = data;
-              } else {
-                this.modelData = data;
-              }
-              this.pagedData = data;
-              this.gotoPage(this.currentPage, this.pagedData);
+                if (this.search) {
+                    this.modelData = data;
+                    this.searchData = data;
+                } else {
+                    this.modelData = data;
+                }
+                this.pagedData = data;
+                this.gotoPage(this.currentPage, this.pagedData);
             }
         }
-     
+
     }
 
     /** Handler if checkbox available in UI */
 
-    @api checkUncheckAll(checked){
+    @api checkUncheckAll(checked) {
         let i;
         let checkboxes = this.template.querySelectorAll('.checkbox-input');
-        for(i=0; i<checkboxes.length; i++) {
+        for (i = 0; i < checkboxes.length; i++) {
             checkboxes[i].checked = checked;
         }
     }
 
-    @api returnList(){
+    @api returnList() {
         return JSON.parse(JSON.stringify(this.modelData));
     }
 
-    @api returnSearchList(){
+    @api returnSearchList() {
         return JSON.parse(JSON.stringify(this.searchData));
     }
 
-    @api returnPageList(){
+    @api returnPageList() {
         return JSON.parse(JSON.stringify(this.pagedData));
     }
 
-    checkboxHandler(event){
-        console.log("checkboxHandler");
+
+    handleCheckbox(event) {
+        let checked = event.target.checked;
+        let targetId = event.currentTarget.dataset.id;
+        let rowObject = { isChecked: checked, targetId: targetId }
+        this.dispatchEvent(new CustomEvent('rowselection', { detail: rowObject }));
+    }
+
+    checkboxHandler(event) {
         event.stopPropagation();
         let checked = event.target.checked;
         let targetId = event.currentTarget.dataset.id;
-        let rowObject = {isChecked: checked, targetId: targetId }
-        this.dispatchEvent(new CustomEvent('rowselection', {detail: rowObject}));
+        let rowObject = { isChecked: checked, targetId: targetId }
+        this.dispatchEvent(new CustomEvent('rowselection', { detail: rowObject }));
         let recordIndex = this.modelData.findIndex(record => record.id === targetId);
-        if(this.modelData[recordIndex] && "isChecked" in this.modelData[recordIndex]) {
-            this.updateCheckBox(event.target.checked,targetId);
+        if (this.modelData[recordIndex] && "isChecked" in this.modelData[recordIndex]) {
+            this.updateCheckBox(event.target.checked, targetId);
         }
     }
 
@@ -885,20 +960,24 @@ export default class UserPreviewTable extends LightningElement {
 
     connectedCallback() {
         // Initialize data table to the specified current page (should be 1)
-        console.log("Trip", JSON.stringify(this.modelData), this.norecord, this.scrollable)
+       console.log("Trip", JSON.stringify(this.modelData), this.norecord, this.scrollable)
+       console.log("Role", this.userRole);
         //Object.assign({},this.objContactData);
-       // this.myContactData = this.objContactData;
-        this.tableClass = 'slds-table slds-table--header-fixed slds-table_cell-buffer slds-table_fixed-layout slds-max-medium-table_stacked-horizontal slds-table_striped';
-        if(this.modelData){
-            this.originalClass = (this.scrollable) ? (this.modelData.length > 6)  ? ((this.viewName === 'Team') ? 'slds-scrollable_y scroll-modal-height-v2 slds-p-right_small' : 'slds-scrollable_y scroll-modal-height slds-p-right_small') : 'slds-p-right_small' : 'slds-p-right_small';
-            this.className = (this.scrollable) ? (this.modelData.length > 6)  ? ((this.viewName === 'Team') ? 'slds-scrollable_y scroll-modal-height-v2 slds-p-right_small' : 'slds-scrollable_y scroll-modal-height slds-p-right_small') : 'slds-p-right_small' : 'slds-p-right_small';
-            this.mainClass = (this.scrollable) ? (this.modelData.length > 6) ? 'slds-table--header-fixed_container p-top-v1' : 'slds-table--header-fixed_container p-top-v1 overflow-none' : this.mainClass;
-            if(this.isPaginate){
+        // this.myContactData = this.objContactData;
+        this.tableClass = 'slds-table slds-table_cell-buffer slds-table_striped fixed-table';
+        if (this.modelData) {
+            this.originalClass = (this.scrollable) ? (this.modelData.length > 6) ? 'scrollable_wrapper slds-p-right_small' : (this.viewName === 'User') ? 'scrollable_wrapper slds-p-right_small' : 'scrollable_wrapper overflow-none slds-p-right_small' : 'slds-p-right_small';
+            this.className = (this.scrollable) ? (this.modelData.length > 6) ? 'scrollable_wrapper slds-p-right_small' : (this.viewName === 'User') ? 'scrollable_wrapper slds-p-right_small' : 'scrollable_wrapper overflow-none slds-p-right_small' : 'slds-p-right_small';
+            this.mainClass = (this.scrollable) ? 'fixed-container' : this.mainClass;
+            // this.originalClass = (this.scrollable) ? (this.modelData.length > 6)  ? ((this.viewName === 'Team') ? 'scrollable_wrapper slds-p-right_small' : 'scrollable_wrapper slds-p-right_small') : 'slds-p-right_small' : 'slds-p-right_small';
+            // this.className = (this.scrollable) ? (this.modelData.length > 6)  ? ((this.viewName === 'Team') ? 'scrollable_wrapper slds-p-right_small' : 'scrollable_wrapper slds-p-right_small') : 'slds-p-right_small' : 'slds-p-right_small';
+            // this.mainClass = (this.scrollable) ? (this.modelData.length > 6) ? 'fixed-container' : 'fixed-container overflow-none' : this.mainClass;
+            if (this.isPaginate) {
                 this.sortedColumn = this.columns[0].colName;
                 this.gotoPage(this.currentPage, this.modelData);
-              //  this.totalPages(this.maxPages);
+                //  this.totalPages(this.maxPages);
                 this.setPages();
-            }else{
+            } else {
                 this.pagedData = [];
                 this.pagedData = this.modelData;
             }
@@ -906,59 +985,59 @@ export default class UserPreviewTable extends LightningElement {
             if (!this.modelData.length) {
                 this.norecord = true;
                 this.nopagedata = true;
-                this.tableClass = 'slds-table slds-table--header-fixed slds-table_cell-buffer slds-table_striped'
-            }else{
+                // this.tableClass = 'slds-table slds-table_cell-buffer slds-table_striped'
+            } else {
                 this.norecord = false;
-                this.tableClass = 'slds-table slds-table--header-fixed slds-table_cell-buffer slds-table_fixed-layout slds-max-medium-table_stacked-horizontal slds-table_striped';
+                this.tableClass = 'slds-table slds-table_cell-buffer slds-table_striped fixed-table';
             }
-            if(this.modelData.length > 8){
+            if (this.modelData.length > 8) {
                 this.searchVisible = true;
-            }else{
+            } else {
                 this.searchVisible = false;
             }
-          
-            if(this.isDefaultSort){
-                this.defaultSort(this.colname, this.coltype, this.sortorder) 
+
+            if (this.isDefaultSort) {
+                this.defaultSort(this.colname, this.coltype, this.sortorder)
             }
         }
-      
+
     }
 
-    renderedCallback(){
+    renderedCallback() {
         var pageBlock = this.template.querySelectorAll('.page-num-block');
         let customIcon = this.template.querySelectorAll('.navigate');
         let _self = this;
-        if(pageBlock){
-            pageBlock.forEach(item=>{
-                if(item.dataset.id){
-                    if(item.dataset.id !== '...'){
-                         // eslint-disable-next-line radix
-                        if(parseInt(item.dataset.id) === this.currentPage){
+        if (pageBlock) {
+            pageBlock.forEach(item => {
+                if (item.dataset.id) {
+                    if (item.dataset.id !== '...') {
+                        // eslint-disable-next-line radix
+                        if (parseInt(item.dataset.id) === this.currentPage) {
                             item.classList.add('active')
-                        }else{
+                        } else {
                             item.classList.remove('active')
                         }
-                    }else{
+                    } else {
                         item.classList.add('page-num-disabled');
                     }
                 }
             })
         }
-        if(customIcon){
-            customIcon.forEach(ev=>{
-                ev.addEventListener('click', function(e){
+        if (customIcon) {
+            customIcon.forEach(ev => {
+                ev.addEventListener('click', function (e) {
                     // console.log("Icon----", e, e.currentTarget.dataset.id, e.currentTarget.dataset.st, _self.isBiweek )
-                    if(e.currentTarget.dataset.name !== undefined){
-                        if(_self.isBiweek !== true){
+                    if (e.currentTarget.dataset.name !== undefined) {
+                        if (_self.isBiweek !== true) {
                             events(_self, e.currentTarget.dataset.name)
-                        }else{
+                        } else {
                             events(_self, {
                                 id: e.currentTarget.dataset.id,
                                 startDate: e.currentTarget.dataset.st,
                                 endDate: e.currentTarget.dataset.ed
                             })
                         }
-                      
+
                     }
                     e.stopPropagation();
                 });
@@ -966,13 +1045,13 @@ export default class UserPreviewTable extends LightningElement {
         }
     }
 
-    handleDownload(event){
+    handleDownload(event) {
         event.stopPropagation();
         openEvents(this, event.currentTarget.dataset.key);
     }
 
-    downloadAllTrips(){
-        const tripEvent = new CustomEvent('view', {detail: this.tripMonth});
+    downloadAllTrips() {
+        const tripEvent = new CustomEvent('view', { detail: this.tripMonth });
         this.dispatchEvent(tripEvent);
     }
 
@@ -980,30 +1059,36 @@ export default class UserPreviewTable extends LightningElement {
         // event.stopPropagation();
         let record = event.currentTarget.dataset.id;
         let key = event.currentTarget.dataset.key;
-        const dateIconEvent = new CustomEvent('iconclick', {detail: {
-            id: record,
-            key: key
-        } });
+        const dateIconEvent = new CustomEvent('iconclick', {
+            detail: {
+                id: record,
+                key: key
+            }
+        });
         this.dispatchEvent(dateIconEvent);
     }
 
     handleConditionalIcon(event) {
         // event.stopPropagation();
         let record = event.currentTarget.dataset.id;
-        const deleteIconEvent = new CustomEvent('conditionalclick', {detail: {
-            id: record
-        } });
+        const deleteIconEvent = new CustomEvent('conditionalclick', {
+            detail: {
+                id: record
+            }
+        });
         this.dispatchEvent(deleteIconEvent);
     }
 
-    handleMultipleIcon(event){
+    handleMultipleIcon(event) {
         event.stopPropagation();
         let record = event.currentTarget.dataset.id;
         let key = event.currentTarget.dataset.key;
-        const dateIconEvent = new CustomEvent('icon2click', {detail: {
-            id: record,
-            key: key
-        } });
+        const dateIconEvent = new CustomEvent('icon2click', {
+            detail: {
+                id: record,
+                key: key
+            }
+        });
         this.dispatchEvent(dateIconEvent);
     }
 
@@ -1012,10 +1097,10 @@ export default class UserPreviewTable extends LightningElement {
         let detail = {
             key: event.currentTarget.dataset.key,
             tag: event.detail,
-            record : event.currentTarget.dataset.id
+            record: event.currentTarget.dataset.id
         }
         const removeTag = new CustomEvent('removetag', {
-            detail : detail
+            detail: detail
         });
         this.dispatchEvent(removeTag);
     }
@@ -1029,9 +1114,9 @@ export default class UserPreviewTable extends LightningElement {
         let dataList = (this.search) ? this.proxyToObj(this.searchData) : this.proxyToObj(this.modelData);
         let updatedList = [];
         // let element = dataList.find(ele  => ele.id === this.rowId);
-        if(recordId) {
+        if (recordId) {
             let recordIndex = dataList.findIndex(record => record.id === recordId);
-            if(dataList && "isChecked" in dataList[recordIndex]) {
+            if (dataList && "isChecked" in dataList[recordIndex]) {
                 dataList[recordIndex].isChecked = isChecked;
             }
             // Check if any object has isChecked = false
@@ -1042,24 +1127,24 @@ export default class UserPreviewTable extends LightningElement {
             selectAllCheckbox.checked = !hasFalseValue;
         } else {
             for (let i = 0; i < dataList.length; i++) {
-                if(dataList[i] && "isChecked" in dataList[i]) {
+                if (dataList[i] && "isChecked" in dataList[i]) {
                     dataList[i].isChecked = isChecked;
                 }
             }
         }
         updatedList = dataList;
-        
-        if(this.search){
+
+        if (this.search) {
             this.modelData = dataList;
             this.searchData = dataList;
-        }else{
+        } else {
             this.modelData = dataList;
         }
         this.pagedData = dataList;
         this.gotoPage(this.currentPage, this.pagedData)
         this.dispatchEvent(
             new CustomEvent("update", {
-            detail: JSON.stringify(updatedList)
+                detail: JSON.stringify(updatedList)
             })
         );
         this.triggerDisableCheckbox(dataList);
@@ -1072,7 +1157,7 @@ export default class UserPreviewTable extends LightningElement {
     @api
     toggleCheckBox(toogle) {
         this.isCheckBoxVisible = toogle;
-        if(!toogle) {
+        if (!toogle) {
             this.disableAll();
         }
     }
@@ -1081,30 +1166,30 @@ export default class UserPreviewTable extends LightningElement {
         let dataList = (this.search) ? this.proxyToObj(this.searchData) : this.proxyToObj(this.modelData);
         let updatedList = [];
         for (let i = 0; i < dataList.length; i++) {
-            if(dataList[i] && "isChecked" in dataList[i]) {
+            if (dataList[i] && "isChecked" in dataList[i]) {
                 dataList[i].isChecked = false;
             }
         }
         updatedList = dataList;
-        
-        if(this.search){
+
+        if (this.search) {
             this.modelData = dataList;
             this.searchData = dataList;
-        }else{
+        } else {
             this.modelData = dataList;
         }
         this.pagedData = dataList;
         this.gotoPage(this.currentPage, this.pagedData)
         this.dispatchEvent(
             new CustomEvent("update", {
-            detail: JSON.stringify(updatedList)
+                detail: JSON.stringify(updatedList)
             })
         );
     }
 
     triggerDisableCheckbox(data) {
         const hasTrueValue = data.some(obj => obj.isChecked === true);
-        if(!hasTrueValue) {
+        if (!hasTrueValue) {
             this.dispatchEvent(
                 new CustomEvent("disablecheckbox", {})
             );
@@ -1113,5 +1198,16 @@ export default class UserPreviewTable extends LightningElement {
                 new CustomEvent("enablesubmit", {})
             );
         }
+    }
+
+    handleInvalidZip(event) {
+        let message = event.detail?.message;
+        this.dispatchToast("error", message);
+
+    }
+
+    dispatchToast(type, message) {
+        let toastObj = { type: type, message: message }
+        this.dispatchEvent(new CustomEvent('toast', { detail: toastObj }));
     }
 }

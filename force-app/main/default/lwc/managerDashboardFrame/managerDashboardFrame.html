@@ -1,5 +1,5 @@
 <template>
-    <c-navigation-menu driver-menu-item={managerProfileMenu} onsidebar={handleSidebarToggle} driver-name={userName} driver-email={userEmail} profile-id={profile} onlogout={handleLogout}></c-navigation-menu><!-- onopen={takeMeToMenu} -->
+	<c-navigation-menu driver-menu-item={managerProfileMenu} onsidebar={handleSidebarToggle} driver-name={userName} driver-email={userEmail} profile-id={profile} onlogout={handleLogout}></c-navigation-menu>
 	<c-dashboard-profile-header user-name={firstName} full-name={contactTitle} unread={unreadCount} page-source={isHomePage} onnotify={viewAllNotification} onlogout={handleLogout} driver-menu={menu} is-navigate="true"></c-dashboard-profile-header>
     <section class={section} id="default">
         <template lwc:if={isProfile}>
@@ -7,38 +7,38 @@
         </template>
         <template lwc:elseif={mileageApproval}>
             <template lwc:if={listOfDriver}>
-					<c-user-mileage-grid contact-id={_contactId} account-id={_accountId} is-account-biweek={biweekAccount} contact-list={listOfDriver} onpreview={getUnapproveMileage} onshow={showSpinner} onhide={hideSpinner} ontoast={showToast} show-team={showTeam} filter={nameFilter} contact-info={userName} role={userRole}></c-user-mileage-grid>
+					<c-user-mileage-grid contact-id={_contactId} account-id={_accountId} is-account-biweek={biweekAccount} contact-list={listOfDriver} onpreview={getUnapproveMileage} onshow={showSpinner} onhide={hideSpinner} ontoast={showToast} show-team={showTeam} filter={nameFilter} contact-info={userName} role={userRole}  onback={backToDashboard} single-user={singleUser} user-list={userOfDriver}></c-user-mileage-grid>
             </template>
         </template>
         <template lwc:elseif={teamList}>
             <template lwc:if={myTeamList}>
-               <c-user-view-mileage contact-id={_contactId} account-id={_accountId} contact-list={myTeamList} show-team={showTeam} contact-info={userName} filter={contactTitle} trip-column={teamColumn} trip-key-fields={teamKeyFields} onpreview={redirectToDriverView}></c-user-view-mileage><!--onpreview={redirectToDriverView}-->
+               <c-user-view-mileage contact-id={_contactId} account-id={_accountId} contact-list={myTeamList} show-team={showTeam} contact-info={userName} filter={contactTitle} trip-column={teamColumn} trip-key-fields={teamKeyFields} onpreview={redirectToDriverView}  onback={backToDashboard}></c-user-view-mileage><!--onpreview={redirectToDriverView}-->
             </template>
         </template>
         <template lwc:elseif={mileageSummary}>
             <template lwc:if={listOfReimbursement}>
-               <c-user-view-mileage contact-id={_contactId} account-id={_accountId} contact-list={listOfReimbursement} contact-info={userName} filter={contactTitle} show-team={showTeam} account-year={mileageAccountList} month-year={lastMonthSelected} trip-column={summaryColumn} trip-key-fields={summaryKeyFields} onpreview={getMileage} onmonthyearchange={handleMonthYearRender}></c-user-view-mileage>
+               <c-user-view-mileage contact-id={_contactId} account-id={_accountId} contact-list={listOfReimbursement} role={userRole} contact-info={userName} filter={contactTitle} show-team={showTeam} account-year={mileageAccountList} month-year={lastMonthSelected} trip-column={summaryColumn} trip-key-fields={summaryKeyFields} onpreview={getMileage} onmonthyearchange={handleMonthYearRender}  onback={backToDashboard}></c-user-view-mileage>
             </template>
         </template>
         <template lwc:elseif={mileageSummaryView}>
             <template lwc:if={viewMileages}>
-               <c-view-detail-user contact-id={_contactId} account-id={_accountId} contact-list={viewMileages} user-name={mileageContactName} trip-column={summaryDetailColumn} trip-key-fields={summaryDetailKeyFields} month={mileageMonthList} selected-month={monthSelected} onback={redirectToSummary} onmonthchange={refreshDetailSummary}></c-view-detail-user>
+               <c-view-detail-user contact-id={_contactId} account-id={_accountId} contact-list={viewMileages} role={userRole} user-name={mileageContactName} trip-column={summaryDetailColumn} trip-key-fields={summaryDetailKeyFields} month={mileageMonthList} selected-month={monthSelected} onback={redirectToSummary} onmonthchange={refreshDetailSummary} redirect-dashboard={isDashboard}></c-view-detail-user>
             </template>
         </template>
         <template lwc:elseif={mileageView}>
 			<template lwc:if={mileageRecord}>
-				<c-new-datatable-component main-class="slds-table--header-fixed_container preview-height" role-of-user={userRole} driver-data={mileageRecord} month-list={mileageAccountList} driver-list={driverdetail}  ontoastmessage={handleToastMessage} norecord-message="There is no trip data available" onshowloader={showLoader} onhideloader={hideLoader}></c-new-datatable-component> 
+				<c-new-datatable-component main-class="slds-table--header-fixed_container preview-height" driver-data={mileageRecord} month-list={mileageAccountList} driver-list={driverdetail} status-list={Statusoptions}  ontoastmessage={handleToastMessage} norecord-message="There is no trip data available" onshowloader={showLoader} onhideloader={hideLoader}></c-new-datatable-component> 
 			</template>
         </template>
 		<template lwc:elseif={showDriverView}>
-			<c-manager-driver-profile account-id={_accountId} contact-id={idContact} ontoast={showToast} onback={redirectToMyTeam}></c-manager-driver-profile>
+			<c-manager-driver-profile account-id={_accountId} contact-id={idContact} ontoast={showToast} onback={redirectToMyTeam} redirect-dashboard={isDashboard}></c-manager-driver-profile>
         </template>
 		<template  lwc:elseif={resources}>
-			<c-user-resource minimums={contactInformation}></c-user-resource>
+			<c-user-resource minimums={contactInformation} role={userRole}  onback={backToDashboard} settings={customSetting} driver-meeting={driverMeeting} onsend={emailSent}></c-user-resource>
 		</template>
         <template lwc:else>
             <template lwc:if={unapproveMileages}>
-                 <c-user-flagging-trip contact-id={_contactId} account-id={_accountId}  header-name={driverName}  is-account-biweek={biweekAccount} emailaddress={userEmail} contact-list={unapproveMileages} onback={redirectToMileage} onshow={showSpinner} onhide={hideSpinner} ontoast={showToast} onflagcomplete={handleComplete} onsyncdone={handleSyncDone}></c-user-flagging-trip>
+                 <c-user-flagging-trip contact-id={_contactId} account-id={_accountId}  header-name={driverName}  is-account-biweek={biweekAccount} emailaddress={userEmail} contact-list={unapproveMileages} onback={redirectToMileage} onshow={showSpinner} onhide={hideSpinner} ontoast={showToast} onflagcomplete={handleComplete} onsyncdone={handleSyncDone} role={userRole} redirect-dashboard={isDashboard}></c-user-flagging-trip>
             </template>
         </template>
        

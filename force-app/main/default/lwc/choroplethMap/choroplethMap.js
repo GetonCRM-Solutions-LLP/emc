@@ -13,18 +13,26 @@ export default class ChoroplethMap extends LightningElement {
     @api borderColor;
     @api height;
     @api width;
+    @api type;
+    @api canada;
+
+    @api reloadChart(){
+        this.initializeChart()
+    }
+
     initializeChart() {
         // eslint-disable-next-line no-restricted-globals
         let url = location.origin;
         let urlHost = url + '/app/choroplethChart';
         this.vfHost = urlHost;
         this.origin = url;
+        let canadaState = this.canada.split(',');
         getDrivingState({
             contactId: this.contactId
         }).then((result) =>{
             if(result){
                 this.contactList = result;
-                let obj = {modal : this.contactList, background: this.background, border: this.borderColor, height: this.height, width: this.width}
+                let obj = {modal : this.contactList, background: this.background, border: this.borderColor, height: this.height, width: this.width, mapType: this.type, arrayList: canadaState}
                 let messagePost = JSON.stringify(obj)
                 if(this.template.querySelector('.vf-iframe').contentWindow){
                     this.template.querySelector('.vf-iframe').contentWindow.postMessage(messagePost, this.origin)

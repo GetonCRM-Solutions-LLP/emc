@@ -16,6 +16,8 @@ export default class UserProfileModal extends LightningElement {
     @api columns;
     @api content;
     @api month;
+    @api mDashboarding;
+    @api isDisabledBG = false;
     get modalId() {
         return this._modalId;
     }
@@ -30,6 +32,11 @@ export default class UserProfileModal extends LightningElement {
 
     get modalHeadingId(){
         return `modal-heading-id-${this.modalId}`;
+    }
+
+    constructor() {
+        super();
+        this.handleKeyDown = this.handleKeyDown.bind(this);
     }
     
     @api 
@@ -47,6 +54,15 @@ export default class UserProfileModal extends LightningElement {
 
     @api hide() {
         this.showModal = false;
+    }
+
+    handleKeyDown = (event) =>{
+        if (event.keyCode === 27) {
+           // console.log('Esc key pressed.');
+            const closedialog = new CustomEvent('closedialog');
+            this.dispatchEvent(closedialog);
+            this.hide()
+        }
     }
     
     handleDialogClose() {
@@ -88,5 +104,9 @@ export default class UserProfileModal extends LightningElement {
     handleClose(event) {
         var eId = event.target.dataset.id;
         this.template.querySelector(`.notify-text[data-id="${eId}"]`).classList.add('slds-hide');
+    }
+
+    connectedCallback(){
+        window.addEventListener('keydown', this.handleKeyDown);
     }
 }

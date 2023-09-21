@@ -24,9 +24,10 @@
         <script src="{!URLFOR($Resource.HighChart,'/highmaps.js')}"></script>
         <script src="{!URLFOR($Resource.HighChart,'/accessibility.js')}"></script>
         <script src="{!URLFOR($Resource.HighChart,'/us-all.js')}"></script>
+        <script src="{!URLFOR($Resource.HighChart,'/ca-all.js')}"></script>
         <script>
              var lexOrigin = location.origin;
-             var postData, chartData, states, chart = [], chloChart, charturl;
+             var postData, chartData, states, chart = [], chloChart, charturl, typeBasedUrl;
             window.addEventListener("message", function (event) {
                 console.log('Origin ' + event.origin);
                 console.log('data ' + event.data);
@@ -36,11 +37,13 @@
                 }
                 postData = JSON.parse(event.data)
                 chartData = postData.modal;
+               
+                typeBasedUrl = (postData.mapType === 'CANADA') ? 'countries/ca/ca-all' : 'countries/us/us-all' ;
                 let containerChart = document.getElementById('container');
                //countries/us/custom/us-all-territories
                 Highcharts.mapChart(containerChart, {
                         chart: {
-                            map: 'countries/us/us-all',
+                            map: typeBasedUrl,
                             borderColor:postData.border,
                             backgroundColor: postData.background,
                           //  height: postData.height, //250

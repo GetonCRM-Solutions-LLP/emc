@@ -37,8 +37,9 @@ h2{
     font-size: 14px;
 }
 .sync_dropdown{
-    width: 142px;
+    width: 120px;
     margin-left: 10px;
+    margin-top: 2px;
     /* margin: 11px; */
 }
 .report_name{
@@ -47,7 +48,7 @@ h2{
   color: #7ABB4A;
   margin-top: 8px;
   margin-right: 26px;
-  font-family: 'Proxima Nova Bold';
+  font-family: 'Proxima Nova Bold' !important;
 }
 .back_button{
     margin-left: 0px !important;
@@ -64,16 +65,15 @@ h2{
     box-shadow: none !important;
 }        
 .flat-container{
-    display: flex;
-    border: 1px solid #e0dbdb !important;
-    padding: 0px 0 0px 9px !important;
-    width: 215px;
-    border-radius: 10px;
-    position: relative;
-    height: 34px;
-    bottom: -5px;
-    /* left: -68px; */
-    background: white;
+  display: flex;
+  border: 1px solid #e0dbdb !important;
+  padding: 0px 0 0px 9px !important;
+  width: 135px;
+  border-radius: 10px;
+  position: relative;
+  height: 33px;
+  bottom: -5px;
+  background: white;
   }
   .flat-input{
     padding: 8px 0 8px 9px !important;
@@ -102,7 +102,7 @@ h2{
     display: flex;
     /* margin-left: 220px; */
     position: relative;
-    bottom: 4px;
+    bottom: 3px;
   }
   .date_label_02{
     position: relative;
@@ -118,30 +118,42 @@ h2{
     /* margin: 8px 25px; */
     margin: 8px 4px;
     padding: 12px 0px;
+    justify-content: space-between;
   }
  .btn-trip{
-    border-radius: 11px;
-    margin: 0px 30px;
-    width: 65px;
-    background: #7ABB4A;
-    color: white;
-    border: none;
-    font-family: 'Proxima Nova Bold' !important;
+  border-radius: 6px;
+  margin: 2px 0px 0px 6px;
+  height: 31.5px;
+  background: #7ABB4A;
+  color: white;
+  border: none;
+  font-family: 'Proxima Nova Bold' !important;
+  font-size: 12px;
+ }
+ .btn_width{
+  width: 70px;
+ }
+ .btn_width_01{
+  width: 94px;
  }
  .footer_section{
     display: flex;
-    margin: 21px 0px 16px 0px;
+    /* margin: 21px 0px 16px 0px; */
     /* border-top: 1px solid lightgrey; */
  }
+ .header1{
+  display: flex;
+  margin-top: 6px;
+ }
  .btn-trip_01{
-    border-radius: 8px;
+    border-radius: 6px;
     margin: 0px 4px;
-    width: 65px;
+    width: 55px;
     height: 34px;
     background: transparent !important;
-  border-color: #7ABB4A;
+    border-color: #7ABB4A;
     color: #7ABB4A !important;
-    font-size: 14px;
+    font-size: 12px;
     font-family: 'Proxima Nova Bold' !important;
     top: 8px;
  }
@@ -149,10 +161,15 @@ h2{
     font-family: 'Proxima Nova Bold' !important;
     font-size: 14px;
     color: #1D1D1D;
-    margin: 14px 12px 0px 20px;
+    margin: 14px 1px 0px 20px;
  }
 .header_dropdown {
   width: 135px;
+  margin-top: 2px;
+ }
+ .header_dropdown01{
+  width: 200px;
+  margin-top: 1.5px;
  }
  .search-holder{
   display: flex;
@@ -180,4 +197,30 @@ button
 
 .slds-button_outline-brand:active{
   border-color: '#7abb4a' !important;
+}
+.update_btn{
+  background: none !important;
+    background-color: var(--green-color)!important;
+    font-family: 'Proxima Nova Bold' !important;
+    color: white !important;
+    padding: 20px 40px !important;
+    border-radius: 9px !important;
+    font-size: 14px !important;
+}
+.Cancel_btn{
+    background: none !important;
+    font-family: 'Proxima Nova Bold' !important;
+    background-color: rgb(64, 75, 90) !important;
+    color: white !important;
+    border: none;
+    padding: 20px 40px !important;
+    border-radius: 9px !important;
+    font-size: 14px !important;
+
+}
+.close-btn{
+  background: var(--even-row-color);
+  position: absolute;
+  right: 7px;
+  top: 9px;
 }

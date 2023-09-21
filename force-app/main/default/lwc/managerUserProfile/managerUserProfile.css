@@ -12,6 +12,15 @@
     --scroll-color: #F6F6F6;
     --active-color: #404B5B;
     --step-bg: #F1F8EC;
+    --blue-color: #00AFE8;
+}
+
+/*Media Queries */
+@media (max-width : 1366px) {
+    /* CSS rules here */
+    .flex-container-view{
+        grid-template-columns: repeat(auto-fill, minmax(375px, 1fr)) !important;
+    }
 }
 
 .fa,
@@ -23,7 +32,11 @@
 }
 
 .flex-container-view{
-    display: flex;
+    display: grid;
+    /* grid-template-columns: repeat(auto-fill, minmax(375px, 1fr)); */
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-column-gap: 33px;
+    grid-row-gap: 33px;
 }
 
 .list-view{
@@ -36,6 +49,11 @@
     position: absolute;
     bottom: 0;
     right: 0;
+}
+
+.view-map{
+    position: absolute;
+    bottom: 0;
 }
 
 .close{
@@ -72,6 +90,12 @@
     transform: translateY(-100%);
 }
 
+.notify-container{
+    /* height: 190px 206px; */
+    /* padding-left: 0.6em;
+    margin-right: 0.6em; */
+}
+
 .overlay-slide-down {
     transition: all .4s ease-in-out;
     transform: translateY(0)
@@ -85,6 +109,7 @@
 .flex-view-1{
     border: 1px solid #D7D7D7;
     flex: 30%;
+    height: 335px;
     /* height: 46vh;
     max-height: calc(50% - 1rem); */
     border-radius: 20px;
@@ -95,6 +120,7 @@
 .flex-view-2{
     border: 1px solid #D7D7D7;
     flex: 30%;
+    height: 335px;
     /* height: 46vh;
     max-height: calc(50% - 1rem); */
     border-radius: 20px;
@@ -104,6 +130,7 @@
 .flex-view-3{
     border: 1px solid #D7D7D7;
     flex: 30%;
+    height: 335px;
     /* height: 46vh;
     max-height: calc(50% - 1rem); */
     border-radius: 20px;
@@ -118,26 +145,43 @@
     color: var(--link-color);
 }
 
+.opaque{
+    opacity: 0.4;
+}
+
 .close-notify{
     cursor: pointer;
 }
 
-.name{
-    font-family: 'Proxima Nova Bold' !important;
+.name-eh{
+    font-family: 'Proxima Nova' !important;
     font-size: 14px;
-    color: var(--link-color);
-    text-decoration: underline;
+}
+
+.name{
+    font-family: 'Proxima Nova' !important;
+    font-size: 14px;
+    color: var(--blue-color);
+    text-decoration: none;
 }
 
 .name:hover{
-    color: var(--link-color) !important;
+    color: var(--blue-color) !important;
+    text-decoration: none !important;
 }
 
 .mileage{
-    font-family: 'Proxima Nova' !important;
+    font-family: 'Proxima Nova Bold' !important;
     font-size: 14px;
     color: var(--link-color);
 }
+
+.mileage>*{
+    font-family: 'Proxima Nova Bold' !important;
+    font-size: 14px;
+    color: var(--link-color);
+}
+
 
 .driver-top td:first-child{
     padding-left: 0.6rem !important;
@@ -147,8 +191,49 @@
     padding-bottom: 0 !important;
 }
 
+.download-btn{
+    position: absolute;
+    left: 23px;
+    bottom: 18px;
+    cursor: pointer;
+}
+
+.slds-checkbox_toggle [type=checkbox]:checked+.slds-checkbox_faux_container .slds-checkbox_faux{
+    --slds-c-checkbox-toggle-color-border: var(--active-color) !important;
+    --slds-c-checkbox-toggle-color-background: var(--active-color) !important;
+}
+
+.map-label{
+    font-size: 14px;
+    line-height: 136.8%;
+}
+
+.slds-checkbox_toggle [type=checkbox]:checked+.slds-checkbox_faux_container+.input-label .map--canada{
+    color: #1D1D1D;
+    font-family: 'Proxima Nova Bold' !important;
+}
+
+.slds-checkbox_toggle [type=checkbox]:checked+.slds-checkbox_faux_container+.input-label .map--us{
+    color: rgba(29, 29, 29, 0.50);
+    font-family: 'Proxima Nova' !important;
+}
+
+.slds-checkbox_toggle [type=checkbox]+.slds-checkbox_faux_container+.input-label .map--canada{
+    color: rgba(29, 29, 29, 0.50);
+    font-family: 'Proxima Nova' !important;
+}
+
+.slds-checkbox_toggle [type=checkbox]+.slds-checkbox_faux_container+.input-label .map--us{
+    color: #1D1D1D;
+    font-family: 'Proxima Nova Bold' !important;
+}
+
+.slds-checkbox_toggle .slds-checkbox_faux{
+    box-shadow: none;
+}
+
 .view-all{
-    width: 100%;
+    /* width: 100%; */
     text-align: right;
     color: var(--green-color);
     text-decoration: underline;

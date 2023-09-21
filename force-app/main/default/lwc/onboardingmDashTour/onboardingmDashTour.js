@@ -13,6 +13,7 @@ export default class OnboardingmDashTour extends LightningElement {
   renderInitialized = false;
   promiseError = false;
   renderAccount = false;
+  watchedMeeting = false;
   driverDetails;
   buttonRender = "";
   @api dayLeft;
@@ -58,18 +59,12 @@ export default class OnboardingmDashTour extends LightningElement {
 
 
   toggleHide() {
-    var list, contactList
     contactInfo({
             contactId: this.contactId
         })
         .then((data) => {
+            this.driverDetails = data
             console.log("detail data", data)
-            if (data) {
-                this.driverDetails = data;
-                list = this.driverDetails;
-                contactList = this.proxyToObject(list);
-                this.renderAccount = (contactList[0].mburseDashboardOnBoarding) ? true : false
-            }
         })
         .catch((error) => {
             console.log(error);
@@ -110,6 +105,36 @@ export default class OnboardingmDashTour extends LightningElement {
       }
   }
 
+  handleNextMeeting(event) {
+    var checkbox = event.target.checked
+    this.renderAccount = (!checkbox) ? false : true;
+    this.template.querySelector('.skip-check').checked = false;
+    this.watchedMeeting = checkbox
+  }
+
+  handleSkipMeeting(event) {
+      var checkbox = event.target.checked
+      this.renderAccount = (!checkbox) ? false : true;
+      this.template.querySelector('.complete-check').checked = false;
+  }
+
+  nextStep(){
+    var value
+    let m = this.driverDetails;
+    value = this.proxyToObject(m)
+    console.log("###", value)
+    value[0].checkOnBoarding = true;
+    value[0].mburseDashboardOnBoarding = (this.watchedMeeting === true) ? true : false;
+    updateContactDetail({
+        contactData: JSON.stringify(value),
+        driverPacket: false
+    }).then((result)=>{
+      if(result === 'Success'){
+        this.loggedInToAccount();
+      }
+    })
+  }
+
   connectedCallback() {
     console.log("callback called", this.customSetting);
     let data = this.customSetting;
@@ -123,16 +148,16 @@ export default class OnboardingmDashTour extends LightningElement {
     }
     this.renderInitialized = true;
     this.toggleHide();
-    this.render = this.cellType === "Company Provide" ? true : false;
-    this.buttonRender =
-      this.accountType === "New Account"
-        ? "Register for your manager meeting"
-        : "Watch your manager training";
-    this.showWatchBtn = this.accountType === "New Account" ? false : true;
-    this.afterRegister =
-      this.accountType === "New Account" && this.driverMeeting === "Scheduled"
-        ? true
-        : false;
-    console.log("rendered--", this.render, this.accountType);
+    // this.render = this.cellType === "Company Provide" ? true : false;
+    // this.buttonRender =
+    //   this.accountType === "New Account"
+    //     ? "Register for your manager meeting"
+    //     : "Watch your manager training";
+    // this.showWatchBtn = this.accountType === "New Account" ? false : true;
+    // this.afterRegister =
+    //   this.accountType === "New Account" && this.driverMeeting === "Scheduled"
+    //     ? true
+    //     : false;
+    //console.log("rendered--", this.render, this.accountType);
   }
 }

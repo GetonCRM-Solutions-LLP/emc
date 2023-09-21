@@ -1,8 +1,8 @@
 <template>
-    <div class="slds-p-top_small m-left m-right panel" style="display: flex;
+    <div class="slds-p-top_xx-small m-left m-right panel" style="display: flex;
     flex-wrap: wrap;
     justify-content: center;">
-        <div class="slds-p-around_small" style="flex-basis: 236px;">
+        <!-- <div class="slds-p-around_small" style="flex-basis: 236px;">
             <div class="step">
                     <h2 class="step-count">1</h2>
                     <div class="step-inner step-margin-2">
@@ -10,36 +10,72 @@
                         <div class="step-info">Watch the <br/> <strong>Plan Preview</strong></div>
                     </div>
             </div>
-        </div>
-        <div  class="slds-p-around_small" style="flex-basis: 236px;">
-                    <div class="step">
-                        <h2 class="step-count">2</h2>
-                        <div class="step-inner step-margin-2">
-                            <img class="i-size" src={step2Url}  loading="eager">
-                            <div class="step-info">How to use <br/> <strong>m-Dash</strong></div>
-                        </div>
+        </div> -->
+        <div class="slds-p-around_small" style="flex-basis: 236px;">
+            <!-- <template if:true={accountType}>
+                <div class="step">
+                    <h2 class="step-count">1</h2>
+                    <div class="step-inner step-margin-1">
+                        <img class="i-size" src={step3Url}  loading="eager">
+                        <div class="step-info step-padding">Schedule your  <br/> <strong>Manager Meeting</strong></div>
                     </div>
-        </div>
-        <div  class="slds-p-around_small" style="flex-basis: 236px;">
-                <template if:true={accountType}>
-                    <div class="step">
-                        <h2 class="step-count">3</h2>
-                        <div class="step-inner step-margin-1">
-                            <img class="i-size" src={step3Url}  loading="eager">
-                            <div class="step-info step-padding">Schedule your  <br/> <strong>Manager Meeting</strong></div>
-                        </div>
-                    </div>
-                </template>
+                </div>
+            </template> -->
 
-                <template if:false={accountType}>
-                    <div class="step">
-                        <h2 class="step-count">3</h2>
+            <!-- <template if:false={accountType}> -->
+            <template lwc:if={isRegister}>
+                <div class="step background-blurry">
+                    <div class="plan-info-top">
+                        <h2 class="step-count opaque">1</h2>
+                        <h2 class="step-complete">Completed<span class="info-check"><i
+                                    class="fa-solid fa-lg fa-check"></i></span></h2>
+                    </div>
+                    <div class="opacity">
                         <div class="step-inner step-margin-2">
-                            <img class="i-size" src={step1Url}  loading="eager">
-                            <div class="step-info">Watch your  <br/> <strong>Manager Training</strong></div>
+                            <img class="i-size" src={step1Url} loading="eager">
+                            <div class="step-info">Watch your <br /> <strong>Driver Meeting</strong></div>
                         </div>
                     </div>
-                </template>
+                </div>
+            </template>
+            <template lwc:else>
+                    <div class="step">
+                        <h2 class="step-count">1</h2>
+                        <div class="step-inner step-margin-2">
+                            <img class="i-size" src={step1Url} loading="eager">
+                            <div class="step-info">Watch your <br /> <strong>Driver Meeting</strong></div>
+                        </div>
+                    </div>
+            </template>
+
+           
+            <!-- </template> -->
         </div>
-</div>
+        <div class="slds-p-around_small" style="flex-basis: 236px;">
+            <template lwc:if={ismDash}>
+                <div class="step background-blurry">
+                    <div class="plan-info-top">
+                        <h2 class="step-count opaque">2</h2>
+                        <h2 class="step-complete">Completed<span class="info-check"><i
+                                    class="fa-solid fa-lg fa-check"></i></span></h2>
+                    </div>
+                    <div class="opacity">
+                        <div class="step-inner step-margin-2">
+                            <img class="i-size" src={step2Url} loading="eager">
+                            <div class="step-info">How to use <br /> <strong>m-Dash</strong></div>
+                        </div>
+                    </div>
+                </div>
+            </template>
+            <template lwc:else>
+                <div class="step">
+                    <h2 class="step-count">2</h2>
+                    <div class="step-inner step-margin-2">
+                        <img class="i-size" src={step2Url} loading="eager">
+                        <div class="step-info">How to use <br /> <strong>m-Dash</strong></div>
+                    </div>
+                </div>
+            </template>
+        </div>
+    </div>
 </template>

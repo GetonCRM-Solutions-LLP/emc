@@ -7,8 +7,16 @@ import { loadStyle , loadScript } from 'lightning/platformResourceLoader';
 import jQueryMinified from '@salesforce/resourceUrl/jQueryMinified';
 import datepicker from '@salesforce/resourceUrl/calendar';
 import customMinifiedDP  from '@salesforce/resourceUrl/modalCalDp';
-import accountMonthList from "@salesforce/apex/ManagerDashboardController.accountMonthList";
+import updateEditableField from "@salesforce/apex/ReportDetailsController.updateEditableField";
+import accountMonthList from "@salesforce/apex/ReportDetailsController.monthList";
+
 import getAllReportSoql from '@salesforce/apex/ReportDetailsController.getAllReportSoql';
+import postTotalReimbursementForAllUser from '@salesforce/apex/ReportDetailsController.postTotalReimbursementForAllUser';
+import biweekpayperiod from '@salesforce/apex/ReportListController.payPeriodDateList';
+import NewEnglandGypsum from '@salesforce/label/c.NewEnglandGypsum';
+import SPBS_Account from '@salesforce/label/c.SPBS_Account';
+import SALESFORCE_LIMIT_MSG from '@salesforce/label/c.Info_message_for_salesforce_limit';
+
 
 import WORK_BOOK from "@salesforce/resourceUrl/xlsx";
 export default class ReportDetail extends LightningElement {
@@ -58,6 +66,20 @@ export default class ReportDetail extends LightningElement {
     DriverManagerList = [];
     detailsoql;
     anual_tax = false;
+    showbuttons = false;
+    concurbtn = false;
+    Weekoptions = [];
+    selectedweek;
+    placeholder='';
+    editableView = true;
+    editable_feilds ;
+    updatebtn = false;
+    updatedList = [];
+    editablefield='';
+    limitOfrecord = 0;
+    dateArray = [];
+    remId;
+    isSearchEnable = true;
   
 renderedCallback(){
    
@@ -95,67 +117,113 @@ renderedCallback(){
 getUrlParamValue(url, key) {
   return new URL(url).searchParams.get(key);
 }
+getBiweekLIst(){
+  biweekpayperiod({accId:this._accid})
+  .then(result => {
+      var payarray = new Array();
+      payarray = result.split(",");
+      let finaldata =JSON.parse(JSON.stringify(payarray));
+      console.log("finaldata",finaldata)
+      finaldata.forEach(element => {
+          let list = element.split(' to ')[0];
+          let list1 = element.split(' to ')[1];
+          let finallist = (list.split('-')[1]+'/'+list.split('-')[2]+'/'+list.split('-')[0].substring(2,4)) + ' - '+ (list1.split('-')[1]+'/'+list1.split('-')[2]+'/'+list1.split('-')[0].substring(2,4));
+          this.Weekoptions.push({label:finallist,value:finallist});
+      })
+      this.Weekoptions = JSON.parse(JSON.stringify(this.Weekoptions))
+  })
+  .catch(error => {
+      console.log("biweek error",error)
+  })
+}
 connectedCallback(){
   console.log("this.reportId",this.reportId)
     this._accid  = this.getUrlParamValue(window.location.href, 'accid')
     this._adminid  = this.getUrlParamValue(window.location.href, 'id')
-    
+    if(NewEnglandGypsum == this._accid || SPBS_Account == this._accid){
+      this.concurbtn = true;
+    }
+    this.getBiweekLIst();
     if( this.reportId != 'TAX123'){
-      var date = new Date();
-      let startDate = new Date(date.getFullYear(), date.getMonth(), 1);
-      let enddate = new Date(date.getFullYear(), date.getMonth() + 1, 0)
-      let convertdate ;
-      let convertmonth;
-      if(startDate.getMonth() < 9 ){
-        convertdate = '0'+startDate.getMonth();
-      }else{
-        convertdate = startDate.getMonth();
-      }
-      if(startDate.getDate() < 9 ){
-        convertmonth = '0'+startDate.getDate();
-      }else{
-        convertmonth = startDate.getDate();
-      }
-      let getyear = startDate.getYear();
-      getyear = getyear.toString();
-      this.from_Date = convertdate+'/'+convertmonth+'/'+getyear.substring(1);
-      let endconvertdate ;
-      let endconvertmonth;
-      if(enddate.getMonth() < 9 ){
-        endconvertdate = '0'+enddate.getMonth();
-      }else{
-        endconvertdate = enddate.getMonth();
-      }
-      if(enddate.getDate() < 9 ){
-        endconvertmonth = '0'+enddate.getDate();
-      }else{
-        endconvertmonth = enddate.getDate();
-      }
-      this.to_Date = endconvertdate+'/'+endconvertmonth+'/'+getyear.substring(1);
      
       getReportDetails({reportid : this.reportId})
       .then(result => {
-        
-          let resultdata = JSON.parse(result);
-          console.log("detail",resultdata)
+          console.log("detail",result)
+          // console.log("detail",JSON.parse(result))
+         let jsondata = result.replace(/\'/g, "\\'");
+         console.log("jsondata",jsondata)
+
+          let resultdata = JSON.parse(jsondata);
+         console.log("resultdata",resultdata)
+
           this.reportType = resultdata.Report_Type__c;
-          let datefield = resultdata.Date_Fields__c
-          let datetimefield = resultdata.Date_Time_Fields__c
-          let numericfield = resultdata.Numeric_Fields__c
+          let datefield = resultdata.Date_Fields__c == undefined ?  '' : resultdata.Date_Fields__c
+          if(resultdata.Numeric_Fields__c != undefined){
+            let numericfield = resultdata.Numeric_Fields__c 
+            var headerarry = new Array();
+            headerarry = numericfield.split(",");
+            this.dateArray =JSON.parse(JSON.stringify(headerarry));
+          }
+          
+         
           let showfilter = resultdata.Filter_By__c == undefined ?  '' : resultdata.Filter_By__c
           this.reportName = resultdata.Name;
-  
+          this.limitOfrecord = resultdata.Limit__c == undefined ? 0 : resultdata.Limit__c;
+
+          if(resultdata.Editable_Fields__c != undefined){
+            this.editablefield = resultdata.Editable_Fields__c
+            var editarry = new Array();
+            editarry = this.editablefield.split(",");
+            this.editable_feilds =JSON.parse(JSON.stringify(editarry));
+          }
+         console.log("showfilter.length",showfilter.length)
+          
           if(showfilter.length > 0){
               if(showfilter.includes('Monthly')){
-                  this.getAccountMonthList()
+                  // this.getAccountMonthList()
                   this.monthlyDropdown = true;
                   this.weeklyDropdown = false;
                   this.dateRange = false;
-              }else if(showfilter.includes('Biweekly')){
+              }else if(showfilter.includes('Biweek Reimbursement')){
                   this.weeklyDropdown = true;
                   this.dateRange = false;
                   this.monthlyDropdown = false;
+                 
               }else if(showfilter == 'Dates'){
+                console.log("today date",new Date())
+                var currentDate = new Date();
+                var getmonth = currentDate.getMonth()
+                let startDate = new Date(currentDate.getFullYear(), currentDate.getMonth() , 1);
+                let enddate = new Date(currentDate.getFullYear(), getmonth, 0)
+                console.log("startDate,enddate",startDate+enddate)
+                let convertdate ;
+                let convertmonth;
+                if(startDate.getMonth() < 9 ){
+                  convertdate = '0'+startDate.getMonth();
+                }else{
+                  convertdate = startDate.getMonth();
+                }
+                if(startDate.getDate() < 9 ){
+                  convertmonth = '0'+startDate.getDate();
+                }else{
+                  convertmonth = startDate.getDate();
+                }
+                let getyear = startDate.getYear();
+                getyear = getyear.toString();
+                this.from_Date = convertdate+'/'+convertmonth+'/'+getyear.substring(1);
+                let endconvertdate ;
+                let endconvertmonth;
+                if(enddate.getMonth() < 9 ){
+                  endconvertdate = '0'+(enddate.getMonth()+1);
+                }else{
+                  endconvertdate = enddate.getMonth()+1;
+                }
+                if(enddate.getDate() < 9 ){
+                  endconvertmonth = '0'+enddate.getDate();
+                }else{
+                  endconvertmonth = enddate.getDate();
+                }
+                this.to_Date = endconvertdate+'/'+endconvertmonth+'/'+getyear.substring(1);
                   this.dateRange = true;
                   this.monthlyDropdown = false;
                   this.weeklyDropdown = false;
@@ -167,8 +235,10 @@ connectedCallback(){
           }else{
               this.DriverManager = 'Driver';
           }
-  
-          getManagerDriverDetails({accountId : this._accid,role : this.DriverManager})
+          this.placeholder = 'Select '+this.DriverManager;
+          console.log("this.placeholder",this.placeholder)
+          
+          getManagerDriverDetails({accountId : this._accid,role : 'Manager'})
           .then(result => {
               this.DriverManagerList = JSON.parse(result);
               this.DriverManagerList.forEach(index => {
@@ -195,29 +265,93 @@ connectedCallback(){
           this.detail = detailarraynew;
           console.log("detail",JSON.parse(JSON.stringify(this.detail)))
           let detaildatanew = JSON.parse(JSON.stringify(detailarraynew))
+          console.log("after",JSON.parse(JSON.stringify(this.detail)))
+
           this.detailsoql = JSON.parse(JSON.stringify(detailarraynew));
+          console.log("before",JSON.parse(JSON.stringify(this.detail)))
+
           var imageList=[];
           let coltype;
+          console.log("this.headerdata.length",this.headerdata.length)
+
           for(let i=0;i<this.headerdata.length;i++){
-          if(datefield == detaildatanew[i]){
-                  coltype = 'Date'
-          }else if(datetimefield == detaildatanew[i]){
-                  coltype = 'Datetime'
-          }else if(numericfield == detaildatanew[i]){
-                  coltype = 'Decimal'
-          }else{
-                  coltype = 'String'
-          }
-          imageList.push({id:i,name:this.headerdata[i] ,colName:detaildatanew[i],colType:coltype,arrUp:false,arrDown:false});
+            coltype = 'String';
+            this.dateArray.forEach(col => {
+              if(col == detaildatanew[i]){
+                coltype = 'Integer'
+              }
+            })
+            if(i== 0){
+              imageList.push({id:i,name:this.headerdata[i] ,colName:this.headerdata[i],colType:coltype,arrUp:true,arrDown:false});
+            }else{
+              imageList.push({id:i,name:this.headerdata[i] ,colName:this.headerdata[i],colType:coltype,arrUp:false,arrDown:false});
+            }
           }
           this.header = JSON.parse(JSON.stringify(imageList));
-          console.log("header",this.header)
-          getDriverManagerDropdownList({accountId : '0010Z00001ygUen' , contactId : '0030Z00003NFLRo', reportId : this.reportId})
+         console.log("this.header",this.header)
+
+          console.log("header",this._accid+'--'+this._adminid+'---'+this.reportId)
+          getDriverManagerDropdownList({accountId : this._accid , contactId : this._adminid, reportId : this.reportId , checkLimit : this.limitOfrecord})
           .then(result => {
+            console.log("data",result)
+
               let data = JSON.parse(result)
-              if(data[1].length > 8){
+              console.log("data",data)
+              if(this.DriverManager == 'Manager'){
+                this.detaildata = JSON.parse(JSON.parse(data[1]));
+              }else{
+                this.detaildata = JSON.parse(JSON.parse(data[0]));
+              }
+              if(this.detaildata.length > 0){
+                this.showbuttons = true;
+                
+                console.log("this.detaildata",this.detaildata)
+                if(this.reportName == 'Employee Roster Report'){
+                  this.detaildata.forEach(element => {
+                    if(element.Activation_Date__c != undefined){
+                      var actdate = element.Activation_Date__c;
+                      element.Activation_Date__c = actdate.split('-')[1]+'/'+actdate.split('-')[2]+'/'+actdate.split('-')[0];
+                    }
+                    if(element.Deactivated_Date__c != undefined){
+                      var dctdate = element.Deactivated_Date__c;
+                      element.Deactivated_Date__c = dctdate.split('-')[1]+'/'+(dctdate.split('-')[2]).slice(0, 2)+'/'+dctdate.split('-')[0];
+                    }
+                  })
+                }else if(this.reportName == 'Onboarding Status Report'){
+                  this.detaildata.forEach(element => {
+                    if(element.Schedule_Driver_Meeting__c == true){
+                      element.Schedule_Driver_Meeting__c = 'Yes';
+                    }else if(element.Schedule_Driver_Meeting__c == false){
+                      element.Schedule_Driver_Meeting__c = 'No';
+                    }
+                  })
+                }else if(this.reportName == 'Commuter and Actual Mileage Report'){
+                  this.detaildata.forEach(element => {
+                    if(element.Trip_Date__c != undefined){
+                      var actdate = element.Trip_Date__c;
+                      element.Trip_Date__c = actdate.split('-')[1]+'/'+actdate.split('-')[2]+'/'+actdate.split('-')[0];
+                    }
+                    if(element.Approved_Date__c != undefined){
+                      var approvedt = element.Approved_Date__c;
+                      element.Approved_Date__c = approvedt.split('-')[1]+'/'+approvedt.split('-')[2]+'/'+approvedt.split('-')[0];
+                    }
+                    
+                    if(element.ConvertedStartTime__c != undefined){
+                      var starttime = element.ConvertedStartTime__c;
+                      var time = new Date(starttime);
+                      var ampm = time.toLocaleString('en-US', { hour: 'numeric', hour12: true })
+                      element.ConvertedStartTime__c = (starttime.split('T')[1]).slice(0, 5)+ ' '+ampm.split(' ')[1];
+                    }
+                    if(element.ConvertedEndTime__c != undefined){
+                      var endtime = element.ConvertedEndTime__c;
+                      var time1 = new Date(endtime);
+                      var ampm1 = time1.toLocaleString('en-US', { hour: 'numeric', hour12: true })
+                      element.ConvertedEndTime__c = (endtime.split('T')[1]).slice(0, 5)+ ' '+ampm1.split(' ')[1];
+                    }
+                  })  
+                }
                   this.recordDisplay = true;
-                  this.detaildata = JSON.parse(JSON.parse(data[1]));
+                  
                   this.headerfields = new Map();
                   for(var i=0 ; i < detaildatanew.length ; i++){
                       if(detaildatanew[i].includes('.')){
@@ -226,7 +360,9 @@ connectedCallback(){
                           this.headerfields.set(detaildatanew[i],this.headerdata[i]);
                       }
                   }
-                  
+                  this.headerfields.set('Id','Id');
+                  // this.headerfields.set(Id,Id);
+                  console.log("this.headerfields",this.headerfields)
                   for(var i=0;i<this.detaildata.length;i++){
                       Object.keys(this.detaildata[i]).forEach((key) => {
                                   if(key != "attributes"){
@@ -240,6 +376,7 @@ connectedCallback(){
                                   }
                       })
                   }
+                  console.log("keyArray",JSON.parse(JSON.stringify(this.keyArray)))
                   var temp = [];
                  
                   for(let k=0;k<this.keyArray.length;k++){
@@ -248,6 +385,7 @@ connectedCallback(){
                       }
                   }
                   let temparray =  JSON.parse(JSON.stringify(temp));
+
                   let groupedData = [];
                   for (var i = 0; i < temparray.length; i++) {
                       var item = temparray[i];
@@ -266,7 +404,8 @@ connectedCallback(){
                     
                     // Log or use the grouped data
                     let objarray = JSON.parse(JSON.stringify(groupedData));
-  
+                  console.log("objarray",objarray)
+                    
                     for(var h=0;h<objarray.length;h++){
                       
                       let finalObj ;
@@ -276,10 +415,13 @@ connectedCallback(){
                       objarray[h] = finalObj;
                     }
                     this.finaldata = JSON.parse(JSON.stringify(objarray))
+                    
                     this.exceldata =JSON.parse(JSON.stringify(objarray));
                   this.dynamicBinding(this.finaldata,  this.headerdata)
+                  console.log("final data",this.finaldata)
                   this.ishow = true;
               }else{
+                  this.showbuttons = false;
                   this.ishow = true;
                   this.recordDisplay = false;
               }
@@ -299,23 +441,15 @@ connectedCallback(){
     
 
 }
-getAccountMonthList() {
-    accountMonthList({
-      accountId: '0010Z00001ygUen'
-    }).then((data) => {
-      if (data) {
-        // let mileageAccount = data ? this.removeDuplicateValue(this.proxyToObject(data)) : [];
-        let month = JSON.parse(data)
-        console.log("monthoption",month)
-        month.forEach(row => {
-            this.monthoption.push({label : row , value : row})
-        })
-        this.monthoption = JSON.parse(JSON.stringify( this.monthoption))
-        console.log("monthoption",this.monthoption)
-      }
-    });
-}
 
+handleenter(){
+  if(this.Weekoptions.length > 6){
+    if(this.template.querySelector(`c-dropdown-select[data-id="bi_week"]`)){
+      console.log("hiii",this.template.querySelector(`c-dropdown-select[data-id="bi_week"]`))
+      this.template.querySelector(`c-dropdown-select[data-id="bi_week"]`).toggleStyle(true) ;  
+    }   
+  }  
+}
 removeDuplicateValue(myArray) {
     var newArray = [];
     myArray.forEach((value) => {
@@ -368,9 +502,29 @@ dynamicBinding(data, keyFields) {
         keyFields.forEach(key => {
                 let singleValue = {}
                     singleValue.key = key;
-                    singleValue.value = element[key];
+                    singleValue.value = element[key] == undefined ? null : element[key];
+                    this.header.forEach(element => {
+                      if(element.colName == key){
+                        singleValue.keyType = element.colType;
+                      }
+                    })
+                    if(this.editablefield){
+                        if(this.editablefield.includes(key+'-') ){
+                          singleValue.proratedInput = true;
+                        }else{
+                          singleValue.proratedInput = false;
+                        }
+                    }else{
+                      singleValue.proratedInput = false;
+                    }
+                    singleValue.id = element['Id'];
+                    singleValue.uId = element.Id;
+                    singleValue.twoDecimal = false;
+                    singleValue.onlyLink = false;
+                    singleValue.isLink = false;
                   model.push(singleValue);
         })
+        element.id = element['Id'];
         element.keyFields = this.mapOrder(model, keyFields, 'key');
     });
 }
@@ -384,19 +538,28 @@ mapOrder(array, order, key) {
         }
         return -1;
     });
-
     return array;
 }
 
 handleDriverChange(event){
     this.manager = event.detail.value;
 }
-handleChange(event){
+handleChangebysearch(event){
+  this.updatebtn = false;
     this.searchkey = event.target.value;
+    this.isSearchEnable = this.searchkey == "" ? true : false;
     if(this.template.querySelector('c-user-preview-table')){
         this.template.querySelector('c-user-preview-table').searchByKey(this.searchkey);
     }
+   
 } 
+handleClearInput(event){
+  this.searchkey = "";
+  this.isSearchEnable = this.searchkey == "" ? true : false;
+  this.template
+  .querySelector("c-user-preview-table")
+  .searchByKey(this.searchkey);
+}
 handleClose(){
     this.dispatchEvent(
         new CustomEvent("closemodal", { })
@@ -406,7 +569,8 @@ handlemonthchange(event){
     this.selectedmonth = event.detail.value;
 }
 handleweekchange(event){
-
+  this.selectedweek = event.detail.value;
+  this.template.querySelector(`c-dropdown-select[data-id="bi_week"]`).toggleStyle(false);
 }
 intializeDatepickup1(){
     let $jq = jQuery.noConflict();
@@ -513,14 +677,17 @@ intializeDatepickup1(){
                 console.log('explain:', date, formattedDate, datepicker, _self2.val());
                 console.log('selected date', date);
                 //  console.log('explain:', date, formattedDate, dpicker, _self2.val());
-                 if(index ===  0){
-                  let fromdate = date;
-                 this.from_Date =  fromdate;
+                 if(index ==  0){
+                  console.log("if index",index)
+                  // let fromdate = date;
+                 this.from_Date =  date;
                  }
-                 if(index ===  1){
-                  let todate = date;
-                  this.to_Date =  todate;
+                 if(index ==  1){
+                  console.log("if index",index)
+                  // let todate = date;
+                  this.to_Date =  date;
                  }
+                 console.log("if index",this.from_Date + this.to_Date)
             },
             onShow: function (dp, animationCompleted) {
               console.log('selected date');
@@ -565,52 +732,69 @@ intializeDatepickup1(){
 
   handleCopy(){
     const parent = this.template.querySelector('c-user-preview-table');
-    let target = parent.children[0].offsetParent;
+    let target = parent.children[1].offsetParent;
     if(target  !== null || target !== undefined){
         let targetchildren = target.children[2];
         if(targetchildren  !== null || targetchildren !== undefined){
             let child1 = targetchildren.children[0]
-            if(child1  !== null || child1 !== undefined){
-                let child2 = child1.children[0]
-                if(child2 !== null || child2 !== undefined){
-                    let table = child2.children[0];
-                    console.log("table", parent.children)
+                    console.log("table", child1)
                     this.dispatchEvent(
                         new CustomEvent("copy", {
-                        detail:targetchildren
+                        detail:child1
                         })
                     );
-                }
-            }
         }
     }
-   
-
-    
   }
   handlePrint() {
+    // const parent = this.template.querySelector('c-user-preview-table');
+    // let target = parent.children[0].offsetParent;
+    // if(target  !== null || target !== undefined){
+    //     let targetchildren = target.children[1];
+    //     if(targetchildren  !== null || targetchildren !== undefined){
+    //         let child1 = targetchildren.offsetParent
+    //         if(child1  !== null || child1 !== undefined){
+    //             let child2 = child1.offsetParent
+    //             if(child2 !== null || child2 !== undefined){
+    //               let table = child2.children[2];
+           
+    //               this.dispatchEvent(
+    //                 new CustomEvent("print", {
+    //                   detail:table
+    //                 })
+    //               );
+    //             }
+    //         }    
+    //     }
+    // }    
     const parent = this.template.querySelector('c-user-preview-table');
-    let target = parent.children[0].offsetParent;
+    let target = parent.children[1].offsetParent;
     if(target  !== null || target !== undefined){
         let targetchildren = target.children[2];
         if(targetchildren  !== null || targetchildren !== undefined){
-            let table = targetchildren.children[0];
-           
-                this.dispatchEvent(
-                  new CustomEvent("print", {
-                    detail:table
-                  })
-                );
+            let child1 = targetchildren.children[0]
+                    console.log("table", child1)
+                    this.dispatchEvent(
+                        new CustomEvent("print", {
+                        detail:child1
+                        })
+                    );
         }
-    }    
-  
+    }
   }
   handleCreateExcel(){
     let exceldata = [];
+    console.log("this.exceldata",this.exceldata)
     this.exceldata.forEach(element => {
         let model = [];
         this.headerdata.forEach(key => {
-            model.push({[key]:element[key]});
+          let keyvalue ;
+            if(element[key] == undefined){
+              keyvalue = null;
+            }else{
+              keyvalue = element[key];
+            }
+            model.push({[key]:keyvalue});
         });
          exceldata.push(Object.assign({}, ...model));
 
@@ -633,7 +817,12 @@ intializeDatepickup1(){
         var finaldate =  (month < 10 ? '0'+month : month) +today+toyear+hours+minutes+second;
         //push data , custom header , filename and worksheetname for detail xlsx file
         tempheader.push(this.headerdata);
-        tempworkSheetNameList.push(this.reportName);
+        if(this.reportName == "Final Variable Report for Terminated Drivers" || this.reportName == "Commuter and Actual Mileage Report"){
+          tempworkSheetNameList.push(finaldate);
+        }else{
+          tempworkSheetNameList.push(this.reportName);
+        }
+       
         tempxlsData.push(exceldata);
         name = this.reportName+' '+finaldate+'.xlsx';
         //Download Summary report(xlsx file)
@@ -745,6 +934,7 @@ intializeDatepickup1(){
           item.forEach((value, index) => {
               var innerRowData = [];
               xlsRowKey.forEach(item=>{
+                console.log("valur of key",value[item])
                   innerRowData.push(value[item]);
               })
 
@@ -757,20 +947,35 @@ intializeDatepickup1(){
     console.log("wb",wb)
     /* creating new worksheet */
     var ws = Array(createXLSLFormatObj.length).fill([]);
+    console.log("ws",ws.length)
     for (let i = 0; i < ws.length; i++) {
       /* converting data to excel format and puhing to worksheet */
       let data = XLSX.utils.aoa_to_sheet(createXLSLFormatObj[i]);
       ws[i] = [...ws[i], data];
+      console.log("ws[i]",ws_name[i] )
+      
 
       /* Add worksheet to Excel */
       XLSX.utils.book_append_sheet(wb, ws[i][0], ws_name[i]);
     }
-
+    console.log("filename")
     /* Write Excel and Download */
     XLSX.writeFile(wb, filename);
+    console.log("filename")
+
   }
 
   handleApply(){
+    this.dispatchEvent(
+      new CustomEvent("show", { detail :''})
+    );
+   
+    let months ;
+    this.monthList.forEach(month => {
+      if(this.selectedmonth == month.label){
+        months = month.value;
+      }
+    })
     
     let managerId ;
     this.DriverManagerList.forEach(row => {
@@ -778,7 +983,31 @@ intializeDatepickup1(){
         managerId = row.Id;
       }
     })
-   
+   if(this.selectedweek){
+    //2023-03-24
+    let sdate = this.selectedweek.split('-')[0];
+    let edate = this.selectedweek.split('-')[1];
+
+      this.from_Date = sdate.split('/')[0]+'/'+sdate.split('/')[1]+'/20'+sdate.split('/')[2];
+      this.to_Date = edate.split('/')[0]+'/'+edate.split('/')[1]+'/20'+edate.split('/')[2];
+      console.log("date", this.from_Date )
+   }else{
+    if(this.from_Date){
+      this.from_Date = this.template.querySelector(`.date-selector[data-id="fromDate"]`).value ;
+      this.to_Date = this.template.querySelector(`.date-selector[data-id="toDate"]`).value ;
+    }  
+   }
+   if(this.from_Date == undefined){
+    this.from_Date = null;
+    this.to_Date = null;
+   }
+   console.log("onboarding status",this.to_Date+'--->this.from_Date'+this.from_Date)
+   if(this.reportName == 'Onboarding Status Report'){
+    this.reportsoql = this.reportsoql.replaceAll(/\\/g, '');
+    const replacedString =  this.reportsoql.replace(/\\\\/g, '');
+    console.log("this.reportsoql",replacedString)
+    this.reportsoql = replacedString;
+   }
     getAllReportSoql({reportSoql : this.reportsoql,
                       reporttype : this.reportType,
                       selectedManager : managerId,
@@ -788,14 +1017,58 @@ intializeDatepickup1(){
                       accountid : this._accid,
                       reportid : this.reportId,
                       driverormanager : this.DriverManager,
-                      monthVal :  this.selectedmonth})
+                      monthVal :  months,
+                      checkLimit : this.limitOfrecord})
   .then((result) => {
-        // console.log("success",JSON.parse(JSON.stringify(JSON.parse(result))));
-        // this.filterdata = [];
         this.searchdata = [];
         this.filterdata = JSON.parse(result);
-        console.log("length1", this.filterdata)
-        if(this.filterdata.length > 2){
+        console.log("length1", this.filterdata.length)
+        if(this.filterdata.length > 0){
+          if(this.reportName == 'Employee Roster Report'){
+            this.filterdata.forEach(element => {
+              if(element.Activation_Date__c != undefined){
+                var actdate = element.Activation_Date__c;
+                element.Activation_Date__c = actdate.split('-')[1]+'/'+actdate.split('-')[2]+'/'+actdate.split('-')[0];
+              }
+              if(element.Deactivated_Date__c != undefined){
+                var dctdate = element.Deactivated_Date__c;
+                element.Deactivated_Date__c = dctdate.split('-')[1]+'/'+(dctdate.split('-')[2]).slice(0, 2)+'/'+dctdate.split('-')[0];
+              }
+            })
+          }else if(this.reportName == 'Onboarding Status Report'){
+            this.filterdata.forEach(element => {
+              if(element.Schedule_Driver_Meeting__c == true){
+                element.Schedule_Driver_Meeting__c = 'Yes';
+              }else if(element.Schedule_Driver_Meeting__c == false){
+                element.Schedule_Driver_Meeting__c = 'No';
+              }
+            })
+          }else if(this.reportName == 'Commuter and Actual Mileage Report'){
+            this.filterdata.forEach(element => {
+              if(element.Trip_Date__c != undefined){
+                var actdate = element.Trip_Date__c;
+                element.Trip_Date__c = actdate.split('-')[1]+'/'+actdate.split('-')[2]+'/'+actdate.split('-')[0];
+              }
+              if(element.Approved_Date__c != undefined){
+                var approvedt = element.Approved_Date__c;
+                element.Approved_Date__c = approvedt.split('-')[1]+'/'+approvedt.split('-')[2]+'/'+approvedt.split('-')[0];
+              }
+              
+              if(element.ConvertedStartTime__c != undefined){
+                var starttime = element.ConvertedStartTime__c;
+                var time = new Date(starttime);
+                var ampm = time.toLocaleString('en-US', { hour: 'numeric', hour12: true })
+                element.ConvertedStartTime__c = (starttime.split('T')[1]).slice(0, 5)+ ' '+ampm.split(' ')[1];
+              }
+              if(element.ConvertedEndTime__c != undefined){
+                var endtime = element.ConvertedEndTime__c;
+                var time1 = new Date(endtime);
+                var ampm1 = time1.toLocaleString('en-US', { hour: 'numeric', hour12: true })
+                element.ConvertedEndTime__c = (endtime.split('T')[1]).slice(0, 5)+ ' '+ampm1.split(' ')[1];
+              }
+            })  
+          }
+          this.showbuttons = true;
           this.recordDisplay = true;
           this.headerfields = new Map();
           for(var i=0 ; i < this.detailsoql.length ; i++){
@@ -860,23 +1133,168 @@ intializeDatepickup1(){
               }
               objarr[h] = finalObj1;
             }
-            // this.finaldata = [];
             
             this.searchdata = JSON.parse(JSON.stringify(objarr));
-        console.log("length2",this.searchdata.length + this.searchdata)
-
             this.exceldata =JSON.parse(JSON.stringify(objarr));
-          this.dynamicBinding(this.searchdata,  this.headerdata)
-          // this.ishow = true;
-          this.template.querySelector('c-user-preview-table').tableListRefresh(this.searchdata) ;
+            this.dynamicBinding(this.searchdata,  this.headerdata)
+            setTimeout(() => {
+              this.dispatchEvent(
+                new CustomEvent("hide", { detail : ''})
+              );
+            },2000); 
+            this.template.querySelector('c-user-preview-table').tableListRefresh(this.searchdata) ;
+            if(this.limitOfrecord > 0){
+              let originalString = SALESFORCE_LIMIT_MSG;
+              console.log("replace string",originalString)
+
+              console.log("replace string",originalString.replace("2000",this.limitOfrecord))
+              this.dispatchEvent(
+                new CustomEvent("toastmessage", {
+                  detail: {
+                      errormsg: "error",
+                      message:originalString.replace("2000",this.limitOfrecord)
+                  } 
+                })
+              )
+            }
       }else{
-          // this.ishow = true;
-          this.recordDisplay = false;
+          this.showbuttons = false;
+          // this.recordDisplay = false;
+          this.searchdata = [];
+          setTimeout(() => {
+            this.dispatchEvent(
+              new CustomEvent("hide", { detail : ''})
+            );
+          },2000); 
+          this.template.querySelector('c-user-preview-table').tableListRefresh(this.searchdata) ;
+         
       }
-  })
-  .catch(error => {
-        console.log("failure",error);
-  });
+    })
+    .catch(error => {
+          console.log("failure",error);
+          this.showbuttons = false;
+          // this.recordDisplay = false;
+          this.searchdata = [];
+          setTimeout(() => {
+            this.dispatchEvent(
+              new CustomEvent("hide", { detail : ''})
+            );
+          },2000); 
+          this.template.querySelector('c-user-preview-table').tableListRefresh(this.searchdata) ;
+          this.dispatchEvent(
+            new CustomEvent("toastmessage", {
+              detail: {
+                  errormsg: "error",
+                  message:"System Error: A team member has been notified to identify and address the issue within a working day.If it is urgent, please contact support for a solution."
+              } 
+            })
+          )
+    });
+  }
+  handleConcur(){
+    this.dispatchEvent(
+      new CustomEvent("show", { detail :''})
+    );
+    postTotalReimbursementForAllUser({accId : this._accid})
+    .then((result) => {
+      setTimeout(() => {
+        this.dispatchEvent(
+          new CustomEvent("hide", { detail : ''})
+        );
+      },1000); 
+    })
+    .catch(error => {
+          console.log("failure",error);
+    });
+  }
+  showupdatebtn(event){
+    this.updatebtn = true;
+  }
+  handleUpdateList(event){
     
+    let updateJson = JSON.parse(event.detail.list);
+    console.log("updateJson",updateJson)
+
+    this.remId = updateJson.Id ;
+    let str1 ;
+    this.editable_feilds.forEach(index => {
+      if(index.split('-')[0] == event.detail.key){
+        str1 = index.split('-')[1];
+        // recordId = this.updatedList[i].Id
+        // test.push({[index.split('-')[1]]:this.updatedList[i][key]})
+        // test.push({Id:this.updatedList[i].Id})
+      }
+    })
+    let finalJson = [];
+    finalJson.push({Id : updateJson.Id , [str1] : event.detail.inputValue})
+
+    
+		// this.updatedList =Object.assign({}, ...finalJson);
+    this.updatedList.push(finalJson)
+    console.log("employeeList",JSON.parse(JSON.stringify(this.updatedList)))
+    if(this.searchdata.length > 2){
+    console.log("in if")
+
+      this.searchdata.forEach(searchdata => {
+        if(searchdata.Id == this.remId){
+          keyFields.forEach(col => {
+            if(col.key == event.detail.key){
+              col.value = event.detail.inputValue;
+            }
+          })
+        }
+        this.template.querySelector('c-user-preview-table').tableListRefresh(this.searchdata) ;
+      })
+    }else{
+      let tempdata = JSON.parse(JSON.stringify(this.finaldata));
+      tempdata.forEach(searchdata => {
+        if(searchdata.Id == this.remId){
+          searchdata.keyFields.forEach(col => {
+            if(col.key == event.detail.key){
+              col.value = event.detail.inputValue;
+            }
+          })
+        }
+      })
+      this.template.querySelector('c-user-preview-table').tableListRefresh(tempdata) ;
+    }
+  }
+  handleupdate(){
+    const mergedArray = [].concat(...this.updatedList);
+    const mergedObjects = {};
+    // Loop through the inputArray
+    for (const obj of mergedArray) {
+      const id = obj.Id;
+      if (!mergedObjects[id]) {
+        // If the ID doesn't exist in mergedObjects, create a new object
+        mergedObjects[id] = { Id: id };
+      }
+      // Merge the properties from the current object into the merged object
+      Object.assign(mergedObjects[id], obj);
+    }
+    // Convert the mergedObjects object back into an array
+    const deduplicatedArray = Object.values(mergedObjects);
+    console.log(JSON.stringify(deduplicatedArray));
+    
+
+    updateEditableField({data : JSON.stringify(deduplicatedArray) , idOfRecord : this.remId})
+    .then((result) => {
+      this.dispatchEvent(
+        new CustomEvent("toastmessage", {
+          detail: {
+              errormsg: "success",
+              message:"Data Update Successfully"
+          } 
+        })
+      )
+      this.updatebtn = false;
+    })
+    .catch(error => {
+      console.log("failure",error);
+    });
+    this.updatebtn = false;
+  }
+  handleCancel(){
+    this.updatebtn = false;
   }
 }

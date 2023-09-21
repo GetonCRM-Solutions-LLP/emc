@@ -34,6 +34,21 @@ table tr td {
     font-family: 'Proxima Nova Bold' !important;
 }
 
+.welcome-header{
+    background: transparent !important;
+    border: 0 !important;
+    color: var(--white-color) !important;
+    font-size: 32px !important;
+}
+
+.welcome-header h2{
+    font-family: 'Proxima Nova Semibold' !important;
+}
+
+.no-center{
+    justify-content: normal !important;
+}
+
 .message-header{
     border-bottom: 0 !important;
     font-family: 'Proxima Nova';
@@ -59,6 +74,10 @@ table tr td {
     /* border: 1px solid var(--grey-color) !important; */
     border-top: 0 !important;
     font-family: 'Proxima Nova';
+}
+
+.overflow-inherit{
+    overflow: inherit !important;
 }
 
 h2{
@@ -93,6 +112,11 @@ button.close {
     font-family: 'Proxima Nova Bold' !important;
     position: relative;
     float: right;
+}
+
+.modal-file{
+    width: 90% !important;
+    max-width: 90% !important;
 }
 
 .popup-close-btn span {
@@ -136,8 +160,16 @@ button.close {
     top: 4px;
 }
 
-.slds-backdrop_open{
-    background: rgba(0, 0, 0, 0.85);
+.hidden-close{
+    display: none;
+}
+
+.light-background{
+    background: rgba(0, 0, 0, 0.85) !important;
+}
+
+.dark-background{
+    background: rgba(0, 0, 0, 1) !important;
 }
 
 .slds-text-heading_medium{
@@ -204,4 +236,21 @@ sub {
     top: 8px;
     margin-top: 26px;
     margin-right: 60px;
+ }
+
+ .employee-modal-width {
+    width: 420px !important;
+ }
+
+ .add-employee-modal-width {
+     width: 70% !important;
+ }
+ 
+
+ .deavtivate-modal-width {
+    width: 50% !important;
+ }
+
+ .modal-inside-modal .slds-backdrop_open{
+    background: rgba(0,0,0,0.07) !important;
  }

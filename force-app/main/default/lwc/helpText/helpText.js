@@ -7,7 +7,9 @@ export default class HelpText extends LightningElement {
     @api footer;
     @api content;
     @api titleName;
+    @api helpName;
     filterContent;
+    countStyle = 'is--text--help total-font-style';
 
     connectedCallback(){
         console.log("Help Text Working!!!")

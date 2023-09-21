@@ -1,5 +1,5 @@
-<template>
-    <c-navigation-menu driver-menu-item={adminProfileMenu} onsidebar={handleSidebarToggle} driver-name={userName} driver-email={userEmail} profile-id={profile} onlogout={handleLogout}></c-navigation-menu><!-- onopen={takeMeToMenu} -->
+<template >
+    <c-navigation-menu driver-menu-item={adminProfileMenu} onsidebar={handleSidebarToggle} driver-name={userName} driver-email={userEmail} profile-id={profile} onlogout={handleLogout}></c-navigation-menu>
 	<c-dashboard-profile-header user-name={firstName} full-name={contactTitle} unread={unreadCount} page-source={isHomePage} onnotify={viewAllNotification} onlogout={handleLogout} driver-menu={menu} is-navigate="true">
 		<template lwc:if={isProfile}>
 			<div slot="buttons">
@@ -7,19 +7,7 @@
 					<svg fill="none" viewBox="0 0 12 13.091" height="13.091" width="12" xmlns="http://www.w3.org/2000/svg" class="svg-space"><path stroke-linecap="round" stroke-width="1.6363636363636362" stroke="#fff" d="M5.849 11.305V1.785M1.091 6.545h9.519"></path></svg>
 					New user
 				</button>
-				<button class="slds-btn slds-btn-primary slds-btn-sm waves-effect bc-outline--background waves-light mleft-0 btn-outline-green-sm">
-					<svg class="svg-space" xmlns="http://www.w3.org/2000/svg" width="14" height="2.334" viewBox="0 0 14 2.334" fill="none"><path d="M1.911 1.166h10.179" stroke="#7ABB4A" stroke-width="1.75" stroke-linecap="round"/></svg>
-					Remove user
-				</button>
-			</div>
-		</template>
-		<template lwc:if={showUsers}>
-			<div slot="buttons">
-				<button onclick={addUser} class="slds-btn slds-btn-primary slds-btn-sm waves-effect bc-green waves-light mleft-0 btn-colored">
-					<svg fill="none" viewBox="0 0 12 13.091" height="13.091" width="12" xmlns="http://www.w3.org/2000/svg" class="svg-space"><path stroke-linecap="round" stroke-width="1.6363636363636362" stroke="#fff" d="M5.849 11.305V1.785M1.091 6.545h9.519"></path></svg>
-					New user
-				</button>
-				<button class="slds-btn slds-btn-primary slds-btn-sm waves-effect bc-outline--background waves-light mleft-0 btn-outline-green-sm">
+				<button onclick={removeUser} class="slds-btn slds-btn-primary slds-btn-sm waves-effect bc-outline--background waves-light mleft-0 btn-outline-green-sm">
 					<svg class="svg-space" xmlns="http://www.w3.org/2000/svg" width="14" height="2.334" viewBox="0 0 14 2.334" fill="none"><path d="M1.911 1.166h10.179" stroke="#7ABB4A" stroke-width="1.75" stroke-linecap="round"/></svg>
 					Remove user
 				</button>
@@ -32,22 +20,22 @@
         </template>
         <template lwc:elseif={mileageApproval}>
             <template lwc:if={listOfDriver}>
-                <c-user-mileage-grid contact-id={_contactId} account-id={_accountId} role={userRole} is-account-biweek={biweekAccount} contact-list={listOfDriver} onpreview={getUnapproveMileage} onshow={showSpinner} onhide={hideSpinner} ontoast={showToast} show-team={showTeam} filter={nameFilter} contact-info={userName}></c-user-mileage-grid>
+                <c-user-mileage-grid contact-id={_contactId} account-id={_accountId} role={userRole} is-account-biweek={biweekAccount} contact-list={listOfDriver} onpreview={getUnapproveMileage} onshow={showSpinner} onhide={hideSpinner} ontoast={showToast} show-team={showTeam} filter={nameFilter} contact-info={userName} onback={backToDashboard} single-user={singleUser} user-list={userOfDriver}></c-user-mileage-grid>
             </template>
         </template>
         <template lwc:elseif={teamList}>
             <template lwc:if={myTeamList}>
-               <c-user-view-mileage contact-id={_contactId} account-id={_accountId} contact-list={myTeamList} show-team={showTeam} contact-info={userName} filter={contactTitle} trip-column={teamColumn} trip-key-fields={teamKeyFields} onpreview={redirectToDriverView}></c-user-view-mileage><!--onpreview={redirectToDriverView}-->
+               <c-user-view-mileage contact-id={_contactId} account-id={_accountId} contact-list={myTeamList} show-team={showTeam} contact-info={userName} filter={contactTitle} trip-column={teamColumn} trip-key-fields={teamKeyFields} onpreview={redirectToDriverView} onback={backToDashboard}></c-user-view-mileage>
             </template>
         </template>
         <template lwc:elseif={mileageSummary}>
             <template lwc:if={listOfReimbursement}>
-               <c-user-view-mileage contact-id={_contactId} account-id={_accountId} contact-list={listOfReimbursement} contact-info={userName} filter={contactTitle} show-team={showTeam} account-year={mileageAccountList} month-year={lastMonthSelected} trip-column={summaryColumn} trip-key-fields={summaryKeyFields} onpreview={getMileage} onmonthyearchange={handleMonthYearRender}></c-user-view-mileage>
+               <c-user-view-mileage contact-id={_contactId} account-id={_accountId} contact-list={listOfReimbursement} role={userRole} contact-info={userName} filter={contactTitle} show-team={showTeam} account-year={mileageAccountList} month-year={lastMonthSelected} trip-column={summaryColumn} trip-key-fields={summaryKeyFields} onpreview={getMileage} onmonthyearchange={handleMonthYearRender} onback={backToDashboard}></c-user-view-mileage>
             </template>
         </template>
         <template lwc:elseif={mileageSummaryView}>
             <template lwc:if={viewMileages}>
-               <c-view-detail-user contact-id={_contactId} account-id={_accountId} contact-list={viewMileages} user-name={mileageContactName} trip-column={summaryDetailColumn} trip-key-fields={summaryDetailKeyFields} month={mileageMonthList} selected-month={monthSelected} onback={redirectToSummary} onmonthchange={refreshDetailSummary}></c-view-detail-user>
+               <c-view-detail-user contact-id={_contactId} account-id={_accountId} contact-list={viewMileages} role={userRole} user-name={mileageContactName} trip-column={summaryDetailColumn} trip-key-fields={summaryDetailKeyFields} month={mileageMonthList} selected-month={monthSelected} onback={redirectToSummary} onmonthchange={refreshDetailSummary} redirect-dashboard={isDashboard}></c-view-detail-user>
             </template>
         </template>
         <template lwc:elseif={mileageView}>
@@ -56,43 +44,59 @@
 			</template>
         </template>
 		<template lwc:elseif={showDriverView}>
-			<c-manager-driver-profile account-id={_accountId} contact-id={idContact} ontoast={showToast} onback={redirectToMyTeam}></c-manager-driver-profile>
+			<c-manager-driver-profile account-id={_accountId} contact-id={idContact} ontoast={showToast} onback={redirectToMyTeam} redirect-dashboard={isDashboard}></c-manager-driver-profile>
         </template>
 		<template  lwc:elseif={resources}>
-			<c-user-resource minimums={contactInformation}></c-user-resource>
+			<c-user-resource minimums={contactInformation} role={userRole} settings={customSetting} driver-meeting={driverMeeting} onback={backToDashboard} onsend={emailSent}></c-user-resource>
 		</template>
 		<template  lwc:elseif={showReports}>
-			<c-report-list onviewreport={redirectToReportDetail} ontoastmessage={handleToastMessage}></c-report-list>
+			<c-report-list onviewreport={redirectToReportDetail} ontoastmessage={handleToastMessage}  onshow={showSpinner} onhide={hideSpinner} ></c-report-list>
 		</template>
 		<template lwc:elseif={reportDetail}>
 			<template lwc:if={reportId}>
-				<c-report-detail contact-id={_contactId} account-id={_accountId} report-id={reportId} month-list={reportMonthList} onclosemodal={redirectToReports} onprint={handlePrint} oncopy={handleCopy}></c-report-detail>
+				<c-report-detail contact-id={_contactId} account-id={_accountId} report-id={reportId} month-list={reportMonthList}  onshow={showSpinner} onhide={hideSpinner} onclosemodal={redirectToReports} onprint={handlePrint} oncopy={handleCopy} ontoastmessage={handleToastMessage}></c-report-detail>
 			</template>
         </template>
 		<template  lwc:elseif={showUsers}>
-			<c-users-roster employees={employees} managers={managers} roles={roles} ontoast={showToast} onshow={showSpinner} onhide={hideSpinner} onerror={showErrorToast}></c-users-roster>
+			<c-users-roster employees={employees} redirect-user-id={redirectUserId} onupdateemployee={refreshEmpData} 
+				managers={managers} roles={roles} job-titles={jobTitles} departments={departments} companies={companies} vehicle-type={vehicleType} driver-types={driverTypes}
+						ontoast={showToast} onshow={showSpinner} onhide={hideSpinner} onerror={showErrorToast} onbacktodashboard={backToDashboard}></c-users-roster>
 		</template>
 		<template  lwc:elseif={showTools}>
-			<c-user-tools contact-id={_contactId} account-id={_accountId} onshow={showSpinner} onhide={hideSpinner}  ontoast={showToast} onshowloader={showConditionalLoader} onhideloader={hideConditionalLoader}></c-user-tools>
-		</template>
-		<template lwc:elseif={showTools2}>
-			<c-user-tools2 contact-id={_contactId} account-id={_accountId} onshow={showSpinner} onhide={hideSpinner}  ontoast={showToast} onshowloader={showConditionalLoader} onhideloader={hideConditionalLoader}></c-user-tools2>
-		</template>
-		<template  lwc:elseif={resources}>
-			<c-user-resource minimums={contactInformation}></c-user-resource>
+			<c-user-tools contact-id={_contactId} account-id={_accountId} onuserpreview={handleUserNavigate} 
+			onshow={showSpinner} onhide={hideSpinner}  ontoast={showToast} onshowloader={showConditionalLoader} 
+			onhideloader={hideConditionalLoader} oncloseparent={closeDialogBox} onbacktodashboard={backToDashboard}></c-user-tools>
 		</template>
         <template lwc:else>
             <template lwc:if={unapproveMileages}>
-                 <c-user-flagging-trip contact-id={_contactId} account-id={_accountId}  is-account-biweek={biweekAccount}  header-name={driverName} emailaddress={userEmail} contact-list={unapproveMileages} onback={redirectToMileage} onshow={showSpinner} onhide={hideSpinner} ontoast={showToast} onflagcomplete={handleComplete} onsyncdone={handleSyncDone}></c-user-flagging-trip>
+                 <c-user-flagging-trip contact-id={_contactId} account-id={_accountId}  is-account-biweek={biweekAccount}  header-name={driverName} emailaddress={userEmail} role={userRole} contact-list={unapproveMileages} onback={redirectToMileage} onshow={showSpinner} onhide={hideSpinner} ontoast={showToast} element={unapproveReimbursements} onflagcomplete={handleComplete} onsyncdone={handleSyncDone} redirect-dashboard={isDashboard}></c-user-flagging-trip>
             </template>
         </template>
+		<c-manage-employee-field accid={_accountId}  onformfield={handleFormField}></c-manage-employee-field>
 		<c-user-profile-modal header={headerModalText} month='' show-footer={isFalse} show-btn={isFalse}
 			modal-class={modalClass} header-class={headerClass} subheader-class={subheaderClass}
-			modal-content-style={modalContent} style-header={styleHeader} close-btn-class={styleClosebtn} >
+			modal-content-style={modalContent} style-header={styleHeader} close-btn-class={styleClosebtn} onclosedialogesc={handleCloseModal} onclosedialog={handleCloseModal} >
 			<template if:true={isAddUser}>
 				<div class="add-employee-container">
-					<c-add-employee accid={_accountId} contactid={_contactId} ontoast={showToast} is-add-employe-modal={isAddEmployeModal} onhide={hideSpinner} onshow={showSpinner} onaddemployee={addEmployee} >
+					<c-add-employee accid={_accountId} form-field={addEmpFormField} contactid={_contactId} ontoast={showToast} is-add-employe-modal={isAddEmployeModal} onhide={hideSpinner} onshow={showSpinner} onaddemployee={addEmployee} >
 					</c-add-employee>
+				</div>
+			</template>
+			<template if:true={isRemoveUser}>
+				<div slot="header">
+					<div class="slds-float_right slds-p-right_small">
+						<div class="slds-input-has-icon slds-input-has-icon_right search-holder">
+							<img class="search-icon" src={searchIcon} loading="eager" />
+							<div class="close-btn" if:false={isSearchEnable} onclick={handleClearInput}>
+								<svg class="close-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M4.815 14.46 14.458 4.818m-9.643 0.011 9.643 9.642" stroke="#929497" stroke-width="2" stroke-linecap="round"/></svg>
+							</div>
+							<input class="slds-input filter-input" type="text" placeholder="Search"
+								onkeyup={handleRemoveUserFilter} />
+						</div>
+					</div>
+				</div>
+				<div class="remove-employee-container">
+					<c-remove-employee accid={_accountId}  contactid={_contactId} employees={employees} ontoast={showToast} onhide={hideSpinner} onshow={showSpinner} ></c-remove-employee>
 				</div>
 			</template>
 			<!-- <div class="slds-p-around_large" style="display: flex;flex-flow: column;">

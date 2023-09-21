@@ -20,6 +20,7 @@ export default class UserDataTable extends LightningElement {
     @api mainClass;
     @api rowDownload;
     @api scrollable;
+    @api filter;
     @api isSortable;
     @api isPaginate;
     @api columns;
@@ -573,6 +574,17 @@ export default class UserDataTable extends LightningElement {
         return JSON.parse(JSON.stringify(obj));
     }
 
+
+    getElement(data, id){
+        var object = {};
+        for (let i = 0; i < data.length; i++) {
+            if(data[i].contactid === id){
+                object = data[i];
+            }
+        }
+        return object
+    }
+
     linkHandler(event){
         let id = event.currentTarget.dataset.id;
         let element =  this.getElement(this.modelData, id);
@@ -586,11 +598,40 @@ export default class UserDataTable extends LightningElement {
         return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
     }
 
+    @api
+    refreshTable(data) {
+        this.modelData = this.proxyToObj(data);
+        this.className = (this.scrollable) ? (this.modelData.length > 6)  ? 'scrollable_wrapper slds-p-right_small' : 'slds-p-right_small overflow-none' : 'slds-p-right_small';
+        this.mainClass = (this.scrollable) ? (this.modelData.length > 6) ? 'fixed-container' : 'fixed-container' : this.mainClass;
+        if(this.isPaginate){
+            this.sortedColumn = this.columns[0].colName;
+            this.gotoPage(this.currentPage, this.modelData);
+             //  this.totalPages(this.maxPages);
+          //   this.setPages();
+        }else{
+            this.pagedData = [];
+            this.pagedData = this.modelData;
+        }
+     
+        if (!this.modelData.length) {
+            this.norecord = true;
+            this.nopagedata = true;
+            this.searchVisible = true;
+        }else{
+            this.norecord = false;
+        }
+
+        if(this.isDefaultSort){
+           // this.defaultSort('tripdate', 'Date') 
+           this.defaultSort(this.colname, this.coltype, this.sortorder) 
+        }
+    }
+
     connectedCallback() {
         // Initialize data table to the specified current page (should be 1)
         console.log("Trip", JSON.stringify(this.modelData))
-        this.className = (this.scrollable) ? (this.modelData.length > 6)  ? 'slds-scrollable_y slds-p-right_small' : 'slds-p-right_small' : 'slds-p-right_small';
-        this.mainClass = (this.scrollable) ? (this.modelData.length > 6) ? 'slds-table--header-fixed_container modal-height' : 'slds-table--header-fixed_container overflow-none' : this.mainClass;
+        this.className = (this.scrollable) ? (this.modelData.length > 6)  ? 'scrollable_wrapper slds-p-right_small' : 'slds-p-right_small overflow-none' : 'slds-p-right_small';
+        this.mainClass = (this.scrollable) ? (this.modelData.length > 6) ? 'fixed-container' : 'fixed-container' : this.mainClass;
         if(this.isPaginate){
             this.sortedColumn = this.columns[0].colName;
             this.gotoPage(this.currentPage, this.modelData);

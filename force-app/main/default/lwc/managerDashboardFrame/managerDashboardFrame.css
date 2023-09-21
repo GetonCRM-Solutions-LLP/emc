@@ -189,11 +189,12 @@
 }
 
 .no-data-message {
-    font-size: 24px;
+    font-size: 16px;
     line-height: 29px;
     text-align: center;
     font-family: 'Proxima Nova Semibold' !important;
     color: var(--link-color);
+    opacity: 0.4;
 }
 
 .close-notify-icon {

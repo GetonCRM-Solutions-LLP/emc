@@ -41,6 +41,8 @@ export default class MBurseDownloadMlog extends LightningElement {
 
     @api dayLeft;
 
+    @api firstName;
+
     // Android video link from custom settings
     androidVideoUrl;
 
@@ -232,6 +234,7 @@ export default class MBurseDownloadMlog extends LightningElement {
         this.isCommonDownload = true;
         this.isChatBot = false;
         this.carousel = false;
+        this.sendCorporateLink();
     }
 
     backToDownloadmLog(){

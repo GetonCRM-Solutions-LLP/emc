@@ -10,4 +10,8 @@ export default class MBurseNavbar extends LightningElement {
     get headerStyle() {
         return `margin-bottom:${this.margin}`;
     }
+
+    refreshPage(){
+        window.location.reload();
+    }
 }

@@ -184,7 +184,7 @@
     </div>
     <apex:includeLightning />
     <apex:slds />
-    <body oncontextmenu="return false;">
+    <body oncontextmenu="return false;" onload="init()">
         <div id="lightning"></div>
     </body>
     <script>
@@ -212,33 +212,35 @@
             .catch(function (error) {
                 ///if status code 401...
             });
-        var _driverDetail, empContact, empRole, manRole, plMarketing, videoUrl;
-        _driverDetail = {!DriverDetails}
-        empContact = _driverDetail;
-        empRole = empContact[0].Role__c;
-        manRole = '{!managerrole}'
-        plMarketing = '{!($Label.PL_Marketing)}'
-        function getUrl(){
-            Visualforce.remoting.Manager.invokeAction('{!$RemoteAction.DriverDashboardController.getCustomSettings}',
-                    function (result, event) {
-                        videoUrl = result.Insurance_Link__c
-                    }
-            )
-        }
-        getUrl();
-        $Lightning.use("c:LWCLightningApp", function () {
-            $Lightning.createComponent("c:dashboardUploadInsurance", {
-                //pass parameter values to lwc js controller
-                "role": empRole,
-                "manRole": manRole,
-                "pLMarketing": plMarketing,
-                "insuranceVideo": videoUrl
-            }, "lightning", function (cmp) {
-                setTimeout(()=>{$("#spinner").hide();}, 1000);
-                console.log("component created successfully");
-                // do some stuff
+        function init(){
+            var _driverDetail, empContact, empRole, manRole, plMarketing, videoUrl;
+            _driverDetail = {!DriverDetails}
+            empContact = _driverDetail;
+            empRole = empContact[0].Role__c;
+            manRole = '{!managerrole}'
+            plMarketing = '{!($Label.PL_Marketing)}'
+            function getUrl(){
+                Visualforce.remoting.Manager.invokeAction('{!$RemoteAction.DriverDashboardController.getCustomSettings}',
+                        function (result, event) {
+                            videoUrl = result.Insurance_Link__c
+                        }
+                )
             }
-            );
-        });
+            getUrl();
+            $Lightning.use("c:LWCLightningApp", function () {
+                $Lightning.createComponent("c:dashboardUploadInsurance", {
+                    //pass parameter values to lwc js controller
+                    "role": empRole,
+                    "manRole": manRole,
+                    "pLMarketing": plMarketing,
+                    "insuranceVideo": videoUrl
+                }, "lightning", function (cmp) {
+                    setTimeout(()=>{$("#spinner").hide();}, 1000);
+                    console.log("component created successfully");
+                    // do some stuff
+                }
+                );
+            });
+        }
     </script>
 </apex:page>

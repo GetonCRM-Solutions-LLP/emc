@@ -1,11 +1,15 @@
+/* eslint-disable @lwc/lwc/no-api-reassignments */
 /* eslint-disable @lwc/lwc/no-async-operation */
 /* eslint-disable no-useless-escape */
 import { LightningElement, wire, api } from "lwc";
+import {toDate} from 'c/commonLib';
 import onboardingStatus from "@salesforce/apex/ManagerDashboardController.onboardingStatus";
 import insuranceReport from "@salesforce/apex/ManagerDashboardController.insuranceReport";
 import myTeamDetails from "@salesforce/apex/ManagerDashboardController.myTeamDetails";
 import highRiskDriversDetails from "@salesforce/apex/ManagerDashboardController.highRiskDriversDetails";
 import managerContactData from "@salesforce/apex/ManagerDashboardController.managerContactData";
+import complRptDownloadtData from "@salesforce/apex/ManagerDashboardController.complRptDownloadtData";
+import onboardRptDownloadtData from '@salesforce/apex/ManagerDashboardController.onboardRptDownloadtData';
 import getAllDriversLastMonthUnapprovedReimbursementsclone from "@salesforce/apex/ManagerDashboardController.getAllDriversLastMonthUnapprovedReimbursementsclone";
 export default class ManagerUserProfile extends LightningElement {
   @api contactId;
@@ -14,7 +18,10 @@ export default class ManagerUserProfile extends LightningElement {
   @api notifyMessageList;
   @api notifyMessage;
   @api role;
+  checkAll = false;
+  canadaToggle = false;
   driverUnapproveList;
+  typeMap = 'USA';
   driverVisibleList;
   driverRiskList;
   driverMileageList;
@@ -23,7 +30,16 @@ export default class ManagerUserProfile extends LightningElement {
   highMileageDriverList;
   complianceList;
   insuranceList;
-  locationList;
+  @api get locationList(){
+    return this._locationList;
+  }
+
+  set locationList(value) {
+    this._locationList = value;
+  }
+
+  americanUser;
+  canadianUser;
   headerText = '';
   monthText = '';
   vhHeight = (3 / 5 * 100) + '%';
@@ -97,12 +113,24 @@ export default class ManagerUserProfile extends LightningElement {
         el.lon = el.Address__r
           ? el.Address__r.Location_Lat_Long__Longitude__s
           : 0;
-        el.amount = (el.Reimbursement_Frequency__c === "Monthly Reimbursement") ? el.Fixed_Amount__c ? el.Fixed_Amount__c : 0 : el.Half_Fixed_Amount__c ? el.Half_Fixed_Amount__c : 0 ;
+        el.amount =  (el.Fixed_Amount__c) ? '$' + el.Fixed_Amount__c :  '$0.00' ;
         el.address =
           el.MailingCity + ", " + el.MailingState + " " + el.MailingPostalCode;
       });
       this.locationList = dataList;
       this.isLocation = this.locationList.length > 0 ? true : false;
+      this.canadianUser = dataList.filter(function(item) {
+        return item.Map_Country__c !== null && item.Map_Country__c === 'CANADA';
+      });
+      this.americanUser = dataList.filter(function(item) {
+        return item.Map_Country__c !== 'CANADA';
+      });
+
+      this.locationList = (this.canadianUser.length > 0) ? this.americanUser : dataList;
+      this.isLocation = this.locationList.length > 0 ? true : false;
+      this.canadaToggle = (this.canadianUser.length > 0) ? true : false;
+      console.log("Canada drivers###" , this.canadianUser);
+      console.log("US drivers###" , this.americanUser);
       console.log("locationList---", this.locationList);
     } else {
       console.log("locationList", error);
@@ -123,6 +151,16 @@ export default class ManagerUserProfile extends LightningElement {
     return object;
   }
 
+  handleMap(event){
+    this.checkAll = event.target.checked;
+    this.typeMap = (!this.checkAll) ? 'USA' : 'CANADA'
+    console.log(this.typeMap, event.target.checked)
+    this.locationList = (!this.checkAll) ? this.americanUser : this.canadianUser
+    this.template.querySelector('c-point-chloropleth').locate =  this.locationList;
+    this.template.querySelector('c-point-chloropleth').type = this.typeMap;
+    this.template.querySelector('c-point-chloropleth').reloadChart()
+  }
+
 
   getLocation(){
    // var tablediv = this.template.querySelector("parent");
@@ -133,6 +171,7 @@ export default class ManagerUserProfile extends LightningElement {
     this.vhHeight = (3 / 7 * 100) + '%';
     this.paginatedModal = true;
     this.headerText = 'My Team Locations';
+  
     // if (this.template.querySelector('c-user-profile-modal')) {
     //       this.template.querySelector('c-user-profile-modal').show();
     //       //if (tablediv.webkitRequestFullscreen) {
@@ -145,6 +184,11 @@ export default class ManagerUserProfile extends LightningElement {
     this.template.querySelector('.parent').classList.remove('overlay-slide-down');
     this.template.querySelector('.parent').classList.add('overlay-slide-up');
     this.paginatedModal = false;
+    this.navigation = false;
+    this.vhHeight = (3 / 5 * 100) + '%';
+    this.margin = [0,0,0,0];
+    this.top = 0;
+    this.bottom = 0;
   }
 
   getElementById(data, id) {
@@ -157,9 +201,25 @@ export default class ManagerUserProfile extends LightningElement {
     return object;
   }
 
+  handleKeyDown = (event) =>{
+    if (event.keyCode === 27) {
+       // console.log('Esc key pressed.');
+        if(this.paginatedModal){
+          this.exitFullscreen();
+        }  
+    }
+   // console.log("keyboard###", event)
+  }
+
+  constructor() {
+    super();
+    this.handleKeyDown = this.handleKeyDown.bind(this);
+  }
+
   connectedCallback() {
     const showIsTeam = this.getUrlParamValue(window.location.href, "showteam");
     let team = showIsTeam === "false" ? false : true;
+    window.addEventListener('keydown', this.handleKeyDown);
     getAllDriversLastMonthUnapprovedReimbursementsclone({
       accountId: this.accountId,
       contactId: this.contactId,
@@ -200,8 +260,8 @@ export default class ManagerUserProfile extends LightningElement {
         this.driverIsMyteam = this.myTeamList.length > 0 ? true : false;
         if (this.myTeamList) {
           this.driverTeamVisibleList =
-            this.myTeamList.length > 12
-              ? this.myTeamList.slice(0, 12)
+            this.myTeamList.length > 14
+              ? this.myTeamList.slice(0, 14)
               : this.myTeamList;
         }
         console.log("myTeamDetails List---", data);
@@ -253,8 +313,8 @@ export default class ManagerUserProfile extends LightningElement {
             this.highRiskMileageDriverList.length > 0 ? true : false;
             if (this.highRiskMileageDriverList) {
               this.driverRiskList =
-                this.highRiskMileageDriverList.length > 12
-                  ? this.highRiskMileageDriverList.slice(0, 12)
+                this.highRiskMileageDriverList.length > 14
+                  ? this.highRiskMileageDriverList.slice(0, 14)
                   : this.highRiskMileageDriverList;
             }
         }
@@ -285,7 +345,7 @@ export default class ManagerUserProfile extends LightningElement {
     let target = event.currentTarget.dataset.id;
     let element = this.getElement(this.driverUnapproveList, target);
     const linkEvent = new CustomEvent("access", {
-      detail: JSON.stringify(element)
+      detail: { message: JSON.stringify(element), target: 'dashboard'}
     });
     this.dispatchEvent(linkEvent);
   }
@@ -294,7 +354,7 @@ export default class ManagerUserProfile extends LightningElement {
     let target = event.currentTarget.dataset.id;
     let element = this.getElementById(this.myTeamList, target);
     const linkEvent = new CustomEvent("userview", {
-      detail: JSON.stringify(element)
+      detail: { message : JSON.stringify(element), target: 'dashboard' }
     });
     this.dispatchEvent(linkEvent);
   }
@@ -342,6 +402,98 @@ export default class ManagerUserProfile extends LightningElement {
       );
   }
 
+  dateTime(date){
+    var yd, ydd,ymm, yy, hh, min ,sec;
+    yd = date
+    ydd = yd.getDate();
+    ymm = yd.getMonth() + 1;
+    yy = yd.getFullYear();
+    hh = yd.getHours();
+    min = yd.getMinutes();
+    sec = yd.getSeconds();
+    ydd = (ydd < 10) ? ('0' + ydd) : ydd;
+    ymm = (ymm < 10) ? ('0' + ymm) : ymm;
+    console.log(ymm + ydd);
+    console.log(yy.toString(), hh.toString(), min.toString(), sec.toString());
+    return  ymm.toString() + ydd.toString() + yy.toString() + hh.toString() + min.toString() + sec.toString();
+ }
+
+  excelToExport(data, file, sheet){
+    this.template.querySelector('c-export-excel').download(data, file, sheet);
+  }
+
+  getComplianceReport(){
+    let mileage = [];
+    let fileName = 'Compliance Report ' + this.dateTime(new Date())
+    let sheetName = 'Compliance Report';
+    complRptDownloadtData({
+      managerId: this.contactId,
+      accountId: this.accountId,
+      role: this.role
+    }).then((data) => {
+        if (data) {
+          console.log("Report compliance--->", data);
+          let excelList = JSON.parse(data);
+          mileage.push(["Name", "Email","Compliance Status", "Active Driver"])
+          excelList.forEach((item)=>{
+              mileage.push([item.Name.replace(/\\'/g, "\'"), item.Email, item.compliancestatus__c, item.isActive__c])
+          })
+          this.excelToExport(mileage, fileName, sheetName);
+        }
+      })
+      .catch((error) => {
+        console.log("complaince report error", JSON.stringify(error));
+      });
+  
+  }
+
+  getOnboardingReport(){
+    let mileage = [];
+    let fileName = 'Onboarding Status Report ' + this.dateTime(new Date())
+    let sheetName = 'Onboarding Status Report';
+    onboardRptDownloadtData({
+      managerId: this.contactId,
+      accountId: this.accountId,
+      role: this.role
+    }).then((data) => {
+        if (data) {
+          console.log("Onboarding --->", data);
+          let excelList = JSON.parse(data);
+          mileage.push(["Name", "Email","Completed Onboarding", "Insurance", "Driver Signed",	"Admin Signed",	"Watched Driver Meeting",	"Activation Date",	"Active Driver"])
+          excelList.forEach((item)=>{
+              mileage.push([item.Name.replace(/\\'/g, "\'"), item.Email, item.Onboarding_Status__c, item.Insurance__c, item.Hello_Sign_Status__c, item.Hello_Sign_Admin_Status__c, (item.Schedule_Driver_Meeting__c) ? 'Yes' : 'No', (item.Activation_Date__c !== undefined) ? toDate(item.Activation_Date__c) : "" , item.isActive__c])
+          })
+          this.excelToExport(mileage, fileName, sheetName);
+        }
+      })
+      .catch((error) => {
+        console.log("complaince report error", JSON.stringify(error));
+      });
+  }
+
+  getInsuranceReport(){
+    let insuranceList = [];
+    let fileName = 'Insurance Report ' + this.dateTime(new Date())
+    let sheetName = 'Insurance Report';
+    onboardRptDownloadtData({
+      managerId: this.contactId,
+      accountId: this.accountId,
+      role: this.role
+    }).then((data) => {
+        if (data) {
+          let excelList = JSON.parse(data);
+          insuranceList.push(["Name", "Email","Insurance Status", "Expires"])
+          excelList.forEach((item)=>{
+            insuranceList.push([item.Name.replace(/\\'/g, "\'"), item.Email, item.Insurance__c, (item.Expiration_Date__c !== undefined) ? toDate(item.Expiration_Date__c) : item.Expiration_Date__c])
+          })
+          this.excelToExport(insuranceList, fileName, sheetName);
+        }
+      })
+      .catch((error) => {
+        console.log("complaince report error", JSON.stringify(error));
+      });
+  }
+
   handleClose(event) {
     var eId = event.currentTarget.dataset.id;
     this.dispatchEvent(
@@ -350,4 +502,17 @@ export default class ManagerUserProfile extends LightningElement {
         })
       );
   }
+
+  // renderedCallback(){
+  //   console.log("from---", this.keyCode, this._keyCode)
+  //   if(this._keyCode !== undefined){
+  //     if (this._keyCode === 27) {
+  //       // console.log('Esc key pressed.');
+  //        if(this.paginatedModal === true){
+  //          this.exitFullscreen();
+  //        }  
+  //    }
+  //   }
+    
+  // }
 }

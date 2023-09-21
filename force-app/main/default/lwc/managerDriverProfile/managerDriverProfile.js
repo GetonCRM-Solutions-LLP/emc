@@ -10,6 +10,7 @@ export default class ManagerDriverProfile extends LightningElement {
   @track isAttendance = false;
   @api contactId;
   @api accountId;
+  @api redirectDashboard;
   tripView = false;
   archive = false;
   ytdList;
@@ -73,9 +74,10 @@ export default class ManagerDriverProfile extends LightningElement {
 
 
   revertHandler(){
+    let backTo = (this.redirectDashboard) ? 'Dashboard' : '';
     this.dispatchEvent(
         new CustomEvent("back", {
-            detail: ""
+            detail: backTo
         })
     );
   }

@@ -51,8 +51,23 @@
                 </div>
                 <div
                     class="slds-col slds-size_1-of-1 slds-medium-size_12-of-12 slds-large-size_9-of-12 slds-align_absolute-center slds-p-top_medium">
-                    <c-choropleth-map contact-id={contactId} background="#FFFFFF" border-color="#FFFFFF" width="260"
-                        height="150"></c-choropleth-map>
+                    <c-choropleth-map contact-id={contactId} background="#FFFFFF" border-color="#FFFFFF"
+                         type={typeMap} canada={canadaStatesList}></c-choropleth-map>
+                </div>
+                <div class="view-map slds-p-around_xx-small" lwc:if={multipleMap}>
+                    <div dir="ltr">
+                        <div class="slds-form-element">
+                          <label class="slds-checkbox_toggle slds-grid">
+                            <input type="checkbox" name="checkbox-toggle-16" value="checkbox-toggle-16" aria-describedby="checkbox-toggle-16" onchange={handleMap} checked={checkAll}/>
+                            <span id="checkbox-toggle-16" class="slds-checkbox_faux_container" aria-live="assertive">
+                              <span class="slds-checkbox_faux toogle-input"></span>
+                              <span class="slds-checkbox_on"></span>
+                              <span class="slds-checkbox_off"></span>
+                            </span>
+                            <span class="slds-form-element__label slds-m-bottom_none slds-m-left_small input-label"><span class="map-label map--us">USA</span> <span class="map-label map--canada">/ Canada</span></span>
+                          </label>
+                        </div>
+                      </div>
                 </div>
             </div>
 
@@ -67,77 +82,99 @@
                 <div class="slds-col slds-size_1-of-1 slds-medium-size_12-of-12 slds-large-size_12-of-12">
                     <template lwc:if={notifyMessage}>
                         <div class="notify-container overflow">
-                            <div class="slds-grid slds-wrap slds-align_absolute-center slds-m-vertical_small" style="margin-left: 16px;
-                                margin-right: 16px;">
-                                <!-- <div>{notifyList.length}</div> -->
                                 <template lwc:if={isNotify}>
-                                    <template for:each={notifyMessageList} for:item="notify" for:index="index">
-                                        <div data-id={notify.id} key={notify.id}
-                                            class="slds-col slds-size_1-of-1 slds-medium-size_6-of-12 slds-large-size_12-of-12 slds-m-around_xx-small slds-p-horizontal_x-small slds-p-vertical_small notify-text"
-                                            style="
-                                            width: 100%;
-                                            height: auto;
-                                            border-radius: 10px;
-                                            background: #fa780014;
-                                            display: flex;
-                                            flex-direction: row;">
-                                            <div class="slds-p-top_xx-small
-                                                    slds-p-left_xx-small slds-p-right_x-small">
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="9" height="9"
-                                                    viewBox="0 0 9 9" fill="none">
-                                                    <circle cx="4.5" cy="4.5" r="4.5" fill="#FA7800" />
-                                                </svg>
-                                                <!-- <img style="width: 12px;" src={circle} /> -->
-                                            </div>
-                                            <div class="slds-p-right_small" style="font-family: 'Proxima Nova Bold' !important;font-size: 14px;width:100%;
-                                                    line-height: 17px;
-                                                    letter-spacing: 0em;
-                                                    text-align: left;
-                                                    ">{notify.notificationMessage}
-                                                <div style="font-family: 'Proxima Nova Semibold' !important;
-                                                    font-size: 12px;
-                                                    line-height: 12px;
-                                                    color: #FA7800;
-                                                    " class="slds-p-top_x-small"> <lightning-formatted-date-time
-                                                        value={notify.modifiedDate} year="numeric" day="2-digit"
-                                                        month="long" hour="2-digit" minute="2-digit"
-                                                        time-zone="America/Panama">
-                                                    </lightning-formatted-date-time></div>
-                                            </div>
-                                            <div class="slds-p-right_xx-small close-notify" data-id={notify.id}
-                                                onclick={handleClose}>
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="19" height="19"
-                                                    viewBox="0 0 19 19" fill="none">
-                                                    <path d="M4.53906 13.6328L13.6303 4.54161" stroke="#FA7800"
-                                                        stroke-width="1.7" stroke-linecap="round" />
-                                                    <path d="M4.53906 4.55469L13.6303 13.6459" stroke="#FA7800"
-                                                        stroke-width="1.7" stroke-linecap="round" />
-                                                </svg>
-                                                <!-- <svg xmlns="http://www.w3.org/2000/svg" width="20" height="18"
-                                                    viewBox="0 0 20 18" fill="none" data-id={notify.id}
+                                    <div class="slds-grid slds-wrap slds-align_absolute-center slds-m-vertical_small" style="margin-left: 16px;
+                                    margin-right: 16px;">
+                                        <!-- <div>{notifyList.length}</div> -->
+                                        <template for:each={notifyMessageList} for:item="notify" for:index="index">
+                                            <div data-id={notify.id} key={notify.id}
+                                                class="slds-col slds-size_1-of-1 slds-medium-size_6-of-12 slds-large-size_12-of-12 slds-m-around_xx-small slds-p-horizontal_x-small slds-p-vertical_small notify-text"
+                                                style="
+                                                width: 100%;
+                                                height: auto;
+                                                border-radius: 10px;
+                                                background: #fa780014;
+                                                display: flex;
+                                                flex-direction: row;">
+                                                <div class="slds-p-top_xx-small
+                                                        slds-p-left_xx-small slds-p-right_x-small">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="9" height="9"
+                                                        viewBox="0 0 9 9" fill="none">
+                                                        <circle cx="4.5" cy="4.5" r="4.5" fill="#FA7800" />
+                                                    </svg>
+                                                    <!-- <img style="width: 12px;" src={circle} /> -->
+                                                </div>
+                                                <div class="slds-p-right_small" style="font-family: 'Proxima Nova Bold' !important;font-size: 14px;width:100%;
+                                                        line-height: 17px;
+                                                        letter-spacing: 0em;
+                                                        text-align: left;
+                                                        ">{notify.notificationMessage}
+                                                    <div style="font-family: 'Proxima Nova Semibold' !important;
+                                                        font-size: 12px;
+                                                        line-height: 12px;
+                                                        color: #FA7800;
+                                                        " class="slds-p-top_x-small"> <lightning-formatted-date-time
+                                                            value={notify.modifiedDate} year="numeric" day="2-digit"
+                                                            month="long" hour="2-digit" minute="2-digit"
+                                                            time-zone="America/Panama">
+                                                        </lightning-formatted-date-time></div>
+                                                </div>
+                                                <div class="slds-p-right_xx-small close-notify" data-id={notify.id}
                                                     onclick={handleClose}>
-                                                    <path d="M5.57812 13.4141L14.7504 4.58439" stroke="#1D1D1D"
-                                                        stroke-linecap="round" />
-                                                    <path d="M5.57812 4.58594L14.7504 13.4156" stroke="#1D1D1D"
-                                                        stroke-linecap="round" />
-                                                </svg> -->
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="19" height="19"
+                                                        viewBox="0 0 19 19" fill="none">
+                                                        <path d="M4.53906 13.6328L13.6303 4.54161" stroke="#FA7800"
+                                                            stroke-width="1.7" stroke-linecap="round" />
+                                                        <path d="M4.53906 4.55469L13.6303 13.6459" stroke="#FA7800"
+                                                            stroke-width="1.7" stroke-linecap="round" />
+                                                    </svg>
+                                                    <!-- <svg xmlns="http://www.w3.org/2000/svg" width="20" height="18"
+                                                        viewBox="0 0 20 18" fill="none" data-id={notify.id}
+                                                        onclick={handleClose}>
+                                                        <path d="M5.57812 13.4141L14.7504 4.58439" stroke="#1D1D1D"
+                                                            stroke-linecap="round" />
+                                                        <path d="M5.57812 4.58594L14.7504 13.4156" stroke="#1D1D1D"
+                                                            stroke-linecap="round" />
+                                                    </svg> -->
+                                                </div>
                                             </div>
-                                        </div>
-                                    </template>
+                                        </template>
+                                    </div>
                                 </template>
                                 <template lwc:else>
-                                    <div
-                                        class="slds-align_absolute-center slds-p-top_medium slds-p-bottom_x-large no-data-message">
-                                        You have no notifications right now.</div>
+                                    <div class="slds-grid slds-wrap slds-p-left_medium slds-m-vertical_small">
+                                        <div  class="slds-grid_vertical slds-wrap slds-align_absolute-center" style="margin: 50px auto">
+                                            <svg class="opaque" xmlns="http://www.w3.org/2000/svg" width="60" height="60" viewBox="0 0 30 30" fill="none">
+                                                <g clip-path="url(#a)">
+                                                    <path fill-rule="evenodd" clip-rule="evenodd"
+                                                        d="M5.003 2a1.12 1.12 0 0 0-1.12 1.12v.658h.836V3.12c0-.157.127-.285.284-.285h.673V2h-.673Zm3.366 0H7.022v.835H8.37V2Zm2.693 0H9.715v.835h1.347V2Zm2.692 0h-1.346v.835h1.346V2Zm2.693 0H15.1v.835h1.346V2Zm2.02 0h-.674v.835h.673V2ZM3.882 5.095V6.41h.836V5.095h-.837Zm0 2.633v1.316h.836V7.728h-.837ZM25.594 9.52v-.64h-.836v.64h.837Zm-21.711.84v1.317h.836v-1.316h-.837Zm21.711 1.722v-1.28h-.836v1.28h.837Zm-21.711.911v1.317h.836v-1.317h-.837Zm21.711 1.652v-1.281h-.836v1.28h.837Zm-21.711.981v1.317h.836v-1.317h-.837Zm21.711 1.581v-1.281h-.836v1.281h.837ZM3.883 18.26v1.317h.836V18.26h-.837Zm21.711 1.51v-1.28h-.836v1.28h.837ZM3.883 20.893v1.317h.836v-1.317h-.837Zm21.711 1.44V21.05h-.836v1.28h.837ZM3.883 23.525v1.317h.836v-1.317h-.837Zm21.711 1.37v-1.282h-.836v1.281h.837ZM3.883 26.157v.658c0 .619.501 1.12 1.12 1.12h.608V27.1h-.608a.285.285 0 0 1-.285-.284v-.658h-.836Zm21.711.14v-.122h-.106l.106.122Zm-1.302 1.638-.426-.492v.493h.426Zm-17.464 0h1.217V27.1H6.828v.837Zm2.434 0h1.217V27.1H9.262v.837Zm2.434 0h1.217V27.1h-1.217v.837Zm2.434 0h1.217V27.1H14.13v.837Zm2.434 0h1.217V27.1h-1.217v.837Zm2.434 0h1.217V27.1h-1.217v.837Zm2.434 0h1.217V27.1h-1.217v.837Z"
+                                                        fill="#1d1d1d66" />
+                                                    <path
+                                                        d="M18.082 3.754h.418v1.342h-.418v1.342h.418v1.341h-.418v.671c0 .461.374.835.836.835h.717v-.417h1.434v.417h1.435v-.417h1.434v.417h.718a.627.627 0 0 0 .428-1.083l-.495-.465-.286.305-.991-.93.286-.304-.992-.93-.285.305-.991-.929.285-.304-.99-.93-.287.305-.99-.93.285-.304-.496-.464a.627.627 0 0 0-1.055.457v.67Z"
+                                                        stroke="#1d1d1d66" stroke-width=".835" stroke-dasharray="1.3 1.3" />
+                                                    <circle cx="18.318" cy="19.339" r="4.849" transform="rotate(49.135 18.318 19.34)" stroke="#1d1d1d66"
+                                                        stroke-width="1.128" />
+                                                    <rect x="23.336" y="23.688" width="5.682" height="2.057" rx="1.028" transform="rotate(49.135 23.336 23.688)"
+                                                        stroke="#1d1d1d66" stroke-width="1.128" />
+                                                    <path d="m21.117 22.625 1.69 1.953" stroke="#1d1d1d66" stroke-width=".961" />
+                                                </g>
+                                                <defs>
+                                                    <clipPath>
+                                                        <path fill="#fff" d="M0 0h30v30H0z" />
+                                                    </clipPath>
+                                                </defs>
+                                            </svg>
+                                            <div class="slds-p-top_medium slds-p-bottom_x-large opaque no-data-message">
+                                                No Data
+                                            </div>
+                                        </div>
+                                    </div>
                                 </template>
-
-                            </div>
                         </div>
                         <div class="notify-toggle slds-p-around_medium" lwc:if={isNotify}>
                             <button class="slds-button a-link" onclick={showAll}>View all</button>
                         </div>
                     </template>
-
                 </div>
             </div>
         </div>
@@ -155,7 +192,7 @@
                 <div class="slds-p-vertical_small slds-p-left_small" style="float: left;">
                     <div class="content-text"
                         style="font-family: 'Proxima Nova Bold' !important; font-size: 32px; line-height: 32px; color: rgb(29, 29, 29);"
-                        onclick={getLastMonthMileage}>
+                       >
                         <template lwc:if={lastMilesZero}>
                             {lastMilesZero}
                         </template>
@@ -166,8 +203,12 @@
                                     style="font-size: 16px; line-height: 20px; cursor:pointer" onclick={getLastMonthMileage}></i> -->
                     </div>
                     <div class="slds-p-top_x-small"
-                        style="font-family: Proxima Nova;font-style: normal;font-weight: 400;font-size: 14px;line-height: 18px;color: rgb(108, 108, 108);">
-                        Miles last month</div>
+                        style="font-family: Proxima Nova;font-style: normal;font-weight: 400;font-size: 14px;line-height: 18px;color: #00AFE8;" onclick={getLastMonthMileage}>
+                        Miles last month
+                         <!-- <svg xmlns="http://www.w3.org/2000/svg" width="7" height="10" class="arrow-svg"  viewBox="0 0 7 10" fill="none"  >
+                            <path d="M1 1L6.00087 4.78742C6.14176 4.89412 6.14176 5.10588 6.00087 5.21258L1 9" stroke="#7ABB4A" stroke-width="1.77778" stroke-linecap="round"/>
+                        </svg> -->
+                    </div>
                 </div>
                 <div class="slds-m-vertical_x-small slds-p-right_small slds-p-left_small" style="float: left;">
                     <div style="height: 58px; border: 1px solid #d7d7d7;"></div>
@@ -175,7 +216,7 @@
                 <div class="slds-p-vertical_small" style="float: left;">
                     <div class="content-text"
                         style="font-family: 'Proxima Nova Bold' !important;font-size: 32px;line-height: 32px;color: rgb(29, 29, 29);"
-                        onclick={getThisMonthMileage}>
+                        >
                         <template lwc:if={thisMilesZero}>
                             {thisMilesZero}
                         </template>
@@ -186,8 +227,12 @@
                                     style="font-size: 16px; line-height: 20px;cursor:pointer" onclick={getThisMonthMileage}></i>-->
                     </div>
                     <div class="slds-p-top_x-small"
-                        style="font-family: Proxima Nova;font-style: normal;font-weight: 400;font-size: 14px;line-height: 18px;color: rgb(108, 108, 108);">
-                        Miles this month </div>
+                        style="font-family: Proxima Nova;font-style: normal;font-weight: 400;font-size: 14px;line-height: 18px;color: #00AFE8;" onclick={getThisMonthMileage}>
+                        Miles this month 
+                        <!-- <svg xmlns="http://www.w3.org/2000/svg" width="7" height="10" class="arrow-svg"  viewBox="0 0 7 10" fill="none" >
+                            <path d="M1 1L6.00087 4.78742C6.14176 4.89412 6.14176 5.10588 6.00087 5.21258L1 9" stroke="#7ABB4A" stroke-width="1.77778" stroke-linecap="round"/>
+                        </svg>  -->
+                    </div>
                 </div>
             </div>
             <div class="slds-p-left_medium slds-p-vertical_medium middle-2">
@@ -204,7 +249,7 @@
                     <div class="slds-p-vertical_small slds-p-left_small" style="float: left;">
                         <div class="content-text"
                             style="font-family: 'Proxima Nova Bold' !important; font-size: 32px; line-height: 32px; color: rgb(29, 29, 29);"
-                            onclick={getBiweekReimbursement}>
+                           >
                             <template lwc:if={halfFixedZero}>
                                 {halfFixedZero}
                             </template>
@@ -214,8 +259,11 @@
                             </template>
                         </div>
                         <div class="slds-p-top_x-small"
-                            style="font-family: Proxima Nova; font-style: normal; font-weight: 400; font-size: 14px; line-height: 17px; color: rgb(108, 108, 108);">
-                            /biweek
+                            style="font-family: Proxima Nova; font-style: normal; font-weight: 400; font-size: 14px; line-height: 17px; color: #00AFE8;" onclick={getBiweekReimbursement}>
+                           Biweek 
+                           <!-- <svg xmlns="http://www.w3.org/2000/svg" width="7" height="10" class="arrow-svg"  viewBox="0 0 7 10" fill="none"  >
+                            <path d="M1 1L6.00087 4.78742C6.14176 4.89412 6.14176 5.10588 6.00087 5.21258L1 9" stroke="#7ABB4A" stroke-width="1.77778" stroke-linecap="round"/>
+                           </svg> -->
                         </div>
                     </div>
                     <!-- <div class="slds-p-vertical_medium slds-p-left_x-small" style="float: left;"><i
@@ -226,7 +274,7 @@
                     <div class="slds-p-vertical_small slds-p-left_small" style="float: left;">
                         <div class="content-text"
                             style="font-family: 'Proxima Nova Bold' !important; font-size: 32px; line-height: 32px; color: rgb(29, 29, 29);"
-                            onclick={getMonthReimbursement}>
+                           >
                             <template lwc:if={fixedAmountZero}>
                                 {fixedAmountZero}
                             </template>
@@ -236,8 +284,11 @@
                             </template>
                         </div>
                         <div class="slds-p-top_x-small"
-                            style="font-family: Proxima Nova; font-style: normal; font-weight: 400; font-size: 14px; line-height: 17px; color: rgb(108, 108, 108);">
-                            /month
+                            style="font-family: Proxima Nova; font-style: normal; font-weight: 400; font-size: 14px; line-height: 17px; color: #00AFE8;"  onclick={getMonthReimbursement}>
+                            Month 
+                            <!-- <svg xmlns="http://www.w3.org/2000/svg" width="7" height="10" class="arrow-svg"  viewBox="0 0 7 10" fill="none" >
+                                <path d="M1 1L6.00087 4.78742C6.14176 4.89412 6.14176 5.10588 6.00087 5.21258L1 9" stroke="#7ABB4A" stroke-width="1.77778" stroke-linecap="round"/>
+                            </svg> -->
                         </div>
                     </div>
                     <!-- <div class="slds-p-vertical_medium slds-p-left_x-small" style="float: left;"><i
@@ -262,7 +313,7 @@
                 <div class="slds-p-vertical_small slds-p-left_small" style="float: left;">
                     <div class="content-text"
                         style="font-family: 'Proxima Nova Bold' !important; font-size: 32px; line-height: 32px; color: rgb(29, 29, 29);"
-                        onclick={getGasPrice}>
+                       >
                         <template lwc:if={mileageRateZero}>
                             {mileageRateZero}
                         </template>
@@ -272,8 +323,12 @@
                         </template>
                     </div>
                     <div class="slds-p-top_x-small"
-                        style="font-family: Proxima Nova; font-style: normal; font-weight: 400; font-size: 14px; line-height: 17px; color: rgb(108, 108, 108);">
-                        /mile</div>
+                        style="font-family: Proxima Nova; font-style: normal; font-weight: 400; font-size: 14px; line-height: 17px; color: #00AFE8;" onclick={getGasPrice}>
+                        Mile
+                         <!-- <svg xmlns="http://www.w3.org/2000/svg" width="7" height="10" class="arrow-svg"  viewBox="0 0 7 10" fill="none"  >
+                            <path d="M1 1L6.00087 4.78742C6.14176 4.89412 6.14176 5.10588 6.00087 5.21258L1 9" stroke="#7ABB4A" stroke-width="1.77778" stroke-linecap="round"/>
+                        </svg> -->
+                    </div>
                 </div>
                 <!-- <div class="slds-p-vertical_medium slds-p-left_x-small" style="float: left;"><i
                                 class="fa-solid fa-arrow-right-from-bracket"
@@ -301,7 +356,7 @@
                 <div class="slds-p-vertical_small slds-p-left_small" style="float: left;">
                     <div class="content-text"
                         style="font-family: 'Proxima Nova Bold' !important;font-size: 32px; line-height: 32px; color: rgb(29, 29, 29);"
-                        onclick={getGasPrice}>
+                        >
                         <template lwc:if={fuelPriceZero}>
                             {fuelPriceZero}
                         </template>
@@ -311,8 +366,12 @@
                         </template>
                     </div>
                     <div class="slds-p-top_x-small"
-                        style="font-family: Proxima Nova; font-style: normal; font-weight: 400; font-size: 14px; line-height: 17px; color: rgb(108, 108, 108);">
-                        /gallon</div>
+                        style="font-family: Proxima Nova; font-style: normal; font-weight: 400; font-size: 14px; line-height: 17px; color: #00AFE8;" onclick={getGasPrice}>
+                        Gallon  
+                        <!-- <svg xmlns="http://www.w3.org/2000/svg" width="7" height="10" class="arrow-svg"  viewBox="0 0 7 10" fill="none" >
+                            <path d="M1 1L6.00087 4.78742C6.14176 4.89412 6.14176 5.10588 6.00087 5.21258L1 9" stroke="#7ABB4A" stroke-width="1.77778" stroke-linecap="round"/>
+                        </svg> -->
+                    </div>
                 </div>
                 <!-- <div class="slds-p-vertical_medium slds-p-left_x-small" style="float: left;"><i
                                 class="fa-solid fa-arrow-right-from-bracket"
@@ -467,7 +526,7 @@
                 <div
                     class="slds-col slds-size_1-of-1 slds-medium-size_6-of-12 slds-large-size_12-of-12 slds-p-left_large slds-p-top_small">
                     <h2 style="font-family: 'Proxima Nova Bold' !important;
-                    font-size: 20px;color: #7ABB4A;">Plan Parameters</h2>
+                    font-size: 20px;color: #7ABB4A;">Guidelines</h2>
                 </div>
                 <div
                     class="slds-grid slds-wrap slds-align_absolute-center slds-p-top_large slds-p-bottom_xx-large slds-p-horizontal_large">
@@ -717,7 +776,10 @@
                     <div class="slds-float_right slds-p-right_small">
                         <div class="slds-input-has-icon slds-input-has-icon_right search-holder">
                             <img class="search-icon" src={searchIcon} loading="eager" />
-                            <input class="slds-input filter-input" type="text" placeholder="Search"
+                            <div class="close-btn" if:false={isSearchEnable} onclick={handleClearInput}>
+                                <svg class="close-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M4.815 14.46 14.458 4.818m-9.643 0.011 9.643 9.642" stroke="#929497" stroke-width="2" stroke-linecap="round"/></svg>
+                            </div>
+                            <input class="slds-input filter-input" value={_value} type="text" placeholder="Search"
                                 onkeyup={handleChange} />
                         </div>
                     </div>

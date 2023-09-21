@@ -1,8 +1,9 @@
+/* eslint-disable @lwc/lwc/no-api-reassignments */
 /* eslint-disable radix */
 /* eslint-disable no-useless-escape */
 /* eslint-disable no-restricted-globals */
 /* eslint-disable @lwc/lwc/no-async-operation */
-import { LightningElement, api, track } from "lwc";
+import { LightningElement, api, track, wire } from "lwc";
 import logo from "@salesforce/resourceUrl/EmcCSS";
 import guest from "@salesforce/user/isGuest";
 import { loadStyle , loadScript } from 'lightning/platformResourceLoader';
@@ -18,7 +19,6 @@ import getMileages from "@salesforce/apex/ManagerDashboardController.getMileages
 import contactReimMonthList from "@salesforce/apex/ManagerDashboardController.contactReimMonthList";
 import accountMonthList from "@salesforce/apex/ManagerDashboardController.accountMonthList";
 import reimbursementForHighMileageOrRisk from "@salesforce/apex/ManagerDashboardController.reimbursementForHighMileageOrRisk";
-import getDriverDetailsClone from "@salesforce/apex/DriverDashboardLWCController.getDriverDetailsClone";
 import getNotificationMessageList from '@salesforce/apex/ManagerDashboardController.getNotificationMessageList';
 import updateNotificationMessage from '@salesforce/apex/ManagerDashboardController.updateNotificationMessage';
 import dropdownDriverName from '@salesforce/apex/GetDriverData.getDriverName';
@@ -26,6 +26,13 @@ import fetchLookUpValues from '@salesforce/apex/GetDriverData.fetchLookUpValues'
 import getlistAllEmployees from '@salesforce/apex/RosterController.getlistAllEmployees';
 import getAllManagers from '@salesforce/apex/RosterController.getAllManagers';
 import getRoles from '@salesforce/apex/RosterController.getRoles';
+import getJobTitle from '@salesforce/apex/RosterController.getJobTitle';
+import getDepartment from '@salesforce/apex/RosterController.getDepartment';
+import getCompany from '@salesforce/apex/RosterController.getCompany';
+import getPickListValuesIntoList from '@salesforce/apex/RosterController.getPickListValuesIntoList';
+import getDriverType from '@salesforce/apex/RosterController.getDriverType';
+import resourceImage from '@salesforce/resourceUrl/mBurseCss';
+import sendMlogWelcomeEmail from '@salesforce/apex/ResourceController.sendMlogWelcomeEmail';
 
 export default class AdminDashboardFrame extends LightningElement {
   isGuestUser = guest;
@@ -43,6 +50,7 @@ export default class AdminDashboardFrame extends LightningElement {
 
   contactTitle;
   lastMonth;
+  searchIcon = resourceImage + '/mburse/assets/mBurse-Icons/Vector.png';
   viewTag;
   lastMonthSelected;
   _contactId;
@@ -54,6 +62,7 @@ export default class AdminDashboardFrame extends LightningElement {
   defaultYear = '';
   defaultMonth = '';
   listOfDriver;
+  userOfDriver;
   myTeamList;
   unreadCount;
   isTeamShow;
@@ -61,18 +70,27 @@ export default class AdminDashboardFrame extends LightningElement {
   employees = [];
   managers;
   roles;
+  jobTitles;
+  departments;
+  companies;
+  vehicleType;
+  driverTypes;
   reportMonthList;
   unapproveMileages;
   viewMileages;
   nameFilter = "";
   monthSelected = "";
   reportId = "";
+  _value = "";
+  isSearchEnable = true;
   biweekAccount = false;
+  singleUser = false;
   isProfile = false;
   showUsers = false;
   isAddUser = false;
+  isRemoveUser = false;
+  isDashboard = false;
   showTools = false;
-  showTools2 = false;
   reportDetail = false;
   showDriverView = false;
   mileageApproval = false;
@@ -239,10 +257,16 @@ export default class AdminDashboardFrame extends LightningElement {
   @track notifyList;
   @track notificationList;
   @api showTeam;
+  @api managerId;
   @api mileageRecord;
+  @api driverMeeting;
   @api profile;
   @api userRole;
+  @api customSetting;
+  @api addEmpFormField = [];
+  @api redirectUserId;
   monthoption = [];
+ 
  
   adminProfileMenu = [
     {
@@ -254,8 +278,8 @@ export default class AdminDashboardFrame extends LightningElement {
           menu: "Mileage-Approval",
           menuLabel: "Approval",
           menuClass: "active",
-          logo: logo + "/emc-design/assets/images/Icons/PNG/Green/Approval.png",
-          logoHov: logo + "/emc-design/assets/images/Icons/PNG/White/Approval.png"
+          logo: logo + "/emc-design/assets/images/Icons/SVG/Green/Approval.svg#approval",
+          logoHov: logo + "/emc-design/assets/images/Icons/SVG/White/Approval.svg#approval"
         },
         {
           menuId: 102,
@@ -264,10 +288,10 @@ export default class AdminDashboardFrame extends LightningElement {
           menuClass: "active",
           logo:
             logo +
-            "/emc-design/assets/images/Icons/PNG/Green/Mileage_summary.png",
+            "/emc-design/assets/images/Icons/SVG/Green/Mileage_summary.svg#summary",
           logoHov:
             logo +
-            "/emc-design/assets/images/Icons/PNG/White/Mileage_summary.png"
+            "/emc-design/assets/images/Icons/SVG/White/Mileage_summary.svg#summary"
         },
         {
           menuId: 103,
@@ -276,10 +300,10 @@ export default class AdminDashboardFrame extends LightningElement {
           menuClass: "active",
           logo:
             logo +
-            "/emc-design/assets/images/Icons/PNG/Green/Historical_Mileage.png",
+            "/emc-design/assets/images/Icons/SVG/Green/Historical_Mileage.svg#historical",
           logoHov:
             logo +
-            "/emc-design/assets/images/Icons/PNG/White/Historical_Mileage.png"
+            "/emc-design/assets/images/Icons/SVG/White/Historical_Mileage.svg#historical"
         }
       ]
     },
@@ -293,9 +317,9 @@ export default class AdminDashboardFrame extends LightningElement {
           menuLabel: "Team",
           menuClass: "",
           logo:
-            logo + "/emc-design/assets/images/Icons/PNG/Green/Drivers_list.png",
+            logo + "/emc-design/assets/images/Icons/SVG/Green/Drivers_list.svg#drivers",
           logoHov:
-            logo + "/emc-design/assets/images/Icons/PNG/White/Drivers_list.png"
+            logo + "/emc-design/assets/images/Icons/SVG/White/Drivers_list.svg#drivers"
         },
         {
           menuId: 202,
@@ -303,9 +327,9 @@ export default class AdminDashboardFrame extends LightningElement {
           menuLabel: "Reports",
           menuClass: "",
           logo:
-            logo + "/emc-design/assets/images/Icons/PNG/Green/Reports.png",
+            logo + "/emc-design/assets/images/Icons/SVG/Green/Reports.svg#report",
           logoHov:
-            logo + "/emc-design/assets/images/Icons/PNG/White/Reports.png"
+            logo + "/emc-design/assets/images/Icons/SVG/White/Reports.svg#report"
         },
         {
           menuId: 203,
@@ -313,9 +337,9 @@ export default class AdminDashboardFrame extends LightningElement {
           menuLabel: "Tools",
           menuClass: "",
           logo:
-            logo + "/emc-design/assets/images/Icons/PNG/Green/Tools.png",
+            logo + "/emc-design/assets/images/Icons/SVG/Green/Tools.svg#tools",
           logoHov:
-            logo + "/emc-design/assets/images/Icons/PNG/White/Tools.png"
+            logo + "/emc-design/assets/images/Icons/SVG/White/Tools.svg#tools"
         },
         {
           menuId: 204,
@@ -323,9 +347,9 @@ export default class AdminDashboardFrame extends LightningElement {
           menuLabel: "Users",
           menuClass: "",
           logo:
-            logo + "/emc-design/assets/images/Icons/PNG/Green/Users.png",
+            logo + "/emc-design/assets/images/Icons/SVG/Green/Users.svg#users",
           logoHov:
-            logo + "/emc-design/assets/images/Icons/PNG/White/Users.png"
+            logo + "/emc-design/assets/images/Icons/SVG/White/Users.svg#users"
         }
       ]
     },
@@ -340,9 +364,9 @@ export default class AdminDashboardFrame extends LightningElement {
           menuClass: "",
           logo:
             logo +
-            "/emc-design/assets/images/Icons/PNG/Green/Notifications.png",
+            "/emc-design/assets/images/Icons/SVG/Green/Notifications.svg#notification",
           logoHov:
-            logo + "/emc-design/assets/images/Icons/PNG/White/Notifications.png"
+            logo + "/emc-design/assets/images/Icons/SVG/White/Notifications.svg#notification"
         },
         {
           menuId: 302,
@@ -351,10 +375,10 @@ export default class AdminDashboardFrame extends LightningElement {
           menuClass: "",
           logo:
             logo +
-            "/emc-design/assets/images/Icons/PNG/Green/Driver_Videos_Training.png",
+            "/emc-design/assets/images/Icons/SVG/Green/Driver_Videos_Training.svg#videos",
           logoHov:
             logo +
-            "/emc-design/assets/images/Icons/PNG/White/Driver_Videos_Training.png"
+            "/emc-design/assets/images/Icons/SVG/White/Driver_Videos_Training.svg#videos"
         }
       ]
     }
@@ -502,7 +526,7 @@ export default class AdminDashboardFrame extends LightningElement {
   /* sidebar open/close arrow navigation event*/
   handleSidebarToggle(event) {
     console.log("From navigation new", event.detail);
-    this.section = (event.detail === 'sidebar close') ? 'content-wrapper sidebar-open' : 'content-wrapper main';
+    this.section = (event.detail === 'sidebar') ? 'content-wrapper sidebar-open' : 'content-wrapper main';
     this.template
       .querySelector("c-dashboard-profile-header")
       .styleHeader(event.detail);
@@ -511,6 +535,23 @@ export default class AdminDashboardFrame extends LightningElement {
   handleLogout() {
     // eslint-disable-next-line no-restricted-globals
     location.href = "/app/secur/logout.jsp";
+  }
+
+   @wire(getDriverDetails, {
+    managerId:'$managerId'
+  })userInfo({data,error}) {
+      if (data) {
+        this.contactInformation = data;
+        let contact = JSON.parse(data)
+        this.driverdetail = data;
+        this.userEmail = contact[0].External_Email__c;
+        this.userName = contact[0].Name;
+        this.firstName = contact[0].FirstName;
+        this.biweekAccount = contact[0].Account.Bi_Weekly_Pay_Period__c;
+        console.log("getDriverDetails###", JSON.parse(data))
+      }else if(error){
+          console.log("getDriverDetails error", error.message)
+      }
   }
 
   async handleNotification(event) {
@@ -532,6 +573,16 @@ export default class AdminDashboardFrame extends LightningElement {
         console.log("Notification", notification, result, this.unreadCount)
     }).catch(error=>{console.log(error)})
   }
+
+  modifyUrl(title, url) {
+    if (typeof (history.pushState) != "undefined") {
+     let obj = {
+      Title: title,
+      Url: url
+     };
+     history.pushState(obj, obj.Title, obj.Url);
+    }
+   }
 
   handleClose(event) {
       // console.log("id", event.target.dataset.id)
@@ -555,6 +606,11 @@ export default class AdminDashboardFrame extends LightningElement {
 
 
   viewAllNotification() {
+      if(this.showTools){
+        if(this.template.querySelector('c-user-tools')){
+          this.template.querySelector('c-user-tools').closeChildDialog();
+        }
+      }
       this.notificationViewClicked = true;
       this.headerModalText = 'Notifications';
       this.modalClass = "slds-modal slds-modal_large slds-is-fixed slds-fade-in-open animate__animated animate__fadeInTopLeft animate__delay-1s"
@@ -589,13 +645,13 @@ export default class AdminDashboardFrame extends LightningElement {
         }
       //  this.notificationList = notification;
         this.isNotify = (this.notifyList.length > 0) ? true : false
-        // setTimeout(() => {
-        //     this.dispatchEvent(
-        //         new CustomEvent("show", {
-        //             detail: "spinner"
-        //         })
-        //     );
-        // }, 100);
+        setTimeout(() => {
+            this.dispatchEvent(
+                new CustomEvent("hide", {
+                    detail: "spinner"
+                })
+            );
+        }, 100);
        console.log("Notification", notification, result, this.unreadCount)
     }).catch(error=>{console.log(error)})
   
@@ -603,6 +659,7 @@ export default class AdminDashboardFrame extends LightningElement {
 
   getMileageList(event) {
     this.isProfile = false;
+    this.isDashboard = false;
     this.notificationViewClicked = false;
     this.contactTitle = "Unapproved Mileage";
    this.isHomePage = false;
@@ -623,6 +680,7 @@ export default class AdminDashboardFrame extends LightningElement {
     this.mileageApproval = false;
     this.resources = false;
     this.notificationViewClicked = false;
+    this.isDashboard = false;
     this.teamList = true;
     this.contactTitle = "My Team";
    this.isHomePage = false;
@@ -636,6 +694,7 @@ export default class AdminDashboardFrame extends LightningElement {
   redirectToReports(){
     this.isHomePage = false;
     this.isProfile = false;
+    this.isDashboard = false;
     this.notificationViewClicked = false;
     this.showReports = true;
     this.reportDetail = false;
@@ -653,6 +712,7 @@ export default class AdminDashboardFrame extends LightningElement {
     this.reportMonthList = detailList.monthList;
     this.isHomePage = false;
     this.isProfile = false;
+    this.isDashboard = false;
     this.notificationViewClicked = false;
     this.showReports = false;
     this.reportDetail = true;
@@ -667,41 +727,83 @@ export default class AdminDashboardFrame extends LightningElement {
     console.log("event from report list--", this.reportId, this.reportMonthList);
   }
 
-  redirectToMileage() {
-    this.isProfile = false;
-    this.mileageApproval = true;
-    this.notificationViewClicked = false;
-    this.contactTitle = "Unapproved Mileage";
-   this.isHomePage = false;
-    window.location.href =
-      location.origin +
-      location.pathname +
-      location.search +
-      "#Mileage-Approval";
-    this.template
-      .querySelector("c-navigation-menu")
-      .toggleStyle("Mileage-Approval");
+  redirectToMileage(event) {
+    if(event.detail !== 'Dashboard'){
+      this.isProfile = false;
+      this.isDashboard = false;
+      this.mileageApproval = true;
+      this.notificationViewClicked = false;
+      this.contactTitle = "Unapproved Mileage";
+      this.isHomePage = false;
+      window.location.href =
+        location.origin +
+        location.pathname +
+        location.search +
+        "#Mileage-Approval";
+      this.template
+        .querySelector("c-navigation-menu")
+        .toggleStyle("Mileage-Approval");
+    }else{
+      document.title = "Admin Dashboard";
+      let url =  location.origin + location.pathname + location.search
+      this.contactTitle = this.userName;
+      this.notificationModal = false;
+      this.notificationViewClicked = false;
+      this.mileageView = false;
+      this.showDriverView = false;
+      this.showUsers = false;
+      this.showTools = false;
+      this.showReports = false;
+      this.reportDetail = false;
+      this.resources = false;
+      this.isHomePage = false;
+      this.isProfile = true;
+      this.isDashboard = false;
+      this.template.querySelector('c-navigation-menu').toggleStyle('');
+      this.modifyUrl(document.title, url)
+    }
   }
 
-  redirectToSummary() {
-    this.isProfile = false;
-    this.mileageApproval = false;
-    this.resources = false;
-    this.mileageSummaryView = false;
-    this.notificationViewClicked = false;
-    this.mileageSummary = true;
-    this.contactTitle = this.viewTag;
-    let hasVal = (this.viewTag === 'High Risk') ? '#Mileage-Summary-Risk' : (this.viewTag === 'High Mileage') ? '#Mileage-Summary-High' : '#Mileage-Summary';
-    console.log("Address---", this.viewTag)
-    this.isHomePage = false;
-    window.location.href =
-      location.origin +
-      location.pathname +
-      location.search +
-      hasVal
-    this.template
-      .querySelector("c-navigation-menu")
-      .toggleStyle("Mileage-Summary");
+  redirectToSummary(event) {
+    if(event.detail !== 'Dashboard'){
+      this.isProfile = false;
+      this.mileageApproval = false;
+      this.resources = false;
+      this.isDashboard = false;
+      this.mileageSummaryView = false;
+      this.notificationViewClicked = false;
+      this.mileageSummary = true;
+      this.contactTitle = this.viewTag;
+      let hasVal = (this.viewTag === 'High Risk') ? '#Mileage-Summary-Risk' : (this.viewTag === 'High Mileage') ? '#Mileage-Summary-High' : '#Mileage-Summary';
+      console.log("Address---", this.viewTag)
+      this.isHomePage = false;
+      window.location.href =
+        location.origin +
+        location.pathname +
+        location.search +
+        hasVal
+      this.template
+        .querySelector("c-navigation-menu")
+        .toggleStyle("Mileage-Summary");
+    }else{
+      document.title = "Admin Dashboard";
+      let url =  location.origin + location.pathname + location.search
+      this.contactTitle = this.userName;
+      this.notificationModal = false;
+      this.notificationViewClicked = false;
+      this.mileageView = false;
+      this.showDriverView = false;
+      this.showUsers = false;
+      this.showTools = false;
+      this.showReports = false;
+      this.reportDetail = false;
+      this.resources = false;
+      this.isHomePage = false;
+      this.isProfile = true;
+      this.isDashboard = false;
+      this.template.querySelector('c-navigation-menu').toggleStyle('');
+      this.modifyUrl(document.title, url)
+    }
  
   }
 
@@ -711,6 +813,7 @@ export default class AdminDashboardFrame extends LightningElement {
     this.resources = false;
     this.mileageSummaryView = false;
     this.notificationViewClicked = false;
+    this.isDashboard = false;
     this.mileageSummary = true;
     this.lastMonthSelected = this.lastMonth;
     this.contactTitle = "High Risk";
@@ -737,6 +840,7 @@ export default class AdminDashboardFrame extends LightningElement {
     this.mileageApproval = false;
     this.resources = false;
     this.mileageSummary = false;
+    this.isDashboard = true;
     this.mileageSummaryView = true;
     this.viewMileages = "";
     window.location.href =
@@ -752,14 +856,13 @@ export default class AdminDashboardFrame extends LightningElement {
       contactId: contactId
     })
       .then((data) => {
-        let monthName = data ? JSON.parse(data)[0] : "";
+        let objList = JSON.parse(data)
+        let monthName = data ? ((objList.length > 1) ? ((objList[0] === this.defaultMonth) ? objList[1] : objList[0]): objList[0]) : "";
         let mileageMonth = data ? this.removeDuplicateValue(this.proxyToObject(data)) : [];
         this.mileageMonthList = this.review(mileageMonth);
         this.monthSelected = monthName ? monthName : "";
-        this.contactTitle =
-          detailList.name + " " + this.monthSelected + " Mileage";
+        this.contactTitle = "High Risk " + this.monthSelected + " Mileage For " + detailList.name;
         this.dashboardTitle = this.contactTitle;
-        this.mileageSummaryView = true;
         this.getListMileages(contactId, this.monthSelected);
         console.log(
           "contactReimMonthList Data",
@@ -786,6 +889,7 @@ export default class AdminDashboardFrame extends LightningElement {
     this.resources = false;
     this.mileageSummary = false;
     this.mileageSummaryView = true;
+    this.isDashboard = true;
     this.viewMileages = "";
     window.location.href =
       location.origin +
@@ -800,7 +904,8 @@ export default class AdminDashboardFrame extends LightningElement {
       contactId: contactId
     })
       .then((data) => {
-        let monthName = data ? JSON.parse(data)[0] : "";
+        let objList = JSON.parse(data)
+        let monthName = data ? ((objList.length > 1) ? ((objList[0] === this.defaultMonth) ? objList[1] : objList[0]): objList[0]) : "";
         let mileageMonth = data ? this.removeDuplicateValue(this.proxyToObject(data)) : [];
         this.mileageMonthList = this.review(mileageMonth);
         this.monthSelected = monthName ? monthName : "";
@@ -828,6 +933,7 @@ export default class AdminDashboardFrame extends LightningElement {
     this.resources = false;
     this.notificationViewClicked = false;
     this.mileageSummary = true;
+    this.isDashboard = false;
     this.contactTitle = "High Mileage";
    this.isHomePage = false;
     window.location.href =
@@ -971,11 +1077,12 @@ export default class AdminDashboardFrame extends LightningElement {
     //         detail: "spinner"
     //     })
     // );
-    console.log("Unapproved-->", JSON.stringify(event.detail));
+    console.log("Unapproved-->", JSON.stringify(event.detail.message));
     this.contactTitle = "Unapproved Mileage";
     this.nameFilter = event.detail.type;
    this.isHomePage = false;
    this.notificationViewClicked = false;
+   this.isDashboard = (event.detail.target) ? true : false;
     window.location.href =
       location.origin +
       location.pathname +
@@ -984,10 +1091,11 @@ export default class AdminDashboardFrame extends LightningElement {
     this.template
       .querySelector("c-navigation-menu")
       .toggleStyle("Mileage-Approval");
+    this.singleUser = false;
     this.unapproveMileages = "";
-    this.unapproveReimbursements = (event.detail.data) ? event.detail.data : event.detail;
+    this.unapproveReimbursements = (event.detail.data) ? event.detail.data : event.detail.message;
     getUnapprovedMileages({
-      reimbursementDetails: (event.detail.data) ? event.detail.data : event.detail,
+      reimbursementDetails: (event.detail.data) ? event.detail.data : event.detail.message,
       accountId: this._accountId
     })
       .then((data) => {
@@ -1026,6 +1134,15 @@ export default class AdminDashboardFrame extends LightningElement {
         console.log("getUnapproveMileages error", error);
       });
   }
+		
+	 escapeSpecialChars(str){
+    return str
+    .replace(/\\'/g, "\'")
+    .replace(/\\&#39;/g, "\'")
+    .replace(/(&quot\;)/g,"\"")
+    .replace(/\\\\|\'/g,"\\")
+    .replace(/\\s/g,"\'");
+  }
 
   getListMileages(contactId, month) {
     var arrayList, filterList, original, year;
@@ -1037,8 +1154,10 @@ export default class AdminDashboardFrame extends LightningElement {
       did: contactId
     })
       .then((data) => {
-        var pattern = /\\\\|\'/g;
-        var resultdata = data.replace(pattern, "\\");
+       // var pattern = /\\\\|\'/g;
+       // var resultdata = data.replace(pattern, "\\");
+        var resultdata = data;
+			//	let resultdata = this.escapeSpecialChars(data);
         arrayList = this.proxyToObject(resultdata);
         original = this.proxyToObject(resultdata);
         if (this.viewTag === "High Risk") {
@@ -1099,8 +1218,8 @@ export default class AdminDashboardFrame extends LightningElement {
     this.viewMileages = "";
     this.monthSelected = event.detail;
     this.notificationViewClicked = false;
-    this.contactTitle =
-      this.mileageContactName + " " + this.monthSelected + " Mileage";
+    this.contactTitle = (this.viewTag === 'High Risk') ? "High Risk " + this.monthSelected + " Mileage For " + this.mileageContactName : 
+                        this.mileageContactName + " " + this.monthSelected + " Mileage"
     this.getListMileages(this.contactUserId, event.detail);
   }
 
@@ -1132,11 +1251,12 @@ export default class AdminDashboardFrame extends LightningElement {
       contactId: contactId
     })
       .then((data) => {
-        let monthName = data ? JSON.parse(data)[0] : "";
+        let objList = JSON.parse(data)
+        let monthName = data ? ((objList.length > 1) ? ((objList[0] === this.defaultMonth) ? objList[1] : objList[0]): objList[0]) : "";
         let mileageMonth = data ? this.removeDuplicateValue(this.proxyToObject(data)) : [];
         this.mileageMonthList = this.review(mileageMonth);
         this.monthSelected = monthName ? monthName : "";
-        this.contactTitle =
+        this.contactTitle = (this.viewTag === 'High Risk') ?  "High Risk " + this.monthSelected + " Mileage For " + detailList.name : 
           detailList.name + " " + this.monthSelected + " Mileage";
         this.dashboardTitle = this.contactTitle;
         this.getListMileages(contactId, this.monthSelected);
@@ -1216,7 +1336,21 @@ export default class AdminDashboardFrame extends LightningElement {
     );
   }
 
-  handleComplete() {
+  replaceToFirst(array, el){
+    let element = JSON.parse(el)
+    const index = array.findIndex(x => x.contactid === element.contactid);
+    var newArray = []
+    if (index !== -1) {
+      const items = array.splice(index, 1);
+     // array.splice(index, 1);
+      newArray.splice(0, 0, ...items);
+    }
+
+    return JSON.stringify(newArray)
+  }
+
+
+  handleComplete(event) {
     var arrayInput;
     this.dispatchEvent(
       new CustomEvent("show", {
@@ -1224,15 +1358,22 @@ export default class AdminDashboardFrame extends LightningElement {
       })
     );
     this.unapproveMileages = "";
+    let team = this.isTeamShow === "false" ? false : true;
     getAllDriversLastMonthUnapprovedReimbursementsclone({
       accountId: this._accountId,
       contactId: this._contactId,
-      showTeam: false,
+      showTeam: team,
       role: this.userRole
     })
       .then((b) => {
         let resultDriver = b.replace(/\\'/g, "'");
-        this.listOfDriver = resultDriver;
+        this.userOfDriver = resultDriver;
+        this.singleUser = true;
+        if(resultDriver.length > 0){
+          this.listOfDriver =  this.replaceToFirst(JSON.parse(resultDriver), event.detail);
+        }else{
+          this.listOfDriver = resultDriver;
+        }
       })
       .catch((error) => {
         console.log(
@@ -1289,10 +1430,11 @@ export default class AdminDashboardFrame extends LightningElement {
     );
     this.unapproveMileages = "";
     console.log(this._accountId, this._contactId)
+    let team = this.isTeamShow === "false" ? false : true;
     getAllDriversLastMonthUnapprovedReimbursementsclone({
       accountId: this._accountId,
       contactId: this._contactId,
-      showTeam: false,
+      showTeam: team,
       role: this.userRole
     })
       .then((b) => {
@@ -1431,45 +1573,26 @@ export default class AdminDashboardFrame extends LightningElement {
       });
   }
 
-  getUserInfo() {
-    getDriverDetails({
-      managerId: this._contactId
-    })
-      .then((data) => {
-        if (data) {
-          let _data = this.proxyToObject(data);
-          this.driverList = _data;
-          this.driverdetail = data;
-          this.userEmail = _data[0].External_Email__c;
-          this.userName = _data[0].Name;
-          this.firstName = _data[0].FirstName;
-          this.biweekAccount = _data[0].Account.Bi_Weekly_Pay_Period__c;
-          console.log("driverList", data, this.driverList);
-        }
-      })
-      .catch((error) => {
-        console.log("getDriverDetails error", error);
-      });
-  }
-
   getDriverList(){
     var parsedaata, driverlist = [] ;
-      dropdownDriverName({accountId: this._accountId })
-      .then((data) => {
-        console.log("driverdropdown",JSON.parse(data))
-        parsedaata = JSON.parse(data)
-        let i = 2;
-        for(let key in parsedaata) {
-          if (Object.prototype.hasOwnProperty.call(parsedaata, key)) {
-            i = i+1;
-            driverlist.push({Id: i,label:`${parsedaata[key]}`,value:`${parsedaata[key]}`})
-          }
+    dropdownDriverName({accountId: this._accountId,managerId: this._contactId,role:this.userRole })
+    .then((data) => {
+      console.log("driverdropdown",JSON.parse(data))
+      parsedaata = JSON.parse(data)
+      let i = 2;
+      for(let key in parsedaata) {
+        if (Object.prototype.hasOwnProperty.call(parsedaata, key)) {
+          i = i+1;
+          driverlist.push({Id: i,label:`${parsedaata[key]}`,value:key})
         }
-        this.driverdetail = JSON.parse(JSON.stringify(driverlist))
-      })
-      .catch((error) => {
-        console.log(error);
-      })
+      }
+      this.driverdetail =  JSON.parse(JSON.stringify(this.removeDuplicate(driverlist , it => it.label)));
+     
+      console.log("driverlist",this.driverdetail)
+    })
+    .catch((error) => {
+      console.log(error);
+    })
   }
   getStatus(){
     fetchLookUpValues({
@@ -1587,7 +1710,8 @@ export default class AdminDashboardFrame extends LightningElement {
     myTeamDetails({
       managerId: this._contactId,
       accountId: this._accountId,
-      showteam: boolean
+      showteam: boolean,
+      role: this.userRole
     })
       .then((data) => {
         let result = data.replace(/\\'/g, "'");
@@ -1601,7 +1725,8 @@ export default class AdminDashboardFrame extends LightningElement {
 
   redirectToDriverView(event){
     this.notificationViewClicked = false;
-    let contactDetail = JSON.parse(event.detail)
+    this.isDashboard = (event.detail.target) ? true : false;
+    let contactDetail = (event.detail.message) ? JSON.parse(event.detail.message) : JSON.parse(event.detail)
     this.idContact = contactDetail.id;
     this.driverProfileName = contactDetail.name;
     this.contactTitle = contactDetail.name;
@@ -1623,7 +1748,8 @@ export default class AdminDashboardFrame extends LightningElement {
     .toggleStyle("Team");
   }
 
-  redirectToMyTeam(){
+  redirectToMyTeam(event){
+    if(event.detail !== 'Dashboard'){
     this.isProfile = false;
     this.mileageApproval = false;
     this.resources = false;
@@ -1633,6 +1759,7 @@ export default class AdminDashboardFrame extends LightningElement {
     this.mileageSummaryView = false;
     this.teamList = true;
     this.showDriverView = false;
+    this.isDashboard = false;
     this.contactTitle = "My Team";
     this.isHomePage = true;
       window.location.href =
@@ -1643,6 +1770,25 @@ export default class AdminDashboardFrame extends LightningElement {
       this.template
         .querySelector("c-navigation-menu")
         .toggleStyle("Team");
+    }else{
+      document.title = "Admin Dashboard";
+      let url =  location.origin + location.pathname + location.search
+      this.contactTitle = this.userName;
+      this.notificationModal = false;
+      this.notificationViewClicked = false;
+      this.mileageView = false;
+      this.showDriverView = false;
+      this.showUsers = false;
+      this.showTools = false;
+      this.showReports = false;
+      this.reportDetail = false;
+      this.resources = false;
+      this.isHomePage = false;
+      this.isProfile = true;
+      this.isDashboard = false;
+      this.template.querySelector('c-navigation-menu').toggleStyle('');
+      this.modifyUrl(document.title, url)
+    }
   }
 
   popStateMessage = (event) => {
@@ -1669,7 +1815,6 @@ export default class AdminDashboardFrame extends LightningElement {
         this.showDriverView = false;
         this.showUsers = false;
         this.showTools = false;
-        this.showTools2 = false;
         this.reportDetail = false;
         this.showReports = false;
         this.resources = false;
@@ -1696,7 +1841,6 @@ export default class AdminDashboardFrame extends LightningElement {
           this.mileageSummary = false;
           this.showUsers = false;
           this.showTools = false;
-          this.showTools2 = false;
           this.reportDetail = false;
           this.showReports = false;
           this.notificationViewClicked = false;
@@ -1722,7 +1866,6 @@ export default class AdminDashboardFrame extends LightningElement {
         this.showUsers = false;
         this.showTools = false;
         this.reportDetail = false;
-        this.showTools2 = false;
         this.showReports = false;
         this.teamList = true;
         this.showDriverView = false;
@@ -1741,7 +1884,6 @@ export default class AdminDashboardFrame extends LightningElement {
         this.mileageApproval = false;
         this.showUsers = false;
         this.showTools = false;
-        this.showTools2 = false;
         this.showReports = false;
         this.resources = false;
         this.reportDetail = false;
@@ -1769,7 +1911,6 @@ export default class AdminDashboardFrame extends LightningElement {
           this.mileageApproval = false;
           this.showUsers = false;
           this.showTools = false;
-          this.showTools2 = false;
           this.showReports = false;
           this.resources = false;
           this.teamList = false;
@@ -1793,7 +1934,6 @@ export default class AdminDashboardFrame extends LightningElement {
         this.mileageView = false;
         this.showUsers = false;
         this.showTools = false;
-        this.showTools2 = false;
         this.showReports = false;
         this.reportDetail = false;
         this.mileageApproval = false;
@@ -1818,7 +1958,6 @@ export default class AdminDashboardFrame extends LightningElement {
         this.mileageApproval = false;
         this.showUsers = false;
         this.showTools = false;
-        this.showTools2 = false;
         this.showReports = false;
         this.resources = false;
         this.reportDetail = false;
@@ -1844,7 +1983,6 @@ export default class AdminDashboardFrame extends LightningElement {
         this.mileageApproval = false;
         this.showUsers = false;
         this.showTools = false;
-        this.showTools2 = false;
         this.showReports = false;
         this.resources = false;
         this.teamList = false;
@@ -1853,6 +1991,8 @@ export default class AdminDashboardFrame extends LightningElement {
         this.mileageSummaryView = false;
         this.mileageView = true;
         this.showDriverView = false;
+        this.getDriverList();
+        this.getStatus();
         if (this.template.querySelector('c-user-profile-modal')) {
           this.template.querySelector('c-user-profile-modal').hide();
         }
@@ -1871,7 +2011,6 @@ export default class AdminDashboardFrame extends LightningElement {
         this.mileageSummaryView = false;
         this.mileageView = false;
         this.showTools = false;
-        this.showTools2 = false;
         this.showReports = false;
         this.reportDetail = false;
         this.showUsers = true;
@@ -1879,6 +2018,8 @@ export default class AdminDashboardFrame extends LightningElement {
         if (this.template.querySelector('c-user-profile-modal')) {
           this.template.querySelector('c-user-profile-modal').hide();
         }
+        this.getRolesAndManagers(this._accountId);
+        this.getListOfDropDownData();
         this.template.querySelector('c-navigation-menu').toggleStyle('Users');
       } else if(address === "#Tools"){
         document.title = "Tools";
@@ -1896,7 +2037,6 @@ export default class AdminDashboardFrame extends LightningElement {
         this.mileageView = false;
         this.showUsers = false;
         this.showReports = false;
-        this.showTools2 = false;
         this.showTools = true;
         this.showDriverView = false;
         if (this.template.querySelector('c-user-profile-modal')) {
@@ -1918,7 +2058,6 @@ export default class AdminDashboardFrame extends LightningElement {
         this.mileageView = false;
         this.showUsers = false;
         this.showTools = false;
-        this.showTools2 = false;
         this.reportDetail = true;
         this.showReports = true;
         this.showDriverView = false;
@@ -1944,7 +2083,6 @@ export default class AdminDashboardFrame extends LightningElement {
           this.mileageView = false;
           this.showUsers = false;
           this.showTools = false;
-          this.showTools2 = false;
           this.showReports = false;
           this.reportDetail = true;
           this.showDriverView = false;
@@ -1970,11 +2108,15 @@ export default class AdminDashboardFrame extends LightningElement {
           this.showDriverView = (this.mileageView) ? true : false;
           this.showUsers = (this.showUsers) ? true : false;
           this.showTools = (this.showTools) ? true : false;
-          this.showTools2 = (this.showTools2) ? true : false;
           this.showReports = (this.showReports) ? true : false;
           this.reportDetail = (this.reportDetail) ? true : false;
           this.resources = (this.resources) ? true : false;
           this.myProfile = (this.myProfile) ? true : false;
+          if(this.showTools){
+            if(this.template.querySelector('c-user-tools')){
+              this.template.querySelector('c-user-tools').closeChildDialog();
+            }
+          }
           // if (this.template.querySelector('c-user-profile-modal')) {
           //     this.headerModalText = 'Notifications';
           //     this.modalClass = "slds-modal slds-modal_large slds-is-fixed slds-fade-in-open animate__animated animate__fadeInTopLeft animate__delay-1s"
@@ -2004,7 +2146,6 @@ export default class AdminDashboardFrame extends LightningElement {
           this.mileageView = false;
           this.showUsers = false;
           this.showTools = false;
-          this.showTools2 = false;
           this.showReports = false;
           this.mileageSummary = false;
           this.mileageSummaryView = false;
@@ -2024,11 +2165,10 @@ export default class AdminDashboardFrame extends LightningElement {
         this.notificationModal = false;
         this.isProfile = false;
         this.mileageApproval = false;
-        this.resources = false;
+        this.resources = true;
         this.teamList = false;
         this.showUsers = false;
         this.showTools = false;
-        this.showTools2 = true;
         this.showReports = false;
         this.mileageView = false;
         this.reportDetail = false;
@@ -2039,7 +2179,6 @@ export default class AdminDashboardFrame extends LightningElement {
             this.template.querySelector('c-user-profile-modal').hide();
         }
         this.isHomePage = true;
-        this.resources = false;
         this.template.querySelector("c-navigation-menu").toggleStyle('Videos');
       } else {
             document.title = "Admin Dashboard";
@@ -2050,7 +2189,6 @@ export default class AdminDashboardFrame extends LightningElement {
             this.showDriverView = false;
             this.showUsers = false;
             this.showTools = false;
-            this.showTools2 = false;
             this.showReports = false;
             this.reportDetail = false;
             this.resources = false;
@@ -2119,6 +2257,27 @@ export default class AdminDashboardFrame extends LightningElement {
    // this.notificationModal = false;
   }
 
+  backToDashboard(){
+    document.title = "Admin Dashboard";
+    let url =  location.origin + location.pathname + location.search
+    this.contactTitle = this.userName;
+    this.notificationModal = false;
+    this.notificationViewClicked = false;
+    this.mileageView = false;
+    this.showDriverView = false;
+    this.showUsers = false;
+    this.showTools = false;
+    this.showReports = false;
+    this.reportDetail = false;
+    this.resources = false;
+    this.isHomePage = false;
+    this.isProfile = true;
+    this.isDashboard = false;
+    this.singleUser = false;
+    this.template.querySelector('c-navigation-menu').toggleStyle('');
+    this.modifyUrl(document.title, url)
+  }
+
   handleYearChange(event){
       this.defaultYear = event.detail.value;
       this.getContactNotification();
@@ -2138,6 +2297,16 @@ export default class AdminDashboardFrame extends LightningElement {
     if(!this.notificationViewClicked){
         this.closeNotification();
     }   
+  }
+
+  handleKeyDown = (event) =>{
+      if (event.keyCode === 27) {
+         // console.log('Esc key pressed.');
+          if(!this.notificationViewClicked){
+            this.closeNotification();
+          }  
+      }
+   // console.log("keyboard###", event, this.notificationViewClicked)
   }
 
   handleLiveNotification = (event) => {
@@ -2161,6 +2330,39 @@ export default class AdminDashboardFrame extends LightningElement {
     );
   }
 
+  emailSent(event){
+      var emailOfContact
+      if(event.detail.contactEmail !== '' && event.detail.contactEmail != null && event.detail.contactEmail !== undefined){
+          emailOfContact = event.detail.contactEmail;
+          sendMlogWelcomeEmail({
+              accountID: this._accountId,
+              empEmail: emailOfContact
+          })
+          .then((result) => {
+              if (result === "\"OK\"") {
+                  this.dispatchEvent(
+                      new CustomEvent("sent", {
+                          detail: event.detail
+                      })
+                  );
+              }else{
+                  this.dispatchEvent(
+                      new CustomEvent("senterror", {
+                          detail: 'Error While Sending Email'
+                      })
+                  );
+              }
+              console.log(result);
+          })
+      }else{
+          this.dispatchEvent(
+              new CustomEvent("senterror", {
+                  detail: 'Please provide your email address'
+              })
+          );
+      }
+  }
+
   getLastYear(){
     var current, year, count = 5, i, list = [];
     current = new Date();
@@ -2174,6 +2376,11 @@ export default class AdminDashboardFrame extends LightningElement {
      }
 
      return list
+  }
+
+  constructor() {
+    super();
+    this.handleKeyDown = this.handleKeyDown.bind(this);
   }
 
   connectedCallback() {
@@ -2196,16 +2403,17 @@ export default class AdminDashboardFrame extends LightningElement {
     this._contactId = idParamValue;
     this._accountId = aidParamValue;
     this.isTeamShow = showIsTeam;
-    this.getUserInfo();
     this.getAccountMonthList();
     this.getDriverList();
     this.getEmployeeList();
+    this.getListOfDropDownData();
     this.getRolesAndManagers(this._accountId);
     this.getStatus();
     this.contactTitle = this.userName;
     this.isProfile = true;
     console.log("Guest", this.isGuestUser);
     window.addEventListener('click', this._handler = this.handleOutsideClick.bind(this));
+    window.addEventListener('keydown', this.handleKeyDown);
     window.addEventListener("popstate", this.popStateMessage);
 
     if (window.location.hash !== "") {
@@ -2213,39 +2421,29 @@ export default class AdminDashboardFrame extends LightningElement {
         this.popStateMessage();
       }, 10);
     }
-    // } else {
-    //   if(manager !== null){
-    //     this.popStateMessage();
-    //   }
-    // }
 
-    /*Apex imperatively method call to get contact information */
-      getDriverDetailsClone({
-        contactId: this._contactId
-      })
-      .then((data) => {
-        if (data) {
-          let contactList = this.proxyToObject(data);
-          this.contactInformation = data;
-          console.log("contact--->", this.contactInformation);
-          this.userEmail = contactList[0].External_Email__c;
-          this.userName = contactList[0].Name;
-          this.firstName = contactList[0].FirstName;
-          console.log("Name", this.userName, this.userEmail);
-          this.getContactNotification();
-        }
-      })
-      .catch((error) => {
-        console.log("getDriverDetailsClone error", error.message);
-      });
+    this.getContactNotification();
+  }
+
+  closeDialogBox(){
+    this.notificationViewClicked = false;
+    this.notificationModal = false;
+  }
+  
+  handleClearInput(){
+    this._value = "";
+    this.isSearchEnable = this._value === "" ? true : false;
+    if(this.template.querySelector('c-remove-employee')) {
+      this.template.querySelector('c-remove-employee').handleSearch(this._value)
+    }
   }
 
   addUser() {
       this.modalClass = "slds-modal slds-modal_large slds-is-fixed slds-fade-in-open animate__animated animate__fadeInTopLeft animate__delay-1s"
       this.headerClass = "slds-modal__header header-preview slds-p-left_xx-large slds-clearfix"
       this.subheaderClass = "slds-hyphenate slds-float_left slds-text-heading_medium"
-      this.modalContent = "slds-modal__content slds-p-left_xx-large slds-p-right_medium slds-p-bottom_medium slds-p-top_small overflow-visible"
-      this.styleHeader = "slds-modal__container slds-m-top_medium employee-modal-width"
+      this.modalContent = "slds-modal__content slds-p-left_xx-large slds-p-right_medium slds-p-bottom_medium slds-p-top_small"
+      this.styleHeader = "slds-modal__container slds-m-top_medium"
       this.styleClosebtn = "close-notify"
       this.headerModalText = "Add User";
       this.isAddUser = true;
@@ -2254,5 +2452,100 @@ export default class AdminDashboardFrame extends LightningElement {
 
   addEmployee() {
     this.template.querySelector('c-user-profile-modal').hide();
+    this.getEmployeeList();
   }
+  handleFormField(event) {
+    let addEmp = this.proxyToObj(event.detail);
+    this.addEmpFormField = addEmp?.column;		
+  }
+  proxyToObj(data) {
+    return data ? JSON.parse(JSON.stringify(data)) : '';
+  }
+  handleUserNavigate(event) {
+    document.title = "Users";
+    this.redirectUserId = event.detail;
+    window.location.href = location.origin + location.pathname + location.search + '#Users'
+  }
+
+  refreshEmpData(){
+    this.getEmployeeList();
+  }
+
+  getListOfDropDownData() {
+    getJobTitle()
+		.then(responce => {
+			this.jobTitles = this.formatArray(JSON.parse(responce));
+		})
+		.catch(err => {
+			console.log("JOBLISTERRR",err);
+		});
+    getDepartment()
+		.then(responce => {
+			this.departments = this.formatArray(JSON.parse(responce));
+		})
+		.catch(err => {
+			console.log({err});
+		});
+    getCompany()
+		.then(responce => {
+			this.companies = this.formatArray(JSON.parse(responce));
+		})
+		.catch(err => {
+			console.log({err});
+		});
+    getPickListValuesIntoList({accid:this._accountId})
+		.then(responce => {
+			let vehicles = JSON.parse(responce);
+			if(vehicles && vehicles.length && Array.isArray(vehicles)) {
+				this.vehicleType = this.formatArray(vehicles[1].split(";"));
+			}
+		})
+		.catch(err => {
+			console.log(this.proxyToObj(err));
+		});
+    getDriverType()
+		.then(responce => {
+			this.driverTypes = this.formatArray(JSON.parse(responce));
+		})
+		.catch(err => {
+			console.log(this.proxyToObj(err));
+		})
+  }
+
+  formatArray(data) {
+		if(data && data.length){
+		return 	data.map(key => ({
+				id: key,
+				label: key,
+				value: key
+			}));
+		}
+		return data;
+	}
+
+  removeUser(){
+    this.modalClass = "slds-modal slds-modal_large slds-is-fixed slds-fade-in-open animate__animated animate__fadeInTopLeft animate__delay-1s"
+    this.headerClass = "slds-modal__header header-preview slds-p-horizontal_large slds-p-top_xx-large slds-p-bottom_xxx-small slds-clearfix"
+    this.subheaderClass = "slds-hyphenate slds-float_left slds-text-heading_medium"
+    this.modalContent = "slds-modal__content slds-p-left_xx-large slds-p-right_medium slds-p-bottom_medium slds-p-top_small overflow-visible"
+    this.styleHeader = "slds-modal__container slds-m-top_medium employee-modal-width"
+    this.styleClosebtn = "close-paginated"
+    this.headerModalText = "Remove User";
+    this.isRemoveUser = true;
+    this.template.querySelector('c-user-profile-modal').show();
+  }
+
+  handleCloseModal() {
+    this.isAddUser = false;
+    this.isRemoveUser = false;
+  }
+
+  handleRemoveUserFilter(event) {
+      if(this.template.querySelector('c-remove-employee')) {
+        this._value = event.target.value;
+        this.isSearchEnable = this._value === "" ? true : false;
+        this.template.querySelector('c-remove-employee').handleSearch(event.target.value)
+      }
+  }
+
 }

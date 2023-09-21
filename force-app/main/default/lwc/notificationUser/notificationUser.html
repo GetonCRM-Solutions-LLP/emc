@@ -1,2 +1,89 @@
 <template>
+  <div class="sidebar">
+    <div class="logo-details">
+        <img class="logo-mburse" src={companyShort} loading="eager" onclick={redirectToHomePage} />
+        <img class="mburse-large" src={company} loading="eager" onclick={redirectToHomePage} />
+        <i class='fas fa-chevron-right toggle' onclick={toggleSideBar}></i>
+    </div>
+  
+    <div class="logo-icon">
+        <div class="icon user-icon">
+            <img class="user-icon-img" src={user} loading="eager" />
+            <div class="text logo-text">
+                <span class="name">{driverName}</span>
+                <span class="profession">{driverEmail}</span>
+            </div>
+        </div>
+  
+    </div>
+    <template lwc:if={showButtons}>
+        <div class="dashboard">
+            <!-- <span class="dashboard-name">Dashboards:</span> -->
+            <!-- <div class="dashboard-content"> -->
+            <a class="link-btn admin-btn" href="#" onclick={redirectToProfile}>
+                <svg class="link-icon" xmlns="http://www.w3.org/2000/svg" width="9" height="10" viewBox="0 0 9 10"
+                    fill="none">
+                    <path d="M7.96664 1.33334V8.66667" stroke="#7ABB4A" stroke-width="1.86667"
+                        stroke-linecap="round" />
+                    <path d="M4.50003 3.53333L4.50003 8.66665" stroke="#7ABB4A" stroke-width="1.86667"
+                        stroke-linecap="round" />
+                    <path d="M1.03336 5.73334L1.03336 8.66667" stroke="#7ABB4A" stroke-width="1.86667"
+                        stroke-linecap="round" />
+                </svg>
+                <span class="text-dashboard">{adminText}</span>
+            </a>
+            <a class="link-btn driver-btn" href="#" onclick={redirectToDriverProfile}>
+                <svg class="link-icon" xmlns="http://www.w3.org/2000/svg" width="9" height="10" viewBox="0 0 9 10"
+                    fill="none">
+                    <path d="M7.96664 1.33334V8.66667" stroke="#7ABB4A" stroke-width="1.86667"
+                        stroke-linecap="round" />
+                    <path d="M4.50003 3.53333L4.50003 8.66665" stroke="#7ABB4A" stroke-width="1.86667"
+                        stroke-linecap="round" />
+                    <path d="M1.03336 5.73334L1.03336 8.66667" stroke="#7ABB4A" stroke-width="1.86667"
+                        stroke-linecap="round" />
+                </svg>
+                <span class="text-dashboard">{driverText}</span>
+            </a>
+            <!-- </div> -->
+        </div>
+    </template>
+    <div class="menu-wrapper">
+      <ul class="nav-list">
+        <template for:each={driverMenuItem} for:item="menu">
+            <li key={menu.id}>
+                <div class="grey-border"></div>
+                <div class="text-head">{menu.label}</div>
+                <template for:each={menu.menuItem} for:item="item">
+                    <a class="tooltipText" href="#" key={item.menuId} oncontextmenu={handleContextMenu}
+                      onclick={handleRedirect} name={item.menuLabel} data-name={item.menu}>
+                        <div class="menu-icon icon-no-hover" data-name={item.menu}>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26">
+                                <use xlink:href={item.logo}></use>
+                            </svg>
+                        </div>
+                        <div class="menu-icon icon-hover" data-name={item.menu}>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26">
+                                <use xlink:href={item.logoHov}></use>
+                            </svg>
+                        </div>
+                        <span class="links_name" data-name={item.menu}>{item.menuLabel}</span>
+                          <span class="tooltip"> 
+                            <svg xmlns="http://www.w3.org/2000/svg" width="120" height="38.182" viewBox="0 0 120 38.182" fill="none">
+                              <path
+                                  d="M8.761 4.858C10.785 1.823 14.191 0 17.838 0H109.091C115.116 0 120 4.884 120 10.909V27.273C120 33.298 115.116 38.182 109.091 38.182H18.205C14.358 38.182 10.795 36.155 8.829 32.848L1.405 20.363C0.546 18.919 0.593 17.11 1.525 15.712L8.761 4.858Z"
+                                  fill="#BDC0C6"></path>
+                              <path
+                                  d="M8.761 4.858C10.785 1.823 14.191 0 17.838 0H109.091C115.116 0 120 4.884 120 10.909V27.273C120 33.298 115.116 38.182 109.091 38.182H18.205C14.358 38.182 10.795 36.155 8.829 32.848L1.405 20.363C0.546 18.919 0.593 17.11 1.525 15.712L8.761 4.858Z"
+                                  fill="#404B5A"></path>
+                          </svg>
+                          <span class="tooltipLabel">{item.menuLabel}</span>
+                        </span>
+                    </a>
+                </template>
+            </li>
+        </template>
+      </ul>
+    </div>
+   
+  </div>
 </template>

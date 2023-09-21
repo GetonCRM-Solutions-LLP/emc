@@ -4,16 +4,19 @@ import resourceImage from '@salesforce/resourceUrl/mBurseCss';
 export default class ViewDetailUser extends LightningElement {
     @api contactList;
     @api userName;
+    @api role;
     @api accountId;
     @api contactId;
     @api tripColumn;
     @api tripKeyFields;
     @api month;
     @api selectedMonth;
+    @api redirectDashboard;
     sortable = true;
     isFalse = false;
     isRecord = false;
-    classToTable = 'slds-table--header-fixed_container p-top-v1';
+    classToTable = 'fixed-container';
+    noMessage = 'There is no data available';
     searchIcon = resourceImage + '/mburse/assets/mBurse-Icons/Vector.png';
     flagIcon = resourceImage + '/mburse/assets/mBurse-Icons/Tooltip/flag.png';
     unapproveIcon = resourceImage + '/mburse/assets/mBurse-Icons/Tooltip/unapprove.png';
@@ -24,7 +27,9 @@ export default class ViewDetailUser extends LightningElement {
     originalModelList;
     modalKeyFields;
     modalListColumn;
+    _value = "";
     isScrollable = false;
+    isSearchEnable = true;
     isSort = true;
 
     getUrlParamValue(url, key) {
@@ -106,7 +111,7 @@ export default class ViewDetailUser extends LightningElement {
                     let singleValue = {}
                     if (keyFields.includes(key) !== false) {
                         singleValue.key = key;
-                        singleValue.value =  element[key];
+                        singleValue.value = (key === 'status' || key === 'originname' || key === 'destinationname') ? (element[key] === null || element[key] === undefined || element[key] === "") ? "—" : element[key] : element[key];
                         singleValue.truncate = (key === 'originname' || key === 'destinationname') ? true : false;
                         singleValue.tooltip = (key === 'status' || key === 'originname' || key === 'destinationname') ? true : false;
                         singleValue.tooltipText = (key === 'originname') ? (element.origin != null ? element.origin : 'This trip was manually entered without an address.') : (key === 'destinationname') ? (element.destination != null ? element.destination : 'This trip was manually entered without an address.') : (element.status === 'Rejected') ? (element.approvalName !== null && element.approvalName === 'Tom Honkus') ? 'Your mileage was automatically flagged by the system on ' + element.approveddate :  ((element.approvalName !== null ? element.approvalName : '') + ' flagged on ' + element.approveddate) : (element.status === 'Approved') ? (element.approvalName !== null && element.approvalName === 'Tom Honkus') ? 'Your mileage was automatically approved by the system on ' + element.approveddate : ((element.approvalName !== null ? element.approvalName : '') + ' approved on ' + element.approveddate) : 'Unapproved';
@@ -156,7 +161,16 @@ export default class ViewDetailUser extends LightningElement {
 
     handleChange(event) {
         this._value = event.target.value;
+        this.isSearchEnable = this._value === "" ? true : false;
         this.template.querySelector('c-user-preview-table').searchByKey(this._value)
+    }
+
+    handleClearInput(){
+        this._value = "";
+        this.isSearchEnable = this._value === "" ? true : false;
+        this.template
+        .querySelector("c-user-preview-table")
+        .searchByKey(this._value);
     }
 
     handleMonthChange(event){
@@ -165,9 +179,10 @@ export default class ViewDetailUser extends LightningElement {
     }
 
     revertHandler(){
+        let backTo = (this.redirectDashboard) ? 'Dashboard' : '';
         this.dispatchEvent(
             new CustomEvent("back", {
-                detail: ""
+                detail: backTo
             })
         );
     }
@@ -183,7 +198,7 @@ export default class ViewDetailUser extends LightningElement {
         if (this.contactList) {
             this.modelList = this.proxyToObject(this.contactList);
             this.originalModelList = this.proxyToObject(this.contactList);
-            this.classToTable = this.modelList.length > 5 ? 'slds-table--header-fixed_container preview-height' : 'slds-table--header-fixed_container'
+            this.classToTable = this.modelList.length > 5 ? 'fixed-container' : 'fixed-container overflow-none'
             this.modalListColumn = this.tripColumn;
             this.modalKeyFields = this.tripKeyFields;
             this.dynamicBinding(this.modelList, this.modalKeyFields);
