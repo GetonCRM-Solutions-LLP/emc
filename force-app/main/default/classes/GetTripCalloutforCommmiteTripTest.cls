@@ -32,6 +32,7 @@ public class GetTripCalloutforCommmiteTripTest {
             currentContact[0].Role__c = 'Driver';  
             currentContact[0].Time_Zone__c = 'US/Eastern';
             currentContact[0].Monthly_Reimbursement__c = true;
+            currentContact[0].Biweek_Reimbursement__c=false;
             update currentContact[0];
             
             Contact contact_1 = new Contact(AccountId = account.Id, LastName = 'xgeek',External_Email__c='newmail@gmail.com');

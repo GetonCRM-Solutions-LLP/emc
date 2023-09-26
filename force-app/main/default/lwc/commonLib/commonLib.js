@@ -1,3 +1,6 @@
+/* eslint-disable no-unused-expressions */
+/* eslint-disable vars-on-top */
+/* eslint-disable consistent-return */
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 
 
@@ -43,7 +46,7 @@ const formatData = (data, pID, aID) => {
         let rowData = {};
         let formatDate = fullDateFormat(row, pID, aID);
         let userDate = dateFormat(row);
-        if (row.Day_Of_Week__c != undefined) {
+        if (row.Day_Of_Week__c !== undefined) {
             dayOfWeek = row.Day_Of_Week__c.toString().slice(0, 3);
         } else {
             dayOfWeek = "";
@@ -70,7 +73,6 @@ const formatData = (data, pID, aID) => {
           rowData.waypoint = row.Way_Points__c;
         }
   
-        rowData.TrackingMethod = row.Tracing_Style__c;
         rowData.FromLocation = row.Origin_Name__c;
         rowData.OriginalFromLocation = row.Original_Origin_Name__c;
         rowData.ToLocation = row.Destination_Name__c;
@@ -90,6 +92,7 @@ const formatData = (data, pID, aID) => {
         rowData.Tags = (row.Tag__c === undefined) ? '' : row.Tag__c;
         rowData.Notes = (row.Notes__c === undefined) ? '' : row.Notes__c; 
         rowData.Activity = (row.Activity__c === undefined) ? '' : row.Activity__c;
+        rowData.TrackingMethod = row.Tracing_Style__c;
         rowData.DriveTime = (row.Driving_Time__c === undefined) ? '' : row.Driving_Time__c;
         rowData.StayTime = (row.Stay_Time__c === undefined) ? '' : row.Stay_Time__c;
         rowData.TotalTime = (row.Drive_Stay_Time__c === undefined) ? '' : row.Drive_Stay_Time__c;
@@ -134,7 +137,7 @@ const excelData = (exlData) => {
    exportData.DriveTime = exlData.DriveTime,
    exportData.TotalTime = exlData.TotalTime,
    exportData.Activity = exlData.Activity
-   if(exlData.ActualMileage != undefined){
+   if(exlData.ActualMileage !==undefined){
     exportData.ActualMileage = exlData.ActualMileage
    }
    exportData.Mileage = exlData.Mileage,
@@ -152,26 +155,26 @@ const changeKeyObjects = (csvData) => {
   var filterCSVData = [];
   csvData.forEach((excel) => {
   var replaceKey = {};
-  replaceKey["Driver"] = excel.Name;
-  replaceKey["Email"] = excel.emailID;
-  replaceKey["Status"] = excel.TripStatus;
-  replaceKey["Date"] = excel.userdate;
-  replaceKey["Day"] = excel.Day;
+  replaceKey.Driver = excel.Name;
+  replaceKey.Email = excel.emailID;
+  replaceKey.Status = excel.TripStatus;
+  replaceKey.Date = excel.userdate;
+  replaceKey.Day = excel.Day;
   replaceKey["Start Time"] = excel.StartTime;
   replaceKey["End Time"] = excel.EndTime;
   replaceKey["Stay Time"] = excel.StayTime;
   replaceKey["Drive Time"] = excel.DriveTime;
   replaceKey["Total Time"] = excel.TotalTime;
-  replaceKey["Activity"] = excel.Activity;
+  replaceKey.Activity = excel.Activity;
+  replaceKey["Tracking Method"] = excel.TrackingMethod;
   replaceKey["Mileage (mi)"] = excel.Mileage;
   replaceKey["From Location Name"] = excel.OriginalFromLocation;
   replaceKey["From Location Address"] = excel.TripOrigin;
   replaceKey["To Location Name"] = excel.OriginalToLocation;
   replaceKey["To Location Address"] = excel.TripDestination;
-  replaceKey["State"] = excel.State;
-  replaceKey["Tags"] = excel.Tags;
-  replaceKey["Notes"] = excel.Notes;
-  replaceKey["Tracking Method"] = excel.TrackingMethod;
+  replaceKey.State = excel.State;
+  replaceKey.Tags = excel.Tags;
+  replaceKey.Notes = excel.Notes;
   filterCSVData.push(replaceKey);
 
   });
@@ -187,6 +190,17 @@ const excelFormatDate =(exlDate)=>{
   today = yyyy + '-' + mm + '-' + dd;
   return today;
 }
+
+const toDate = (db) => {
+  var today = new Date(db);
+  var dd = String(today.getDate()).padStart(2, '0');
+  var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+  var yyyy = today.getFullYear().toString().substring(2);
+
+  today = mm + '/' + dd + '/' + yyyy;
+  return today;
+}
+
 const validateDate=(dob)=>{
   var filterDate = dob;
   var date = new Date(filterDate);
@@ -200,10 +214,10 @@ const validateDate=(dob)=>{
 const dateTypeFormat =(dt)=>{
   var tDate = dt;
   var td = new Date(tDate);
-  var tdd = td.getDate();
+ // var tdd = td.getDate();
   var tmm = td.getMonth() + 1;
   var tyy = td.getFullYear();
-  tdd = (tdd < 10) ? ('0' + tdd) : tdd;
+ // tdd = (tdd < 10) ? ('0' + tdd) : tdd;
   tmm = (tmm < 10) ? ('0' + tmm) : tmm;
   var dateReturn = tmm + "-" + tyy;
   return dateReturn;
@@ -246,10 +260,10 @@ const dateString = (dt) =>{
         }
 
         return tripDate + " " + dayofweek;
-      } else {
+      } 
         return "";
-      }
-    }else{
+      
+    }
       if (rowObj.ConvertedStartTime__c != undefined) {
         let newdate = new Date(rowObj.ConvertedStartTime__c);
         let dayofweek;
@@ -263,10 +277,10 @@ const dateString = (dt) =>{
           dayofweek = dayofweek.toString();
         }
         return mm + "/" + ("0" + dd).slice(-2) + "/" + yy + " " + dayofweek;
-      } else {
+      } 
         return "";
-      }
-    }
+      
+    
     
   }
   // function to format date
@@ -278,14 +292,14 @@ const dateString = (dt) =>{
       let yy = newdate.getFullYear();
 
       return mm + "/" + dd + "/" + yy;
-    } else {
+    } 
       return "";
-    }
+    
   }
 
     // function to format time
     const TimeFormat = (timeObj) => {
-      if (timeObj != undefined) {
+      if (timeObj !== undefined) {
         let startendTime = new Date(timeObj);
         let convertedTime = startendTime.toLocaleTimeString("en-US", {
           timeZone: "America/Panama",
@@ -293,9 +307,9 @@ const dateString = (dt) =>{
           minute: "2-digit",
         });
         return convertedTime;
-      } else {
+      } 
         return "";
-      }
+      
     }
 
     const validateState = (stateVal) => {
@@ -361,5 +375,6 @@ export
     dateTypeFormat,
     yearMonthDate,
     typeOfTrip,
-    formatList
+    formatList,
+    toDate
 }

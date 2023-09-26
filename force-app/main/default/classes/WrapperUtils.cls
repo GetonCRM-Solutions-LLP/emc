@@ -49,8 +49,15 @@ public with sharing class WrapperUtils
             currentEmployeeDetail.lastName=currentContact.lastName;
             currentEmployeeDetail.name = currentEmployeeDetail.name + ' '+ currentContact.lastName;   
         } else {
-            currentEmployeeDetail.lastName= '';            
+            currentEmployeeDetail.lastName='';            
         }
+        /* khuman*/
+        if(currentContact.Mileage_for_deduct__c  !=  null) {
+            currentEmployeeDetail.mileageForDeduction=currentContact.Mileage_for_deduct__c;
+        } else {
+            currentEmployeeDetail.mileageForDeduction= 0;            
+        }
+        /* khuman*/
         currentEmployeeDetail.cellphone = currentContact.Phone  !=  null ? currentContact.Phone : '';
         currentEmployeeDetail.branchName = String.IsNotBlank(currentContact.Branch_Name__c) ? currentContact.Branch_Name__c : '';
         currentEmployeeDetail.deactivationBy = currentContact.Deactivated_By__c != null ? currentContact.Deactivated_By__c : '';
@@ -76,7 +83,7 @@ public with sharing class WrapperUtils
             currentEmployeeDetail.monthlymileageLimit = '';
             currentEmployeeDetail.approvalThreshold = '';
         }
-        currentEmployeeDetail.fixedamount = String.isNotBlank(String.valueOf(currentContact.Fixed_Amount__c)) ? String.valueOf(currentContact.Fixed_Amount__c.setScale(2)) : ''; 
+        currentEmployeeDetail.fixedamount = String.isNotBlank(String.valueOf(currentContact.Fixed_Amount__c)) ? String.valueOf(currentContact.Fixed_Amount__c) : ''; 
         currentEmployeeDetail.zipCode = currentContact.MailingPostalCode  !=  null ? String.valueOf(currentContact.MailingPostalCode) : '';
         currentEmployeeDetail.city = currentContact.MailingCity  !=  null ? currentContact.MailingCity : '';
         currentEmployeeDetail.state = currentContact.MailingState  !=  null ? currentContact.MailingState : '';
@@ -157,10 +164,7 @@ public with sharing class WrapperUtils
         currentEmployeeDetail.biWeekReimbursement = currentContact.Biweek_Reimbursement__c;
         currentEmployeeDetail.timeAttandance = currentContact.Time_Attandance__c;
         currentEmployeeDetail.costCode = currentContact.Cost_Code__c != null ? currentContact.Cost_Code__c : '';
-        //currentEmployeeDetail.lastSynced = currentContact.Last_Synced__c != null ? string.valueOf(currentContact.Last_Synced__c) : '';
-       
          if(currentContact.App_Settings__c != null){
-             
              string app = currentContact.App_Settings__c;
              string[] splitApp = app.split('Auto start:');
              system.debug('splitApp[1]==' + splitApp);
@@ -181,7 +185,7 @@ public with sharing class WrapperUtils
         } else {
              currentEmployeeDetail.lastSynced = '';
         }
-        system.debug('currentEmployeeDetail==' + currentEmployeeDetail);
+        currentEmployeeDetail.bpCode = currentContact.BP_Code__c != null ? currentContact.BP_Code__c : '';
         /* END */
         return currentEmployeeDetail;       
     }
@@ -197,6 +201,7 @@ public with sharing class WrapperUtils
     {
         Contact currentContact = new Contact();
         currentContact.id=currentEmployeeDetail.userid;
+        currentContact.Mileage_for_deduct__c = currentEmployeeDetail.mileageForDeduction;
         currentContact.firstname=currentEmployeeDetail.firstName;
         currentContact.lastname = currentEmployeeDetail.lastName;
         currentContact.email =currentEmployeeDetail.email;
@@ -276,13 +281,15 @@ public with sharing class WrapperUtils
         if(currentEmployeeDetail.district != null && currentEmployeeDetail.district != '') {
             currentContact.District__c = currentEmployeeDetail.district;
         }
-        if(currentEmployeeDetail.deactivaedDate  !=  null) {
+        if(currentEmployeeDetail.deactivaedDate != null &&  currentEmployeeDetail.deactivaedDate != '') {
+        system.debug('currentEmployeeDetail.deactivaedDate=='+currentEmployeeDetail.deactivaedDate);
             List<String> deactivationDateSplitted = new List<String>();
             if(String.valueOf(currentEmployeeDetail.deactivaedDate).contains('-')) {
                 deactivationDateSplitted = String.valueOf(currentEmployeeDetail.deactivaedDate).split('-');
             } else if((String.valueOf(currentEmployeeDetail.deactivaedDate).contains('/'))) {
                 deactivationDateSplitted = String.valueOf(currentEmployeeDetail.deactivaedDate).split('/');                
             }
+            system.debug('deactivationDateSplitted='+deactivationDateSplitted);
             currentContact.Deactivated_Date__c = Datetime.newInstance(Integer.valueOf(deactivationDateSplitted[2]), Integer.valueOf(deactivationDateSplitted[0]), Integer.valueOf(deactivationDateSplitted[1]),0,0,0);           
         } else {
             currentContact.Deactivated_Date__c =null;
@@ -347,6 +354,7 @@ public with sharing class WrapperUtils
             currentContact.Payroll_Period__c = String.valueOf(currentEmployeeDetail.payRollPeriod);
         }
         currentContact.Cost_Code__c = currentEmployeeDetail.costCode != null ? currentEmployeeDetail.costCode : '';
+        currentContact.BP_Code__c = currentEmployeeDetail.bpCode != null ? currentEmployeeDetail.bpCode : '';
         return currentContact;      
     }
     
@@ -391,7 +399,14 @@ public with sharing class WrapperUtils
         }
         
         if(employeeMileage.Variable_Rate__c != null){
-            currentEmployeeMileage.variablerate = string.valueof(employeeMileage.Variable_Rate__c );
+        
+            /*if(employeeMileage.Variable_Rate__c < 1){
+                currentEmployeeMileage.variablerate = String.valueOf(employeeMileage.Variable_Rate__c).substring(1);
+            }else{
+                 currentEmployeeMileage.variablerate = employeeMileage.Variable_Rate__c != null ? String.valueOf(employeeMileage.Variable_Rate__c) : '0';     
+            }*/    
+            
+            currentEmployeeMileage.variablerate = employeeMileage.Variable_Rate__c != null ? String.valueOf(employeeMileage.Variable_Rate__c) : '0';     
         }
         if(employeeMileage.Fuel_Variable_Rate__c!= null){
             currentEmployeeMileage.fuelVariableRate= string.valueof(employeeMileage.Fuel_Variable_Rate__c);
@@ -471,14 +486,15 @@ public with sharing class WrapperUtils
         }
         
         //AI-000426
-        if(employeeMileage.Mileage_Lock_Date__c != null) {
+        /*if(employeeMileage.Mileage_Lock_Date__c != null) {
             if(String.valueOf(employeeMileage.Mileage_Lock_Date__c).contains('-')) {
                 List<String> lockDateSplitted = new List<String>();
                 lockDateSplitted = String.valueOf(employeeMileage.Mileage_Lock_Date__c).split('-');
                 currentEmployeeMileage.lockdate  = lockDateSplitted[1]+'/'+lockDateSplitted[2]+'/'+lockDateSplitted[0].substring(2,4);
                 currentEmployeeMileage.isLockDate = true;
             }
-        } else if(employeeMileage.EmployeeReimbursement__r.Mileage_Lock_Date__c != null) {
+        } */
+        if(employeeMileage.EmployeeReimbursement__r.Mileage_Lock_Date__c != null) {
             if(String.valueOf(employeeMileage.EmployeeReimbursement__r.Mileage_Lock_Date__c).contains('-')) {
                 List<String> lockDateSplitted = new List<String>();
                 lockDateSplitted = String.valueOf(employeeMileage.EmployeeReimbursement__r.Mileage_Lock_Date__c).split('-');
@@ -499,10 +515,12 @@ public with sharing class WrapperUtils
         currentEmployeeMileage.month  = employeeMileage.EmployeeReimbursement__r.month__c;
         currentEmployeeMileage.reimbursementid  = employeeMileage.EmployeeReimbursement__c;
         currentEmployeeMileage.driverid = employeeMileage.EmployeeReimbursement__r.Contact_Id__c;
+        currentEmployeeMileage.highRiskMileage = employeeMileage.High_Risk_Mileage__c;
         return currentEmployeeMileage;
     }
     public static Contact getNewContact(EmployeeDetails currentEmployeeDetail) {
-        Contact currentContact = new Contact();       
+        Contact currentContact = new Contact();   
+        currentContact.Mileage_for_deduct__c = currentEmployeeDetail.mileageForDeduction;
         currentContact.firstname=currentEmployeeDetail.firstName;
         currentContact.lastname = currentEmployeeDetail.lastName;
         currentContact.email =currentEmployeeDetail.email;
@@ -537,10 +555,13 @@ public with sharing class WrapperUtils
             List<String> activationDateSplitted = new List<String>();
             if(String.valueOf(currentEmployeeDetail.activationDate).contains('-')) {
                 activationDateSplitted = String.valueOf(currentEmployeeDetail.activationDate).split('-');
+                system.debug('activationDateSplitted if - ==' + activationDateSplitted);
             } else if((String.valueOf(currentEmployeeDetail.activationDate).contains('/'))) {
-                activationDateSplitted = String.valueOf(currentEmployeeDetail.activationDate).split('/');                
+                activationDateSplitted = String.valueOf(currentEmployeeDetail.activationDate).split('/');   
+                  system.debug('activationDateSplitted id /==' + activationDateSplitted);
             }
             currentContact.Activation_Date__c =  Date.newInstance(Integer.valueOf(activationDateSplitted[2]), Integer.valueOf(activationDateSplitted[0]), Integer.valueOf(activationDateSplitted[1]));
+            system.debug(' currentContact.Activation_Date__c ==' + Date.newInstance(Integer.valueOf(activationDateSplitted[2]), Integer.valueOf(activationDateSplitted[0]), Integer.valueOf(activationDateSplitted[1])));
         }
         
         if(currentEmployeeDetail.freeze != null && currentEmployeeDetail.freeze != '') {
@@ -631,6 +652,7 @@ public with sharing class WrapperUtils
             currentContact.Driving_States__c = null;
         }
         currentContact.Cost_Code__c = currentEmployeeDetail.costCode != null ? currentEmployeeDetail.costCode : '';
+        currentContact.BP_Code__c = currentEmployeeDetail.bpCode != null ? currentEmployeeDetail.bpCode : '';
         return currentContact;      
     }
     /**
@@ -640,84 +662,98 @@ public with sharing class WrapperUtils
 @param currentEmployeeReimbursement currentEmployeeReimbursement is the Single Employee_Reimbursement__c from which you want to Built EmployeeReimbursements. 
 @return EmployeeReimbursements built by the method.
 */
-    public static EmployeeReimbursements getEmployeeReimbursements(Employee_Reimbursement__c currentEmployeeReimbursement)
-    {
-        EmployeeReimbursements employeeReimbursement = new EmployeeReimbursements();
-        employeeReimbursement.employeeReimbursementId = currentEmployeeReimbursement.id;
-        if(currentEmployeeReimbursement.Approved_Date__c != null) {
-            if(String.valueOf(currentEmployeeReimbursement.Approved_Date__c).contains('-')) {
-                List<String> approvedDateSplitted = new List<String>();
-                approvedDateSplitted = String.valueOf(currentEmployeeReimbursement.Approved_Date__c).split('-');
-                employeeReimbursement.approveddate  = approvedDateSplitted[1]+'/'+approvedDateSplitted[2]+'/'+approvedDateSplitted[0].substring(2,4);
-            }            
-        }
-        if(currentEmployeeReimbursement.Status__c != null) {
-            employeeReimbursement.status = currentEmployeeReimbursement.Status__c; 
-        }
-        employeeReimbursement.isSelected = false;       
-        employeeReimbursement.contactEmail = currentEmployeeReimbursement.Contact_Email__c;
-        employeeReimbursement.variableRate  = ' $'+String.valueOf(currentEmployeeReimbursement.Total_Variable_Rate__c);
-        employeeReimbursement.month  = getMonthName(currentEmployeeReimbursement.Month__c);
-        employeeReimbursement.intmonth  = getMonthInteger(currentEmployeeReimbursement.Month__c);
-        employeeReimbursement.fuel  = String.valueOf(currentEmployeeReimbursement.Fuel_Price__c) != null ? String.valueOf((currentEmployeeReimbursement.Fuel_Price__c).setScale(2)) : null ;       
-        employeeReimbursement.fixedAmount = String.valueOf(currentEmployeeReimbursement.Fixed_Amount__c) != null ? String.valueOf((currentEmployeeReimbursement.Fixed_Amount__c).setScale(2)) : null ;       
-        
-        /* EMC-260  START
+public static EmployeeReimbursements getEmployeeReimbursements(Employee_Reimbursement__c currentEmployeeReimbursement, Double sumTotalReim, Integer count)
+{
+    EmployeeReimbursements employeeReimbursement = new EmployeeReimbursements();
+    employeeReimbursement.employeeReimbursementId = currentEmployeeReimbursement.id;
+    if(currentEmployeeReimbursement.Approved_Date__c != null) {
+        if(String.valueOf(currentEmployeeReimbursement.Approved_Date__c).contains('-')) {
+            List<String> approvedDateSplitted = new List<String>();
+            approvedDateSplitted = String.valueOf(currentEmployeeReimbursement.Approved_Date__c).split('-');
+            employeeReimbursement.approveddate  = approvedDateSplitted[1]+'/'+approvedDateSplitted[2]+'/'+approvedDateSplitted[0].substring(2,4);
+        }            
+    }
+    if(currentEmployeeReimbursement.Status__c != null) {
+        employeeReimbursement.status = currentEmployeeReimbursement.Status__c; 
+    }
+    employeeReimbursement.isSelected = false;       
+    employeeReimbursement.contactEmail = currentEmployeeReimbursement.Contact_Email__c;
+    employeeReimbursement.variableRate  = ' $'+String.valueOf(currentEmployeeReimbursement.Total_Variable_Rate__c);
+    employeeReimbursement.month  = getMonthName(currentEmployeeReimbursement.Month__c);
+    employeeReimbursement.intmonth  = getMonthInteger(currentEmployeeReimbursement.Month__c);
+    employeeReimbursement.fuel  = String.valueOf(currentEmployeeReimbursement.Fuel_Price__c) != null ? String.valueOf((currentEmployeeReimbursement.Fuel_Price__c).setScale(2)) : null ;       
+    employeeReimbursement.fixedAmount = String.valueOf(currentEmployeeReimbursement.Fixed_Amount__c) != null ? String.valueOf((currentEmployeeReimbursement.Fixed_Amount__c).setScale(2)) : null ;       
+    
+    /* EMC-260  START
 Description : Added a new field : Total_Approved__c,Total_Mileage__c, Total_Pending__c 
 This 3 field values is populated on driver dashboard page
 Modified By : Sanket Goswami */
-        employeeReimbursement.mileage  = String.valueOf(currentEmployeeReimbursement.Total_Mileage__c);
-        employeeReimbursement.pendingMileage  = String.valueOf(currentEmployeeReimbursement.Total_Pending__c);
-        employeeReimbursement.approveMileage  = String.valueOf(currentEmployeeReimbursement.Total_Approved__c);
-        /* EMC-260  END */
-        
-        employeeReimbursement.maintainsAndTyres  = String.valueOf(currentEmployeeReimbursement.Maintenance_and_Tires__c);
-        employeeReimbursement.mpg  =String.valueOf(currentEmployeeReimbursement.MPG__c );
-        String fixedandvariable ='';
-        if(currentEmployeeReimbursement.Fixed_Amount__c != null && (currentEmployeeReimbursement.Contact_Id__r.Driver_Type__c != 'Driver - Part Time' && currentEmployeeReimbursement.Contact_Id__r.Driver_Type__c != 'Driver - Full Time' && currentEmployeeReimbursement.Contact_Id__r.Driver_Type__c != 'Driver - Salary')) {
-            fixedandvariable = '$' + String.valueOf(currentEmployeeReimbursement.Fixed_Amount__c.setScale(2))+' + ';
-        } else if(currentEmployeeReimbursement.Monthly_Fixed_Amount__c != null && currentEmployeeReimbursement.Contact_Id__r.Driver_Type__c == 'Driver - Part Time') {
-            fixedandvariable = '$' + String.valueOf(currentEmployeeReimbursement.Monthly_Fixed_Amount__c.setScale(2))+' + ';
-        } else if(currentEmployeeReimbursement.Half_Fixed_Amount__c != null && (currentEmployeeReimbursement.Contact_Id__r.Driver_Type__c != 'Driver - Full Time' || currentEmployeeReimbursement.Contact_Id__r.Driver_Type__c != 'Driver - Salary')){
-            fixedandvariable = '$' + String.valueOf(currentEmployeeReimbursement.Half_Fixed_Amount__c.setScale(2))+' + ';
-        } else {
-            fixedandvariable = '$0 + ';
-        }
-        
-        if(currentEmployeeReimbursement.Monthly_Variable_Amount__c!= null) {
-            employeeReimbursement.varibleAmount = ' $' + String.valueOf(currentEmployeeReimbursement.Monthly_Variable_Amount__c);
-            fixedandvariable = fixedandvariable + ' $' + String.valueOf(currentEmployeeReimbursement.Monthly_Variable_Amount__c);
-        } else {
-            employeeReimbursement.varibleAmount =  '$0';
-            fixedandvariable  = fixedandvariable + '$0';
-        }
-        
-        if(currentEmployeeReimbursement.Number_of_Pay_Period__c != null && currentEmployeeReimbursement.Number_of_Pay_Period__c == 1 && currentEmployeeReimbursement.Half_Fixed_Amount__c != null){
-            employeeReimbursement.fixed1 = ' $' + String.valueOf(currentEmployeeReimbursement.Half_Fixed_Amount__c);
-            employeeReimbursement.fixed2 = 'null';
-            employeeReimbursement.fixed3 = 'null';
-            employeeReimbursement.totalFixedAmount =  ' $' + String.valueOf(currentEmployeeReimbursement.Half_Fixed_Amount__c);
-        } else if(currentEmployeeReimbursement.Number_of_Pay_Period__c != null && currentEmployeeReimbursement.Number_of_Pay_Period__c == 2 && currentEmployeeReimbursement.Half_Fixed_Amount__c != null){
-            employeeReimbursement.fixed1 = ' $' + String.valueOf(currentEmployeeReimbursement.Half_Fixed_Amount__c);
-            employeeReimbursement.fixed2 = ' $' + String.valueOf(currentEmployeeReimbursement.Half_Fixed_Amount__c);
-            employeeReimbursement.fixed3 = 'null';
-            employeeReimbursement.totalFixedAmount =  ' $' + String.valueOf(2 * currentEmployeeReimbursement.Half_Fixed_Amount__c);
-        } else if(currentEmployeeReimbursement.Number_of_Pay_Period__c != null && currentEmployeeReimbursement.Number_of_Pay_Period__c == 3 && currentEmployeeReimbursement.Half_Fixed_Amount__c != null){
-            employeeReimbursement.fixed1 = ' $' + String.valueOf(currentEmployeeReimbursement.Half_Fixed_Amount__c);
-            employeeReimbursement.fixed2 = ' $' + String.valueOf(currentEmployeeReimbursement.Half_Fixed_Amount__c);
-            employeeReimbursement.fixed3 = ' $' + String.valueOf(currentEmployeeReimbursement.Half_Fixed_Amount__c);
-            employeeReimbursement.totalFixedAmount =  ' $' + String.valueOf(3 * currentEmployeeReimbursement.Half_Fixed_Amount__c);
-        } else {
-            employeeReimbursement.fixed1 = 'null';
-            employeeReimbursement.fixed2 = 'null';
-            employeeReimbursement.fixed3 = 'null';
-            employeeReimbursement.totalFixedAmount = 'null';
-        }
-        employeeReimbursement.varibleAndFixedReimbursements  = fixedandvariable;
-        employeeReimbursement.contactdrivertype = currentEmployeeReimbursement.Contact_Id__r.Driver_Type__c;
-        employeeReimbursement.totalReimbursements  =String.valueOf(currentEmployeeReimbursement.Total_Monthly_Reimbursement__c);
-        return employeeReimbursement;
+    employeeReimbursement.mileage  = String.valueOf(currentEmployeeReimbursement.Total_Mileage__c);
+    employeeReimbursement.pendingMileage  = String.valueOf(currentEmployeeReimbursement.Total_Pending__c);
+    employeeReimbursement.approveMileage  = String.valueOf(currentEmployeeReimbursement.Total_Approved__c);
+    /* EMC-260  END */
+    
+    employeeReimbursement.maintainsAndTyres  = String.valueOf(currentEmployeeReimbursement.Maintenance_and_Tires__c);
+    employeeReimbursement.mpg  =String.valueOf(currentEmployeeReimbursement.MPG__c );
+    String fixedandvariable ='';
+    if(currentEmployeeReimbursement.Fixed_Amount__c != null && (currentEmployeeReimbursement.Contact_Id__r.Driver_Type__c != 'Driver - Part Time' && currentEmployeeReimbursement.Contact_Id__r.Driver_Type__c != 'Driver - Full Time' && currentEmployeeReimbursement.Contact_Id__r.Driver_Type__c != 'Driver - Salary')) {
+        fixedandvariable = '$' + String.valueOf(currentEmployeeReimbursement.Fixed_Amount__c)+' + ';
+    } else if(currentEmployeeReimbursement.Monthly_Fixed_Amount__c != null && currentEmployeeReimbursement.Contact_Id__r.Driver_Type__c == 'Driver - Part Time') {
+        fixedandvariable = '$' + String.valueOf(currentEmployeeReimbursement.Monthly_Fixed_Amount__c.setScale(2))+' + ';
+    } else if(currentEmployeeReimbursement.Half_Fixed_Amount__c != null && (currentEmployeeReimbursement.Contact_Id__r.Driver_Type__c != 'Driver - Full Time' || currentEmployeeReimbursement.Contact_Id__r.Driver_Type__c != 'Driver - Salary')){
+        fixedandvariable = '$' + String.valueOf(currentEmployeeReimbursement.Half_Fixed_Amount__c.setScale(2))+' + ';
+    } else {
+        fixedandvariable = '$0 + ';
     }
+    
+    if(currentEmployeeReimbursement.Monthly_Variable_Amount__c!= null) {
+        employeeReimbursement.varibleAmount = ' $' + String.valueOf(currentEmployeeReimbursement.Monthly_Variable_Amount__c);
+        fixedandvariable = fixedandvariable + ' $' + String.valueOf(currentEmployeeReimbursement.Monthly_Variable_Amount__c);
+    } else {
+        employeeReimbursement.varibleAmount =  '$0';
+        fixedandvariable  = fixedandvariable + '$0';
+    }
+    
+    if(currentEmployeeReimbursement.Number_of_Pay_Period__c != null && currentEmployeeReimbursement.Number_of_Pay_Period__c == 1 && currentEmployeeReimbursement.Half_Fixed_Amount__c != null){
+        employeeReimbursement.fixed1 = ' $' + String.valueOf(currentEmployeeReimbursement.Half_Fixed_Amount__c);
+        employeeReimbursement.fixed2 = 'null';
+        employeeReimbursement.fixed3 = 'null';
+        employeeReimbursement.totalFixedAmount =  ' $' + String.valueOf(currentEmployeeReimbursement.Half_Fixed_Amount__c);
+    } else if(currentEmployeeReimbursement.Number_of_Pay_Period__c != null && currentEmployeeReimbursement.Number_of_Pay_Period__c == 2 && currentEmployeeReimbursement.Half_Fixed_Amount__c != null){
+        employeeReimbursement.fixed1 = ' $' + String.valueOf(currentEmployeeReimbursement.Half_Fixed_Amount__c);
+        employeeReimbursement.fixed2 = ' $' + String.valueOf(currentEmployeeReimbursement.Half_Fixed_Amount__c);
+        employeeReimbursement.fixed3 = 'null';
+        employeeReimbursement.totalFixedAmount =  ' $' + String.valueOf(2 * currentEmployeeReimbursement.Half_Fixed_Amount__c);
+    } else if(currentEmployeeReimbursement.Number_of_Pay_Period__c != null && currentEmployeeReimbursement.Number_of_Pay_Period__c == 3 && currentEmployeeReimbursement.Half_Fixed_Amount__c != null){
+        employeeReimbursement.fixed1 = ' $' + String.valueOf(currentEmployeeReimbursement.Half_Fixed_Amount__c);
+        employeeReimbursement.fixed2 = ' $' + String.valueOf(currentEmployeeReimbursement.Half_Fixed_Amount__c);
+        employeeReimbursement.fixed3 = ' $' + String.valueOf(currentEmployeeReimbursement.Half_Fixed_Amount__c);
+        employeeReimbursement.totalFixedAmount =  ' $' + String.valueOf(3 * currentEmployeeReimbursement.Half_Fixed_Amount__c);
+    } else {
+        employeeReimbursement.fixed1 = 'null';
+        employeeReimbursement.fixed2 = 'null';
+        employeeReimbursement.fixed3 = 'null';
+        employeeReimbursement.totalFixedAmount = 'null';
+    }
+    employeeReimbursement.varibleAndFixedReimbursements  = fixedandvariable;
+    if(currentEmployeeReimbursement.Contact_Id__r.Reimbursement_Frequency__c == 'Bi-Weekly Reimbursement' && currentEmployeeReimbursement.Contact_Id__r.Reimbursement_Type__c == 'FAVR' ){
+        employeeReimbursement.totalReimbursements  ='$'+String.valueOf(currentEmployeeReimbursement.Total_Monthly_Reimbursement_BiWeek__c);
+    } else {
+        employeeReimbursement.totalReimbursements  ='$'+String.valueOf(currentEmployeeReimbursement.Total_Monthly_Reimbursement__c);
+    }
+    employeeReimbursement.contactdrivertype = currentEmployeeReimbursement.Contact_Id__r.Driver_Type__c;
+    if(String.valueOf(currentEmployeeReimbursement.Reimbursement_Month__c) != null && Integer.valueof(currentEmployeeReimbursement.Reimbursement_Month__c) > 0 ){
+        System.debug('sumTotalReim: '+ sumTotalReim +' count: '+count);
+        employeeReimbursement.avgToDate = String.valueof(sumTotalReim / count);
+    }
+    if(currentEmployeeReimbursement.Mileage_Lock_Date__c!= null){
+        employeeReimbursement.lockDate = currentEmployeeReimbursement.Mileage_Lock_Date__c;
+    }
+    if(currentEmployeeReimbursement.Lock_Date_User__c!= null){
+        employeeReimbursement.lockDateUserName = currentEmployeeReimbursement.Lock_Date_User__c;
+    }
+    return employeeReimbursement;
+}
     
     public static EmployeeReimbursementDetailsAdmin getEmployeeReimbursementDetails(Employee_Reimbursement__c currentEmployeeReimbursement) {   
         Double totalrejected =0;    
@@ -741,8 +777,8 @@ Modified By : Sanket Goswami */
             }
         } else {
             employeeReimbursement.approvedDate = '';
-        }     
-        if(currentEmployeeReimbursement.Mileage_Lock_Date__c != null) {
+        }    
+       if(currentEmployeeReimbursement.Mileage_Lock_Date__c != null) {
             if(String.valueOf(currentEmployeeReimbursement.Mileage_Lock_Date__c).contains('-')) {
                 List<String> approvedDateSplitted = new List<String>();
                 approvedDateSplitted = String.valueOf(currentEmployeeReimbursement.Mileage_Lock_Date__c).split('-');
@@ -855,7 +891,10 @@ Modified By : Sanket Goswami */
     public static List<String> getPacketandMeetingDetails(String did) {
         List<String> driverPlanInfoList = new List<String>();
         List<Contact> currentDriver = new List<Contact>();
-        currentDriver = [Select id,name,Meeting__c,Packet__c from Contact where id =:did];
+        //currentDriver = [Select id,name,Meeting__c,Packet__c from Contact where id =:did];
+        for(Contact con : [Select id,name,Meeting__c,Packet__c from Contact where id =:did]){
+            currentDriver.add(con);
+        }
         if(currentDriver.size()>0) {
             driverPlanInfoList.add(JSON.serialize(currentDriver));
         }
@@ -863,10 +902,11 @@ Modified By : Sanket Goswami */
     }
     
     public static List<string> getComplianceCalculation(String did,String year) {
-        Decimal totalmileages1=0;
-        Double TotalActualReimbursements=0;
-        Double MaximumAllowable=0;
-        Double AnnualTaxLiability=0;
+        Decimal totalmileages1 = 0;
+        Double TotalActualReimbursements = 0;
+        Double TotalApprovedMileages = 0;
+        Double MaximumAllowable = 0;
+        Double AnnualTaxLiability = 0;
         
         Contact currentDriver=[SELECT id, name,FirstName, account.Motor_Vehicle_Record_Check_Document__c, email, Insurance_Attachment_Id__c, 
                                MVR_Attachment_Id__c,compliancestatus__c,Compliance_Mileage__c  FROM contact WHERE id =: did limit 1];   
@@ -925,16 +965,18 @@ Modified By : Sanket Goswami */
         
         //Fetch Employee Reimbursement 
         List<Employee_Reimbursement__c> reimbursementList= new List<Employee_Reimbursement__c>();
-        reimbursementList=[SELECT id,Total_Approved__c,Total_Monthly_Reimbursement__c,Contact_Id__c,Contact_Id__r.Name,Variable_Rate__c,
+        reimbursementList=[SELECT id,Total_Mileage__c,Total_Monthly_Reimbursement__c,Contact_Id__c,Contact_Id__r.Name,Variable_Rate__c,
                            Contact_Id__r.Employee_ID__c,Contact_Id__r.External_Email__c,Month__c,Approved_Date__c,IRS_Mileage_Rate__c,IRS_Mileage_Rate__r.IRS_Rate__c,IRS_Mileage_Rate__r.year__c  
                            FROM Employee_Reimbursement__c 
                            WHERE Contact_Id__c =: currentDriver.id AND Month__c =: complinceMonthList AND Approved_Date__c != null];
+        
         for(Employee_Reimbursement__c currentReimbursement:reimbursementList) {
             List<String> riembursementMonthSplitted = new List<String>();
             if((currentReimbursement.Month__c != null)&&(currentReimbursement.Month__c.contains('-')) && currentReimbursement.IRS_Mileage_Rate__c !=null) {
                 riembursementMonthSplitted = currentReimbursement.Month__c.split('-');
                 
                 //For Quater 1 - Calculation and Assign Value using Wrapper
+                system.debug('quaterWiseWrapperTaxMap==' + quaterWiseWrapperTaxMap);
                 if((Integer.valueOf(riembursementMonthSplitted[0]) == 12)||(Integer.valueOf(riembursementMonthSplitted[0])<=2)) {
                     if(quaterWiseWrapperTaxMap.containsKey(1)) {
                         wrapppertaxQuater1 =  quaterWiseWrapperTaxMap.get(1);
@@ -942,15 +984,15 @@ Modified By : Sanket Goswami */
                     wrapppertaxQuater1.quarterno = 1;
                     if((wrapppertaxQuater1.Mileages != null)) {
                         Double mileageinDouble = wrapppertaxQuater1.Mileages;
-                        if(currentReimbursement.Total_Approved__c!= null) {
-                            mileageinDouble = mileageinDouble + currentReimbursement.Total_Approved__c;
+                        if(currentReimbursement.Total_Mileage__c != null) {
+                            mileageinDouble = mileageinDouble + currentReimbursement.Total_Mileage__c;
                         }                                                   
                         Decimal mileageinDecimal= Decimal.valueOf(mileageinDouble);
                         mileageinDouble = mileageinDecimal.setScale(2);
                         wrapppertaxQuater1.Mileages = mileageinDouble; 
                     } else {  
-                        if(currentReimbursement.Total_Approved__c!= null) {
-                            wrapppertaxQuater1.Mileages = currentReimbursement.Total_Approved__c.setScale(2);
+                        if(currentReimbursement.Total_Mileage__c != null) {
+                            wrapppertaxQuater1.Mileages = currentReimbursement.Total_Mileage__c.setScale(2);
                         }                      
                     }
                     if((wrapppertaxQuater1.Reimbursements != null)) {
@@ -968,14 +1010,14 @@ Modified By : Sanket Goswami */
                     }
                     if((wrapppertaxQuater1.MaxIRSrate != null)) {
                         Decimal mileageinDouble = wrapppertaxQuater1.MaxIRSrate;
-                        if((currentReimbursement.Total_Approved__c != null)) {
-                            mileageinDouble = mileageinDouble + (((currentReimbursement.Total_Approved__c)*(Double.valueOf(currentReimbursement.IRS_Mileage_Rate__r.IRS_Rate__c))));                         
+                        if((currentReimbursement.Total_Mileage__c != null)) {
+                            mileageinDouble = mileageinDouble + (((currentReimbursement.Total_Mileage__c)*(Double.valueOf(currentReimbursement.IRS_Mileage_Rate__r.IRS_Rate__c))));                         
                         }                          
                         mileageinDouble = mileageinDouble.setScale(2);                          
                         wrapppertaxQuater1.MaxIRSrate = mileageinDouble; 
                     } else {
-                        if((currentReimbursement.Total_Approved__c!= null)) {
-                            wrapppertaxQuater1.MaxIRSrate = ((currentReimbursement.Total_Approved__c)* Double.valueOf(currentReimbursement.IRS_Mileage_Rate__r.IRS_Rate__c));
+                        if((currentReimbursement.Total_Mileage__c != null)) {
+                            wrapppertaxQuater1.MaxIRSrate = ((currentReimbursement.Total_Mileage__c)* Double.valueOf(currentReimbursement.IRS_Mileage_Rate__r.IRS_Rate__c));
                         }
                     }
                     
@@ -985,8 +1027,8 @@ Modified By : Sanket Goswami */
                         imputedAmountinDouble =wrapppertaxQuater1.ImputedAmount;                      
                         imputedAmountiCheck = wrapppertaxQuater1.ImputedAmount;                      
                     }
-                    if((currentReimbursement.Total_Monthly_Reimbursement__c != null) && (currentReimbursement.Total_Approved__c != null)) {
-                        imputedAmountinDouble = imputedAmountinDouble+ currentReimbursement.Total_Monthly_Reimbursement__c-((currentReimbursement.Total_Approved__c)* Double.valueOf(currentReimbursement.IRS_Mileage_Rate__r.IRS_Rate__c));                          
+                    if((currentReimbursement.Total_Monthly_Reimbursement__c != null) && (currentReimbursement.Total_Mileage__c != null)) {
+                        imputedAmountinDouble = imputedAmountinDouble+ currentReimbursement.Total_Monthly_Reimbursement__c-((currentReimbursement.Total_Mileage__c)* Double.valueOf(currentReimbursement.IRS_Mileage_Rate__r.IRS_Rate__c));                          
                     }       
                     
                     Decimal imputedAmountinDecimal= Decimal.valueOf(imputedAmountinDouble);
@@ -1003,15 +1045,15 @@ Modified By : Sanket Goswami */
                     wrapppertaxQuater2.quarterno = 2;                      
                     if((wrapppertaxQuater2.Mileages != null)) {
                         Double mileageinDouble = wrapppertaxQuater2.Mileages;
-                        if(currentReimbursement.Total_Approved__c != null) {
-                            mileageinDouble = mileageinDouble + currentReimbursement.Total_Approved__c;
+                        if(currentReimbursement.Total_Mileage__c != null) {
+                            mileageinDouble = mileageinDouble + currentReimbursement.Total_Mileage__c;
                         } 
                         Decimal mileageinDecimal= Decimal.valueOf(mileageinDouble);
                         mileageinDouble = mileageinDecimal.setScale(2);
                         wrapppertaxQuater2.Mileages = mileageinDouble;  
                     } else {
-                        if(currentReimbursement.Total_Approved__c != null) {
-                            wrapppertaxQuater2.Mileages = currentReimbursement.Total_Approved__c.setScale(2);
+                        if(currentReimbursement.Total_Mileage__c != null) {
+                            wrapppertaxQuater2.Mileages = currentReimbursement.Total_Mileage__c.setScale(2);
                         }
                     }
                     if((wrapppertaxQuater2.Reimbursements != null)) {
@@ -1029,25 +1071,26 @@ Modified By : Sanket Goswami */
                     }
                     if((wrapppertaxQuater2.MaxIRSrate != null)){
                         Decimal mileageinDouble =wrapppertaxQuater2.MaxIRSrate;
-                        if((currentReimbursement.Total_Approved__c != null)) {
-                            mileageinDouble = mileageinDouble + (((currentReimbursement.Total_Approved__c)*(Double.valueOf(currentReimbursement.IRS_Mileage_Rate__r.IRS_Rate__c))));                         
+                        if((currentReimbursement.Total_Mileage__c != null)) {
+                            mileageinDouble = mileageinDouble + (((currentReimbursement.Total_Mileage__c)*(Double.valueOf(currentReimbursement.IRS_Mileage_Rate__r.IRS_Rate__c))));                         
                         }
                         mileageinDouble = mileageinDouble.setScale(2);                          
                         wrapppertaxQuater2.MaxIRSrate = mileageinDouble; 
                     } else {
-                        wrapppertaxQuater2.MaxIRSrate = ((currentReimbursement.Total_Approved__c)*Double.valueOf(currentReimbursement.IRS_Mileage_Rate__r.IRS_Rate__c));
+                        wrapppertaxQuater2.MaxIRSrate = ((currentReimbursement.Total_Mileage__c)*Double.valueOf(currentReimbursement.IRS_Mileage_Rate__r.IRS_Rate__c));
                     }
                     Double imputedAmountinDouble = 0;
                     if(wrapppertaxQuater2.ImputedAmount != null) {
                         imputedAmountinDouble =wrapppertaxQuater2.ImputedAmount;                      
                     }
-                    if((currentReimbursement.Total_Monthly_Reimbursement__c != null) && (currentReimbursement.Total_Approved__c != null)) {
-                        imputedAmountinDouble = imputedAmountinDouble+ currentReimbursement.Total_Monthly_Reimbursement__c-((currentReimbursement.Total_Approved__c)*Double.valueOf(currentReimbursement.IRS_Mileage_Rate__r.IRS_Rate__c));                          
+                    if((currentReimbursement.Total_Monthly_Reimbursement__c != null) && (currentReimbursement.Total_Mileage__c != null)) {
+                        imputedAmountinDouble = imputedAmountinDouble+ currentReimbursement.Total_Monthly_Reimbursement__c-((currentReimbursement.Total_Mileage__c)*Double.valueOf(currentReimbursement.IRS_Mileage_Rate__r.IRS_Rate__c));                          
                     }
                     Decimal imputedAmountinDecimal= Decimal.valueOf(imputedAmountinDouble);
                     imputedAmountinDouble = imputedAmountinDecimal.setScale(2);
                     wrapppertaxQuater2.ImputedAmount = imputedAmountinDouble;
                     quaterWiseWrapperTaxMap.put(2,wrapppertaxQuater2);
+                    system.debug('quaterWiseWrapperTaxMap= 2='+quaterWiseWrapperTaxMap);
                 }
                 //For Quater 3 - Calculation and Assign Value using Wrapper
                 else if((Integer.valueOf(riembursementMonthSplitted[0])>=6)&&(Integer.valueOf(riembursementMonthSplitted[0])<=8)) {
@@ -1057,15 +1100,15 @@ Modified By : Sanket Goswami */
                     wrapppertaxQuater3.quarterno = 3;                      
                     if((wrapppertaxQuater3.Mileages != null)) {
                         Double mileageinDouble = wrapppertaxQuater3.Mileages;
-                        if(currentReimbursement.Total_Approved__c != null) {
-                            mileageinDouble = mileageinDouble + currentReimbursement.Total_Approved__c;
+                        if(currentReimbursement.Total_Mileage__c != null) {
+                            mileageinDouble = mileageinDouble + currentReimbursement.Total_Mileage__c;
                         } 
                         Decimal mileageinDecimal= Decimal.valueOf(mileageinDouble);
                         mileageinDouble = mileageinDecimal.setScale(2);
                         wrapppertaxQuater3.Mileages = mileageinDouble; 
                     } else {
-                        if(currentReimbursement.Total_Approved__c != null) {
-                            wrapppertaxQuater3.Mileages = currentReimbursement.Total_Approved__c.setScale(2);
+                        if(currentReimbursement.Total_Mileage__c != null) {
+                            wrapppertaxQuater3.Mileages = currentReimbursement.Total_Mileage__c.setScale(2);
                         }
                     }
                     if((wrapppertaxQuater3.Reimbursements != null)) {
@@ -1083,25 +1126,26 @@ Modified By : Sanket Goswami */
                     }
                     if((wrapppertaxQuater3.MaxIRSrate != null)) {
                         Decimal mileageinDouble =wrapppertaxQuater3.MaxIRSrate;
-                        if((currentReimbursement.Total_Approved__c != null)) {
-                            mileageinDouble = mileageinDouble + (((currentReimbursement.Total_Approved__c)*(Double.valueOf(currentReimbursement.IRS_Mileage_Rate__r.IRS_Rate__c))));                         
+                        if((currentReimbursement.Total_Mileage__c != null)) {
+                            mileageinDouble = mileageinDouble + (((currentReimbursement.Total_Mileage__c)*(Double.valueOf(currentReimbursement.IRS_Mileage_Rate__r.IRS_Rate__c))));                         
                         }
                         mileageinDouble = mileageinDouble.setScale(2);                          
                         wrapppertaxQuater3.MaxIRSrate = mileageinDouble;  
                     } else {
-                        wrapppertaxQuater3.MaxIRSrate = ((currentReimbursement.Total_Approved__c)*Double.valueOf(currentReimbursement.IRS_Mileage_Rate__r.IRS_Rate__c));
+                        wrapppertaxQuater3.MaxIRSrate = ((currentReimbursement.Total_Mileage__c)*Double.valueOf(currentReimbursement.IRS_Mileage_Rate__r.IRS_Rate__c));
                     }
                     Double imputedAmountinDouble = 0;
                     if(wrapppertaxQuater3.ImputedAmount != null) {
                         imputedAmountinDouble =wrapppertaxQuater3.ImputedAmount;                      
                     }
-                    if((currentReimbursement.Total_Monthly_Reimbursement__c != null) && (currentReimbursement.Total_Approved__c != null)) {
-                        imputedAmountinDouble = imputedAmountinDouble+ currentReimbursement.Total_Monthly_Reimbursement__c-((currentReimbursement.Total_Approved__c)* Double.valueOf(currentReimbursement.IRS_Mileage_Rate__r.IRS_Rate__c));                          
+                    if((currentReimbursement.Total_Monthly_Reimbursement__c != null) && (currentReimbursement.Total_Mileage__c != null)) {
+                        imputedAmountinDouble = imputedAmountinDouble+ currentReimbursement.Total_Monthly_Reimbursement__c-((currentReimbursement.Total_Mileage__c)* Double.valueOf(currentReimbursement.IRS_Mileage_Rate__r.IRS_Rate__c));                          
                     }
                     Decimal imputedAmountinDecimal= Decimal.valueOf(imputedAmountinDouble);
                     imputedAmountinDouble = imputedAmountinDecimal.setScale(2);
                     wrapppertaxQuater3.ImputedAmount = imputedAmountinDouble;
                     quaterWiseWrapperTaxMap.put(3,wrapppertaxQuater3);
+                    system.debug('quaterWiseWrapperTaxMap= 3='+quaterWiseWrapperTaxMap);
                 }
                 //For Quater 4 - Calculation and Assign Value using Wrapper 
                 else if((Integer.valueOf(riembursementMonthSplitted[0])>=9)&&(Integer.valueOf(riembursementMonthSplitted[0])<=11)) {
@@ -1111,15 +1155,15 @@ Modified By : Sanket Goswami */
                     wrapppertaxQuater4.quarterno = 4;                      
                     if((wrapppertaxQuater4.Mileages != null)) {
                         Double mileageinDouble = wrapppertaxQuater4.Mileages;
-                        if(currentReimbursement.Total_Approved__c != null) {
-                            mileageinDouble = mileageinDouble + currentReimbursement.Total_Approved__c;
+                        if(currentReimbursement.Total_Mileage__c != null) {
+                            mileageinDouble = mileageinDouble + currentReimbursement.Total_Mileage__c;
                         } 
                         Decimal mileageinDecimal= Decimal.valueOf(mileageinDouble);
                         mileageinDouble = mileageinDecimal.setScale(2);
                         wrapppertaxQuater4.Mileages = mileageinDouble; 
                     } else {
-                        if(currentReimbursement.Total_Approved__c != null) {
-                            wrapppertaxQuater4.Mileages = currentReimbursement.Total_Approved__c.setScale(2);
+                        if(currentReimbursement.Total_Mileage__c != null) {
+                            wrapppertaxQuater4.Mileages = currentReimbursement.Total_Mileage__c.setScale(2);
                         }
                     }
                     if((wrapppertaxQuater4.Reimbursements != null)) {
@@ -1137,47 +1181,56 @@ Modified By : Sanket Goswami */
                     }
                     if((wrapppertaxQuater4.MaxIRSrate != null)) {
                         Decimal mileageinDouble =wrapppertaxQuater4.MaxIRSrate;
-                        if((currentReimbursement.Total_Approved__c != null)) {
-                            mileageinDouble = mileageinDouble + (((currentReimbursement.Total_Approved__c)*(Double.valueOf(currentReimbursement.IRS_Mileage_Rate__r.IRS_Rate__c))));                         
+                        if((currentReimbursement.Total_Mileage__c != null)) {
+                            mileageinDouble = mileageinDouble + (((currentReimbursement.Total_Mileage__c)*(Double.valueOf(currentReimbursement.IRS_Mileage_Rate__r.IRS_Rate__c))));                         
                         }  
                         mileageinDouble = mileageinDouble.setScale(2);                          
                         wrapppertaxQuater4.MaxIRSrate = mileageinDouble; 
                     } else {
-                        wrapppertaxQuater4.MaxIRSrate = ((currentReimbursement.Total_Approved__c)*Double.valueOf(currentReimbursement.IRS_Mileage_Rate__r.IRS_Rate__c));
+                        wrapppertaxQuater4.MaxIRSrate = ((currentReimbursement.Total_Mileage__c)*Double.valueOf(currentReimbursement.IRS_Mileage_Rate__r.IRS_Rate__c));
                     }
                     Double imputedAmountinDouble = 0;
                     if(wrapppertaxQuater4.ImputedAmount != null) {
                         imputedAmountinDouble =wrapppertaxQuater4.ImputedAmount;                      
                     }
-                    if((currentReimbursement.Total_Monthly_Reimbursement__c != null) && (currentReimbursement.Total_Approved__c != null)) {
-                        imputedAmountinDouble = imputedAmountinDouble+ currentReimbursement.Total_Monthly_Reimbursement__c-((currentReimbursement.Total_Approved__c)*Double.valueOf(currentReimbursement.IRS_Mileage_Rate__r.IRS_Rate__c));                          
+                    if((currentReimbursement.Total_Monthly_Reimbursement__c != null) && (currentReimbursement.Total_Mileage__c != null)) {
+                        imputedAmountinDouble = imputedAmountinDouble+ currentReimbursement.Total_Monthly_Reimbursement__c-((currentReimbursement.Total_Mileage__c)*Double.valueOf(currentReimbursement.IRS_Mileage_Rate__r.IRS_Rate__c));                          
                     }
                     Decimal imputedAmountinDecimal= Decimal.valueOf(imputedAmountinDouble);
                     imputedAmountinDouble = imputedAmountinDecimal.setScale(2);
                     wrapppertaxQuater4.ImputedAmount = imputedAmountinDouble;
                     quaterWiseWrapperTaxMap.put(4,wrapppertaxQuater4);
+                    system.debug('quaterWiseWrapperTaxMap= 4='+quaterWiseWrapperTaxMap);
                 }
+               
                 if(currentReimbursement.Approved_Date__c != null) {
                     WrapperTaxReport currentTaxReport = new WrapperTaxReport();
                     currentTaxReport.drivername= currentReimbursement.Contact_Id__r.Name;
                     currentTaxReport.employeeid =currentReimbursement.Contact_Id__r.Employee_ID__c;
                     currentTaxReport.emailid = currentReimbursement.Contact_Id__r.External_Email__c;
-                    if(currentReimbursement.Total_Approved__c != null) {
-                        currentTaxReport.approvedmileages = currentReimbursement.Total_Approved__c.setScale(2);
+                    if(currentReimbursement.Total_Mileage__c != null) {
+                        currentTaxReport.approvedmileages = currentReimbursement.Total_Mileage__c.setScale(2);
                     } else {
                         currentTaxReport.approvedmileages = 0;
                     }
+                    
+                    /*if(currentReimbursement.Variable_Rate__c < 1){
+                        currentTaxReport.variableRate = Double.valueOf(String.valueOf(currentReimbursement.Variable_Rate__c).substring(1));
+                    }else{
+                        currentTaxReport.variableRate = currentReimbursement.Variable_Rate__c != null ? currentReimbursement.Variable_Rate__c : null;
+                    }*/    
+                
                     currentTaxReport.variableRate = currentReimbursement.Variable_Rate__c != null ? currentReimbursement.Variable_Rate__c : null;
                     if(currentReimbursement.Total_Monthly_Reimbursement__c != null) {
                         currentTaxReport.totalreim = currentReimbursement.Total_Monthly_Reimbursement__c.setScale(2);
                     } else {
                         currentTaxReport.totalreim = 0;
                     }
-                    if((currentReimbursement.Total_Approved__c != null)) {
-                        currentTaxReport.iRSallowable =(((currentReimbursement.Total_Approved__c.setScale(2))*(Double.valueOf(currentReimbursement.IRS_Mileage_Rate__r.IRS_Rate__c))));
+                    if((currentReimbursement.Total_Mileage__c != null)) {
+                        currentTaxReport.iRSallowable =(((currentReimbursement.Total_Mileage__c.setScale(2))*(Double.valueOf(currentReimbursement.IRS_Mileage_Rate__r.IRS_Rate__c))));
                     }                      
-                    if((currentReimbursement.Total_Monthly_Reimbursement__c  != null)&&(currentReimbursement.Total_Approved__c != null)) {
-                        currentTaxReport.imputedincome=(currentReimbursement.Total_Monthly_Reimbursement__c.setScale(2))-((currentReimbursement.Total_Approved__c.setScale(2))*Double.valueOf(currentReimbursement.IRS_Mileage_Rate__r.IRS_Rate__c));
+                    if((currentReimbursement.Total_Monthly_Reimbursement__c  != null)&&(currentReimbursement.Total_Mileage__c != null)) {
+                        currentTaxReport.imputedincome=(currentReimbursement.Total_Monthly_Reimbursement__c.setScale(2))-((currentReimbursement.Total_Mileage__c.setScale(2))*Double.valueOf(currentReimbursement.IRS_Mileage_Rate__r.IRS_Rate__c));
                     }
                     currentTaxReport.month =Integer.valueOf(riembursementMonthSplitted[0]);
                     currentTaxReport.year =String.valueOf(riembursementMonthSplitted[1]);
@@ -1200,6 +1253,7 @@ Modified By : Sanket Goswami */
          //Use For Quater - 1 
         if(quaterWiseWrapperTaxMap.containsKey(1)) {
             TotalActualReimbursements =quaterWiseWrapperTaxMap.get(1).Reimbursements;
+            TotalApprovedMileages = quaterWiseWrapperTaxMap.get(1).Mileages;
             MaximumAllowable =  quaterWiseWrapperTaxMap.get(1).MaxIRSrate;
             AnnualTaxLiability =quaterWiseWrapperTaxMap.get(1).ImputedAmount; 
             if(quaterWiseWrapperTaxMap.get(1).Mileages != null) {
@@ -1234,6 +1288,7 @@ Modified By : Sanket Goswami */
          //Use For Quater - 2 
         if(quaterWiseWrapperTaxMap.containsKey(2)) {
             TotalActualReimbursements =TotalActualReimbursements+quaterWiseWrapperTaxMap.get(2).Reimbursements;
+            TotalApprovedMileages = TotalApprovedMileages + quaterWiseWrapperTaxMap.get(2).Mileages;
             MaximumAllowable = MaximumAllowable  +quaterWiseWrapperTaxMap.get(2).MaxIRSrate;
             AnnualTaxLiability =AnnualTaxLiability+quaterWiseWrapperTaxMap.get(2).ImputedAmount;
             if(quaterWiseWrapperTaxMap.get(2).Mileages != null) {
@@ -1288,6 +1343,7 @@ Modified By : Sanket Goswami */
          //Use For Quater - 3 
         if(quaterWiseWrapperTaxMap.containsKey(3)) {
             TotalActualReimbursements =TotalActualReimbursements+quaterWiseWrapperTaxMap.get(3).Reimbursements;
+            TotalApprovedMileages = TotalApprovedMileages + quaterWiseWrapperTaxMap.get(3).Mileages;
             MaximumAllowable = MaximumAllowable  +quaterWiseWrapperTaxMap.get(3).MaxIRSrate;
             AnnualTaxLiability =AnnualTaxLiability+quaterWiseWrapperTaxMap.get(3).ImputedAmount; 
             if(quaterWiseWrapperTaxMap.get(3).Mileages != null) {
@@ -1362,6 +1418,7 @@ Modified By : Sanket Goswami */
         //Use For Quater - 4 
         if(quaterWiseWrapperTaxMap.containsKey(4)) {
             TotalActualReimbursements =TotalActualReimbursements+quaterWiseWrapperTaxMap.get(4).Reimbursements;
+            TotalApprovedMileages = TotalApprovedMileages + quaterWiseWrapperTaxMap.get(4).Mileages;
             MaximumAllowable = MaximumAllowable  +quaterWiseWrapperTaxMap.get(4).MaxIRSrate;
             AnnualTaxLiability =AnnualTaxLiability+quaterWiseWrapperTaxMap.get(4).ImputedAmount;
             if(quaterWiseWrapperTaxMap.get(4).Mileages != null) {
@@ -1458,7 +1515,7 @@ Modified By : Sanket Goswami */
             if(quaterWiseWrapperTaxMap.containsKey(2)){            
                 wrapppertaxList.add(quaterWiseWrapperTaxMap.get(2));
             }
-            if(quaterWiseWrapperTaxMap.containsKey(3)) {            
+            if(quaterWiseWrapperTaxMap.containsKey(3)) {  
                 wrapppertaxList.add(quaterWiseWrapperTaxMap.get(3));
             }
             if(quaterWiseWrapperTaxMap.containsKey(4)) {
@@ -1469,13 +1526,13 @@ Modified By : Sanket Goswami */
             if(currentDriver.compliancestatus__c =='Yes') {
                 if(totalmileages1 < currentDriver.Compliance_Mileage__c) {
                     message=label.compliancenotmeeting;
-                    if(quaterWiseWrapperTaxMap.containsKey(1)) {            
+                    if(quaterWiseWrapperTaxMap.containsKey(1)) {   
                         wrapppertaxList.add(quaterWiseWrapperTaxMap.get(1));
                     }
-                    if(quaterWiseWrapperTaxMap.containsKey(2)) {            
+                    if(quaterWiseWrapperTaxMap.containsKey(2)) {       
                         wrapppertaxList.add(quaterWiseWrapperTaxMap.get(2));
                     }
-                    if(quaterWiseWrapperTaxMap.containsKey(3)) {            
+                    if(quaterWiseWrapperTaxMap.containsKey(3)) {   
                         wrapppertaxList.add(quaterWiseWrapperTaxMap.get(3));
                     }
                     if(quaterWiseWrapperTaxMap.containsKey(4)) {
@@ -1493,10 +1550,10 @@ Modified By : Sanket Goswami */
                 system.debug('quaterWiseWrapperTaxMap.get(1)=****='+quaterWiseWrapperTaxMap.get(1));
                     wrapppertaxList.add(quaterWiseWrapperTaxMap.get(1));
                 }
-                if(quaterWiseWrapperTaxMap.containsKey(2)) {            
+                if(quaterWiseWrapperTaxMap.containsKey(2)) {  
                     wrapppertaxList.add(quaterWiseWrapperTaxMap.get(2));
                 }
-                if(quaterWiseWrapperTaxMap.containsKey(3)) {            
+                if(quaterWiseWrapperTaxMap.containsKey(3)) {  
                     wrapppertaxList.add(quaterWiseWrapperTaxMap.get(3));
                 }
                 if(quaterWiseWrapperTaxMap.containsKey(4)) {
@@ -1558,16 +1615,14 @@ Modified By : Sanket Goswami */
         complianceCalculationList.add(JSON.serialize(String.valueOf(currentDriver.name)));
         complianceCalculationList.add(JSON.serialize(message));        
         if(wrapppertaxList.size()>0) { 
-         system.debug('wrapppertaxList=****='+wrapppertaxList);
-          system.debug('quaterWiseWrapperTaxList=****='+quaterWiseWrapperTaxList);
             complianceCalculationList.add(JSON.serialize(wrapppertaxList));
             complianceCalculationList.add(JSON.serialize(quaterWiseWrapperTaxList));
             complianceCalculationList.add(JSON.serialize(taxSummaryReport));         
             complianceCalculationList.add(JSON.serialize(String.valueOf(Decimal.valueOf(TotalActualReimbursements).setScale(2)))); 
             complianceCalculationList.add(JSON.serialize(String.valueOf(Decimal.valueOf(MaximumAllowable).setScale(2))));          
-            complianceCalculationList.add(JSON.serialize(String.valueOf(Decimal.valueOf(AnnualTaxLiability).setScale(2))));  
+            complianceCalculationList.add(JSON.serialize(String.valueOf(Decimal.valueOf(AnnualTaxLiability).setScale(2)))); 
+            complianceCalculationList.add(JSON.serialize(String.valueOf(Decimal.valueOf(TotalApprovedMileages).setScale(2))));  
         }   
-        system.debug('complianceCalculationList=****='+complianceCalculationList);
         return complianceCalculationList;
     }
     public static String approveMileagesForAdminDash(String checked,String selected,String unapprove,String name,String emailaddress) {
@@ -1576,6 +1631,7 @@ Modified By : Sanket Goswami */
         List<String> approvedIdList = new List<String>();
         List<String> rejectedIdList = new List<String>();
         List<String> unapproveIdList = new List<String>();
+        MAP<Id,Employee_Mileage__c> milMap = new MAP<Id,Employee_Mileage__c>();
         if(selected != null) {
             List<EmployeeMileages> employeeMileagesListApprove = new List<EmployeeMileages>();
             employeeMileagesListApprove = (List<EmployeeMileages>)JSON.deserialize(selected,List<EmployeeMileages>.Class);
@@ -1607,7 +1663,7 @@ Modified By : Sanket Goswami */
             mileagesToApprove.addAll(WrapperUtils.UpdateMileages(rejectedIdList,'Rejected'));
             mileagesToApprove.addAll(WrapperUtils.UpdateMileages(unapproveIdList,'Not Approved Yet'));
             
-            MAP<Id,Employee_Mileage__c> milMap = new MAP<Id,Employee_Mileage__c>();
+            // MAP<Id,Employee_Mileage__c> milMap = new MAP<Id,Employee_Mileage__c>();
             milMap.putall(mileagesToApprove);
             
             if(milMap.size()>0){
@@ -1670,18 +1726,30 @@ Modified By : Sanket Goswami */
         return JSON.serialize(gasPriceList);
     }
     public static String getDriverFuelVariableRate(String conId){
+        system.debug('conId===' + conId);
         String lastMonth = Utils.fetchMonths(1, 0)[0];
+        system.debug('lastMonth===' + lastMonth);
         String fuelVariableRate = '';
-        List<Employee_Reimbursement__c> reimList = [SELECT id,Fuel_Variable_Rate__c FROM Employee_Reimbursement__c WHERE Contact_Id__c =: conId and Month__c =: lastMonth ];
-        if(!reimList.isEmpty()){
-            fuelVariableRate = String.valueOf(reimList[0].Fuel_Variable_Rate__c);
+        List<Employee_Reimbursement__c> reimList = new List<Employee_Reimbursement__c>();
+       /* Map<Id, Employee_Reimbursement__c> reimMap = new Map<Id, Employee_Reimbursement__c>([SELECT id,Fuel_Variable_Rate__c FROM Employee_Reimbursement__c WHERE Contact_Id__c =: conId and Month__c =: lastMonth]);
+        system.debug('reimMap===' + reimMap);
+        Map<Id, String> reimIdvsFuelVarRateMap = new Map<Id, String>();
+        for(Employee_Reimbursement__c reim : [SELECT id,Fuel_Variable_Rate__c FROM Employee_Reimbursement__c WHERE Contact_Id__c =: conId and Month__c =: lastMonth AND Id IN :reimMap.keySet()])
+            {   
+              fuelVariableRate = String.valueOf(reim.Fuel_Variable_Rate__c);
+            } */
+        //List<Employee_Reimbursement__c> reimList = [SELECT id,Fuel_Variable_Rate__c FROM Employee_Reimbursement__c WHERE Contact_Id__c =: conId and Month__c =: lastMonth ];
+        for(Employee_Reimbursement__c reim : [SELECT id,Fuel_Variable_Rate__c FROM Employee_Reimbursement__c WHERE Contact_Id__c =: conId and Month__c =: lastMonth and Fuel_Variable_Rate__c != null]){
+            fuelVariableRate = String.valueOf(reim.Fuel_Variable_Rate__c);
+            return fuelVariableRate;
         }
-        return fuelVariableRate;
+        return '0';
     }
     /*EMC-260 
 Added a new field : Total_Approved__c,Total_Mileage__c, Total_Pending__c  
 Author : Sanket Goswami */
-    public Static String getAllReimbursements(String year,String did,String accid) { 
+public Static String getAllReimbursements(String year,String did,String accid) { 
+    System.debug('start===');
         String query=''; 
         List<String> monthList = new List<String>();
         integer month = 12;
@@ -1705,20 +1773,32 @@ Author : Sanket Goswami */
                                            AND Driver_Type__c != 'Driver - Part Time' AND Driver_Type__c != 'Driver - Salary'  AND Account.Bi_Weekly_Pay_Period__c = false))];
         if((monthList.size() > 0 && conList.isEmpty()) || (monthList.size() > 0 && !conList.isEmpty() && System.today().Month() == 1) || (monthList.size() > 0 && !conList.isEmpty() && Integer.valueOf(year) != System.today().year())) {
             editedquery = setQueryParameters(monthList);
-            query = 'Select id,Contact_Email__c,Contact_Id__r.Driver_Type__c,Total_Approved__c,Monthly_Fixed_Amount__c,Number_of_Pay_Period__c,Half_Fixed_Amount__c,Month__c,Total_Variable_Rate__c,Fuel_Price__c,Total_Mileage__c,Fixed_Amount__c,Variable_Rate__c,Total_Monthly_Reimbursement__c,Contact_Id__c,Approved_Date__c,Status__c,Total_Pending__c,Monthly_Variable_Amount__c,Total_Monthly_Approved_Variable__c,MPG__c,Maintenance_and_Tires__c from Employee_Reimbursement__c where Contact_Id__c=\''+did+'\' and Month__c IN '+ editedquery;
+            query = 'Select id,Reimbursement_Month__c,Mileage_Lock_Date__c,Lock_Date_User__c,Contact_Email__c,Total_Monthly_Reimbursement_BiWeek__c,Contact_Id__r.Driver_Type__c,Contact_Id__r.Reimbursement_Frequency__c,Contact_Id__r.Reimbursement_Type__c,Total_Approved__c,Monthly_Fixed_Amount__c,Number_of_Pay_Period__c,Half_Fixed_Amount__c,Month__c,Total_Variable_Rate__c,Fuel_Price__c,Total_Mileage__c,Fixed_Amount__c,Variable_Rate__c,Total_Monthly_Reimbursement__c,Contact_Id__c,Approved_Date__c,Status__c,Total_Pending__c,Monthly_Variable_Amount__c,Total_Monthly_Approved_Variable__c,MPG__c,Maintenance_and_Tires__c from Employee_Reimbursement__c where Contact_Id__c=\''+did+'\' and Month__c IN '+ editedquery+'Order by Reimbursement_Month__c asc';
         } 
         else if(monthList.size() > 0 && !conList.isEmpty() ) {
             monthlist.remove(monthList.size()-1);
             editedquery = setQueryParameters(monthList);
-            query = 'Select id,Contact_Email__c,Contact_Id__r.Driver_Type__c,Total_Approved__c,Monthly_Fixed_Amount__c,Number_of_Pay_Period__c,Half_Fixed_Amount__c,Month__c,Total_Variable_Rate__c,Fuel_Price__c,Total_Mileage__c,Fixed_Amount__c,Variable_Rate__c,Total_Monthly_Reimbursement__c,Contact_Id__c,Approved_Date__c,Status__c,Total_Pending__c,Monthly_Variable_Amount__c,Total_Monthly_Approved_Variable__c,MPG__c,Maintenance_and_Tires__c from Employee_Reimbursement__c where Contact_Id__c=\''+did+'\' and Month__c IN '+ editedquery;
+            query = 'Select id,Reimbursement_Month__c,Mileage_Lock_Date__c,Lock_Date_User__c,Contact_Email__c,Contact_Id__r.Driver_Type__c,Total_Monthly_Reimbursement_BiWeek__c,Contact_Id__r.Reimbursement_Frequency__c,Contact_Id__r.Reimbursement_Type__c,Total_Approved__c,Monthly_Fixed_Amount__c,Number_of_Pay_Period__c,Half_Fixed_Amount__c,Month__c,Total_Variable_Rate__c,Fuel_Price__c,Total_Mileage__c,Fixed_Amount__c,Variable_Rate__c,Total_Monthly_Reimbursement__c,Contact_Id__c,Approved_Date__c,Status__c,Total_Pending__c,Monthly_Variable_Amount__c,Total_Monthly_Approved_Variable__c,MPG__c,Maintenance_and_Tires__c from Employee_Reimbursement__c where Contact_Id__c=\''+did+'\' and Month__c IN '+ editedquery+'Order by Reimbursement_Month__c asc';
         } else {
-            query = 'Select id,Month__c,Contact_Id__r.Driver_Type__c,Total_Approved__c,Monthly_Fixed_Amount__c,Number_of_Pay_Period__c,Half_Fixed_Amount__c,Contact_Email__c,Total_Variable_Rate__c,Fuel_Price__c,Total_Mileage__c,Fixed_Amount__c,Variable_Rate__c,Total_Monthly_Reimbursement__c,Contact_Id__c,Approved_Date__c,Status__c,Total_Pending__c,Monthly_Variable_Amount__c,Total_Monthly_Approved_Variable__c,MPG__c,Maintenance_and_Tires__c from Employee_Reimbursement__c where Contact_Id__c=\''+did+'\'';
+            query = 'Select id,Reimbursement_Month__c,Mileage_Lock_Date__c,Lock_Date_User__c,Month__c,Total_Monthly_Reimbursement_BiWeek__c,Contact_Id__r.Reimbursement_Frequency__c,Contact_Id__r.Reimbursement_Type__c,Contact_Id__r.Driver_Type__c,Total_Approved__c,Monthly_Fixed_Amount__c,Number_of_Pay_Period__c,Half_Fixed_Amount__c,Contact_Email__c,Total_Variable_Rate__c,Fuel_Price__c,Total_Mileage__c,Fixed_Amount__c,Variable_Rate__c,Total_Monthly_Reimbursement__c,Contact_Id__c,Approved_Date__c,Status__c,Total_Pending__c,Monthly_Variable_Amount__c,Total_Monthly_Approved_Variable__c,MPG__c,Maintenance_and_Tires__c from Employee_Reimbursement__c where Contact_Id__c=\''+did+'\''+'Order by Reimbursement_Month__c asc';
         }              
         
         List<EmployeeReimbursements> reimbursementList =  new List<EmployeeReimbursements>();
+        Double sumTotalReim = 0;
+        Integer count = 0;
         for(Employee_Reimbursement__c currentReimbursement : (List<Employee_Reimbursement__c>)ExecuteQueryUtil.getRecordListFromsObject(query)) {
-            reimbursementList.add(WrapperUtils.getEmployeeReimbursements(currentReimbursement));
+            count += 1;
+            if(currentReimbursement.Total_Monthly_Reimbursement_BiWeek__c > 0 && currentReimbursement.Contact_Id__r.Reimbursement_Frequency__c == 'Bi-Weekly Reimbursement' ){
+                sumTotalReim = sumTotalReim + currentReimbursement.Total_Monthly_Reimbursement_BiWeek__c;
+            } else if(currentReimbursement.Total_Monthly_Reimbursement__c > 0){
+                sumTotalReim = sumTotalReim + currentReimbursement.Total_Monthly_Reimbursement__c;
+            }
+            
+            System.debug('currentEmployeeReimbursement.Reimbursement_Month__c=='+currentReimbursement.Reimbursement_Month__c+'   '+currentReimbursement.Month__c);
+            // sumTotalReim = sumTotalReim + currentReimbursement.Total_Monthly_Reimbursement__c;
+            reimbursementList.add(WrapperUtils.getEmployeeReimbursements(currentReimbursement,sumTotalReim,count));
         }  
+        System.debug('data: '+ JSON.serialize(reimbursementList));
         return JSON.serialize(reimbursementList);
     }
     
@@ -1758,15 +1838,17 @@ Author : Sanket Goswami */
                                                   EmployeeReimbursement__r.Contact_Id__r.External_Email__c,EmployeeReimbursement__r.Monthly_Variable_Amount__c,
                                                   Maintenance_and_Tires__c,Fuel_price__c,EmployeeReimbursement__r.Total_Mileage__c,ConvertedEndTime__c,
                                                   EmployeeReimbursement__r.Total_Rejected__c,Notes__c,ConvertedStartTime__c,Variable_Rate__c,Original_Origin_Name__c,Original_Destination_Name__c,
-                                                  TimeZone__c,EmployeeReimbursement__r.Mileage_Lock_Date__c,Activity__c,Mileage_Lock_Date__c,EmployeeReimbursement__r.Fuel_Variable_Rate__c,Fuel_Variable_Rate__c
+                                                  TimeZone__c,EmployeeReimbursement__r.Mileage_Lock_Date__c,Activity__c,Mileage_Lock_Date__c,EmployeeReimbursement__r.Fuel_Variable_Rate__c,Fuel_Variable_Rate__c,High_Risk_Mileage__c
                                                   FROM Employee_Mileage__c 
-                                                  WHERE EmployeeReimbursement__r.Month__c =: month AND EmployeeReimbursement__r.Contact_Id__c =: did ]) {
+                                                  WHERE EmployeeReimbursement__r.Month__c =: month AND EmployeeReimbursement__r.Contact_Id__c =: did order by ConvertedStartTime__c asc]) {
                                                       employeeMileageList.add(WrapperUtils.getMileagesOfReimbursement(currentMileage));
                                                   }        
-        if(!employeeMileageList.isEmpty()) 
-            return JSON.serialize(employeeMileageList);
         
-        return '';
+        if(!employeeMileageList.isEmpty())  {
+            return JSON.serialize(employeeMileageList);
+        } else {
+            return JSON.serialize(employeeMileageList);
+        }
     }
     
     public static String getMileagesBasedTA(String startdate,string enddate,String did) {              
@@ -1779,11 +1861,11 @@ Author : Sanket Goswami */
                                                   EmployeeReimbursement__r.Contact_Id__r.External_Email__c,EmployeeReimbursement__r.Monthly_Variable_Amount__c,
                                                   Maintenance_and_Tires__c,Fuel_price__c,EmployeeReimbursement__r.Total_Mileage__c,ConvertedEndTime__c,
                                                   EmployeeReimbursement__r.Total_Rejected__c,Notes__c,ConvertedStartTime__c,Variable_Rate__c,Original_Origin_Name__c,Original_Destination_Name__c,
-                                                  TimeZone__c,EmployeeReimbursement__r.Mileage_Lock_Date__c,Activity__c,Mileage_Lock_Date__c,EmployeeReimbursement__r.Fuel_Variable_Rate__c,Fuel_Variable_Rate__c
+                                                  TimeZone__c,EmployeeReimbursement__r.Mileage_Lock_Date__c,Activity__c,Mileage_Lock_Date__c,EmployeeReimbursement__r.Fuel_Variable_Rate__c,Fuel_Variable_Rate__c,High_Risk_Mileage__c
                                                   FROM Employee_Mileage__c 
                                                   WHERE Trip_Date__c >= : Date.valueOf(startDate)
                                                   AND Trip_Date__c <= : Date.valueOf(endDate) 
-                                                  AND EmployeeReimbursement__r.Contact_Id__c =: did order by Trip_Date__c asc]) {
+                                                  AND EmployeeReimbursement__r.Contact_Id__c =: did order by ConvertedStartTime__c asc]) {
                                                       employeeMileageList.add(WrapperUtils.getMileagesOfReimbursement(currentMileage));
                                                   }        
         if(!employeeMileageList.isEmpty()) 
@@ -1796,7 +1878,7 @@ Author : Sanket Goswami */
         
         String month = WrapperUtils.getMonthno(clickedMonth);      
         month = month +'-'+year;
-        String query = 'SELECT id,Name,Trip_Date__c,Mileage_Lock_Date__c,Variable_Rate__c,Trip_Origin__c,Stay_Time__c,Original_Origin_Name__c,Original_Destination_Name__c,Trip_Destination__c,Mileage__c,Variable__c,Approval_Name__c,Trip_Status__c,Approved_Date__c,EmployeeReimbursement__c,EmployeeReimbursement__r.month__c, EmployeeReimbursement__r.Contact_Id__c,CreatedDate,Rejected__c,EmployeeReimbursement__r.Total_Variable_Rate__c,EmployeeReimbursement__r.Total_Pending__c,Origin_Name__c,Tracing_Style__c,StartTime__c,EndTime__c,Day_Of_Week__c,Destination_Name__c,EmployeeReimbursement__r.Contact_Id__r.External_Email__c,EmployeeReimbursement__r.Monthly_Variable_Amount__c,EmployeeReimbursement__r.Total_Monthly_Approved_Variable__c,Maintenance_and_Tires__c,Fuel_price__c,EmployeeReimbursement__r.Total_Mileage__c,EmployeeReimbursement__r.Total_Rejected__c,Notes__c,TimeZone__c,EmployeeReimbursement__r.Mileage_Lock_Date__c,ConvertedStartTime__c,ConvertedEndTime__c,Driving_Time__c,Total_Time__c,Tag__c,Activity__c,EmployeeReimbursement__r.Fuel_Variable_Rate__c,Fuel_Variable_Rate__c  FROM Employee_Mileage__c WHERE EmployeeReimbursement__r.Month__c = \''+month+'\' AND EmployeeReimbursement__r.Contact_Id__c =\''+did+'\'';      
+        String query = 'SELECT id,Name,Trip_Date__c,Mileage_Lock_Date__c,Variable_Rate__c,Trip_Origin__c,Stay_Time__c,Original_Origin_Name__c,Original_Destination_Name__c,Trip_Destination__c,Mileage__c,Variable__c,Approval_Name__c,Trip_Status__c,Approved_Date__c,EmployeeReimbursement__c,EmployeeReimbursement__r.month__c, EmployeeReimbursement__r.Contact_Id__c,CreatedDate,Rejected__c,EmployeeReimbursement__r.Total_Variable_Rate__c,EmployeeReimbursement__r.Total_Pending__c,Origin_Name__c,Tracing_Style__c,StartTime__c,EndTime__c,Day_Of_Week__c,Destination_Name__c,EmployeeReimbursement__r.Contact_Id__r.External_Email__c,EmployeeReimbursement__r.Monthly_Variable_Amount__c,EmployeeReimbursement__r.Total_Monthly_Approved_Variable__c,Maintenance_and_Tires__c,Fuel_price__c,EmployeeReimbursement__r.Total_Mileage__c,EmployeeReimbursement__r.Total_Rejected__c,Notes__c,TimeZone__c,EmployeeReimbursement__r.Mileage_Lock_Date__c,ConvertedStartTime__c,ConvertedEndTime__c,Driving_Time__c,Total_Time__c,Tag__c,Activity__c,EmployeeReimbursement__r.Fuel_Variable_Rate__c,Fuel_Variable_Rate__c,High_Risk_Mileage__c  FROM Employee_Mileage__c WHERE EmployeeReimbursement__r.Month__c = \''+month+'\' AND EmployeeReimbursement__r.Contact_Id__c =\''+did+'\' order by ConvertedStartTime__c asc';      
         
         List<Employee_Mileage__c> employeeMileageList =  (List<Employee_Mileage__c>)ExecuteQueryUtil.getRecordListFromsObject(query);
         List<String> mileagesList = new List<String>();    
@@ -1818,6 +1900,12 @@ Author : Sanket Goswami */
         }
     }
     public static String readFromFileInchunk(String attachmentBody, String attachmentName, String attachmentId,String did,String accid,String contactattachementid) {
+        System.debug('attachmentBody: '+attachmentBody);
+        System.debug('attachmentName: '+attachmentName);
+        System.debug('attachmentId: '+attachmentId);
+        System.debug('did: '+did);
+        System.debug('accid: '+accid);
+        System.debug('contactattachementid: '+contactattachementid);
         if(attachmentBody != null) {
             Attachment insuranceAttachment = getAttachment(attachmentId);
             String newBody = '';
@@ -1825,34 +1913,25 @@ Author : Sanket Goswami */
                 newBody = EncodingUtil.base64Encode(insuranceAttachment.Body);
             }
             newBody += attachmentBody;
+            System.debug('newBody: '+newBody);
             insuranceAttachment.Body = EncodingUtil.base64Decode(newBody);
             if(attachmentId == null) {
                 insuranceAttachment.Name = attachmentName;
                 insuranceAttachment.parentId = did;
             }
+            System.debug('insuranceAttachment: '+insuranceAttachment);
             upsert insuranceAttachment;
-            if(String.isNotBlank(contactattachementid)) {
-                if(String.isNotBlank(insuranceAttachment.Id) && insuranceAttachment.Id!= contactattachementid) {
+            if(insuranceAttachment.Id!=null && String.isNotBlank(insuranceAttachment.Id)) {
                     contact currentDriver = new contact();
                     currentDriver.id= did;
                     currentDriver.Insurance_Attachment_Id__c = insuranceAttachment.id;
                     currentDriver.Insurance_Upload_Date__c = System.today();
                     currentDriver.Insurance_Declaration_Status__c = 'Uploaded';
-                    currentDriver.Insurance__c = 'Yes';
                     currentDriver.Expiration_Date__c = null;
-                    update currentDriver;
-                }
-            } else {
-                if(insuranceAttachment.Id!=null) {
-                    contact currentDriver = new contact();
-                    currentDriver.id= did;
-                    currentDriver.Insurance_Attachment_Id__c = insuranceAttachment.id;
-                    currentDriver.Insurance_Upload_Date__c = System.today();
-                    currentDriver.Insurance_Declaration_Status__c = 'Uploaded';
                     currentDriver.Insurance__c = 'Yes';
-                    currentDriver.Expiration_Date__c = null;
                     update currentDriver;
-                }
+                    System.debug('did: '+did);
+                    AddOrUpdateInsuranceMessage updateMessage = new AddOrUpdateInsuranceMessage(did);
             }
             return insuranceAttachment.Id;           
         } else {
@@ -1985,68 +2064,81 @@ Author : Sanket Goswami */
             employeeReimbursementList =[SELECT id, Name, Month__c, Total_Rejected__c, Approved_Date__c, Contact_Id__r.Accountid,
                                         Contact_Id__r.Manager__r.Name, Contact_Id__c, Contact_Id__r.name, Contact_Id__r.Monthly_Mileage_Limit__c, 
                                         Total_Approved__c, Total_Mileage__c, Status__c, Total_Variable_Rate__c, Total_Pending__c,
-                                        Total_Approved_Pending_Mileage__c, Reimbursement_Approval__c,Mileage_Approver__c,
-                                        Contact_Id__r.Manager__r.External_Email__c,Mileage_Lock_Date__c
+                                        Total_Approved_Pending_Mileage__c, Reimbursement_Approval__c,Mileage_Approver__c,Contact_Id__r.Manager__r.External_Email__c,Mileage_Lock_Date__c,High_Risk_Total_Mileages__c,High_Risk_Total_Rejected__c,High_Risk_Total_Approved__c
+                                        
                                         FROM Employee_Reimbursement__c 
                                         WHERE Approved_Date__c = null AND Status__c='Pending' 
                                         AND Contact_Id__r.Accountid =: accountId
-                                        AND Total_Approved_Pending_Mileage__c > 0
-                                        AND (Month__c !=: currentMonth OR Contact_Id__r.Deactivated_Date__c = THIS_YEAR) ];
+                                        AND Total_Pending__c > 0
+                                        AND (Month__c !=: currentMonth OR Contact_Id__r.Deactivated_Date__c = THIS_YEAR) Order by Total_Pending__c desc];
         }
         else if(showteam!=null && showteam == false && (role=='Admin' || role == StaticValues.roleAdminDriver)) { // || role == 'Admin/Driver' 
             employeeReimbursementList =[SELECT id, Name, Month__c, Total_Rejected__c, Approved_Date__c, Contact_Id__r.Accountid, Contact_Id__c,
                                         Contact_Id__r.Manager__r.Name, Contact_Id__r.name, Contact_Id__r.Monthly_Mileage_Limit__c, 
                                         Total_Approved__c, Total_Mileage__c, Status__c, Total_Approved_Pending_Mileage__c, 
-                                        Total_Variable_Rate__c, Total_Pending__c, Reimbursement_Approval__c, Mileage_Approver__c, Contact_Id__r.Manager__r.External_Email__c,Mileage_Lock_Date__c
-                                        FROM Employee_Reimbursement__c 
-                                        where Approved_Date__c = null 
-                                        AND Status__c='Pending' 
-                                        AND Total_Approved_Pending_Mileage__c > 0
-                                        AND Contact_Id__r.Accountid =: accountId 
-                                        AND (Month__c !=: currentMonth OR Contact_Id__r.Deactivated_Date__c = THIS_YEAR)
-                                        AND ((Contact_Id__r.Manager__c =:contactId) 
-                                             OR (Contact_Id__r.Manager__r.Manager__c =:contactId) 
-                                             OR (Contact_Id__r.Manager__r.Manager__r.Manager__c =:contactId) 
-                                             OR (Contact_Id__r.Manager__r.Manager__r.Manager__r.Manager__c =:contactId) 
-                                             OR (Contact_Id__r.Manager__r.Manager__r.Manager__r.Manager__r.Manager__c =:contactId))];
-        }
-        else if(showteam!=null && showteam == true && (role=='Manager' || role=='Driver/Manager')) {
-            employeeReimbursementList =[SELECT id, Name, Month__c, Total_Rejected__c, Approved_Date__c, Contact_Id__r.Accountid, 
-                                        Contact_Id__c, Contact_Id__r.name, Contact_Id__r.Manager__r.Name, Contact_Id__r.Monthly_Mileage_Limit__c, 
-                                        Total_Approved__c, Total_Mileage__c, Status__c,Total_Approved_Pending_Mileage__c, 
-                                        Total_Variable_Rate__c, Total_Pending__c, Reimbursement_Approval__c, Mileage_Approver__c, Contact_Id__r.Manager__r.External_Email__c,Mileage_Lock_Date__c
+                                        Total_Variable_Rate__c, Total_Pending__c, Reimbursement_Approval__c, Mileage_Approver__c, Contact_Id__r.Manager__r.External_Email__c,Mileage_Lock_Date__c,High_Risk_Total_Mileages__c,High_Risk_Total_Rejected__c,High_Risk_Total_Approved__c
                                         FROM Employee_Reimbursement__c 
                                         where Approved_Date__c = null 
                                         AND Status__c='Pending' 
                                         AND Total_Approved_Pending_Mileage__c > 0
                                         AND Contact_Id__r.Accountid =: accountId
+                                        AND Total_Pending__c > 0 
+                                        AND (Month__c !=: currentMonth OR Contact_Id__r.Deactivated_Date__c = THIS_YEAR)
+                                        AND ((Contact_Id__r.Manager__c =:contactId) 
+                                             OR (Contact_Id__r.Manager__r.Manager__c =:contactId) 
+                                             OR (Contact_Id__r.Manager__r.Manager__r.Manager__c =:contactId) 
+                                             OR (Contact_Id__r.Manager__r.Manager__r.Manager__r.Manager__c =:contactId) 
+                                             OR (Contact_Id__r.Manager__r.Manager__r.Manager__r.Manager__r.Manager__c =:contactId)) Order by Total_Pending__c desc];
+        }
+        else if(showteam!=null && showteam == true && (role=='Manager' || role=='Driver/Manager')) {
+            employeeReimbursementList =[SELECT id, Name, Month__c, Total_Rejected__c, Approved_Date__c, Contact_Id__r.Accountid, 
+                                        Contact_Id__c, Contact_Id__r.name, Contact_Id__r.Manager__r.Name, Contact_Id__r.Monthly_Mileage_Limit__c, 
+                                        Total_Approved__c, Total_Mileage__c, Status__c,Total_Approved_Pending_Mileage__c, 
+                                        Total_Variable_Rate__c, Total_Pending__c, Reimbursement_Approval__c, Mileage_Approver__c, Contact_Id__r.Manager__r.External_Email__c,Mileage_Lock_Date__c,High_Risk_Total_Mileages__c,High_Risk_Total_Rejected__c,High_Risk_Total_Approved__c
+                                        FROM Employee_Reimbursement__c 
+                                        where Approved_Date__c = null 
+                                        AND Status__c='Pending' 
+                                        AND Total_Approved_Pending_Mileage__c > 0
+                                        AND Contact_Id__r.Accountid =: accountId
+                                        AND Total_Pending__c > 0
                                         AND (Month__c !=: currentMonth OR Contact_Id__r.Deactivated_Date__c = THIS_YEAR)
                                         AND ((Contact_Id__r.Manager__c =: contactId) 
                                              OR (Contact_Id__r.Manager__r.Manager__c =: contactId) 
                                              OR (Contact_Id__r.Manager__r.Manager__r.Manager__c =: contactId) 
                                              OR (Contact_Id__r.Manager__r.Manager__r.Manager__r.Manager__c =: contactId) 
-                                             OR (Contact_Id__r.Manager__r.Manager__r.Manager__r.Manager__r.Manager__c =: contactId))];
+                                             OR (Contact_Id__r.Manager__r.Manager__r.Manager__r.Manager__r.Manager__c =: contactId)) Order by Total_Pending__c desc];
         }
         else if(showteam != null && showteam == false && (role == 'Manager' || role =='Driver/Manager')) {
             employeeReimbursementList = [SELECT id, Name, Month__c, Total_Rejected__c, Approved_Date__c, Contact_Id__r.Accountid, 
                                          Contact_Id__c, Contact_Id__r.name, Contact_Id__r.Manager__r.Name, Contact_Id__r.Manager__c,
                                          Contact_Id__r.Monthly_Mileage_Limit__c, Total_Approved__c, Total_Mileage__c, Status__c, 
                                          Total_Variable_Rate__c, Total_Pending__c, Reimbursement_Approval__c, Mileage_Approver__c, 
-                                         Contact_Id__r.Manager__r.External_Email__c,Mileage_Lock_Date__c
+                                         Contact_Id__r.Manager__r.External_Email__c,Mileage_Lock_Date__c,High_Risk_Total_Mileages__c,High_Risk_Total_Rejected__c,High_Risk_Total_Approved__c
                                          FROM Employee_Reimbursement__c 
                                          where Approved_Date__c = null 
                                          AND Total_Approved_Pending_Mileage__c > 0
-                                         AND Status__c='Pending' 
+                                         AND Status__c='Pending'
+                                         AND Total_Pending__c > 0 
                                          AND (Month__c !=: currentMonth OR Contact_Id__r.Deactivated_Date__c = THIS_YEAR)
                                          AND Contact_Id__r.Accountid =: accountId 
-                                         AND (Contact_Id__r.Manager__c =: contactId)]; 
+                                         AND (Contact_Id__r.Manager__c =: contactId) Order by Total_Pending__c desc]; 
         }       
         for(Employee_Reimbursement__c currentReimbursement : employeeReimbursementList) {
             EmployeeMileagesForCalculation reimbursement = new EmployeeMileagesForCalculation();
             if(employeeReimbursementMap.containsKey(currentReimbursement.Contact_Id__c)) {
                 if(employeeReimbursementMap.get(currentReimbursement.Contact_Id__c).reimbursementIdList != null && employeeReimbursementMap.get(currentReimbursement.Contact_Id__c).reimbursementIdList.size() > 0) {                    
                     reimbursement = employeeReimbursementMap.get(currentReimbursement.Contact_Id__c);
-                    reimbursement.totalMileages =(currentReimbursement.Total_Pending__c!=null) ? String.valueOf(double.valueOf((reimbursement.totalMileages!=null) ? reimbursement.totalMileages : '0')+double.valueOf(currentReimbursement.Total_Pending__c)):'0';                    
+                    reimbursement.totalMileages =(currentReimbursement.Total_Pending__c!=null) ? String.valueOf(double.valueOf((reimbursement.totalMileages!=null) ? reimbursement.totalMileages : '0')+double.valueOf(currentReimbursement.Total_Pending__c)):'0';  
+
+                    /*if(currentReimbursement.High_Risk_Total_Rejected__c != null && currentReimbursement.High_Risk_Total_Rejected__c > 0){
+                        reimbursement.totalHighRiskMileages  = currentReimbursement.High_Risk_Total_Mileages__c > 0 ? double.valueOf(currentReimbursement.High_Risk_Total_Mileages__c) - double.valueOf(currentReimbursement.High_Risk_Total_Rejected__c) : 0.00; 
+                    }else{
+                        reimbursement.totalHighRiskMileages  = currentReimbursement.High_Risk_Total_Mileages__c != null ? double.valueOf(currentReimbursement.High_Risk_Total_Mileages__c) : 0.00; 
+                    }*/
+                    
+                    reimbursement.totalHighRiskMileages  = currentReimbursement.High_Risk_Total_Mileages__c != null ? double.valueOf(currentReimbursement.High_Risk_Total_Mileages__c) : 0.00; 
+                    reimbursement.highRiskTotalApproved  = currentReimbursement.High_Risk_Total_Approved__c != null ? double.valueOf(currentReimbursement.High_Risk_Total_Approved__c) : 0.00;             
+                    reimbursement.highRiskTotalRejected  = currentReimbursement.High_Risk_Total_Rejected__c != null ? double.valueOf(currentReimbursement.High_Risk_Total_Rejected__c) : 0.00;             
                     if(reimbursement.reimbursementIdList != null && reimbursement.reimbursementIdList.size() >0) {                        
                         List<String> reimbursementIdList = new List<String>();
                         reimbursementIdList = reimbursement.reimbursementIdList;
@@ -2062,6 +2154,7 @@ Author : Sanket Goswami */
                 reimbursement.month = currentReimbursement.Month__c;
                 reimbursement.threshold = String.valueOf(currentReimbursement.Contact_Id__r.Monthly_Mileage_Limit__c);
                 reimbursement.totalMileages = (currentReimbursement.Total_Pending__c!=null) ? String.valueOf(currentReimbursement.Total_Pending__c) : '0';
+                reimbursement.rejectedMileges = (currentReimbursement.Total_Rejected__c != null) ? String.valueOf(currentReimbursement.Total_Rejected__c) : '0';
                 reimbursement.approvedMileages = String.valueOf(currentReimbursement.Total_Approved__c);             
                 reimbursement.isSelected = false;
                 reimbursement.isSelectedEmailReminder = false;
@@ -2073,6 +2166,16 @@ Author : Sanket Goswami */
                 reimbursement.reimbursementIdList = reimbursementIdList;
                 reimbursement.reimbursementApproval = currentReimbursement.Reimbursement_Approval__c;
                 reimbursement.status = currentReimbursement.Status__c;
+
+                /*if(currentReimbursement.High_Risk_Total_Rejected__c != null && currentReimbursement.High_Risk_Total_Rejected__c > 0){
+                    reimbursement.totalHighRiskMileages  = currentReimbursement.High_Risk_Total_Mileages__c > 0 ? double.valueOf(currentReimbursement.High_Risk_Total_Mileages__c) - double.valueOf(currentReimbursement.High_Risk_Total_Rejected__c) : 0.00; 
+                } else{
+                    reimbursement.totalHighRiskMileages  = currentReimbursement.High_Risk_Total_Mileages__c != null ? double.valueOf(currentReimbursement.High_Risk_Total_Mileages__c) : 0.00; 
+                }*/
+
+                reimbursement.totalHighRiskMileages  = currentReimbursement.High_Risk_Total_Mileages__c != null ? double.valueOf(currentReimbursement.High_Risk_Total_Mileages__c) : 0.00; 
+                reimbursement.highRiskTotalApproved  = currentReimbursement.High_Risk_Total_Approved__c != null ? double.valueOf(currentReimbursement.High_Risk_Total_Approved__c) : 0.00;             
+                reimbursement.highRiskTotalRejected  = currentReimbursement.High_Risk_Total_Rejected__c != null ? double.valueOf(currentReimbursement.High_Risk_Total_Rejected__c) : 0.00;             
                 if(currentReimbursement.Mileage_Lock_Date__c != null) {
                 if(String.valueOf(currentReimbursement.Mileage_Lock_Date__c).contains('-')) {
                         List<String> approvedDateSplitted = new List<String>();
@@ -2098,7 +2201,7 @@ Author : Sanket Goswami */
             if(showteam != null && showteam == true && (role=='Admin' || role == StaticValues.roleAdminDriver)) {
                 employeeReimbursementList =[SELECT ID, Name, Month__c, Total_Rejected__c, Approved_Date__c, Contact_Id__c, Contact_Id__r.name, Contact_Id__r.Monthly_Mileage_Limit__c,
                                             Contact_Id__r.Manager__r.Name, Total_Approved__c, Total_Mileage__c, Status__c, Reimbursement_Approval__c, Mileage_Approver__c,
-                                            Contact_Id__r.Manager__r.External_Email__c,Mileage_Lock_Date__c
+                                            Contact_Id__r.Manager__r.External_Email__c,Mileage_Lock_Date__c 
                                             FROM Employee_Reimbursement__c 
                                             WHERE Contact_Id__r.Accountid = :accountId 
                                             AND Month__c = :currentAccount.Last_Reimbursement_Created__c
@@ -2108,7 +2211,8 @@ Author : Sanket Goswami */
                 employeeReimbursementList = [SELECT ID, Name, Month__c, Total_Rejected__c, Approved_Date__c, Contact_Id__c, Contact_Id__r.name, 
                                              Contact_Id__r.Monthly_Mileage_Limit__c, Contact_Id__r.Manager__r.Name, Total_Approved__c, 
                                              Total_Mileage__c, Status__c, Reimbursement_Approval__c, 
-                                             Mileage_Approver__c, Contact_Id__r.Manager__r.External_Email__c,Mileage_Lock_Date__c
+                                             Mileage_Approver__c, Contact_Id__r.Manager_External_Email__c,
+                                             Contact_Id__r.Manager__r.External_Email__c,Mileage_Lock_Date__c 
                                              FROM Employee_Reimbursement__c 
                                              WHERE Contact_Id__r.Accountid = :accountId 
                                              and Month__c = :currentAccount.Last_Reimbursement_Created__c
@@ -2132,8 +2236,8 @@ Author : Sanket Goswami */
                                              Total_Approved__c, 
                                              Total_Mileage__c, 
                                              Status__c,
-                                             Reimbursement_Approval__c,
-                                             Mileage_Approver__c,Contact_Id__r.Manager__r.External_Email__c,Mileage_Lock_Date__c
+                                             Reimbursement_Approval__c,                                                                                        
+                                             Mileage_Approver__c,Contact_Id__r.Manager__r.External_Email__c,Mileage_Lock_Date__c 
                                              FROM Employee_Reimbursement__c 
                                              WHERE Contact_Id__r.Accountid = :accountId 
                                              AND Contact_Id__r.Deactivated_Date__c = null
@@ -2157,8 +2261,9 @@ Author : Sanket Goswami */
                                              Total_Approved__c, 
                                              Total_Mileage__c, 
                                              Status__c,
+                                             Contact_Id__r.Manager__r.External_Email__c,Mileage_Lock_Date__c,
                                              Reimbursement_Approval__c,
-                                             Mileage_Approver__c,Contact_Id__r.Manager__r.External_Email__c,Mileage_Lock_Date__c
+                                             Mileage_Approver__c,Contact_Id__r.Manager_External_Email__c 
                                              FROM Employee_Reimbursement__c 
                                              WHERE Contact_Id__r.Accountid = :accountId 
                                              AND Contact_Id__r.Deactivated_Date__c = null
@@ -2229,11 +2334,11 @@ Author : Sanket Goswami */
                                                       CreatedDate,Rejected__c,Origin_Name__c,Tracing_Style__c,StartTime__c,EndTime__c,Mileage_Lock_Date__c,
                                                       Day_Of_Week__c,Destination_Name__c,EmployeeReimbursement__r.Contact_Id__r.External_Email__c,Variable_Rate__c,
                                                       Maintenance_and_Tires__c,Fuel_price__c,EmployeeReimbursement__r.Total_Variable_Rate__c,ConvertedStartTime__c,ConvertedEndTime__c, 
-                                                      EmployeeReimbursement__r.Total_Rejected__c,Notes__c,EmployeeReimbursement__r.Mileage_Lock_Date__c,Activity__c,Fuel_Variable_Rate__c
+                                                      EmployeeReimbursement__r.Total_Rejected__c,Notes__c,EmployeeReimbursement__r.Mileage_Lock_Date__c,Activity__c,Fuel_Variable_Rate__c,High_Risk_Mileage__c
                                                       FROM Employee_Mileage__c 
                                                       WHERE 
                                                       Trip_Status__c =: StaticValues.noApprovedYet AND Approved_Date__c = null AND 
-                                                      EmployeeReimbursement__c IN : reimbursement.reimbursementIdList]) {
+                                                      EmployeeReimbursement__c IN : reimbursement.reimbursementIdList order by ConvertedStartTime__c asc]) {
                                                           employeeMileagesList.add(getMileagesOfReimbursement(currentMileage));
                                                       }
             reimbursement.mileagesList = employeeMileagesList;            
@@ -2281,7 +2386,7 @@ Author : Sanket Goswami */
             }
             
             List<Employee_Mileage__c> mileageList = new List<Employee_Mileage__c>();
-            for(Employee_Mileage__c mileage : [SELECT id,Trip_Status__c,Trip_Id__c 
+            for(Employee_Mileage__c mileage : [SELECT id,Trip_Status__c,Trip_Id__c,High_Risk_Mileage__c 
                                                FROM Employee_Mileage__c 
                                                WHERE EmployeeReimbursement__c =: empReID 
                                                AND Trip_Status__c = 'Not Approved Yet' and Trip_Id__c != null]){
@@ -2322,5 +2427,4 @@ Author : Sanket Goswami */
             }
         }
     }
-    
 }

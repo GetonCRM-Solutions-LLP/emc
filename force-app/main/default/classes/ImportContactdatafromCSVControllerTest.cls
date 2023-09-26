@@ -5,7 +5,7 @@ public class ImportContactdatafromCSVControllerTest {
         TriggerConfig__c triggerCustomSetting = TestDataFactory.triggerConfigCustomSetting(true);
         SendEmail__c sendEmailCustomSetting1 = TestDataFactory.sendEmailCustomSetting(true,'Send Email For Compliance');
         TrueDialog_Keys__c tdKeys = TestDataFactory.createTrueDialog(true);
-        Vehicle_URL_Mapping__c vehicleObj = TestDataFactory.createVehicleData(true,0);
+        Vehicle_URL_Mapping__c vehicleObj = TestDataFactory.createVehicleData(true,1);
         IRS_Mileage_Rate__c irsRateObj = TestDataFactory.createIRSRate(true,0);
         
         Account acc = new Account();     
@@ -18,6 +18,7 @@ public class ImportContactdatafromCSVControllerTest {
         User userObj;
         System.runAs(admin) {
             acc = TestDataFactory.createAccount(false,'Test',true);
+            acc.Vehicle_Types__c=vehicleObj.name;
             acc.True_Dialog__c = true;
             acc.Vehicle_Types__c = vehicleObj.Name;
             Insert acc;
@@ -29,7 +30,7 @@ public class ImportContactdatafromCSVControllerTest {
 
         Attachment attach = TestDataFactory.createAttachment(true, conList[0].id);
         List<Attachment> attachments = [select id, name from Attachment where parent.id =: conList[0].id];        
-        String strOriginal ='Role,First Name,Last Name,Email Address,Cell Phone,City,State,Zip Code,Department,Job Title,Managers First Name,Managers Last Name,Managers Email,Insurance Rate,License and Registration,Personal Property Tax,Depreciation,Annual Fixed Cost,Fixed Amount,FCA,Total Fixed Amount,Meeting,Packet,Date Added,Activation Date,MPG,Maint,Tires,Maint/Tires,Standard Vehicle,Compliance Mileage,Vehicle URL\nManager,paras,dhanani,paras.test123@gmail.com,6879056890,Surat,GJ,395006,ENV,Inspector/Consultant,Minkesh,Patel,mink.patel@kiwiqa.com,3231,142,0,4207,7580,451.01,6,451.01,Attended,Sent,9/30/2021,1/1/2022,25.5,0.0597,0.0461,0.1058,2022 Ford F-150,5000,https://f.hubspotusercontent40.net/hubfs/2511299/2022-Chevy-Silverado.jpeg \n'; 
+        String strOriginal ='[{\"Role\":\"Driver\",\"FirstName\":\"wo\",\"LastName\":\"pas\",\"EmailAddress\":\"wopas601856@yubua.com\",\"CellPhone\":1234565432,\"City\":\"Villa Rica\",\"State\":\"GA\",\"ZipCode\":30180,\"Department\":\"ENV\",\"JobTitle\":\"Inspector/Consultant\",\"ManagersFirstName\":\"ceni\",\"ManagersLastName\":\"pi\",\"ManagersEmail\":\"cenipi2424@zfobo.com\",\"InsuranceRate\":3134,\"LicenseandRegistration\":102,\"PersonalPropertyTax\":733,\"Depreciation\":4435,\"AnnualFixedCost\":8404,\"FixedAmount\":500.04,\"FCA\":1,\"TotalFixedAmount\":500.04,\"Meeting\":\"Attended\",\"Packet\":\"Sent\",\"DateAdded\":\"2021-10-19T18:30:00.000Z\",\"ActivationDate\":\"2022-01-31T18:30:00.000Z\",\"MPG\":25.5,\"Maint\":0.0738,\"Tires\":0.0689,\"MaintTires\":0.1427,\"StandardVehicle\":\"2022 Volkswagen Atlas\",\"ComplianceMileage\":5000,\"VehicleURL\":\"https://f.hubspotusercontent40.net/hubfs/2511299/2022-Chevy-Silverado.jpeg\"},{\"Role\":\"Driver\",\"FirstName\":\"yu\",\"LastName\":\"bua\",\"EmailAddress\":\"wopas60185@yubua.com\",\"CellPhone\":1334565432,\"City\":\"Wilmington\",\"State\":\"NC\",\"ZipCode\":28412,\"Department\":\"ENV\",\"JobTitle\":\"Inspector/Consultant\",\"ManagersFirstName\":\"ceni\",\"ManagersLastName\":\"pi\",\"ManagersEmail\":\"cenipi2424@zfobo.com\",\"InsuranceRate\":2122,\"LicenseandRegistration\":177,\"PersonalPropertyTax\":262,\"Depreciation\":3844,\"AnnualFixedCost\":6405,\"FixedAmount\":381.1,\"FCA\":2,\"TotalFixedAmount\":381.1,\"Meeting\":\"Attended\",\"Packet\":\"Sent\",\"DateAdded\":\"2021-06-14T18:30:00.000Z\",\"ActivationDate\":\"2022-05-18T18:30:00.000Z\",\"MPG\":26,\"Maint\":0.0495,\"Tires\":0.0408,\"MaintTires\":0.0903,\"StandardVehicle\":\"2022 Ford F-150\",\"ComplianceMileage\":5000,\"VehicleURL\":\"https://f.hubspotusercontent40.net/hubfs/2511299/2022-Chevy-Silverado.jpeg\"}]'; 
         System.debug('strOriginal==' + strOriginal);
         final Blob dataDocuments ;
         string accId;
@@ -38,8 +39,7 @@ public class ImportContactdatafromCSVControllerTest {
             Database.executeBatch(I);
             dataDocuments = Blob.valueOf('strOriginal');
             accId = acc.Id;
-            Date cvtDate = ImportContactdatafromCSVController.convertDateFormat('20/12/2022');
-            Date cvtDate1 = ImportContactdatafromCSVController.convertDateFormat('20-12-2022');
+           // Date cvtDate = ImportContactdatafromCSVController.convertDateFormat('20/12/2022');
         Test.stopTest();
    }
 
@@ -48,7 +48,7 @@ public class ImportContactdatafromCSVControllerTest {
         TriggerConfig__c triggerCustomSetting = TestDataFactory.triggerConfigCustomSetting(true);
         SendEmail__c sendEmailCustomSetting1 = TestDataFactory.sendEmailCustomSetting(true,'Send Email For Compliance');
         TrueDialog_Keys__c tdKeys = TestDataFactory.createTrueDialog(true);
-        Vehicle_URL_Mapping__c vehicleObj = TestDataFactory.createVehicleData(true,0);
+        Vehicle_URL_Mapping__c vehicleObj = TestDataFactory.createVehicleData(true,1);
         IRS_Mileage_Rate__c irsRateObj = TestDataFactory.createIRSRate(true,0);
         
         Account acc = new Account();     
@@ -74,7 +74,7 @@ public class ImportContactdatafromCSVControllerTest {
         
         Attachment attach = TestDataFactory.createAttachment(true, conList[0].id);
         List<Attachment> attachments = [select id, name from Attachment where parent.id =: conList[0].id];
-        String strOriginal ='Role,First Name,Last Name,Email Address,Cell Phone,City,State,Zip Code,Department,Job Title,Managers First Name,Managers Last Name,Managers Email,Insurance Rate,License and Registration,Personal Property Tax,Depreciation,Annual Fixed Cost,Fixed Amount,FCA,Total Fixed Amount,Meeting ,Packet ,Date Added,Activation Date,MPG,Maint,Tires ,Maint/Tires,Standard Vehicle,Compliance Mileage,Vehicle URL\nManager,paras ,Dhanani ,paras.test123@gmail.com,6879056890,Surat,GJ,395006,ENV,Inspector/Consultant,Minkesh,Patel,mink.patel@kiwiqa.com,3231,142,0,4207,7580,451.01,6,451.01,Attended,Sent,9-30-2021,1/1/2022,25.5,0.0597,0.0461,0.1058,2022 Ford F-150,5000,https://f.hubspotusercontent40.net/hubfs/2511299/2022-Chevy-Silverado.jpeg \n'; 
+        String strOriginal ='[{\"Role\":\"Driver\",\"FirstName\":\"wo\",\"LastName\":\"pas\",\"EmailAddress\":\"wopas601856@yubua.com\",\"CellPhone\":1234565432,\"City\":\"Villa Rica\",\"State\":\"GA\",\"ZipCode\":30180,\"Department\":\"ENV\",\"JobTitle\":\"Inspector/Consultant\",\"ManagersFirstName\":\"ceni\",\"ManagersLastName\":\"pi\",\"ManagersEmail\":\"cenipi2424@zfobo.com\",\"InsuranceRate\":3134,\"LicenseandRegistration\":102,\"PersonalPropertyTax\":733,\"Depreciation\":4435,\"AnnualFixedCost\":8404,\"FixedAmount\":500.04,\"FCA\":1,\"TotalFixedAmount\":500.04,\"Meeting\":\"Attended\",\"Packet\":\"Sent\",\"DateAdded\":\"2021-10-19T18:30:00.000Z\",\"ActivationDate\":\"2022-01-31T18:30:00.000Z\",\"MPG\":25.5,\"Maint\":0.0738,\"Tires\":0.0689,\"MaintTires\":0.1427,\"StandardVehicle\":\"2022 Volkswagen Atlas\",\"ComplianceMileage\":5000,\"VehicleURL\":\"https://f.hubspotusercontent40.net/hubfs/2511299/2022-Chevy-Silverado.jpeg\"},{\"Role\":\"Driver\",\"FirstName\":\"yu\",\"LastName\":\"bua\",\"EmailAddress\":\"wopas60185@yubua.com\",\"CellPhone\":1334565432,\"City\":\"Wilmington\",\"State\":\"NC\",\"ZipCode\":28412,\"Department\":\"ENV\",\"JobTitle\":\"Inspector/Consultant\",\"ManagersFirstName\":\"ceni\",\"ManagersLastName\":\"pi\",\"ManagersEmail\":\"cenipi2424@zfobo.com\",\"InsuranceRate\":2122,\"LicenseandRegistration\":177,\"PersonalPropertyTax\":262,\"Depreciation\":3844,\"AnnualFixedCost\":6405,\"FixedAmount\":381.1,\"FCA\":2,\"TotalFixedAmount\":381.1,\"Meeting\":\"Attended\",\"Packet\":\"Sent\",\"DateAdded\":\"2021-06-14T18:30:00.000Z\",\"ActivationDate\":\"2022-05-18T18:30:00.000Z\",\"MPG\":26,\"Maint\":0.0495,\"Tires\":0.0408,\"MaintTires\":0.0903,\"StandardVehicle\":\"2022 Ford F-150\",\"ComplianceMileage\":5000,\"VehicleURL\":\"https://f.hubspotusercontent40.net/hubfs/2511299/2022-Chevy-Silverado.jpeg\"}]'; 
         System.debug('strOriginal==' + strOriginal);
         final Blob dataDocuments ;
         string accId;
@@ -91,7 +91,7 @@ public class ImportContactdatafromCSVControllerTest {
         TriggerConfig__c triggerCustomSetting = TestDataFactory.triggerConfigCustomSetting(true);
         SendEmail__c sendEmailCustomSetting1 = TestDataFactory.sendEmailCustomSetting(true,'Send Email For Compliance');
         TrueDialog_Keys__c tdKeys = TestDataFactory.createTrueDialog(true);
-        Vehicle_URL_Mapping__c vehicleObj = TestDataFactory.createVehicleData(true,0);
+        Vehicle_URL_Mapping__c vehicleObj = TestDataFactory.createVehicleData(true,1);
         IRS_Mileage_Rate__c irsRateObj = TestDataFactory.createIRSRate(true,0);
         
         Account acc = new Account();     
@@ -116,7 +116,7 @@ public class ImportContactdatafromCSVControllerTest {
         
         Attachment attach = TestDataFactory.createAttachment(true, conList[0].id);
         List<Attachment> attachments = [select id, name from Attachment where parent.id =: conList[0].id];
-        String strOriginal ='Role,First Name,Last Name,Email Address,Cell Phone,City,State,Zip Code,Department,Job Title,Managers First Name,Managers Last Name,Managers Email,Insurance Rate,License and Registration,Personal Property Tax,Depreciation,Annual Fixed Cost,Fixed Amount,FCA,Total Fixed Amount,Meeting ,Packet ,Date Added,Activation Date,MPG,Maint,Tires ,Maint/Tires,Standard Vehicle,Compliance Mileage,Vehicle URL\nManager,paras ,dhanani ,,,Surat,GJ,395006,ENV,Inspector/Consultant,Minkesh,Patel,mink.patel@kiwiqa.com,3231,142,0,4207,7580,451.01,6,451.01,Attended,Sent,9-30-2021,1/1/2022,25.5,0.0597,0.0461,0.1058,2022 Ford F-150,5000,https://f.hubspotusercontent40.net/hubfs/2511299/2022-Chevy-Silverado.jpeg \n'; 
+        String strOriginal ='[{\"Role\":\"Driver\",\"FirstName\":\"wo\",\"LastName\":\"pas\",\"EmailAddress\":\"wopas601856@yubua.com\",\"CellPhone\":1234565432,\"City\":\"Villa Rica\",\"State\":\"GA\",\"ZipCode\":30180,\"Department\":\"ENV\",\"JobTitle\":\"Inspector/Consultant\",\"ManagersFirstName\":\"ceni\",\"ManagersLastName\":\"pi\",\"ManagersEmail\":\"cenipi2424@zfobo.com\",\"InsuranceRate\":3134,\"LicenseandRegistration\":102,\"PersonalPropertyTax\":733,\"Depreciation\":4435,\"AnnualFixedCost\":8404,\"FixedAmount\":500.04,\"FCA\":1,\"TotalFixedAmount\":500.04,\"Meeting\":\"Attended\",\"Packet\":\"Sent\",\"DateAdded\":\"2021-10-19T18:30:00.000Z\",\"ActivationDate\":\"2022-01-31T18:30:00.000Z\",\"MPG\":25.5,\"Maint\":0.0738,\"Tires\":0.0689,\"MaintTires\":0.1427,\"StandardVehicle\":\"2022 Volkswagen Atlas\",\"ComplianceMileage\":5000,\"VehicleURL\":\"https://f.hubspotusercontent40.net/hubfs/2511299/2022-Chevy-Silverado.jpeg\"},{\"Role\":\"Driver\",\"FirstName\":\"yu\",\"LastName\":\"bua\",\"EmailAddress\":\"wopas60185@yubua.com\",\"CellPhone\":1334565432,\"City\":\"Wilmington\",\"State\":\"NC\",\"ZipCode\":28412,\"Department\":\"ENV\",\"JobTitle\":\"Inspector/Consultant\",\"ManagersFirstName\":\"ceni\",\"ManagersLastName\":\"pi\",\"ManagersEmail\":\"cenipi2424@zfobo.com\",\"InsuranceRate\":2122,\"LicenseandRegistration\":177,\"PersonalPropertyTax\":262,\"Depreciation\":3844,\"AnnualFixedCost\":6405,\"FixedAmount\":381.1,\"FCA\":2,\"TotalFixedAmount\":381.1,\"Meeting\":\"Attended\",\"Packet\":\"Sent\",\"DateAdded\":\"2021-06-14T18:30:00.000Z\",\"ActivationDate\":\"2022-05-18T18:30:00.000Z\",\"MPG\":26,\"Maint\":0.0495,\"Tires\":0.0408,\"MaintTires\":0.0903,\"StandardVehicle\":\"2022 Ford F-150\",\"ComplianceMileage\":5000,\"VehicleURL\":\"https://f.hubspotusercontent40.net/hubfs/2511299/2022-Chevy-Silverado.jpeg\"}]'; 
         System.debug('strOriginal==' + strOriginal);
         final Blob dataDocuments ;
         string accId;

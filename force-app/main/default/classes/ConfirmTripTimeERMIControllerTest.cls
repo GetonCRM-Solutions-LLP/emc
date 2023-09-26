@@ -38,6 +38,7 @@ private class ConfirmTripTimeERMIControllerTest {
             ConfirmTripTimeERMIController controller = new ConfirmTripTimeERMIController();  
             ConfirmTripTimeERMIController.syncTripsForErmi (conId,'03/07/2022','03/12/2022'); 
             ConfirmTripTimeERMIController.UpdateBiWeekData(json );    
+             ConfirmTripTimeERMIController.getMileageData(conId);  
             ConfirmTripTimeERMIController.reimMileages(biWeeklyReimList[0].id);  
         }
         Test.stopTest();

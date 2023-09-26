@@ -13,7 +13,7 @@
     <fieldUpdates>
         <fullName>EmpIdEmailStartdateEnddate</fullName>
         <field>EmpIdEmailStartdateEnddate__c</field>
-        <formula>IF(Contact__r.Account.Name != &apos;Test Accounts&apos;, Contact_Id_Employee_ID__c &amp; &apos;#&apos; &amp; TRIM(Contact_Id_External_Email__c) &amp; &apos;#&apos; &amp; TEXT(Start_Date__c) &amp; &apos;#&apos; &amp; TEXT(End_Date__c) , null)</formula>
+        <formula>IF(Contact__r.Account.Name != &apos;Test Account&apos;, Contact_Id_Employee_ID__c &amp; &apos;#&apos; &amp; TRIM(Contact_Id_External_Email__c) &amp; &apos;#&apos; &amp; TEXT(Start_Date__c) &amp; &apos;#&apos; &amp; TEXT(End_Date__c) , null)</formula>
         <name>EmpIdEmailStartdateEnddate</name>
         <notifyAssignee>false</notifyAssignee>
         <operation>Formula</operation>
@@ -26,7 +26,7 @@
             <name>EmpIdEmailStartdateEnddate</name>
             <type>FieldUpdate</type>
         </actions>
-        <active>true</active>
+        <active>false</active>
         <formula>true</formula>
         <triggerType>onAllChanges</triggerType>
     </rules>

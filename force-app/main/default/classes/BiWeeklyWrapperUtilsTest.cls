@@ -2,6 +2,7 @@
 public class BiWeeklyWrapperUtilsTest {
 
     @testSetup static void setupmethod() {
+        IRS_Mileage_Rate__c irsRateObj = TestDataFactory.createIRSRate(true,0);
         TrueDialog_Keys__c tdKeys = TestDataFactory.createTrueDialog(true);
         TriggerConfig__c customSetting =  new TriggerConfig__c();
         customSetting.Name = 'Defaulttrigger';
@@ -16,6 +17,11 @@ public class BiWeeklyWrapperUtilsTest {
         customSetting1.Name = 'Send Email For Compliance';
         customSetting1.Send_email_from_code__c= true;
         insert customSetting1;
+        
+        IRS_Mileage_Rate__c objIRSRate = new IRS_Mileage_Rate__c();
+        objIRSRate.year__c = String.valueOf(System.today().year());
+        objIRSRate.IRS_Rate__c= 12.0;
+        insert objIRSRate;
         
         Vehicle_URL_Mapping__c veh = new Vehicle_URL_Mapping__c();
         veh.URL__c = 'https://cdn2.hubspot.net/hubfs/2511299/iStock-494093356.jpg';
@@ -107,12 +113,7 @@ public class BiWeeklyWrapperUtilsTest {
                 LastName = 'Lastname'
             );
             insert user_1;
-        }
-        
-        IRS_Mileage_Rate__c objIRSRate = new IRS_Mileage_Rate__c();
-        objIRSRate.year__c = '2021';
-        objIRSRate.IRS_Rate__c= 12.0;
-        insert objIRSRate;
+        }   
 
         Decimal days = acc.Pay_Period_Days__c;
         List<String> dateRange = new List<String>();
@@ -133,6 +134,7 @@ public class BiWeeklyWrapperUtilsTest {
         bireim.Start_Date__c = Date.parse('10/03/2021');
         bireim.End_Date__c = Date.parse('10/16/2021');
         bireim.Contact__c = con.id;
+        bireim.Mileage_Lock_Date__c = system.today();
         insert bireim;
 
         
@@ -256,16 +258,16 @@ public class BiWeeklyWrapperUtilsTest {
         List<Contact> con = [select id from Contact where accountId =: acc[0].Id and Deactivated_Date__c != null limit 1];
         List<Bi_Weekly_Reimbursement__c> bireim = [select id,Name,Month__c,Total_Approved_Pending_Mileage__c,Total_Rejected__c,Approved_Date__c,Contact__r.AccountId,Contact__r.Manager__r.Name,
                                                     Contact__c,Contact__r.name,Contact__r.Monthly_Mileage_Limit__c,Total_Approved__c,Total_Mileage__c,Status__c,
-                                                    Reimbursement_Approval__c  from Bi_Weekly_Reimbursement__c where Contact__c =: con[0].id limit 1];
+                                                    Reimbursement_Approval__c,Mileage_Lock_Date__c  from Bi_Weekly_Reimbursement__c where Contact__c =: con[0].id limit 1];
         List<Employee_Reimbursement__c> er = [select id from Employee_Reimbursement__c where Contact_Id__c =: con[0].id limit 1];
-        List<Employee_Mileage__c> emp = [select id,Name,Trip_Status__c,Trip_Date__c,Trip_Origin__c,Trip_Destination__c,Bi_Weekly_Reimbursement__c,
+        List<Employee_Mileage__c> emp = [select id,Name,Original_Origin_Name__c,Original_Destination_Name__c,Trip_Status__c,Trip_Date__c,Trip_Origin__c,Trip_Destination__c,Bi_Weekly_Reimbursement__c,
                                             Approved_Date__c,Mileage__c,Variable__c,EmployeeReimbursement__c,TimeZone__c,Tag__c,
                                             Bi_Weekly_Reimbursement__r.month__c,Bi_Weekly_Reimbursement__r.Total_Pending__c,Stay_Time__c,
                                             Bi_Weekly_Reimbursement__r.Total_Mileage__c,Bi_Weekly_Reimbursement__r.Contact__c,Driving_Time__c,Total_Time__c,
                                             CreatedDate,Rejected__c,Origin_Name__c,Tracing_Style__c,StartTime__c,EndTime__c,Mileage_Lock_Date__c,
                                             Day_Of_Week__c,Destination_Name__c,Bi_Weekly_Reimbursement__r.Contact__r.External_Email__c,Bi_Weekly_Reimbursement__r.Half_Fixed_Amount__c,
                                             Maintenance_and_Tires__c,Fuel_price__c,Bi_Weekly_Reimbursement__r.Total_Variable_Rate__c,ConvertedStartTime__c,ConvertedEndTime__c, 
-                                            Bi_Weekly_Reimbursement__r.Total_Rejected__c,Notes__c,Bi_Weekly_Reimbursement__r.Mileage_Lock_Date__c,Activity__c 
+                                            Bi_Weekly_Reimbursement__r.Total_Rejected__c,Notes__c,Bi_Weekly_Reimbursement__r.Mileage_Lock_Date__c,Activity__c,High_Risk_Mileage__c,EmployeeReimbursement__r.Contact_Id__r.Account.Bi_Weekly_Pay_Period__c 
                                         from Employee_Mileage__c where EmployeeReimbursement__c =: er[0].Id ];
 
         BiWeeklyWrapperUtils.getLastMonthReimbursements(string.valueOf(con[0].Id), string.valueOf(acc[0].Id),true,'');
@@ -275,8 +277,14 @@ public class BiWeeklyWrapperUtilsTest {
         BiWeeklyWrapperUtils.getLastMonthReimbursements(string.valueOf(con[0].Id), string.valueOf(acc[0].Id),true,'Driver/Admin');
         BiWeeklyWrapperUtils.getEmployeeReimbursementDetails(bireim[0]);
         BiWeeklyWrapperUtils.getMileagesOfReimbursement(emp[0]);
+        emp[0].Approved_Date__c = date.today().adddays(-1);
+        update emp;
+        BiWeeklyWrapperUtils.getMileagesOfReimbursement(emp[0]);
         BiWeeklyWrapperUtils.getBiweekReimId(con[0].Id, system.today(),True);
-       
+        // BiWeeklyWrapperUtils.getUnapprovedMileages(string.valueOf(obj))
+        // public static Map<String, Id> getBiweeklyReimMap (String contactId,Date minTripdate, Date maxTripDate, Boolean checkBiweekAcc)
+        BiWeeklyWrapperUtils.getBiweeklyReimMap(string.valueOf(con[0].Id),system.today().addDays(-1),system.today(),true);
+        BiWeeklyWrapperUtils.getBiweeklyReimMap(string.valueOf(con[0].Id),system.today().addDays(-1),system.today(),false);
     }
         
 }

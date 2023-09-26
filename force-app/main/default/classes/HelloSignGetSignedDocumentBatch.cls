@@ -2,9 +2,9 @@ global class HelloSignGetSignedDocumentBatch implements Database.Batchable<sObje
     global Map<String, Contact> contactMap = new Map<String, Contact>();
     global List<ContentVersion> versionList = new List<ContentVersion>();
     //global Database.QueryLocator start(Database.BatchableContext bc) {
-    global List<Contact> start(Database.BatchableContext bc) {
-        //return Database.getQueryLocator('Select Id,Email,Hello_Sign_Request_Id__c,Hello_Sign_Status__c,Hello_Sign_Admin_Status__c,Packet__c,Admin_Sign_Date__c,Driver_Sign_Date__c,Driver_License_State__c,Driver_License_Number__c,Driver_Birthdate__c from contact where (Hello_Sign_Status__c =\'awaiting_signature\' or Hello_Sign_Admin_Status__c =\'awaiting_signature\') limit 50000');
-        List<Contact> conList = [Select Id,Account.Hello_Sign_Admin_Sign__c,Email,Hello_Sign_Request_Id__c,Hello_Sign_Status__c,Hello_Sign_Admin_Status__c,Packet__c,Admin_Sign_Date__c,Driver_Sign_Date__c,Driver_License_State__c,Driver_License_Number__c,Driver_Birthdate__c from contact where (Hello_Sign_Status__c ='awaiting_signature' or Hello_Sign_Admin_Status__c ='awaiting_signature') limit 9999]; 
+    global List<Contact> start(Database.BatchableContext bc) {       
+        List<Contact> conList ;       
+            conList = [Select Id,Account.Hello_Sign_Admin_Sign__c,Email,Hello_Sign_Request_Id__c,Hello_Sign_Status__c,Hello_Sign_Admin_Status__c,Packet__c,Admin_Sign_Date__c,Driver_Sign_Date__c,Driver_License_State__c,Driver_License_Number__c,Driver_Birthdate__c from contact where (Hello_Sign_Status__c ='awaiting_signature' or Hello_Sign_Admin_Status__c ='awaiting_signature') limit 9999]; 
         return conList;  
     }
     global void execute(Database.BatchableContext bc, List<contact> records){

@@ -54,7 +54,7 @@
         <language>en_US</language>
         <protected>false</protected>
         <shortDescription>BatchAccountName</shortDescription>
-        <value>Acme Corporation,Anton Paar,California Nevada Cement Association (CNCA),CATCO,Community Account,Controlled Environment System,Design Air,Excelligence Learning Corporation,Frampton Construction,GPS (General Production Service),New England Gypsum,Northwest Pipe,Progressive Safety,Saverino &amp; Associates,Spineology,Tire World,Venergy Group,Smart Fundraising,Southwest Valve,Vehicle Outfitters,McIntosh Box,Key Serv Company,Buchi,Perspectum,Kanzen Sei, Cello and Maudru,SurfacePrep,Solaris Oilfield,Degenkolb,Quality Aspirators,NICOR Lighting,Commonwealth Building Materials,HB NEXT,Draper,Diamond Elevator,Cascade Construction,Flat Water Homes,Sanguine Biosciences,Sight Sciences,ermi,</value>
+        <value>Acme Corporation,Anton Paar,California Nevada Cement Association (CNCA),CATCO,Community Account,Controlled Environment System,Design Air,Excelligence Learning Corporation,Frampton Construction,New England Gypsum,Northwest Pipe,Progressive Safety,Saverino &amp; Associates,Spineology,Tire World,Venergy Group,Smart Fundraising,Southwest Valve,Vehicle Outfitters,McIntosh Box,Buchi,Perspectum, Cello and Maudru,SurfacePrep,Solaris Oilfield,Degenkolb,Quality Aspirators,NICOR Lighting,Commonwealth Building Materials,HB NEXT,Draper,Diamond Elevator,Cascade Construction,Flat Water Homes,Sight Sciences,GPS (General Production Service),Cowtown Materials,Pattons Of CA,FlashCo,ermi,</value>
     </labels>
     <labels>
         <fullName>BiWeeklyReimbursementStatementBatch</fullName>
@@ -275,6 +275,21 @@
         <value>sanket.goswami@getoncrm.com</value>
     </labels>
     <labels>
+        <fullName>Error_Email_for_not_Create_BiWeeklyReimberssment</fullName>
+        <categories>paras.dhanani@getoncrm.com</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Error Email for not Create BiWeeklyReimberssment</shortDescription>
+        <value>shweta.patel@kiwiqa.com</value>
+    </labels>
+    <labels>
+        <fullName>Error_Email_for_not_Create_Reimbursement</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Error Email for not Create Reimbursement</shortDescription>
+        <value>paras.dhanani@getoncrm.com</value>
+    </labels>
+    <labels>
         <fullName>ExceptionLabel</fullName>
         <language>en_US</language>
         <protected>false</protected>
@@ -332,6 +347,13 @@
         <value>0013r00002hF3hRAAS,0010Z00001ygUenQAE</value>
     </labels>
     <labels>
+        <fullName>Info_message_for_salesforce_limit</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Info message for salesforce limit</shortDescription>
+        <value>Due to the Salesforce heap size limit, we are displaying 2000 records per page.</value>
+    </labels>
+    <labels>
         <fullName>Insurancecard</fullName>
         <language>en_US</language>
         <protected>false</protected>
@@ -365,6 +387,13 @@
         <protected>false</protected>
         <shortDescription>Latest App Versions In Triplog</shortDescription>
         <value>Android v3.4,iOS v8.4</value>
+    </labels>
+    <labels>
+        <fullName>Loading_message_for_preview_page</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Loading message for preview page</shortDescription>
+        <value>Your mileages is processing and could take some time. We will send you an email once it completes.</value>
     </labels>
     <labels>
         <fullName>MVR_Account_ID</fullName>
@@ -644,14 +673,14 @@
         <language>en_US</language>
         <protected>false</protected>
         <shortDescription>Triplog New URL for Account Ids added</shortDescription>
-        <value>fde76cdde14449bea46b321225ac8fd1,039802e580a348c1a8996ce3b1342ef9,7640e808d1d04ea2a48ab775e27691f2,d380533c57c748a0b84be6e275358fd6,ddc0406120f5409991a6f944ce062f31,09a91dfa46ef41a8acb12ae11860a525,790215e499b94b1f930e6ea448a6f934,0e468789b2f84817a627388b8e6b7b62,3f92f166dbbd48f1bb02194edd0384a5,75b59c50cefa4f8f9c3b5e824944ffe5,6e1b74b1532e4f4fb68a78d90e9fe1f6,6c38cbff811f4f7da4c2e0b695b89735,a536441368ca44bead647f710608aa65,a6abdd2f6fe2447692abc0a918fa3a60,87ade80a855f4137b7244912ef0541bb,c14ca0b3d37540b49c1fb042863dae1e,e450e0d4356c4533949d321a41742582,00f7226e3f704aaa9264382180e514e6,25db255c03684befa22c7bdd3efc39e0,97157a4483524c3896b463cbda9c693b,1312037d423d44b1a4eeb5d654c1051b,7db53f851c1844f2868cdfba22382a42,ea060c8b8f0545759237ee339366f5ee,5470f81dd7ee431b8a8bc58b03d9e203,18610707954e4877af349a2a293a57ca,ba3b26e5a8934a35a797988a01d9bfb9,44022b5c13f04f33bb2087a8974594da,bd164a07cb1d44f6a9dfa62698ebf6d8,b6b3f183f73c4cd4b90690f979406454,32ed718f0</value>
+        <value>fde76cdde14449bea46b321225ac8fd1,039802e580a348c1a8996ce3b1342ef9,7640e808d1d04ea2a48ab775e27691f2,d380533c57c748a0b84be6e275358fd6,ddc0406120f5409991a6f944ce062f31,09a91dfa46ef41a8acb12ae11860a525,790215e499b94b1f930e6ea448a6f934,0e468789b2f84817a627388b8e6b7b62,3f92f166dbbd48f1bb02194edd0384a5,75b59c50cefa4f8f9c3b5e824944ffe5,6e1b74b1532e4f4fb68a78d90e9fe1f6,6c38cbff811f4f7da4c2e0b695b89735,a536441368ca44bead647f710608aa65,a6abdd2f6fe2447692abc0a918fa3a60,87ade80a855f4137b7244912ef0541bb,c14ca0b3d37540b49c1fb042863dae1e,e450e0d4356c4533949d321a41742582,00f7226e3f704aaa9264382180e514e6,25db255c03684befa22c7bdd3efc39e0,97157a4483524c3896b463cbda9c693b,1312037d423d44b1a4eeb5d654c1051b,7db53f851c1844f2868cdfba22382a42,5470f81dd7ee431b8a8bc58b03d9e203,18610707954e4877af349a2a293a57ca,44022b5c13f04f33bb2087a8974594da,bd164a07cb1d44f6a9dfa62698ebf6d8,b6b3f183f73c4cd4b90690f979406454,32ed718f0,559d0aab07af4fb0bb954e9e50ce8f42</value>
     </labels>
     <labels>
         <fullName>Triplog_New_URL2</fullName>
         <language>en_US</language>
         <protected>false</protected>
         <shortDescription>Triplog New URL2</shortDescription>
-        <value>cdb7699c03aa46588486d51e274afffd,b6b3f183f73c4cd4b90690f979406454,e0531da07e5c4044a4b688282675b953,a56da3c7da6943569f2f94c655917256,bf9327debab340219735b8d22e4021f3,6acd61098c5c440d8c6443d7e2a593d7,32ed718f05ab4d1dae793fa002a0acb9,28beeea973f34daf89050a9b6a3b1a71,55795ae104b94b01b8354b8e81f8805d,731844f211604c15aeb827780d863cc2,3c0d79b940534603ae1c748dc7c4cb9e,a833947f499440fca88b376e7bdbc9db,48c22d085b1445e1bd011935ebeec2fd,5f0bf017d086458ab3c23c4525b04596</value>
+        <value>cdb7699c03aa46588486d51e274afffd,b6b3f183f73c4cd4b90690f979406454,e0531da07e5c4044a4b688282675b953,a56da3c7da6943569f2f94c655917256,bf9327debab340219735b8d22e4021f3,6acd61098c5c440d8c6443d7e2a593d7,28beeea973f34daf89050a9b6a3b1a71,55795ae104b94b01b8354b8e81f8805d,731844f211604c15aeb827780d863cc2,3c0d79b940534603ae1c748dc7c4cb9e,a833947f499440fca88b376e7bdbc9db,48c22d085b1445e1bd011935ebeec2fd,5f0bf017d086458ab3c23c4525b04596,46f38d93ccd6435db24dee4bf0561cc3,844e20fdec6a4a438b7914ed27998b9a,</value>
     </labels>
     <labels>
         <fullName>Triplog_URL_For_TripStatus</fullName>
@@ -688,7 +717,7 @@
         <language>en_US</language>
         <protected>false</protected>
         <shortDescription>TripstobeLogged</shortDescription>
-        <value>Acme Corporation,Anton Paar,California Nevada Cement Association (CNCA),CATCO,Community Account,Controlled Environment System,Cascade Construction,Design Air,Excelligence Learning Corporation,Frampton Construction,GPS (General Production Service),HB NEXT,New England Gypsum,Northwest Pipe,Progressive Safety,Saverino &amp; Associates,Spineology,Tire World,Venergy Group,Smart Fundraising,Southwest Valve,Vehicle Outfitters,McIntosh Box,Key Serv Company,Buchi,Perspectum,Kanzen Sei,Cello and Maudru,SurfacePrep,Solaris Oilfield,Sanguine Biosciences,Sight Sciences,Degenkolb,Quality Aspirators,NICOR Lighting,Commonwealth Building Materials,Draper,Flat Water Homes,Diamond Elevator,Ermi,Test Accounts</value>
+        <value>Acme Corporation,Anton Paar,California Nevada Cement Association (CNCA),CATCO,Community Account,Cowtown Materials,Controlled Environment System,Design Air,Excelligence Learning Corporation,Frampton Construction,FlashCo,GPS (General Production Service),New England Gypsum,Northwest Pipe,Progressive Safety,Saverino &amp; Associates,Spineology,Tire World,Venergy Group,Smart Fundraising,Southwest Valve,Vehicle Outfitters,McIntosh Box,Buchi,Perspectum, Cello and Maudru,SurfacePrep,Solaris Oilfield,Degenkolb,Quality Aspirators,NICOR Lighting,Commonwealth Building Materials,HB NEXT,Draper,Diamond Elevator,Cascade Construction,Flat Water Homes,Sight Sciences,Pattons Of CA,ermi,</value>
     </labels>
     <labels>
         <fullName>UnApproved_Page_Message</fullName>
@@ -731,7 +760,7 @@
         <language>en_US</language>
         <protected>false</protected>
         <shortDescription>Vehicle Type</shortDescription>
-        <value>2021 IRS Mileage Rate,2023 IRS Mileage Rate,2024 IRS Mileage Rate,2023 Standard Rate,2024 Standard Rate,2022 CRA Rate,2023 CRA Rate,2022 IRS Mileage Rate</value>
+        <value>2021 IRS Mileage Rate,2023 IRS Mileage Rate,2024 IRS Mileage Rate,2023 Standard Rate,2024 Standard Rate,2022 CRA Rate,2023 CRA Rate,2022 IRS Mileage Rate,</value>
     </labels>
     <labels>
         <fullName>Weiser_Account</fullName>
@@ -746,6 +775,13 @@
         <protected>false</protected>
         <shortDescription>YTC Account Name</shortDescription>
         <value>YTC (Yokohama Tire Corporation)</value>
+    </labels>
+    <labels>
+        <fullName>canada_driving_states</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>canada driving states</shortDescription>
+        <value>AB,BC,MB,NB,NL,NT,NS,NU,ON,PE,QC,SK,YT</value>
     </labels>
     <labels>
         <fullName>communityurl</fullName>
@@ -809,6 +845,13 @@
         <protected>false</protected>
         <shortDescription>doc sample</shortDescription>
         <value>Sample Template</value>
+    </labels>
+    <labels>
+        <fullName>employeeNoneEditableFields</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>employeeNoneEditableFields</shortDescription>
+        <value>appVersion,freeze,state,city</value>
     </labels>
     <labels>
         <fullName>insuranceBottomMsg</fullName>
@@ -907,6 +950,13 @@
         <protected>false</protected>
         <shortDescription>unapproveMileageMessage</shortDescription>
         <value>Mileage is being synced</value>
+    </labels>
+    <labels>
+        <fullName>usa_driving_states</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>usa driving states</shortDescription>
+        <value>AK,AL,AR,AZ,CA,CO,CT,DC,DE,FL,GA,HI,IA,ID,IL,IN,KS,KY,LA,MA,MD,ME,MI,MN,MO,MS,MT,NC,ND,NE,NH,NJ,NM,NV,NY,OH,OK,OR,PA,RI,SD,SC,TN,TX,UT,VA,VT,WA,WI,WV,WY,PR</value>
     </labels>
     <labels>
         <fullName>waitingfordocumentation</fullName>

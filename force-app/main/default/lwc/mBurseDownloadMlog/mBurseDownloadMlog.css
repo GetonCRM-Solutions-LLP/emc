@@ -5,6 +5,7 @@
     0% {
         opacity: 0;
     }
+
     100% {
         opacity: 1;
     }
@@ -12,12 +13,12 @@
 
 @keyframes xA {
     0% {
-        box-shadow:  rgb(25 20 104 / 70%) 0px 0px 0px 0px;
+        box-shadow: rgb(25 20 104 / 70%) 0px 0px 0px 0px;
     }
 
-     70% {
+    70% {
         box-shadow: rgb(106 120 209 / 0%) 0px 0px 0px 6px;
-    } 
+    }
 
     100% {
         box-shadow: rgb(106 120 209 / 0%) 0px 0px 0px 0px;
@@ -25,6 +26,7 @@
 }
 
 @keyframes bounceLeft {
+
     0%,
     20%,
     50%,
@@ -46,6 +48,7 @@
 }
 
 @keyframes bounceRight {
+
     0%,
     20%,
     50%,
@@ -76,7 +79,7 @@
     }
 }
 
-@media only screen and (min-width: 768px) and (max-width: 1023px){
+@media only screen and (min-width: 768px) and (max-width: 1023px) {
     .video-container {
         width: 305px !important;
         height: 165px !important;
@@ -94,11 +97,11 @@
         left: 83% !important;
     }
 
-    .emcFont{
+    .emcFont {
         font-size: 0.8125rem !important;
     }
 
-    .footer-text{ 
+    .footer-text {
         font-size: 0.8125rem !important;
     }
 
@@ -111,10 +114,7 @@
     }
 }
 
-@media only screen 
-  and (min-width: 1024px) 
-  and (max-height: 1366px) 
-  and (-webkit-min-device-pixel-ratio: 1.5)  {
+@media only screen and (min-width: 1024px) and (max-height: 1366px) and (-webkit-min-device-pixel-ratio: 1.5) {
     .video-container {
         width: 330px !important;
         height: 174px !important;
@@ -133,11 +133,11 @@
         left: 75% !important;
     }
 
-    .emcFont{
+    .emcFont {
         font-size: 1rem !important;
     }
 
-    .footer-text{ 
+    .footer-text {
         font-size: 1rem !important;
     }
 
@@ -150,27 +150,21 @@
     }
 }
 
-@media only screen 
-  and (min-device-width : 1366px) 
-  and (max-device-height: 768px) {
+@media only screen and (min-device-width : 1366px) and (max-device-height: 768px) {
     /* .mburse-support {
         top: 85% !important;
         left: 72% !important;
     } */
 }
 
-@media only screen 
-  and (min-device-width : 1112px)  and (max-device-width : 1279px) 
-  and (max-device-height: 834px) {
+@media only screen and (min-device-width : 1112px) and (max-device-width : 1279px) and (max-device-height: 834px) {
     /* .mburse-support {
         top: 85% !important;
         left: 66% !important;
     } */
 }
 
-@media only screen 
-  and (min-device-width: 1280px)  and (max-device-width : 1365px) 
-  and (max-device-height: 800px) {
+@media only screen and (min-device-width: 1280px) and (max-device-width : 1365px) and (max-device-height: 800px) {
     /* .mburse-support {
         top: 85% !important; 
         left: 69% !important;
@@ -178,7 +172,7 @@
 }
 
 @media only screen and (min-width: 4480px) and (max-width: 5120px) {
-    .transition{
+    .transition {
         padding-top: 200px;
     }
 
@@ -224,7 +218,7 @@
     .emcFont {
         font-size: 1.20vw !important;
     }
-    
+
     .footer-text {
         font-size: 1.12vw !important;
     }
@@ -232,14 +226,14 @@
     .apple_icon_box {
         width: 90px !important;
     }
-    
+
     .android_icon_box {
         width: 90px !important;
     }
 }
 
 @media only screen and (min-width: 2880px) and (max-width: 4479px) {
-    .transition{
+    .transition {
         padding-top: 100px;
     }
 
@@ -285,7 +279,7 @@
     .emcFont {
         font-size: 1.20vw !important;
     }
-    
+
     .footer-text {
         font-size: 1.12vw !important;
     }
@@ -293,7 +287,7 @@
     .apple_icon_box {
         width: 72px !important;
     }
-    
+
     .android_icon_box {
         width: 72px !important;
     }
@@ -346,7 +340,7 @@
     .emcFont {
         font-size: 1.20vw !important;
     }
-    
+
     .footer-text {
         font-size: 1.12vw !important;
     }
@@ -424,7 +418,8 @@
     .back-btn_div {
         margin-right: 42% !important;
     }
-/* 
+
+    /* 
     .mburse-support {
         /* top: 60% !important; 
         left: 74% !important;
@@ -492,10 +487,28 @@ a {
     border-color: #78bc42;
 }
 
-.slds-btn-link{
+.bc-outline{
+    color: #7abb4a;
+    background-color: #fff;
+    border: 1px solid #7abb4a !important;
+    padding: 11px 35px !important;
+}
+
+.slds-btn-link {
     color: #fff;
     background-color: #37c1ee;
     border-color: #37c1ee;
+}
+
+.link-btn{
+    padding: 0.8rem 1.66rem 0.9rem 1.66rem !important;
+}
+
+.bc-outline{
+    color: #7abb4a;
+    background-color: #fff;
+    border: 1px solid #7abb4a !important;
+    padding: 10px 20px !important;
 }
 
 .plr {
@@ -506,7 +519,6 @@ a {
 .video-container {
     width: 350px;
     height: 195px;
-    box-shadow: 0px 4px 17px 0px #888888;
 }
 
 .img-logo {
@@ -519,20 +531,34 @@ a {
 }
 
 .slds-btn-sm {
-    padding: .5rem 1.6rem;
-    font-size: 15px;
+    padding: 0.8rem 1.66rem 0.8rem 1.2rem;
+    font-size: 16px;
+    font-family: 'Proxima Nova Bold' !important;
+}
+
+.padding-dn{
+    padding: 0.5rem 1.2rem 0.5rem 1.2rem !important;
+}
+
+.bold-letters{
+    font-family: 'Proxima Nova Bold' !important;
+}
+
+.account-btn {
+    padding: 0.8rem 1.66rem;
+    font-size: 16px;
     font-family: 'Proxima Nova Bold' !important;
 }
 
 .slds-btn {
-    margin: .375rem 1.9rem;
+    margin: .375rem 2.5rem;
     word-wrap: break-word;
     white-space: normal;
     cursor: pointer;
     border: 0;
-    border-radius: .125rem;
-    -webkit-box-shadow: 0 2px 5px 0 rgb(0 0 0 / 16%), 0 2px 10px 0 rgb(0 0 0 / 12%);
-    box-shadow: 0 2px 5px 0 rgb(0 0 0 / 16%), 0 2px 10px 0 rgb(0 0 0 / 12%);
+    border-radius: 10px;
+    /* -webkit-box-shadow: 0 2px 5px 0 rgb(0 0 0 / 16%), 0 2px 10px 0 rgb(0 0 0 / 12%);
+    box-shadow: 0 2px 5px 0 rgb(0 0 0 / 16%), 0 2px 10px 0 rgb(0 0 0 / 12%); */
 }
 
 .mleft-0 {
@@ -544,11 +570,11 @@ a {
 }
 
 .mleft {
-    margin-left: 25px;
+    margin-left: 28px;
 }
 
 .mright {
-    margin-right: 25px;
+    margin-right: 35px;
 }
 
 .mright-3 {
@@ -620,6 +646,10 @@ a {
     font-size: 18px;
 }
 
+.padding{
+    padding: 1rem 1rem;
+}
+
 .img-container {
     opacity: 0.7;
 }
@@ -628,6 +658,12 @@ a {
     position: relative;
     /* float: right;
     margin-right: 29%; */
+}
+
+.svg-arrow{
+    position: absolute;
+    bottom: -74px;
+    right: -32px;
 }
 
 .back-btn_div {
@@ -659,7 +695,7 @@ a {
     padding-left: 6px;
 }
 
-.tips-button{
+.tips-button {
     /* position: absolute;
     right: -215px;
     top: -46px; */
@@ -678,17 +714,105 @@ a {
     animation: 2s ease 2.1s infinite normal none running xA-c-mBurseDownloadMlog_mBurseDownloadMlog, 0.5s ease 1.4s 1 normal forwards running roundB;
 }
 
-.flex-container{
+.flex-container {
     display: flex;
     flex-direction: row;
     align-items: center;
     justify-content: center;
 }
 
-.carousel-holder{
+.carousel-holder {
     padding-left: 10px;
     height: 67px;
     position: relative;
     display: flex;
     flex-direction: column;
+}
+
+.emc-font {
+    font-size: 1.8vw;
+    font-weight: 700;
+}
+
+
+.navigate-icon {
+    color: #7ABB4A !important;
+}
+
+.slds-item.navigate {
+    border: 1px solid #D7D7D7;
+    border-radius: 10px;
+}
+
+.navigate.margin {
+    margin: 0.375rem 13rem;
+}
+
+.navigate.margin-QR {
+    margin: 0.375rem 13.2rem;
+}
+
+.navigate.margin-SR {
+    margin: 0.375rem 21.7rem;
+}
+
+.navigate.marginR {
+    margin: 0.4rem 32rem 0.4rem 0;
+}
+
+.mright-app{
+    margin-right: 146px;
+}
+
+.slds-item.navigate .n-link {
+    padding: 0 !important;
+}
+
+.slds-item.navigate a {
+    padding: 0.85rem !important;
+}
+
+.fa-lg {
+    line-height: 1.05em !important;
+}
+
+.display_vertical {
+    display: flex;
+    flex-flow: column;
+}
+
+.step-count {
+    width: 51px;
+    height: 51px;
+    font-size: 22px;
+    line-height: 45px;
+    font-weight: 600;
+    border-radius: 100px;
+    text-align: center;
+    justify-content: center;
+    border: 2px solid #7ABB4A;
+    color: #1d1d1d;
+    font-family: 'Proxima Nova' !important;
+}
+
+.info-background {
+    display: flex;
+    margin: 0 auto;
+    width: 27%;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    background: #F1F8EC;
+    border-radius: 20px;
+    color: #7ABB4A;
+    font-weight: 700;
+}
+
+.img-prop {
+    height: 516px;
+    /* width: 239px; */
+}
+
+.img-padding {
+    padding-top: 0px;
 }

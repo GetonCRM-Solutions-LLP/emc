@@ -35,10 +35,30 @@
             *{
                 user-select: none;
             }
-            ::-webkit-scrollbar {
-                width: 0;  /* Remove scrollbar space */
-                background: transparent;  /* Optional: just make scrollbar invisible */
+            /* ::-webkit-scrollbar {
+                width: 0;  /* Remove scrollbar space 
+                background: transparent; //Optional: just make scrollbar invisible 
+            } */
+
+            ::-webkit-scrollbar-track {
+                -webkit-box-shadow: inset 0 0 6px #F6F6F6;
+                border-radius: 100px;
+                background-color: #F6F6F6;
             }
+
+            ::-webkit-scrollbar {
+                width: 5px;
+                height: 50px;
+                background-color:#F6F6F6;
+            }
+
+            ::-webkit-scrollbar-thumb {
+                border-radius: 100px;
+                height: 50px;
+                background-color:#404B5B
+            }
+
+            
             body{
                 font-family: 'Proxima Nova' !important;
                 max-width: 100%;
@@ -57,7 +77,9 @@
                     margin-right: 0;
                 }
             }
-            .spinner-background{
+
+            
+           /* .spinner-background{
                 width: 100%;
                 height: 108%;
                 background: #404b5b;
@@ -112,15 +134,179 @@
                 -webkit-animation: rotationBack 1s linear infinite;
                 animation: rotationBack 1s linear infinite;
                 transform-origin: center center;
+            }*/
+            .opacity{
+                opacity: 0.98 !important;
+            }
+
+            .d-none{
+                display: none;
+            }
+
+            .d-block{
+                display: block;
+            }
+
+            .loader-text{
+                font-weight: 400;
+                font-size: 16px;
+                line-height: 19px;
+                padding-top: 15px;
+                color: #FFF;
+                font-family: 'Proxima Nova' !important;
+            }
+
+            .logo-m{
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+            }
+
+            .spinner-background{
+                    width: 100%;
+                    height: 100%;
+                    background: #FFF;
+                    opacity: 1;
+                    top: 0px;
+                    left: 0px;
+                    position: fixed;
+                    z-index: 1000000;
+            }
+
+            .loader{
+                    position: fixed;
+                    top: 0;
+                    left: 0;
+                    height: 100%;
+                    width: 100%;
+                    display: flex;
+                    flex-flow: column nowrap;
+                    justify-content: center;
+                    align-items: center;
+                    z-index: 1000000;
+            }
+
+            .mbloader-text{
+                font-weight: 400;
+                font-size: 22px;
+                line-height: 24px;
+                padding-top: 20px;
+                color: #1D1D1D;
+                font-family: 'Proxima Nova' !important;
+            }
+
+            .text-loading{
+                font-family: 'Proxima Nova Bold' !important;
+                font-size: 35px;
+                line-height: 39px;
+                display: flex;
+                align-items: center;
+                text-align: center;
+                justify-content: center;
+                color: #78BC42;
+            }
+
+            .data-text-loading{
+                font-size: 30px;
+                line-height: 39px;
+                display: flex;
+                align-items: center;
+                text-align: center;
+                color: #78BC42;
+                font-family: 'Proxima Nova Bold' !important;
+            }
+
+            .loading-text-sub{
+                font-family: 'Proxima Nova Bold' !important;
+                font-size: 32px;
+                line-height: 39px;
+                padding-top: 12px;
+                display: flex;
+                align-items: center;
+                text-align: center;
+                justify-content: center;
+                color: #404b5a;
+            }
+
+            .svg-container{
+                padding-top: 20px;
+            }
+
+            /* #toast-container>.toast-success{
+                opacity: 1 !important;
+                background-color: #7ABB4A !important
+            }
+
+            #toast-container>.toast-error{
+                opacity: 1 !important;
+                background-color: #FA7800!important
+            } */
+
+            #toast-container>div{
+                /*background-position: top 15px left 10px !important;*/
+                box-shadow: none !important;
+            }
+
+            .toast-message{
+                color: #fff;
+                font-family: 'Proxima Nova' !important;
+                padding: 0 16px 0 12px;
+            }
+
+            .toast-success,.toast-info,.toast-warning,.toast-error{
+                opacity: 1 !important;
+                width: 343px !important;
+                font-size: 13px;
+                border-radius: 12px !important;
+                background-color:#404b5a !important;
+                color:#ffffff !important;
+                border-color:transparent !important;
+                font-family: 'Proxima Nova' !important;
+                overflow: inherit !important;
+                padding: 25px 15px 25px 42px !important;
+            }
+
+
+            .toast-close-button{
+                font-size: 30px !important;
+                opacity: 1 !important;
+                font-weight: 500 !important;
+                color: #fff !important;
+                text-shadow: none !important;
+                font-family: 'Proxima Nova' !important;
+                right: 0em !important;
+                top: -0.78em !important;
+            }
+
+            #toast-container>.toast-error {
+                    background-image:  url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" viewBox="0 0 30 30" fill="none"><path d="M7.60156 21.9948L21.995 7.60144" stroke="%23FA7800" stroke-width="2.91497" stroke-linecap="round"/><path d="M7.60156 7.61179L21.995 22.0052" stroke="%23FA7800" stroke-width="2.91497" stroke-linecap="round"/></svg>') !important;
+            }
+
+            .toast.toast-success {
+                background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='25' height='19.643' viewBox='0 0 25 19.643' fill='none'%3e%3cpath d='M9.802 14.245 20.918 0.978l0.005 -0.009a1.393 1.393 0 0 1 2.083 0 1.664 1.664 0 0 1 0.003 2.212L10.857 17.597l-0.005 0.007a1.408 1.408 0 0 1 -1.041 0.468 1.409 1.409 0 0 1 -1.041 -0.468l-6.776 -7.337a1.664 1.664 0 0 1 0 -2.214l7.808 6.189Zm0 0 -5.725 -6.192a1.393 1.393 0 0 0 -2.083 0l7.808 6.191Z' fill='%237ABB4A' stroke='%237ABB4A' stroke-width='0.42857142857142855'/%3e%3c/svg%3e") !important;
             }
         </style>
     </head>
     <apex:slds />
-    <div id="mSpinner">
+    <!-- <div id="mSpinner">
         <div class="spinner-background"></div>
         <div class="mburseLoader">
             <div class="mbloader"></div>
             <div class="mbloader-text">Welcome to mBurse! Your profile is loading, please wait momentarily.</div>
+        </div>
+    </div> -->
+     <div id="mSpinner" class="d-none">
+        <div class="spinner-background"></div>
+        <div class="loader">
+            <span class="text-loading" id="welcome-text"></span>
+            <div class="loading-text-sub" id="subtext-welcome"></div>
+            <div class="mbloader-text">Please wait while we load your profile</div>
+            <div class="svg-container">
+                <div style="position:relative">
+                   <img style="width: 72px;" src="{!URLFOR($Resource.mBurseCss,'mburse/assets/mBurse-Icons/mburse-loading.gif')}" />
+                </div>
+            </div>
         </div>
     </div>
     <apex:includeLightning />
@@ -132,13 +318,16 @@
         this.setOptions = function () {
             toastr.options.positionClass = "toast-top-right";
             toastr.options.closeButton = true;
-            toastr.options.progressBar = true;
+            toastr.options.progressBar = false;
             toastr.options.fadeOut = 100000;
         };
 
         this.setOptions();
         $("#mSpinner").show();
-        var videoWrapper = {!videoCustom}
+        var videoWrapper = {!videoCustom}, nameOfUser = '{!contactName}'
+        document.getElementById("subtext-welcome").innerText = 'Welcome to your mDash Onboarding';
+        document.getElementById("welcome-text").innerText = (nameOfUser === '') ? 'Hi!' : 'Hi ' + nameOfUser + '!'
+        console.log("video ", videoWrapper)
         $Lightning.use("c:LWCLightningApp",function(){
             $Lightning.createComponent("c:mBursePlanInfo",{
                 //pass parameter values to lwc js controller

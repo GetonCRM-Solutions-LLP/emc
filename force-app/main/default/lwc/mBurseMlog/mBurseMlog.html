@@ -4,7 +4,9 @@
     </template>
     <div class="transition">
         <div>
-            <c-m-burse-header-text head-text="Step 4 - mLog Preview"></c-m-burse-header-text>
+            <c-m-burse-header-text head-text="Step 4">
+                <div slot="subHeading" class="slds-text-heading_small slds-text-align_center font-style slds-p-bottom_small emc-font">mLog Preview</div>
+            </c-m-burse-header-text>
         </div>
         <div class="slds-text-heading_small slds-text-align_center slds-p-bottom_x-large font-style emcFont p_bottom">Take a moment to
             watch this video to learn more about mLog.
@@ -14,27 +16,62 @@
                 <source  type="video/mp4" src={mLogVideoUrl}/>
             </video>
         </div>
-        <div class="slds-clearfix slds-p-top_x-large m-left m-right p_top">
-            <div class="footer-text slds-float_left">
+        <div class="slds-clearfix slds-align_absolute-center slds-p-top_x-large p_top" style="flex-flow: column; width: 29%;">
+            <div class="footer-text  slds-p-bottom_large">
                 <div class="font-style"><strong>Track mileage easily and accurately with mLog</strong>
                     <ul class="slds-list_dotted slds-p-top_x-small">
-                        <li>We do not share your current location and any of your personal trips</li>
-                        <li>Review our Privacy Pledge  <a href={privacyPledgeUrl} target="_blank">HERE</a></li>
+                        <li>We do not allow live tracking or have access to your personal trips/information</li>
+                        <li>Review our Privacy Pledge  <a class="a_link" href={privacyPledgeUrl} target="_blank">HERE</a></li>
                     </ul>
                 </div>
             </div>
-            <div class="footer-button slds-float_right mright-0 mleft-0">
-                <button if:false={render} class="slds-btn slds-btn-primary slds-btn-sm waves-effect bc-blue waves-light" onclick={mLogDownload}>
-                    Next Download mLog
+            <div class="footer-button mright-0 mleft-0">
+                <div>
+                    <ul class="slds-list_horizontal  slds-has-block-links_space border-radius">
+                        <li class="slds-item navigate" style="margin: 0.375rem 8.375rem 0.375rem 0;"  if:true={isShow}>
+                            <a 
+                            name="buttonBackwards"
+                            label="Previous" 
+                            title="Back" 
+                            onclick={backToPage}  >
+                            <i class="fa-solid fa-arrow-left fa-lg navigate-icon"></i>
+                            </a>
+                        </li>
+                        <li>
+                            <button if:false={render} class="slds-btn slds-btn-primary slds-btn-sm waves-effect bc-blue waves-light" onclick={mLogDownload}>
+                                Go to Download mLog
+                            </button>
+                            <button if:true={render} class="slds-btn slds-btn-primary slds-btn-sm waves-effect bc-blue waves-light" onclick={mLogDownload}>
+                                Go to Sign in to mLog
+                            </button>
+                        </li>
+                    </ul>
+                </div>
+                <!-- <button if:false={render} class="slds-btn slds-btn-primary slds-btn-sm waves-effect bc-blue waves-light" onclick={mLogDownload}>
+                    Go to download mLog
                 </button>
                 <button if:true={render} class="slds-btn slds-btn-primary slds-btn-sm waves-effect bc-blue waves-light" onclick={mLogDownload}>
-                    Next Sign In To mLog
+                    Go to sign in to mLog
                 </button>
                 <div if:true={isShow}>
                     <div class="back_to_previous slds-float_left">
-                        <a class="font-ms" onclick={backToPage}><i class="fa-solid fa-angle-left"></i>Back</a>
+                        <ul class="slds-list_horizontal  slds-has-block-links_space border-radius">
+                            <li class="slds-item navigate">
+                                <a 
+                                name="buttonBackwards"
+                                label="Previous" 
+                                title="" 
+                                onclick={backToPage}  >
+                                <i class="fa-solid fa-arrow-left fa-lg navigate-icon"></i>
+                                </a>
+                            </li>
+                            <li>
+                                
+                            </li>
+                        </ul>
+                        <a class="font-ms" onclick={backToPage}><i class="fa-solid fa-angle-left"></i>Back</a> 
                     </div>
-                </div>
+                </div> -->
             </div>
         </div>
     </div>

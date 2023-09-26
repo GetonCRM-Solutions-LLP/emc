@@ -1,22 +1,28 @@
-global class CSVIterator implements Iterator<string>, Iterable<string>{
-   private String m_CSVData;
-   private String m_introValue;
-   
-   public CSVIterator(String fileData, String introValue){
-      fileData = fileData.substring(fileData.indexOf('\n')+1);
-      m_CSVData = fileData;
-      m_introValue = introValue;
+public class CSVIterator implements Iterator<CSVToContact>, Iterable<CSVToContact>{
+   private List<CSVToContact> m_lstCon;
+   private Integer currentPosition;
+
+   public CSVIterator(List<CSVToContact> lstCon ){  
+      m_lstCon = lstCon; 
+      currentPosition = 0;
+      System.debug('inside iterator');
    }
-   global Boolean hasNext(){
-      return m_CSVData.length() > 1 ? true : false;
+   public Boolean hasNext(){
+      System.debug('m_SCVdata hasnext--'+currentPosition);
+      return currentPosition < m_lstCon.size()  ;
+   } 
+   public CSVToContact next(){
+      System.debug(' m_CSVData--'+ m_lstCon);
+      
+      
+   if (currentPosition <m_lstCon.size() ) {
+      CSVToContact con = m_lstCon[currentPosition];
+      currentPosition++;
+      return con;
+      }
+      return null;   
    }
-   global String next(){
-      System.debug(' m_CSVData--'+ m_CSVData);
-      String row = m_CSVData.subString(0, m_CSVData.indexOf(m_introValue));
-      m_CSVData = m_CSVData.subString(m_CSVData.indexOf(m_introValue) + m_introValue.length(),m_CSVData.length());
-      return row;
-   }
-   global Iterator<string> Iterator(){
+   public Iterator<CSVToContact> Iterator(){
       return this;
    }
 }

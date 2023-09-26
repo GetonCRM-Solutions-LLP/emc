@@ -27,6 +27,15 @@ public with sharing class ReportListController {
                                }
                            }
     }
+    @AuraEnabled
+    public static Integer AccountYear(String accountId){
+        Account acc = [SELECT id,
+                           CreatedDate  
+                           FROM Account 
+                           WHERE id =: accountId];  
+                       return Date.valueof(acc.CreatedDate).year();
+    }
+    
     public static String getAccountid() {
         if (ApexPages.currentPage().getParameters().containsKey('accid')) {
             return ApexPages.currentPage().getParameters().get('accid');
@@ -63,18 +72,18 @@ public with sharing class ReportListController {
     }
     
     public static string AdminName(String adminId) {
-        List<Contact> conName = [SELECT Id,FirstName FROM Contact WHERE id =: adminId]; 
-        string name = conName[0].FirstName;
+        Contact conName = [SELECT Id,FirstName FROM Contact WHERE id =: adminId]; 
+        string name = conName.FirstName != '' ? conName.FirstName : '';
         return name;
     }
-    
-    public static string getAllReports() {       
+    @AuraEnabled
+    public static string getAllReports(String contactId) {       
         Map<String,List<Report_Accessibility__c>> obj_map_report_Accessibility = new Map<String,List<Report_Accessibility__c>>();
         for(Report_Accessibility__c obj_currentreportaccesibilty:[SELECT Custom_Report__r.ownerid,Custom_Report__r.Name,
                                                                   Custom_Report__c,Custom_Report__r.Report_Category__c,
                                                                   Custom_Report__r.Show_Lock_Date__c,Mileage_Lock_Date__c 
                                                                   FROM Report_Accessibility__c 
-                                                                  WHERE user__r.contactid=:getContactid() Order By Custom_Report__r.Report_Category__c]) {
+                                                                  WHERE user__r.contactid =: contactId Order By Custom_Report__r.Report_Category__c]) {
                                                                       if(obj_map_report_Accessibility.containsKey(obj_currentreportaccesibilty.Custom_Report__r.Report_Category__c)) {  
                                                                           obj_map_report_Accessibility.get(obj_currentreportaccesibilty.Custom_Report__r.Report_Category__c).add(obj_currentreportaccesibilty);   
                                                                       }
@@ -103,14 +112,17 @@ public with sharing class ReportListController {
         return JSON.serialize(obj_CategoryWiseReportList);      
     }
     //AI-000426
-    @RemoteAction
+    // @RemoteAction
+    @AuraEnabled
     public static string updateLockDate(String accountId,String contactId) {
         List<Account> accList = new List<Account>();
         for(Account acc : [SELECT id,Trip_Status_Lock__c,Change_Status_Admin__c 
                            FROM Account 
                            Where id =: accountId]){
                                acc.Trip_Status_Lock__c = System.today();
-                               acc.Change_Status_Admin__c = AdminName(contactId); 
+                               string adminName = AdminName(contactId);
+                               acc.Change_Status_Admin__c = adminName != null ? adminName : '';            
+                               //acc.Change_Status_Admin__c = AdminName(contactId); 
                                accList.add(acc);
                            }
         if(accList.size() > 0) {
@@ -165,7 +177,7 @@ public with sharing class ReportListController {
         return reimbursementList;   
     }
     
-    @RemoteAction
+    @RemoteAction @AuraEnabled
     public static DateTime postTimeSheetImportAPI(String startDate, String endDate,String adminId) {
         DateTime runTime = System.Now();
         String AdminEmail = EmailAddress(adminId);
@@ -175,7 +187,7 @@ public with sharing class ReportListController {
         return runTime;
     }
     
-    @RemoteAction
+    @RemoteAction @AuraEnabled
     public static DateTime postVariablePaymentAPI(String startDate,String adminId) {
         DateTime runTime = System.Now();
         String AdminEmail = EmailAddress(adminId);
@@ -185,7 +197,9 @@ public with sharing class ReportListController {
         return runTime;
     }
     
-    @RemoteAction
+    // @RemoteAction 
+    @AuraEnabled
+    
     public static DateTime postFixedAmountAPI(String startDate,String adminId) {
         DateTime runTime = System.Now();
         String AdminEmail = EmailAddress(adminId);
@@ -195,8 +209,9 @@ public with sharing class ReportListController {
         return runTime;
     }
     
-    @RemoteAction
-    public static PollarResponse CheckStatus(Long longtime, String batchName) {
+    // @RemoteAction 
+    @AuraEnabled
+    public static String CheckStatus(Long longtime, String batchName) {
         DateTime runTime = DateTime.newInstance(longtime);
         List<Tripslog__c> logList = [SELECT Id, Response_Data__c  FROM Tripslog__c WHERE Log_Time__c =: runTime AND Response__c =: batchName];
         PollarResponse res = new PollarResponse();
@@ -205,10 +220,11 @@ public with sharing class ReportListController {
             res.enablePollar = false; 
             res.message = logList.get(0).Response_Data__c;
         }
-        return res;
+        return Json.Serialize(res);
     }
     
-    @RemoteAction
+    @RemoteAction @AuraEnabled
+   
     public static DateTime postHalfFPFullDriverAPI(String startDate, String endDate,String adminId) {
         DateTime runTime = System.Now();
         String AdminEmail = EmailAddress(adminId);
@@ -218,7 +234,8 @@ public with sharing class ReportListController {
         return runTime;
     }
     
-    @RemoteAction
+    @RemoteAction @AuraEnabled
+   
     public static DateTime DeleteNetchexCallout(String startDate,String endDate) {
         DateTime runTime = System.Now();
         if(!Test.isRunningTest()) {
@@ -233,12 +250,13 @@ public with sharing class ReportListController {
         ChangeTripStatusByAdmin tripBtc = new ChangeTripStatusByAdmin(accId,lastMonth);
         Database.executeBatch(tripBtc,10);
     }
-    @RemoteAction
+    @RemoteAction @AuraEnabled
     public static String TripDetailReport(String tripStartDate,String tripEndDate,String id) {
         String response = TripDetailReportController.drivingTime(tripStartDate,tripEndDate,id);
         return response;
     }
-    @RemoteAction
+    @RemoteAction @AuraEnabled
+    
     public static string ErmiDriverList (String startDate,String endDate,String accountId) {
         List<reimbursementWrapper> reimWrapperList = new List<reimbursementWrapper>();
         Map<String,String> contactMap = new Map<String,String>();
@@ -262,7 +280,7 @@ public with sharing class ReportListController {
         return JSON.serialize(reimWrapperList).unescapeHtml4();
     }
 
-    @RemoteAction
+    @RemoteAction @AuraEnabled
     Public static string taxLiabilityReport (String accId){
         List<reimbursementWrapper> reimWrapperList = new List<reimbursementWrapper>();
         List<String> complianceCalculationList ;
@@ -280,7 +298,7 @@ public with sharing class ReportListController {
         return JSON.serialize(reimWrapperList);
     }
 
-    @RemoteAction
+    @RemoteAction @AuraEnabled
     Public static string downLoadComplianceReport (string condata, string year){
     System.debug('condata'+condata);
     System.debug('year'+year);

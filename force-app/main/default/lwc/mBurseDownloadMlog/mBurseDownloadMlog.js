@@ -6,7 +6,6 @@ import {
 import mBurseCss from '@salesforce/resourceUrl/mBurseCss';
 import getCustomSettings from '@salesforce/apex/NewAccountDriverController.getCustomSettings';
 import contactInfo from '@salesforce/apex/NewAccountDriverController.getContactDetail';
-import updateMeetingStatus from '@salesforce/apex/NewAccountDriverController.updateMeetingStatus';
 // import updateContactDetail from '@salesforce/apex/NewAccountDriverController.updateContactDetail';
 import redirectionURL from '@salesforce/apex/NewAccountDriverController.loginRedirection';
 import {
@@ -42,6 +41,8 @@ export default class MBurseDownloadMlog extends LightningElement {
 
     @api dayLeft;
 
+    @api firstName;
+
     // Android video link from custom settings
     androidVideoUrl;
 
@@ -69,6 +70,15 @@ export default class MBurseDownloadMlog extends LightningElement {
     // Flag to show/hide already download element
     isDownloadAlready = false;
 
+    // Flag to show/hide isDownloadForApple
+    isDownloadForApple = false;
+
+    isDownloadForAndroid = false;
+
+    isCommonDownload = false;
+
+    switchToVersion = '';
+
     // Flag to show mburse chat bot
     isChatBot = false;
 
@@ -94,7 +104,9 @@ export default class MBurseDownloadMlog extends LightningElement {
     arrayList;
 
     // Flag to show/hide element based on cellphone type
-    render;
+    render = false;
+
+    main = false;
 
     // change Text
     buttonRender;
@@ -109,6 +121,21 @@ export default class MBurseDownloadMlog extends LightningElement {
     videoLogoUrl = mBurseCss + '/mburse/assets/youtube_play_video_icon.png'
 
     typePopover = "slds-popover slds-nubbin_left-top  slds-popover_large c_popover"
+
+    QRCode = mBurseCss + '/mburse/assets/QR-code.png'
+
+    IOS1 = mBurseCss + '/mburse/assets/IOS/1.png'
+
+    IOS2 = mBurseCss + '/mburse/assets/IOS/2.png'
+
+    IOS3 = mBurseCss + '/mburse/assets/IOS/3.png'
+
+
+    ANDR1 = mBurseCss + '/mburse/assets/Android/1.png'
+
+    ANDR2 = mBurseCss + '/mburse/assets/Android/2.png'
+
+    ANDR3 = mBurseCss + '/mburse/assets/Android/3.png'
 
     carousel = false;
 
@@ -197,6 +224,36 @@ export default class MBurseDownloadMlog extends LightningElement {
         this.carousel = false;
     }
 
+    nextTodownload(event) {
+        this.switchToVersion = event.currentTarget.dataset.id;
+        this.isPlay = false;
+        this.isPlayAndroid = false;
+        this.isDownload = false;
+        this.isDownloadNow = false;
+        this.isDownloadLater = false;
+        this.isCommonDownload = true;
+        this.isChatBot = false;
+        this.carousel = false;
+        this.sendCorporateLink();
+    }
+
+    backToDownloadmLog(){
+        this.isDownload = true;
+        this.isCommonDownload = false;
+    }
+
+    backToStep1(){
+        this.isCommonDownload = true;
+        this.isDownloadForAndroid = false;
+        this.isDownloadForApple = false;
+    }
+
+    nextPageOfmLog(){
+        this.isCommonDownload = false;
+        this.isDownloadForAndroid = (this.switchToVersion === 'Android') ? true : false;
+        this.isDownloadForApple = (this.switchToVersion === 'Apple') ? true : false;
+    }
+
     // Convert JSON to Object
     proxyToObject(e) {
         return JSON.parse(e)
@@ -210,7 +267,6 @@ export default class MBurseDownloadMlog extends LightningElement {
             })
             .then((data) => {
                 if (data) {
-										updateMeetingStatus({contactId: this.contactId})
                     // list = this.proxyToObject(data);
                     // this.arrayList = list;
                     // d = this.arrayList;
@@ -346,6 +402,7 @@ export default class MBurseDownloadMlog extends LightningElement {
         this.renderButton();
         this.showWatchBtn = (this.accountType === 'New Account') ? false : true;
         this.afterRegister = (this.accountType === 'New Account' && this.driverMeeting === 'Scheduled') ? true : false;
+        console.log("rendered--", this.render)
     }
 
 }

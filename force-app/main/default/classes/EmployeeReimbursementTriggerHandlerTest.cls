@@ -30,6 +30,7 @@ public with sharing class EmployeeReimbursementTriggerHandlerTest {
             acc = TestDataFactory.createAccount(True, 'Test Account', False);
             acc2 = TestDataFactory.createAccount(True, 'Rayner', False);
             acc3 = TestDataFactory.createAccount(True, 'CATCO', False);
+           
             con = TestDataFactory.createDriverContact(False, acc.Id, 'Driver', vehicleType.Name, 'Paras.Patel', 2);
             con[0].IsCreatedFromCommunity__c = false;
             Insert con;
@@ -47,7 +48,7 @@ public with sharing class EmployeeReimbursementTriggerHandlerTest {
             con6[0].Manager__c = con5[0].Id;
             Insert con6[0];
             userObj = TestDataFactory.createUser(True, profileObj.Id, con[0].Id);
-        }
+    }
         Test.startTest();      
         Map<id,Employee_Reimbursement__c> oldmap = new Map<id,Employee_Reimbursement__c>();
         Map<id,Employee_Reimbursement__c> newmap = new Map<id,Employee_Reimbursement__c>();
@@ -56,32 +57,33 @@ public with sharing class EmployeeReimbursementTriggerHandlerTest {
         er[0].Month__c = '09-2017';
         er[0].Status__c = 'Approved';
         Insert er[0];
+   
         oldmap.put(er[0].id, er[0]);
 
         List<Employee_Reimbursement__c> er2 = TestDataFactory.createPendingReimbursement(False, con3, 1, createIRSRate.Id);
         er2[0].Month__c = '09-2020';
         Insert er2[0];
-
+       
         List<Employee_Reimbursement__c> er3 = TestDataFactory.createPendingReimbursement(False, con3, 1, createIRSRate.Id);
         er3[0].Month__c = '11-2020';
         Insert er3[0];
-
+        
         List<Employee_Reimbursement__c> er5 = TestDataFactory.createPendingReimbursement(False, con5, 1, createIRSRate.Id);
         er5[0].Month__c = '09-2020';
         Insert er5[0];
-
+        
         List<Employee_Reimbursement__c> er6 = TestDataFactory.createPendingReimbursement(False, con5, 1, createIRSRate.Id);
         er6[0].Month__c = '11-2020';
         Insert er6[0];
-
+       
         List<Employee_Reimbursement__c> er7 = TestDataFactory.createPendingReimbursement(False, con6, 1, createIRSRate.Id);
         er7[0].Month__c = '09-2020';
         Insert er7[0];
-
+       
         List<Employee_Reimbursement__c> er8 = TestDataFactory.createPendingReimbursement(False, con6, 1, createIRSRate.Id);
         er8[0].Month__c = '11-2020';
         Insert er8[0];
-      
+            
         List<Employee_Reimbursement__c> empReimList = new List<Employee_Reimbursement__c>();
         er[0].Status__c = 'Approved';
         er[0].Approved_Date__c = system.today();
@@ -103,7 +105,16 @@ public with sharing class EmployeeReimbursementTriggerHandlerTest {
         er8[0].Status__c = 'Approved';
         er8[0].Approved_Date__c = system.today();
         empReimList.add(er8[0]);
+        system.debug('er[0]=='+er[0]);
+        system.debug('er2[0]=='+er2[0]);
+        system.debug('er3[0]=='+er3[0]);
+        system.debug('er5[0]=='+er5[0]);
+        system.debug('er6[0]=='+er6[0]);
+        system.debug('er7[0]=='+er7[0]);
+        system.debug('er8[0]=='+er8[0]);
+          system.debug('empReimList=='+empReimList);
         update empReimList;
+        
         newmap.put(er[0].id, er[0]);
         newmap.put(er2[0].id, er2[0]);
         newmap.put(er3[0].id, er[0]);
@@ -120,6 +131,9 @@ public with sharing class EmployeeReimbursementTriggerHandlerTest {
         emp1[0].Approved_Date__c = system.today();
         Insert emp1[0];
         system.assertEquals(2, emp1.size(), true);
+        system.System.debug('empReimList==' + empReimList);
+        system.System.debug('oldmap==' + oldmap);
+        system.System.debug('newmap==' + newmap);
         EmployeeReimbursementTriggerHandler.mileagefieldupdate(empReimList, oldmap, newmap);
         Test.stopTest();
     }

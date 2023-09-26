@@ -171,8 +171,8 @@
         <customTabListAdditionalFields>dsfs__DocuSign_Email_Subject__c</customTabListAdditionalFields>
         <customTabListAdditionalFields>dsfs__DocuSign_Envelope_ID__c</customTabListAdditionalFields>
         <customTabListAdditionalFields>dsfs__DocuSign_Envelope_Sent__c</customTabListAdditionalFields>
-        <excludedStandardButtons>ChangeOwner</excludedStandardButtons>
         <excludedStandardButtons>Accept</excludedStandardButtons>
+        <excludedStandardButtons>ChangeOwner</excludedStandardButtons>
         <lookupDialogsAdditionalFields>dsfs__Sender__c</lookupDialogsAdditionalFields>
         <lookupDialogsAdditionalFields>dsfs__Contact2eSignDoc01__c</lookupDialogsAdditionalFields>
         <lookupDialogsAdditionalFields>dsfs__Document_Name__c</lookupDialogsAdditionalFields>

@@ -3,7 +3,8 @@ import {
   api,
   track
 } from 'lwc';
-import updateMeetingStatus from '@salesforce/apex/NewAccountDriverController.updateMeetingStatus';
+import updateContactDetail from '@salesforce/apex/NewAccountDriverController.updateContactDetail';
+import redirectionURL from '@salesforce/apex/NewAccountDriverController.loginRedirection';
 import driverDetails from '@salesforce/apex/NewAccountDriverController.getContactDetail';
 export default class MBurseMain extends LightningElement {
   nextInsurance = false;
@@ -22,6 +23,7 @@ export default class MBurseMain extends LightningElement {
   contactId;
   accountId;
   contactName;
+  contactFirstName;
   contactEmail;
   mobilePhone;
   attachmentid;
@@ -40,22 +42,22 @@ export default class MBurseMain extends LightningElement {
     return JSON.parse(e)
   }
 
-  renderView(event) {
+  renderView(array) {
     let listForInfo, m, cList;
-    listForInfo = event.detail;
+    // listForInfo = (event.detail);
+    listForInfo = array
     cList = this.proxyToObject(listForInfo);
     m = cList[0];
-    console.log("renderview", event.detail)
+   
     //this.welcomePage = ((m.driverPacketStatus === null && m.insuranceStatus === null) || (m.driverPacketStatus === 'Skip' && m.insuranceStatus === 'Skip') || (m.driverPacketStatus === null  && m.insuranceStatus === 'Skip') || (m.driverPacketStatus === 'Uploaded' && m.insuranceStatus === 'Skip' )) ? true : false;
-    this.nextInsurance = ((m.driverPacketStatus === null && m.insuranceStatus === null) || (m.driverPacketStatus !== 'Uploaded' && (m.insuranceStatus === null || m.insuranceStatus === 'Skip')) || (m.driverPacketStatus === null && (m.insuranceStatus === null || m.insuranceStatus === 'Skip')) || (m.driverPacketStatus === 'Uploaded' && (m.insuranceStatus === null || m.insuranceStatus === 'Skip'))) ? true : false;
-    this.isInsurance = ((m.driverPacketStatus === null && m.insuranceStatus === null) || (m.driverPacketStatus !== 'Uploaded' && (m.insuranceStatus === null || m.insuranceStatus === 'Skip')) || (m.driverPacketStatus !== 'Uploaded' && (m.insuranceStatus === null || m.insuranceStatus === 'Skip')) || (m.driverPacketStatus === 'Uploaded' && (m.insuranceStatus === null || m.insuranceStatus === 'Skip'))) ? true : false;
-    this.nextDriverPacket = (m.insuranceStatus === 'Uploaded' && m.driverPacketStatus !== 'Uploaded') ? true : false;
-    this.nextmLogPreview = (m.insuranceStatus === 'Uploaded' && m.driverPacketStatus === 'Uploaded' && m.mlogApp === false) ? true : false;
+    this.nextInsurance = (m.watchMeetingOnBoarding) ? ((m.driverPacketStatus === null && m.insuranceStatus === null) || (m.driverPacketStatus !== 'Uploaded' && (m.insuranceStatus === null || m.insuranceStatus === 'Skip')) || (m.driverPacketStatus === null && (m.insuranceStatus === null || m.insuranceStatus === 'Skip')) || (m.driverPacketStatus === 'Uploaded' && (m.insuranceStatus === null || m.insuranceStatus === 'Skip'))) ? true : false : true;
+    this.isInsurance = (!m.watchMeetingOnBoarding) ? true : false;
+    this.isDeclaration = (!this.isInsurance) ? true : false;
+    this.nextDriverPacket = (m.watchMeetingOnBoarding && m.insuranceStatus === 'Uploaded' && m.driverPacketStatus !== 'Uploaded') ? true : false;
+    this.nextmLogPreview = (m.watchMeetingOnBoarding && m.insuranceStatus === 'Uploaded' && m.driverPacketStatus === 'Uploaded' && m.mlogApp === false) ? true : false;
     this.nextBurseMeeting = (m.insuranceStatus === 'Uploaded' && m.driverPacketStatus === 'Uploaded' && m.mlogApp === true) ? true : false;
-  	if(this.nextBurseMeeting){
-							updateMeetingStatus({contactId: this.contactId})
-		}
-	}
+    console.log("renderview", this.isInsurance, this.nextInsurance)
+  }
 
   callApex() {
     driverDetails({
@@ -66,10 +68,12 @@ export default class MBurseMain extends LightningElement {
         if (data) {
           this.information = data;
           driverDetailList = this.proxyToObject(data);
+          console.log("driver", driverDetailList)
           this.registerMeeting = driverDetailList[0].scheduleLink;
           this.scheduleMeeting = driverDetailList[0].scheduleLink;
           this.attachmentid = driverDetailList[0].insuranceId;
           this.contactName = driverDetailList[0].contactName;
+          this.contactFirstName = (driverDetailList[0].contactFirstName === null || driverDetailList[0].contactFirstName === undefined) ? driverDetailList[0].contactName : driverDetailList[0].contactFirstName;
           this.contactEmail = driverDetailList[0].contactEmail;
           this.mobilePhone = driverDetailList[0].mobilePhone;
           this.accountType = driverDetailList[0].accountStatus;
@@ -84,7 +88,7 @@ export default class MBurseMain extends LightningElement {
               })
             );
           }, 100);
-          console.log('Listening from wire handler', data)
+          //console.log('Listening from wire handler', data)
         }
       })
       .catch((error) => {
@@ -97,17 +101,22 @@ export default class MBurseMain extends LightningElement {
     const aidParamValue = this.getUrlParamValue(window.location.href, 'accid');
     this.contactId = idParamValue;
     this.accountId = aidParamValue;
-    this.callApex();
+   // this.callApex();
   }
 
   navigateToInsurance() {
-    // let listForInfo;
-    //listForInfo = this.information;
-    // cList = this.proxyToObject(listForInfo);
+    //this.callApex();
+    let listForInfo , list;
+    listForInfo = this.information;
+    list = this.proxyToObject(listForInfo);
+    console.log("inside insurance", list[0].watchMeetingOnBoarding)
     this.welcomePage = false;
-    this.nextInsurance = true;
-    this.isInsurance = true;
-    //this._renderView(cList[0]);
+    // this.nextInsurance = true;
+    // this.isInsurance = (!list[0].watchMeetingOnBoarding) ? true : false;
+   // this.isDeclaration = (!this.isInsurance) ? true : false;
+  // if(!this.isInsurance){
+     this.renderView(listForInfo);
+  // }
     //this.nextInsurance = true;
   }
 
@@ -119,6 +128,41 @@ export default class MBurseMain extends LightningElement {
   }
 
 
+  nextView(e){
+    var value
+    let m = this.information;
+    value = this.proxyToObject(m)
+    console.log("###", value)
+    this.nextInsurance = false;
+    this.isInsurance = false;
+    this.isDeclaration = false;
+    this.nextDeclationUpload = false;
+    value[0].watchMeetingOnBoarding = (e.detail === true) ? true : false;
+    updateContactDetail({
+        contactData: JSON.stringify(value),
+        driverPacket: false
+    }).then(() => {
+      if ((value[0].insuranceStatus === 'Uploaded')) {
+        if ((value[0].driverPacketStatus === 'Uploaded')) {
+          if (value[0].mlogApp) {
+            this.takeMeToDashboard();
+          } else {
+            this.nextmLogPreview = true;
+          }
+        } else {
+          this.nextDriverPacket = true;
+        }
+      } else {
+        console.log("inside---");
+        this.nextInsurance = true;
+        this.isInsurance = false;
+        this.isDeclaration = true;
+        this.nextDeclationUpload = false;
+      }
+    })
+   
+  }
+
   navigateToDriverPacket(event) {
     this.nextDeclationUpload = false;
     if (event.detail === 'Next Driver Packet') {
@@ -127,7 +171,6 @@ export default class MBurseMain extends LightningElement {
       this.nextmLogPreview = true;
     } else if (event.detail === 'Next mburse meeting') {
       this.nextBurseMeeting = true;
-			updateMeetingStatus({contactId: this.contactId})
     }
   }
 
@@ -135,7 +178,6 @@ export default class MBurseMain extends LightningElement {
     this.nextDriverPacket = false;
     if (event.detail === 'Next mburse meeting') {
       this.nextBurseMeeting = true;
-			updateMeetingStatus({contactId: this.contactId})
     } else {
       this.nextmLogPreview = true;
     }
@@ -157,7 +199,6 @@ export default class MBurseMain extends LightningElement {
     this.nextDriverPacket = false;
     this.nextDeclationUpload = false;
     this.nextBurseMeeting = true;
-		updateMeetingStatus({contactId: this.contactId})
   }
 
   skipToDriverPacket() {
@@ -204,9 +245,13 @@ export default class MBurseMain extends LightningElement {
           dataList = this.proxyToObject(data);
           status = dataList[0].driverPacketStatus;
           if (status === 'Uploaded') {
-            this.nextDriverPacket = false;
-            this.nextInsurance = true;
-            this.isInsurance = true;
+            if(dataList[0].insuranceStatus !== 'Uploaded' || !dataList[0].watchMeetingOnBoarding ){
+              this.nextDriverPacket = false;
+              this.nextInsurance = true;
+              this.isInsurance = (!dataList[0].watchMeetingOnBoarding) ? true : false;
+            }else{
+              this.welcomePage = true;
+            }
           } else {
             this.nextInsurance = false;
             this.isInsurance = false;
@@ -284,8 +329,9 @@ export default class MBurseMain extends LightningElement {
             this.nextDeclationUpload = false;
             this.skipUpload = false;
             this.uploadVal = false;
-            this.nextInsurance = true;
-            this.isInsurance = true;
+            this.welcomePage = (detailList[0].watchMeetingOnBoarding) ? true : false;
+            this.nextInsurance = (!detailList[0].watchMeetingOnBoarding) ? true : false;
+            this.isInsurance = (!detailList[0].watchMeetingOnBoarding) ? true : false;
           } else {
             this.nextInsurance = false;
             this.isInsurance = false;
@@ -296,11 +342,25 @@ export default class MBurseMain extends LightningElement {
       })
   }
 
+  takeMeToDashboard() {
+    redirectionURL({
+            contactId: this.contactId
+        })
+        .then((result) => {
+            let url = window.location.origin + result;
+            window.open(url, '_self');
+        })
+        .catch((error) => {
+            // If the promise rejects, we enter this code block
+            console.log(error);
+        })
+}
+
   renderedCallback() {
-    if (this.renderInitialized) {
-      return;
-    }
-    this.renderInitialized = true;
+    // if (this.renderInitialized) {
+    //   return;
+    // }
+    // this.renderInitialized = true;
     this.callApex();
   }
 

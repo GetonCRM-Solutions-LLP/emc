@@ -16,7 +16,7 @@ public with sharing class EmployeeReimbursementTriggerHandler {
                                                 FROM Employee_Mileage__c WHERE EmployeeReimbursement__c in : empReimbursList]) {              
             if(empmilege.EmployeeReimbursement__r.Status__c == 'Approved'){
                 //this static value is used for bypass from here when MappingGasPriceTrigger is called. this is while 'Mileage update after the lock date' is updated  
-                StaticValues.isCalledFromReimTri = false;
+                StaticValues.isCalledFromReimTri = true;
                 reimForMil = empReimburseNew.get(empmilege.EmployeeReimbursement__c);            
                 if(empmilege.Approved_Date__c == null) {
                     empmilege.Approved_Date__c = reimForMil.Approved_Date__c;
@@ -258,6 +258,14 @@ public with sharing class EmployeeReimbursementTriggerHandler {
             }
         } catch (DMLException e) {
             System.debug('The following exception has occurred: ' + e.getMessage());
+        }
+    }
+
+    public static void checkLockDate(List<Employee_Reimbursement__c> empReimbursList){
+        for(Employee_Reimbursement__c empReimList : empReimbursList) {
+            if(empReimList.Mileage_Lock_Date__c != null){
+                empReimList.addError('Please Remove Mileage Lock date value time of Creation new Record');
+            }
         }
     }
   

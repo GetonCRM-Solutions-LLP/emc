@@ -107,6 +107,7 @@ export default class MBurseSMS extends LightningElement {
 
     /* Event to close modal*/
     handleClose() {
+        clearInterval(this._interval);
         this.dispatchEvent(
             new CustomEvent("close", {
                 detail: "endchat"
@@ -120,14 +121,14 @@ export default class MBurseSMS extends LightningElement {
             this.insertedText = true;
             this.messageLoading = true;
             this.template.querySelector('.send_chat_button').style.pointerEvents = 'auto';
-            this.template.querySelector('.fa-paper-plane').classList.remove('send-icon');
-            this.template.querySelector('.fa-paper-plane').classList.add('send-icon_allowed');
+            this.template.querySelector('.send-message').classList.remove('send-icon');
+            this.template.querySelector('.send-message').classList.add('send-icon_allowed');
         } else {
             this.messageLoading = false;
             this.insertedText = false;
             this.template.querySelector('.send_chat_button').style.pointerEvents = 'none';
-            this.template.querySelector('.fa-paper-plane').classList.remove('send-icon_allowed');
-            this.template.querySelector('.fa-paper-plane').classList.add('send-icon');
+            this.template.querySelector('.send-message').classList.remove('send-icon_allowed');
+            this.template.querySelector('.send-message').classList.add('send-icon');
         }
     }
 
@@ -151,11 +152,11 @@ export default class MBurseSMS extends LightningElement {
         //  _self.insertedText = false;
         _self.template.querySelector('.file-input').value = "";
         _self.template.querySelector('.send_chat_button').style.pointerEvents = 'none';
-        _self.template.querySelector('.fa-paper-plane').classList.remove('send-icon_allowed');
-        _self.template.querySelector('.fa-paper-plane').classList.add('send-icon');
+        _self.template.querySelector('.send-message').classList.remove('send-icon_allowed');
+        _self.template.querySelector('.send-message').classList.add('send-icon');
         let toHeight = _self.template.querySelector('.doc-container').offsetHeight;
         if (toHeight != null || toHeight !== undefined) {
-            _self.template.querySelector('.messageArea').style.maxHeight = (toHeight - 180) + 'px'
+            _self.template.querySelector('.messageArea').style.maxHeight = (toHeight - 237) + 'px' /*180*/
         } else {
             _self.template.querySelector('.messageArea').style.maxHeight = 377 + 'px';
         }
@@ -176,8 +177,8 @@ export default class MBurseSMS extends LightningElement {
             let caretPos = _self.template.querySelector('.message-input').value;
             this.messageLoading = false;
             this.template.querySelector('.send_chat_button').style.pointerEvents = 'none';
-            this.template.querySelector('.fa-paper-plane').classList.remove('send-icon_allowed');
-            this.template.querySelector('.fa-paper-plane').classList.add('send-icon');
+            this.template.querySelector('.send-message').classList.remove('send-icon_allowed');
+            this.template.querySelector('.send-message').classList.add('send-icon');
             if (caretPos === "") {
                 event.preventDefault();
             } else {
@@ -251,13 +252,13 @@ export default class MBurseSMS extends LightningElement {
                         this.choosefile = baseTarget;
                         this.imageUploaded = true;
                         this.template.querySelector('.send_chat_button').style.pointerEvents = 'auto';
-                        this.template.querySelector('.fa-paper-plane').classList.remove('send-icon');
-                        this.template.querySelector('.fa-paper-plane').classList.add('send-icon_allowed');
+                        this.template.querySelector('.send-message').classList.remove('send-icon');
+                        this.template.querySelector('.send-message').classList.add('send-icon_allowed');
                     } else {
                         if (this.imageUploaded) {
                             this.template.querySelector('.send_chat_button').style.pointerEvents = 'none';
-                            this.template.querySelector('.fa-paper-plane').classList.remove('send-icon_allowed');
-                            this.template.querySelector('.fa-paper-plane').classList.add('send-icon');
+                            this.template.querySelector('.send-message').classList.remove('send-icon_allowed');
+                            this.template.querySelector('.send-message').classList.add('send-icon');
                         }
                         this.imageUploaded = false;
                         this.toggleError('Base 64 Encoded file is too large.  Maximum size is 300 KB.');
@@ -267,8 +268,8 @@ export default class MBurseSMS extends LightningElement {
                 } else {
                     if (this.imageUploaded) {
                         this.template.querySelector('.send_chat_button').style.pointerEvents = 'none';
-                        this.template.querySelector('.fa-paper-plane').classList.remove('send-icon_allowed');
-                        this.template.querySelector('.fa-paper-plane').classList.add('send-icon');
+                        this.template.querySelector('.send-message').classList.remove('send-icon_allowed');
+                        this.template.querySelector('.send-message').classList.add('send-icon');
                     }
                     this.imageUploaded = false;
                     this.toggleError('There was an error uploading the file. Please try again.');
@@ -277,8 +278,8 @@ export default class MBurseSMS extends LightningElement {
             } else {
                 if (this.imageUploaded) {
                     this.template.querySelector('.send_chat_button').style.pointerEvents = 'none';
-                    this.template.querySelector('.fa-paper-plane').classList.remove('send-icon_allowed');
-                    this.template.querySelector('.fa-paper-plane').classList.add('send-icon');
+                    this.template.querySelector('.send-message').classList.remove('send-icon_allowed');
+                    this.template.querySelector('.send-message').classList.add('send-icon');
                 }
                 this.imageUploaded = false;
                 this.toggleError('Please upload correct File. File extension should be .png, .jpg or .jpeg.');
@@ -343,8 +344,8 @@ export default class MBurseSMS extends LightningElement {
             this.template.querySelector('.chat__file-image').src = "";
             this.imageUploaded = false;
             this.template.querySelector('.send_chat_button').style.pointerEvents = 'none';
-            this.template.querySelector('.fa-paper-plane').classList.remove('send-icon_allowed');
-            this.template.querySelector('.fa-paper-plane').classList.add('send-icon');
+            this.template.querySelector('.send-message').classList.remove('send-icon_allowed');
+            this.template.querySelector('.send-message').classList.add('send-icon');
             if (file.size <= maxFileSize) {
                 this.attachmentName = this.chooseFileName;
                 this.fileReader = new FileReader();
@@ -386,10 +387,10 @@ export default class MBurseSMS extends LightningElement {
         // console.log("clientHeight",_selfTarget.template.querySelector('.stateBody').clientHeight)
         // console.log("scrollHeight",_selfTarget.template.querySelector('.stateBody').scrollHeight)
         // console.log("Height",_selfTarget.template.querySelector('.inputWrapper').getBoundingClientRect().height)
-        let main = _selfTarget.template.querySelector('.stateBody').clientHeight;
-        let target = _selfTarget.template.querySelector('.messageArea').offsetHeight;
-        let toTarget = _selfTarget.template.querySelector('.inputWrapper').offsetHeight;
-        this.template.querySelector('.messageArea').style.maxHeight = ((main - target) + toTarget) + 'px';
+        // let main = _selfTarget.template.querySelector('.stateBody').clientHeight;
+        // let target = _selfTarget.template.querySelector('.messageArea').offsetHeight;
+        // let toTarget = _selfTarget.template.querySelector('.inputWrapper').offsetHeight;
+       // this.template.querySelector('.messageArea').style.maxHeight = ((main - target) + toTarget) + 'px';
         console.log("File reading done")
         if (_selfTarget.imageUploaded) {
             _selfTarget.readURL(event, fileImage);
@@ -450,7 +451,7 @@ export default class MBurseSMS extends LightningElement {
             });
         let toHeight = this.template.querySelector('.doc-container').offsetHeight;
         if (toHeight != null || toHeight !== undefined) {
-            this.template.querySelector('.messageArea').style.maxHeight = (toHeight - 180) + 'px'
+            this.template.querySelector('.messageArea').style.maxHeight = (toHeight - 237) + 'px'
         } else {
             this.template.querySelector('.messageArea').style.maxHeight = 377 + 'px';
         }
@@ -463,7 +464,7 @@ export default class MBurseSMS extends LightningElement {
         let Height = element.offsetHeight;
         if (Height != null || Height !== undefined) {
             console.log("inside resize height", Height)
-            target.style.maxHeight = (Height - 180) + 'px'
+            target.style.maxHeight = (Height - 237) + 'px'
         } else {
             target.style.maxHeight = 377 + 'px';
         }
@@ -480,7 +481,7 @@ export default class MBurseSMS extends LightningElement {
         // })
         // eslint-disable-next-line @lwc/lwc/no-async-operation
         this._interval = setInterval(() => {
-            this.progress = this.progress + 1000;
+        this.progress = this.progress + 1000;
             getAllMessageByContact({
                 contactId: _self.driverId,
             }).then((result) => {
@@ -494,9 +495,9 @@ export default class MBurseSMS extends LightningElement {
             }).catch(error => {
                 console.log("error from getAllMessageByContact", error)
             })
-            if (this.progress === 1260000) {
-                clearInterval(this._interval);
-            }
-        }, this.progress);
+           if (this.progress === 1260000) {
+               clearInterval(this._interval);
+           }
+         }, this.progress);
     }
 }

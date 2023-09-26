@@ -42,6 +42,12 @@ public with sharing class EmployeeMileages
     public String halfFixedAmount {get; set;}
     public String fuelVariableRate{get; set;}
     public String approvalName{get; set;}
+    public String fromLocation{get; set;}
+    public String toLocation{get; set;}
+    public datetime startdatetime{get; set;}
+    public datetime enddatetime{get; set;}
+    public boolean highRiskMileage{get; set;}
+    public String originalReimbursementid {get;set;}
     public EmployeeMileages() 
     {
         

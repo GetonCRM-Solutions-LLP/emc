@@ -432,9 +432,9 @@
                 <label>2022 Compact Sedan</label>
             </value>
             <value>
-                <fullName>2023 Midsize Sedan</fullName>
+                <fullName>2023 Mid-Size Sedan</fullName>
                 <default>false</default>
-                <label>2023 Midsize Sedan</label>
+                <label>2023 Mid-Size Sedan</label>
             </value>
             <value>
                 <fullName>2023 Pickup Truck</fullName>
@@ -452,9 +452,9 @@
                 <label>2023 Full-Size Sedan</label>
             </value>
             <value>
-                <fullName>2023 Mid-size SUV</fullName>
+                <fullName>2023 Mid-Size SUV</fullName>
                 <default>false</default>
-                <label>2023 Mid-size SUV</label>
+                <label>2023 Mid-Size SUV</label>
             </value>
             <value>
                 <fullName>2023 SUV</fullName>
@@ -480,6 +480,86 @@
                 <fullName>2023 P/U Truck</fullName>
                 <default>false</default>
                 <label>2023 P/U Truck</label>
+            </value>
+            <value>
+                <fullName>2024 4x4 Pickup Truck</fullName>
+                <default>false</default>
+                <label>2024 4x4 Pickup Truck</label>
+            </value>
+            <value>
+                <fullName>2024 Full Size 4x4 V8 Pickup Truck</fullName>
+                <default>false</default>
+                <label>2024 Full Size 4x4 V8 Pickup Truck</label>
+            </value>
+            <value>
+                <fullName>2024 4x4 V8 Pickup Truck</fullName>
+                <default>false</default>
+                <label>2024 4x4 V8 Pickup Truck</label>
+            </value>
+            <value>
+                <fullName>2024 4x4 V6 Pickup Truck</fullName>
+                <default>false</default>
+                <label>2024 4x4 V6 Pickup Truck</label>
+            </value>
+            <value>
+                <fullName>2024 Premium SUV</fullName>
+                <default>false</default>
+                <label>2024 Premium SUV</label>
+            </value>
+            <value>
+                <fullName>2024 Full Size SUV</fullName>
+                <default>false</default>
+                <label>2024 Full Size SUV</label>
+            </value>
+            <value>
+                <fullName>2023 Pickup Truck 4</fullName>
+                <default>false</default>
+                <label>2023 Pickup Truck 4</label>
+            </value>
+            <value>
+                <fullName>2023 Pickup Truck 3</fullName>
+                <default>false</default>
+                <label>2023 Pickup Truck 3</label>
+            </value>
+            <value>
+                <fullName>2023 Pickup Truck 2</fullName>
+                <default>false</default>
+                <label>2023 Pickup Truck 2</label>
+            </value>
+            <value>
+                <fullName>2023 Pickup Truck 1</fullName>
+                <default>false</default>
+                <label>2023 Pickup Truck 1</label>
+            </value>
+            <value>
+                <fullName>2024 Full-Size Sedan</fullName>
+                <default>false</default>
+                <label>2024 Full-Size Sedan</label>
+            </value>
+            <value>
+                <fullName>2023 Compact SUV</fullName>
+                <default>false</default>
+                <label>2023 Compact SUV</label>
+            </value>
+            <value>
+                <fullName>2023 4x4 Pickup Truck</fullName>
+                <default>false</default>
+                <label>2023 4x4 Pickup Truck</label>
+            </value>
+            <value>
+                <fullName>2023 Dodge Charger</fullName>
+                <default>false</default>
+                <label>2023 Dodge Charger</label>
+            </value>
+            <value>
+                <fullName>2023 Full-Size SUV 2</fullName>
+                <default>false</default>
+                <label>2023 Full-Size SUV 2</label>
+            </value>
+            <value>
+                <fullName>2023 4x4 V8 Pickup Truck</fullName>
+                <default>false</default>
+                <label>2023 4x4 V8 Pickup Truck</label>
             </value>
             <value>
                 <fullName>2016 Chevrolet Malibu</fullName>

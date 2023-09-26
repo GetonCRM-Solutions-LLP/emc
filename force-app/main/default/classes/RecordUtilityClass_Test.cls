@@ -7,6 +7,7 @@ public with sharing class RecordUtilityClass_Test {
     {
         RecordUtilityClass obj = new RecordUtilityClass();
         RecordUtilityClass.exceptionEmail();
+        RecordUtilityClass.insertIrsRate();
         RecordUtilityClass.sendEmailforCompliance();
         RecordUtilityClass.enableMappingGasPriceTrigger();
         RecordUtilityClass.vehicleUrlMapping();
@@ -60,6 +61,7 @@ public with sharing class RecordUtilityClass_Test {
     {
         RecordUtilityClass obj = new RecordUtilityClass();
         RecordUtilityClass.exceptionEmail();
+        RecordUtilityClass.insertIrsRate();
         RecordUtilityClass.createRecordsAdminDashboardController();
         TrueDialog_Keys__c tdKeys = TestDataFactory.createTrueDialog(true);
     }
@@ -67,6 +69,7 @@ public with sharing class RecordUtilityClass_Test {
     {
         RecordUtilityClass obj = new RecordUtilityClass();
         RecordUtilityClass.exceptionEmail();
+        RecordUtilityClass.insertIrsRate();
         TrueDialog_Keys__c tdKeys = TestDataFactory.createTrueDialog(true);
         RecordUtilityClass.createRecordsforManagerDashboard();
     }
@@ -74,6 +77,7 @@ public with sharing class RecordUtilityClass_Test {
     {   
         RecordUtilityClass obj = new RecordUtilityClass();
         RecordUtilityClass.exceptionEmail();
+        RecordUtilityClass.insertIrsRate();
         RecordUtilityClass.sendEmailforCompliance();
         RecordUtilityClass.enableMappingGasPriceTrigger();
         RecordUtilityClass.vehicleUrlMapping();
@@ -135,6 +139,7 @@ public with sharing class RecordUtilityClass_Test {
     public static Testmethod void RecordUtilityClass_TestMethod5(){
         RecordUtilityClass obj = new RecordUtilityClass();
         RecordUtilityClass.exceptionEmail();
+        RecordUtilityClass.insertIrsRate();
         RecordUtilityClass.sendEmailforCompliance();
         RecordUtilityClass.enableMappingGasPriceTrigger();
         RecordUtilityClass.vehicleUrlMapping();
@@ -195,6 +200,7 @@ public with sharing class RecordUtilityClass_Test {
     public static Testmethod void RecordUtilityClass_TestMethod6(){
         RecordUtilityClass obj = new RecordUtilityClass();
         RecordUtilityClass.exceptionEmail();
+        RecordUtilityClass.insertIrsRate();
         RecordUtilityClass.sendEmailforCompliance();
         RecordUtilityClass.enableMappingGasPriceTrigger();
         RecordUtilityClass.vehicleUrlMapping();

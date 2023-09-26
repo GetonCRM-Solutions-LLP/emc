@@ -39,8 +39,8 @@ public class WrapperUtils_Test {
     
             obj_Driver_list = RecordUtilityClass.buildDriverContact(obj_Account,obj_Manager_list[0]);
             insert obj_Driver_list;
-			 obj_Driver_list2 = TestDataFactory.createDriverContact(true,obj_Account.Id,'Driver', vehicleType.Name, 'Paras.dhnanani', 1);
-			obj_Driver_list2[0].firstName = 'paras';
+             obj_Driver_list2 = TestDataFactory.createDriverContact(true,obj_Account.Id,'Driver', vehicleType.Name, 'Paras.dhnanani', 1);
+            obj_Driver_list2[0].firstName = 'paras';
             obj_Driver_list2[0].Employee_ID__c = '1234567';
             obj_Driver_list2[0].Company__c = 'Park';
             obj_Driver_list2[0].Department__c = 'Sales';
@@ -54,6 +54,12 @@ public class WrapperUtils_Test {
             user_1 = TestDataFactory.createUser(true, profile_1.Id, contactObj.Id);
         }       
 
+        Message__c newMessage = new Message__c();
+            newMessage.Notification_Message__c = 'Thanks for uploading your insurance, we will evaluate your insurance shortly.';
+            newMessage.Unread__c = True;
+            newMessage.Contacts__c = obj_Driver_list[0].ID;
+            insert newMessage;
+        
         list<Employee_Reimbursement__c> obj_Employee_Reimbursement_list = RecordUtilityClass.buildPendingEmployee_Reimbursement(obj_Driver_list);
         insert obj_Employee_Reimbursement_list;       
         
@@ -100,7 +106,7 @@ public class WrapperUtils_Test {
         for(Employee_Reimbursement__c obj:obj_newreimbursements) {            
             obj_Employee_Reimbursement_list_update1.add(obj.id);
         }
-        EmployeeReimbursements obj_EmployeeReimbursements = WrapperUtils.getEmployeeReimbursements(obj_Employee_Reimbursement_list[0]);
+        EmployeeReimbursements obj_EmployeeReimbursements = WrapperUtils.getEmployeeReimbursements(obj_Employee_Reimbursement_list[0],23, 1);
         List<EmployeeReimbursements> obj_EmployeeReimbursements_list2 = new List<EmployeeReimbursements>();
         obj_EmployeeReimbursements_list2.add(obj_EmployeeReimbursements);        
         for(Employee_Reimbursement__c obj:obj_Employee_Reimbursement_list) {
@@ -270,7 +276,7 @@ public class WrapperUtils_Test {
         for(Employee_Reimbursement__c obj:obj_newreimbursements) {            
             obj_Employee_Reimbursement_list_update1.add(obj.id);
         }
-        EmployeeReimbursements obj_EmployeeReimbursements = WrapperUtils.getEmployeeReimbursements(obj_Employee_Reimbursement_list[0]);
+        EmployeeReimbursements obj_EmployeeReimbursements = WrapperUtils.getEmployeeReimbursements(obj_Employee_Reimbursement_list[0],23, 1);
         List<EmployeeReimbursements> obj_EmployeeReimbursements_list2 = new List<EmployeeReimbursements>();
         obj_EmployeeReimbursements_list2.add(obj_EmployeeReimbursements);    
         
@@ -447,7 +453,7 @@ public class WrapperUtils_Test {
         for(Employee_Reimbursement__c obj:obj_newreimbursements) {            
             obj_Employee_Reimbursement_list_update1.add(obj.id);
         }
-        EmployeeReimbursements obj_EmployeeReimbursements = WrapperUtils.getEmployeeReimbursements(obj_Employee_Reimbursement_list[0]);
+        EmployeeReimbursements obj_EmployeeReimbursements = WrapperUtils.getEmployeeReimbursements(obj_Employee_Reimbursement_list[0],23, 1);
         List<EmployeeReimbursements> obj_EmployeeReimbursements_list2 = new List<EmployeeReimbursements>();
         obj_EmployeeReimbursements_list2.add(obj_EmployeeReimbursements);    
         

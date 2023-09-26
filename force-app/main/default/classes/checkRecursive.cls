@@ -1,7 +1,9 @@
 public Class checkRecursive {
     private static boolean run = true;
 	private static boolean run1 = true;
+	private static boolean latLongAddressFlag = true;
     public static boolean runOnce() {
+            System.debug('Class checkRecursive::'+run);
 	    if(run) {
 			run = false;
 			return true;
@@ -17,4 +19,23 @@ public Class checkRecursive {
 	        return run1;
 	    }
     }
+	public static boolean getting_SetLatLondAddressFlag() {
+	    
+	       return latLongAddressFlag;
+	    
+    }
+	public static void setting_SetLatLondAddressFlag(Boolean flag) {
+	    if(flag !=null){
+			latLongAddressFlag=flag;
+		}else{
+			latLongAddressFlag=true;
+		}
+ 	}
+	 public static void setting_run(Boolean flag) {
+	    if(flag !=null){
+			run=flag;
+		}else{
+			run=true;
+		}
+ 	}
 }

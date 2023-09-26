@@ -20,12 +20,19 @@ public class NewdriverdashboardController_Test {
             userObj = TestDataFactory.createUser(True, profileObj.Id, con[0].Id);
         }        
                 
-        List<Employee_Reimbursement__c> er = TestDataFactory.createPendingReimbursement(true, con, 0, createIRSRate.Id);          
+        List<Employee_Reimbursement__c> er = TestDataFactory.createPendingReimbursement(true, con, 0, createIRSRate.Id);
+        Message__c msg = new Message__c();
+        msg.Contacts__c = con[0].Id;
+        msg.Notification_Message__c = 'Test Message';
+        msg.Unread__c = true;
+        insert msg;
         
         Test.startTest();
             Test.setCurrentPage(Page.Newdriverdashboard);
             ApexPages.CurrentPage().getParameters().put('id', con[0].Id);        
-            NewdriverdashboardController testAccPlan = new NewdriverdashboardController();          
+            NewdriverdashboardController testAccPlan = new NewdriverdashboardController();   
+        NewdriverdashboardController.getNotificationMessageList(con[0].Id);
+        NewdriverdashboardController.updateNotificationMessage(msg.Id);
         Test.stopTest();
     }
     

@@ -7,6 +7,27 @@ public class RosterControllerTest {
         customEmailSetting.ContactTriCommunityReimCreate__c = true;
         insert customEmailSetting;
          TrueDialog_Keys__c tdKeys = TestDataFactory.createTrueDialog(true);
+         List<Address__c> objAddress = TestDataFactory.createAddress(true, 2,30304);
+         /*AddEmployeeFieldSetting__c customAddEmpSetting = new AddEmployeeFieldSetting__c();
+         customAddEmpSetting.Name = 'addEmployee';
+         customAddEmpSetting.component__c = 'drivingStates';
+         customAddEmpSetting.date__c = 'activationDate,addedDate,deactivaedDate'; 
+         customAddEmpSetting.Disabled__c = 'addedDate,state';
+         customAddEmpSetting.planField__c = 'activationDate,addedDate,vehicalType,zipCode,city,state,drivingStates,monthlymileage,department,company';
+         customAddEmpSetting.required__c = 'firstName,activationDate,lastName,email,role,managerName,cellphone,department,deptDesign,company';
+         customAddEmpSetting.select__c = 'vehicalType,role,managerName,city,jobtitle,department,company,driverType';
+         customAddEmpSetting.text__c = 'firstName,lastName,email,zipCode,employeeId,state,cellphone,monthlymileage,costCode,deptDesign,am,an,appVersion,glcode,territory,name,deactivationBy,sage100ID,code,freeze,district,netchexEmployeeID';
+         Insert customAddEmpSetting;
+         
+         EmployeeFieldSetting__c CustomEmpFieldSetting = new EmployeeFieldSetting__c();
+         CustomEmpFieldSetting.Name = 'DesignAir_Fields';
+         CustomEmpFieldSetting.Account_Id__c = '';
+         CustomEmpFieldSetting.addEmployeeFields__c = 'firstName,lastName,email,role,managerName,employeeId,cellphone,activationDate,addedDate,vehicalType,zipCode,city,state,drivingStates,monthlymileage';
+         CustomEmpFieldSetting.fields__c = 'name,email,city,state,deactivaedDate,role,freeze,managerName,zipCode,appVersion,drivingStates,jobtitle,deptDesign,department';
+         
+         Insert CustomEmpFieldSetting;
+         */
+         
          List<IRS_Mileage_Rate__c> obj_IRS_Mileage_Rate =  RecordUtilityClass.insertIrsRate();
          
         RecordUtilityClass.sendEmailforCompliance();
@@ -24,6 +45,7 @@ public class RosterControllerTest {
         Profile profile_1 = [SELECT Id FROM Profile WHERE Name = 'Customer Community Login User' LIMIT 1];
         User admin = [SELECT Id, Username, UserRoleId FROM User WHERE Profile.Name = 'System Administrator' AND UserRoleId = :userRole_1.Id LIMIT 1];
         User user_1;
+        User user_2;
         Account obj_Account;
         Contact obj_admincontact;
         List<Contact> obj_Manager_list;
@@ -41,6 +63,7 @@ public class RosterControllerTest {
             insert obj_admincontact;
 
             obj_Manager_list = RecordUtilityClass.buildManagerContact(obj_Account,obj_admincontact);
+            system.debug('obj_Manager_list=='+obj_Manager_list );
             insert obj_Manager_list;
 
             obj_Driver_list = RecordUtilityClass.buildDriverContact(obj_Account,obj_Manager_list[0]);
@@ -56,7 +79,8 @@ public class RosterControllerTest {
 
             obj_Manager_list1 = new Contact();
             obj_Manager_list1 = RecordUtilityClass.getManagerContact();
-
+            // List<id> insertedContactIDList1 = new List<id>();
+            //  insertedContactIDList1.add(contact_1.Id);    
             user_1 = new User( 
                 Email = 'yourusername@gmail.com',
                 ProfileId = profile_1.Id, 
@@ -72,19 +96,14 @@ public class RosterControllerTest {
                 LastName = 'Lastname'
                 );
             insert user_1;
+            
+             
         }
+        
          
         EmployeeDetails empDetail = WrapperUtils.getEmployeeDetails(obj_Driver_list1[0],120.34,230.43);
         EmployeeDetails empDetail1 = WrapperUtils.getEmployeeDetails(obj_Driver_list1[0],120.34,230.43);
-         String str = 'Employee_ID__c,Firstname,LastName,External_Email__c,' + 
-                            'Vehicle_Type__c,Role__c,MailingCity,MailingState,' + 
-                            'MailingPostalCode,AccountId,Activation_Date__c,Manager__c,MobilePhone, Driving_States__c\n'+
-                            '1,Tesdfsdfsts,Testidfdsfsdng1,test1932434230@testing.com,' + 
-                            '2020 Dodge Charger,Driver,CA,USA,' + 
-                            '12834,'+obj_Account.Name+',03/03/2018,'+'Test Contact Manager0'+',34323,CA;\n' +
-                            '2,Secdfsdfond,Testindfdfsg1,atfdgdfg324ssddsfsd32423424h.goc@gmail.com,' + 
-                            '2020 Dodge Charger,Driver,CA,USA,' + 
-                            '12586,'+obj_Account.Name+',03/03/2018,'+'Test Contact Manager0'+'34323,CA;'+'Tom Honkus';
+         String str = '[{\"Role\":\"Driver\",\"FirstName\":\"wo\",\"LastName\":\"pas\",\"EmailAddress\":\"wopas601856@yubua.com\",\"CellPhone\":1234565432,\"City\":\"Villa Rica\",\"State\":\"GA\",\"ZipCode\":30180,\"Department\":\"ENV\",\"JobTitle\":\"Inspector/Consultant\",\"ManagersFirstName\":\"ceni\",\"ManagersLastName\":\"pi\",\"ManagersEmail\":\"cenipi2424@zfobo.com\",\"InsuranceRate\":3134,\"LicenseandRegistration\":102,\"PersonalPropertyTax\":733,\"Depreciation\":4435,\"AnnualFixedCost\":8404,\"FixedAmount\":500.04,\"FCA\":1,\"TotalFixedAmount\":500.04,\"Meeting\":\"Attended\",\"Packet\":\"Sent\",\"DateAdded\":\"2021-10-19T18:30:00.000Z\",\"ActivationDate\":\"2022-01-31T18:30:00.000Z\",\"MPG\":25.5,\"Maint\":0.0738,\"Tires\":0.0689,\"MaintTires\":0.1427,\"StandardVehicle\":\"2022 Volkswagen Atlas\",\"ComplianceMileage\":5000,\"VehicleURL\":\"https://f.hubspotusercontent40.net/hubfs/2511299/2022-Chevy-Silverado.jpeg\"},{\"Role\":\"Driver\",\"FirstName\":\"yu\",\"LastName\":\"bua\",\"EmailAddress\":\"wopas60185@yubua.com\",\"CellPhone\":1334565432,\"City\":\"Wilmington\",\"State\":\"NC\",\"ZipCode\":28412,\"Department\":\"ENV\",\"JobTitle\":\"Inspector/Consultant\",\"ManagersFirstName\":\"ceni\",\"ManagersLastName\":\"pi\",\"ManagersEmail\":\"cenipi2424@zfobo.com\",\"InsuranceRate\":2122,\"LicenseandRegistration\":177,\"PersonalPropertyTax\":262,\"Depreciation\":3844,\"AnnualFixedCost\":6405,\"FixedAmount\":381.1,\"FCA\":2,\"TotalFixedAmount\":381.1,\"Meeting\":\"Attended\",\"Packet\":\"Sent\",\"DateAdded\":\"2021-06-14T18:30:00.000Z\",\"ActivationDate\":\"2022-05-18T18:30:00.000Z\",\"MPG\":26,\"Maint\":0.0495,\"Tires\":0.0408,\"MaintTires\":0.0903,\"StandardVehicle\":\"2022 Ford F-150\",\"ComplianceMileage\":5000,\"VehicleURL\":\"https://f.hubspotusercontent40.net/hubfs/2511299/2022-Chevy-Silverado.jpeg\"}]';
             Blob csvFileBody = Blob.valueOf(str);
             String csvAsString = csvFileBody.toString();
 
@@ -93,7 +112,7 @@ public class RosterControllerTest {
         List<EmployeeDetails> obj_list_EmployeeDetails = new List<EmployeeDetails>();
         obj_list_EmployeeDetails.add(empDetail);
         Test.startTest();
-        
+       
         System.runAs(user_1) {
             Test.setCurrentPage(Page.roster);
             String conId = ApexPages.currentPage().getParameters().put('id',obj_admincontact.Id);
@@ -103,7 +122,7 @@ public class RosterControllerTest {
             RosterController.getContactid();
             RosterController.getRedirected();
             RosterController.editInlineNewEmployee(JSON.serialize(obj_list_EmployeeDetails),String.valueOf(obj_Account.Id),String.valueOf(obj_admincontact.Id));
-            RosterController.getAllManagers();
+            RosterController.getAllManagers(String.valueOf(obj_Account.id));
             RosterController.getlistAllEmployees(obj_Account.Id,obj_admincontact.Id);
             RosterController.getRoles();
             RosterController.getDriverType();
@@ -114,32 +133,30 @@ public class RosterControllerTest {
             RosterController.getUser(obj_admincontact.Id);
             RosterController.sendExceptionMails('Insert Failed','1');
             RosterController.getCustomExceptionMessage('1');
-            //RosterController.readFromFile(csvAsString,accId);
-            RosterController.editEmployeeDetails    (obj_Manager_list[0].Id);
+            String batchId = RosterController.readFromFile(csvAsString,accId,obj_admincontact.Id);
+            RosterController.CheckStatus(batchId);
+            RosterController.editEmployeeDetails(obj_Manager_list[0].Id);
             RosterController.getContactByEmailAddress(obj_Manager_list[0].External_Email__c);
             RosterController.manageEmployee(JSON.serialize(obj_list_EmployeeDetails),String.valueOf(obj_Account.id),String.valueOf(obj_admincontact.Id));
             RosterController.getCountryStateCity('36310');
             RosterController.getCity('Abbeville','36310');
             RosterController.getCompany();
             RosterController.sendSignatureRequestForDriver(accId );
-            RosterController.getPickListValuesIntoList();
+            RosterController.getPickListValuesIntoList(String.valueOf(obj_Account.id));
+            RosterController.getCustomEmployeeTableSettings();
+            RosterController.getCustomAddEmployeeSettings();
             List<String> conIdList = new List<String>();
             for(contact cont:obj_Manager_list){
                 conIdList.add(cont.Id);
             } 
-            Bi_Weekly_Reimbursement__c br = new Bi_Weekly_Reimbursement__c();
-            br.Name = system.today()-13 + ' to ' + system.today() ; 
-            br.Contact__c = obj_Driver_list[0].Id;
-            br.Start_Date__c = date.valueOf('2022-03-23');
-            br.End_Date__c = date.valueOf('2022-04-01');
-            br.MPG__c = obj_Driver_list[0].MPG__c;
-            br.Maintenance_and_Tires__c = obj_Driver_list[0].Maintenance_and_Tires__c;
-            br.Fixed_Amount__c = obj_Driver_list[0].Fixed_Amount__c;
-            br.Status__c = 'Pending';
-            br.Fuel_Price__c = 0;
+            
+            List<Employee_Reimbursement__c> er = TestDataFactory.createPendingReimbursement(true, obj_Driver_list1, 3, obj_IRS_Mileage_Rate[0].Id);
+            List<Bi_Weekly_Reimbursement__c> br = TestDataFactory.createBiweeklyReim (true, obj_Driver_list1, Date.valueof('2021-12-09'),Date.valueof('2021-12-20'), 1, obj_IRS_Mileage_Rate[0].Id);
+          
+            List<Employee_Mileage__c> emp2 = TestDataFactory.getEmpMileage (true, 1, er, br);
             
             RosterController.LOAWrapper empW = new RosterController.LOAWrapper();
-             empW.BiweekId = string.valueOf(br.Id);
+             empW.BiweekId = string.valueOf(br[0].Id);
              empW.ContactEmail = 'rghgfhgf21212@gmail.com';  
              empW.LOAStartDate = '2021-12-22'; 
              empW.LOAEndDate  = '2021-12-29';
@@ -159,21 +176,27 @@ public class RosterControllerTest {
             for(Contact currentcontact:obj_Driver_list1)
             {
                 insertedContactIDList.add(currentcontact.id);
-            }        
+            }
+                   
             RosterController.postHTTPCreateNewUserTriplog(insertedContactIDList);
             RosterController.getExcetionTypes('System.DmlException','[UPDATE FAILED]',12);
             RosterController.getExcetionTypes('TypeException','Invalid decimal: .',12);
-            RosterController.getExcetionTypes('QueryException','[List has no rows]',12);
+            RosterController.getExcetionTypes('QueryException','List has no rows',12);
+            RosterController.getExcetionTypes('QueryException','LIST HAS NO ROWS',12);
             RosterController.getExcetionTypes('NullPointerException','Attempt to de-reference',12);
             RosterController.putHTTP(String.valueOf(obj_Account.id),'test1932434230@testing.com');
-            RosterController.massResetPassword(JSON.serialize(insertedContactIDList));
             RosterController.massEnableUser(JSON.serialize(insertedContactIDList));
-            RosterController.updateLockDate(String.valueOf(obj_Account.id),'12/21/20','03-2021');
-            RosterController.putHTTPConcurConnect(obj_Account.Id,JSON.serialize(insertedContactIDList));
-            RosterController.deleteTrips(obj_Account.Id,'09-2021');
+            //RosterController.massResetPassword(JSON.serialize(insertedContactIDList));
+            RosterController.updateLockDate(String.valueOf(obj_Account.id),'12/21/2023','06-2023');
+            RosterController.putHTTPConcurConnect(obj_Account.Id,'yourusername@gmail.com');
+            RosterController.putHTTPConcurConnect(String.valueOf(obj_Account.id),'test1932434230@testing.com');
+            RosterController.deleteTrips(obj_Account.Id,'06-2023');
             RosterController.getLoginAsData(obj_Account.Id);
-            RosterController.BiweekReimRecord('2021-12-21','2021-12-30',String.valueOf(obj_Account.id));
+            RosterController.BiweekReimRecord('2021-12-09','2021-12-20',String.valueOf(obj_Account.id));
             RosterController.SaveLOA(string.valueOf( JSON.serialize(obj_list_EmployeeDetails)));
+            RosterController.deleteMonthlyReim(obj_Driver_list1[0].Id, system.today().addMonths(-2));
+             RosterController.getPicklistValues();
+            RosterController.putHTTPMassWlcmMail(String.valueOf(obj_Account.id), '["jiyush@goc.com","vipin@kiwiqa.com","priyapatel@gmail.com"]');
         }
         Test.stopTest();
     }
@@ -184,7 +207,7 @@ public class RosterControllerTest {
         customEmailSetting.ContactTriCommunityReimCreate__c = true;
         insert customEmailSetting;
         TrueDialog_Keys__c tdKeys = TestDataFactory.createTrueDialog(true);
-
+        List<Address__c> objAddress = TestDataFactory.createAddress(true, 2,30304);
         SendEmail__c customSetting =  new SendEmail__c();
         customSetting.Name = 'Send Email For Compliance';
         customSetting.Send_email_from_code__c= true;

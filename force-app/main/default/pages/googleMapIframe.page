@@ -30,10 +30,6 @@
                     font-size: .85rem !important;
                     font-family: 'Proxima Nova' !important;
                 }
-                
-                .gm-style-cc {
-                    display: none !important;
-                }
         </style>
         <script type="text/javascript">
              var lexOrigin = location.origin, map, mapLocation;

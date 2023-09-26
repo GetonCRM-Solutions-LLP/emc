@@ -7,7 +7,7 @@ public without sharing class ManageNotificationController {
     public static String manrole {get;set;}
     public static String contactDataAsString {get; set;}
     public static String logoDocument_id {get;set;}
-    public string conWrapper {get; set;} 
+    private static string conWrapper {get; set;} 
     public string milWrapper {get; set;}
     public static Boolean isTestClass = false;
     public static Boolean checkTrueDialog {get; set;} 
@@ -23,7 +23,7 @@ public without sharing class ManageNotificationController {
     * ********************************************************
     */
     
-    @RemoteAction
+    @AuraEnabled
     public static String sendMessageToMultipleContacts(String trueDialogContactIdList,String message){   
         System.debug('**in  sendMessageToMultipleContacts**');
         System.debug('**trueDialogContactIdList**'+trueDialogContactIdList);
@@ -74,7 +74,7 @@ public without sharing class ManageNotificationController {
         return result;            
     }    
 
-    @RemoteAction
+    @AuraEnabled
     public static String sendImageToMultipleContacts(String trueDialogContactIdList,String attachmentBody, String attachmentName,String message){   
       
         TrueDialog_Keys__c tdKeys = TrueDialog_Keys__c.getValues('TrueDialogKeys');
@@ -196,7 +196,7 @@ public without sharing class ManageNotificationController {
             List<Message__c> lstMessage = [Select id, Contacts__c, 
                                             Unread__c,Contacts__r.Time_Zone__c
                                             FROM Message__c 
-                                            WHERE Contacts__c =: contactId ];
+                                            WHERE Contacts__c =: contactId and Notification_Message__c = null];
 
             for(Message__c message : lstMessage){
                 message.Unread__c = false ;
@@ -221,19 +221,10 @@ public without sharing class ManageNotificationController {
         return result;
     }  
 
-    
-    public ManageNotificationController() {
-        
-         
-        accId = ApexPages.currentPage().getParameters().get('accId');
-        adminId = ApexPages.currentPage().getParameters().get('id');
+    @AuraEnabled
+    public static String manageNotificationController(String accId,String adminId) {  
         String manager;
-         if (ApexPages.currentPage().getParameters().containsKey('managerid') && String.isNotBlank(ApexPages.currentPage().getParameters().get('managerid'))) {
-            manager = ApexPages.currentPage().getParameters().get('managerid');
-         }
-         if (ApexPages.currentPage().getParameters().containsKey('manid') && String.isNotBlank(ApexPages.currentPage().getParameters().get('manid'))) {
-            manager = ApexPages.currentPage().getParameters().get('manid');
-         }
+         
         if(manager != null){
             List<Contact> conList = [SELECT id,name,Role__c 
                                     FROM Contact 
@@ -246,7 +237,33 @@ public without sharing class ManageNotificationController {
            checkTrueDialog = objAccount.True_Dialog__c != null ? objAccount.True_Dialog__c : false;
            conWrapper = NewEmployeeData(accId,adminId );
         }
+        System.debug('conWrapper: ' +conWrapper);
+        return conWrapper;
     }
+
+    @RemoteAction
+    public static string NewConData(String accountId)
+    {
+        List<ContactWrapper> conWrapList = new List<ContactWrapper>();
+        for(Contact con : [SELECT id,FirstName, LastName, Insurance__c, Expiration_Date__c                                   
+                                FROM Contact 
+                                WHERE AccountId =: accountId
+                                      AND Role__c != 'Admin'
+                                      AND Role__c != 'Manager'
+                                      AND Deactivated_Date__c = null]) {
+                                    ContactWrapper conWrap = new ContactWrapper();
+                                    conWrap.contactId = con.Id;
+                                    conWrap.fullname = con.FirstName +' '+con.LastName;
+                                    conWrap.insurance = con.Insurance__c ;
+                                    if(con.Expiration_Date__c != null){
+                                        conWrap.expirationDate = con.Expiration_Date__c;
+                                    }
+                                    conWrapList.add(conWrap);
+                                    }
+        String wrapjson = JSON.serialize(conWrapList);
+        return wrapjson;
+    }
+
     @RemoteAction
     public static string NewEmployeeData(String accountId,String adminId)
     {
@@ -290,6 +307,9 @@ public without sharing class ManageNotificationController {
                                     conWrap.contactPicture= con.Contact_Picture__c;
                                     conWrap.trueDialogId = con.TrueDialog_Contact_Id__c;
                                     conWrap.massNotiText = false;
+                                    conWrap.insuranceFile = false;
+                                    conWrap.locationFile = false;
+                                    conWrap.messageHolder = false;
                                     conWrapList.add(conWrap);
                 }
             } 
@@ -336,7 +356,8 @@ public without sharing class ManageNotificationController {
             String wrapjson = JSON.serialize(conWrapList);
             return wrapjson;
     }
-    @RemoteAction
+    //@RemoteAction
+    @AuraEnabled
     public static string editInlineNewEmployee(String listofemployee,String adminId) {
         System.debug('listofemployee='+listofemployee);
         List<Contact> conList = [SELECT id,name 
@@ -350,16 +371,23 @@ public without sharing class ManageNotificationController {
         Messaging.SingleEmailMessage mail;
         List<Messaging.SingleEmailMessage> mail_list = new List<Messaging.SingleEmailMessage>();
         List<Contact> updateEmployeeList = new List<Contact>();
+        List<Message__c> msgList = new List<Message__c>();
         if(listofemployee!=null)
         {
             List<ContactWrapper> conWrapUpdateList = new List<ContactWrapper>();
+           
             conWrapUpdateList = (List<ContactWrapper>)Json.deserialize(listofemployee,List<ContactWrapper>.class);
             for(ContactWrapper conwrap : conWrapUpdateList){
                 Contact currentContact = new Contact();
+                Message__c msg = new Message__c();
                  System.debug('conwrap ()'+conwrap );
                 currentContact.Id = conwrap.contactId;
                 currentContact.Notification_Message__c = conwrap.notiMessage;
                 currentContact.Notification_Date__c = system.today();
+                msg.Notification_Message__c = conwrap.notiMessage;
+                msg.Contacts__c = conwrap.contactId;
+                msg.Unread__c = true;
+                msgList.add(msg);
                 updateEmployeeList.add(currentContact);
                 List<String> sendingTo = new List<String>();
                 string htmlbody = '';
@@ -389,6 +417,9 @@ public without sharing class ManageNotificationController {
         if(!updateEmployeeList.isEmpty() && !Test.isRunningTest()){
             update updateEmployeeList;
         }
+        if(!msgList.isEmpty() && !Test.isRunningTest()){
+            insert msgList;
+        }
         
         SendEmail__c  sendEmailObj = SendEmail__c.getValues('SendMileageReminderforDelta');
         if((sendEmailObj!=null) && sendEmailObj.Send_email_from_code__c==true && mail_list.size()>0 && !Test.isRunningTest())
@@ -398,7 +429,7 @@ public without sharing class ManageNotificationController {
         return 'Success';
     }
 
-    @RemoteAction
+    @AuraEnabled
     public static string sendAllInsuranceEmail(String listofemployee,String adminId) {
         
         List<Contact> conList = [SELECT id,name 
@@ -447,7 +478,7 @@ public without sharing class ManageNotificationController {
         } 
         return 'Success';
     }
-    @RemoteAction
+    @AuraEnabled(cacheable=false)
     public static String readFromFileInchunk(String attachmentBody, String attachmentName, String attachmentId,String did,String accid,String contactattachementid)
     {
         return  WrapperUtils.readFromFileInchunk(attachmentBody,attachmentName,attachmentId,did,accid,contactattachementid);   
@@ -459,7 +490,7 @@ public without sharing class ManageNotificationController {
         return String.escapeSingleQuotes(JSON.serialize((List<Attachment>)ExecuteQueryUtil.getRecordListFromsObject(query)));
     }
     
-    @RemoteAction
+    @AuraEnabled
     public static String UploadLocation(string location,string  accId) {   
         String MLOGACCOUNT = System.Label.Triplog_New_URL + ',' + System.Label.Triplog_New_URL2;   
         
@@ -480,14 +511,21 @@ public without sharing class ManageNotificationController {
            system.debug('=='+body );
              try {
                 if(!Test.isRunningTest()) {
-                    HttpResponse res = ApiCalloutUtility.executeCallout(apiToken,'POST',baseURL,'',body);
-                    system.debug('res'+res);
+                    //HttpResponse res = ApiCalloutUtility.executeCallout(apiToken,'POST',baseURL,'',body);
+                    UploadLocationAPI(apiToken,baseURL,body);
+                    //system.debug('res'+res);
                 }
             } catch(System.CalloutException er) { }
         }
            
         return null;
     }
+
+    @Future(callout=true)
+    public static void UploadLocationAPI (String apiToken,string baseURL,String body){
+        HttpResponse res = ApiCalloutUtility.executeCallout(apiToken,'POST',baseURL,'',body);
+    }
+    
     @RemoteAction
     public static String UploadMileage(string mileage,string  accId,String adminId,String startdate,String enddate) { 
         List<JSONMilList> MilJson = JSONMilList.parse(mileage);
@@ -799,12 +837,12 @@ public without sharing class ManageNotificationController {
         String wrapjson = JSON.serialize(conWrapUpdateList);
         return wrapjson;
     }
-    @RemoteAction
+    @AuraEnabled(cacheable=true)
     public static void sendInsuranceEmail (String Id,String Name,String email){
         BiWeeklyWrapperUtils.sendInsuranceEmail(Id, Name, email);
     }
-    @RemoteAction
-    public static string ImportMileage(String accountId) {       
+    @AuraEnabled(cacheable=true)
+    public static String ImportMileage(String accountId) {       
         String currentMonth = Utils.fetchMonths(1, 0)[0];
         List<MileageWrapper> mileageUpdateList = new List<MileageWrapper>();
         for(Employee_Reimbursement__c empReim : [SELECT id,Contact_Id__r.name,Total_Mileage__c,Fuel_Price__c,MPG__c, Maintenance_and_Tires__c,Contact_Email__c FROM Employee_Reimbursement__c where Contact_Id__r.AccountId =: accountId and Month__c =: currentMonth Order By Contact_Id__r.name asc]){
@@ -824,7 +862,7 @@ public without sharing class ManageNotificationController {
         System.debug('wrapjson =='+wrapjson );
         return wrapjson;
     }
-    @RemoteAction
+    @AuraEnabled
     public static string UpdateImportMileage(String responseData) {
         List<MileageWrapper> mileageWrapList = new List<MileageWrapper>();
         Set<Id> reimbursementIds = new Set<Id>();
@@ -841,7 +879,7 @@ public without sharing class ManageNotificationController {
                 if(reimbursementIds.size() > 0){
                     delete [SELECT id FROM Employee_Mileage__c WHERE EmployeeReimbursement__c IN : reimbursementIds];                
                 }
-                for(Bi_Weekly_Reimbursement__c biWeekObj : [SELECT id,Contact__c FROM Bi_Weekly_Reimbursement__c WHERE Contact__c IN : contactIds]){
+                for(Bi_Weekly_Reimbursement__c biWeekObj : [SELECT id,Contact__c,Contact__r.Time_Zone__c FROM Bi_Weekly_Reimbursement__c WHERE Contact__c IN : contactIds]){
                     biweekContactId.put(biWeekObj.Contact__c , biWeekObj.Id);
                 }
                 Integer index = 0;
@@ -866,6 +904,7 @@ public without sharing class ManageNotificationController {
                     }      
                     emp.Contact_Email_Id__c = wrapObj.contactEmail;
                     emp.Trip_Date__c = date.today();
+                    emp.TimeZone__c = 'US/Mountain';
                     if(emp.EmployeeReimbursement__c != null && emp.Bi_Weekly_Reimbursement__c != null){
                         empList.add(emp);
                     }                    
@@ -881,7 +920,7 @@ public without sharing class ManageNotificationController {
     public static Boolean CheckNull(String param1) {
         return param1 == null || param1 == '' ? true : false;
     }
-    @RemoteAction
+    @AuraEnabled
     Public Static void clearMassNotification(String accID){
     List<Contact > contactList = new List<Contact >();
         for(Contact con : [SELECT Id, Name,Notification_Message__c,Notification_Date__c,Deactivated_Date__c 
@@ -897,6 +936,25 @@ public without sharing class ManageNotificationController {
         if(contactList.size() > 0){
             update contactList;
         }
+    }
+    
+    @AuraEnabled
+    Public Static string clearNotification(String contactID){
+    List<Contact > contactList = new List<Contact >();
+        for(Contact con : [SELECT Id, Name,Notification_Message__c,Notification_Date__c,Deactivated_Date__c 
+                                FROM contact 
+                                WHERE Id =: contactID
+                                    AND Deactivated_Date__c = NULL]) {
+                                        if(con.Notification_Message__c != NULL || con.Notification_Date__c != NULL){
+                                            con.Notification_Message__c = null;
+                                            con.Notification_Date__c = null;
+                                            contactList.add(con);
+                                        }     
+        }
+        if(contactList.size() > 0){
+            update contactList;
+        }
+        return 'Success';
     }
     public class ContactWrapper {
         public string contactId { get; set; }
@@ -918,6 +976,9 @@ public without sharing class ManageNotificationController {
         public string contactPicture { get; set; }
         public string trueDialogId{ get; set; }
         public Boolean massNotiText { get; set; }
+        public Boolean insuranceFile { get; set; }
+        public Boolean locationFile { get; set; }
+        public Boolean messageHolder { get; set; }
     }
     public class LOAWrapper {
         public string employeeId { get; set; }

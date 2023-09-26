@@ -20,9 +20,7 @@ public with sharing class LoginRedirection_Test {
 
         System.runAs(admin) {
         
-           acc = TestDataFactory.createAccount(false, 'Test Account', True);
-           acc.MburseDashboardRedirect__c = true;
-           insert acc;
+           acc = TestDataFactory.createAccount(True, 'Test Account', True);
            conList = TestDataFactory.createDriverContact(false, acc.Id, 'Driver', vehicleType.Name, 'Paras.Patel', 2);
            conList[0].IsCreatedFromCommunity__c = false;
            Insert conList[0];

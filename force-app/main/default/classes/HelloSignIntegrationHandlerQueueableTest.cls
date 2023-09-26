@@ -10,7 +10,7 @@ public class HelloSignIntegrationHandlerQueueableTest {
         vehicleType.Name = '2020 Full-Size Sedan';
         vehicleType.vehicle__c = 'Full-Size Sedan';
         Insert vehicleType;
-
+        IRS_Mileage_Rate__c irsRateObj = TestDataFactory.createIRSRate(true,0);
         UserRole uRole = TestDataFactory.getUserRole();
         Profile profileObj = TestDataFactory.getUserProfile();
         User admin = TestDataFactory.getSystemAdminUser(uRole.Id);

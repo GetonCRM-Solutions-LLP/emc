@@ -172,8 +172,8 @@
         <customTabListAdditionalFields>CRMG_GTM__End_Time__c</customTabListAdditionalFields>
         <customTabListAdditionalFields>CRMG_GTM__Attendee_Name__c</customTabListAdditionalFields>
         <excludedStandardButtons>New</excludedStandardButtons>
-        <excludedStandardButtons>Accept</excludedStandardButtons>
         <excludedStandardButtons>ChangeOwner</excludedStandardButtons>
+        <excludedStandardButtons>Accept</excludedStandardButtons>
         <lookupDialogsAdditionalFields>CRMG_GTM__Subject__c</lookupDialogsAdditionalFields>
         <lookupDialogsAdditionalFields>CRMG_GTM__Number_of_Attendees__c</lookupDialogsAdditionalFields>
         <lookupDialogsAdditionalFields>CRMG_GTM__Meeting_ID__c</lookupDialogsAdditionalFields>

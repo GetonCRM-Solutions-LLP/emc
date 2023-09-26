@@ -2,7 +2,7 @@
 public class BiWeekEmployeeReimbTriggerHandlerTest {
     public static testmethod void test1(){
         TriggerConfig__c triggerCustomSetting = TestDataFactory.triggerConfigCustomSetting(true);
-         TrueDialog_Keys__c tdKeys = TestDataFactory.createTrueDialog(true);                
+        TrueDialog_Keys__c tdKeys = TestDataFactory.createTrueDialog(true);                
         SendEmail__c sendEmailCustomSetting1 = TestDataFactory.sendEmailCustomSetting(true,'Send Email For Compliance');        
         Vehicle_URL_Mapping__c vehicleObj = TestDataFactory.createVehicleData(true,0);
         IRS_Mileage_Rate__c irsRateObj = TestDataFactory.createIRSRate(true,0);
@@ -35,6 +35,8 @@ public class BiWeekEmployeeReimbTriggerHandlerTest {
         List<Employee_Mileage__c> empMileage = TestDataFactory.getEmpMileage(true,5,reimList,biWeeklyReimList);
         Map<Id,Bi_Weekly_Reimbursement__c> empReimburseOld = new Map<Id,Bi_Weekly_Reimbursement__c>();
         empReimburseOld.put(biWeeklyReimList[0].Id,biWeeklyReimList[0]);
+        set<Id> reimIdslst= new set<Id>();
+        reimIdslst.add(biWeeklyReimList[0].Id);
         Test.startTest();
         System.runAs(userObj) {
             if(empMileage[0].Approved_Date__c == null ){
@@ -48,6 +50,7 @@ public class BiWeekEmployeeReimbTriggerHandlerTest {
             BiWeekEmployeeReimbTriggerHandler biweeklyreim = new BiWeekEmployeeReimbTriggerHandler();
             BiWeekEmployeeReimbTriggerHandler.mileagefieldupdate(biWeeklyReimList,empReimburseOld,empReimburseOld);
             BiWeekEmployeeReimbTriggerHandler.updateConfirmFields(biWeeklyReimList,empReimburseOld,empReimburseOld);
+            BiWeekEmployeeReimbTriggerHandler.IRSVehicleCHeck(reimIdslst);
         }
         Test.stopTest();
     }

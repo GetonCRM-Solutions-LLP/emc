@@ -77,7 +77,9 @@ global class HelloSignIntegrationHandler{
                     for(HelloSign.ServiceObjects.Signature signatureObj : responseJSON.signature_request.signatures){
                         System.debug('signature obj:'+signatureObj);
                         System.debug('signature obj === :'+signatureObj.status_code);
-                        if(contactMap.containskey(signatureObj.signer_email_address)){contactMap.get(signatureObj.signer_email_address).Hello_Sign_Request_Id__c = responseJSON.signature_request.signature_request_id;contactMap.get(signatureObj.signer_email_address).Packet__c = Constants.sentForSignature;ContactMap.get(signatureObj.signer_email_address).Document_Sent_Date__c = System.today();ContactMap.get(signatureObj.signer_email_address).Driver_Sign_Date__c = '';ContactMap.get(signatureObj.signer_email_address).Admin_Sign_Date__c = '';ContactMap.get(signatureObj.signer_email_address).Hello_Sign_Admin_Status__c = '';ContactMap.get(signatureObj.signer_email_address).Driver_Sign_Date__c = '';if(conObj.Account.Hello_Sign_Admin_Sign__c == false || signatureObj.order == 0){emailString = signatureObj.signer_email_address;contactMap.get(signatureObj.signer_email_address).Hello_Sign_Status__c = signatureObj.status_code;}}
+                        if(contactMap.containskey(signatureObj.signer_email_address)){contactMap.get(signatureObj.signer_email_address).Hello_Sign_Request_Id__c = responseJSON.signature_request.signature_request_id;contactMap.get(signatureObj.signer_email_address).Packet__c = Constants.sentForSignature;ContactMap.get(signatureObj.signer_email_address).Document_Sent_Date__c = System.today();ContactMap.get(signatureObj.signer_email_address).Driver_Sign_Date__c = '';ContactMap.get(signatureObj.signer_email_address).Admin_Sign_Date__c = '';ContactMap.get(signatureObj.signer_email_address).Hello_Sign_Admin_Status__c = '';
+                            if(conObj.Account.Hello_Sign_Admin_Sign__c == false || signatureObj.order == 0){emailString = signatureObj.signer_email_address;contactMap.get(signatureObj.signer_email_address).Hello_Sign_Status__c = signatureObj.status_code;}
+                        }
                         if(conObj.Account.Hello_Sign_Admin_Sign__c == true && signatureObj.order == 1){contactMap.get(emailString).Hello_Sign_Admin_Status__c = signatureObj.status_code;}
                     }
                 }
@@ -92,9 +94,12 @@ global class HelloSignIntegrationHandler{
     
             Datetime start = System.Now();
             while(System.Now()< start.addSeconds(4)){}
-
-        ID jobID = System.enqueueJob(new HelloSignIntegrationHandlerQueueable(emailNew));
-        System.debug('call queable : '+jobID);
+        
+        if(!Test.isRunningTest()){
+            ID jobID = System.enqueueJob(new HelloSignIntegrationHandlerQueueable(emailNew));
+            System.debug('call queable : '+jobID);
+        }
+        
         }catch(Exception e){
             System.debug('Exception Occur:- '+e.getmessage()+' - Line:-'+e.getLineNumber());
         }

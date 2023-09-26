@@ -13,10 +13,27 @@
     z-index: 1000000;
 }
 .uploadLoader{
-    position: fixed;
+    /* position: fixed;
     top: 49%;
-    left: 49%;
+    left: 49%; */
+    width: 100%;
+    align-items: center;
+    text-align: center;
+    justify-content: center;
+    display: flex;
     z-index: 1000000;
+}
+.spin-loader{
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  display: flex;
+  flex-flow: column nowrap;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000000;
 }
 .loader {
     width: 48px;
@@ -49,9 +66,12 @@
     animation: bump 0.4s ease-in-out infinite alternate;
   }
   .loader_message{
-    position: fixed;
-    top: 54%;
-    left: 39%;
+    width: 100%;
+    padding-top: 18px;
+    display: flex;
+    text-align: center;
+    align-items: center;
+    justify-content: center;
     text-align: center;
     z-index: 1000000;
     color: #fff;

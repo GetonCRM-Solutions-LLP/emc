@@ -138,4 +138,9 @@ public with sharing class EmployeeDetails
     public string appSetting {get;set;}
     public string Businesshours {get;set;}
 	public String lastSynced {get;set;}
+    /** by khuman*/
+    public decimal mileageForDeduction {get;set;}
+    // EMC-2356 Paras Dhanani
+    public String bpCode {get;set;}
+    
 }

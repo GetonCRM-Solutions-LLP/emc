@@ -13,18 +13,23 @@ import {
 export default class MBurseWelcomeInsurance extends LightningElement {
     videoWidth = 396;
     videoHeight = 223;
-    welcomeVideoUrl;
     insuranceVideoUrl;
     nextShow = false;
     nextPreview = false;
+    watchedMeeting = false;
     isPlay = false;
     renderInitialized = false;
     promiseError = false;
+    showBtn = false;
+    checked = false;
+    checkedskip = false;
     driverDetails;
+    renderText = 'Go to step 2'
     @api dayLeft;
     @api contactId;
     @api welcomeInsurance;
     @api insuranceDeclaration;
+		@api driverMeetingUrl;
     @api customSetting;
     // get backgroundStyle() {
     //     return `background-image:url(${background})`;
@@ -33,29 +38,92 @@ export default class MBurseWelcomeInsurance extends LightningElement {
     nextDeclarationUpload() {
         events(this, 'Next Declaration Upload')
     }
-    
+
     nextDeclaration() {
-        // eslint-disable-next-line @lwc/lwc/no-api-reassignments
-        this.welcomeInsurance = false;
-        // eslint-disable-next-line @lwc/lwc/no-api-reassignments
-        this.insuranceDeclaration = true;
-        this.isPlay = false;
+        // var listToContact, contactData
+        // if (this.driverDetails) {
+        //     listToContact = this.driverDetails;
+        //     contactData = this.proxyToObject(listToContact);
+        //     console.log("this", this.watchedMeeting)
+        //     contactData[0].watchMeetingOnBoarding = (this.watchedMeeting === true) ? true : false;
+        //     updateContactDetail({
+        //         contactData: JSON.stringify(contactData),
+        //         driverPacket: false
+        //     }).then(()=>{
+        //         this.toggleHide();
+                const e = new CustomEvent('next', {detail: this.watchedMeeting});
+                this.dispatchEvent(e);
+                  // eslint-disable-next-line @lwc/lwc/no-api-reassignments
+                // this.welcomeInsurance = false;
+                // // eslint-disable-next-line @lwc/lwc/no-api-reassignments
+                // this.insuranceDeclaration = true;
+                // this.isPlay = false;
+          //  })
+       // }
+      
     }
+
+    handleNextMeeting(event) {
+        if(this.checked == false){
+            this.checked = true;
+        }else{
+            this.checked = false;
+        }
+        this.showBtn = (!this.checked) ? false : true;
+        // this.template.querySelector('.skip-check').checked = false;
+        this.checkedskip = false;
+        this.watchedMeeting = this.checked
+    }
+   
+    handleSkipMeeting(event) {
+        if(this.checkedskip == false){
+            this.checkedskip = true;
+        }else{
+            this.checkedskip = false;
+        }
+        this.showBtn = (!this.checkedskip) ? false : true;
+        this.checked = false;
+        // this.template.querySelector('.complete-check').checked = false;
+    }
+
+    removePreview() {
+        var listToContact, contactData
+        if (this.driverDetails) {
+            listToContact = this.driverDetails;
+            contactData = this.proxyToObject(listToContact);
+            contactData[0].insuranceDialogueRemove = true;
+            updateContactDetail({
+                contactData: JSON.stringify(contactData),
+                driverPacket: false
+            })
+                .then(() => {
+                    // eslint-disable-next-line @lwc/lwc/no-api-reassignments
+                    this.welcomeInsurance = false;
+                    // eslint-disable-next-line @lwc/lwc/no-api-reassignments
+                    this.insuranceDeclaration = true;
+                    this.isPlay = false;
+                })
+        }
+    }
+
     proxyToObject(e) {
         return JSON.parse(e)
     }
     toggleHide() {
         var list, status, packetStatus;
         contactInfo({
-                contactId: this.contactId
-            })
+            contactId: this.contactId
+        })
             .then((data) => {
                 if (data) {
                     this.driverDetails = data;
                     list = this.proxyToObject(data);
+                    console.log("list##", data)
+                    this.renderText = (list[0].insuranceStatus !== 'Uploaded') ? 'Go to step 2' : (list[0].driverPacketStatus !== 'Uploaded')
+                    ? 'Go to step 3' : (!list[0].mlogApp) ? 'Go to step 4' : (list[0].insuranceStatus === 'Uploaded' && list[0].driverPacketStatus === 'Uploaded' && list[0].mlogApp && !list[0].watchMeetingOnBoarding) ? 'Go to Dashboard' : this.renderText
                     status = list[0].insuranceStatus;
                     packetStatus = list[0].driverPacketStatus;
-                    this.nextPreview = ((list[0].driverPacketStatus === null && list[0].insuranceStatus === null) || (list[0].driverPacketStatus !== 'Uploaded' &&  (list[0].insuranceStatus === null || list[0].insuranceStatus === 'Skip')) || (list[0].driverPacketStatus === null &&  (list[0].insuranceStatus === null || list[0].insuranceStatus === 'Skip')) || (list[0].driverPacketStatus === 'Uploaded' &&  (list[0].insuranceStatus === null || list[0].insuranceStatus === 'Skip'))) ? false : true;
+                    this.nextPreview = ((list[0].driverPacketStatus === null && list[0].insuranceStatus === null) || (list[0].driverPacketStatus !== 'Uploaded' && (list[0].insuranceStatus === null || list[0].insuranceStatus === 'Skip')) || (list[0].driverPacketStatus === null && (list[0].insuranceStatus === null || list[0].insuranceStatus === 'Skip')) || (list[0].driverPacketStatus === 'Uploaded' && (list[0].insuranceStatus === null || list[0].insuranceStatus === 'Skip'))) ? false : true;
                     if (this.dayLeft === true) {
                         this.nextShow = (status === 'Uploaded' || packetStatus === 'Uploaded') ? true : false;
                     } else {
@@ -119,11 +187,11 @@ export default class MBurseWelcomeInsurance extends LightningElement {
                 contactData[0].insuranceStatus = "Skip";
                 console.log(JSON.stringify(contactData));
                 updateContactDetail({
-                        contactData: JSON.stringify(contactData),
-                        driverPacket: false
-                    }).then(() => {
-                        this.toggleHide();
-                    })
+                    contactData: JSON.stringify(contactData),
+                    driverPacket: false
+                }).then(() => {
+                    this.toggleHide();
+                })
                     .catch((error) => {
                         // If the promise rejects, we enter this code block
                         this.errorMessage = 'Disconnected! Please check your connection and log in';
@@ -134,24 +202,32 @@ export default class MBurseWelcomeInsurance extends LightningElement {
         }
         skipEvents(this, 'Next Declaration Upload');
     }
-    skipToNext(){
+    skipToNext() {
         nextSkipEvents(this, this.driverDetails)
     }
     backToPage() {
-        // let delayInMilliseconds = 100;
-        // eslint-disable-next-line @lwc/lwc/no-api-reassignments
-        this.welcomeInsurance = true;
+        var listFrom, contactData;
+        if (this.driverDetails) {
+            listFrom = this.driverDetails
+            contactData = this.proxyToObject(listFrom);
+            console.log("contact--", listFrom)
+            // eslint-disable-next-line @lwc/lwc/no-api-reassignments
+            this.welcomeInsurance = (!contactData[0].watchMeetingOnBoarding) ? true : false;
+        }
+
+        if (!this.welcomeInsurance) {
+            this.backToPrevious()
+       }
         this.isPlay = false;
         // eslint-disable-next-line @lwc/lwc/no-api-reassignments
         this.insuranceDeclaration = false;
     }
-    backToPrevious(){
-            backEvents(this, 'Next Welcome Page');
+    backToPrevious() {
+        backEvents(this, 'Next Welcome Page');
     }
     connectedCallback() {
         console.log("callback called", this.customSetting)
         let data = this.customSetting;
-        this.welcomeVideoUrl = data.Welcome_Link__c;
         this.insuranceVideoUrl = data.Insurance_Link__c;
     }
 }

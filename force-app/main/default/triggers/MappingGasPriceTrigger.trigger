@@ -2,7 +2,7 @@ Trigger MappingGasPriceTrigger on Employee_Mileage__c (before insert, before upd
     
     TriggerConfig__c customSetting = TriggerConfig__c.getInstance('Defaulttrigger');
     
-    if( Trigger.isInsert && Trigger.isBefore && customSetting.MappingGasPriceTrigger__c)
+    if( Trigger.isInsert && Trigger.isBefore && customSetting.MappingGasPriceTrigger__c )
     {
         Set<String> reimIds = new Set<String>();
         Set<String> reimbursementIds = new Set<String>();
@@ -26,7 +26,6 @@ Trigger MappingGasPriceTrigger on Employee_Mileage__c (before insert, before upd
                                                   Contact_Id__r.AccountId 
                                                   FROM Employee_Reimbursement__c 
                                                   WHERE Id In: reimIds]) {
-                                                      
                                                         if( reim.Month__c.contains('-') 
                                                             && ( String.isNotBlank(reim.Contact_Id__r.MailingCity) || String.isNotBlank(reim.Contact_Id__r.MailingState) ) ) 
                                                         {
@@ -38,15 +37,13 @@ Trigger MappingGasPriceTrigger on Employee_Mileage__c (before insert, before upd
                                                         if(String.isNotBlank(reim.Month__c))
                                                             reimbursementWiseMonthMap.put(reim.Id, reim.Month__c );
                                                         
-                                                        if((System.label.FuelPriceAccId.contains(reim.Contact_Id__r.AccountId))
-                                                            ||  (reim.Contact_Id__r.Vehicle_Type__c.contains('Mileage Rate'))){
-                                                            reimbursementIds.add(reim.Id);
+                                                      if(System.label.FuelPriceAccId.contains(reim.Contact_Id__r.AccountId) || (reim.Contact_Id__r.Vehicle_Type__c != null && reim.Contact_Id__r.Vehicle_Type__c.contains('Mileage Rate'))){
+                                                         reimbursementIds.add(reim.Id);
                                                         }
                                                     }
             
             Set<String> cityStateDate = new Set<String>();
             for(Employee_Mileage__c mil : Trigger.New) {
-                
                 if( mil.Trip_Date__c != null ) {
                     String month = ( mil.Trip_Date__c.month() < 10 ? '0' : '') + mil.Trip_Date__c.month() + '-' + mil.Trip_Date__c.Year();
                     
@@ -64,15 +61,11 @@ Trigger MappingGasPriceTrigger on Employee_Mileage__c (before insert, before upd
                         cityStateDate.add(stateCity);
                     } 
                 }                 
-                
                 if(!reimbursementIds.isEmpty() && reimbursementIds.contains(mil.EmployeeReimbursement__c)){
                     mil.Fuel_Price__c = 0;
                     mil.MPG__c = 0;
                 }
-                
             }
-            
-            System.debug('cityStateDate has no of records ' + cityStateDate);
             if(!cityStateDate.isEmpty())
             {
                 for(Gas_Prices__c gs : [Select Id,
@@ -96,23 +89,19 @@ Trigger MappingGasPriceTrigger on Employee_Mileage__c (before insert, before upd
                                 mil.Fuel_Price__c = gasPriceFuelMap.get(statecity);
                             }
                         } 
-
                         if(!reimbursementIds.isEmpty() && reimbursementIds.contains(mil.EmployeeReimbursement__c)){
                             mil.Fuel_Price__c = 0;
                             mil.MPG__c = 0;
                         }
                     }
                 }
-                
             }
         }
         
     }
-    
     if(customSetting.MappingGasPriceTriggerUpdateConvertedDat__c){
         if(Trigger.isInsert && Trigger.isBefore) {
             MappingGasPriceTriggerHelper.updateConvertedDates(Trigger.new);
-            //MappingGasPriceTriggerHelper.updateBiweekReimId(Trigger.new);
         }
         else if(Trigger.isBefore && Trigger.isUpdate){
             List<Employee_Mileage__c> updateMileagesList = new List<Employee_Mileage__c>();
@@ -120,14 +109,16 @@ Trigger MappingGasPriceTrigger on Employee_Mileage__c (before insert, before upd
             {
                 if(mil.TimeZone__c != Trigger.oldMap.get(mil.id).TimeZone__c 
                    || mil.StartTime__c != Trigger.oldMap.get(mil.id).StartTime__c 
-                   || mil.EndTime__c != Trigger.oldMap.get(mil.id).EndTime__c)
+                   || mil.EndTime__c != Trigger.oldMap.get(mil.id).EndTime__c || mil.Trip_Date__c != Trigger.oldMap.get(mil.id).Trip_Date__c )
                 {
+                    System.debug('mil =='+mil);
+                    System.debug('mil.StartTime__c  =='+mil.StartTime__c );
+                    System.debug('mil.old=='+Trigger.oldMap.get(mil.id).StartTime__c);
                     updateMileagesList.add(mil);
                 }
                  if(mil.Stay_Time__c != 0 && (mil.Tag__c == 'Admin' || mil.Tag__c == 'admin')){
                     mil.Stay_Time__c = 0;
                 }
-                
                 if(mil.Stay_Time__c != 0 && mil.Origin_Name__c != null && mil.Destination_Name__c != null && ((mil.Origin_Name__c).toUppercase() == 'HOME' && (mil.Destination_Name__c).toUppercase() == 'HOME' )){
                     mil.Stay_Time__c = 0;
                 }
@@ -162,7 +153,6 @@ Trigger MappingGasPriceTrigger on Employee_Mileage__c (before insert, before upd
                        if(Trigger.oldMap.get(mil.id).EMP_Mileage__c != null){
                             mil.Mileage_Difference__c = mil.EMP_Mileage__c - Trigger.oldMap.get(mil.id).EMP_Mileage__c;
                        }
-                        
                         mil.Trip_Status__c = Trigger.oldMap.get(mil.id).Trip_Status__c;
                         if(mil.Approved_Date__c != null && Trigger.oldMap.get(mil.Id).Approved_Date__c == null){
                             mil.Approved_Date__c = mil.Approved_Date__c;
@@ -205,16 +195,31 @@ Trigger MappingGasPriceTrigger on Employee_Mileage__c (before insert, before upd
                     } else if (mil.Activity__c == 'Business'){
                          mil.Mileage__c = mil.EMP_Mileage__c;
                     }
-                }
-                
-                
+                }  
             }
             if(!updateMileagesList.isEmpty())
                 MappingGasPriceTriggerHelper.updateConvertedDates(updateMileagesList);
-            
         }
     }
-    
+    /*if(Trigger.isAfter && Trigger.isUpdate && checkRecursive.runOnce()){
+        Set<String> milIdList = new Set<String>();
+         for(Employee_Mileage__c mil : Trigger.New){
+             milIdList.add(mil.Id);
+         }
+         if(milIdList.size() > 0 ){
+             MappingGasPriceTriggerHelper.updateCanadianMileage(milIdList, Trigger.oldMap);
+         }
+     }*/
+     if(Trigger.isAfter && Trigger.isInsert){
+         Set<String> milIdList = new Set<String>();
+         for(Employee_Mileage__c mil : Trigger.New){
+             milIdList.add(mil.Id);
+         }
+         system.debug('milIdList in trigger== '+ milIdList);
+         if(milIdList.size() > 0 ){
+             MappingGasPriceTriggerHelper.updateCanadianMileage(milIdList);
+         }
+     }
     if(Trigger.isAfter && (Trigger.isInsert || Trigger.isUpdate) && customSetting.MappingGasStayTime__c){
         set<Id> reimbursementIdsSet = new set<Id>();
         List<datetime> tripList = new List<datetime>();
@@ -276,6 +281,7 @@ Trigger MappingGasPriceTrigger on Employee_Mileage__c (before insert, before upd
     if(Trigger.isUpdate && Trigger.isAfter && customSetting.Mileage_Lockdate__c && !Test.isRunningTest()){
         MappingGasPriceTriggerHelper.updateMilLockDateBWReim(Trigger.new);
     }
+    
     /*
     if(Trigger.isAfter && Trigger.isUpdate && customSetting.MappingMileage__c){
        //MappingGasPriceTriggerHelper.updateMileages(Trigger.new);

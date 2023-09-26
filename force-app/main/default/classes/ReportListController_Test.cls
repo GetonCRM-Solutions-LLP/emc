@@ -6,9 +6,10 @@ public class ReportListController_Test {
         SendEmail__c sendEmailCustomSetting = TestDataFactory.sendEmailCustomSetting(true, 'Send Email For Compliance');
         IRS_Mileage_Rate__c irsRateObj = TestDataFactory.createIRSRate(true,0);
         TrueDialog_Keys__c tdKeys = TestDataFactory.createTrueDialog(true);
-        List<Address__c> objAddress = TestDataFactory.createAddress(true, 10);
+        List<Address__c> objAddress = TestDataFactory.createAddress(true, 10,0965);
+        //List<Address__c> objAddress = TestDataFactory.createAddress(true, 10);
         Vehicle_URL_Mapping__c vehicleType = TestDataFactory.createVehicleData(true, 3);
-       	vehicleType.Name = '2022 Ford F-150';
+        vehicleType.Name = '2022 Ford F-150';
         vehicleType.vehicle__c = 'Ford F-150';
         vehicleType.Year__c = '2022';
         Update vehicleType;
@@ -41,7 +42,7 @@ public class ReportListController_Test {
             obj_driver_contact = TestDataFactory.createDriverContact(true,obj_acc.Id, 'Driver', vehicleType.Name, 'paras.patel',  1);
             /*obj_driver_contact[0].Vehicle_Type__c = '2022 Ford F-150';
             insert obj_driver_contact ;
-			*/
+            */
             userObj = TestDataFactory.createUser(True, profileObj.Id, obj_driver_contact[0].Id);
         }
 
@@ -94,7 +95,7 @@ public class ReportListController_Test {
             ReportListController.getAccountid();
             ReportListController.getContactid();
             ReportListController.getRedirected();
-            ReportListController.getAllReports();
+            ReportListController.getAllReports(obj_driver_contact[0].Id);
             ReportListController.getRole();
             ReportListController.reimbursementListModal(reimList[0].Id);
             ReportListController.contactListModal(obj_acc.Id);
@@ -112,6 +113,8 @@ public class ReportListController_Test {
             ReportListController.reimbursementWrapper wrapperList = new ReportListController.reimbursementWrapper();
             ReportListController.taxLiabilityReport(obj_acc.Id);
             ReportListController.payPeriodDateList(obj_acc.Id);
+            ReportListController.TripDetailReport(startDate,endDate,string.valueof(obj_acc.Id));
+            //ReportListController.updateLockDate(string.valueof(obj_acc.Id),obj_driver_contact[0].id);
             wrapperList.reimbId = obj_driver_contact[0].id;
             
             wrapperList.name = 'test';

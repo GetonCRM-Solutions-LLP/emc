@@ -3,10 +3,19 @@
         <div class="slds-text-align_center">
             <lightning-layout class="layout-grid">
                 <lightning-layout-item class="layout-grid-item-1">
-                    <button class="slds-btn slds-btn-primary slds-btn-sm waves-effect bc-blue waves-light"
-                        onclick={previousHandler} disabled={disablePrevious}>
-                        <i class="fa-solid fa-chevron-left"></i>
-                    </button>
+                    <template if:false={isIconSlider} >
+                        <button class="slds-btn slds-btn-primary slds-btn-sm waves-effect bc-blue waves-light"
+                            onclick={previousHandler} disabled={disablePrevious}>
+                            <i class="fa-solid fa-chevron-left"></i>
+                        </button>
+                    </template>
+                    <template if:true={isIconSlider} >
+                        <div class="right-icon">
+                            <svg height="30" onclick={previousHandler}  width="30"   xmlns="http://www.w3.org/2000/svg">
+                                <use xlink:href={leftIcon}></use>
+                            </svg>
+                        </div>
+                    </template>
                 </lightning-layout-item>
                 <lightning-layout-item class="layout-grid-item-2">
                     <section class="carousel_wrapper">
@@ -14,22 +23,32 @@
                         <div class="carousel_inner">
                             <template if:true={visibleRecords}>
                                 <template for:each={visibleRecords} for:item="contact">
+                                    <div align="center" key={contact.id} if:true={contact.icon}><img class="icon-unit" src={contact.icon}/></div>
                                     <p align="center" key={contact.id}> <span>{contact.name}</span></p>
                                 </template>
                             </template>
                         </div>
                     </section>
                     <footer class="uI-Carousel-Footer">
-                        <small class="is--text--help">
+                        <small class={countStyle}>
                             <span aria-hidden="true">{currentPage}/{totalPage}</span>
                         </small>
                     </footer>
                 </lightning-layout-item>
                 <lightning-layout-item class="layout-grid-item-3">
-                    <button class="slds-btn slds-btn-primary slds-btn-sm waves-effect bc-blue waves-light"
-                        onclick={nextHandler} disabled={disableNext}>
-                        <i class="fa-solid fa-chevron-right"></i>
-                    </button>
+                    <template if:false={isIconSlider} >
+                        <button class="slds-btn slds-btn-primary slds-btn-sm waves-effect bc-blue waves-light"
+                            onclick={nextHandler} disabled={disableNext}>
+                            <i class="fa-solid fa-chevron-right"></i>
+                        </button>
+                    </template>
+                    <template if:true={isIconSlider} >
+                        <div class="right-icon">
+                            <svg height="30" onclick={nextHandler}  width="30"   xmlns="http://www.w3.org/2000/svg">
+                                <use xlink:href={rightIcon}></use>
+                            </svg>
+                        </div>
+                    </template>
                 </lightning-layout-item>
             </lightning-layout>
         </div>

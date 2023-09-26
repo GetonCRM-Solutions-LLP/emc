@@ -4,5 +4,10 @@
     <columns>NAME</columns>
     <columns>Report_For__c</columns>
     <filterScope>Everything</filterScope>
+    <filters>
+        <field>NAME</field>
+        <operation>equals</operation>
+        <value>Onboarding Status Report</value>
+    </filters>
     <label>All</label>
 </ListView>

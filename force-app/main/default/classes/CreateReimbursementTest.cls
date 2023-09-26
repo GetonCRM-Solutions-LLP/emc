@@ -5,13 +5,8 @@ public with sharing class CreateReimbursementTest {
         SendEmail__c sendEmailCustomSetting = TestDataFactory.sendEmailCustomSetting(true, 'Send Email For Compliance');
         IRS_Mileage_Rate__c obj_IRS_Mileage_Rate_1 = TestDataFactory.createIRSRate(true,0);
         TrueDialog_Keys__c tdKeys = TestDataFactory.createTrueDialog(true);
-        List<Address__c> objAddress = TestDataFactory.createAddress(true, 10);
+        List<Address__c> objAddress = TestDataFactory.createAddress(true, 10, 43567);
         Vehicle_URL_Mapping__c vehicleObj = TestDataFactory.createVehicleData(true,0);
-        //Vehicle_URL_Mapping__c veh = TestDataFactory.createVehicleData(false, 3);
-        //veh.Name = '2019 Full-Size Sedan';
-        //veh.vehicle__c = 'Full-Size Sedan';
-        //veh.
-        //Insert veh;
         
         UserRole uRole = TestDataFactory.getUserRole();
         Profile profileObj = TestDataFactory.getUserProfile();
@@ -27,24 +22,25 @@ public with sharing class CreateReimbursementTest {
             acc.Triplog_API__c = 'fde76cdde14449bea46b321225ac8fd1';
             acc.Pay_Period_Start_Date__c = System.today().addDays(-100);
             acc.Pay_Period_Days__c = 13;
-           // acc.Vehicle_Types__c = veh.Name;
             update acc;
             
             conList = TestDataFactory.createDriverContact(false, acc.Id, 'Driver', vehicleObj.Name, 'paras.dhanani',  1);
-            //conList[0].Vehicle_Type__c =  acc.Vehicle_Types__c;
             Insert conList[0];
             
             system.assertEquals(1, conList.size(), true);
             userObj = TestDataFactory.createUser(True, profileObj.Id, contactObj.Id);
         }    
-       // List<Gas_Prices__c>  gasPriceList = TestDataFactory.createGasPrice(true, 'Denver', Date.today().adddays(-1), 0);
         String lastMonth = Utils.fetchMonths(1, -1)[0];
         
-        List<Employee_Reimbursement__c> reimList = TestDataFactory.createPendingReimbursement(true ,conList,1, obj_IRS_Mileage_Rate_1.Id);
+        List<Employee_Reimbursement__c> reimList = TestDataFactory.createPendingReimbursement(false,conList,2, obj_IRS_Mileage_Rate_1.Id);
+        reimList[0].EmpIdEmailMonth__c = '123';
+        Insert reimList;
         
-        Test.startTest();
+        Test.startTest();    
         CreateReimbursement abc = new CreateReimbursement(); 
         Database.executeBatch(abc);
+        Database.SaveResult sr1 = (Database.SaveResult)
+            JSON.deserialize('{"success":false,"errors":[{"message":"You cannot do this...","statusCode":"FIELD_CUSTOM_VALIDATION_EXCEPTION"}]}', Database.SaveResult.class);
         Test.stopTest();
     }
 }

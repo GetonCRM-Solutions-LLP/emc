@@ -28,15 +28,15 @@ public class CreateBiweeklyReimTest {
         System.runAs(admin) {
             Account account_1 = new Account( Name = 'Test Accounts');
             account_1.Bi_Weekly_Pay_Period__c = true;
-            account_1.Pay_Period_Days__c = 4;
-            account_1.Pay_Period_Start_Date__c = system.today().adddays(-4);
+            account_1.Pay_Period_Days__c = 3;
+            account_1.Pay_Period_Start_Date__c = system.today().adddays(-2);
             insert account_1;
             
             acc = new Account();             
             acc.Name = 'PL Marketing';
             acc.Bi_Weekly_Pay_Period__c = true;
-            acc.Pay_Period_Days__c = 4;
-            acc.Pay_Period_Start_Date__c = system.today().adddays(-4);
+            acc.Pay_Period_Days__c = 3;
+            acc.Pay_Period_Start_Date__c = system.today().adddays(-3);
             insert acc;
             
             
@@ -77,8 +77,11 @@ public class CreateBiweeklyReimTest {
         Bi_Weekly_Reimbursement__c br = new Bi_Weekly_Reimbursement__c();
         br.Name = '04/14/2022 to 04/18/2023'; 
         br.Contact__c = con1.Id;
-        br.Start_Date__c = Date.valueOf('2022-04-14');
-        br.End_Date__c = Date.valueOf('2022-04-18') ;
+        //br.Start_Date__c = Date.valueOf('2022-04-14');
+        br.Start_Date__c = system.today().adddays(-3);
+        br.End_Date__c = system.today() ;
+        
+        //br.End_Date__c = Date.valueOf('2022-04-18') ;
         br.MPG__c = con1.MPG__c;
         br.Maintenance_and_Tires__c = con1.Maintenance_and_Tires__c;
         br.Fixed_Amount__c = con1.Fixed_Amount__c;

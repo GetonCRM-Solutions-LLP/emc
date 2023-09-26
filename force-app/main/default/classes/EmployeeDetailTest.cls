@@ -49,5 +49,23 @@ public class EmployeeDetailTest {
         empDetail.monthlyReimbursement = true;
         empDetail.biWeekReimbursement = false;
         empDetail.timeAttandance = false;
+        empDetail.branchNumber = '12345332';
+        empDetail.monthlymileage = '435';
+        empDetail.IsMassFreeze = false;
+        empDetail.netchexEmployeeID = 'Paras123';
+        empDetail.deptDesign = 'sales';
+        empDetail.deactivationBy = 'Tom Honkus';
+        empDetail.deptPL = 'develoement';
+        empDetail.divison = 'North';
+        empDetail.finalPayrollAmount = '342';
+        empDetail.firstPayrollPer  = '34';
+        empDetail.company = 'PdDeveloper';
+        empDetail.am = 'vafa';
+        empDetail.an = 'dvjhdjks';
+        empDetail.costCode = '1254353';
+        empDetail.appSetting = 'start:MagicTrip.';
+        empDetail.Businesshours = ' Business hours:Mon Tue Wed Thu Fri 3:00 AM-9:00 PM Business. After hours:Personal.';
+        empDetail.lastSynced = '4/20/2023 7:39';
+        empDetail.mileageForDeduction = 55.00;
     }
 }

@@ -21,6 +21,16 @@
                 <default>false</default>
                 <label>Commute</label>
             </value>
+            <value>
+                <fullName>Personal</fullName>
+                <default>false</default>
+                <label>Personal</label>
+            </value>
+            <value>
+                <fullName>Uncategorized</fullName>
+                <default>false</default>
+                <label>Uncategorized</label>
+            </value>
         </valueSetDefinition>
     </valueSet>
 </CustomField>

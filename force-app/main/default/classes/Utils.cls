@@ -227,10 +227,12 @@ public without sharing class Utils {
 
         return options;
     }
+
     //String date Value Convert in to DateTime Fromat
     public Static DateTime ConvertToDateAndTime(String dateVal) {
         Datetime dateTimeOriginal = (DateTime)Json.deserialize('"'+dateVal+'"', DateTime.class);
         System.debug('dateTimeOriginal : '+dateTimeOriginal);
         return dateTimeOriginal;
     }
+
 }

@@ -1,6 +1,7 @@
 public with sharing class EmployeeMileagesForCalculation {
 
     public String reimbursementid {get;set;}
+    public String id {get;set;} //Megha
     public String mileageid {get;set;}
     public String contactid {get;set;}
     public String name {get;set;}
@@ -19,6 +20,13 @@ public with sharing class EmployeeMileagesForCalculation {
     public String mileageApproval {get;set;}
     public String managerEmail {get;set;}
     public String lockDate {get;set;}   
+    public String rejectedMileges {get;set;}  
+    public String rejectedMileages {get;set;}  //Megha
+    public Double totalHighRiskMileages {get;set;}
+    public Double highRiskTotalApproved {get;set;}
+    public Double highRiskTotalRejected {get;set;}
+    public String originalReimbursementid {get;set;}
+    public boolean highRiskMileage{get; set;}
     public EmployeeMileagesForCalculation() {
         
     }

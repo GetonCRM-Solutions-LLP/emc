@@ -9,9 +9,9 @@ public with sharing class EmployeeReimbursementDetailsAdmin
     public String approvedMileages {get;set;}
     public String rejectedMileages {get;set;}
     public String status {get;set;}
-    public String approvedDate {get;set;}   
-    public Boolean isSelected {get;set;}
+    public String approvedDate {get;set;}
     public String lockDate {get;set;}   
+    public Boolean isSelected {get;set;}
     public String managerName {get;set;}
     public Boolean isSelectedEmailReminder {get;set;}
     public Boolean reimbursementApproval {get;set;}

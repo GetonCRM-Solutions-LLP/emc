@@ -66,17 +66,7 @@ public without sharing class ContactTriggerHelper {
     
     public static void  CommunityUserCreate(List<Contact> contactList) {
         List<User> createUserList = new List<User>();
-        list<Profile> profileList = [SELECT
-                                     Id, 
-                                     Name
-                                     FROM
-                                     Profile
-                                     WHERE
-                                     Name = 'Customer Community Login User - Driver' OR 
-                                     Name = 'Customer Community Login User - Manager' OR 
-                                     Name = 'Customer Community Login User - Super Manager' OR 
-                                     Name = 'Customer Community Login User - Manager/Driver' OR 
-                                     Name = 'Customer Community Login User - Super Manager/Driver'];
+        list<Profile> profileList = [SELECT Id, Name FROM Profile WHERE Name = 'Customer Community Login User - Driver' OR  Name = 'Customer Community Login User - Manager' OR  Name = 'Customer Community Login User - Super Manager' OR  Name = 'Customer Community Login User - Manager/Driver' OR  Name = 'Customer Community Login User - Super Manager/Driver'];
         
         Map<string,Id> profilemap = new Map<string,ID>();
         for(Profile profileObj : profileList){
@@ -87,7 +77,7 @@ public without sharing class ContactTriggerHelper {
             } else if(profileObj.Name == 'Customer Community Login User - Manager/Driver'){
                 profilemap.put('Driver/Manager',profileObj.id);
             } else if(profileObj.Name == 'Customer Community Login User - Super Manager/Driver'){
-                profilemap.put(StaticValues.roleAdminDriver ,profileObj.id); 
+                profilemap.put(StaticValues.roleAdminDriver ,profileObj.id);
             }  else if(profileObj.Name == 'Customer Community Login User - Super Manager'){
                 profilemap.put('Admin',profileObj.id);
             }
@@ -99,7 +89,7 @@ public without sharing class ContactTriggerHelper {
         }
         if(createUserList.size()>0) {
             insert createUserList;
-        }            
+    }
     }
     
     public static User CreateUserFROMCommunity(Contact contObj, Id profileId){
@@ -158,7 +148,7 @@ public without sharing class ContactTriggerHelper {
                         mail.setOrgWideEmailAddressId(owea.get(0).Id);
                     }
                     mail.setBccAddresses(new String[] {'minkeshp@askemc.com','sanket.goswami@getoncrm.com'});
-                    mails.add(mail);                    
+                    mails.add(mail);
                 }
             }
         }
@@ -171,10 +161,16 @@ public without sharing class ContactTriggerHelper {
     }
     
     //This method is used when deactivate date is removed and create a new reimbursement for that driver.
-    public static void createReimRecord(List<Contact> newCon, Map<ID, Contact> conOldMap) { 
+    public static void createReimRecord(List<Contact> newCon, Map<ID, Contact> conOldMap) {
         List<Employee_Reimbursement__c> reimToInsert   = new List<Employee_Reimbursement__c>();
         List<Bi_Weekly_Reimbursement__c> bireimToInsert   = new List<Bi_Weekly_Reimbursement__c>();
         map<string, Decimal> gasPriceMap = GetGasPrice();
+        List<IRS_Mileage_Rate__c> objIRSRate = [SELECT id,year__c,IRS_Rate__c FROM IRS_Mileage_Rate__c WHERE year__c =: String.valueOf(System.today().year()) Limit 1];
+        String IRSRateId;
+        if(!objIRSRate.isEmpty()){
+
+        IRSRateId= objIRSRate[0].id;
+        }
         Boolean monthlyReimValue;
 
         for(Contact con : newCon) {
@@ -188,8 +184,8 @@ public without sharing class ContactTriggerHelper {
             if(conOldMap.get(con.id).Deactivated_Date__c != null  && con.Deactivated_Date__c == null && (conOldMap.get(con.id).Deactivated_Date__c != con.Deactivated_Date__c) && con.Activation_Date__c <= System.today()){
                 if(con.Role__c != 'Admin' && con.Role__c != 'Manager') {
                     TriggerConfig__c customSetting = TriggerConfig__c.getInstance('Defaulttrigger');
-                    if(customSetting.ContactTriCommunityReimCreate__c == true) {
-                        reimToInsert.add(CreateReimbursement(con,gasPriceMap));
+                    if(customSetting.ContactTriCommunityReimCreate__c == true && IRSRateId!=null) {
+                        reimToInsert.add(CreateReimbursement(con,gasPriceMap,IRSRateId));
                         if(customSetting.ContactTriBiReimCreate__c == true) {
                             bireimToInsert.add(CreateBiweekReimbursement(con,gasPriceMap,monthlyReimValue));
                         }
@@ -201,7 +197,7 @@ public without sharing class ContactTriggerHelper {
                     upsert reimToInsert;
                     if(!bireimToInsert.isEmpty()){
                         upsert bireimToInsert;
-                    } 
+                    }
                 } catch (DMLException e) {
                     system.debug('DMLException='+e);
                 }
@@ -222,7 +218,7 @@ public without sharing class ContactTriggerHelper {
             fuelPriceDate = date.valueOf(string.valueOf(integer.valueOf(splitDate[0])-1) + '-12' + '-01' );   
         } else {
             fuelPriceDate = date.valueOf(splitDate[0] + '-' + string.valueOf(integer.valueOf(splitDate[1])-1) + '-01');
-        } 
+        }
         SYSTEM.DEBUG('fuelPriceDate===' + fuelPriceDate);
         for(Gas_Prices__c objGasPrice : [SELECT id,
                                          name,
@@ -239,12 +235,11 @@ public without sharing class ContactTriggerHelper {
          return fuelPricereimMap;
     }
     
-    public static Employee_Reimbursement__c CreateReimbursement(Contact con, map<string, Decimal> monthFuelPricereimMap){
+    public static Employee_Reimbursement__c CreateReimbursement(Contact con, map<string, Decimal> monthFuelPricereimMap,String IRSRateId){
         //EMC-283 Update Fuel Price based on the contact city and state as past month's fuel price FROM Gas price object. 
         
         String currentDate = String.valueOf(system.today());
         String[] splitDate = currentDate.split('-');
-        List<IRS_Mileage_Rate__c> objIRSRate = [SELECT id,year__c,IRS_Rate__c FROM IRS_Mileage_Rate__c WHERE year__c =: String.valueOf(System.today().year()) Limit 1];
         String lastMonth = Utils.fetchMonths(1, -1)[0];
         Employee_Reimbursement__c er = new Employee_Reimbursement__c();
         er.Fixed_Amount__c = con.Fixed_Amount__c;
@@ -268,12 +263,17 @@ public without sharing class ContactTriggerHelper {
                 er.Fuel_Price__c = 0;
             }
         }
-        er.IRS_Mileage_Rate__c = objIRSRate.size() > 0 ? objIRSRate[0].ID : null;
+        er.IRS_Mileage_Rate__c = IRSRateId;
         return er;
     }    
     public static void  communityReimCreate(List<Contact> contactList) {
         List<Employee_Reimbursement__c> reimToInsert   = new List<Employee_Reimbursement__c>();
         List<Bi_Weekly_Reimbursement__c> bireimToInsert   = new List<Bi_Weekly_Reimbursement__c>();
+        List<IRS_Mileage_Rate__c> objIRSRate = [SELECT id,year__c,IRS_Rate__c FROM IRS_Mileage_Rate__c WHERE year__c =: String.valueOf(System.today().year()) Limit 1];
+        String IRSRateId;
+        if(!objIRSRate.isEmpty()){
+             IRSRateId= objIRSRate[0].id;
+        }
         map<string, Decimal> gasPriceMap = GetGasPrice();
         Boolean monthlyReimValue;
 
@@ -290,9 +290,9 @@ public without sharing class ContactTriggerHelper {
                 putHTTP(con.AccountId,con.External_Email__c);
             }
             if(con.Role__c != 'Admin' && con.Role__c != 'Manager' && con.Deactivated_Date__c == null) {
-                if(con != null && customSetting.ContactTriCommunityReimCreate__c == true) {
-                    reimToInsert.add(CreateReimbursement(con,gasPriceMap));
-                    if(customSetting.ContactTriBiReimCreate__c == true) {
+                if(con != null && customSetting.ContactTriCommunityReimCreate__c == true && IRSRateId!=null ) {
+                    reimToInsert.add(CreateReimbursement(con,gasPriceMap,IRSRateId));
+                    if(customSetting.ContactTriBiReimCreate__c == true ) {
                         bireimToInsert.add(CreateBiweekReimbursement(con,gasPriceMap,monthlyReimValue)); 
                     }
                 }               
@@ -397,7 +397,7 @@ public without sharing class ContactTriggerHelper {
                                      FROM Account 
                                      WHERE Id =: accountID];
          if(accountList.size() > 0 && accountList[0].MburseDashboardRedirect__c == false){
-            String MLOGACCOUNT = System.Label.Triplog_New_URL  + ',' + System.Label.Triplog_New_URL2;        
+            String MLOGACCOUNT = System.Label.Triplog_New_URL  + ',' + System.Label.Triplog_New_URL2;
             String body, apiToken;
             
             if(accountList.size() > 0 ){
@@ -417,7 +417,7 @@ public without sharing class ContactTriggerHelper {
             HttpResponse putRes = new HttpResponse();
             
             putReq.setEndpoint(rosterURL);
-            putReq.setMethod('PUT');                 
+            putReq.setMethod('PUT');
             putReq.setBody(body);
             putReq.setTimeout(120000);
             putReq.setHeader('Authorization', 'apikey ' + apiToken);
@@ -675,23 +675,23 @@ New Contact is created at that time we have to update plan parameter section's f
                                 }    else {
                                     con.Vehicle_Value__c = null;
                                 }
-/*
-        EMC-372        
-based On the activation date of drivers compliance mileages auto calculate.
-Maximum Compliance Mileages per year is 5000 mileage.
+                /*
+                        EMC-372        
+                based On the activation date of drivers compliance mileages auto calculate.
+                Maximum Compliance Mileages per year is 5000 mileage.
 
-for single month compliance mileages are  5000/12 =  416.66666
-now if the contact is activated from 1st date of the moth to 7th date of the month than compliance mileages for that month is  416.66666
-if Driver is activate from 8th to 15th date of the month than compliance mileages for that month is (416.6666/4) * 3 = 312.495(three week of proration)
-if Driver is activate from 16th to 23th date of the month than compliance mileages for that month is (416.6666/4) * 2 = 208.33(Two week of proration)
-And if Driver is activate after 23th date of the month than compliance mileages for that month is 416.6666/4 = 104.165(One week of proration)
+                for single month compliance mileages are  5000/12 =  416.66666
+                now if the contact is activated from 1st date of the moth to 7th date of the month than compliance mileages for that month is  416.66666
+                if Driver is activate from 8th to 15th date of the month than compliance mileages for that month is (416.6666/4) * 3 = 312.495(three week of proration)
+                if Driver is activate from 16th to 23th date of the month than compliance mileages for that month is (416.6666/4) * 2 = 208.33(Two week of proration)
+                And if Driver is activate after 23th date of the month than compliance mileages for that month is 416.6666/4 = 104.165(One week of proration)
 
-Example :- 
-if any driver is activate on the 5th of march than Compliance Mileages are 10(From March to December )*416.6666 = 416.666
-if driver is activate on the 8th of march than Compliance Mileages are (9 (From April to December )* 416.6666) + 312.495(March month 3 Weeks of Prorations) = 4062.4944
-if driver is activate on the 20th of march than Compliance Mileages are (9(From April to December )* 416.6666) + 208.33 (March month's 2 Weeks of Prorations) = 3958.33
-if driver is activate on the 28th of march than Compliance Mileages are (9 (From April to December )* 416.6666) + 104.165 (March month's 1 Weeks of Prorations) = 3854.1644
-*/
+                Example :- 
+                if any driver is activate on the 5th of march than Compliance Mileages are 10(From March to December )*416.6666 = 416.666
+                if driver is activate on the 8th of march than Compliance Mileages are (9 (From April to December )* 416.6666) + 312.495(March month 3 Weeks of Prorations) = 4062.4944
+                if driver is activate on the 20th of march than Compliance Mileages are (9(From April to December )* 416.6666) + 208.33 (March month's 2 Weeks of Prorations) = 3958.33
+                if driver is activate on the 28th of march than Compliance Mileages are (9 (From April to December )* 416.6666) + 104.165 (March month's 1 Weeks of Prorations) = 3854.1644
+                */
                                 if(con.Activation_Date__c != null){
                                    splitactivationdate = String.valueOf(con.Activation_Date__c).split('-');
                                     system.debug('splitactivationdate==' + splitactivationdate[1]);
@@ -746,5 +746,245 @@ if driver is activate on the 28th of march than Compliance Mileages are (9 (From
         if(updateConList.size() > 0){
             Update updateConList;
         }
+    }
+    /*********************************************************************************************************************************
+     * this class update the value of map_country field on the contact with every change in zipcode of contact in the contact object * 
+     *********************************************************************************************************************************/
+    @future(callout=true)
+    public static void updateMapCountry(set<String> conlist1){
+        list<contact> conlist =[SELECT id,Map_Country__c,MailingPostalCode FROM contact WHERE id IN :conlist1 AND MailingPostalCode!=null];
+        list<contact> conlistUpdated =new list<contact>();
+            for(contact con :conlist){
+                String zipCode= con.MailingPostalCode;
+                Http h = new Http();
+                HttpRequest req = new HttpRequest();
+                req.setEndpoint('https://maps.googleapis.com/maps/api/geocode/json?address='+zipCode+'&sensor=false&key=AIzaSyDnaP6tZBTFOCUpfNbCXMZwnLDTQ3aOrug');
+                req.setMethod('GET');
+                req.setTimeout(5000);
+                try{
+                    HttpResponse res = h.send(req);
+                    // System.debug('res.getBody(): '+res.getBody());
+                    Map<String, Object> jsonMap = (Map<String, Object>) JSON.deserializeUntyped(res.getBody());
+                    List<Object> results = (List<Object>) jsonMap.get('results');
+                    if (results != null && !results.isEmpty()) {
+                        Map<String, Object> firstResult = (Map<String, Object>) results[0];
+                        String formattedAddress = (String) firstResult.get('formatted_address');
+                    // Print the result or use it as needed
+                        System.debug(formattedAddress);
+                        String Country ;
+                        Country = formattedAddress.substring(formattedAddress.lastindexOf(',')+1);
+                        System.debug(Country);
+                
+                        con.Map_Country__c=country;
+                        conlistUpdated.add(con);
+                    }
+                }
+                catch (Exception e) {
+                    system.debug(e);
+                }
+            if(!conlistUpdated.isEmpty()){
+                update conlistUpdated;  
+            }
+        }
+    }
+    /**************************************************************************************************************************************************************************
+     * this method is there to create the user in mlog when the role is changed in the org from manager to driver manager and creating reimbersemner and biweekreimbersement  *
+     **************************************************************************************************************************************************************************/
+    public static void creatuserreimbermentrecrds(List<Contact> newCon, Map<ID, Contact> conOldMap){
+        System.debug('inside the if statemen 5');
+        List<Employee_Reimbursement__c> reimToInsert   = new List<Employee_Reimbursement__c>();
+        List<Bi_Weekly_Reimbursement__c> bireimToInsert   = new List<Bi_Weekly_Reimbursement__c>();
+        map<string, Decimal> gasPriceMap = GetGasPrice();
+        List<IRS_Mileage_Rate__c> objIRSRate = [SELECT id,year__c,IRS_Rate__c FROM IRS_Mileage_Rate__c WHERE year__c =: String.valueOf(System.today().year()) Limit 1];
+        Profile userProfile = [SELECT Id, Name FROM Profile WHERE   Name = 'Customer Community Login User - Manager/Driver' limit 1];
+        System.debug('inside the if statemen 6');
+        String IRSRateId;
+        if(!objIRSRate.isEmpty()){
+
+        IRSRateId= objIRSRate[0].id;
+        }
+    
+
+        for(Contact con : newCon) {
+            TriggerConfig__c customSetting = TriggerConfig__c.getInstance('Defaulttrigger');
+            
+            System.debug('inside the if statemen 7');
+            System.debug('inside the if statemen 1');
+            if(customSetting.ContactTriCommunityReimCreate__c == true && IRSRateId!=null) {
+                System.debug('inside the if statemen 2');
+                reimToInsert.add(CreateReimbursement(con,gasPriceMap,IRSRateId));
+                if(customSetting.ContactTriBiReimCreate__c == true) {
+                    System.debug('inside the if statemen 3');
+                    bireimToInsert.add(CreateBiweekReimbursement(con,gasPriceMap,con.Monthly_Reimbursement__c));
+                }
+            }
+                
+            
+            if(!reimToInsert.isEmpty()){
+                try{
+                    upsert reimToInsert;
+                    if(!bireimToInsert.isEmpty()){
+                        upsert bireimToInsert;
+                    }
+                } catch (DMLException e) {
+                    system.debug('DMLException='+e);
+                }
+            }
+
+        
+            list<ContentDocumentLink> cdl = [SELECT ContentDocument.title,LinkedEntityId,ContentDocumentId FROM ContentDocumentLink WHERE LinkedEntityId  =:  con.Id AND ContentDocument.Title like '%Driver Agreement%'ORDER BY ContentDocument.CreatedDate];
+            if(Test.isRunningTest()){
+                cdl.clear();
+            }
+            if(cdl.isempty()){
+                
+            List<ContentDocumentLink> lstContentDocumentLink = new List<ContentDocumentLink>();
+                
+            for(ContentDocumentLink cdl1 : [SELECT ContentDocument.title,LinkedEntityId,ContentDocumentId FROM ContentDocumentLink WHERE LinkedEntityId  =:  con.AccountId AND ContentDocument.Title like '%Driver Agreement%' ORDER BY ContentDocument.CreatedDate DESC LIMIT 1]){
+                ContentDocumentLink objCDL = new ContentDocumentLink();
+                objCDL.ContentDocumentId = cdl1.ContentDocumentId;
+                objCDL.LinkedEntityId = con.Id;
+                objCDL.ShareType = 'I';
+                objCDL.Visibility = 'AllUsers';
+                lstContentDocumentLink.add(objCDL);
+            }
+            
+            if(lstContentDocumentLink != null && lstContentDocumentLink.size() > 0 && !Test.isRunningTest()){
+                Insert lstContentDocumentLink;
+            }
+            if(con.Triplog_UserID__c==null){
+                list<Id> conIdList=new list<Id>{con.id};
+                RosterController.postHTTPCreateNewUserTriplog(conIdList);
+                system.debug('after creating user in the mlog ');
+            }else{
+                updateUserInMlog(con.id);
+            }
+            
+            }
+            
+        
+        
+        }
+
+    }
+    @future(callout=true)
+    public static void updateUserInMlog(String conId){
+        System.debug('IN updateUserInMlog');
+        Http h;
+        HttpRequest req;
+        HttpResponse res;
+        String mLOGACCOUNT = System.Label.Triplog_New_URL + ',' + System.Label.Triplog_New_URL2;
+        for(Contact conObj : [SELECT id,Triplog_UserID__c,Email, Account.Triplog_API__c  FROM Contact WHERE id =: conId]) {
+            if(conObj.Triplog_UserID__c != null && conObj.Account.Triplog_API__c != null){
+                String baseURL = !mLOGACCOUNT.Contains( conObj.Account.Triplog_API__c ) ? StaticValues.TRIPLOG_BASEURL : StaticValues.MLOG_BASEURL;
+                JSONGenerator gen = JSON.createGenerator(true);
+                gen.writeStartObject();
+                gen.writeStringField('isDriver','true');
+                gen.writeEndObject();
+                h = new Http();
+                req = new HttpRequest();
+                req.setEndpoint( baseURL + StaticValues.DEACTIVATE_USER_SUFFIX+'/'+conObj.Triplog_UserID__c);
+                String st=baseURL + StaticValues.DEACTIVATE_USER_SUFFIX;
+                system.debug('st--->>'+st);
+                req.setMethod('PUT');
+                req.setTimeout(120000);
+                req.setbody(gen.getAsString());
+                req.setHeader('Content-Type', 'application/json');
+                req.setHeader('Authorization', 'apikey '+ conObj.Account.Triplog_API__c);
+                if(!Test.isRunningTest())
+                {
+                    res = h.send(req);
+                    system.debug('response--->>> '+res.getbody());
+                }
+            }
+        }
+    }
+    @future
+    public static void updateUser(String conId,String role){
+        list<Profile> profileList = [SELECT Id, Name FROM Profile WHERE Name = 'Customer Community Login User - Driver' OR  Name = 'Customer Community Login User - Manager' OR  Name = 'Customer Community Login User - Super Manager' OR  Name = 'Customer Community Login User - Manager/Driver' OR  Name = 'Customer Community Login User - Super Manager/Driver'];
+                
+        Map<string,Id> profilemap = new Map<string,ID>();
+        for(Profile profileObj : profileList){
+            if(profileObj.Name == 'Customer Community Login User - Driver' ){
+                profilemap.put('Driver',profileObj.id);
+            } else if(profileObj.Name == 'Customer Community Login User - Manager'){
+                profilemap.put('Manager',profileObj.id);
+            } else if(profileObj.Name == 'Customer Community Login User - Manager/Driver'){
+                profilemap.put('Driver/Manager',profileObj.id);
+            } else if(profileObj.Name == 'Customer Community Login User - Super Manager/Driver'){
+                profilemap.put(StaticValues.roleAdminDriver ,profileObj.id);
+            }  else if(profileObj.Name == 'Customer Community Login User - Super Manager'){
+                profilemap.put('Admin',profileObj.id);
+            }
+        }
+
+        System.debug('inside the if statemen 4');
+        List<User> conUser = new list<User>() ;
+        conUser = [SELECT id FROM User WHERE ContactId =: conId limit 1];
+        if(conUser.size()>0){
+            conUser[0].profileId=profilemap.get(role);
+        }
+        update conUser;
+    }
+    
+    /*EMC-2227
+     * Description :- This Method is used to update Employee Mileage from mile to kelometer id the Driver's 
+     * map Contry field on contact is updated from other map contry to "CANADA" than Actual Mileage field 
+     * on Employee mileage object of that driver is update as "Actual Mileage * 1.609".
+     *Precondition :- Trip status is not approved Yet.
+     *  
+     * 
+     * Author :- PARAS DHANANI
+     * Created Date :-18/09/2023 
+     */ 
+    public static void updtcanadianmil(List<Contact> conList, Map<Id, contact> conOldMap){
+        system.debug('conList==' + conList);
+        system.debug('conOldMap==' + conOldMap);
+        set<Id> conIdList = new set<Id>();
+        for(contact con: conList){
+            if(con.Role__c != 'Admin' || con.Role__c != 'Manager'){
+                if(conOldMap.get(con.ID).Map_Country__c != 'CANADA' && con.Map_Country__c ==  'CANADA'){
+                    conIdList.add(con.Id);
+                }
+            }
+            
+            List<Employee_Mileage__c> updateMilList = new List<Employee_Mileage__c>();
+            for(Employee_Mileage__c mil : [SELECT id,EMP_Mileage__c 
+                                           FROM Employee_Mileage__c 
+                                           WHERE EmployeeReimbursement__r.Contact_Id__c =: conIdList
+                                               AND Trip_Status__c = 'Not Approved Yet'
+                                               AND Activity__c = 'Business'
+                                               AND EmployeeReimbursement__r.Status__c = 'Pending' ]){
+                                                mil.EMP_Mileage__c = (mil.EMP_Mileage__c != null) ? mil.EMP_Mileage__c * 1.609 :mil.EMP_Mileage__c;
+                                                   updateMilList.add(mil);
+                                           }
+            system.debug('conOldMap==' + conOldMap);
+            if(updateMilList.size() > 0){
+                update updateMilList;
+            }
+        }
+    }
+    /*EMC-2227
+     * Description :-this method update username and email of the user when the external email is changed on the contact
+     *Email field on the contact is changed to trigger this method
+     * username and email is changed of the related user
+     *
+     *   
+     * Author :- KHUMAN SINGH
+     * Created Date :-21/09/2023 
+     */
+    @future
+    public static void updateEmailOfUser( set<String> conLstId){
+        list<user>updateduser= new List<user>();
+        for(String con :conLstId ){
+            List<User> conUser = new list<User>() ;
+            conUser = [SELECT id,contact.External_Email__c ,Email ,Username  FROM User WHERE ContactId =: con limit 1];
+            if(conUser.size()>0){
+                conUser[0].Email=conUser[0].contact.External_Email__c;
+                conUser[0].Username=conUser[0].contact.External_Email__c;
+                updateduser.add(conUser[0]);
+            }
+        }
+        update updateduser;
     }
 }

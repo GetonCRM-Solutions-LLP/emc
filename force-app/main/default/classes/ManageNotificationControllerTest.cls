@@ -32,6 +32,8 @@ public class ManageNotificationControllerTest {
             conManagerList = TestDataFactory.createDriverContact(true, acc.Id, 'Manager', vehicleObj.Name, 'dialg.email', 1);
             conList = TestDataFactory.createDriverContact(false, acc.Id, 'Driver', vehicleObj.Name, 'test.email', 1);
             conList[0].Manager__c = conManagerList[0].Id;
+             conList[0].Notification_Message__c = 'Test Message';
+             conList[0].Notification_Date__c = system.today();
             insert conList;
             userObj = TestDataFactory.createUser(true, profileObj.Id, conList[0].Id);
         }
@@ -59,6 +61,8 @@ public class ManageNotificationControllerTest {
             ManageNotificationController.editInlineNewEmployee(json3 ,conAdminList[0].Id);
             ManageNotificationController.UploadLOA(json4,Acc.Id,'2021-06-30','2021-08-31');
             ManageNotificationController.DeleteTrips(conAdminList[0].Id);
+            ManageNotificationController.clearMassNotification(Acc.Id);
+            ManageNotificationController.clearNotification(conList[0].Id );
             String response = ManageNotificationController.ImportMileage(Acc.Id);
             String json5 = '[{"totalMileage":"0.00","reimbursementId":null,"mpg":null,"maintaincetyre":null,"iseditable":false,"fuelprice":null,"driverName":"Priyanka Gajera","contactId":null,"contactEmail":"test.email1@gmail.com"}]';
             ManageNotificationController.UpdateImportMileage(json5 );
@@ -77,7 +81,8 @@ public class ManageNotificationControllerTest {
         TriggerConfig__c triggerCustomSetting = TestDataFactory.triggerConfigCustomSetting(true);
         SendEmail__c sendEmailCustomSetting = TestDataFactory.sendEmailCustomSetting(true, 'Send Email For Compliance');
         IRS_Mileage_Rate__c irsRateObj = TestDataFactory.createIRSRate(true,0);
-        List<Address__c> objAddress = TestDataFactory.createAddress(true, 10);
+        List<Address__c> objAddress = TestDataFactory.createAddress(true, 10, 0956);
+        //List<Address__c> objAddress = TestDataFactory.createAddress(true, 10);
         TrueDialog_Keys__c tdKeys = TestDataFactory.createTrueDialog(true);
 
         Vehicle_URL_Mapping__c vehicleType = TestDataFactory.createVehicleData(false, 3);
@@ -150,7 +155,8 @@ public class ManageNotificationControllerTest {
         TriggerConfig__c triggerCustomSetting = TestDataFactory.triggerConfigCustomSetting(true);
         SendEmail__c sendEmailCustomSetting = TestDataFactory.sendEmailCustomSetting(true, 'Send Email For Compliance');
         IRS_Mileage_Rate__c irsRateObj = TestDataFactory.createIRSRate(true,0);
-        List<Address__c> objAddress = TestDataFactory.createAddress(true, 10);
+        List<Address__c> objAddress = TestDataFactory.createAddress(true, 10,0986);
+        //List<Address__c> objAddress = TestDataFactory.createAddress(true, 10);
         TrueDialog_Keys__c tdKeys = TestDataFactory.createTrueDialog(true);
 
         Vehicle_URL_Mapping__c vehicleType = TestDataFactory.createVehicleData(false, 3);

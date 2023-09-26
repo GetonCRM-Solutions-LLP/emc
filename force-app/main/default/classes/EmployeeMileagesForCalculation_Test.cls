@@ -18,5 +18,11 @@ public class EmployeeMileagesForCalculation_Test {
         obj.managerEmail = 'test@gmail.com';
         obj.reimbursementApproval = true;
         obj.status = 'Approve';
+        obj.lockDate = String.valueOf(System.today());
+        obj.rejectedMileges = '30';   
+		obj.rejectedMileages = '40';   
+        obj.totalHighRiskMileages = 34.3; 
+        obj.highRiskTotalApproved = 34.3; 
+        obj.highRiskTotalRejected = 34.3; 
     }
 }

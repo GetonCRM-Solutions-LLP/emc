@@ -4,7 +4,8 @@
         window.zESettings = {
           webWidget: {
             offset: {
-              horizontal: '20px'
+              horizontal: '20px',
+              vertical: '5px'
             }
           }
         };

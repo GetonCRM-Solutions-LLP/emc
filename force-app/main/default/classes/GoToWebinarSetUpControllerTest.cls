@@ -8,8 +8,9 @@ public with sharing class GoToWebinarSetUpControllerTest {
         TriggerConfig__c customEmailSetting = TestDataFactory.triggerConfigCustomSetting(true);
         TrueDialog_Keys__c trueDialogCustom = TestDataFactory.createTrueDialog(true);
         Vehicle_URL_Mapping__c veh = TestDataFactory.createVehicleData(true,0);
+        IRS_Mileage_Rate__c irsRateObj = TestDataFactory.createIRSRate(true,0);
         
-        IRS_Mileage_Rate__c irsRate = TestDataFactory.createIRSRate(true,2023);
+        //IRS_Mileage_Rate__c irsRate = TestDataFactory.createIRSRate(true,2023);
 
         Gas_Prices__c gasprice = new Gas_Prices__c();
         gasprice.City__c = 'Atlanta';

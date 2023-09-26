@@ -1,7 +1,14 @@
 <aura:application  access="GLOBAL" extends="ltng:outApp" >
-    <aura:dependency resource="homePageComponent"/>
-    <aura:dependency resource="driverProfile"/>
-    <aura:dependency resource="mBursePlanInfo"/>
-    <aura:dependency resource="dashboardUploadInsurance"/>
-    <aura:dependency resource="mBurseSMS"/>
+    <aura:dependency resource="c:homePageComponent"/>
+    <aura:dependency resource="c:driverProfile"/>
+    <aura:dependency resource="c:mBursePlanInfo"/>
+    <aura:dependency resource="c:dashboardUploadInsurance"/>
+    <aura:dependency resource="c:mBurseSMS"/>
+    <aura:dependency resource="c:mBurseDriverMeeting"/>
+    <aura:dependency resource="c:locationNewMburse"/>
+    <aura:dependency resource="c:adminLoginNew"/>
+    <aura:dependency resource="c:driverDashboardFrame"/>
+    <aura:dependency resource="c:adminDashboardFrame"/>
+    <aura:dependency resource="c:managerDashboardFrame"/>
+    <aura:dependency resource="c:onboardingPlanInfo" />
 </aura:application>

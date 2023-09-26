@@ -30,18 +30,19 @@ public without sharing class MappingGasPriceTriggerHelper{
                 timeZoneMap.put(currentReimbursement.id,currentReimbursement.Contact_Id__r.Time_Zone__c);
             } 
         }
+        
         for(Employee_Mileage__c currentMileage : mileagesList) {
-            
             if(timeZoneMap.containsKey(currentMileage.EmployeeReimbursement__c)) {
                 currentMileage.TimeZone__c = timeZoneMap.get(currentMileage.EmployeeReimbursement__c);
                 if(currentMileage.StartTime__c != null) 
                 {
+                    
                     currentMileage.ConvertedStartTime__c = ConvertDateTimeGMT(currentMileage.StartTime__c, currentMileage.TimeZone__c).addHours(HoursToAdjust(currentMileage.StartTime__c, DSTzconfig, currentMileage.TimeZone__c));
+                    system.debug('ConvertedStartTime__c' +  currentMileage.ConvertedStartTime__c);
                     currentMileage.Trip_Date__c = currentMileage.ConvertedStartTime__c.date();
+                     system.debug('Tripdate' +  currentMileage.Trip_Date__c);
                     currentMileage.Day_Of_Week__c = currentMileage.ConvertedStartTime__c.format('EEEE');
-                    System.debug('currentMileage.ConvertedStartTime__c: '+currentMileage.ConvertedStartTime__c);
                     strTime = getConvertTime(currentMileage.ConvertedStartTime__c);
-                    System.debug('strTime : '+strTime );
                 }
                 
                 if(currentMileage.EndTime__c != null ) {
@@ -54,7 +55,7 @@ public without sharing class MappingGasPriceTriggerHelper{
                     currentMileage.Time_In_High_Risk__c = checkTimeVal(strTime,endTime);
                 }                
             }
-        }
+        } 
     }
     
     public static string getConvertTime(Datetime dt){
@@ -243,18 +244,22 @@ public without sharing class MappingGasPriceTriggerHelper{
                         system.debug('else part contactName='+contactName);
                     }
                     
+                    System.debug('erNameMap: '+erNameMap);
                     if(erNameMap.containsKey(contactName)) {
+                        System.debug('inside Map: '+StaticValues.isCalledFromReimTri);
                         Employee_Mileage__c em = new Employee_Mileage__c();
                         em.id = empMil.id;
                         em.EmployeeReimbursement__c = erNameMap.get(contactName);
                         if(StaticValues.isCalledFromReimTri == true){
                             emToUpdate.add(em);
+                            System.debug('emToUpdate: '+emToUpdate);
                         }
                     }   
                 }   
             }
         }
         if(!emToUpdate.isEmpty()){
+            System.debug('emToUpdate2: '+emToUpdate);
             update emToUpdate;
         }
     }
@@ -350,11 +355,45 @@ public without sharing class MappingGasPriceTriggerHelper{
                         objMil.Mileage__c = 0;
                 }
                 mileageList.add(objMil);
-            }
+            } 
             milmap.putall(mileageList);
             if(milmap.size()>0){
                 update milmap.values();
             }
+        }
+    }
+    /*Public Static void updateCanadianMileage(Set<String> milIdList, Map<ID, Employee_Mileage__c> milOldMap){
+        List<Employee_Mileage__c> milListUpdate = new List <Employee_Mileage__c>();
+        for(Employee_Mileage__c mil : [SELECT id,EmployeeReimbursement__r.Contact_Id__r.Map_Country__c,EMP_Mileage__c,Activity__c,Map_Country__c  
+                                            FROM Employee_Mileage__c 
+                                       			WHERE Id =: milIdList 
+                                      				AND Trip_Status__c = 'Not Approved Yet' ]){
+                                                if(mil.Activity__c == 'Business'){
+                                                    if(milOldMap.get(mil.id).Map_Country__c != 'CANADA' && mil.Map_Country__c == 'CANADA'){
+                                                        mil.EMP_Mileage__c = mil.EMP_Mileage__c * 1.609;
+                                                        milListUpdate.add(mil);
+                                                    }
+                                                }
+        }
+        if(!milListUpdate.isEmpty()){
+            upsert milListUpdate;
+        }
+    }*/
+    Public Static void updateCanadianMileage( Set<String> milIdList){
+        system.debug('milIdList=='+ milIdList );
+        List<Employee_Mileage__c> milListUpdate = new List <Employee_Mileage__c>();
+        for(Employee_Mileage__c mil : [SELECT id,EmployeeReimbursement__r.Contact_Id__r.Map_Country__c,EMP_Mileage__c,Activity__c,Trip_Status__c  
+        FROM Employee_Mileage__c 
+               WHERE Id =: milIdList 
+                  AND Trip_Status__c = 'Not Approved Yet' 
+                  AND Activity__c = 'Business'
+                  AND EmployeeReimbursement__r.Contact_Id__r.Map_Country__c = 'CANADA']){
+                    mil.EMP_Mileage__c = mil.EMP_Mileage__c * 1.609;
+                    milListUpdate.add(mil);  
+        }
+        system.debug('milListUpdate=='+ milListUpdate );
+        if(!milListUpdate.isEmpty()){
+            update milListUpdate;
         }
     }
 }

@@ -22,7 +22,8 @@ public with sharing class BiWeeklyWrapperUtils {
             startDate = String.valueof(date.valueof(enddate).addDays(1));
         }
         system.debug('dateRange.size()=='+dateRange.size());
-         system.debug('dateRange.size()=='+dateRange);
+         system.debug('dateRange =='+dateRange);
+         
         if(dateRange.size() == 0){
             return null;
         } else {
@@ -70,6 +71,7 @@ public with sharing class BiWeeklyWrapperUtils {
                                                     Total_Approved__c,
                                                     Total_Mileage__c,
                                                     Status__c,
+                                                    Mileage_Lock_Date__c,
                                                     Reimbursement_Approval__c 
                                                 FROM Bi_Weekly_Reimbursement__c 
                                                 WHERE Contact__r.Accountid = :accountId 
@@ -91,7 +93,8 @@ public with sharing class BiWeeklyWrapperUtils {
                                                     Total_Approved__c, 
                                                     Total_Mileage__c, 
                                                     Status__c,
-                                                    Reimbursement_Approval__c 
+                                                    Reimbursement_Approval__c,
+                                                    Mileage_Lock_Date__c
                                             FROM Bi_Weekly_Reimbursement__c 
                                                 WHERE Contact__r.Accountid = :accountId 
                                                 and Name =: payPeriodName
@@ -118,7 +121,8 @@ public with sharing class BiWeeklyWrapperUtils {
                                                     Total_Approved__c, 
                                                     Total_Mileage__c, 
                                                     Status__c,
-                                                    Reimbursement_Approval__c 
+                                                    Reimbursement_Approval__c,
+                                                    Mileage_Lock_Date__c 
                                             FROM Bi_Weekly_Reimbursement__c 
                                             WHERE Contact__r.Accountid = :accountId 
                                             AND Contact__r.Deactivated_Date__c = null
@@ -145,7 +149,8 @@ public with sharing class BiWeeklyWrapperUtils {
                                                     Total_Approved__c, 
                                                     Total_Mileage__c, 
                                                     Status__c,
-                                                    Reimbursement_Approval__c 
+                                                    Reimbursement_Approval__c,
+                                                    Mileage_Lock_Date__c 
                                             FROM Bi_Weekly_Reimbursement__c 
                                             WHERE Contact__r.Accountid = :accountId 
                                             AND Contact__r.Deactivated_Date__c = null
@@ -166,7 +171,8 @@ public with sharing class BiWeeklyWrapperUtils {
                                                     Total_Approved__c, 
                                                     Total_Mileage__c, 
                                                     Status__c,
-                                                    Reimbursement_Approval__c 
+                                                    Reimbursement_Approval__c,
+                                                    Mileage_Lock_Date__c  
                                             FROM Bi_Weekly_Reimbursement__c 
                                             WHERE Contact__r.Accountid = :accountId 
                                             AND Contact__r.Deactivated_Date__c = null];
@@ -204,6 +210,15 @@ public with sharing class BiWeeklyWrapperUtils {
         } else {
             employeeReimbursement.approvedDate = '';
         }
+        if(currentEmployeeReimbursement.Mileage_Lock_Date__c != null) {
+            if(String.valueOf(currentEmployeeReimbursement.Mileage_Lock_Date__c).contains('-')) {
+                List<String> approvedDateSplitted = new List<String>();
+                approvedDateSplitted = String.valueOf(currentEmployeeReimbursement.Mileage_Lock_Date__c).split('-');
+                employeeReimbursement.lockDate = approvedDateSplitted[1]+'/'+approvedDateSplitted[2]+'/'+approvedDateSplitted[0].substring(2,4);
+            }
+        } else {
+            employeeReimbursement.lockDate = '';
+        }  
         employeeReimbursement.rejectedMileages = String.valueOf(currentEmployeeReimbursement.Total_Rejected__c);
         employeeReimbursement.reimbursementApproval = currentEmployeeReimbursement.Reimbursement_Approval__c;
         employeeReimbursement.isSelected = false;
@@ -218,6 +233,7 @@ public with sharing class BiWeeklyWrapperUtils {
        Map<String,EmployeeMileagesForCalculation> employeeReimbursementMap = new Map<String,EmployeeMileagesForCalculation>();
        //String currentMonth = Utils.fetchMonths(1, -1)[0];
        String payPeriodName = getPayPeriodDates(accountId);
+       System.debug('today: '+System.today());
        System.debug('payPeriodName='+payPeriodName);
         List<Bi_Weekly_Reimbursement__c> employeeReimbursementList = new List<Bi_Weekly_Reimbursement__c>();
         
@@ -236,17 +252,18 @@ public with sharing class BiWeeklyWrapperUtils {
                                             Contact__r.name,
                                             Contact__r.Monthly_Mileage_Limit__c,
                                             Total_Approved__c,
-                                            Total_Mileage__c,
+                                            Total_Mileage__c,                                            
                                             Status__c,
                                             Total_Variable_Rate__c,
                                             Total_Pending__c,
                                             Total_Approved_Pending_Mileage__c,
-                                            Reimbursement_Approval__c
+                                            Mileage_Lock_Date__c,
+                                            Reimbursement_Approval__c,Employee_Reimbursement__c
                                         FROM Bi_Weekly_Reimbursement__c
                                         WHERE Approved_Date__c = null AND Status__c='Pending'
                                             AND Contact__r.Accountid =: accountId
-                                            AND Total_Approved_Pending_Mileage__c > 0
-                                            AND (Name =: payPeriodName OR Contact__r.Deactivated_Date__c = THIS_YEAR) ];
+                                            AND Total_Pending__c > 0
+                                            AND (Name =: payPeriodName OR Contact__r.Deactivated_Date__c = THIS_YEAR) Order by Total_Pending__c desc];
             //employeeReimbursementList =[select id,Name, Month__c, Total_Rejected__c, Approved_Date__c,Contact_Id__r.Accountid, Contact_Id__c, Contact_Id__r.name, Contact_Id__r.Monthly_Mileage_Limit__c, Total_Approved__c, Total_Mileage__c, Status__c, Total_Variable_Rate__c,(select id,Name,Trip_Status__c,Trip_Date__c,Trip_Origin__c,Trip_Destination__c,Approved_Date__c,Mileage__c,Variable__c,EmployeeReimbursement__c,EmployeeReimbursement__r.month__c,EmployeeReimbursement__r.Total_Pending__c,EmployeeReimbursement__r.Contact_Id__c,CreatedDate,Rejected__c,Origin_Name__c,Tracing_Style__c,StartTime__c,EndTime__c,Day_Of_Week__c,Destination_Name__c,EmployeeReimbursement__r.Contact_Id__r.External_Email__c,Maintenance_and_Tires__c,Fuel_price__c,EmployeeReimbursement__r.Total_Variable_Rate__c from Employees_Mileage__r where Trip_Status__c =: StaticValues.noApprovedYet and Approved_Date__c = null) from Employee_Reimbursement__c where Approved_Date__c = null and Contact_Id__r.Accountid =: accountId];
         }
         else if(showteam!=null && showteam == false && (role=='Admin' || role == StaticValues.roleAdminDriver)) // || role == 'Admin/Driver'
@@ -263,21 +280,23 @@ public with sharing class BiWeeklyWrapperUtils {
                                             Contact__r.name,
                                             Contact__r.Monthly_Mileage_Limit__c,
                                             Total_Approved__c,
-                                            Total_Mileage__c,
+                                            Total_Mileage__c,                                            
                                             Status__c,
                                             Total_Variable_Rate__c,
                                             Total_Pending__c,
                                             Total_Approved_Pending_Mileage__c,
-                                            Reimbursement_Approval__c
+                                            Mileage_Lock_Date__c,
+                                            Reimbursement_Approval__c,Employee_Reimbursement__c
                                             FROM Bi_Weekly_Reimbursement__c
                                             WHERE Approved_Date__c = null AND Status__c='Pending'
                                                 AND Contact__r.Accountid =: accountId
+                                                AND Total_Pending__c > 0
                                                 AND (Name =: payPeriodName OR Contact__r.Deactivated_Date__c = THIS_YEAR)
                                                 AND ((Contact__r.Manager__c =:contactId) 
                                                 OR (Contact__r.Manager__r.Manager__c =:contactId) 
                                                 OR (Contact__r.Manager__r.Manager__r.Manager__c =:contactId) 
                                                 OR (Contact__r.Manager__r.Manager__r.Manager__r.Manager__c =:contactId) 
-                                                OR (Contact__r.Manager__r.Manager__r.Manager__r.Manager__r.Manager__c =:contactId))];
+                                                OR (Contact__r.Manager__r.Manager__r.Manager__r.Manager__r.Manager__c =:contactId)) Order by Total_Pending__c desc];
         }
         else if(showteam!=null && showteam == true && (role=='Manager' || role=='Driver/Manager'))
         {
@@ -293,21 +312,23 @@ public with sharing class BiWeeklyWrapperUtils {
                                             Contact__r.name,
                                             Contact__r.Monthly_Mileage_Limit__c,
                                             Total_Approved__c,
-                                            Total_Mileage__c,
+                                            Total_Mileage__c,                                            
                                             Status__c,
                                             Total_Variable_Rate__c,
                                             Total_Pending__c,
                                             Total_Approved_Pending_Mileage__c,
-                                            Reimbursement_Approval__c
+                                            Mileage_Lock_Date__c,
+                                            Reimbursement_Approval__c,Employee_Reimbursement__c
                                             FROM Bi_Weekly_Reimbursement__c
                                             WHERE Approved_Date__c = null AND Status__c='Pending'
                                                 AND Contact__r.Accountid =: accountId
+                                                AND Total_Pending__c > 0
                                                 AND (Name =: payPeriodName OR Contact__r.Deactivated_Date__c = THIS_YEAR)
                                                 AND ((Contact__r.Manager__c =: contactId) 
                                                 OR (Contact__r.Manager__r.Manager__c =: contactId) 
                                                 OR (Contact__r.Manager__r.Manager__r.Manager__c =: contactId) 
                                                 OR (Contact__r.Manager__r.Manager__r.Manager__r.Manager__c =: contactId) 
-                                                OR (Contact__r.Manager__r.Manager__r.Manager__r.Manager__r.Manager__c =: contactId))];
+                                                OR (Contact__r.Manager__r.Manager__r.Manager__r.Manager__r.Manager__c =: contactId)) Order by Total_Pending__c desc];
         }
         
         else if(showteam != null && showteam == false && (role == 'Manager' || role =='Driver/Manager'))
@@ -321,19 +342,21 @@ public with sharing class BiWeeklyWrapperUtils {
                                             Contact__r.Manager__r.Name,
                                             Contact__c,
                                             Contact__r.name,
-                                            Contact__r.Monthly_Mileage_Limit__c,
+                                            Contact__r.Monthly_Mileage_Limit__c,                                            
                                             Total_Approved__c,
                                             Total_Mileage__c,
                                             Status__c,
                                             Total_Variable_Rate__c,
                                             Total_Pending__c,
                                             Total_Approved_Pending_Mileage__c,
-                                            Reimbursement_Approval__c
+                                            Mileage_Lock_Date__c,
+                                            Reimbursement_Approval__c,Employee_Reimbursement__c
                                             FROM Bi_Weekly_Reimbursement__c
                                             WHERE Approved_Date__c = null AND Status__c='Pending'
                                                 AND Contact__r.Accountid =: accountId
+                                                AND Total_Pending__c > 0
                                                 AND (Name =: payPeriodName OR Contact__r.Deactivated_Date__c = THIS_YEAR)
-                                                AND (Contact__r.Manager__c =: contactId)];        
+                                                AND (Contact__r.Manager__c =: contactId) Order by Total_Pending__c desc];        
                                                  //AND Contact__r.Accountid =: accountId 
                                                 
         }       
@@ -375,6 +398,17 @@ public with sharing class BiWeeklyWrapperUtils {
                 reimbursement.reimbursementIdList = reimbursementIdList;
                 reimbursement.reimbursementApproval = currentReimbursement.Reimbursement_Approval__c;
                 reimbursement.status = currentReimbursement.Status__c;
+                reimbursement.originalReimbursementid = currentReimbursement.Employee_Reimbursement__c != null ? currentReimbursement.Employee_Reimbursement__c : null;
+                reimbursement.rejectedMileges = (currentReimbursement.Total_Rejected__c != null) ? String.valueOf(currentReimbursement.Total_Rejected__c) : '0';
+                if(currentReimbursement.Mileage_Lock_Date__c != null) {
+                if(String.valueOf(currentReimbursement.Mileage_Lock_Date__c).contains('-')) {
+                        List<String> approvedDateSplitted = new List<String>();
+                        approvedDateSplitted = String.valueOf(currentReimbursement.Mileage_Lock_Date__c).split('-');
+                        reimbursement.lockDate = approvedDateSplitted[1]+'/'+approvedDateSplitted[2]+'/'+approvedDateSplitted[0].substring(2,4);
+                    }
+                } else {
+                    reimbursement.lockDate = '';
+                }
                 employeeReimbursementMap.put(currentReimbursement.Contact__c,reimbursement);                   
                                     
             }
@@ -391,14 +425,15 @@ public with sharing class BiWeeklyWrapperUtils {
         {
             reimbursement = (EmployeeMileagesForCalculation)Json.deserialize(reimbursementDetails,EmployeeMileagesForCalculation.class);
             List<EmployeeMileages> employeeMileagesList = new List<EmployeeMileages>();
-            for(Employee_Mileage__c currentMileage : [SELECT id,Name,Trip_Status__c,Trip_Date__c,Trip_Origin__c,Trip_Destination__c,Bi_Weekly_Reimbursement__c,
+            for(Employee_Mileage__c currentMileage : [SELECT id,Name,Trip_Status__c,Original_Origin_Name__c,Original_Destination_Name__c,Trip_Date__c,Trip_Origin__c,Trip_Destination__c,Bi_Weekly_Reimbursement__c,
                                                             Approved_Date__c,Mileage__c,Variable__c,EmployeeReimbursement__c,TimeZone__c,Tag__c,
                                                             Bi_Weekly_Reimbursement__r.month__c,Bi_Weekly_Reimbursement__r.Total_Pending__c,Stay_Time__c,
                                                             Bi_Weekly_Reimbursement__r.Total_Mileage__c,Bi_Weekly_Reimbursement__r.Contact__c,Driving_Time__c,Total_Time__c,
                                                             CreatedDate,Rejected__c,Origin_Name__c,Tracing_Style__c,StartTime__c,EndTime__c,Mileage_Lock_Date__c,
                                                             Day_Of_Week__c,Destination_Name__c,Bi_Weekly_Reimbursement__r.Contact__r.External_Email__c,Bi_Weekly_Reimbursement__r.Half_Fixed_Amount__c, 
                                                             Maintenance_and_Tires__c,Fuel_price__c,Bi_Weekly_Reimbursement__r.Total_Variable_Rate__c,ConvertedStartTime__c,ConvertedEndTime__c, 
-                                                            Bi_Weekly_Reimbursement__r.Total_Rejected__c,Notes__c,Bi_Weekly_Reimbursement__r.Mileage_Lock_Date__c,Activity__c
+                                                            Bi_Weekly_Reimbursement__r.Total_Rejected__c,Notes__c,Bi_Weekly_Reimbursement__r.Mileage_Lock_Date__c,Activity__c,
+                                                            EmployeeReimbursement__r.Contact_Id__r.Account.Bi_Weekly_Pay_Period__c,High_Risk_Mileage__c
                                                     FROM Employee_Mileage__c 
                                                     WHERE 
                                                     Trip_Status__c =: StaticValues.noApprovedYet AND Approved_Date__c = null AND 
@@ -460,7 +495,10 @@ public with sharing class BiWeeklyWrapperUtils {
         if(employeeMileage.Bi_Weekly_Reimbursement__r.Total_Variable_Rate__c != null){
             currentEmployeeMileage.variablerate = string.valueof(employeeMileage.Bi_Weekly_Reimbursement__r.Total_Variable_Rate__c);
         }
-
+    
+        currentEmployeeMileage.fromLocation='';
+        currentEmployeeMileage.toLocation='';
+        
         currentEmployeeMileage.dayofweek='';
         currentEmployeeMileage.starttime='';
         currentEmployeeMileage.endtime='';
@@ -484,18 +522,18 @@ public with sharing class BiWeeklyWrapperUtils {
         {
             currentEmployeeMileage.tracingstyle=employeeMileage.Tracing_Style__c;
         }
-
-        if(employeeMileage.ConvertedStartTime__c  != null )
-        {
-           DateTime startTime = employeeMileage.ConvertedStartTime__c;
-           currentEmployeeMileage.starttime = startTime.format('h:mm a','America/Panama');
+        
+        if(employeeMileage.ConvertedStartTime__c  != null ) {
+            DateTime startTime = employeeMileage.ConvertedStartTime__c;
+            currentEmployeeMileage.startdatetime = employeeMileage.ConvertedStartTime__c;
+            currentEmployeeMileage.starttime = startTime.format('h:mm a','America/Panama');
         }
         
-        if(employeeMileage.ConvertedEndTime__c  != null)
-        {
-           DateTime endTime = employeeMileage.ConvertedEndTime__c ;
-           currentEmployeeMileage.endTime = endTime.format('h:mm a','America/Panama');
-        }
+        if(employeeMileage.ConvertedEndTime__c  != null) {
+            DateTime endTime = employeeMileage.ConvertedEndTime__c ;
+            currentEmployeeMileage.enddatetime = employeeMileage.ConvertedEndTime__c ;
+            currentEmployeeMileage.endTime = endTime.format('h:mm a','America/Panama');
+        }         
         
         if(employeeMileage.Day_Of_Week__c != null)
         {
@@ -539,7 +577,7 @@ public with sharing class BiWeeklyWrapperUtils {
         }
 
         //AI-000426
-        if(employeeMileage.Mileage_Lock_Date__c != null)
+        /*if(employeeMileage.Mileage_Lock_Date__c != null)
         {
            if(String.valueOf(employeeMileage.Mileage_Lock_Date__c).contains('-'))
            {
@@ -548,7 +586,8 @@ public with sharing class BiWeeklyWrapperUtils {
                 currentEmployeeMileage.lockdate  = lockDateSplitted[1]+'/'+lockDateSplitted[2]+'/'+lockDateSplitted[0].substring(2,4);
                 currentEmployeeMileage.isLockDate = true;
            }
-        } else if(employeeMileage.Bi_Weekly_Reimbursement__r.Mileage_Lock_Date__c != null) {
+        } */
+        if(employeeMileage.Bi_Weekly_Reimbursement__r.Mileage_Lock_Date__c != null) {
            if(String.valueOf(employeeMileage.Bi_Weekly_Reimbursement__r.Mileage_Lock_Date__c).contains('-'))
            {
                 List<String> lockDateSplitted = new List<String>();
@@ -570,9 +609,34 @@ public with sharing class BiWeeklyWrapperUtils {
         currentEmployeeMileage.totalMileages = String.valueOf(employeeMileage.Bi_Weekly_Reimbursement__r.Total_Mileage__c);
         currentEmployeeMileage.totalpending = String.valueOf(employeeMileage.Bi_Weekly_Reimbursement__r.Total_Pending__c);
         currentEmployeeMileage.variableamount  = String.valueOf(employeeMileage.Variable__c);
-        currentEmployeeMileage.month  = employeeMileage.Bi_Weekly_Reimbursement__r.month__c;
-        currentEmployeeMileage.reimbursementid  = employeeMileage.EmployeeReimbursement__c;
+        currentEmployeeMileage.month  = employeeMileage.Bi_Weekly_Reimbursement__r.month__c;               
+        if(employeeMileage.EmployeeReimbursement__r.Contact_Id__r.Account.Bi_Weekly_Pay_Period__c == true){
+            currentEmployeeMileage.reimbursementid  = employeeMileage.Bi_Weekly_Reimbursement__c;
+            currentEmployeeMileage.originalReimbursementid = employeeMileage.EmployeeReimbursement__c;
+        } else {
+            currentEmployeeMileage.reimbursementid  = employeeMileage.EmployeeReimbursement__c;
+        }
         currentEmployeeMileage.driverid = employeeMileage.Bi_Weekly_Reimbursement__r.Contact__c;
+        //currentEmployeeMileage.originalOriginName = employeeMileage.Original_Origin_Name__c;
+        //currentEmployeeMileage.OriginalDestinationName = employeeMileage.Original_Destination_Name__c;
+        
+        if(employeeMileage.Original_Origin_Name__c != null){
+         currentEmployeeMileage.originalOriginName = employeeMileage.Original_Origin_Name__c;
+        } else if(employeeMileage.Origin_Name__c != null){
+         currentEmployeeMileage.originalOriginName = employeeMileage.Origin_Name__c;
+        } else{
+         currentEmployeeMileage.originalOriginName = null;
+        }
+   
+   
+        if(employeeMileage.Original_Destination_Name__c != null){
+         currentEmployeeMileage.OriginalDestinationName = employeeMileage.Original_Destination_Name__c;
+        } else if(employeeMileage.Destination_Name__c != null){
+         currentEmployeeMileage.OriginalDestinationName = employeeMileage.Destination_Name__c;
+        } else{
+         currentEmployeeMileage.OriginalDestinationName = null;
+        }
+        currentEmployeeMileage.highRiskMileage = employeeMileage.High_Risk_Mileage__c;
         System.debug('currentEmployeeMileage'+currentEmployeeMileage);
         return currentEmployeeMileage;
     }
@@ -646,10 +710,7 @@ public with sharing class BiWeeklyWrapperUtils {
 
     public static void sendInsuranceEmail (String contactId,String Name,String driverEmail){
         String adminName;
-        String adminEmail;
-        system.debug('contactId'+contactId);
-        system.debug('Name'+Name);
-        system.debug('driverEmail'+driverEmail);
+        String adminEmail;        
         if(contactId != null){
             for(Contact conObj : [SELECT id,FirstName,External_Email__c
                                 FROM Contact 
@@ -663,7 +724,7 @@ public with sharing class BiWeeklyWrapperUtils {
         String newemailBody;
         OrgWideEmailAddress[] owea = [SELECT Id,Address from OrgWideEmailAddress where Address = 'driverservices@mburse.com'];
         List<String> toAddress = new List<String>();
-        if(contactId != null && adminEmail != driverEmail) {
+        if(contactId != null && adminEmail != driverEmail) {       
             templateId = [SELECT Id, Subject,HtmlValue, body FROM EmailTemplate WHERE developerName = 'SendAdminInsuranceEmail' Limit 1];
             newemailBody = templateId.HtmlValue;
             if(adminName != null ){
@@ -672,20 +733,21 @@ public with sharing class BiWeeklyWrapperUtils {
             if(Name != null ){
                 newemailBody = newemailBody.replace('{drivername}', Name);
             }            
-            toAddress.add(adminEmail);
+            toAddress.add(adminEmail);            
         } else {
             templateId = [SELECT Id, Subject,HtmlValue, body FROM EmailTemplate WHERE developerName = 'SendDriverInsuranceEmail' Limit 1];
             newemailBody = templateId.HtmlValue;
             newemailBody = newemailBody.replace('{!ContactName}', Name);
-            toAddress.add(driverEmail);
+            toAddress.add(driverEmail);            
         }
-        List<Messaging.SingleEmailMessage> emails = new List<Messaging.SingleEmailMessage>();
+        List<Messaging.SingleEmailMessage> emails = new List<Messaging.SingleEmailMessage>();        
         newemailBody = newemailBody.replace('{!$Label.Driver_Forword_Logo}', System.Label.Driver_Forword_Logo);
         messaging.singleEmailMessage email = Utils.CreateEmail(templateId.Subject,newemailBody,toAddress,null,null,null);
+        email.setOrgWideEmailAddressId(owea[0].Id);
         emailist.add(email); 
         SendEmail__c  sendEmailObj = SendEmail__c.getValues('BiWeekWrapSendAdmin');
-        if(!emailist.isEmpty() && !Test.IsRunningTest() && sendEmailObj.Send_email_from_code__c == true) {                    
-            Messaging.SendEmailResult [] result = Messaging.sendEmail(emailist, false);
+        if(!emailist.isEmpty() && !Test.IsRunningTest() && sendEmailObj.Send_email_from_code__c == true) {                 
+            Messaging.SendEmailResult [] result = Messaging.sendEmail(emailist, false);             
         }
     }
 }

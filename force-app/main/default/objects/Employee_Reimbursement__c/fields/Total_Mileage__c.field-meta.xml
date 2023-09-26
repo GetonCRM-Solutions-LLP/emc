@@ -4,6 +4,11 @@
     <externalId>false</externalId>
     <label>Total Mileage</label>
     <summarizedField>Employee_Mileage__c.Mileage__c</summarizedField>
+    <summaryFilterItems>
+        <field>Employee_Mileage__c.Activity__c</field>
+        <operation>equals</operation>
+        <value>Business</value>
+    </summaryFilterItems>
     <summaryForeignKey>Employee_Mileage__c.EmployeeReimbursement__c</summaryForeignKey>
     <summaryOperation>sum</summaryOperation>
     <trackHistory>false</trackHistory>

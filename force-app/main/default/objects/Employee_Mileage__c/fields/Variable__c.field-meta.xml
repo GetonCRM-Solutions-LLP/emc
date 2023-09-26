@@ -2,7 +2,7 @@
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>Variable__c</fullName>
     <externalId>false</externalId>
-    <formula>ROUND(Variable_Rate__c,4)* Mileage__c</formula>
+    <formula>IF(ISPICKVAL(Activity__c,&quot;Business&quot;),ROUND(Variable_Rate__c,4)* Mileage__c,0)</formula>
     <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
     <label>Variable Amount</label>
     <precision>18</precision>

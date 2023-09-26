@@ -7,22 +7,68 @@ trigger ContactTrigger on Contact (after Update, after insert, before insert, be
     
     //if(Trigger.isUpdate && Trigger.isAfter && (Test.isrunningTest() ||  checkRecursive.runOnce())) {
         if(Trigger.isUpdate && Trigger.isAfter && (checkRecursive.runOnce())) {
+        
+        //ContactTriggerHelper.updtcanadianmil(Trigger.New,Trigger.oldMap);
         Map<String,String> managerNames = new Map<String,String>();
         set<String> contactOldIdList = new set<String>();
         Map<String,String> contactInfo = new Map<String,String>();
         Map<String,String> accountInfo = new Map<String,String>();
+        Set<string> conlistcountry=new set<string>();
+        set<string>conLstId =new set<String>();
+
+
         for(Contact currentContact : Trigger.New) {
+           /*EMC-2227
+            * Description :-this method update username and email of the user when the external email is changed on the contact
+            *Email field on the contact is changed to trigger this method
+            * username and email is changed of the related user
+            * */
+            if(currentContact.External_Email__c!=Trigger.oldMap.get(currentContact.ID).External_Email__c ){
+                conLstId.add(currentContact.Id);
+            }
+            
+            /**
+             * khuman singh 
+             * creating user in the triplof and creating biweek reimbersment in the monthly reimbersment in when 
+             */
+            if(currentContact.Role__c!=Trigger.oldMap.get(currentContact.ID).Role__c){
+                ContactTriggerHelper.updateUser(currentContact.Id,currentContact.Role__c);
+            }
+            if(currentContact.Role__c!=Trigger.oldMap.get(currentContact.ID).Role__c && currentContact.Role__c=='Driver/Manager' && Trigger.oldMap.get(currentContact.ID).Role__c == 'Manager'){
+                map<Id,contact>contactMap = new map<Id,contact>();
+                contactMap.put(currentContact.ID,Trigger.oldMap.get(currentContact.ID));
+                list<contact>contactlst =new list<contact>();
+                contactlst.add(currentContact);
+                ContactTriggerHelper.creatuserreimbermentrecrds(contactlst, contactMap);
+            }
+            /*  khuman singh 
+                assigning the country to contact in case of any change made to address related field on the contact 
+            */
+       
+            if(currentContact.MailingPostalCode!= null && currentContact.MailingPostalCode!= Trigger.oldMap.get(currentContact.ID).MailingPostalCode){
+                conlistcountry.add(currentContact.Id);
+            }
+
             if(currentContact.Manager__c!=Trigger.oldMap.get(currentContact.id).Manager__c) {
                 name = currentContact.FirstName + ' '+ currentContact.FirstName;
                 accountId = currentContact.AccountId;
                 contactOldIdList.add(currentContact.Manager__c);
                 contactOldIdList.add(Trigger.oldMap.get(currentContact.id).Manager__c);
             }
-            
             if(currentContact.Phone != Trigger.oldMap.get(currentContact.id).Phone && String.isNotBlank(currentContact.Triplog_UserID__c)) {
                 contactInfo.put(currentContact.Triplog_UserID__c, currentContact.Phone);
             }
-        }   
+        } 
+        /**khuman singh 
+         * updating  email and username of the user when changed on the contact
+         */
+        if(!conLstId.isEmpty()){
+            ContactTriggerHelper.updateEmailOfUser(conLstId);
+        }
+        if(conlistcountry.size() > 0 && checkRecursive.getting_SetLatLondAddressFlag()){
+            ContactTriggerHelper.updateMapCountry(conlistcountry);
+        }
+
         for(Contact currentContact : [SELECT id,Triplog_UserID__c,Account.Triplog_API__c FROM Contact WHERE Triplog_UserID__c =: contactInfo.keySet() AND Account.isUsingTriplog__c = true]) {
             accountInfo.put(currentContact.Triplog_UserID__c,currentContact.Account.Triplog_API__c);
         }
@@ -71,15 +117,28 @@ trigger ContactTrigger on Contact (after Update, after insert, before insert, be
         If(conList.Size() > 0 && !Test.isrunningTest()){
             ContactTriggerHelper.updatePlanParameter(conList, accList);
         }
+
+
+
+
     }
     
     if(Trigger.isAfter){
         if(Trigger.isInsert ){
             /******************** */  /**Dhanraj Khatri */          
             Set<String> tmpConIdSet = new Set<String>();
+            Set<String> conlistcountry = new Set<String>();
             for(contact con : Trigger.New){
-                tmpConIdSet.add(con.Id);     
-            }   
+                tmpConIdSet.add(con.Id);   
+                /*api callout for assigning the country name to contact-> khuman */  
+                if(con.MailingPostalCode!= null ){
+                    conlistcountry.add(con.Id);
+                }
+            }  
+            if(conlistcountry.size() > 0 && checkRecursive.getting_SetLatLondAddressFlag()){
+                ContactTriggerHelper.updateMapCountry(conlistcountry);
+            }
+    
 
             Map<Id,Contact> contactIdMap =  new Map<Id, Contact>([select id, MobilePhone,
                                             Email,Account.True_Dialog__c FROM Contact 
@@ -93,7 +152,7 @@ trigger ContactTrigger on Contact (after Update, after insert, before insert, be
             }            
             /*********************************** */
             /* EMC - 333
-                This is used when driver is insert automatically driver packet is added in file section of that driver
+                This is used when driver  is inserted automatically driver packet is added in file section of that driver
                 from his Account's file section.
                 */ 
             TriggerConfig__c customSettingForFile = TriggerConfig__c.getInstance('Defaulttrigger');
@@ -145,9 +204,12 @@ trigger ContactTrigger on Contact (after Update, after insert, before insert, be
         }     
         ContactTriggerHelper.CheckVehicalYearAndModel(Trigger.new);
  
-    } else if(Trigger.isBefore && Trigger.isUpdate) {     
+    } else if(Trigger.isBefore && Trigger.isUpdate) {
         List<Contact> updateContactList = new List<Contact>();
-        for(Contact currentContact : Trigger.New) {           
+        for(Contact currentContact : Trigger.New) {
+                
+
+
             name = currentContact.FirstName + ' '+ currentContact.FirstName;
             accountId = currentContact.AccountId;
             if(currentContact.Role__c == 'Driver' || currentContact.Role__c == 'Driver/Manager' || currentContact.Role__c == StaticValues.roleAdminDriver) {
@@ -161,7 +223,7 @@ trigger ContactTrigger on Contact (after Update, after insert, before insert, be
                 }
                 name = currentContact.FirstName + ' '+ currentContact.FirstName;
                 accountId = currentContact.AccountId;
-            }        
+            }
         }
         if(updateContactList.size() > 0 && !Test.isRunningTest()) {
             ContactTriggerHelper.CheckVehicalYearAndModel(updateContactList);
@@ -174,7 +236,7 @@ trigger ContactTrigger on Contact (after Update, after insert, before insert, be
                 name = currentContact.FirstName + ' '+ currentContact.FirstName;
                 accountId = currentContact.AccountId;
                 currentContact.Email = currentContact.External_Email__c.toLowerCase();
-            }            
+            }
         }
     }
 }

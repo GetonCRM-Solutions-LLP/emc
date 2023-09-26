@@ -91,6 +91,10 @@ public with sharing class EmployeeReimbursements
     */
     public String contactdrivertype {get;set;}
     public String fixedAmount {get;set;}
+    public String avgToDate {get;set;}
+    //@description If Lock date should be available then Lock date user should be display
+    public date lockDate {get;set;}
+    public String lockDateUserName {get; set;}
     /**
     @author Natavar Ghodasara
     @date 26th Feb 2019

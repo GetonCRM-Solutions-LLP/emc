@@ -17,8 +17,9 @@ public class BiweeklyPayPeriodTest {
         Profile profileObj = TestDataFactory.getUserProfile();
         User admin = TestDataFactory.getSystemAdminUser(userRole.Id);
         User userObj;
+        Account accountObj;
         System.runAs(admin) {
-            Account accountObj = TestDataFactory.createAccount(true,'Test',true);
+            accountObj = TestDataFactory.createAccount(true,'Test',true);
             Contact contactObj = TestDataFactory.createCICDContact(true,accountObj.Id);
             acc = TestDataFactory.createAccount(true,'Test',true);
             conList = TestDataFactory.createDriverContact(true, acc.Id, 'Driver', vehicleObj.Name, 'test.email', 1);
@@ -53,28 +54,26 @@ public class BiweeklyPayPeriodTest {
         emp1[0].Approved_Date__c = system.today();
         Update emp1;
 
-        //List<Employee_Mileage__c> emp2 = TestDataFactory.getEmpMileage (True, 0, er, br);
-        //emp2[0].Trip_Date__c = date.today().adddays(-1);
-        //emp2[0].Trip_Status__c = 'Approved';
-        //emp2[0].Approved_Date__c = system.today();
-        //Update emp2;     
+        /*List<Employee_Mileage__c> emp2 = TestDataFactory.getEmpMileage (True, 0, er, br);
+        emp2[0].Trip_Date__c = date.today().adddays(-1);
+        emp2[0].Trip_Status__c = 'Approved';
+        emp2[0].Approved_Date__c = system.today();
+        Update emp2;  */   
         
         Test.startTest();
         System.runAs(userObj) {
             integer i = 0;
-        BiweeklyPayPeriod.getTimeAndAttendance(conList[0].Id, '2022');
         BiweeklyPayPeriod.getTimeAndAttendance(conList[0].Id, '2023');
-        BiweeklyPayPeriod.getTimeAndAttendance(conList[0].Id, '2021');
-        BiweeklyPayPeriod.getPayPeriodDates(conList[0].Id, 2023);
-        BiweeklyPayPeriod.getBiweeklyMileage(conList[0].Id, 2023);
+        BiweeklyPayPeriod.getPayPeriodDates(conList[0].Id, 2022);
+        BiweeklyPayPeriod.getBiweeklyMileage(conList[0].Id, 2022);
         BiweeklyPayPeriod.getMileages1(system.today()-1, system.today(), conList[0].Id);
         BiweeklyPayPeriod.getAllBiweekMileages1(system.today()-1, system.today(), conList[0].Id);
         BiweeklyPayPeriod.ApproveTrips(system.today()-1, system.today(), conList[0].Id);
         BiweeklyPayPeriod.calculateBiweekMil (String.valueof(system.today()-1),String.valueof(system.today()), conList[0].Id);
-        BiweeklyPayPeriod.getBiweeklyReimbursement(String.valueOf(conList[0].Id) ,2022);
+        BiweeklyPayPeriod.getBiweeklyReimbursement(String.valueOf(conList[0].Id) ,2023);
         BiweeklyPayPeriod.getBiweekMileages1(string.valueOf(br));
         BiweeklyPayPeriod.ApproveBiWeekTrips(string.valueOf(br));
-        BiweeklyPayPeriod.payPeriodDateList(string.valueOf(acc.Id));    
+        BiweeklyPayPeriod.payPeriodDateList(accountObj.Id);
       }
         Test.stopTest();
     }

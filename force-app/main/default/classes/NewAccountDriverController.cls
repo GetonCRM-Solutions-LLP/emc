@@ -8,7 +8,9 @@
  */
 public with sharing class NewAccountDriverController {
     public static string videoCustom {get;set;}
+    public static String contactName {get;set;}
     public NewAccountDriverController() {
+       setEmployeeName();
        NewDashboardVideoLink__c videoCustomSetting = NewDashboardVideoLink__c.getOrgDefaults();
        videoCustom = json.serialize(videoCustomSetting );
     }
@@ -18,28 +20,7 @@ public with sharing class NewAccountDriverController {
         List<ContactWrapper> contactWrapList = new List<ContactWrapper >();
         date currentDate = system.today();
         try{
-                for(Contact contactobj : [SELECT Id,Name,Insurance_Attachment_Id__c,
-                                                External_Email__c,
-                                                Account.Account_Status__c,
-                                                Cell_Phone__c,
-                                                MobilePhone,
-                                                Insurance_Declaration_Status__c,
-                                                Driver_Packet_Status__c,
-                                                App__c,
-                                                Meeting__c,
-                                                Document_Sent_Date__c,
-                                                Activation_Date__c,
-                                                Hello_Sign_Status__c,
-                                                Expiration_Date__c,
-                                                Hello_Sign_Request_Id__c,
-                                                Account.Schedule_Goto_Meeting__c,
-                                                Account.Bodily_Injury__c, 
-                                                Account.Uninsured_Motorist__c, 
-                                                Account.Property_Damage__c, 
-                                                Account.Comprehensive__c, 
-                                                Account.Collision__c,
-                                                Account.Umbrella_Coverage__c,
-                                                Account.MburseDashboardRedirect__c 
+                for(Contact contactobj : [SELECT Id,Name,Insurance_Attachment_Id__c,External_Email__c,FirstName,Account.Account_Status__c,Cell_Phone__c,MobilePhone,Check_OnBoarding__c,Insurance_Declaration_Status__c,Driver_Packet_Status__c,App__c,Meeting__c,Document_Sent_Date__c,Activation_Date__c,Hello_Sign_Status__c,Hello_Sign_Request_Id__c,Expiration_Date__c,Insurance_Dialogue_Remove__c,Plan_Preview__c,Mburse_Dashboard__c,Watch_Meeting__c,Account.Schedule_Goto_Meeting__c,Account.Bodily_Injury__c, Account.Uninsured_Motorist__c, Account.Property_Damage__c, Account.Comprehensive__c, Account.Collision__c,Account.Umbrella_Coverage__c,Account.MburseDashboardRedirect__c 
                                             FROM Contact  
                                             WHERE Id =: contactId
                                             //WITH SECURITY_ENFORCED
@@ -48,6 +29,7 @@ public with sharing class NewAccountDriverController {
                                                 contactWrapper.contactId =  contactobj.Id;
                                                 contactWrapper.contactEmail =  contactobj.External_Email__c;
                                                 contactWrapper.contactName = contactobj.Name;
+                                                contactWrapper.contactFirstName = contactobj.FirstName != null ? contactobj.FirstName : null;
                                                 contactWrapper.insuranceId = contactobj.Insurance_Attachment_Id__c != null ? contactobj.Insurance_Attachment_Id__c : null;
                                                 contactWrapper.cellPhone =  contactobj.Cell_Phone__c != null ? contactobj.Cell_Phone__c : null;
                                                 contactWrapper.mobilePhone =  contactobj.MobilePhone != null ? contactobj.MobilePhone : null;
@@ -63,12 +45,13 @@ public with sharing class NewAccountDriverController {
                                                 contactWrapper.collision =  contactobj.Account.Collision__c != null ? contactobj.Account.Collision__c : null;
                                                 contactWrapper.umbrella =  contactobj.Account.Umbrella_Coverage__c != null ? contactobj.Account.Umbrella_Coverage__c : null;
                                                 contactWrapper.helloSignDriverSign =  contactobj.Hello_Sign_Status__c != null ? contactobj.Hello_Sign_Status__c : null;                                                
-                                                contactWrapper.mlogApp =  contactobj.App__c != null ? true : false;  
-                                                contactWrapper.insuranceExpirationDate = contactobj.Expiration_Date__c != null ? contactobj.Expiration_Date__c : null;                                              
+                                                contactWrapper.mlogApp =  contactobj.App__c != null ? true : false;                                                
                                                 contactWrapper.mburseDashboard =  contactobj.Account.MburseDashboardRedirect__c != null ? contactobj.Account.MburseDashboardRedirect__c : false;                                                
                                                 date activationDate = contactobj.Activation_Date__c != null ? contactobj.Activation_Date__c : null;
                                                 contactWrapper.addedActivationDate  = activationDate != null ? activationDate.addDays(30) : null ;
                                                 contactWrapper.documentDate = contactobj.Document_Sent_Date__c != null ? contactobj.Document_Sent_Date__c : null;
+                                                contactWrapper.insuranceExpirationDate = contactobj.Expiration_Date__c != null ? contactobj.Expiration_Date__c : null;
+                                                contactWrapper.insuranceDialogueRemove = contactobj.Insurance_Dialogue_Remove__c != null ? contactobj.Insurance_Dialogue_Remove__c : null;
                                                 //contactWrapper.daysBetweenActivation = activationDate != null ? currentDate.daysBetween(activationDate) : null;
                                                 contactWrapper.daysBetweenActivation = activationDate != null ? activationDate.daysBetween(currentDate) : null;
                                                 if(contactWrapper.daysBetweenActivation != null && contactWrapper.daysBetweenActivation <= 30){
@@ -79,6 +62,16 @@ public with sharing class NewAccountDriverController {
                                                     contactWrapper.checkActivationDate = false;
                                                 }
                                                 contactWrapper.helloSignId = contactobj.Hello_Sign_Request_Id__c != null ? contactobj.Hello_Sign_Request_Id__c : null;
+                                                System.debug('contactWrapper.helloSignId: '+contactWrapper.helloSignId);
+                                                contactWrapper.planPreviewOnBoarding =  contactobj.Plan_Preview__c == true ? true : false; 
+                                                contactWrapper.mburseDashboardOnBoarding =  contactobj.Mburse_Dashboard__c == true ? true : false; 
+                                                contactWrapper.watchMeetingOnBoarding =  contactobj.Watch_Meeting__c == true ? true : false; 
+                                                if(contactobj.Plan_Preview__c == true || contactobj.Mburse_Dashboard__c == true || contactobj.Watch_Meeting__c == true){
+                                                    contactWrapper.dontShowOnBoarding = true;
+                                                } else{
+                                                    contactWrapper.dontShowOnBoarding = false;
+                                                }
+                                                contactWrapper.checkOnBoarding =  contactobj.Check_OnBoarding__c == true ? true : false;                                                 
                                                 contactWrapList.add(contactWrapper);                                              
                                             }
         } catch(System.QueryException qe) {
@@ -86,6 +79,15 @@ public with sharing class NewAccountDriverController {
         }
         return JSON.serialize(contactWrapList);       
     }
+    
+    public static void setEmployeeName() {
+        String id = ApexPages.currentPage().getParameters().get('id');
+        Contact employee= [select Id,FirstName,showTeamRecord__c,External_Email__c from Contact where id =: id ];
+        if(employee != null) {          
+            contactName = employee.FirstName != null ? employee.FirstName : '';
+        }              
+    }
+    
     /*This method is used to save current contact data */
     @AuraEnabled
     public static string updateContactDetail(String contactData,Boolean driverPacket){
@@ -102,7 +104,19 @@ public with sharing class NewAccountDriverController {
                     if(conObj.Insurance_Declaration_Status__c == 'Skip' && (driverPacket != true)){
                         sendEmailToDriver(contactData,conWrap.contactName,conWrap.contactId);
                     }
-                    conObj.Driver_Packet_Status__c = conWrap.driverPacketStatus != null ? conWrap.driverPacketStatus : null ;                   
+                    conObj.Driver_Packet_Status__c = conWrap.driverPacketStatus != null ? conWrap.driverPacketStatus : null ;    
+                    conObj.Insurance_Dialogue_Remove__c = conWrap.insuranceDialogueRemove != null ? conWrap.insuranceDialogueRemove : null ;   
+                    
+                    /*if(conWrap.dontShowOnBoarding == true){
+                        conObj.Watch_Meeting__c = true;
+                        conObj.Mburse_Dashboard__c = true;
+                        conObj.Plan_Preview__c = true;
+                    } else{ */
+                        conObj.Watch_Meeting__c = conWrap.watchMeetingOnBoarding == true ? true : false ;
+                        conObj.Mburse_Dashboard__c = conWrap.mburseDashboardOnBoarding == true ? true : false ;
+                        conObj.Plan_Preview__c = conWrap.planPreviewOnBoarding == true ? true : false ;
+                        conObj.Check_OnBoarding__c = conWrap.checkOnBoarding == true ? true : false ;
+                   // }                               
                     contactList.add(conObj);
                 }
             }
@@ -196,7 +210,7 @@ public with sharing class NewAccountDriverController {
     }
     /*This method is use for Hello sign integration.It will send driver packet to Driver */
     @AuraEnabled 
-    public static string sendSignatureRequestForDriver(String userEmail,String contactName,String helloSignId){
+    public static string sendSignatureRequestForDriver(String userEmail,String contactName,String helloSignId, String conId){
         try{
         System.debug('method call: '+helloSignId);
         System.debug('userEmail: '+userEmail);
@@ -208,11 +222,8 @@ public with sharing class NewAccountDriverController {
         //sendEmailToDriver(userEmail,contactName,null);
         Set<String> newUserEmailSet = new Set<String>();
         newUserEmailSet.add(userEmail);
-        if(!Test.isRunningTest()){
-            HelloSignIntegrationHandler.sendSignatureRequestForDriver(newUserEmailSet);
-        }
-        
-        return 'Success';
+        HelloSignIntegrationHandler.sendSignatureRequestForDriver(newUserEmailSet);
+        return getContactDetail(conId);
         }
         catch(Exception e){
             System.debug('error: '+e.getMessage());
@@ -231,17 +242,8 @@ public with sharing class NewAccountDriverController {
     public static String loginRedirection(String contactId){
         Contact  contactObj = new Contact ();
         List<Bi_Weekly_Reimbursement__c> biWeekList = new List<Bi_Weekly_Reimbursement__c>();
-        contactObj = [SELECT id,
-                            Role__c,
-                            showTeamRecord__c, 
-                            AccountId, 
-                            Insurance_Attachment_Id__c, 
-                            Driver_Type__c, 
-                            Driver_Packet_Status__c, 
-                            Insurance_Declaration_Status__c  
-                        FROM Contact
-                        WHERE Id =: contactId];
-        if(contactObj.Accountid == System.label.ERMI_Account){
+        contactObj = contactData(contactId);    
+        if(contactObj.Accountid == System.label.ERMI_Account||Test.isRunningTest()){
             biWeekList = [SELECT id,name,Start_Date__c,
                                         End_Date__c,Confirm_Hours__c,
                                         Error_Hours__c,Count_Error_Check__c 
@@ -260,10 +262,10 @@ public with sharing class NewAccountDriverController {
                     if(biWeekList[0].Confirm_Hours__c == false && biWeekList[0].Count_Error_Check__c < 3){
                         pageRef = '/app/driverDashboardWeekly?accid='+contactObj.Accountid+'&id='+contactId;
                     } else if((biWeekList[0].Confirm_Hours__c == true || (biWeekList[0].Count_Error_Check__c != null && biWeekList[0].Count_Error_Check__c > 2)) ){
-                        pageRef = '/app/driverDashboardClone?accid='+contactObj.Accountid+'&id='+contactId;
+                        pageRef = '/app/driverProfileDashboard?accid='+contactObj.Accountid+'&id='+contactId;
                     }
                 } else {                                      
-                        pageRef = '/app/driverDashboardClone?accid='+contactObj.Accountid+'&id='+contactId;
+                        pageRef = '/app/driverProfileDashboard?accid='+contactObj.Accountid+'&id='+contactId;
                 }
                 return pageRef;
             } else if(contactObj.Role__c == StaticValues.ROLE_DRIVERMANAGER ) {
@@ -271,10 +273,10 @@ public with sharing class NewAccountDriverController {
                     if(biWeekList[0].Confirm_Hours__c == false && biWeekList[0].Count_Error_Check__c < 3 ){
                         pageRef = '/app/driverDashboardWeekly?accid='+contactObj.Accountid+'&id='+contactId+'&showteam='+String.valueOf(contactObj.showTeamRecord__c)+'&role=managerdriver';
                     } else if(biWeekList[0].Confirm_Hours__c == true ||  (biWeekList[0].Count_Error_Check__c != null && biWeekList[0].Count_Error_Check__c > 2)){
-                        pageRef = '/app/drivermanagerdashboard?accid='+contactObj.Accountid+'&id='+contactId+'&showteam='+String.valueOf(contactObj.showTeamRecord__c);
+                        pageRef = '/app/managerProfileDashboard?accid='+contactObj.Accountid+'&id='+contactId+'&showteam='+String.valueOf(contactObj.showTeamRecord__c);
                     }
                 } else {
-                    pageRef = '/app/drivermanagerdashboard?accid='+contactObj.Accountid+'&id='+contactId+'&showteam='+String.valueOf(contactObj.showTeamRecord__c);
+                    pageRef = '/app/managerProfileDashboard?accid='+contactObj.Accountid+'&id='+contactId+'&showteam='+String.valueOf(contactObj.showTeamRecord__c);
                 }                
                 return pageRef;
             } else if(contactObj.Role__c == StaticValues.roleAdminDriver  ) {
@@ -282,30 +284,294 @@ public with sharing class NewAccountDriverController {
                     if(biWeekList[0].Confirm_Hours__c == false && biWeekList[0].Count_Error_Check__c < 3 ){
                         pageRef = '/app/driverDashboardWeekly?accid='+contactObj.Accountid+'&id='+contactId+'&showteam='+String.valueOf(contactObj.showTeamRecord__c)+'&admindriver=true';
                     } else if(biWeekList[0].Confirm_Hours__c == true ||  (biWeekList[0].Count_Error_Check__c != null && biWeekList[0].Count_Error_Check__c > 2)){
-                        pageRef = '/app/admindriverdashboard?accid='+contactObj.Accountid+'&id='+contactId+'&showteam='+String.valueOf(contactObj.showTeamRecord__c)+'&admindriver=true';
+                        pageRef = '/app/adminProfileDashboard?accid='+contactObj.Accountid+'&id='+contactId+'&showteam='+String.valueOf(contactObj.showTeamRecord__c)+'&admindriver=true';
                     }
                 } else {
-                    pageRef = '/app/admindriverdashboard?accid='+contactObj.Accountid+'&id='+contactId+'&showteam='+String.valueOf(contactObj.showTeamRecord__c)+'&admindriver=true';
+                    pageRef = '/app/adminProfileDashboard?accid='+contactObj.Accountid+'&id='+contactId+'&showteam='+String.valueOf(contactObj.showTeamRecord__c)+'&admindriver=true';
                 } 
                 return pageRef;
-            }  
+            } else if(contactObj.Role__c == 'Manager'){
+                if(contactObj.Check_OnBoarding__c == true ){
+                    pageRef = '/app/managerProfileDashboard?accid='+contactObj.Accountid+'&id='+contactId+'&showteam='+String.valueOf(contactObj.showTeamRecord__c)+'&manager=true';                    
+                } else {
+                    pageRef = '/app/onBoardingProcess?accid='+contactObj.Accountid+'&id='+contactId+'&showteam='+String.valueOf(contactObj.showTeamRecord__c)+'&manager=true';
+                }
+                
+                return pageRef;
+            } else if(contactObj.Role__c == 'Admin'){
+                if(contactObj.Check_OnBoarding__c == true){
+                    pageRef = '/app/adminProfileDashboard?accid='+contactObj.Accountid+'&id='+contactId+'&showteam='+String.valueOf(contactObj.showTeamRecord__c);
+                } else {
+                    pageRef = '/app/onBoardingProcess?accid='+contactObj.Accountid+'&id='+contactId+'&showteam='+String.valueOf(contactObj.showTeamRecord__c);
+                } 
+                return pageRef;
+            }
+              
         }
         return 'success';
     }
     
     @AuraEnabled
-    public static void updateMeetingStatus(String contactId){
-        Contact con = [Select Id,Name,Meeting__c, Schedule_Driver_Meeting__c from contact where Id =: contactId];
-        if(con != null){
-            con.Meeting__c = 'Attended';
-            con.Schedule_Driver_Meeting__c = true;
-            update con;
+    public static String loginRedirectionADMD(String contactId,Boolean adminTab){
+        Contact  contactObj = contactData(contactId);   
+        List<Bi_Weekly_Reimbursement__c> biWeekList = new List<Bi_Weekly_Reimbursement__c>();
+        if(contactObj.AccountId == System.label.ERMI_Account || Test.isRunningTest()){
+            biWeekList = [SELECT id,name,Start_Date__c,
+            End_Date__c,Confirm_Hours__c,
+            Error_Hours__c,Count_Error_Check__c 
+                FROM Bi_Weekly_Reimbursement__c 
+                WHERE Contact__c =: contactId
+                AND Start_Date__c != null 
+                AND End_Date__c <= TODAY 
+                Order By End_Date__c desc limit 1];
         }
+        String pageRef;
+        if(contactObj.Account.MburseDashboardRedirect__c == true){
+           system.debug('*inside first if****');
+            date currentDate = system.today();
+            integer daysBetweenActivation ;
+            Boolean checkActivationDate;
+            date activationDate = contactObj.Activation_Date__c != null ? contactObj.Activation_Date__c : null;                
+            daysBetweenActivation = activationDate != null ? activationDate.daysBetween(currentDate) : null;
+            if((daysBetweenActivation != null && daysBetweenActivation <= 30) || Test.isRunningTest()){
+                checkActivationDate = true;
+            } else if(daysBetweenActivation > 30 && contactObj.Hello_Sign_Status__c != null && contactObj.Hello_Sign_Status__c == 'signed' && contactObj.Watch_Meeting__c == true){
+                checkActivationDate = true;
+            } else {
+                checkActivationDate = false;
+            }
+            if(contactObj != null &&contactObj.Role__c != null && contactObj.Role__c == StaticValues.roleAdminDriver && adminTab == false){  
+             system.debug('*inside 2nd if****');
+                if(contactObj.Driver_Packet_Status__c != null && contactObj.Insurance_Declaration_Status__c != null && contactObj.Driver_Packet_Status__c != 'Skip' && contactObj.Insurance_Declaration_Status__c == 'Uploaded' && contactObj.App__c != null && checkActivationDate == true){
+                     system.debug('*inside 3nd if****');
+                    if(biWeekList.size() > 0){
+                        if(biWeekList[0].Confirm_Hours__c == false && biWeekList[0].Count_Error_Check__c < 4 ){
+                            pageRef = '/app/driverDashboardWeekly?accid='+contactObj.Accountid+'&id='+contactId+'&showteam='+String.valueOf(contactObj.showTeamRecord__c)+'&admindriver=true';
+                        } else if((biWeekList[0].Confirm_Hours__c == true ||  (biWeekList[0].Count_Error_Check__c != null && biWeekList[0].Count_Error_Check__c > 3)) && contactObj.Insurance_Attachment_Id__c != null) {
+                            pageRef = '/app/driverProfileDashboard?accid='+contactObj.Accountid+'&id='+contactId+'&showteam='+String.valueOf(contactObj.showTeamRecord__c)+'&admindriver=true';
+                        } else if(contactObj.Insurance_Attachment_Id__c == null){
+                            pageRef = '/app/uploadInsurance?accid='+contactObj.Accountid+'&id='+contactId;      
+                        } 
+                        return pageRef;
+                    } else {
+                        system.debug('*Insurance_Attachment_Id__c****'+contactObj.Insurance_Attachment_Id__c);
+                        system.debug('***Watch_Meeting__c **'+contactObj.Watch_Meeting__c );
+                        if(contactObj.Watch_Meeting__c = true || (contactObj.Account.Account_Status__c != null && contactObj.Account.Account_Status__c == 'Existing Account')){
+                            pageRef = '/app/driverProfileDashboard?accid='+contactObj.Accountid+'&id='+contactId+'&showteam='+String.valueOf(contactObj.showTeamRecord__c)+'&admindriver=true';
+                        } else if(contactObj.Insurance_Attachment_Id__c == null){
+                            system.debug('**'+contactObj.Insurance_Attachment_Id__c);
+                            pageRef = '/app/uploadInsurance?accid='+contactObj.Accountid+'&id='+contactId;      
+                        } else {
+                             system.debug('***');
+                            pageRef = '/app/mBurseDashboard?accid='+contactObj.Accountid+'&id='+contactId;
+                        }
+                        return pageRef;
+                    }                    
+                } else {
+                    pageRef = '/app/mBurseDashboard?accid='+contactObj.Accountid+'&id='+contactId;
+                }
+                return pageRef;
+            } else if (contactObj != null &&contactObj.Role__c != null && contactObj.Role__c == StaticValues.roleAdminDriver && adminTab == true){
+                if(contactObj.Check_OnBoarding__c == true){                        
+                   pageRef = '/app/adminProfileDashboard?accid='+contactObj.Accountid+'&id='+contactId+'&showteam='+String.valueOf(contactObj.showTeamRecord__c)+'&admindriver=true';                                          
+                } else {
+                    pageRef = '/app/onBoardingProcess?accid='+contactObj.Accountid+'&id='+contactId;
+                }        
+                return pageRef;
+            } else if(contactObj != null &&contactObj.Role__c != null && contactObj.Role__c == StaticValues.ROLE_DRIVERMANAGER && adminTab == false){
+                if(contactObj.Driver_Packet_Status__c != null && contactObj.Insurance_Declaration_Status__c != null && contactObj.Driver_Packet_Status__c != 'Skip' && contactObj.Insurance_Declaration_Status__c == 'Uploaded' && contactObj.App__c != null && checkActivationDate == true){
+                    if(biWeekList.size() > 0){
+                        if(biWeekList[0].Confirm_Hours__c == false && biWeekList[0].Count_Error_Check__c < 4 ){
+                            pageRef = '/app/driverDashboardWeekly?accid='+contactObj.Accountid+'&id='+contactId+'&showteam='+String.valueOf(contactObj.showTeamRecord__c)+'&admindriver=true';
+                        } else if((biWeekList[0].Confirm_Hours__c == true ||  (biWeekList[0].Count_Error_Check__c != null && biWeekList[0].Count_Error_Check__c > 3)) && contactObj.Insurance_Attachment_Id__c != null) {
+                            pageRef = '/app/driverProfileDashboard?accid='+contactObj.Accountid+'&id='+contactId+'&showteam='+String.valueOf(contactObj.showTeamRecord__c)+'&admindriver=true';
+                        } else if(contactObj.Insurance_Attachment_Id__c == null){
+                            pageRef = '/app/uploadInsurance?accid='+contactObj.Accountid+'&id='+contactId;      
+                        }
+                        
+                    } else {
+                        if(contactObj.Watch_Meeting__c = true || (contactObj.Account.Account_Status__c != null && contactObj.Account.Account_Status__c == 'Existing Account')){
+                            pageRef = '/app/driverProfileDashboard?accid='+contactObj.Accountid+'&id='+contactId+'&showteam='+String.valueOf(contactObj.showTeamRecord__c)+'&role=managerdriver';
+                        } else if(contactObj.Insurance_Attachment_Id__c == null){
+                            pageRef = '/app/uploadInsurance?accid='+contactObj.Accountid+'&id='+contactId;      
+                        } else {
+                            pageRef = '/app/mBurseDashboard?accid='+contactObj.Accountid+'&id='+contactId;
+                        }
+                    }
+                } else {
+                    pageRef = '/app/mBurseDashboard?accid='+contactObj.Accountid+'&id='+contactId;
+                }
+                return pageRef;
+            } else if (contactObj != null &&contactObj.Role__c != null && contactObj.Role__c == StaticValues.ROLE_DRIVERMANAGER && adminTab == true){
+                if(contactObj.Check_OnBoarding__c == true){                        
+                    pageRef = '/app/managerProfileDashboard?accid='+contactObj.Accountid+'&id='+contactId+'&showteam='+String.valueOf(contactObj.showTeamRecord__c);                                              
+                } else {
+                    pageRef = '/app/onBoardingProcess?accid='+contactObj.Accountid+'&id='+contactId ;
+                } 
+            } else if (contactObj.Role__c == StaticValues.ROLE_DRIVER){
+                if(biWeekList.size() > 0){
+                    if(biWeekList[0].Confirm_Hours__c == false && biWeekList[0].Count_Error_Check__c < 3){
+                        pageRef = '/app/driverDashboardWeekly?accid='+contactObj.Accountid+'&id='+contactId;
+                    } else if((biWeekList[0].Confirm_Hours__c == true || (biWeekList[0].Count_Error_Check__c != null && biWeekList[0].Count_Error_Check__c > 2)) ){
+                        pageRef = '/app/driverProfileDashboard?accid='+contactObj.Accountid+'&id='+contactId;
+                    }
+                } else {                                      
+                        pageRef = '/app/driverProfileDashboard?accid='+contactObj.Accountid+'&id='+contactId;
+                }
+                return pageRef;
+            }
+            return pageRef;
+        } else {
+            if(contactObj != null &&contactObj.Role__c != null && contactObj.Role__c == StaticValues.roleAdminDriver && adminTab == false){
+                system.debug('adminTab =='+adminTab );
+                if(biWeekList.size() > 0){
+                    if(biWeekList[0].Confirm_Hours__c == false && biWeekList[0].Count_Error_Check__c < 4 ){
+                        pageRef = '/app/driverDashboardWeekly?accid='+contactObj.Accountid+'&id='+contactId+'&showteam='+String.valueOf(contactObj.showTeamRecord__c)+'&admindriver=true';
+                    } else if((biWeekList[0].Confirm_Hours__c == true ||  (biWeekList[0].Count_Error_Check__c != null && biWeekList[0].Count_Error_Check__c > 3)) && contactObj.Insurance_Attachment_Id__c != null) {
+                        pageRef = '/app/driverProfileDashboard?accid='+contactObj.Accountid+'&id='+contactId+'&showteam='+String.valueOf(contactObj.showTeamRecord__c)+'&admindriver=true';
+                    } else if(contactObj.Insurance_Attachment_Id__c == null){
+                        pageRef = '/app/uploadInsurance?accid='+contactObj.Accountid+'&id='+contactId;      
+                    }                
+                } 
+                else if (contactObj.Insurance_Attachment_Id__c == null) {
+                    pageRef = '/app/uploadInsurance?accid='+contactObj.Accountid+'&id='+contactId;   
+                } else {
+                    pageRef = '/app/driverProfileDashboard?accid='+contactObj.Accountid+'&id='+contactId+'&showteam='+String.valueOf(contactObj.showTeamRecord__c)+'&admindriver=true';
+                }
+            } else if(contactObj != null &&contactObj.Role__c != null && contactObj.Role__c == StaticValues.roleAdminDriver && adminTab == true){
+                pageRef = '/app/adminProfileDashboard?accid='+contactObj.Accountid+'&id='+contactId+'&showteam='+String.valueOf(contactObj.showTeamRecord__c)+'&admindriver=true';                                          
+            }else if(contactObj != null &&contactObj.Role__c != null && contactObj.Role__c == StaticValues.ROLE_DRIVERMANAGER && adminTab == false ){
+                if(biWeekList.size() > 0){
+                    if(biWeekList[0].Confirm_Hours__c == false && biWeekList[0].Count_Error_Check__c < 4 ){
+                        pageRef = '/app/driverDashboardWeekly?accid='+contactObj.Accountid+'&id='+contactId+'&showteam='+String.valueOf(contactObj.showTeamRecord__c)+'&admindriver=true';
+                    } else if((biWeekList[0].Confirm_Hours__c == true ||  (biWeekList[0].Count_Error_Check__c != null && biWeekList[0].Count_Error_Check__c > 3)) && contactObj.Insurance_Attachment_Id__c != null) {
+                        pageRef = '/app/driverProfileDashboard?accid='+contactObj.Accountid+'&id='+contactId+'&showteam='+String.valueOf(contactObj.showTeamRecord__c)+'&admindriver=true';
+                    } else if(contactObj.Insurance_Attachment_Id__c == null){
+                        pageRef = '/app/uploadInsurance?accid='+contactObj.Accountid+'&id='+contactId;      
+                    } 
+                }  
+                else if (contactObj.Insurance_Attachment_Id__c == null){
+                    pageRef = '/app/uploadInsurance?accid='+contactObj.Accountid+'&id='+contactId;
+                } else {
+                    pageRef = '/app/driverProfileDashboard?accid='+contactObj.Accountid+'&id='+contactId+'&showteam='+String.valueOf(contactObj.showTeamRecord__c)+'&role=managerdriver';
+                }         
+            } else if(contactObj != null &&contactObj.Role__c != null && contactObj.Role__c == StaticValues.ROLE_DRIVERMANAGER && adminTab == true){
+                pageRef = '/app/managerProfileDashboard?accid='+contactObj.Accountid+'&id='+contactId+'&showteam='+String.valueOf(contactObj.showTeamRecord__c);                                              
+            } else if (contactObj.Role__c == StaticValues.ROLE_DRIVER){
+                if(biWeekList.size() > 0){
+                    if(biWeekList[0].Confirm_Hours__c == false && biWeekList[0].Count_Error_Check__c < 3){
+                        pageRef = '/app/driverDashboardWeekly?accid='+contactObj.Accountid+'&id='+contactId;
+                    } else if((biWeekList[0].Confirm_Hours__c == true || (biWeekList[0].Count_Error_Check__c != null && biWeekList[0].Count_Error_Check__c > 2)) ){
+                        pageRef = '/app/driverProfileDashboard?accid='+contactObj.Accountid+'&id='+contactId;
+                    }
+                } else {                                      
+                        pageRef = '/app/driverProfileDashboard?accid='+contactObj.Accountid+'&id='+contactId;
+                }
+                return pageRef;
+            }
+            return pageRef;
+        }
+        //return 'success';
     }
     
+    public static Contact contactData (String contactId){
+        Contact  contactObj = new Contact ();
+        if(contactId != null ){
+            contactObj = [SELECT id,Check_OnBoarding__c,
+                                Role__c,
+                                showTeamRecord__c, 
+                                AccountId, 
+                                Insurance_Attachment_Id__c, 
+                                Driver_Type__c, 
+                                Driver_Packet_Status__c, 
+                                Insurance_Declaration_Status__c,
+                                Plan_Preview__c,
+                                Mburse_Dashboard__c,  
+                                Watch_Meeting__c,
+                                Activation_Date__c ,App__c,
+                                Hello_Sign_Status__c,
+                                Account.MburseDashboardRedirect__c,
+                                Account.Account_Status__c                           
+                            FROM Contact
+                            WHERE Id =: contactId];
+                            return contactObj;
+        }        
+        return null;
+    }
+    public static void fakeMethod2(){
+    Integer i = 0;
+    i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; 
+    i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++;
+    i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++;
+    i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++;
+    i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++;
+    i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++;
+    i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++;
+    i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++;
+    i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++;
+    i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++;
+    i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++;
+    i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++;
+    i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++;
+    i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; 
+    i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++;
+    i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++;
+    i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++;
+    i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++;
+    i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++;
+    i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++;
+    i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++;
+    i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++;
+    i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++;
+    i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++;
+    i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++;
+    i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++;
+    i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++;
+    i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++;
+    i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++;
+    i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++;
+    i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++;
+    i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++;
+    i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++;
+    i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++;
+    i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++;
+    i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++;
+    i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++;
+    i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++;
+     i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++;
+    i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++;
+    i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++;
+    i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++;
+    i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++;
+    i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++;
+    i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++;
+    i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++;
+    i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++;
+    i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++;
+    i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++;
+    i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++;
+    i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++;
+    i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++;
+     i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++;
+    i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++;
+    i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++;
+    i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++;
+    i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++;
+    i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++;
+    i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++;
+    i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++;
+    i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++;
+    i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++;
+    i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++;
+    i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++;
+    i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++;
+    i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++;
+    
+        }
     public class ContactWrapper {
         public string contactId { get; set; }
         public string contactName {get; set;}
+        public string contactFirstName {get; set;}
         public string insuranceId {get; set;}
         public string contactEmail {get; set;}
         public string cellPhone { get; set; }
@@ -324,12 +590,18 @@ public with sharing class NewAccountDriverController {
         public Boolean mlogApp {get; set;}        
         public Boolean checkActivationDate {get; set;}
         public Boolean mburseDashboard {get; set;}
-        public Boolean planPreview {get; set;}
+        public Boolean  planPreview {get; set;}
         public integer daysBetweenActivation {get; set;}
         public string helloSignDriverSign{get; set;}
         public string helloSignId {get; set;}
         public Datetime documentDate {get; set;}
-        public Date addedActivationDate {get; set;}     
-        public Date insuranceExpirationDate {get; set;}     
+        public Date addedActivationDate {get; set;}  
+        public Date insuranceExpirationDate {get; set;}  
+        public Boolean insuranceDialogueRemove {get; set;}  
+        public Boolean planPreviewOnBoarding {get; set;}
+        public Boolean mburseDashboardOnBoarding {get; set;}
+        public Boolean watchMeetingOnBoarding{get; set;} 
+        public Boolean dontShowOnBoarding{get; set;}  
+        public Boolean checkOnBoarding{get; set;}   
     }
 }

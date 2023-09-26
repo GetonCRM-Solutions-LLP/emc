@@ -17,10 +17,14 @@ public with sharing class LoginRedirection
         u = [SELECT id,Profile.Name,
                     contactid,contact.showTeamRecord__c,
                     contact.Accountid,Contact.Insurance_Attachment_Id__c,
+                    contact.Check_OnBoarding__c,                    
                     Contact.Driver_Type__c,
                     Contact.Meeting__c,
                     Contact.Driver_Packet_Status__c,
                     Contact.Insurance_Declaration_Status__c,
+                    Contact.Plan_Preview__c,
+                    Contact.Mburse_Dashboard__c,
+                    Contact.Watch_Meeting__c,
                     Contact.App__c,Contact.Activation_Date__c,
                     Contact.Hello_Sign_Status__c,                    
                     Contact.Account.MburseDashboardRedirect__c,
@@ -48,35 +52,39 @@ public with sharing class LoginRedirection
                     daysBetweenActivation = activationDate != null ? activationDate.daysBetween(currentDate) : null;
                     if((daysBetweenActivation != null && daysBetweenActivation <= 30) || Test.isRunningTest()){
                         checkActivationDate = true;
-                    } else if(daysBetweenActivation > 30 && u.Contact.Hello_Sign_Status__c != null && u.Contact.Hello_Sign_Status__c == 'signed' && u.Contact.Meeting__c != null && u.Contact.Meeting__c != 'Sent'){
+                    } else if(daysBetweenActivation > 30 && u.Contact.Hello_Sign_Status__c != null && u.Contact.Hello_Sign_Status__c == 'signed' && u.Contact.Watch_Meeting__c == true){
                         checkActivationDate = true;
                     } else {
                         checkActivationDate = false;
                     }
-                if(u.Profile.Name == 'Customer Community Login User - Manager') {
-                    pageRef = new PageReference('/app/managerdashboard?accid='+u.contact.Accountid+'&id='+u.contactid+'&showteam='+String.valueOf(u.contact.showTeamRecord__c));
+                if(u.Profile.Name == 'Customer Community Login User - Manager') {                   
+                    if(u.contact.Check_OnBoarding__c == true){                        
+                        pageRef = new PageReference('/app/managerProfileDashboard?accid='+u.contact.Accountid+'&id='+u.contactid+'&showteam='+String.valueOf(u.contact.showTeamRecord__c));                    
+                    } else {
+                        pageRef = new PageReference('/app/onBoardingProcess?accid='+u.contact.Accountid+'&id='+u.contactid+'&showteam='+String.valueOf(u.contact.showTeamRecord__c));
+                    }
+                    
                     return pageRef;
-                } else if(u.Profile.Name == 'Customer Community Login User - Super Manager') {
-                    pageRef = new PageReference('/app/admindashboard?accid='+u.contact.Accountid+'&id='+u.contactid+'&showteam='+String.valueOf(u.contact.showTeamRecord__c));
+                } else if(u.Profile.Name == 'Customer Community Login User - Super Manager') {                   
+                    if(u.contact.Check_OnBoarding__c == true){
+                        pageRef = new PageReference('/app/adminProfileDashboard?accid='+u.contact.Accountid+'&id='+u.contactid+'&showteam='+String.valueOf(u.contact.showTeamRecord__c));
+                    } else {
+                        pageRef = new PageReference('/app/onBoardingProcess?accid='+u.contact.Accountid+'&id='+u.contactid+'&showteam='+String.valueOf(u.contact.showTeamRecord__c));
+                    }                    
                     return pageRef;
                 } else if(u.Profile.Name == 'Customer Community Login User - Driver') {                                         
-                    if(u.Contact.Driver_Packet_Status__c != null && u.Contact.Insurance_Declaration_Status__c != null && u.Contact.Driver_Packet_Status__c != 'Skip' && u.Contact.Insurance_Declaration_Status__c == 'Uploaded' && u.Contact.App__c != null && checkActivationDate == true){
-                      
+                    if(u.Contact.Driver_Packet_Status__c != null && u.Contact.Insurance_Declaration_Status__c != null && u.Contact.Driver_Packet_Status__c != 'Skip' && u.Contact.Insurance_Declaration_Status__c == 'Uploaded' && u.Contact.App__c != null && checkActivationDate == true){                      
                         //AI-000414                       
                         if(biWeekList.size() > 0){
                             if(biWeekList[0].Confirm_Hours__c == false &&  u.Contact.Insurance_Attachment_Id__c != null && biWeekList[0].Count_Error_Check__c < 4){
                                 pageRef = new PageReference('/app/driverDashboardWeekly?accid='+u.contact.Accountid+'&id='+u.contactid);
                             } else if((biWeekList[0].Confirm_Hours__c == true || (biWeekList[0].Count_Error_Check__c != null && biWeekList[0].Count_Error_Check__c > 3)) && u.Contact.Insurance_Attachment_Id__c != null ){
-                                pageRef = new PageReference('/app/driverDashboardClone?accid='+u.contact.Accountid+'&id='+u.contactid);
-                            } else if(u.Contact.Insurance_Attachment_Id__c == null){
-                                pageRef = new PageReference('/app/uploadInsurance?accid='+u.contact.Accountid+'&id='+u.contactid);      
+                                pageRef = new PageReference('/app/driverProfileDashboard?accid='+u.contact.Accountid+'&id='+u.contactid);
                             } 
                         } else {
-                            if(u.Contact.Meeting__c != null && u.Contact.Meeting__c != 'Sent' && u.Contact.Insurance_Attachment_Id__c != null || (u.Contact.Account.Account_Status__c != null && u.Contact.Account.Account_Status__c == 'Existing Account' && u.Contact.Insurance_Attachment_Id__c != null)){
-                                pageRef = new PageReference('/app/driverDashboardClone?accid='+u.contact.Accountid+'&id='+u.contactid);
-                            }  else if(u.Contact.Insurance_Attachment_Id__c == null){
-                                pageRef = new PageReference('/app/uploadInsurance?accid='+u.contact.Accountid+'&id='+u.contactid);      
-                            }   else {
+                            if(u.Contact.Watch_Meeting__c = true || (u.Contact.Account.Account_Status__c != null && u.Contact.Account.Account_Status__c == 'Existing Account')){
+                                pageRef = new PageReference('/app/driverProfileDashboard?accid='+u.contact.Accountid+'&id='+u.contactid);
+                            } else {
                                 pageRef = new PageReference('/app/mBurseDashboard?accid='+u.contact.Accountid+'&id='+u.contactid);  
                             }
                         }
@@ -85,58 +93,35 @@ public with sharing class LoginRedirection
                     }                    
                     return pageRef;
                 } else if(u.Profile.Name == 'Customer Community Login User - Manager/Driver') {
-                    if(u.Contact.Driver_Packet_Status__c != null && u.Contact.Insurance_Declaration_Status__c != null && u.Contact.Driver_Packet_Status__c != 'Skip' && u.Contact.Insurance_Declaration_Status__c == 'Uploaded' && u.Contact.App__c != null && checkActivationDate == true){
-                        if(biWeekList.size() > 0 ){
-                            if(biWeekList[0].Confirm_Hours__c == false && biWeekList[0].Count_Error_Check__c < 4 ){
-                                pageRef = new PageReference('/app/driverDashboardWeekly?accid='+u.contact.Accountid+'&id='+u.contactid+'&showteam='+String.valueOf(u.contact.showTeamRecord__c)+'&role=managerdriver');
-                            } else if((biWeekList[0].Confirm_Hours__c == true ||  (biWeekList[0].Count_Error_Check__c != null && biWeekList[0].Count_Error_Check__c > 3)) && u.Contact.Insurance_Attachment_Id__c != null ){
-                                pageRef = new PageReference('/app/drivermanagerdashboard?accid='+u.contact.Accountid+'&id='+u.contactid+'&showteam='+String.valueOf(u.contact.showTeamRecord__c));
-                            } else if(u.Contact.Insurance_Attachment_Id__c == null){
-                                pageRef = new PageReference('/app/uploadInsurance?accid='+u.contact.Accountid+'&id='+u.contactid);      
-                            } 
-                        } else {
-                            if(u.Contact.Meeting__c != null && u.Contact.Meeting__c != 'Sent' && u.Contact.Insurance_Attachment_Id__c != null ||(u.Contact.Account.Account_Status__c != null && u.Contact.Account.Account_Status__c == 'Existing Account' && u.Contact.Insurance_Attachment_Id__c != null)){
-                                pageRef = new PageReference('/app/drivermanagerdashboard?accid='+u.contact.Accountid+'&id='+u.contactid+'&showteam='+String.valueOf(u.contact.showTeamRecord__c));
-                            }  else if(u.Contact.Insurance_Attachment_Id__c == null){
-                                pageRef = new PageReference('/app/uploadInsurance?accid='+u.contact.Accountid+'&id='+u.contactid);      
-                            } else {
-                                pageRef = new PageReference('/app/mBurseDashboard?accid='+u.contact.Accountid+'&id='+u.contactid);
-                            }  
-                        }                        
+                    if(u.contact.Check_OnBoarding__c == true){                        
+                        pageRef = new PageReference('/app/managerProfileDashboard?accid='+u.contact.Accountid+'&id='+u.contactid+'&showteam='+String.valueOf(u.contact.showTeamRecord__c));                                              
                     } else {
-                        pageRef = new PageReference('/app/mBurseDashboard?accid='+u.contact.Accountid+'&id='+u.contactid);
+                        pageRef = new PageReference('/app/onBoardingProcess?accid='+u.contact.Accountid+'&id='+u.contactid );
                     }             
                     return pageRef;
                 } else if(u.Profile.Name == 'Customer Community Login User - Super Manager/Driver') {                     
-                    if(u.Contact.Driver_Packet_Status__c != null && u.Contact.Insurance_Declaration_Status__c != null && u.Contact.Driver_Packet_Status__c != 'Skip' && u.Contact.Insurance_Declaration_Status__c == 'Uploaded' && u.Contact.App__c != null && checkActivationDate == true){
-                        if(biWeekList.size() > 0){
-                            if(biWeekList[0].Confirm_Hours__c == false && biWeekList[0].Count_Error_Check__c < 4 ){
-                                pageRef = new PageReference('/app/driverDashboardWeekly?accid='+u.contact.Accountid+'&id='+u.contactid+'&showteam='+String.valueOf(u.contact.showTeamRecord__c)+'&admindriver=true');
-                            } else if((biWeekList[0].Confirm_Hours__c == true ||  (biWeekList[0].Count_Error_Check__c != null && biWeekList[0].Count_Error_Check__c > 3)) && u.Contact.Insurance_Attachment_Id__c != null) {
-                                pageRef = new PageReference('/app/admindriverdashboard?accid='+u.contact.Accountid+'&id='+u.contactid+'&showteam='+String.valueOf(u.contact.showTeamRecord__c)+'&admindriver=true');
-                            } else if(u.Contact.Insurance_Attachment_Id__c == null){
-                                pageRef = new PageReference('/app/uploadInsurance?accid='+u.contact.Accountid+'&id='+u.contactid);      
-                            } 
-                        } else {
-                            if(u.Contact.Meeting__c != null && u.Contact.Meeting__c != 'Sent' && u.Contact.Insurance_Attachment_Id__c != null || (u.Contact.Account.Account_Status__c != null && u.Contact.Account.Account_Status__c == 'Existing Account' && u.Contact.Insurance_Attachment_Id__c != null )){
-                                pageRef = new PageReference('/app/admindriverdashboard?accid='+u.contact.Accountid+'&id='+u.contactid+'&showteam='+String.valueOf(u.contact.showTeamRecord__c)+'&admindriver=true');
-                            } else if(u.Contact.Insurance_Attachment_Id__c == null){
-                                pageRef = new PageReference('/app/uploadInsurance?accid='+u.contact.Accountid+'&id='+u.contactid);      
-                            } else {
-                                pageRef = new PageReference('/app/mBurseDashboard?accid='+u.contact.Accountid+'&id='+u.contactid);
-                            }
-                        }                        
+                    if(u.contact.Check_OnBoarding__c == true){                        
+                       pageRef = new PageReference('/app/adminProfileDashboard?accid='+u.contact.Accountid+'&id='+u.contactid+'&showteam='+String.valueOf(u.contact.showTeamRecord__c)+'&admindriver=true');                                          
                     } else {
-                        pageRef = new PageReference('/app/mBurseDashboard?accid='+u.contact.Accountid+'&id='+u.contactid);
+                        pageRef = new PageReference('/app/onBoardingProcess?accid='+u.contact.Accountid+'&id='+u.contactid);
                     }        
                     return pageRef;
                 }
             } else {
                 if(u.Profile.Name == 'Customer Community Login User - Manager') {
-                    pageRef = new PageReference('/app/managerdashboard?accid='+u.contact.Accountid+'&id='+u.contactid+'&showteam='+String.valueOf(u.contact.showTeamRecord__c));
+                   if(u.contact.Check_OnBoarding__c == true){
+                        pageRef = new PageReference('/app/onBoardingProcess?accid='+u.contact.Accountid+'&id='+u.contactid+'&showteam='+String.valueOf(u.contact.showTeamRecord__c));
+                    } else {
+                        pageRef = new PageReference('/app/managerProfileDashboard?accid='+u.contact.Accountid+'&id='+u.contactid+'&showteam='+String.valueOf(u.contact.showTeamRecord__c));
+                    }                    
                     return pageRef;
                 } else if(u.Profile.Name == 'Customer Community Login User - Super Manager') {
-                    pageRef = new PageReference('/app/admindashboard?accid='+u.contact.Accountid+'&id='+u.contactid+'&showteam='+String.valueOf(u.contact.showTeamRecord__c));
+                    //pageRef = new PageReference('/app/admindashboard?accid='+u.contact.Accountid+'&id='+u.contactid+'&showteam='+String.valueOf(u.contact.showTeamRecord__c));
+                    if(u.contact.Check_OnBoarding__c == true){
+                        pageRef = new PageReference('/app/adminProfileDashboard?accid='+u.contact.Accountid+'&id='+u.contactid+'&showteam='+String.valueOf(u.contact.showTeamRecord__c));
+                    } else {
+                        pageRef = new PageReference('/app/onBoardingProcess?accid='+u.contact.Accountid+'&id='+u.contactid+'&showteam='+String.valueOf(u.contact.showTeamRecord__c));
+                    } 
                     return pageRef;
                 } else if(u.Profile.Name == 'Customer Community Login User - Driver') {
                     //AI-000414
@@ -144,39 +129,23 @@ public with sharing class LoginRedirection
                         if(biWeekList[0].Confirm_Hours__c == false &&  u.Contact.Insurance_Attachment_Id__c != null && biWeekList[0].Count_Error_Check__c < 4){
                             pageRef = new PageReference('/app/driverDashboardWeekly?accid='+u.contact.Accountid+'&id='+u.contactid);
                         } else if((biWeekList[0].Confirm_Hours__c == true || (biWeekList[0].Count_Error_Check__c != null && biWeekList[0].Count_Error_Check__c > 3)) && u.Contact.Insurance_Attachment_Id__c != null ){
-                            pageRef = new PageReference('/app/driverDashboardClone?accid='+u.contact.Accountid+'&id='+u.contactid);
+                            pageRef = new PageReference('/app/driverProfileDashboard?accid='+u.contact.Accountid+'&id='+u.contactid);
                         } else if(u.Contact.Insurance_Attachment_Id__c == null){
                             pageRef = new PageReference('/app/uploadInsurance?accid='+u.contact.Accountid+'&id='+u.contactid);      
                         } 
                     } else {
                         if(u.Contact.Insurance_Attachment_Id__c != null ){
-                            pageRef = new PageReference('/app/driverDashboardClone?accid='+u.contact.Accountid+'&id='+u.contactid);
+                            pageRef = new PageReference('/app/driverProfileDashboard?accid='+u.contact.Accountid+'&id='+u.contactid);
                         } else {
                             pageRef = new PageReference('/app/uploadInsurance?accid='+u.contact.Accountid+'&id='+u.contactid);
                         }
                     }
                     return pageRef;
-                } else if(u.Profile.Name == 'Customer Community Login User - Manager/Driver') {
-                    if(biWeekList.size() > 0 ){
-                        if(biWeekList[0].Confirm_Hours__c == false && biWeekList[0].Count_Error_Check__c < 4 ){
-                            pageRef = new PageReference('/app/driverDashboardWeekly?accid='+u.contact.Accountid+'&id='+u.contactid+'&showteam='+String.valueOf(u.contact.showTeamRecord__c)+'&role=managerdriver');
-                        } else if(biWeekList[0].Confirm_Hours__c == true ||  (biWeekList[0].Count_Error_Check__c != null && biWeekList[0].Count_Error_Check__c > 3)){
-                            pageRef = new PageReference('/app/drivermanagerdashboard?accid='+u.contact.Accountid+'&id='+u.contactid+'&showteam='+String.valueOf(u.contact.showTeamRecord__c));
-                        }
-                    } else {
-                        pageRef = new PageReference('/app/drivermanagerdashboard?accid='+u.contact.Accountid+'&id='+u.contactid+'&showteam='+String.valueOf(u.contact.showTeamRecord__c));
-                    }                
+                } else if(u.Profile.Name == 'Customer Community Login User - Manager/Driver') {                    
+                     pageRef = new PageReference('/app/managerProfileDashboard?accid='+u.contact.Accountid+'&id='+u.contactid+'&showteam='+String.valueOf(u.contact.showTeamRecord__c));                           
                     return pageRef;
-                } else if(u.Profile.Name == 'Customer Community Login User - Super Manager/Driver') {
-                    if(biWeekList.size() > 0 ){
-                        if(biWeekList[0].Confirm_Hours__c == false && biWeekList[0].Count_Error_Check__c < 4 ){
-                            pageRef = new PageReference('/app/driverDashboardWeekly?accid='+u.contact.Accountid+'&id='+u.contactid+'&showteam='+String.valueOf(u.contact.showTeamRecord__c)+'&admindriver=true');
-                        } else if(biWeekList[0].Confirm_Hours__c == true ||  (biWeekList[0].Count_Error_Check__c != null && biWeekList[0].Count_Error_Check__c > 3)){
-                            pageRef = new PageReference('/app/admindriverdashboard?accid='+u.contact.Accountid+'&id='+u.contactid+'&showteam='+String.valueOf(u.contact.showTeamRecord__c)+'&admindriver=true');
-                        }
-                    } else {
-                        pageRef = new PageReference('/app/admindriverdashboard?accid='+u.contact.Accountid+'&id='+u.contactid+'&showteam='+String.valueOf(u.contact.showTeamRecord__c)+'&admindriver=true');
-                    } 
+                } else if(u.Profile.Name == 'Customer Community Login User - Super Manager/Driver') {                   
+                    pageRef = new PageReference('/app/adminProfileDashboard?accid='+u.contact.Accountid+'&id='+u.contactid+'&showteam='+String.valueOf(u.contact.showTeamRecord__c)+'&admindriver=true');
                     return pageRef;
                 }
             }
@@ -376,6 +345,7 @@ public with sharing class LoginRedirection
     i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++;
     i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++;
     i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++;
+     i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++;
     i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++;
     i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++;
     i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++;
@@ -389,8 +359,7 @@ public with sharing class LoginRedirection
     i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++;
     i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++;
     i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++;
-    i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++;
-    i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++;
+     i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++;
     i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++;
     i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++;
     i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++; i++;

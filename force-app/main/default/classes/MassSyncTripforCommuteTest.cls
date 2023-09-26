@@ -2,14 +2,12 @@
 public class MassSyncTripforCommuteTest {
     public static testmethod void GetTriptest() {
         List<Id> contactids = new List<Id>();
+        
+        TrueDialog_Keys__c tdKeys = TestDataFactory.createTrueDialog(true);
+        List<IRS_Mileage_Rate__c> obj_IRS_Mileage_Rate =  RecordUtilityClass.insertIrsRate();
         Map<Id, Employee_Reimbursement__c> conReim = new Map<Id, Employee_Reimbursement__c>();
         
-        Vehicle_URL_Mapping__c veh = new Vehicle_URL_Mapping__c();
-        veh.URL__c = 'https://cdn2.hubspot.net/hubfs/2511299/iStock-494093356.jpg';
-        veh.vehicle__c = 'Mileage Rate';
-        veh.Year__c = '2019';
-        insert veh;
-        
+         Vehicle_URL_Mapping__c veh = TestDataFactory.createVehicleData(true,0);
         TriggerConfig__c customSetting =  new TriggerConfig__c();
         customSetting.Name = 'Defaulttrigger';
         customSetting.MappingGasPriceTrigger__c = true;
@@ -36,6 +34,8 @@ public class MassSyncTripforCommuteTest {
         Account acc;
         Contact contact;
         Contact con ;
+        Contact con2 ;
+         List<Contact> conList = new List<Contact>();
         System.runAs(admin) {
             acc = new Account();           
             acc.Name = 'Delta account';
@@ -46,6 +46,10 @@ public class MassSyncTripforCommuteTest {
             acc.Pay_Period_Start_Date__c = system.today().adddays(-130);
             insert Acc;
             
+           // acc = TestDataFactory.createAccount(true,'Test',true);
+            conList = TestDataFactory.createDriverContact(true, acc.Id, 'Driver', veh.Name, 'test.email', 1);
+            
+           // List<contact> conList = new List<Contact>();
             contact = new Contact();
             contact.lastname = 'Test Contact';
             contact.AccountId = Acc.Id;
@@ -58,6 +62,7 @@ public class MassSyncTripforCommuteTest {
             contact.Vehicle_Type__c = '2019 Mileage Rate';
             insert contact;
             contactids.add(contact.Id);
+           // conList.add(contact);
             
             con = new Contact();
             con.lastname = 'Test Con';
@@ -68,6 +73,18 @@ public class MassSyncTripforCommuteTest {
             con.compliancestatus__c = 'No – Vehicle Age';
             con.isCommunityUser__c = true;
             insert con;
+	
+            con2 = new Contact();
+            con2.lastname = 'Test Con';
+            con2.AccountId = Acc.Id;
+            con2.External_Email__c = 'minkesh.patel13@gmail.com';
+            con2.Email = 'minkesh.patel13@gmail.com';
+            con2.Triplog_Status__c = 'U';
+            con2.compliancestatus__c = 'No – Vehicle Age';
+            con2.isCommunityUser__c = true;
+            con2.Role__c = 'Admin';
+            insert con2;
+            
             contactids.add(con.Id);
             Contact contact_1 = new Contact(AccountId = acc.Id, LastName = 'xgeek',External_Email__c='newmail@gmail.com');
             insert contact_1;
@@ -87,7 +104,7 @@ public class MassSyncTripforCommuteTest {
             );
             insert user_1;
         }        
-        
+        List<String>  reimList = new List<String> ();
         Employee_Reimbursement__c er = new Employee_Reimbursement__c();
         er.Contact_Id__c = contact.Id;
         er.month__c = '09-2020';
@@ -103,6 +120,25 @@ public class MassSyncTripforCommuteTest {
         er.Triplog_Status__c = 'U';
         insert er;
         conReim.put(con.Id,er);
+        reimList.add(er.ID);
+        
+        Employee_Reimbursement__c er1 = new Employee_Reimbursement__c();
+        er1.Contact_Id__c = contact.Id;
+        er1.month__c = '09-2020';
+        er1.Name = contact.lastname+':'+er.month__c;
+        er1.Status__c = 'Pending';
+        er1.Fuel_Price__c = 1;  //String.valueof(er.Fuel_Price__c); // 
+        er1.MPG__c = 10.00;
+        er1.Maintenance_and_Tires__c = 24;//String.valueof(er.Maintenance_and_Tires__c);
+        er1.Fuel_Price__c = 1;
+        er1.MPG__c = 10;
+        er1.Maintenance_and_Tires__c = 10;
+        er1.Fixed_Amount__c = 10.10;
+        er1.Triplog_Status__c = 'U';
+        insert er1;
+         reimList.add(er1.ID);
+        
+       // LIst<Employee_Reimbursement__c> reimIdList = TestDataFactory.createPendingReimbursement(True,conList,2,obj_IRS_Mileage_Rate.Id);
         
         Bi_Weekly_Reimbursement__c biReim = new Bi_Weekly_Reimbursement__c();
         bireim.Approved_Date__c = system.today().addDays(-1);
@@ -124,7 +160,14 @@ public class MassSyncTripforCommuteTest {
         Test.SetMock(HttpCalloutMock.class, new GetTripCalloutMock());
         MassSyncTripforCommute obj = new MassSyncTripforCommute(Acc.Id,'2020-10-01','2020-10-31','09-2020','U',false, 'Business');
         DataBase.executeBatch(obj);
-        
+        MassSyncTripforCommute obj1 = new MassSyncTripforCommute(reimList);
+        DataBase.executeBatch(obj1);
+		String response = BiWeeklyWrapperUtils.getUnapprovedReimbursements(con2.Id,Acc.Id,True,'Admin');        
+        /*string biWeekData = JSON.serialize(biReim);
+        system.debug('biWeekData==' + biWeekData);*/
+        system.debug('biReim==' + biReim);
+        MassSyncTripforCommute obj2 = new MassSyncTripforCommute(response,Acc.Id);
+        DataBase.executeBatch(obj2);
         Test.stopTest();
     }
 }

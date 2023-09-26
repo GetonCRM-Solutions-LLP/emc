@@ -4,11 +4,11 @@ import {
     api
 } from 'lwc';
 import mBurseCss from '@salesforce/resourceUrl/EmcCSS';
+import resourceImage from '@salesforce/resourceUrl/mBurseCss';
 import readFromFileInchunk from '@salesforce/apex/NewAccountDriverController.readFromFileInchunk';
 import contactInfo from '@salesforce/apex/NewAccountDriverController.getContactDetail';
 import sendInsuranceEmail from '@salesforce/apex/NewAccountDriverController.sendInsuranceEmail';
 import redirectionURL from '@salesforce/apex/NewAccountDriverController.loginRedirection';
-import updateMeetingStatus from '@salesforce/apex/NewAccountDriverController.updateMeetingStatus';
 import updateContactDetail from '@salesforce/apex/NewAccountDriverController.updateContactDetail';
 import {
     events,
@@ -64,6 +64,9 @@ export default class MBurseUploadDeclaration extends LightningElement {
     afterRegister = false;
     allowRedirect = false;
     uploaded = mBurseCss + '/emc-design/assets/images/file-uploaded.png';
+    fileUpload = resourceImage + '/mburse/assets/mBurse-Icons/file-upload.png';
+    fileSuccess = resourceImage + '/mburse/assets/mBurse-Icons/file-success.png';
+    thanksUploading = resourceImage + '/mburse/assets/mBurse-Icons/thanks.png';
     @api
     get client() {
         return this.driverObject;
@@ -343,7 +346,6 @@ export default class MBurseUploadDeclaration extends LightningElement {
     }
 
     redirectToDashboard() {
-				updateMeetingStatus({contactId: this.contactId})
         events(this, 'Next mburse meeting');
         // var list, d;
         // contactInfo({

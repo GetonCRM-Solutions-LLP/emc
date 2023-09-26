@@ -5,7 +5,7 @@
         <name>Driver_is_using_TRipLog</name>
         <label>Driver is using TRipLog</label>
         <locationX>182</locationX>
-        <locationY>276</locationY>
+        <locationY>252</locationY>
         <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
         <rules>
             <name>isUsing_Triplog</name>
@@ -15,13 +15,6 @@
                 <operator>EqualTo</operator>
                 <rightValue>
                     <booleanValue>true</booleanValue>
-                </rightValue>
-            </conditions>
-            <conditions>
-                <leftValueReference>$Record.AccountId</leftValueReference>
-                <operator>NotEqualTo</operator>
-                <rightValue>
-                    <stringValue>0010Z00001ygUenQAE</stringValue>
                 </rightValue>
             </conditions>
             <conditions>
@@ -67,7 +60,7 @@
         <name>Update_Insurance_Value</name>
         <label>Update Insurance Value</label>
         <locationX>50</locationX>
-        <locationY>396</locationY>
+        <locationY>360</locationY>
         <inputAssignments>
             <field>Insurance_Attachment_Id__c</field>
         </inputAssignments>
@@ -120,10 +113,10 @@
         <object>Contact</object>
         <schedule>
             <frequency>Daily</frequency>
-            <startDate>2023-05-02</startDate>
-            <startTime>03:00:00.000Z</startTime>
+            <startDate>2023-06-22</startDate>
+            <startTime>00:15:00.000Z</startTime>
         </schedule>
         <triggerType>Scheduled</triggerType>
     </start>
-    <status>Active</status>
+    <status>Draft</status>
 </Flow>

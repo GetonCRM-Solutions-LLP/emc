@@ -126,6 +126,8 @@ public with sharing class TestDataFactory {
         customSetting.IRSVehicleCHeck__c = false;
         customSetting.BiWeeklyReimbursementTrigger__c = true;
         customSetting.updateWorkingDays__c = true;
+        customSetting.Mileage_Lock_date_on_Reimbursement__c =  false;
+        customSetting.AddressTrigger__c=true;
         if(doInsert){
             insert customSetting;
         }
@@ -273,6 +275,7 @@ public with sharing class TestDataFactory {
         accountObj.Triplog_API__c = '28beeea973f34daf89050a9b6a3b1a71';
         accountObj.Triplog_Status__c = 'U';
         accountObj.isUsingTriplog__c = True;
+        
         if(doInsert){
             insert accountObj;
         }
@@ -370,6 +373,7 @@ public with sharing class TestDataFactory {
                 objReimbursement.Monthly_Fixed_Amount__c = 123;
                 objReimbursement.Approved_Date__c = null;     
                 objReimbursement.Number_of_Pay_Period__c = i;
+                objReimbursement.Mileage_Lock_Date__c = null;
                 reimbursementList.add(objReimbursement);
             }
         }
@@ -483,14 +487,15 @@ public with sharing class TestDataFactory {
      * This Method is used for creating an address List
      * ********************************************************** 
      */
-    public static List<Address__c> createAddress(Boolean doInsert, Integer nmbrRecord){
+    public static List<Address__c> createAddress(Boolean doInsert, Integer nmbrRecord, Integer zipcode){
         List<Address__c> addressList = new List<Address__c>();
         for(Integer i = 0; i <= nmbrRecord; i++) {
             Address__c addrs = new Address__c();
             addrs.State__c ='Alabama';
             addrs.City__c ='Abbeville';
             addrs.Abbreviation__c ='AL';
-            addrs.ZIP_Code__c ='36310'; 
+            addrs.ZIP_Code__c = string.valueof(zipcode + i); 
+            //addrs.ZIP_Code__c ='36310'; 
             addrs.Time_Zone__c = 'America/Anchorage';
             addressList.add(addrs);
         }
@@ -499,7 +504,7 @@ public with sharing class TestDataFactory {
         }
         return addressList;
     }
-	
+    
      public static Batch_Setup__c getTestBatchSetup(Boolean doInsert){
         Batch_Setup__c bsSet = new Batch_Setup__c();
         

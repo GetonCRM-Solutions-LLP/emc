@@ -21,6 +21,10 @@ Public class CreateBiweeklyReim Implements Database.Batchable<sObject> ,  databa
     Public String currentMonthDateStr ;
     List<IRS_Mileage_Rate__c> objIRSRate;
     Map<String,String> employeereimMap = new Map<String,String>();
+    public Map<Integer,String> errorMap = new Map<Integer,String>();
+    //public Integer errorFlagCount = 0;
+    public List<Bi_Weekly_Reimbursement__c> biweeklyreimToInsert   = new List<Bi_Weekly_Reimbursement__c>();
+    public String exceptionMessage = '';
     
     Public CreateBiweeklyReim(){
         myDate = system.today();
@@ -44,6 +48,7 @@ Public class CreateBiweeklyReim Implements Database.Batchable<sObject> ,  databa
                        AND Role__c != 'Manager' 
                        AND Deactivated_Date__c = NULL
                        AND Biweek_Reimbursement__c = true
+                       //AND Account.isUsingTriplog__c = true 
                        AND Activation_Date__c <=: myDate 
                        WITH SECURITY_ENFORCED ];
         } else {
@@ -121,15 +126,16 @@ Public class CreateBiweeklyReim Implements Database.Batchable<sObject> ,  databa
             accIdvsNewEndDate.put(acc.Id,newEnddate);
             accIdvsNewEndDateName.put(acc.Id,namenewEnddate);
             accIdvsPayLastEndDates.put(acc.Id, endDate);
+            system.debug('accIdvsPayLastEndDates==' + accIdvsPayLastEndDates);
             accIdvsDays.put(acc.Id,payDays);
         }
-        List<Bi_Weekly_Reimbursement__c> biweeklyreimToInsert   = new List<Bi_Weekly_Reimbursement__c>();
+        try {
         for(Contact con : [SELECT id,AccountId,Account.Pay_Period_Days__c, Deactivated_Date__c,Account.Pay_Period_Start_Date__c,Account.Bi_Weekly_Pay_Period__c,MPG__c, Maintenance_and_Tires__c,Fixed_Amount__c,MailingCity,MailingState
                            FROM Contact 
                            WHERE id =: conList]) {
                                if(accIdvsPayLastEndDates.containskey(con.AccountId) || test.isRunningTest()){
-                                   if(accIdvsPayLastEndDates.get(con.AccountId) == system.today() || test.isRunningTest()){
-                                       Bi_Weekly_Reimbursement__c br = new Bi_Weekly_Reimbursement__c();
+                                   if(accIdvsPayLastEndDates.get(con.AccountId) == system.today()){
+                                   		Bi_Weekly_Reimbursement__c br = new Bi_Weekly_Reimbursement__c();
                                        br.name = accIdvsNewStartDateName.get(con.AccountId) + ' to ' + accIdvsNewEndDateName.get(con.AccountId);
                                        br.Contact__c = con.Id;
                                        br.Start_Date__c = accIdvsNewStartDate.get(con.AccountId);
@@ -158,17 +164,69 @@ Public class CreateBiweeklyReim Implements Database.Batchable<sObject> ,  databa
                                            br.IRS_Mileage_Rate__c = objIRSRate[0].ID;
                                        }
                                        biweeklyreimToInsert.add(br);
+                                       system.debug('biweeklyreimToInsert=='+biweeklyreimToInsert);
                                    }
                                }
+                               System.debug('Error in insert Reimbursement ' + errorMap);
                            }
-        try {
-            if(!biweeklyreimToInsert.isEmpty() && !Test.isRunningTest()){
-                Database.insert(biweeklyreimToInsert, false);
-            }
-        } catch(DmlException e) {
-            System.debug('The following exception has occurred: ' + e.getMessage());
-        }
+            if(!biweeklyreimToInsert.isEmpty() || Test.isRunningTest()){
+                                           Database.SaveResult[] insertBiweeklyReim= Database.insert(biweeklyreimToInsert, false);
+                                           Integer errorFlagCount = 0;
+                                           if(insertBiweeklyReim.size() > 0){
+                                               for(Database.SaveResult sr:insertBiweeklyReim){
+                                                   if (sr.isSuccess() == false) {
+                                                       system.debug('Insert into false if condition==');
+                                                       for(Database.Error objErr : sr.getErrors()) {
+                                                           errorMap.put(errorFlagCount, objErr.getMessage());
+                                                           errorFlagCount++;
+                                                       }
+                                                   }
+                                                   
+                                               }  
+                                           }
+                                       }
+                               } catch(DmlException e) {
+                                           System.debug('The following exception has occurred: ' + e.getMessage());
+                                           exceptionMessage = 'Exception:-'+e.getMessage()+' '+e.getLineNumber();
+                                       }
     } 
     Public void finish(Database.BatchableContext bc){
-    } 
+        
+        String errorEmail=System.Label.Error_Email_for_not_Create_BiWeeklyReimberssment;
+        Messaging.SingleEmailMessage email = new Messaging.SingleEmailMessage();
+        String[] toAddresses = new String[] {errorEmail};
+        email.setToAddresses(toAddresses);
+        String errorSubject;
+        String htmlbody;
+        Boolean emailFalg = false;
+        Messaging.EmailFileAttachment attach = new Messaging.EmailFileAttachment();
+        String finalstr;
+        string header ='Name'+','+'ContactId'+','+'Error'+' \n';
+        finalstr = header;
+        String Name,ContactId;
+        attach.setFileName('Employee Biweekly Reimbursement Error File .Csv');
+        errorSubject = 'Error Result Of Employee Biweekly Reimbursement Csv File';
+        htmlbody = 'Your job is not completed due to some record has error, so please see the last column in attached csv file for error';
+        system.debug('exceptionMessage==' + exceptionMessage);
+        system.debug('errorMap==' + errorMap);
+        if((exceptionMessage == null || exceptionMessage == '') && !errorMap.isEmpty()) {            
+            for(Integer mapkey : errorMap.keySet()){
+                 system.debug('errorMapkeyset==' + errorMap.keySet());
+                    Name = String.valueOf(biweeklyreimToInsert.get(mapkey).Name) != null ? biweeklyreimToInsert.get(mapkey).Name : '';
+                    ContactId = String.valueOf(biweeklyreimToInsert.get(mapkey).Contact__c) != null ? biweeklyreimToInsert.get(mapkey).Contact__c : '';
+                    String Recordstring = biweeklyreimToInsert.get(mapkey).Name +',' + biweeklyreimToInsert.get(mapkey).Contact__c +',' + errorMap.get(mapkey)+'    \n';
+                    finalstr = finalstr + Recordstring;
+            } 
+            system.debug('finalstr==' + finalstr);
+            attach.setBody(blob.valueOf(finalstr));            
+            email.setFileAttachments(new Messaging.EmailFileAttachment[] {attach});
+        }if((exceptionMessage == null || exceptionMessage == '') && errorMap.isEmpty()) {
+            emailFalg = true;
+            System.debug('exceptionMessage == errorMap.isEmpty()-->');
+        } 
+        email.setSubject(errorSubject);
+        email.setHTMLBody(htmlbody);
+        if(emailFalg == false)
+            Messaging.SendEmailResult [] r = Messaging.sendEmail(new Messaging.SingleEmailMessage[] {email});
+    }   
 }

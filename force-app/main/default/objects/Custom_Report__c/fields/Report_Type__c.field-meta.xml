@@ -75,6 +75,11 @@
                 <default>false</default>
                 <label>BiWeek Reimbursement Start and EndDate</label>
             </value>
+            <value>
+                <fullName>Reimbursement Month</fullName>
+                <default>false</default>
+                <label>Reimbursement Month</label>
+            </value>
         </valueSetDefinition>
     </valueSet>
 </CustomField>

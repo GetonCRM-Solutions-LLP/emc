@@ -21,9 +21,7 @@ export default class MapCreationComponent extends LightningElement {
   urlHost = "";
 
   @api mapAccess() {
-			setTimeout(()=>{
-					this.handleCallout();
-			}, 10)
+    this.handleCallout();
   }
 
   async handleCallout() {
@@ -42,7 +40,7 @@ export default class MapCreationComponent extends LightningElement {
       }
 
       resultArray = (apiJSON != null) ? apiJSON.routes : [];
-      console.log('apiCall->', resultArray);
+      console.log('apiCall->', JSON.stringify(resultArray));
       if (resultArray.length > 25) {
         resultArray = resultArray.slice(0, 25);
       }
@@ -84,7 +82,7 @@ export default class MapCreationComponent extends LightningElement {
       } else if ((mapLocations[0].startLocation.Latitude !== undefined && mapLocations[0].startLocation.Longitude !== undefined) ||
         (mapLocations[0].endLocation.Latitude !== undefined && mapLocations[0].endLocation.Longitude !== undefined)) {
         console.log('inside apiCall has locations end->')
-				locateList = JSON.stringify(mapLocations);
+        locateList = JSON.stringify(mapLocations);
         this.vfHost = this.urlHost + '?locations=' + locateList;
       } else {
         console.log('inside apiCall vf host empty->');

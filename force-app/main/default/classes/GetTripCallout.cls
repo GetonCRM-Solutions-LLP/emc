@@ -81,10 +81,10 @@ global class GetTripCallout {
                 emp.Mileage__c = lt.mileage;
                 emp.EMP_Mileage__c = lt.mileage;
                 //AI-000408
-                /*if(emp.Mileage__c == null || emp.Mileage__c == 0) {
+                if(emp.Mileage__c == null || emp.Mileage__c == 0) {
                     emp.Trip_Status__c = 'Approved';
                     emp.Approved_Date__c = System.Today();
-                }*/
+                }
                 //This is for PL marketing account
                 emp.Activity__c = lt.activity;
                 if(emp.Activity__c == 'Commute' && emp.Mileage__c >= 30) {

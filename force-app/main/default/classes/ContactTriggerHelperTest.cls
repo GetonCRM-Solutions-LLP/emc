@@ -7,7 +7,7 @@ public class ContactTriggerHelperTest {
         SendEmail__c sendEmailCustomSetting = TestDataFactory.sendEmailCustomSetting(true, 'Send Email For Compliance');
         TrueDialog_Keys__c tdKeys = TestDataFactory.createTrueDialog(true);
         IRS_Mileage_Rate__c irsRateObj = TestDataFactory.createIRSRate(true,0);
-        List<Address__c> objAddress = TestDataFactory.createAddress(true, 10);
+        List<Address__c> objAddress = TestDataFactory.createAddress(true, 10,12345);
         Vehicle_URL_Mapping__c vehicleType = TestDataFactory.createVehicleData(false, 3);
         vehicleType.Name = '2020 Full-Size Sedan';
         vehicleType.vehicle__c = 'Full-Size Sedan';
@@ -43,12 +43,15 @@ public class ContactTriggerHelperTest {
             con1List[0].Vehicle_Value__c = vehValue[0].Value__c;
             con1List[0].Activation_Date__c = system.today();
             con1List[0].Email = 'Testn@mailinator.com';
+            con1List[0].MailingPostalCode='99501';
+            con1List[0].Map_Country__c = 'USA';
             Insert con1List[0];
             
             con1List[0].compliancestatus__c = 'Yes';
             con1List[0].Deactivated_Date__c =null;   
             con1List[0].Email = 'Testn@mailinator.com';
-            con1List[0].Activation_Date__c = system.today().adddays(-20);        
+            con1List[0].Activation_Date__c = system.today().adddays(-20);
+            con1List[0].MailingPostalCode='382028';        
             update con1List[0];
             
             conList = TestDataFactory.createDriverContact(false, acc.Id, 'Driver', vehicleType.Name, 'paras.dhanani',  1);
@@ -58,7 +61,8 @@ public class ContactTriggerHelperTest {
             conList[0].Activation_Date__c = system.today().adddays(-9);   
             Insert conList[0];
             conIdList.add(conList[0].Id);
-            
+
+            checkRecursive.setting_run( true);
             conList[0].compliancestatus__c = 'No – Vehicle Age';
             update conList[0];
             
@@ -104,7 +108,36 @@ public class ContactTriggerHelperTest {
             ContactTriggerHelper.CreateUserFromCommunity (newCon[0], profileObj.ID);
             ContactTriggerHelper.insertDriverAggrementFile (connewMap);
             ContactTriggerHelper.updatePlanParameter(conIdList, accIdList);
+            
+            ContactTriggerHelper.updateComplianceStatus(newCon,conOldMap);
+            ContactTriggerHelper.updateMapCountry(conIdList);
+            
+            con1List[0].Role__c='Manager';
+            update con1List;
+            
+            List<Contact> newCon1 = new List<Contact>();
+            newCon1.add(con1List[0]);
+            
+            checkRecursive.setting_run(true);
+            con1List[0].Role__c='Driver/Manager';
+            update con1List;
+
+            checkRecursive.setting_run(true);
+            con1List[0].External_Email__c='Testn123@mailinator.com';
+            update con1List;
+                
+            Map<ID, Contact> conOldMap1 = new Map<ID, Contact>();
+            conOldMap1.put(con1List[0].Id,con1List[0]);
+            
+            con1List[0].Map_Country__c = 'CANADA';
+            update con1List[0];
+            
+            ContactTriggerHelper.creatuserreimbermentrecrds(newCon1,conOldMap1);
+            ContactTriggerHelper.updtcanadianmil(newCon1,conOldMap1);
+            ContactTriggerHelper.updateUser(String.valueOf(con1List[0].Id),'Driver');
+            ContactTriggerHelper.updateUserInMlog(con1List[0].Id);
         }
         Test.stopTest();
-    }     
+    }
+   
 }

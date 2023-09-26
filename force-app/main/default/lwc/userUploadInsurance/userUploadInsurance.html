@@ -1,0 +1,7 @@
+<template>
+    <template if:true={information}>
+        <c-dashboard-insurance-view if:false={nextDeclationUpload} video-css={videoStyle} css={contentStyle} expired={insuranceExpired} contact-id={contactId} account-id={accountId} onnavigate={navigateToDeclaration} video-link={insuranceVideo}></c-dashboard-insurance-view>
+        <c-dashboard-insurance-upload if:true={nextDeclationUpload} is-upload-show={uploadVal} account-id={accountId} contact-id={contactId} attachmentid={attachmentid} contact-name={contactName}
+        contact-email={contactEmail} client={information} onnavigate={navigateToDashboard}  onback={backToInsurance}></c-dashboard-insurance-upload>
+    </template>
+</template>

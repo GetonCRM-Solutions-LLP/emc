@@ -137,9 +137,12 @@ public with sharing class RecordUtilityClass
         System.runAs(user_1) {
             list<Gas_Prices__c> gaslist = buildGasPrice();
             insert gaslist;
-
+            
+            System.debug('first===');
             list<Employee_Reimbursement__c> obj_Employee_Reimbursement_list = buildPendingEmployee_Reimbursement(obj_Driver_list);
+            System.debug('second==='+obj_Employee_Reimbursement_list);
             insert obj_Employee_Reimbursement_list;
+            System.debug('third==='+obj_Employee_Reimbursement_list);
             
             list<Bi_Weekly_Reimbursement__c> empBIweekReimbursementList1 = buildPendingBiReimbursement(obj_Driver_list);
             insert empBIweekReimbursementList1;
@@ -202,8 +205,7 @@ public with sharing class RecordUtilityClass
     public static List<Employee_Reimbursement__c> getEmployee_Reimbursement(String accid)
     {
         system.debug('getEmployee_Reimbursement==' + accid);
-       
-        return [select id,Name, Month__c, Approved_Date__c,Contact_Id__r.Accountid, Contact_Id__c, Contact_Id__r.name, Contact_Id__r.Monthly_Mileage_Limit__c, Total_Approved__c, Total_Mileage__c, Status__c, Total_Variable_Rate__c,(select id,Name,Trip_Status__c,Trip_Date__c,Trip_Origin__c,Trip_Destination__c,Approved_Date__c,Mileage__c,Variable__c,EmployeeReimbursement__c,EmployeeReimbursement__r.month__c,EmployeeReimbursement__r.Contact_Id__c,CreatedDate,Rejected__c from Employees_Mileage__r where Trip_Status__c =: StaticValues.noApprovedYet and Approved_Date__c = null) from Employee_Reimbursement__c where Contact_Id__r.Accountid =: accid and (Contact_Id__r.Deactivated_Date__c = null OR Contact_Id__r.Deactivated_Date__c > TODAY) and Status__c = 'Pending' and Approved_Date__c != null];
+        return [select id,Name, Month__c, Approved_Date__c,Contact_Id__r.Accountid, Contact_Id__c, Contact_Id__r.name, Contact_Id__r.Monthly_Mileage_Limit__c, Total_Approved__c, Total_Mileage__c, Status__c, Total_Variable_Rate__c,(select id,Name,Trip_Status__c,Trip_Date__c,Trip_Origin__c,Trip_Destination__c,Approved_Date__c,Mileage__c,Variable__c,EmployeeReimbursement__c,EmployeeReimbursement__r.month__c,EmployeeReimbursement__r.Contact_Id__c,CreatedDate,Rejected__c from Employees_Mileage__r where Trip_Status__c =: StaticValues.noApprovedYet and Approved_Date__c = null) from Employee_Reimbursement__c where Contact_Id__r.Accountid =: accid and (Contact_Id__r.Deactivated_Date__c = null OR Contact_Id__r.Deactivated_Date__c > TODAY) and Status__c = 'Pending' and Approved_Date__c = null];
     }
     public static List<Employee_Reimbursement__c> getDriverEmployee_Reimbursement(String drivercontactid)
     {
@@ -257,6 +259,8 @@ public with sharing class RecordUtilityClass
                 empMil.Day_Of_Week__c ='';
                 empMil.Destination_Name__c='';
                 empMil.Activity__c = 'Business';
+                empMil.StartTime__c = system.today().addDays(-15);
+                empMil.EndTime__c = system.today().addDays(-15);
                 empMil.Bi_Weekly_Reimbursement__c = biweekly;
                 obj_Employee_Mileage_list.add(empMil);
             }
@@ -265,7 +269,7 @@ public with sharing class RecordUtilityClass
     }
     public static List<Employee_Reimbursement__c> buildPendingEmployee_Reimbursement(List<Contact> obj_Driver_list)
     {
-        
+        System.debug('seco');
         list<Employee_Reimbursement__c> obj_Employee_Reimbursement_list = new list<Employee_Reimbursement__c>();
         List<IRS_Mileage_Rate__c> obj_IRS_Mileage_Rate = new List<IRS_Mileage_Rate__c>();
         
@@ -287,6 +291,7 @@ public with sharing class RecordUtilityClass
                 obj_Employee_Reimbursement_list.add(obj_Employee_Reimbursement);
             }
         }
+        System.debug('obj_Employee_Reimbursement_list: '+obj_Employee_Reimbursement_list);
         return obj_Employee_Reimbursement_list;
     }
 
@@ -376,8 +381,8 @@ public with sharing class RecordUtilityClass
             c.Freeze__c = System.today();
             c.Vehicle_Type__c = '2019 Mileage Rate';
             c.Monthly_Reimbursement__c = true;
-            c.Last_Synced__c = system.today();
-            c.App_Settings__c = 'iOS v1.1.11. Auto start:MagicTrip. Business hours:Mon Tue Wed Thu Fri 3:00 AM-9:00 PM Business. After hours:Personal.';
+            c.Time_Zone__c = 'US/Arizona';
+            c.App_Settings__c = 'iOS v1.1.11. Auto start:MagicTrip. Business hours: Business. After hours:Personal.';
             obj_Driver_list.add(c);
         }
         return obj_Driver_list;
@@ -398,10 +403,10 @@ public with sharing class RecordUtilityClass
             c.LastName = 'Contact Manager'+i;
             c.AccountId = newAccount.Id;
             c.MailingStreet = 'Test Street';
-            c.MailingCity = 'Test City';
-            c.MailingState = 'ON';
-            c.MailingPostalCode = '123';
-            c.MailingCountry = 'CA';  
+            c.MailingCity = 'Abbeville';
+            c.MailingState = 'AL';
+            c.MailingPostalCode = '30304';
+            c.MailingCountry = 'USA';  
             c.External_Email__c = 'minkesh.pateldriver01'+i+'@gmail.com';
             c.Deactivated_Date__c = null;
             c.IsCommunityUser__c = true;
@@ -414,8 +419,7 @@ public with sharing class RecordUtilityClass
             c.Activation_Date__c = System.today();
             c.Monthly_Reimbursement__c = true;
             c.Company__C = 'Park';
-            c.Last_Synced__c = system.today();
-            c.App_Settings__c = 'iOS v1.1.11. Auto start:MagicTrip. Business hours:Mon Tue Wed Thu Fri 3:00 AM-9:00 PM Business. After hours:Personal.';
+            c.App_Settings__c = 'iOS v1.1.11. Auto start:MagicTrip. Business hours: Business. After hours:Personal.';
             obj_Manager_list.add(c);
         }
         return obj_Manager_list;
@@ -437,10 +441,10 @@ public with sharing class RecordUtilityClass
             c.LastName = 'Contact Driver Manager'+i;
             c.AccountId = newAccount.Id;
             c.MailingStreet = 'Test Street';
-            c.MailingCity = 'Test City';
-            c.MailingState = 'ON';
-            c.MailingPostalCode = '123';
-            c.MailingCountry = 'CA';            
+            c.MailingCity = 'Abbeville';
+            c.MailingState = 'AL';
+            c.MailingPostalCode = '30304';
+            c.MailingCountry = 'USA';        
             c.External_Email__c = 'minkesh.pateldriver01'+i+'@gmail.com';
             c.Deactivated_Date__c = null;
             c.IsCommunityUser__c = true;
@@ -449,6 +453,7 @@ public with sharing class RecordUtilityClass
             c.Monthly_Mileage_Limit__c = 210;
             c.Manager__c = adminContact.Id;
             c.Vehicle_Type__c = '2021 Test Ford';
+            c.App_Settings__c = 'iOS v1.1.11. Auto start:MagicTrip. Business hours: Business. After hours:Personal.';
             obj_Manager_list.add(c);
         }
         return obj_Manager_list;
@@ -466,10 +471,10 @@ public with sharing class RecordUtilityClass
         co.LastName = 'Contact Admin';
         co.AccountId = newAccount.Id;
         co.MailingStreet = 'Test Street';
-        co.MailingCity = 'Test City';
-        co.MailingState = 'ON';
-        co.MailingPostalCode = '123';
-        co.MailingCountry = 'CA';
+        co.MailingCity = 'Abbeville';
+        co.MailingState = 'AL';
+        co.MailingPostalCode = '30304';
+        co.MailingCountry = 'USA';
         co.Phone = '1232434445';
         co.External_Email__c = 'minkesh.patelmanager01@gmail.com';
         co.Deactivated_Date__c = null;
@@ -478,9 +483,7 @@ public with sharing class RecordUtilityClass
         co.Role__c = 'Admin';
         co.Monthly_Mileage_Limit__c = 210;
         co.Monthly_Reimbursement__c = true;
-        co.showTeamRecord__c = true;
-       	co.App_Settings__c = 'iOS v1.1.11. Auto start:MagicTrip. Business hours:Mon Tue Wed Thu Fri 3:00 AM-9:00 PM Business. After hours:Personal.';
-        co.Last_Synced__c = system.today();
+        co.App_Settings__c = 'iOS v1.1.11. Auto start:MagicTrip. Business hours: Business. After hours:Personal.';
         return co;       
     }
     public static EmployeeReimbursementDetailsAdmin getEmployeeReimbursementDetails(Employee_Reimbursement__c obj_current_Employee_Reimbursement)
@@ -660,7 +663,7 @@ public with sharing class RecordUtilityClass
                     EmployeeReimbursement__r.Total_Pending__c,EmployeeReimbursement__r.Monthly_Variable_Amount__c,
                     EmployeeReimbursement__r.Contact_Id__r.External_Email__c,EmployeeReimbursement__r.Total_Rejected__c,
                     EmployeeReimbursement__r.Total_Mileage__c,Notes__c,ConvertedStartTime__c,Stay_Time__c,Original_Destination_Name__c,
-                    Driving_Time__c,Total_Time__c,Tag__c,Activity__c,Mileage_Lock_Date__c,Fuel_Variable_Rate__c,Original_Origin_Name__c 
+                    Driving_Time__c,Total_Time__c,Tag__c,Activity__c,Mileage_Lock_Date__c,Fuel_Variable_Rate__c,Original_Origin_Name__c,High_Risk_Mileage__c 
                 FROM Employee_Mileage__c];
     } 
     public static List<EmployeeMileages> getallEmployeeMileages(List<Employee_Mileage__c> obj_list_Employee_Mileage)

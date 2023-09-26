@@ -3,6 +3,7 @@ import {
     api
 } from 'lwc';
 import mBurseCss from '@salesforce/resourceUrl/EmcCSS';
+import resourceImage from '@salesforce/resourceUrl/mBurseCss';
 import readFromFileInchunk from '@salesforce/apex/NewAccountDriverController.readFromFileInchunk';
 import sendInsuranceEmail from '@salesforce/apex/NewAccountDriverController.sendInsuranceEmail';
 import updateContactDetail from '@salesforce/apex/NewAccountDriverController.updateContactDetail';
@@ -73,7 +74,9 @@ export default class DashboardInsuranceUpload extends LightningElement {
 
     /*static resource file */
     uploaded = mBurseCss + '/emc-design/assets/images/file-uploaded.png';
-
+    fileUpload = resourceImage + '/mburse/assets/mBurse-Icons/file-upload.png';
+    fileSuccess = resourceImage + '/mburse/assets/mBurse-Icons/file-success.png';
+    thanksUploading = resourceImage + '/mburse/assets/mBurse-Icons/thanks.png';
     /*getter setter method for insurance minimums */
     @api 
     get client(){
@@ -93,6 +96,10 @@ export default class DashboardInsuranceUpload extends LightningElement {
         this.isVisible = false;
         this.template.querySelector('.box').classList.add('has-advanced-upload-error');
         this.template.querySelector('.box').classList.remove('has-advanced-upload');
+        let pathname = window.location.pathname;
+        if(pathname !== "/app/driverProfileDashboard"){
+            this.template.querySelector('.back_to_previous').style.top = "488px";
+        }
         this.template.querySelector('.file-message').classList.add('pd-10');
         this.template.querySelector('.file-message').classList.remove('pd-3');
     }
@@ -101,6 +108,10 @@ export default class DashboardInsuranceUpload extends LightningElement {
     toggleBox() {
         this.isError = false;
         this.isVisible = true;
+        let pathname = window.location.pathname;
+        if(pathname !== "/app/driverProfileDashboard"){
+            this.template.querySelector('.back_to_previous').style.top = "455px";
+        }
         this.template.querySelector('.box').classList.remove('has-advanced-upload-error');
         this.template.querySelector('.box').classList.add('has-advanced-upload');
         this.template.querySelector('.file-message').classList.remove('pd-10');
@@ -274,7 +285,7 @@ export default class DashboardInsuranceUpload extends LightningElement {
 
     /* on done click */
     nextDoneUpload() {
-            events(this, 'Next Driver Packet');
+        events(this, '');
     }
 
     /* on back click */
@@ -287,6 +298,17 @@ export default class DashboardInsuranceUpload extends LightningElement {
             return;
           }
         this.renderInitialized = true;
+        let pathname = window.location.pathname;
+        if(this.template.querySelector('.back_to_previous')){
+            if(pathname !== "/app/driverProfileDashboard")
+                this.template.querySelector('.back_to_previous').style.top = "433px";
+            else
+                this.template.querySelector('.back_to_previous').style.marginTop = "19px";
+        }
+        if(this.template.querySelector('.transition')){
+            if(pathname !== "/app/driverProfileDashboard")
+                this.template.querySelector('.transition').style.paddingTop = "80px"
+        }
         if (this.template.querySelector('form') != null) {
             this.template.querySelector('form').addEventListener(
                 'submit',

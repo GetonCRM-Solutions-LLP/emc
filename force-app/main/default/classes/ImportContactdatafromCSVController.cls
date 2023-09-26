@@ -1,52 +1,73 @@
-global class ImportContactdatafromCSVController implements Database.Batchable<String>, Database.Stateful, Database.AllowsCallouts {
-    global final Blob dataDocuments;
-    global String exceptionMessage = '';
-    global string accId;
-    global string adminMailId;
-    global Map<Integer,String> errorMap = new Map<Integer,String>();
-    global List<Contact> allContactList = new List<Contact>();
-    global String vehicleName;
-   
-    global ImportContactdatafromCSVController (String data,String accountId, String adminId){        
-        Blob beforeblob = Blob.valueOf(data);
-        this.dataDocuments = beforeblob;
+public class ImportContactdatafromCSVController implements Database.Batchable<CSVToContact>, Database.Stateful, Database.AllowsCallouts {
+    public String exceptionMessage = '';
+    public final String  JsonString;
+    public list<CSVToContact> LstCon ;
+    public string accId;
+    public string adminMailId;
+    public Map<Integer,String> errorMap = new Map<Integer,String>();
+    public List<Contact> allContactList = new List<Contact>();
+    public String vehicleName;
+    
+    public ImportContactdatafromCSVController (String data,String accountId, String adminId){
+        System.debug('file:: '+data );
+        System.debug('accountId:: '+accountId );
+        System.debug('AdminId:: '+adminId );      
+        this.JsonString = data;
+                // this.LstCon = CSVToContact.parse(JsonString);
+        // System.debug('lstcon   :: '+LstCon );
+
+        
+
         accId  = accountId;
-        for(Contact con : [SELECT id,External_Email__c 
-                            FROM contact 
-                            WHERE id =: adminId]) {
-                                adminMailId = con.External_Email__c;           
+        for(Contact con : [SELECT id,External_Email__c FROM contact WHERE id =: adminId]) {
+            adminMailId = con.External_Email__c;           
         }
     }
     
-    global Iterable<String> start(Database.BatchableContext bc){    
-        return new CSVIterator(this.dataDocuments.toString(), '\n');
-    }
+    public Iterable<CSVToContact> start(Database.BatchableContext bc){    
+        system.debug('inside start method');
+        this.lstCon=CSVToContact.parse(JsonString);
+        return new CSVIterator(lstCon);
+            }
     
-    global void execute(Database.BatchableContext info, List<String> scope){
+    public void execute(Database.BatchableContext info, List<CSVToContact> scope){
+        boolean flag =false;
+        checkRecursive.setting_SetLatLondAddressFlag(flag);
+
         Savepoint spMain = Database.setSavepoint();
+        System.debug('checking scope'+scope);
         Boolean checkValue;
+        system.debug('inside execute  method 1 ');
+
         Map<String, String> vehicleNameUrlMap = new Map<String, String>();
         Set<String> existingVehiclelist = new Set<String>();
         List<Vehicle_URL_Mapping__c> allVehiclelist = new List<Vehicle_URL_Mapping__c>();
         try {
+        system.debug('inside execute  method 2 ');
+
                  TrueDialog_Keys__c tdKeys =TrueDialog_Keys__c.getInstance('TrueDialogKeys');
                  tdKeys.Contact_Insert_From_File__c = true;
+        system.debug('inside execute  method 3 ');
+
                  update tdKeys;
                 //Getting all vehicle details
                 for (Vehicle_URL_Mapping__c veh : [SELECT Name FROM Vehicle_URL_Mapping__c limit 50000]) {
                     existingVehiclelist.add(veh.Name);
                 }
-                for(String row : scope){
-                    string[] csvRecordData = row.split(',');
-                    if(checkValue != true && String.isNotBlank(csvRecordData[29])){
-                    	vehicleName = csvRecordData[29];
+            
+        system.debug('inside execute  method 4 ');
+                for( CSVToContact con : scope){
+                    if(checkValue != true && String.isNotBlank(con.StandardVehicle)){
+                    	vehicleName = con.StandardVehicle;
                         System.debug('vehicleName'+vehicleName);
                         checkValue = true;
                     }
-                    if(csvRecordData[29] != '' && csvRecordData[31] != '' && existingVehiclelist.contains(csvRecordData[29]) == false){
-                        VehicleNameUrlMap.put((csvRecordData[29]).trim(), csvRecordData[31]);
+                    if(con.StandardVehicle != '' && con.VehicleURL != '' && existingVehiclelist.contains(con.StandardVehicle) == false){
+                        VehicleNameUrlMap.put(con.StandardVehicle.trim(), con.VehicleURL );
                     }
                 }
+        system.debug('inside execute  method 5');
+
             
             //Insert Vehicles
             for(String vName : VehicleNameUrlMap.keySet()) {
@@ -62,14 +83,20 @@ global class ImportContactdatafromCSVController implements Database.Batchable<St
             
             System.debug('vehicle name: '+vehicleName);
             //System.debug('Vehicle name in parent : '+allVehiclelist);
-            for(String row : scope){
-            System.debug('row=== '+row );
-                String[] csvRecordData = row.split(',');
-                System.debug('CSV Records'+csvRecordData);
-                System.debug('preparecontactList==='+preparecontactList(csvRecordData, accId,vehicleName));
+            string accVehicles ;
+            for (account acc : [select id,Vehicle_Types__c from Account where id =: accId and Vehicle_Types__c != null ]){
+            accVehicles = acc.Vehicle_Types__c;
+             }
+        system.debug('inside execute  method 6 ');
+
+
+            for(CSVToContact con : scope){
+                System.debug('row=== '+con );
+                System.debug('preparecontactList==='+preparecontactList(con, accId,vehicleName,accVehicles));
                 System.debug('Vehicle name in parent : '+vehicleName);
-                allContactList.add(preparecontactList(csvRecordData, accId, vehicleName));
+                allContactList.add(preparecontactList(con, accId, vehicleName,accVehicles));
             }
+
             system.debug('allContactList=='  + allContactList);
             if(!allContactList.isEmpty()){
                
@@ -93,22 +120,7 @@ global class ImportContactdatafromCSVController implements Database.Batchable<St
                     erroFlagCount ++;
                 }
             
-                /*List<Database.SaveResult> insertDriverList = Database.insert(allContactList, false);
-                Integer erroFlagCount = 0;
-                for(Integer i=0;i<insertDriverList.size();i++){
-                    if (insertDriverList.get(i).isSuccess()){
-                        insertDriverList.get(i).getId();
-
-                    }else if (!insertDriverList.get(i).isSuccess()){
-                        // DML operation failed
-                       Database.Error error = insertDriverList.get(i).getErrors().get(0);
-                        //String failedDML = error.getMessage();
-                        allContactList.get(i);//failed record from the list
-                        system.debug('Failed ID'+allContactList.get(i).Id);
-                            errorMap.put(erroFlagCount, error.getMessage());
-                    }
-                    erroFlagCount ++;
-                }  */
+               
             }
             system.debug('errorMap=='  + errorMap);
             Map<String, Contact> contactMap = new Map<String, Contact>();
@@ -150,29 +162,21 @@ global class ImportContactdatafromCSVController implements Database.Batchable<St
                 }
             }
             Database.saveResult[] insertDriverList = Database.update(contactMap.values(), false);
+            System.debug('insertdriverlis '+insertDriverList);
+
             
         }   catch(Exception e){
             exceptionMessage = 'Exception:-'+e.getMessage()+' '+e.getLineNumber();
             System.debug('Exception error Messagae'+e.getMessage());
             Database.rollback(spMain);
         }
+        
     }
-
-    public static Contact preparecontactList(String[] csvRecordData, string accId, String vehicleName){
+   public static Contact preparecontactList(CSVtoContact csvRecordData, string accId, String vehicleName,String accVehicles){
         System.debug('csv record data'+csvRecordData);
         System.debug('vehicleName'+vehicleName);
-        string accVehicles ;
         
-        if(Test.isRunningTest()){
-            for (account acc : [select id,Vehicle_Types__c from Account where Name = 'Test' Limit 2]){
-                accVehicles = acc.Vehicle_Types__c;
-                system.debug('accVehicles==' + accVehicles);
-              }
-            } else {
-                for (account acc : [select id,Vehicle_Types__c from Account where id =: accId and Vehicle_Types__c != null ]){
-                    accVehicles = acc.Vehicle_Types__c;
-                  }
-            }
+            
         //myString1.contains(myString2);
         system.debug('Insert into accVehicles if condition');
         string[] vehicleSplit;
@@ -180,101 +184,93 @@ global class ImportContactdatafromCSVController implements Database.Batchable<St
                 system.debug('Insert into accVehicles if condition');
                vehicleSplit =  accVehicles.split(';');
             } 
-       //string[] vehicleSplit =  accVehicles.split(';');
-      // System.debug('splited Vehicle'+vehicleSplit[0]);
-        String invalidNumbers = '[^0-9]';
+      
+      String invalidNumbers = '[^0-9]';
+
+      system.debug('Insert into accVehicles if condition');
+
         Contact conObj = new Contact();
-        conObj.Role__c = csvRecordData[0] ;
+        conObj.Role__c = csvRecordData.Role ;
         if (accId != null) { 
             conObj.AccountId = accId;
         }             
-        conObj.FirstName = csvRecordData[1];
+        conObj.FirstName = csvRecordData.FirstName;
 
         //below two field added to not activate community user when contact is created.
         conObj.isCommunityUser__c = false;
         conObj.IsCreatedFromCommunity__c = false;
     
-        conObj.LastName = csvRecordData[2];
-        conObj.Email = csvRecordData[3];
-        conObj.External_Email__c = csvRecordData[3];  
-        conObj.MobilePhone = csvRecordData[4];
-        conObj.Phone = csvRecordData[4];
-        conObj.MailingCity = csvRecordData[5];
-        conObj.MailingState = csvRecordData[6];
-        conObj.MailingPostalCode = csvRecordData[7];
-        conObj.Department = csvRecordData[8];   
-        conObj.Job_Title__c = csvRecordData[9];
-        conObj.Manager_First_Name__c = csvRecordData[10];
-        conObj.Manager_Last_Name__c = csvRecordData[11];
-        string managerExtEmail = csvRecordData[12];
+        conObj.LastName = csvRecordData.LastName;
+        conObj.Email = csvRecordData.EmailAddress;
+        conObj.External_Email__c = csvRecordData.EmailAddress;  
+        conObj.MobilePhone =String.valueOf(csvRecordData.CellPhone);
+        conObj.Phone = String.valueOf(csvRecordData.CellPhone);
+        conObj.MailingCity = csvRecordData.City;
+        conObj.MailingState = csvRecordData.State;
+        conObj.MailingPostalCode = String.valueOf(csvRecordData.ZipCode);
+        conObj.Department = csvRecordData.Department;   
+        conObj.Job_Title__c = csvRecordData.JobTitle;
+        conObj.Manager_First_Name__c = csvRecordData.ManagersFirstName;
+        conObj.Manager_Last_Name__c = csvRecordData.ManagersLastName;
+        string managerExtEmail = csvRecordData.ManagersEmail;
         if (managerExtEmail != '') {
             conObj.Manager_External_Email__c = managerExtEmail;
         }
+        system.debug('con obj'+conObj);
 
-        if(csvRecordData[29] != ''){conObj.Vehicle_Type__c = csvRecordData[29]; }  
-        if(csvRecordData[13] != '' && csvRecordData[13] != null && csvRecordData[13] != 'null'){conObj.Insurance_Rate__c = Decimal.valueOf(csvRecordData[13]);}
-        if(csvRecordData[14] != '' && csvRecordData[14] != null && csvRecordData[14] != 'null'){conObj.License_Ragistration__c = Decimal.valueOf(csvRecordData[14]);}
-        if(csvRecordData[15] != '' && csvRecordData[15] != null && csvRecordData[15] != 'null'){conObj.Taxes__c = Decimal.valueOf(csvRecordData[15]);}
-        if(csvRecordData[16] != '' && csvRecordData[16] != null && csvRecordData[16] != 'null'){conObj.Depreciation__c = Decimal.valueOf(csvRecordData[16]);}
-        if(csvRecordData[17] != '' && csvRecordData[17] != null && csvRecordData[17] != 'null'){conObj.Annual_Fixed_Cost__c = Decimal.valueOf(csvRecordData[17]);}
-        if(csvRecordData[18] != '' && csvRecordData[18] != null && csvRecordData[18] != 'null'){conObj.Fixed_Amount__c = Decimal.valueOf(csvRecordData[18]) ; }
-        if(csvRecordData[19] != '' && csvRecordData[19] != null && csvRecordData[19] != 'null'){conObj.Fixed_Cost_Adjustment__c = Decimal.valueOf(csvRecordData[19]);}
-        if(csvRecordData[20] != '' && csvRecordData[20] != null && csvRecordData[20] != 'null'){conObj.Total_Fixed_Costs__c = Decimal.valueOf(csvRecordData[20]);}
-        if(csvRecordData[21] != '') {conObj.Meeting__c = csvRecordData[21];}
+        // String.valueOf(csvRecordData.ComplianceMileage)    ;
+        if(csvRecordData.StandardVehicle != ''){conObj.Vehicle_Type__c = csvRecordData.StandardVehicle; }  
+        if(String.valueOf(csvRecordData.InsuranceRate) != '' && csvRecordData.InsuranceRate != null && String.valueOf(csvRecordData.InsuranceRate) != 'null'){conObj.Insurance_Rate__c = Decimal.valueOf(csvRecordData.InsuranceRate);}
+        if(String.valueOf(csvRecordData.LicenseandRegistration) != '' && csvRecordData.LicenseandRegistration != null && String.valueOf(csvRecordData.LicenseandRegistration) != 'null'){conObj.License_Ragistration__c = Decimal.valueOf(csvRecordData.LicenseandRegistration);}
+        if(String.valueOf(csvRecordData.PersonalPropertyTax) != '' && csvRecordData.PersonalPropertyTax != null && String.valueOf(csvRecordData.PersonalPropertyTax) != 'null'){conObj.Taxes__c = Decimal.valueOf(csvRecordData.PersonalPropertyTax);}
+        if(String.valueOf(csvRecordData.Depreciation) != '' && csvRecordData.Depreciation != null && String.valueOf(csvRecordData.Depreciation) != 'null'){conObj.Depreciation__c = Decimal.valueOf(csvRecordData.Depreciation);}
+        if(String.valueOf(csvRecordData.AnnualFixedCost) != '' && csvRecordData.AnnualFixedCost != null && String.valueOf(csvRecordData.AnnualFixedCost) != 'null'){conObj.Annual_Fixed_Cost__c = Decimal.valueOf(csvRecordData.AnnualFixedCost);}
+        if(String.valueOf(csvRecordData.FixedAmount) != '' && csvRecordData.FixedAmount != null && String.valueOf(csvRecordData.FixedAmount) != 'null'){conObj.Fixed_Amount__c = Decimal.valueOf(csvRecordData.FixedAmount) ; }
+        if(String.valueOf(csvRecordData.FCA) != '' && csvRecordData.FCA != null && String.valueOf(csvRecordData.FCA) != 'null'){conObj.Fixed_Cost_Adjustment__c = Decimal.valueOf(csvRecordData.FCA);}
+        if(String.valueOf(csvRecordData.TotalFixedAmount) != '' && csvRecordData.TotalFixedAmount != null && String.valueOf(csvRecordData.TotalFixedAmount) != 'null'){conObj.Total_Fixed_Costs__c = Decimal.valueOf(csvRecordData.TotalFixedAmount);}
+        if(csvRecordData.Meeting != '') {conObj.Meeting__c = csvRecordData.Meeting;}
+        system.debug('con obj'+conObj);
+
         //conObj.Packet__c = csvRecordData[26];
-        if(csvRecordData[23] != '') {
-            conObj.Added_Date__c = convertDateFormat(csvRecordData[23]);
+        if(csvRecordData.DateAdded != '') {
+            Date dt=Date.valueof(csvRecordData.DateAdded.split('T')[0]);
+            Date myDateIN=Date.newinstance(dt.year(), dt.MONTH(), dt.day());
+        
+            system.debug('***'+myDateIN);
+                        
+            conObj.Added_Date__c = myDateIN;
+            System.debug('added date '+conObj.Added_Date__c);    
         }
 
-        if(csvRecordData[24] != ''){
-            conObj.Activation_Date__c = convertDateFormat(csvRecordData[24]);    
+        if(csvRecordData.ActivationDate != ''){
+            Date dt1= Date.valueof(csvRecordData.ActivationDate.split('T')[0]);
+            Date myDate1=Date.newinstance(dt1.year(), dt1.MONTH(), dt1.day());
+            system.debug('***'+myDate1);
+            conObj.Activation_Date__c =myDate1;
+            System.debug('added date '+conObj.Activation_Date__c);
         } else {
             conObj.Activation_Date__c = system.today();
         }
-        if(csvRecordData[25] != '' && csvRecordData[25] != 'null' && csvRecordData[25] != null){conObj.MPG__c = Decimal.valueOf(csvRecordData[25]);}   
-        if(csvRecordData[26] != '' && csvRecordData[26] != 'null' && csvRecordData[26] != null){conObj.Maintenance__c = Decimal.valueOf(csvRecordData[26]);}   
-        if(csvRecordData[27] != '' && csvRecordData[27] != 'null' && csvRecordData[27] != null){conObj.Tires__c = Decimal.valueOf(csvRecordData[27]);}
-        if(csvRecordData[28] != '' && csvRecordData[28] != 'null' && csvRecordData[28] != null){conObj.Maintenance_and_Tires__c = Decimal.valueOf(csvRecordData[28]) ; }            
+        if(String.valueOf(csvRecordData.MPG) != '' && String.valueOf(csvRecordData.MPG) != 'null' && csvRecordData.MPG != null){conObj.MPG__c = Decimal.valueOf(csvRecordData.MPG);}   
+        if(String.valueOf(csvRecordData.Maint) != '' && String.valueOf(csvRecordData.Maint) != 'null' && csvRecordData.Maint != null){conObj.Maintenance__c = Decimal.valueOf(csvRecordData.Maint);}   
+        if(String.valueOf(csvRecordData.Tires) != '' && String.valueOf(csvRecordData.Tires) != 'null' && csvRecordData.Tires != null){conObj.Tires__c = Decimal.valueOf(csvRecordData.Tires);}
+        if(String.valueOf(csvRecordData.MaintTires) != '' && String.valueOf(csvRecordData.MaintTires) != 'null' && csvRecordData.MaintTires != null){conObj.Maintenance_and_Tires__c = Decimal.valueOf(csvRecordData.MaintTires) ; }            
 
-        if(csvRecordData[29] == ''){
+        if(csvRecordData.StandardVehicle == ''){
             conObj.Vehicle_Type__c = vehicleSplit.get(vehicleSplit.size()-1);
-        } else if(csvRecordData[29] != ''){
-            conObj.Vehicle_Type__c = csvRecordData[29];
+        } else if(csvRecordData.StandardVehicle != ''){
+            conObj.Vehicle_Type__c = csvRecordData.StandardVehicle;
         }/* else {
                 System.debug('Vehicle name in else: '+ vehicleSplit[0]);
                 conObj.Vehicle_Type__c = vehicleName;
         } */
-        if(csvRecordData[30] != '' && csvRecordData[30] != 'null' && csvRecordData[30] != null){conObj.Compliance_Mileage__c = Decimal.valueOf(csvRecordData[30]);}
-        if(csvRecordData[31] != ''){conObj.Car_Image__c = csvRecordData[31];}
+        if(String.valueOf(csvRecordData.ComplianceMileage) != '' && String.valueOf(csvRecordData.ComplianceMileage) != 'null' && csvRecordData.ComplianceMileage != null){conObj.Compliance_Mileage__c = Decimal.valueOf(csvRecordData.ComplianceMileage);}
+        if(csvRecordData.VehicleURL != ''){conObj.Car_Image__c = csvRecordData.VehicleURL;}
         System.debug('conObj :::' +conObj);
         return conObj;
     }
-    public static Date convertDateFormat(String csvRecordData){
-        String[] dts;
-        Date myDateIN;
-        if(csvRecordData.contains('/')){
-            dts = csvRecordData.split('/');
-            system.debug('dts==' + dts );
-            if(dts[2].contains(' ')){ 
-                dts[2] = dts[2].split(' ')[0];
-                myDateIN = Date.newinstance(Integer.valueOf(dts[0]), Integer.valueOf(dts[1]), Integer.valueOf(dts[2]));
-            } else {               
-                myDateIN = Date.newinstance(Integer.valueOf(dts[2]), Integer.valueOf(dts[0]), Integer.valueOf(dts[1]));                
-            }
-        } else if (csvRecordData.contains('-')){
-            dts = csvRecordData.split('-');
-            if(dts[2].contains(' ')){ 
-                dts[2] = dts[2].split(' ')[0];               
-                myDateIN = Date.newinstance(Integer.valueOf(dts[0]), Integer.valueOf(dts[1]), Integer.valueOf(dts[2]));
-            } else {               
-                myDateIN = Date.newinstance(Integer.valueOf(dts[2]), Integer.valueOf(dts[0]), Integer.valueOf(dts[1]));
-            }           
-        }
-        return myDateIN;
-    }
-    global void finish(Database.BatchableContext info){  
-
-
+    
+    public void finish(Database.BatchableContext info){
         for(Contact con : allContactList){
             if(con.id != null) {
                 try {                 
@@ -305,77 +301,56 @@ global class ImportContactdatafromCSVController implements Database.Batchable<St
             TrueDialogContactAPI tdContactApi = new TrueDialogContactAPI(contactIdSet);
             Database.executeBatch(tdContactApi,5);
         }        
-        String errorEmail = adminMailId;
-        Messaging.SingleEmailMessage email = new Messaging.SingleEmailMessage();
-        String[] toAddresses = new String[] {errorEmail};
-        email.setToAddresses(toAddresses);
+        
         String errorSubject;
         String htmlbody;
         Boolean emailFalg = false;
         System.debug('exception message: '+exceptionMessage);
         System.debug('error map is empty: '+errorMap.isEmpty());
-      
+        System.debug('error map is empty: '+errorMap );
+        Messaging.SingleEmailMessage email = new Messaging.SingleEmailMessage();
+        OrgWideEmailAddress[] owea = [SELECT Id,Address from OrgWideEmailAddress where Address = 'driverservices@mburse.com'];
+        
         if((exceptionMessage == null || exceptionMessage == '') && !errorMap.isEmpty()) {           
             Messaging.EmailFileAttachment attach = new Messaging.EmailFileAttachment();
-            String finalstr;
+            System.debug('inside attachment construction if block: ');
+            String csv = 'Index,Error Message\n';
+            for (Integer key : errorMap.keySet()) {
+                String errorMessage = errorMap.get(key).replaceAll(',', ';');
+                csv += key + ',' + errorMessage + '\n';
+            }   
+            System.debug('CSV---> '+csv);
             
-           string header = 'Role'+','+'First Name'+','+'Last Name'+','+'Email Address'+','+'Cell Phone'+','+'City'+','+'State'+','+'Zip Code'+','+'Department'+','+'Job Title'+','+'Managers First Name'+','+'Managers Last Name'+','+'Managers Email'+','+'Insurance Rate'+','+'License and Registration'+','+'Personal Property Tax'+','+'Depreciation'+','+'Annual Fixed Cost'+','+'Fixed Amount'+','+'FCA'+','+'Total Fixed Amount'+','+'Meeting'+','+'Packet'+','+'Date Added'+','+'Activation Date'+','+'MPG'+','+'Maint'+','+'Tires'+','+'Maint/Tires'+','+'Standard Vehicle'+','+'Compliance Mileage'+','+'Vehicle URL'+','+'Error'+' \n';
-           
-            finalstr = header;
-            String cellPhone,managersEmail,insuraceRate,licenseandRegistration,personalPropertyTax,depreciation,annualFixedCost,
-            fixedAmount,fca,totalFixedAmount,meeting,addedDate,activationDate,mpg,maint,tires,maintTires,standardVehicle,
-            complianceMileage,vehicleURL;
-
-            for(Integer mapkey : errorMap.keySet()){
-                    cellPhone = String.valueof(allContactList.get(mapkey)?.Phone) != null ? String.valueof(allContactList.get(mapkey)?.Phone) : '';
-                    managersEmail = allContactList.get(mapkey).Manager_External_Email__c != null ? allContactList.get(mapkey).Manager_External_Email__c : '';
-                    insuraceRate = String.valueof(allContactList.get(mapkey)?.Insurance_Rate__c) != null ? String.valueof(allContactList.get(mapkey)?.Insurance_Rate__c)  : '';
-                    licenseandRegistration = String.valueof(allContactList.get(mapkey).License_Ragistration__c) != null ? String.valueof(allContactList.get(mapkey).License_Ragistration__c) : '';
-                    personalPropertyTax = String.valueof(allContactList.get(mapkey).Taxes__c) != null ? String.valueof(allContactList.get(mapkey).Taxes__c) : '';
-                    depreciation = String.valueof(allContactList.get(mapkey).Depreciation__c) != null ? String.valueof(allContactList.get(mapkey).Depreciation__c) : '';
-                    annualFixedCost = String.valueof(allContactList.get(mapkey).Annual_Fixed_Cost__c) != null ? String.valueof(allContactList.get(mapkey).Annual_Fixed_Cost__c) : '';
-                    fixedAmount = String.valueof(allContactList.get(mapkey).Fixed_Amount__c) != null ? String.valueof(allContactList.get(mapkey).Fixed_Amount__c) : '';
-                    fca = String.valueof(allContactList.get(mapkey).Fixed_Cost_Adjustment__c) != null ? String.valueof(allContactList.get(mapkey).Fixed_Cost_Adjustment__c) : '';
-                    totalFixedAmount = String.valueof(allContactList.get(mapkey).Total_Fixed_Costs__c) != null ? String.valueof(allContactList.get(mapkey).Total_Fixed_Costs__c) : '';
-                    meeting = allContactList.get(mapkey).Meeting__c != null ? allContactList.get(mapkey).Meeting__c : '';
-                    mpg = String.valueof(allContactList.get(mapkey).MPG__c) != null ? String.valueof(allContactList.get(mapkey).MPG__c) : '';
-                    maint = String.valueof(allContactList.get(mapkey).Maintenance__c) != null ? String.valueof(allContactList.get(mapkey).Maintenance__c) : '';
-                    tires = String.valueof(allContactList.get(mapkey).Tires__c) != null ? String.valueof(allContactList.get(mapkey).Tires__c) : '';
-                    maintTires = String.valueof(allContactList.get(mapkey).Maintenance_and_Tires__c) != null ? String.valueof(allContactList.get(mapkey).Maintenance_and_Tires__c): '';
-                    standardVehicle = allContactList.get(mapkey).Vehicle_Type__c != null ? allContactList.get(mapkey).Vehicle_Type__c : '';
-                    complianceMileage = String.valueOf(allContactList.get(mapkey).Compliance_Mileage__c) != null ? String.valueof(allContactList.get(mapkey).Compliance_Mileage__c) : '';
-                    vehicleURL = allContactList.get(mapkey).Car_Image__c != null ? allContactList.get(mapkey).Car_Image__c : '';
-                    
-                    if(allContactList.get(mapkey).Added_Date__c != null) {
-                        addedDate = allContactList.get(mapkey).Added_Date__c != null ? allContactList.get(mapkey).Added_Date__c.day() + '/' + allContactList.get(mapkey).Added_Date__c.month()+'/'+ allContactList.get(mapkey).Added_Date__c.year() : '';
-                    }
-                    if(allContactList.get(mapkey)?.Activation_Date__c != null) {
-                        activationDate = allContactList.get(mapkey).Activation_Date__c != null ? allContactList.get(mapkey).Activation_Date__c.day() + '/' + allContactList.get(mapkey).Activation_Date__c.month()+'/'+ allContactList.get(mapkey).Activation_Date__c.year() : '';
-                    
-                    String recordstring = '"'+allContactList.get(mapkey).Role__c+'","'+allContactList.get(mapkey).FirstName+'","'+allContactList.get(mapkey).LastName+'","'+allContactList.get(mapkey).Email+'","'+CellPhone+'","'+allContactList.get(mapkey).MailingCity+'","'+allContactList.get(mapkey).MailingState+'","'+allContactList.get(mapkey).MailingPostalCode+'","'+allContactList.get(mapkey).Department+'","'+allContactList.get(mapkey).Job_Title__c+'","'+allContactList.get(mapkey).Manager_First_Name__c+'","'+allContactList.get(mapkey).Manager_Last_Name__c+'","'+ManagersEmail+'","'+insuraceRate +'","'+LicenseandRegistration+'","'+PersonalPropertyTax+'","'+Depreciation+'","'+AnnualFixedCost+'","'+FixedAmount+'","'+FCA+'","'+TotalFixedAmount+'","'+Meeting+'","'+''+'","'+addedDate+'","'+activationDate+'","'+MPG+'","'+Maint+'","'+Tires+'","'+MaintTires+'","'+StandardVehicle+'","'+ComplianceMileage+'","'+VehicleURL+'","'+errorMap.get(mapkey)+'"    \n';
-                    
-                    finalstr = finalstr + recordstring;
-                    }   
-            }          
-            
-            attach.setBody(blob.valueOf(finalstr));
+            attach.setBody(blob.valueOf(csv));
             attach.setFileName('Contact Error File .Csv');
             errorSubject = 'Error Result Of Contact Csv File';
             htmlbody = 'Your job is not completed due to some record has error, so please see the last column in attached csv file for error';
             email.setFileAttachments(new Messaging.EmailFileAttachment[] {attach});
-        }if((exceptionMessage == null || exceptionMessage == '') && errorMap.isEmpty()) {
+            
+        }else if((exceptionMessage == null || exceptionMessage == '') && errorMap.isEmpty()) {
+            System.debug('no error in the contact list if block ');
             emailFalg = true;          
         }else if(exceptionMessage != null && exceptionMessage != ''){
+            System.debug('exception occured ');
             errorSubject = 'Your job is rollback';
             htmlbody = 'Your job is rollback due to the error '+exceptionMessage + ',  please upload again or connect administrator';
         }
+        if (owea.size() > 0) {
+            email.setOrgWideEmailAddressId(owea.get(0).Id);
+        }
+        String errorEmail = adminMailId;
+        String[] toAddresses = new String[] {errorEmail};
+        email.setToAddresses(toAddresses);
+
         email.setSubject(errorSubject);
+        System.debug('out side the attachment creation blockx');
         email.setHTMLBody(htmlbody);
         if(emailFalg == false) {
-            Messaging.SendEmailResult [] r = Messaging.sendEmail(new Messaging.SingleEmailMessage[] {email});   
+            System.debug('error flag is still false');
+            Messaging.SendEmailResult [] r = Messaging.sendEmail(new Messaging.SingleEmailMessage[] {email}); 
+            system.debug('email result '+r)  ;
         }
 
        
-    } 
-     
-}
+    }     
+    }

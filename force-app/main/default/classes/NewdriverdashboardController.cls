@@ -61,8 +61,9 @@ global class NewdriverdashboardController {
         String contactFixedAmount ;
         String biWeekFixedAmount ;
         Boolean check = false;
+        
         for(Employee_Reimbursement__c reim : [SELECT id,Total_Approved__c,Total_Monthly_Reimbursement__c,Variable_Rate__c,
-                                                    Year__c,Contact_Id__r.MailingCity,Contact_Id__r.MailingState,Total_Variable_Rate__c, 
+                                                    Year__c,Contact_Id__r.MailingCity,Contact_Id__r.MailingState, 
                                                     Contact_Id__r.MailingPostalCode, Contact_Id__r.Fixed_Amount__c, 
                                                     Contact_Id__r.Driving_States__c, Contact_Id__r.Vehicle_Type__c,Contact_Id__r.Half_Fixed_Amount__c,
                                                     Contact_Id__r.Car_Image__c, Contact_Id__r.Annual_Total_Approved_Mileage__c,
@@ -110,11 +111,13 @@ global class NewdriverdashboardController {
              contactObj.biWeekContact = reim.Contact_Id__r.Biweek_Reimbursement__c != null ? reim.Contact_Id__r.Biweek_Reimbursement__c : false;
              if(reim.Month__c != null && reim.Month__c == lastMonth){
                  //contactObj.fixedAmount = String.valueof(reim.Fixed_Amount__c) != null ? String.valueof((reim.Fixed_Amount__c).setScale(2)) : null;
-                 contactObj.variableRate = String.valueof(reim.Total_Variable_Rate__c) != null ? String.valueof(reim.Total_Variable_Rate__c) : null;
+                 
+                 contactObj.variableRate = String.valueof(reim.Variable_Rate__c) != null ? String.valueof(reim.Variable_Rate__c) : null;
                  check = true;
              } else if(check == false){                 
                  //contactObj.fixedAmount = String.valueof(reim.Fixed_Amount__c) != null ? String.valueof((reim.Fixed_Amount__c).setScale(2)) : null;
-                 contactObj.variableRate = String.valueof(reim.Total_Variable_Rate__c) != null ? String.valueof(reim.Total_Variable_Rate__c) : null;                
+                 
+                 contactObj.variableRate = String.valueof(reim.Variable_Rate__c) != null ? String.valueof(reim.Variable_Rate__c) : null;                
              }
              
         }
@@ -191,6 +194,42 @@ global class NewdriverdashboardController {
         }
         return JSON.serialize(wrapList);
     }
+
+    @AuraEnabled
+    public static String getNotificationMessageList(String conId){
+        List<NotificationWrapper> wrapList = new List<NotificationWrapper>();
+        List<String> messages = new List<String>();
+        for(Message__c msgList : [Select Id,Contacts__c,Notification_Message__c,Unread__c,LastModifiedDate from Message__c where Contacts__c =: conId and Notification_Message__c != null and Unread__c = true Order by LastModifiedDate Desc]){
+            NotificationWrapper reimWrap = new NotificationWrapper();
+            reimWrap.id = msgList.Id;
+            reimWrap.modifiedDate = msgList.LastModifiedDate;
+            reimWrap.notificationMessage = msgList.Notification_Message__c;
+            reimWrap.unread = msgList.Unread__c;
+            wrapList.add(reimWrap);
+        }
+        //System.debug('message: '+messages);
+        return JSON.serialize(wrapList);
+    }
+
+    @AuraEnabled
+    public static string updateNotificationMessage(String msgId){
+        String updatedWrapperJson;
+        Message__c msgVal = [Select Id,Contacts__c,Notification_Message__c,Unread__c,LastModifiedDate from Message__c where Id =: msgId];
+        if(msgVal != null){
+            msgVal.Unread__c = false;
+            update msgVal;
+        }
+        updatedWrapperJson = getNotificationMessageList(msgVal.Contacts__c);
+        return updatedWrapperJson;
+    }
+
+    public class NotificationWrapper{
+        public string id {get; set;}
+        public DateTime modifiedDate {get; set;}
+        public String notificationMessage {get; set;}
+        public Boolean unread {get; set;}
+    }
+
     public class ReibursementWrapper{
         public string month {get; set;}
         public Decimal mileage {get; set;}

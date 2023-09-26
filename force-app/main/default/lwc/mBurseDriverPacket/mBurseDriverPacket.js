@@ -4,7 +4,6 @@ import {
 } from 'lwc';
 import signatureRequestForDriver from '@salesforce/apex/NewAccountDriverController.sendSignatureRequestForDriver';
 import contactInfo from '@salesforce/apex/NewAccountDriverController.getContactDetail';
-import updateMeetingStatus from '@salesforce/apex/NewAccountDriverController.updateMeetingStatus';
 import updateContactDetail from '@salesforce/apex/NewAccountDriverController.updateContactDetail';
 import redirectionURL from '@salesforce/apex/NewAccountDriverController.loginRedirection';
 import mBurseCss from '@salesforce/resourceUrl/mBurseCss';
@@ -14,10 +13,9 @@ import {
     backEvents
 } from 'c/utils';
 export default class MBurseDriverPacket extends LightningElement {
-    packetCss = mBurseCss + '/mburse/assets/Sign.png';
+    packetCss = mBurseCss + '/mburse/assets/Sign_cover.png';
     packetHeaderText = '';
     packetSignDate = '';
-		helloSignId =  '';
     showWatchBtn = false;
     afterRegister = false;
     packetSent = false;
@@ -31,6 +29,7 @@ export default class MBurseDriverPacket extends LightningElement {
     packetAlreadySent = false;
     packetIntial = false;
     allowRedirect = false;
+    helloSignId = '';
     @api days
     @api cellType;
     @api contactId;
@@ -50,27 +49,27 @@ export default class MBurseDriverPacket extends LightningElement {
         this.packetAlreadySent  = false;
         this.packetSent = true;
         let contactList, mLogList;
-				console.log("Driver details", this.driverDetails);
+        console.log("Driver details", this.driverDetails);
         if (this.driverDetails) {
             mLogList = this.driverDetails;
             contactList = this.proxyToObject(mLogList);
             this.isAppDone = (contactList[0].mlogApp) ? true : false;
-						this.helloSignId = contactList[0].helloSignId;
+            this.helloSignId =  contactList[0].helloSignId;
             signatureRequestForDriver({
-                    userEmail: this.emailOfDriver,
-                    contactName: this.contactOfDriver,
-										helloSignId: this.helloSignId
-                })
-                .then((result) => {
-                    console.log("Packet received --", result);
+                userEmail: this.emailOfDriver,
+                contactName: this.contactOfDriver,
+                helloSignId: this.helloSignId
+            })
+            .then((result) => {
+                console.log("Packet received --", result);
                     contactList[0].driverPacketStatus = (contactList[0].driverPacketStatus === null) ? "Sent" :
                         (contactList[0].driverPacketStatus === "Sent") ? "Resent" : (contactList[0].driverPacketStatus === "Resent") ? "Resent Again" : (contactList[0].driverPacketStatus === "Skip") ? "Sent" : "Resent Again"
-                    updateContactDetail({
-                        contactData: JSON.stringify(contactList),
-                        driverPacket: true
-                    }).then(() => {
-                        this.toggleHide();
-                    })
+                        updateContactDetail({
+                            contactData: JSON.stringify(contactList),
+                            driverPacket: true
+                        }).then(() => {
+                            this.toggleHide();
+                        })
                 })
                 .catch((error) => {
                     console.log(error);
@@ -99,7 +98,6 @@ export default class MBurseDriverPacket extends LightningElement {
                     list = this.proxyToObject(data);
                     this.packetHeaderText = list[0].documentDate;
                     this.packetSignDate = list[0].addedActivationDate;
-										this.helloSignId = (list[0].helloSignId != null) ? list[0].helloSignId : null;
                     packetStatus = list[0].driverPacketStatus; // list[0].driverPacketStatus;
                    // status = list[0].insuranceStatus;
                     this.packetIntial =  (packetStatus === 'Sent' || packetStatus  === 'Resent' || packetStatus  === 'Resent Again') ? false : true;
@@ -227,7 +225,6 @@ export default class MBurseDriverPacket extends LightningElement {
     }
 
     goToDashboard() {
-				updateMeetingStatus({contactId: this.contactId})
         events(this, 'Next mburse meeting');
         // var list, d;
         // contactInfo({
@@ -259,7 +256,7 @@ export default class MBurseDriverPacket extends LightningElement {
     backToPacket() {
         let checkList, info, packetStatus;
         this.packetSent = false;
-				this.toggleHide();
+        this.toggleHide();
         if (this.driverDetails) {
             checkList = this.driverDetails;
             info = this.proxyToObject(checkList);
@@ -298,7 +295,7 @@ export default class MBurseDriverPacket extends LightningElement {
         }
         this.renderInitialized = true;
         this.toggleHide();
-        this.renderText = (this.cellType === 'Company Provide') ? 'mLog Preview' : 'mLog Preview';
+        this.renderText = (this.cellType === 'Company Provide') ? 'Go to mLog Preview' : 'Go to mLog Preview';
         this.renderBtnText = (this.accountType === 'New Account') ? 'Register for your driver meeting' : 'Watch your driver meeting';
         this.renderButton();
         this.showWatchBtn = (this.accountType === 'New Account') ? false : true;
