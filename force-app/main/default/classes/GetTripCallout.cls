@@ -25,7 +25,7 @@ global class GetTripCallout {
 
         // MLOG URL Change | Sanjay Halpati | 12 May 2020 | START
         String endPoint = 'startDate=' + priMin + '&userEmail=' + contactEmail + '&endDate=' + priMax + '&status=' + 
-                    tripStatus + '&activity=Business';
+                    tripStatus ;
         String baseURL = !MLOGACCOUNT.Contains(apiToken) ? StaticValues.TRIPLOG_BASEURL : StaticValues.MLOG_BASEURL;
 
         req.setEndpoint(baseURL + StaticValues.GETTRIP_SUFFIX + endPoint );

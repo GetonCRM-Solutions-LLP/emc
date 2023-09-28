@@ -101,7 +101,7 @@ export default class UsersRoster extends LightningElement {
 	@api exportFields = [];
 	isLoginAsVisible = false;
 	redirectPageName;
-	isClearIconEnable = true;
+	isClearIconEnable = false;
     
     dynamicBinding(data, keyFields) {
         data.forEach(element => {

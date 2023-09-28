@@ -599,8 +599,13 @@ export default class UserDataTable extends LightningElement {
     }
 
     @api
-    refreshTable(data) {
+    refreshTable(data, key) {
+				var sList = [];
         this.modelData = this.proxyToObj(data);
+				if(key){
+            sList = this.searchData.map(obj => this.modelData.find(o => o[key] === obj[key]) || obj);
+            this.searchData = sList;
+        }
         this.className = (this.scrollable) ? (this.modelData.length > 6)  ? 'scrollable_wrapper slds-p-right_small' : 'slds-p-right_small overflow-none' : 'slds-p-right_small';
         this.mainClass = (this.scrollable) ? (this.modelData.length > 6) ? 'fixed-container' : 'fixed-container' : this.mainClass;
         if(this.isPaginate){

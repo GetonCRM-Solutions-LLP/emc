@@ -84,6 +84,7 @@ export default class ReportDetail extends LightningElement {
     sortOrder = '';
     columnName = '';
     columnType = '';
+    withoutupdatedate;
   
 renderedCallback(){
    
@@ -141,6 +142,9 @@ getBiweekLIst(){
   })
 }
 connectedCallback(){
+  this.dispatchEvent(
+    new CustomEvent("show", { detail :''})
+  );
   console.log("this.reportId",this.reportId)
     this._accid  = this.getUrlParamValue(window.location.href, 'accid')
     this._adminid  = this.getUrlParamValue(window.location.href, 'id')
@@ -243,10 +247,13 @@ connectedCallback(){
           getManagerDriverDetails({accountId : this._accid,role : this.DriverManager})
           .then(result => {
               this.DriverManagerList = JSON.parse(result);
-              this.DriverManagerList.forEach(index => {
+              if(this.DriverManagerList.length > 2){
+                this.DriverManagerList.forEach(index => {
                   this.picklist.push({label:index.Name,value:index.Id})
-              })
-              this.picklist = JSON.parse(JSON.stringify(this.picklist))
+                })
+                this.picklist = JSON.parse(JSON.stringify(this.picklist))
+              }
+             
           })
           .catch(error => {
               console.log("error",error)
@@ -279,8 +286,7 @@ connectedCallback(){
                 }
               })
             }  
-            console.log("col1 == detaildatanew[i]",this.numberArray.length)
-
+            
             if(this.numberArray.length > 0){
               this.numberArray.forEach(col1 => {
                 console.log("col1 == detaildatanew[i]",col1+'-----'+ detaildatanew[i])
@@ -290,13 +296,6 @@ connectedCallback(){
               })
             }
             
-            // if(datefield.includes(this.headerdata[i].split(' ')[0])){
-            //   coltype = 'Date';
-            // }
-            // if(this.headerdata[i] == 'Deactivated Date'){
-            //   coltype = 'Date';
-            // }
-            // if(datefield == 'Activation_Date__c')
             if(i== 0){
               if(this.reportName == 'Onboarding Status Report' || this.reportName == 'Employee Roster Report'){
                 this.columnName = "Activation Date";
@@ -450,10 +449,16 @@ connectedCallback(){
                   this.dynamicBinding(this.finaldata,  this.headerdata)
                   // console.log("final data",this.finaldata)
                   this.ishow = true;
+                  this.dispatchEvent(
+                    new CustomEvent("hide", { detail :''})
+                  );
               }else{
                   this.showbuttons = false;
                   this.ishow = true;
                   this.recordDisplay = false;
+                  this.dispatchEvent(
+                    new CustomEvent("hide", { detail :''})
+                  );
               }
           })
           .catch(error => {
@@ -467,8 +472,11 @@ connectedCallback(){
       })
     }else{
         this.anual_tax = true;
+         this.dispatchEvent(
+          new CustomEvent("hide", { detail :''})
+        );
     }
-    
+   
 
 }
 
@@ -573,7 +581,12 @@ mapOrder(array, order, key) {
 }
 
 handleDriverChange(event){
+  console.log("event.detail.value",event.detail.value)
+  if(event.detail.value == undefined){
+    this.manager = '';
+  }else{
     this.manager = event.detail.value;
+  }
 }
 handleChangebysearch(event){
   this.updatebtn = false;
@@ -1053,6 +1066,8 @@ intializeDatepickup1(){
   .then((result) => {
         this.searchdata = [];
         this.filterdata = JSON.parse(result);
+        console.log("length1", this.filterdata)
+
         console.log("length1", this.filterdata.length)
         if(this.filterdata.length > 0){
           if(this.reportName == 'Employee Roster Report'){
@@ -1109,6 +1124,7 @@ intializeDatepickup1(){
                   this.headerfields.set(this.detailsoql[i],this.headerdata[i]);
               }
           }
+          this.headerfields.set('Id','Id');
           console.log("this.filterdata.length",this.filterdata.length)
           this.keyArray = [];
           for(var i=0;i<this.filterdata.length;i++){
@@ -1147,8 +1163,15 @@ intializeDatepickup1(){
               Object.keys(item).forEach(key => {
                   m = m+1;
                   if(m == 1){
-                   groupedData1[item.index].push({[key]:item[key]});
-                   console.log("groupedData1",groupedData1)
+                  //  groupedData1[item.index].push({[key]:item[key]});
+                    if(key == 'Id'){
+                            groupedData1[item.index].push({Id:item[key]});
+
+                            }else{
+                              groupedData1[item.index].push({[key]:item[key]});
+
+                            }
+                   console.log("groupedData1",JSON.parse(JSON.stringify(groupedData1)))
                   }
                 }); 
             }
@@ -1167,6 +1190,7 @@ intializeDatepickup1(){
             
             this.searchdata = JSON.parse(JSON.stringify(objarr));
             this.exceldata =JSON.parse(JSON.stringify(objarr));
+            console.log("this.searchdata",this.searchdata)
             this.dynamicBinding(this.searchdata,  this.headerdata)
             setTimeout(() => {
               this.dispatchEvent(
@@ -1182,7 +1206,7 @@ intializeDatepickup1(){
               this.dispatchEvent(
                 new CustomEvent("toastmessage", {
                   detail: {
-                      errormsg: "error",
+                      errormsg: "info",
                       message:originalString.replace("2000",this.limitOfrecord)
                   } 
                 })
@@ -1228,21 +1252,24 @@ intializeDatepickup1(){
     );
     postTotalReimbursementForAllUser({accId : this._accid})
     .then((result) => {
-      setTimeout(() => {
+     
         this.dispatchEvent(
           new CustomEvent("hide", { detail : ''})
         );
-      },1000); 
     })
     .catch(error => {
           console.log("failure",error);
+          this.dispatchEvent(
+            new CustomEvent("hide", { detail : ''})
+          );
     });
   }
-  showupdatebtn(event){
+  showupdatebtn(){
     this.updatebtn = true;
   }
   handleUpdateList(event){
-    
+    this.updatebtn = true;
+    console.log("input value",event.detail.inputValue)
     let updateJson = JSON.parse(event.detail.list);
     console.log("updateJson",updateJson)
 
@@ -1251,30 +1278,27 @@ intializeDatepickup1(){
     this.editable_feilds.forEach(index => {
       if(index.split('-')[0] == event.detail.key){
         str1 = index.split('-')[1];
-        // recordId = this.updatedList[i].Id
-        // test.push({[index.split('-')[1]]:this.updatedList[i][key]})
-        // test.push({Id:this.updatedList[i].Id})
       }
     })
     let finalJson = [];
     finalJson.push({Id : updateJson.Id , [str1] : event.detail.inputValue})
-
-    
 		// this.updatedList =Object.assign({}, ...finalJson);
     this.updatedList.push(finalJson)
     console.log("employeeList",JSON.parse(JSON.stringify(this.updatedList)))
-    if(this.searchdata.length > 2){
-    console.log("in if")
 
-      this.searchdata.forEach(searchdata => {
-        if(searchdata.Id == this.remId){
-          keyFields.forEach(col => {
-            if(col.key == event.detail.key){
-              col.value = event.detail.inputValue;
+    if(this.searchdata.length > 2){
+    let tempdata1 = JSON.parse(JSON.stringify(this.searchdata));
+    tempdata1.forEach(searchdatanew => {
+      console.log("searchdatanew",searchdatanew.Id +'-----'+ this.remId)
+        if(searchdatanew.Id == this.remId){
+          searchdatanew.keyFields.forEach(col1 => {
+            if(col1.key == event.detail.key){
+              col1.value = event.detail.inputValue;
             }
           })
         }
-        this.template.querySelector('c-user-preview-table').tableListRefresh(this.searchdata) ;
+        this.template.querySelector('c-user-preview-table').tableListRefresh(tempdata1) ;
+        this.searchdata=tempdata1;
       })
     }else{
       let tempdata = JSON.parse(JSON.stringify(this.finaldata));
@@ -1328,5 +1352,20 @@ intializeDatepickup1(){
   }
   handleCancel(){
     this.updatebtn = false;
+    let canceldata ;
+    if(this.searchdata.length > 2){
+      canceldata = this.searchdata;
+    }else{
+      canceldata = this.finaldata;
+    }
+    this.dynamicBinding(canceldata,  this.headerdata)
+    if(this.searchdata.length > 2){
+      this.searchdata = canceldata;
+    }else{
+      this.finaldata = canceldata;
+    }
+    this.template.querySelector('c-user-preview-table').tableListRefresh( canceldata) ;
   }
 }
+
+// 0033r000042KVO6AAO

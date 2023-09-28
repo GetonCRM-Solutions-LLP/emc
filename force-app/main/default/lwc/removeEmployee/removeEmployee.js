@@ -141,7 +141,7 @@ export default class RemoveEmployee extends LightningElement {
         let recordIndex = this.employeeList.findIndex(emp => emp.userid === this.currentRecord);
         this.employeeList[recordIndex].deactivaedDate = this.deavtivationDate;
         this.dynamicBinding(this.employeeList, this.empKeyFields);
-        this.template.querySelector("c-user-data-table").refreshTable(this.employeeList);
+        this.template.querySelector("c-user-data-table").refreshTable(this.employeeList, "userid");
         this.handleCloseModal();
     }
 
@@ -190,6 +190,7 @@ export default class RemoveEmployee extends LightningElement {
             }
             this.dynamicBinding(this.employeeList, this.empKeyFields);
             this.template.querySelector("c-user-data-table").refreshTable(this.employeeList);
+						this.template.querySelector('c-user-data-table').searchByKey("", this.employeeList);
             this.stopSpinner();
             let updateEmpMessage = `Records updated`;
             let toastSuccess = { type: "success", message: updateEmpMessage };

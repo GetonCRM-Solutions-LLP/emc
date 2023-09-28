@@ -1321,6 +1321,7 @@ export default class AdminDashboardFrame extends LightningElement {
   }
 
   showToast(event) {
+		this._value = "";
     this.dispatchEvent(
       new CustomEvent("toast", {
         detail: event.detail
@@ -1329,6 +1330,7 @@ export default class AdminDashboardFrame extends LightningElement {
   }
 
   showErrorToast(event){
+		this._value = "";
     this.dispatchEvent(
         new CustomEvent("error", {
             detail: event.detail
@@ -2537,6 +2539,7 @@ export default class AdminDashboardFrame extends LightningElement {
   }
 
   handleCloseModal() {
+		this.getEmployeeList();
     this.isAddUser = false;
     this.isRemoveUser = false;
   }

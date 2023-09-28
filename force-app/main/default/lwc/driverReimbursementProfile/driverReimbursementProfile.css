@@ -178,7 +178,7 @@ and (max-device-width: 1024px) {
     flex-wrap: wrap;
     flex-direction: row;
     position: relative;
-    flex-basis: 248px;
+    flex-basis: 280px; /*248*/
     flex-grow: 1;
     /* margin: 0 0px 35px 0px; */
 }

@@ -168,7 +168,7 @@ global class DeActivatedUserBatchMileage implements Database.Batchable<sObject>,
                 HttpRequest req = new HttpRequest();
                 HttpResponse res = new HttpResponse();
                 String endPoint = 'startDate=' + startDate + '&userEmail=' + reim.Contact_Id__r.External_Email__c + '&endDate=' + endDate + 
-                           '&status=' + status + '&activity=Business';
+                           '&status=' + status;
                 String apiKey = reim.Contact_Id__r.Account.Triplog_API__c;
                 String baseURL = !MLOGACCOUNT.Contains(apiKey) ? StaticValues.TRIPLOG_BASEURL : StaticValues.MLOG_BASEURL;
                 req.setEndpoint( baseURL + StaticValues.TRIPS_SUFFIX +  endPoint.trim());

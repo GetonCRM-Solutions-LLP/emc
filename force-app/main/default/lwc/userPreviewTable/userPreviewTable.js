@@ -799,6 +799,7 @@ export default class UserPreviewTable extends LightningElement {
     }
 
     handleProratedInput(event){
+        console.log("Inside Prorated Input")
         let id = event.currentTarget.dataset.id ;
         let tripid = event.currentTarget.dataset.tripid;
         let data = this.modelData;

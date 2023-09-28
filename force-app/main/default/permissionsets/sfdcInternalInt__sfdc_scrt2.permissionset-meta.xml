@@ -4133,7 +4133,17 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
+        <field>Employee_Reimbursement__c.Total_Personal_Mileage__c</field>
+        <readable>false</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
         <field>Employee_Reimbursement__c.Total_Rejected__c</field>
+        <readable>false</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Employee_Reimbursement__c.Total_UnCategorized_Mileage__c</field>
         <readable>false</readable>
     </fieldPermissions>
     <fieldPermissions>

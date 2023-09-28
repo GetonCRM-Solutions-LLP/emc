@@ -100,7 +100,7 @@ export default class ManageEmployeeField extends LightningElement {
                     if(res?.Name === "ERMI_Account") {
                         this.activities.push("Sync All");
                     } else if(res?.Name === "SPBS_Account" || res?.Name === "NewEnglandGypsum"){
-                        this.activities.push("Concur");
+                        this.activities.push("Concur Connect");
                     }
                     isAccountInCustomSetting = true;
                 }

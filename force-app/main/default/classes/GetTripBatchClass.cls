@@ -193,7 +193,7 @@ global class GetTripBatchClass implements Database.Batchable<sObject>,Database.A
                         Set<Employee_Mileage__c> empSet = new Set<Employee_Mileage__c>();
                         
                         Employee_Mileage__c emp;        
-                        endPoint = 'startDate='+firstDateOfLastMonth+'&userEmail='+con.Email+'&endDate='+LastDateOfLastMonth+'&status='+System.Label.Trips+'&activity=Business';
+                        endPoint = 'startDate='+firstDateOfLastMonth+'&userEmail='+con.Email+'&endDate='+LastDateOfLastMonth+'&status='+System.Label.Trips;
                         
                         res = ApiCalloutUtility.executeCallout(con.Account.Triplog_API__c,'GET',URL.trim(),endPoint,'');
                         trip_IDs = new Set<Integer>();

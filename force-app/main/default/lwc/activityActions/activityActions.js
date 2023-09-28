@@ -23,7 +23,7 @@ export default class ActivityActions extends LightningElement {
             case 'UnFreeze':
                 this.freezeUnFreeze(data, false);
                 break;
-            case 'Concur':
+            case 'Concur Connect':
                 this.concurEmployee(data, accId);
                 break;
             case 'Mass Reset Password':
