@@ -18,6 +18,9 @@
             font-family: 'Proxima Nova' !important;
         } */
 
+       /* #auraErrorMessage{
+            color: #fff;
+        }*/
         header{
             margin-bottom: 0 !important;
         }
@@ -386,6 +389,16 @@
                 win.print();    // PRINT THE CONTENTS.
           }
 
+          function updateTriplogId(){
+            let accountId = new URL(window.location.href).searchParams.get('accid');
+            Visualforce.remoting.Manager.invokeAction('{!$RemoteAction.GetDriverData.UpdateTimezonAppVer}', accountId,
+                        function (result, event) {
+                            console.log("Triplog Id", result)
+                        }
+            );
+          }
+          
+
           function init(){
                 var resultdata, url, path, team, nameOfUser, videoWrapper, performanceProfile, ProfileId, Role, userLogin, meeting;
                         url = location;
@@ -400,6 +413,9 @@
                     performanceProfile = window.performance.getEntriesByType("navigation")[0].type;
                     Role = (ProfileId === '00e31000001FRDWAA4' || ProfileId === '00e31000001FRDXAA4') ? 'Manager' : (ProfileId === '00e31000001FRDZAA4' || ProfileId === '00e31000001FRDYAA4') ? 'Admin' : 'Driver'
                     console.log("Profile", ProfileId, '{!$Profile.Name}');
+                    if(Role === 'Admin'){
+                        this.updateTriplogId();
+                    }
                     console.log("PErformance profile--", performanceProfile, window.performance.getEntriesByType("navigation")[0].type, location.hash)
                     if (performanceProfile === 'navigate' || performanceProfile === 'back_forward') {
                         if (location.hash != '') {
@@ -427,6 +443,8 @@
                             console.log(result)
                         }
                     );
+
+                    
 
                     $Lightning.use("c:LWCLightningApp", function () {
                         $Lightning.createComponent("c:adminDashboardFrame", {

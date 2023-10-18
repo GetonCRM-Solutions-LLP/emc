@@ -4,6 +4,7 @@ import massFreeze from '@salesforce/apex/RosterController.massFreeze';
 import putHTTPConcurConnect from '@salesforce/apex/RosterController.putHTTPConcurConnect';
 import massResetPassword from '@salesforce/apex/RosterController.massResetPassword';
 import massEnableUser from '@salesforce/apex/RosterController.massEnableUser';
+import sendSignatureRequestForDriver from '@salesforce/apex/RosterController.sendSignatureRequestForDriver';
 import putHTTPMassWlcmMail from '@salesforce/apex/RosterController.putHTTPMassWlcmMail';
 import {
     toastEvents, modalEvents
@@ -28,6 +29,9 @@ export default class ActivityActions extends LightningElement {
                 break;
             case 'Mass Reset Password':
                 this.massReset(data);
+                break;
+            case 'Send Driver Packet':
+                this.sendPacket(data);
                 break;
             case 'Resend mLog App':
                 this.sendMdashAppLink(data, accId);
@@ -160,9 +164,27 @@ export default class ActivityActions extends LightningElement {
         }
     }
 
+    sendPacket(data) {
+        if(data && data.length) {
+           this.spinnerStart();
+           sendSignatureRequestForDriver({contactEmails:  this.getListOfContactEmails(data)})
+            .then(responce => {
+                    console.log("RESPONCE",this.proxyToObject(responce));
+                    let toastSuccess = { type: "success", message: "Driver packet was sent" };
+                    toastEvents(this, toastSuccess);
+                    this.spinnerStop();
+            })
+            .catch(err => {
+				let toastSuccess = { type: "error", message: "Something went wrong" };
+                toastEvents(this, toastSuccess);
+                this.spinnerStop();
+            })
+        }
+    }
+
     displayToast(result, updateEmpMessage) {
         if(result?.hasError) {
-            this.stopSpinner();
+            this.spinnerStop();
             console.error(result.message);
             let toastError = { type: "error", message: "Something went wrong." };
             toastEvents(this, toastError);
@@ -198,4 +220,5 @@ export default class ActivityActions extends LightningElement {
     getListOfContactName(data) {
         return data.map(item => item.name);
     }
+
 }

@@ -21,6 +21,7 @@ export default class DriverDashboardFrame extends LightningElement {
     @api profile;
     @api customSetting;
     @api driverMeeting;
+    @api last2Year;
     section = 'content-wrapper main';
     unreadCount;
     insuranceVideo;
@@ -34,6 +35,7 @@ export default class DriverDashboardFrame extends LightningElement {
     @track isAttendance = false;
     notificationViewClicked = false;
     managerRole = false;
+    isArchive = false;
     notificationModal = false;
     isFalse = false;
     archive = true;
@@ -1305,7 +1307,7 @@ export default class DriverDashboardFrame extends LightningElement {
     }
 
     connectedCallback() {
-        var currentDay = new Date(), currentYear = '', selectedYear = '';
+        var currentDay = new Date(), currentYear = '', selectedYear = '', menuList = [];
         const idParamValue = this.getUrlParamValue(window.location.href, 'id');
         const aidParamValue = this.getUrlParamValue(window.location.href, 'accid');
         this.currentDate = validateDate(new Date());
@@ -1317,7 +1319,77 @@ export default class DriverDashboardFrame extends LightningElement {
         this._contactId = idParamValue;
         this._accountId = aidParamValue;
         this.isHomePage = false;
+        menuList = this.driverProfileMenu;
         this.yearList = this.getLastYear();
+        this.isArchive = (this.last2Year) ? (JSON.parse(this.last2Year).length > 1) ? true : false : false;
+        if(!this.isArchive){
+           this.driverProfileMenu =  [{
+            "id": 1,
+            "label": "Mileage",
+            "menuItem": [{
+                "menuId": 101,
+                "menu": "Mileage",
+                "menuLabel" : "Plan Info / Mileage",
+                "menuClass": "active",
+                "logo": logo + '/emc-design/assets/images/Icons/SVG/Green/Mileage.svg#mileage',
+                "logoHov": logo + '/emc-design/assets/images/Icons/SVG/White/Mileage.svg#mileage'
+            }]
+        },
+         {
+            "id": 2,
+            "label": "Plan management",
+            "menuItem": [{
+                "menuId": 201,
+                "menu": "Insurance-Upload",
+                "menuLabel" : "Insurance Upload",
+                "menuClass": "",
+                "logo": logo + '/emc-design/assets/images/Icons/SVG/Green/Insurance_Upload.svg#insurance',
+                "logoHov": logo + '/emc-design/assets/images/Icons/SVG/White/Insurance_Upload.svg#insurance'
+            }, {
+                "menuId": 202,
+                "menu": "Locations",
+                "menuLabel" : "Locations",
+                "menuClass": "",
+                "logo": logo + '/emc-design/assets/images/Icons/SVG/Green/Locations.svg#location',
+                "logoHov": logo + '/emc-design/assets/images/Icons/SVG/White/Locations.svg#location'
+            }, {
+                "menuId": 203,
+                "menu": "Compliance",
+                "menuLabel" : "Compliance",
+                "menuClass": "",
+                "logo": logo + '/emc-design/assets/images/Icons/SVG/Green/Compliance.svg#compliance',
+                "logoHov": logo + '/emc-design/assets/images/Icons/SVG/White/Compliance.svg#compliance'
+            }, {
+                "menuId": 204,
+                "menu": "Tax-Liability",
+                "menuLabel" : "Tax Liability",
+                "menuClass": "",
+                "logo": logo + '/emc-design/assets/images/Icons/SVG/Green/Tax_Liability.svg#tax',
+                "logoHov": logo + '/emc-design/assets/images/Icons/SVG/White/Tax_Liability.svg#tax'
+            }]
+        }, {
+            "id": 3,
+            "label": "Help & info",
+            "menuItem": [{
+                "menuId": 301,
+                "menu": "Notifications",
+                "menuLabel" : "Notifications",
+                "menuClass": "",
+                "logo": logo + '/emc-design/assets/images/Icons/SVG/Green/Notifications.svg#notification',
+                "logoHov": logo + '/emc-design/assets/images/Icons/SVG/White/Notifications.svg#notification'
+            },{
+                "menuId": 302,
+                "menu": "Videos",
+                "menuLabel" : "Videos/Training",
+                "menuClass": "",
+                "logo": logo + '/emc-design/assets/images/Icons/SVG/Green/Driver_Videos_Training.svg#videos',
+                "logoHov": logo + '/emc-design/assets/images/Icons/SVG/White/Driver_Videos_Training.svg#videos'
+            }]
+           }]
+        }else{
+            this.driverProfileMenu = menuList
+        }
+        this.archive = this.isArchive;
         this.insuranceVideo = this.customSetting.Insurance_Link__c;
         window.addEventListener('click', this._handler = this.handleOutsideClick.bind(this));
         window.addEventListener('keydown', this.handleKeyDown);

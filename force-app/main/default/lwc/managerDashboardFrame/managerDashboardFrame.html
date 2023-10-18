@@ -72,7 +72,7 @@
 						</div>
 						<div class="tab-content">
 								<div class="slds-p-left_x-large slds-p-right_medium notification-wrapper">
-									<template if:true={isNotify}>
+									<template lwc:if={isNotify}>
 										<template for:each={notifyList} for:item="notify" for:index="index">
 											<div data-id={notify.id} key={notify.id}
 												class="slds-col slds-size_1-of-1 slds-medium-size_6-of-12 slds-large-size_12-of-12 slds-m-around_xx-small slds-p-horizontal_x-small slds-p-vertical_small notify-text">
@@ -99,7 +99,7 @@
 										</template>
 									</template>
 								
-									<template if:false={isNotify}>
+									<template lwc:else>
 										<div class="slds-align_absolute-center slds-p-top_medium slds-p-bottom_x-large no-data-message">You have no notifications right now.</div>
 									</template>
 								</div>

@@ -109,6 +109,8 @@ export default class AdminDashboardFrame extends LightningElement {
   driverList;
   driverdetail;
   idContact;
+  reimbursementFrequency;
+  cellPhone;
   mileageMonthList = "";
   mileageAccountList = "";
   pageSize = 100;
@@ -857,7 +859,8 @@ export default class AdminDashboardFrame extends LightningElement {
     })
       .then((data) => {
         let objList = JSON.parse(data)
-        let monthName = data ? ((objList.length > 1) ? ((objList[0] === this.defaultMonth) ? objList[1] : objList[0]): objList[0]) : "";
+        let monthName = this.lastMonthSelected;
+       // let monthName = data ? ((objList.length > 1) ? ((objList[0] === this.defaultMonth) ? objList[1] : objList[0]): objList[0]) : "";
         let mileageMonth = data ? this.removeDuplicateValue(this.proxyToObject(data)) : [];
         this.mileageMonthList = this.review(mileageMonth);
         this.monthSelected = monthName ? monthName : "";
@@ -905,7 +908,8 @@ export default class AdminDashboardFrame extends LightningElement {
     })
       .then((data) => {
         let objList = JSON.parse(data)
-        let monthName = data ? ((objList.length > 1) ? ((objList[0] === this.defaultMonth) ? objList[1] : objList[0]): objList[0]) : "";
+        let monthName = this.lastMonthSelected;
+       // let monthName = data ? ((objList.length > 1) ? ((objList[0] === this.defaultMonth) ? objList[1] : objList[0]): objList[0]) : "";
         let mileageMonth = data ? this.removeDuplicateValue(this.proxyToObject(data)) : [];
         this.mileageMonthList = this.review(mileageMonth);
         this.monthSelected = monthName ? monthName : "";
@@ -1252,7 +1256,8 @@ export default class AdminDashboardFrame extends LightningElement {
     })
       .then((data) => {
         let objList = JSON.parse(data)
-        let monthName = data ? ((objList.length > 1) ? ((objList[0] === this.defaultMonth) ? objList[1] : objList[0]): objList[0]) : "";
+        let monthName = this.lastMonthSelected
+        //let monthName = data ? ((objList.length > 1) ? ((objList[0] === this.defaultMonth) ? objList[1] : objList[0]): objList[0]) : "";
         let mileageMonth = data ? this.removeDuplicateValue(this.proxyToObject(data)) : [];
         this.mileageMonthList = this.review(mileageMonth);
         this.monthSelected = monthName ? monthName : "";
@@ -1633,6 +1638,9 @@ export default class AdminDashboardFrame extends LightningElement {
   getEmployeeList() {
     getlistAllEmployees({accid : this._accountId, contactid: this._contactId})
     .then(response => {
+      console.log("EMployee", response);
+      this.reimbursementFrequency = (response) ? (JSON.parse(response)[0]?.accountReimbursementFrequency) ? (JSON.parse(response)[0]?.accountReimbursementFrequency) : 'none' : 'none'
+      this.cellPhone = (response) ? (JSON.parse(response)[0]?.accountCellPhoneProvider) ? JSON.parse(response)[0]?.accountCellPhoneProvider : 'none' : 'none'
       this.employees = JSON.parse(response);
     })
     .catch(err => {
@@ -2213,12 +2221,9 @@ export default class AdminDashboardFrame extends LightningElement {
       return;
     }
     
-    console.log("Inside rendered")
     if(this.mileageView){
-      console.log("Inside rendered mileage")
       loadScript(this, jQueryMinified)
       .then(() => {
-          console.log('jquery loaded')
           Promise.all([
             loadStyle(this, datepicker + "/minifiedCustomDP.css"),
             loadStyle(this, datepicker + "/datepicker.css"),
@@ -2226,7 +2231,6 @@ export default class AdminDashboardFrame extends LightningElement {
             loadScript(this, datepicker + '/datepicker.js')
           ]).then(() => {
               this.calendarJsInitialised = true;
-              console.log("script datepicker loaded--");
             })
             .catch((error) => {
               console.error(error);
@@ -2283,19 +2287,19 @@ export default class AdminDashboardFrame extends LightningElement {
   handleYearChange(event){
       this.defaultYear = event.detail.value;
       this.getContactNotification();
-      console.log("Year change-", this.defaultYear);
+      // console.log("Year change-", this.defaultYear);
   }
 
 
   handleMonthChange(event){
       this.defaultMonth = event.detail.value;
       this.getContactNotification();
-      console.log("month change-",  this.defaultMonth);
+      // console.log("month change-",  this.defaultMonth);
   }
 
 
   handleOutsideClick = (event) => {
-    console.log("OUtside", event, this.notificationViewClicked)
+    // console.log("OUtside", event, this.notificationViewClicked)
     if(!this.notificationViewClicked){
         this.closeNotification();
     }   

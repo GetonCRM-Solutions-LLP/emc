@@ -2,7 +2,7 @@
     <div class="slds-p-horizontal_x-large animate__animated animate__slideInLeft animate__delay-1s">
         <div class="row">
             <div class="container">
-                <template if:true={modelList}>
+                <template lwc:if={modelList}>
                     <c-user-preview-table   show-footer="true" header-name="true" d-flex="grid-block" divider-class="row-divider--v1"  head-th="header-title--v1" sort-th="sort-container p-top-v1" trip-month={tripMonth}  biweek-value={biweekValue} start-date={startDate} end-date={endDate} main-class={classToTable} scrollable={isScrollable} is-paginate={paginatedModal} model-data={modelList}
                     columns={modalListColumn} options={modalKeyFields} is-sortable={sortable} norecord-message={noMessage} is-default-sort={isSort} colname="tripdate" coltype="Date" sortorder="asc">
                     <div slot="filter" class="slds-p-left_small slds-m-top_xx-small row">
@@ -20,9 +20,13 @@
                                 <div class="search-icon-block">
                                     <img class="search-icon" src={searchIcon} />
                                 </div>
-                                <div class="close-btn" if:false={isSearchEnable} onclick={handleClearInput}>
-                                    <svg class="close-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M4.815 14.46 14.458 4.818m-9.643 0.011 9.643 9.642" stroke="#929497" stroke-width="2" stroke-linecap="round"/></svg>
-                                </div>
+                                <template lwc:if={isSearchEnable}>
+                                </template>
+                                <template lwc:else>
+                                    <div class="close-btn" onclick={handleClearInput}>
+                                        <svg class="close-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M4.815 14.46 14.458 4.818m-9.643 0.011 9.643 9.642" stroke="#929497" stroke-width="2" stroke-linecap="round"/></svg>
+                                    </div>
+                                </template>
                                 <input  class="slds-input filter-input" type="text" placeholder="Search" value={_value}  onkeyup={handleChange}/>
                             </div>
                         </div>
@@ -31,10 +35,10 @@
                 </template>
                 <!-- <div class="preview slds-m-top_medium">
                     <div class="slds-p-left_medium slds-p-bottom_small slds-p-top_xx-small">
-                        <h2 class="slds-text-heading_medium slds-hyphenate month-header" if:false={biweekValue}>
+                        <h2 class="slds-text-heading_medium slds-hyphenate month-header" lwc:else={biweekValue}>
                             {tripMonth}
                         </h2>
-                        <h2 class="slds-text-heading_medium slds-hyphenate month-header" if:true={biweekValue}>
+                        <h2 class="slds-text-heading_medium slds-hyphenate month-header" lwc:if={biweekValue}>
                             Pay Period <lightning-formatted-date-time value={startDate} year="2-digit" month="numeric" day="numeric">
                             </lightning-formatted-date-time> - <lightning-formatted-date-time value={endDate} year="2-digit" month="numeric"
                                 day="numeric">
@@ -42,7 +46,7 @@
                         </h2>
                     </div>
                     <div  class="slds-p-left_medium slds-p-right_medium">
-                        <template if:true={modelList}>
+                        <template lwc:if={modelList}>
                             <c-user-data-table main-class={classToTable} scrollable={isScrollable} is-paginate={paginatedModal} model-data={modelList}
                             columns={modalListColumn} options={modalKeyFields} ></c-user-data-table>
                         </template>

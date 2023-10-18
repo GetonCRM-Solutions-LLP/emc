@@ -63,7 +63,7 @@
         modal-class="slds-modal slds-modal_x-small slds-is-fixed slds-fade-in-open animate__animated animate__slideInUp animate__fast"
         modal-content-style={contentText} header-class="slds-modal__header resource-header slds-clearfix"
         style-header={modalContainer} close-btn-class="close-notify-video">
-        <template if:true={planPreview}>
+        <template lwc:if={planPreview}>
             <video id="video-source" width={videoWidth} height={videoHeight} autoplay controls="controls"
                 controlslist="noplaybackrate  nodownload" style="object-fit: cover;border-bottom-right-radius: 20px;
             border-bottom-left-radius: 20px;
@@ -72,7 +72,7 @@
                 <source type="video/mp4" src={videoPlanUrl} />
             </video>
         </template>
-        <template if:true={planParameter}>
+        <template lwc:if={planParameter}>
             <div class="slds-p-horizontal_x-large slds-p-bottom_small slds-p-top_large">
                 <div style="font-family: 'Proxima Nova Bold' !important;
             font-style: normal;
@@ -120,7 +120,7 @@
                                 </lightning-formatted-number>
                             </td>
                         </tr>
-                        <tr if:true={minimums.Umbrella_Coverage__c}>
+                        <tr lwc:if={minimums.Umbrella_Coverage__c}>
                             <td>Umbrella Coverage</td>
                             <td>
                                 <lightning-formatted-number value={minimums.Account.Umbrella_Coverage__c}
@@ -130,7 +130,7 @@
                         </tr>
                     </table>
                     <div style="display: flex;">
-                        <div class="slds-p-vertical_large slds-p-right_large" if:true={minimums.Vehicle_Value__c}>
+                        <div class="slds-p-vertical_large slds-p-right_large" lwc:if={minimums.Vehicle_Value__c}>
                             <div class="vehicle-value"> <lightning-formatted-number value={minimums.Vehicle_Value__c}
                                     format-style="currency" currency-code="USD" minimum-fraction-digits="0">
                                 </lightning-formatted-number></div>
@@ -143,7 +143,7 @@
                         ">Vehicle Value</div>
                         </div>
                         <div class="slds-p-vertical_large slds-p-left_x-large slds-p-right_small"
-                            if:true={minimums.Plan_Years__c}>
+                            lwc:if={minimums.Plan_Years__c}>
                             <div style="font-family: 'Proxima Nova Bold' !important;
                         font-size: 32px;
                         line-height: 39px;
@@ -160,7 +160,7 @@
                         ">Vehicle Age</div>
                         </div>
                         <div class="slds-p-vertical_large slds-p-left_xx-large"
-                            if:true={minimums.Compliance_Mileage__c}>
+                            lwc:if={minimums.Compliance_Mileage__c}>
                             <div style="font-family: 'Proxima Nova Bold' !important;
                         font-size: 32px;
                         line-height: 39px;
@@ -182,25 +182,20 @@
                 </div>
             </div>
         </template>
-        <template if:true={fileResourcePreview}>
+        <template lwc:elseif={fileResourcePreview}>
             <div class="content-container">
                 <lightning-layout>
                     <lightning-layout-item flexibility="auto">
                         <article class="slds-card">
                             <div class="slds-card__body slds-card__body_inner" style="margin: 0">
-                                <!-- <template if:false={showFrame}>
-                            <img src={url} />
-                          </template>
-                          <template if:true={showFrame}> -->
                                 <iframe src={file.downloadUrl} style="width: 100%; height: 800px; border: 0"></iframe>
-                                <!-- </template> -->
                             </div>
                         </article>
                     </lightning-layout-item>
                 </lightning-layout>
             </div>
         </template>
-        <template if:true={documentedVideoPreview}>
+        <template lwc:elseif={documentedVideoPreview}>
             <video id="video-source-2" width={videoWidth} height={videoHeight} autoplay controls="controls"
                 controlslist="noplaybackrate  nodownload" style="object-fit: cover;border-bottom-right-radius: 20px;
             border-bottom-left-radius: 20px;

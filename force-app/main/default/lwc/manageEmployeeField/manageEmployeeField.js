@@ -7,6 +7,8 @@ import getCustomAddEmployeeSettings from '@salesforce/apex/RosterController.getC
 export default class ManageEmployeeField extends LightningElement {
 
     @api accid;
+    @api frequency;
+    @api cellphone;
     @api allFields = [
         { name: 'appVersion', label: 'App Version' },
         { name: 'employeeId', label: 'Employee Id' },
@@ -48,7 +50,9 @@ export default class ManageEmployeeField extends LightningElement {
         {name: 'mileageForDeduction', label: 'Mileage For Deduction'},
         {name: 'fixedamount', label: 'Fixed Amount'},
         {name: 'compliancestatus', label: 'Compliance'},
-        {name : 'totalreimbursement', label: 'Average Monthly Reimbursement'}
+        {name : 'totalreimbursement', label: 'Average Monthly Reimbursement'},
+        {name: 'ReimbursementFrequency', label : 'Reimbursement Frequency'},
+        {name: 'CellPhoneProvider', label : 'Cell Phone Provider'}
       ];
     
     @api activities = ["Activity","Mass Deactivate", "Freeze", "UnFreeze", "Send Driver Packet", "Resend mLog App", "Mass Reset Password", "Enable User", "Mileage Lock Date"];
@@ -67,6 +71,7 @@ export default class ManageEmployeeField extends LightningElement {
     @api SurfacePrep_Account_table;
     @api GPSAccount_table;
     customSetting;
+		accountName;
     @api viewAllEmploye
     @api keyFields
     @api addEmpKeyFields
@@ -97,9 +102,10 @@ export default class ManageEmployeeField extends LightningElement {
                     } else {
                         expFields = this.defaultExportField2;
                     }
+										this.accountName = res?.Name;
                     if(res?.Name === "ERMI_Account") {
                         this.activities.push("Sync All");
-                    } else if(res?.Name === "SPBS_Account" || res?.Name === "NewEnglandGypsum"){
+                    } else if(res?.Name === "SPBS_Account" || res?.Name === "NewEnglandGypsum" || res?.Name === "Cowtown Materials"){
                         this.activities.push("Concur Connect");
                     }
                     isAccountInCustomSetting = true;
@@ -111,6 +117,15 @@ export default class ManageEmployeeField extends LightningElement {
                 this.addEmpKeyFields = this.defaultAddEmployeeFields
                 expFields = this.defaultExportField2;
             }
+            /* Update Reimbursement Frequency field & Cell Phone field based on account field */
+            let originalAddEmpKeyFields = this.addEmpKeyFields, exportFields = expFields;
+            let newAddEmpKeyFields = (this.frequency) ? (this.frequency === 'Both') ? [...originalAddEmpKeyFields, 'ReimbursementFrequency'] : originalAddEmpKeyFields : originalAddEmpKeyFields;
+            newAddEmpKeyFields = (this.cellphone) ? (this.cellphone === 'Both') ? [...newAddEmpKeyFields, 'CellPhoneProvider'] : newAddEmpKeyFields : newAddEmpKeyFields;
+            let newExpFields = (this.frequency) ? (this.frequency === 'Both') ? [...exportFields, 'ReimbursementFrequency'] : exportFields : exportFields;
+            newExpFields = (this.cellphone) ? (this.cellphone === 'Both') ? [...newExpFields, 'CellPhoneProvider'] : newExpFields : newExpFields;
+            this.addEmpKeyFields = newAddEmpKeyFields
+            expFields = newExpFields
+    
             if(expFields && expFields.length){
                 this.exportFields = this.getExportFields(expFields);
             } 
@@ -167,6 +182,7 @@ export default class ManageEmployeeField extends LightningElement {
                 })
             }
             this.addEmployee = this.getFormatedFormArray(this.addEmpKeyFields);
+            console.log("Add Employee", JSON.stringify(this.addEmployee))
             if(this.addEmployee?.length) {
                 this.dispatchEvent(new CustomEvent('formfield', {
                     detail: {
@@ -215,6 +231,7 @@ export default class ManageEmployeeField extends LightningElement {
                 isDisable: this.isDisable(f),
                 displayValue :  '',
                 dropDownList: "",
+								is7DigitCostCode: (this.accountName === 'Flashco') ? true : false,
                 errorClass: this.isText(f) ? this.isDisable(f) ?  'content-input disabled-input' : 'content-input' : '',
                 // errorClass: this.isNotInput(field.type) ? field.fieldName !== "state" ?  'content-input' : 'content-input disabled-input' : '',
                 cmpClass : this.getCmpClass(f),

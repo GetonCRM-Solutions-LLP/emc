@@ -1,13 +1,13 @@
 <template>   
     <c-file-upload-spinner show-spinner={isSpinner}></c-file-upload-spinner>
-        <template if:true={isdataLoaded}> 
+        <template lwc:if={isdataLoaded}> 
             <div class="animate__animated animate__slideInLeft animate__faster">
                 <template lwc:if={data}>
                 <c-user-preview-table onupdate={handleUpdateList} head-th="header-title--v1" show-footer="true" is-footer="true" sort-th="sort-container p-top-v1" d-flex="flex-block" main-class={classToTable}
                     row-download="true" is-paginate={paginatedModal} is-sortable={sortable} is-default-sort={isSort} colname="fullname" coltype="String" sortorder="desc" scrollable={isScrollable}
                     model-data={data} columns={accordionListColumn} oniconclick={handleModal} onedit={editRecord} onconditionalclick={deleteNotification} onicon2click={handlePopup} options={accordionKeyFields}>
                     <div slot="filter" class="slds-p-left_small slds-p-bottom_small row">
-                        <template if:true={onloadTool}>
+                        <template lwc:if={onloadTool}>
                             <button onclick={downloadLocationTemp}
                                 class="slds-btn slds-btn-primary slds-btn-sm waves-effect bc-green waves-light mleft-0 btn-trip">
                                 <svg
@@ -21,7 +21,7 @@
                                 </svg>Location Template
                             </button>
                         </template>
-                        <template if:true={istrueInsurance}>
+                        <template lwc:if={istrueInsurance}>
                             <button onclick={handleSendInsuranceReminder}
                                 class="slds-btn slds-btn-primary slds-btn-sm waves-effect bc-green waves-light mleft-0 btn-trip">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 22 22"
@@ -32,7 +32,7 @@
                                 </svg>{insuranceLabel}
                             </button>
                         </template>
-                        <template if:true={istrueMessaging}>
+                        <template lwc:if={istrueMessaging}>
                             <!-- <button onclick={handleMassTextMessage}
                                 class="slds-btn slds-btn-primary slds-btn-sm waves-effect bc-green waves-light mleft-0 btn-trip">
                                 <svg class="send-message send-icon" xmlns="http://www.w3.org/2000/svg" width="20"
@@ -54,7 +54,7 @@
                                 {massNotimessageLabel}
                             </button>
                         </template>
-                        <template if:true={isTrueCancelProcess}>
+                        <template lwc:if={isTrueCancelProcess}>
                             <button onclick={handleCancelProcess}
                                 class="slds-btn slds-btn-primary slds-btn-sm waves-effect waves-light mleft-0 slds-flagbtn">
                                 <svg class="cancel_icon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 18 18"
@@ -94,9 +94,14 @@
                                 <div class="search-icon-block">
                                     <img class="search-icon" src={searchIcon} />
                                 </div>
-                                <div class="close-btn" if:false={isSearchEnable} onclick={handleClearInput}>
-                                    <svg class="close-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M4.815 14.46 14.458 4.818m-9.643 0.011 9.643 9.642" stroke="#929497" stroke-width="2" stroke-linecap="round"/></svg>
-                                </div>
+                                <template lwc:if={isSearchEnable}>
+                                </template>
+                                <template lwc:else>
+                                    <div class="close-btn"  onclick={handleClearInput}>
+                                        <svg class="close-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M4.815 14.46 14.458 4.818m-9.643 0.011 9.643 9.642" stroke="#929497" stroke-width="2" stroke-linecap="round"/></svg>
+                                    </div>
+                                </template>
+                               
                                 <input  class="slds-input filter-input" type="text" value={_value} placeholder="Search" onkeyup={handleChange}/>
                             </div>
                         </div>
@@ -122,7 +127,7 @@
             </template>
             </div>
         </template>
-        <template if:true={isMileageLoaded}> 
+        <template lwc:if={isMileageLoaded}> 
                 <template lwc:if={mileageData}>
                 <c-user-preview-table class="mileage-user-table" data-id="mileage" head-th="header-title--v1" sort-th="sort-container p-top-v1" show-footer="true" is-footer="true" d-flex="flex-block" main-class={classToTable}
                     is-paginate={paginatedModal} is-sortable={sortable} is-default-sort={isSort} colname="name" coltype="String" sortorder="desc" scrollable={isScrollable}
@@ -138,7 +143,7 @@
                         </button>
                     </div>
                 </c-user-preview-table>
-                <div class="slds-align_absolute-center" if:true={isEditMode}>
+                <div class="slds-align_absolute-center" lwc:if={isEditMode}>
                     <button class="slds-btn slds-btn-primary slds-btn-md waves-effect bc-green2 waves-light" onclick={updateMileage}>
                         Update
                     </button>
@@ -278,7 +283,7 @@
                         </textarea>
                     </div>
                     <div class={imageHolderStyle}>
-                        <div class="close-image" if:true={imageUploaded}>
+                        <div class="close-image" lwc:if={imageUploaded}>
                             <button class="slds-button slds-button_brand btn-brand-padding slds-modal__close" onclick={removeSelection}>
                                 <i class="fa-solid fa-xmark"></i>
                             </button>

@@ -1,5 +1,5 @@
 <template>
-    <template if:true={isDataLoaded}>
+    <template lwc:if={isDataLoaded}>
         <c-user-data-table  main-class="slds-table--header-fixed_container modal-height" is-default-sort={paginatedModal} scrollable={isScrollable} is-paginate={paginatedModal}  model-data={employeeList} 
         columns={column} options={empKeyFields} is-sortable={isSortable}  colname={colname} coltype={coltype} is-all-download={download} onedit={handleModal}  filter={filter} sortorder={sortorder}>
             <div class="flex-row">
@@ -11,7 +11,7 @@
                 class="slds-btn slds-btn-primary tab-btn slds-btn-sm waves-effect bc-white waves-light mleft-0 disabled  add-employee btn-toggle" data-id="disabled" onclick={handleTab}>
                     Disabled
                 </button>
-                <template if:true={displaySave}>
+                <template lwc:if={displaySave}>
                     <button class="slds-btn slds-btn-primary slds-btn-sm waves-effect bc-green waves-light" onclick={updateRecord}>
                         Save
                     </button>

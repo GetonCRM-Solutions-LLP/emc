@@ -157,10 +157,10 @@
                                                             font-size: 26px;
                                                             line-height: 35px;
                                                             color: rgb(29, 29, 29);">
-                                                                <template if:true={lastMilesZero}>
+                                                                <template lwc:if={lastMilesZero}>
                                                                     {lastMilesZero}
                                                                 </template>
-                                                                <template if:false={lastMilesZero}>
+                                                                <template lwc:else>
                                                                     <lightning-formatted-number style="font-family: 'Proxima Nova Bold' !important;" value={lastMonthMiles}></lightning-formatted-number>
                                                                 </template>
                                                             </div>
@@ -185,10 +185,10 @@
                                                             <div style="float: left;font-family: 'Proxima Nova Bold' !important;
                                                             font-size: 26px;
                                                             line-height: 35px;
-                                                            color: rgb(29, 29, 29);"><template if:true={thisMilesZero}>
+                                                            color: rgb(29, 29, 29);"><template lwc:if={thisMilesZero}>
                                                                 {thisMilesZero}
                                                             </template>
-                                                            <template if:false={thisMilesZero}>
+                                                            <template lwc:else>
                                                                 <lightning-formatted-number style="font-family: 'Proxima Nova Bold' !important;" value={thisMonthMiles}></lightning-formatted-number>
                                                             </template> </div>
                                                             <!-- <i class="fa-solid slds-p-left_x-small fa-arrow-right-from-bracket"
@@ -210,16 +210,17 @@
                                                         <!-- <img class="middle-icon" src={moneyIcon}   style="max-width: 36px;"/> -->
                                                         <svg xmlns="http://www.w3.org/2000/svg" width="42" height="42" viewBox="0 0 42 42" fill="none"><path d="M5.116 11.489h30.878M32.905 8.4H8.204M3.57 14.576h33.965c0.427 0 0.772 0.346 0.772 0.772v16.982a0.772 0.772 0 0 1 -0.772 0.772H3.573a0.772 0.772 0 0 1 -0.772 -0.772V15.348c0 -0.427 0.346 -0.772 0.772 -0.772Zm30.878 12.351v-6.174c0 -0.427 -0.352 -0.759 -0.763 -0.874a2.021 2.021 0 0 1 -1.456 -1.452c-0.112 -0.41 -0.443 -0.763 -0.868 -0.763H9.746c-0.425 0 -0.756 0.352 -0.868 0.763 -0.215 0.77 -0.759 1.255 -1.456 1.452 -0.41 0.115 -0.763 0.446 -0.763 0.872v6.176c0 0.427 0.355 0.761 0.758 0.898a2.315 2.315 0 0 1 1.433 1.431c0.14 0.404 0.472 0.759 0.898 0.759h21.616c0.425 0 0.759 -0.355 0.896 -0.759a2.315 2.315 0 0 1 1.433 -1.431c0.404 -0.14 0.759 -0.472 0.759 -0.898Zm-10.808 -3.094a3.089 3.089 0 1 1 -6.174 0 3.089 3.089 0 0 1 6.174 0Z" stroke="#1D1D1D" stroke-width="1.543878" stroke-miterlimit="10" stroke-linecap="round"/></svg>
                                                     </div>
-                                                    <template if:true={biweekly}>
+                                                    <template lwc:if={biweekly}>
                                                         <div style="display: flex;flex-flow: column;">
                                                             <div  class="slds-text-align--center content-text" style="font-family: 'Proxima Nova Bold' !important;font-size: 26px;line-height: 35px;color: rgb(29, 29, 29);">
                                                                 <div style="float: left;font-family: 'Proxima Nova Bold' !important;
                                                                 font-size: 26px;
                                                                 line-height: 35px;
-                                                                color: rgb(29, 29, 29);"><template if:true={halfFixedZero}>
+                                                                color: rgb(29, 29, 29);">
+                                                                <template lwc:if={halfFixedZero}>
                                                                     {halfFixedZero}
                                                                 </template>
-                                                                <template if:false={halfFixedZero}>
+                                                                <template lwc:else>
                                                                     <lightning-formatted-number style="font-family: 'Proxima Nova Bold' !important;" value={halfFixedAmount} format-style="currency" currency-code="USD"></lightning-formatted-number>
                                                                 </template></div>
                                                                  <!-- <i class="fa-solid fa-arrow-right-from-bracket slds-p-left_x-small"
@@ -233,17 +234,17 @@
                                                             </div>
                                                         </div>
                                                     </template>
-                                                    <template if:false={biweekly}>
+                                                    <template lwc:else>
                                                         <div style="display: flex;flex-flow: column;">
                                                             <div  class="slds-text-align--center content-text" style="font-family: 'Proxima Nova Bold' !important;font-size: 26px;line-height: 35px;color: rgb(29, 29, 29);" >
                                                                 <div style="float: left;font-family: 'Proxima Nova Bold' !important;
                                                                 font-size: 26px;
                                                                 line-height: 35px;
                                                                 color: rgb(29, 29, 29);">
-                                                                    <template if:true={fixedAmountZero}>
+                                                                    <template lwc:if={fixedAmountZero}>
                                                                         {fixedAmountZero}
                                                                     </template>
-                                                                    <template if:false={fixedAmountZero}>
+                                                                    <template lwc:else>
                                                                          <lightning-formatted-number style="font-family: 'Proxima Nova Bold' !important;" value={fixedAmount} format-style="currency" currency-code="USD"></lightning-formatted-number>
                                                                     </template>
                                                                 </div> <!--<i class="fa-solid fa-arrow-right-from-bracket slds-p-left_x-small"
@@ -275,10 +276,10 @@
                                                             font-size: 26px;
                                                             line-height: 35px;
                                                             color: rgb(29, 29, 29);">
-                                                                <template if:true={mileageRateZero}>
+                                                                <template lwc:if={mileageRateZero}>
                                                                     {mileageRateZero}
                                                                 </template>
-                                                                <template if:false={mileageRateZero}>
+                                                                <template lwc:else>
                                                                     <lightning-formatted-number style="font-family: 'Proxima Nova Bold' !important;" value={lastMonthMileageRate} format-style="currency" currency-code="USD"></lightning-formatted-number>
                                                                 </template>
                                                             </div>
@@ -309,10 +310,10 @@
                                                         font-size: 26px;
                                                         line-height: 35px;
                                                         color: rgb(29, 29, 29);">
-                                                            <template if:true={fuelPriceZero}>
+                                                            <template lwc:if={fuelPriceZero}>
                                                                 {fuelPriceZero}
                                                             </template>
-                                                            <template if:false={fuelPriceZero}>
+                                                            <template lwc:else>
                                                                 <lightning-formatted-number style="font-family: 'Proxima Nova Bold' !important;" value={monthfuelPrice} format-style="currency" currency-code="USD"></lightning-formatted-number>
                                                             </template>
                                                         </div>
@@ -349,7 +350,7 @@
                                 class="slds-btn slds-btn-primary slds-btn-sm waves-effect bc-white waves-light mleft-0 my-plan btn-toggle"
                                 onclick={handlePlanInfo}>
                                 Plan info</button></div>
-                        <template if:true={myTA}>
+                        <template lwc:if={myTA}>
                             <div class=""><button
                                     class="slds-btn slds-btn-primary slds-btn-sm waves-effect bc-white waves-light mleft-0 my-ta btn-toggle"
                                     onclick={handleTimeAttendance}>
@@ -362,8 +363,8 @@
     </div>
     <div>
         <div class="slds-p-horizontal_medium animate__animated animate__slideInLeft animate__faster">
-            <template if:true={myTrip}>
-                <template if:true={lengthOfContact}>
+            <template lwc:if={myTrip}>
+                <template lwc:if={lengthOfContact}>
                     <c-accordion-view accordion-data={accordionList} is-tand-a={timeAttendance} contact-id={contactId} is-download-all={hrBorder} hr-class={hrBorder} show-arrow-icon={isIcon}
                         account-id={accountId} contact-info={contact} onnavigate={fromAccordion} ontoast={onToast} onshow={getSpinner}>
                     </c-accordion-view>
@@ -371,8 +372,8 @@
             </template>
         </div>
         <div class="slds-p-horizontal_medium animate__animated animate__slideInLeft animate__faster">
-            <template if:true={timeAttendance}>
-                <template if:true={lengthOfContact}>
+            <template lwc:if={timeAttendance}>
+                <template lwc:if={lengthOfContact}>
                     <c-accordion-view accordion-data={accordionList} is-tand-a={timeAttendance} contact-id={contactId} is-download-all={hrBorder}  hr-class={hrBorder} show-arrow-icon={isIcon}
                         account-id={accountId} contact-info={contact} onnavigate={fromAccordion} ontoast={onToast}  onshow={getSpinner}>
                     </c-accordion-view>
@@ -380,7 +381,7 @@
             </template>
         </div>
         <div class="slds-p-horizontal_medium animate__animated animate__slideInLeft animate__faster">
-            <template if:true={myPlanInfo}>
+            <template lwc:if={myPlanInfo}>
                 <c-user-plan-info contact-id={contactId} insurance-attachment-id={attachmentInsurance}
                     insurance-rate={insuranceRate} maintenance={maintenance} license={license} taxes={taxes}
                     depreciation={depreciation} monthly-cost={totalCost} business-use={businessUse}
@@ -395,15 +396,17 @@
             <button class="slds-btn waves-effect btn-grey slds-back-btn slds-btn-sm" onclick={revertHandler}><i
                     class="fas fa-arrow-left"></i></button>
         </div>
-        <template if:false={myPlanInfo}>
-            <div if:true={isArchive} style="padding-top: 134px;padding-left: 16px;">
+        <template lwc:if={myPlanInfo}>
+        </template>
+        <template lwc:else>
+            <div lwc:if={isArchive} style="padding-top: 134px;padding-left: 16px;">
                 <button class="slds-btn slds-btn-primary slds-btn-sm waves-effect bc-green waves-light mleft-0 btn-trip"
                     onclick={archiveReimbursement}>
                     Go to archive</button>
             </div>
         </template>
     </div>
-    <template if:true={paginatedModal}>
+    <template lwc:if={paginatedModal}>
         <c-user-profile-modal header={headerText}  month={monthText} show-footer={isFalse} show-btn={isTrue}
         modal-class="slds-modal slds-modal_large slds-is-fixed slds-fade-in-open animate__animated animate__fadeInTopLeft animate__faster"
         header-class="slds-modal__header header-preview slds-p-horizontal_large slds-p-top_xx-large slds-p-bottom_xxx-small slds-clearfix"
@@ -411,27 +414,31 @@
         subheader-class="slds-text-heading_medium slds-hyphenate slds-float_left"
         style-header="slds-modal__container slds-m-top_medium" close-btn-class="close-paginated">
             <div slot="header">
-                <template if:true={modalLength}>
+                <template lwc:if={modalLength}>
                     <div class="slds-float_right slds-p-right_small">
                         <div  class="slds-input-has-icon slds-input-has-icon_right search-holder">
                             <img class="search-icon" src={searchIcon} />
-                            <div class="close-btn" if:false={isSearchEnable} onclick={handleClearInput}>
-                                <svg class="close-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M4.815 14.46 14.458 4.818m-9.643 0.011 9.643 9.642" stroke="#929497" stroke-width="2" stroke-linecap="round"/></svg>
-                            </div>
+                            <template lwc:if={isSearchEnable}>
+                            </template>
+                            <template lwc:else>
+                                <div class="close-btn" onclick={handleClearInput}>
+                                    <svg class="close-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M4.815 14.46 14.458 4.818m-9.643 0.011 9.643 9.642" stroke="#929497" stroke-width="2" stroke-linecap="round"/></svg>
+                                </div>
+                            </template>
                             <input  class="slds-input filter-input" type="text" placeholder="Search" value={_value}  onkeyup={handleChange}/>
                         </div>
                     </div>
                 </template>
             </div>
             <div>
-                <template if:true={lastModelList}>
+                <template lwc:if={lastModelList}>
                     <c-user-data-table main-class="slds-table--header-fixed_container modal-height" is-default-sort={paginatedModal} scrollable={isScrollable} is-paginate={paginatedModal}  model-data={lastModelList} search-key={_value}
                     columns={modalListColumn} options={modalKeyFields} is-sortable={isSortable}  colname={colname} coltype={coltype} sortorder={sortorder} is-all-download={download} onview={downloadUserTrips} is-variable={variable}></c-user-data-table>
                 </template>
             </div>
         </c-user-profile-modal>
     </template>
-    <template if:false={paginatedModal}>
+    <template lwc:else>
         <c-user-profile-modal header={headerText}  month={monthText} show-footer={isFalse} show-btn={isTrue}
         modal-class={modalStyle}
         header-class=""
@@ -439,7 +446,7 @@
         subheader-class=""
         style-header="slds-modal__container slds-m-top_medium" close-btn-class="close-aligned">
             <div>
-                <template if:true={lastModelList}>
+                <template lwc:if={lastModelList}>
                     <c-user-data-table main-class="modal-height" scrollable={isScrollable} is-sortable={isSortable} is-paginate={paginatedModal} model-data={lastModelList}
                     columns={modalListColumn} options={modalKeyFields}  colname={colname} coltype={coltype} sortorder={sortorder} onrecord={downloadAllRecord} footer-list={reimbursementYtd} is-ytd-biweek={biweekYtd} is-ytd={ytd}></c-user-data-table>
                 </template>

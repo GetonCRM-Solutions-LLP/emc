@@ -58,7 +58,7 @@
 			</template>
         </template>
 		<template  lwc:elseif={showUsers}>
-			<c-users-roster employees={employees} redirect-user-id={redirectUserId} onupdateemployee={refreshEmpData} 
+			<c-users-roster employees={employees} frequency={reimbursementFrequency} cellphone={cellPhone} redirect-user-id={redirectUserId} onupdateemployee={refreshEmpData} 
 				managers={managers} roles={roles} job-titles={jobTitles} departments={departments} companies={companies} vehicle-type={vehicleType} driver-types={driverTypes}
 						ontoast={showToast} onshow={showSpinner} onhide={hideSpinner} onerror={showErrorToast} onbacktodashboard={backToDashboard}></c-users-roster>
 		</template>
@@ -72,24 +72,29 @@
                  <c-user-flagging-trip contact-id={_contactId} account-id={_accountId}  is-account-biweek={biweekAccount}  header-name={driverName} emailaddress={userEmail} role={userRole} contact-list={unapproveMileages} onback={redirectToMileage} onshow={showSpinner} onhide={hideSpinner} ontoast={showToast} element={unapproveReimbursements} onflagcomplete={handleComplete} onsyncdone={handleSyncDone} redirect-dashboard={isDashboard}></c-user-flagging-trip>
             </template>
         </template>
-		<c-manage-employee-field accid={_accountId}  onformfield={handleFormField}></c-manage-employee-field>
+		<c-manage-employee-field accid={_accountId} frequency={reimbursementFrequency} cellphone={cellPhone}  onformfield={handleFormField}></c-manage-employee-field>
 		<c-user-profile-modal header={headerModalText} month='' show-footer={isFalse} show-btn={isFalse}
 			modal-class={modalClass} header-class={headerClass} subheader-class={subheaderClass}
 			modal-content-style={modalContent} style-header={styleHeader} close-btn-class={styleClosebtn} onclosedialogesc={handleCloseModal} onclosedialog={handleCloseModal} >
-			<template if:true={isAddUser}>
+			<template lwc:if={isAddUser}>
 				<div class="add-employee-container">
 					<c-add-employee accid={_accountId} form-field={addEmpFormField} contactid={_contactId} ontoast={showToast} is-add-employe-modal={isAddEmployeModal} onhide={hideSpinner} onshow={showSpinner} onaddemployee={addEmployee} >
 					</c-add-employee>
 				</div>
 			</template>
-			<template if:true={isRemoveUser}>
+			<template lwc:if={isRemoveUser}>
 				<div slot="header">
 					<div class="slds-float_right slds-p-right_small">
 						<div class="slds-input-has-icon slds-input-has-icon_right search-holder">
 							<img class="search-icon" src={searchIcon} loading="eager" />
-							<div class="close-btn" if:false={isSearchEnable} onclick={handleClearInput}>
-								<svg class="close-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M4.815 14.46 14.458 4.818m-9.643 0.011 9.643 9.642" stroke="#929497" stroke-width="2" stroke-linecap="round"/></svg>
-							</div>
+							<template lwc:if={isSearchEnable}>
+							</template>
+							<template lwc:else>
+								<div class="close-btn"  onclick={handleClearInput}>
+									<svg class="close-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M4.815 14.46 14.458 4.818m-9.643 0.011 9.643 9.642" stroke="#929497" stroke-width="2" stroke-linecap="round"/></svg>
+								</div>
+							</template>
+							
 							<input class="slds-input filter-input" type="text" placeholder="Search"
 								onkeyup={handleRemoveUserFilter} value={_value} />
 						</div>
@@ -136,7 +141,7 @@
 						</div>
 						<div class="tab-content">
 								<div class="slds-p-left_x-large slds-p-right_medium notification-wrapper">
-									<template if:true={isNotify}>
+									<template lwc:if={isNotify}>
 										<template for:each={notifyList} for:item="notify" for:index="index">
 											<div data-id={notify.id} key={notify.id}
 												class="slds-col slds-size_1-of-1 slds-medium-size_6-of-12 slds-large-size_12-of-12 slds-m-around_xx-small slds-p-horizontal_x-small slds-p-vertical_small notify-text">
@@ -163,7 +168,7 @@
 										</template>
 									</template>
 								
-									<template if:false={isNotify}>
+									<template lwc:else>
 										<div class="slds-align_absolute-center slds-p-top_medium slds-p-bottom_x-large no-data-message">You have no notifications right now.</div>
 									</template>
 								</div>

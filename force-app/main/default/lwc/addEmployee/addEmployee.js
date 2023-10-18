@@ -33,9 +33,9 @@ export default class AddEmployee extends LightningElement {
 	@api ListOfCity = []
 	newTag = '';
     @api requiredFields = {
-        driver : ['firstName', 'activationDate', 'lastName', 'email', 'role', 'managerName', 'cellphone', 'department', 'deptDesign', 'company', 'vehicalType', 'zipCode', 'city', 'jobtitle', 'costCode', 'bpCode','am', 'an'],
-        manager: ['firstName', 'activationDate', 'lastName', 'email', 'role', 'managerName', 'cellphone', 'department', 'deptDesign', 'company'],
-        admin: ['firstName', 'activationDate', 'lastName', 'email', 'role', 'cellphone', 'department', 'deptDesign', 'company']
+        driver : ['firstName', 'activationDate', 'lastName', 'email', 'role', 'managerName', 'cellphone', 'department', 'deptDesign', 'company', 'vehicalType', 'zipCode', 'city', 'jobtitle', 'costCode', 'bpCode','am', 'an','ReimbursementFrequency','CellPhoneProvider'],
+        manager: ['firstName', 'activationDate', 'lastName', 'email', 'role', 'managerName', 'cellphone', 'department', 'deptDesign', 'company','ReimbursementFrequency','CellPhoneProvider'],
+        admin: ['firstName', 'activationDate', 'lastName', 'email', 'role', 'cellphone', 'department', 'deptDesign', 'company','ReimbursementFrequency','CellPhoneProvider']
     }
 	isUpdateMode = false;
 	isRecordFirstTimeLoading;
@@ -171,7 +171,10 @@ export default class AddEmployee extends LightningElement {
 					return { ...field, value : value, displayValue : this.convertDateFormat(value)  }
 				}
 				if(fieldName === "costCode") {
-					return { ...field, value : this.autoCostCode(value)  }
+					if(field.is7DigitCostCode)
+						return { ...field, value : this.autoCostCode7Digit(value)  }
+					else
+						return { ...field, value : this.autoCostCode(value)  }
 				}
 				if(fieldName === "am" || fieldName === "an") {
 					return { ...field, value : this.isAlphabestOnly(value)  }
@@ -185,6 +188,7 @@ export default class AddEmployee extends LightningElement {
 				if(fieldName === "vehicalType") {
 					return { ...field, value : this.isVehicalType(value)  }
 				}
+				
 				return { ...field, value };
 			}
 			return field;
@@ -293,6 +297,17 @@ export default class AddEmployee extends LightningElement {
 			return '';
 		}
 	}
+		
+	autoCostCode7Digit(code){
+		if (code.trim().length > 0 && /^[0-9 \-]+$/.test(code)) {
+			const match = code.replace(/\D+/g, '').match(/(\d.*){1,9}/)[0];
+			const part1 = match.length > 5 ? `${match.substring(0, 5)}` : match;
+			const part2 = match.length > 5 ? `-${match.substring(5, 7)}` : '';
+			return `${part1}${part2}`;
+		} else {
+			return '';
+		}
+	}
 	
 	handleMLog() {
 		let toastMessage = ''
@@ -344,6 +359,7 @@ export default class AddEmployee extends LightningElement {
 
 	AddEmployee() {
 		let employeeData = this.proxyToObj(this.employeeFields);
+		console.log("employeeData",employeeData)
 		employeeData = employeeData.map(emp => ({
 			...emp,
 			isValid : this.validateField(emp),
@@ -355,7 +371,11 @@ export default class AddEmployee extends LightningElement {
 			let employee = {}
 			
 			this.employeeFields.forEach(emp => {
-				employee[emp.fieldName] = emp.value;
+				if(emp.fieldName == "mileageForDeduction" && !emp.value ){
+
+				}else{
+					employee[emp.fieldName] = emp.value;
+				}
 			});
 			if(this.isUpdateMode) {
 				employee['userid'] = this.record?.userid;
@@ -728,6 +748,16 @@ export default class AddEmployee extends LightningElement {
 		.catch(err => {
 			console.log(err);
 		});
+
+		
+		let reimFreqList = [{id: 'Monthly Reimbursement',label: 'Monthly Reimbursement' , value: 'Monthly Reimbursement'},
+							{id: 'Bi-Weekly Reimbursement',label: 'Bi-Weekly Reimbursement' , value: 'Bi-Weekly Reimbursement'}];
+			
+		this.setDependentDropDown("ReimbursementFrequency", reimFreqList);
+		let cellPhoneList = [{id: 'Company Provide',label: 'Company Provide' , value: 'Company Provide'},
+							{id: 'Employee Provide',label: 'Employee Provide' , value: 'Employee Provide'}];
+			
+		this.setDependentDropDown("CellPhoneProvider", cellPhoneList);
 
 		getRoles()
 		.then(roles => {

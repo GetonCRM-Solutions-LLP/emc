@@ -458,14 +458,13 @@ export default class UserDataTable extends LightningElement {
             if (colType === "Decimal") {
                 a[colName] = (a[colName].indexOf('$') > -1) ? a[colName].replace(/\$/g, "") : a[colName];
                 b[colName] = (b[colName].indexOf('$') > -1) ? b[colName].replace(/\$/g, "") : b[colName];
-                console.log(a[colName], b[colName])
                 a = (a[colName] == null || a[colName] === 'null') ? '' : parseFloat(a[colName])
                 b = (b[colName] == null || b[colName] === 'null') ? '' : parseFloat(b[colName])
                 return a > b ? 1 * isReverse : -1 * isReverse;
             }
             if(colType === "Date"){
-                a = (a[colName] == null) ? '' : new Date(a[colName].toLowerCase())
-                b = (b[colName] == null) ? '' : new Date(b[colName].toLowerCase())
+                a = (a[colName] == null || a[colName] === '') ? null : new Date(a[colName].toLowerCase())
+                b = (b[colName] == null || b[colName] === '') ? null : new Date(b[colName].toLowerCase())
                 return a > b ? 1 * isReverse : -1 * isReverse;
             }
                 a = (a[colName] == null || a[colName] === '') ? '' : a[colName].toLowerCase();

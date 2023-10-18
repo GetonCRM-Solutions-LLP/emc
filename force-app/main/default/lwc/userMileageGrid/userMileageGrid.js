@@ -8,7 +8,7 @@ import approveMileagesClone from "@salesforce/apex/ManagerDashboardController.ap
 import CheckBatchStatus from "@salesforce/apex/ManagerDashboardController.CheckBatchStatus";
 import UpdatedReimList from "@salesforce/apex/ManagerDashboardController.UpdatedReimList";
 import MassSyncTripsForBiweek from "@salesforce/apex/ManagerDashboardController.MassSyncTripsForBiweek";
-import MassSyncTripsForReimbursements from "@salesforce/apex/ManagerDashboardController.MassSyncTripsForReimbursements";
+import MassSyncTrips from "@salesforce/apex/ManagerDashboardController.MassSyncTrips";
 import { toastEvents } from "c/utils";
 export default class UserMileageGrid extends LightningElement {
   @api contactList;
@@ -31,6 +31,11 @@ export default class UserMileageGrid extends LightningElement {
   isFalse = false;
   typeFilter = "";
   _value = ""
+  syStartDate = "";
+  syEndDate = "";
+  syncMonth = "";
+  tripStatus = 'U';
+  activity = 'Business';
   unapprovereimbursements = [];
   headerModalText = "";
   modalClass = "";
@@ -1173,7 +1178,7 @@ export default class UserMileageGrid extends LightningElement {
             let toast = {
               type: "success",
               message:
-                "Please wait for few minutes. mileage sync process is running in background."
+                "The mileage is syncing in background. It could take up to a minute for sync to mileage."
             };
             toastEvents(this, toast);
             setTimeout(function () {
@@ -1186,15 +1191,23 @@ export default class UserMileageGrid extends LightningElement {
         });
     }else{
       console.log("Inside monthly", this.isAccountBiweek)
-      MassSyncTripsForReimbursements({
-        reimbursements: JSON.stringify(this.allReimbursementList)
-      })
+      let dates = this.getStartAndEndDate(this.syncMonth);
+			this.syStartDate = dates?.startDate;
+			this.syEndDate = dates?.endDate;
+      MassSyncTrips({
+				accountId: this.accountId, 
+				startDate: this.syStartDate, 
+				endDate: this.syEndDate, 
+				month : this.syncMonth,
+				tripStatus: this.tripStatus,
+        activityStatus: this.activity
+			})
         .then((result) => {
           if (result) {
             let toast = {
               type: "success",
               message:
-                "Please wait for few minutes. mileage sync process is running in background."
+                "The mileage is syncing in background. It could take up to a minute for sync to mileage."
             };
             toastEvents(this, toast);
             setTimeout(function () {
@@ -1213,6 +1226,17 @@ export default class UserMileageGrid extends LightningElement {
   excelToExport(data, file, sheet) {
     this.template.querySelector("c-export-excel").download(data, file, sheet);
   }
+
+  getStartAndEndDate(dateString) {
+		const [month, year] = dateString.split('-');
+		const startDate = new Date(year, month - 1, 1);
+		const endDate = new Date(year, month, 0);
+	  
+		const formattedStartDate = `${(startDate.getMonth() + 1).toString().padStart(2, '0')}/${startDate.getDate().toString().padStart(2, '0')}/${startDate.getFullYear()}`;
+		const formattedEndDate = `${(endDate.getMonth() + 1).toString().padStart(2, '0')}/${endDate.getDate().toString().padStart(2, '0')}/${endDate.getFullYear()}`;
+	  
+		return { startDate: formattedStartDate, endDate: formattedEndDate };
+	}
 
   downloadAllTrips() {
     console.log("Type--", this.typeFilter);
@@ -1375,7 +1399,17 @@ export default class UserMileageGrid extends LightningElement {
 
   connectedCallback() {
     sessionStorage.removeItem("Batch-Id");
-    console.log("Parennt", this.role)
+    const formatter = new Intl.DateTimeFormat("default", {
+      month: "numeric", year: "numeric"
+    });
+    const date = new Date();
+    let number = 1;
+    let prevMonth = formatter.format(
+      new Date(date.getFullYear(), date.getMonth() - `${number}`)
+    );
+    let prevList = prevMonth.split('/');
+    prevList[0] = prevList[0].padStart(2, '0');
+    this.syncMonth = prevList.join('-');
     let count = 0;
     this.isScrollable = true;
     this.paginatedModal = true;

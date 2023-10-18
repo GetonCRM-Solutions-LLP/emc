@@ -1,6 +1,6 @@
 <template>
     <div class="slds-p-horizontal_x-large animate__animated animate__slideInLeft animate__delay-1s">
-        <template if:true={lengthOfContact}>
+        <template lwc:if={lengthOfContact}>
             <c-accordion-view accordion-data={accordionList} is-download-all={hrBorder}  hr-class={hrBorder} contact-id={contactId} account-id={accountId} contact-info={contact} onnavigate={fromAccordion} is-tand-a={timeAttendance} 
                 ontoast={onToast} onshow={getSpinner} show-arrow-icon={isIcon}>
             </c-accordion-view>

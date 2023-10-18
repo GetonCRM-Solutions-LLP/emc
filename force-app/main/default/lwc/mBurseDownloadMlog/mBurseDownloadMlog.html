@@ -26,7 +26,7 @@
             <div class="slds-align_absolute-center video-flow">
                     <div class="mright">
                         <div class="video-container">
-                            <!-- <template if:false={isPlay}>
+                            <!-- <template lwc:else={isPlay}>
                                 <div class="apple_icon_box">
                                     <img class="apple_icon slds-m-left_xx-small" src={appleUrl} />
                                 </div>
@@ -36,7 +36,7 @@
                                     <img src={videoLogoUrl} class="img-logo" onclick={playVideo} />
                                 </div>
                             </template> -->
-                            <!-- <template if:true={isPlay}> -->
+                            <!-- <template lwc:if={isPlay}> -->
                                 <iframe width={videoWidth} height={videoHeight} src={iosVideoUrl}
                                     title="YouTube video player" frameborder="0"
                                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
@@ -46,7 +46,7 @@
                     </div>
                     <div class="mleft">
                         <div class="video-container">
-                            <!-- <template if:false={isPlayAndroid}>
+                            <!-- <template lwc:else={isPlayAndroid}>
                                 <div class="android_icon_box">
                                     <img class="android_icon slds-m-left_xx-small" src={androidUrl} />
                                 </div>
@@ -56,7 +56,7 @@
                                     <img src={videoLogoUrl} class="img-logo" onclick={playVideoAndroid} />
                                 </div>
                             </template> -->
-                            <!-- <template if:true={isPlayAndroid}> -->
+                            <!-- <template lwc:if={isPlayAndroid}> -->
                                 <iframe width={videoWidth} height={videoHeight} src={androidVideoUrl}
                                     title="YouTube video player" frameborder="0"
                                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
@@ -81,7 +81,7 @@
                     </div> -->
                     <div class="footer-button slds-p-top_large  slds-p-bottom_large p_top">
                         <div>
-                            <template if:true={allowRedirect}>
+                            <template lwc:if={allowRedirect}>
                                 <div class="watch-meet slds-align_absolute-center">
                                     <button class="slds-btn bc-outline slds-btn-sm waves-effect bc-blue waves-light"
                                         onclick={takeMeToDashboard}>
@@ -188,11 +188,11 @@
                                 <div class="slds-text-heading_small slds-text-align_center font-style slds-p-bottom_small emc-font">
                                     Download and Install mLog</div>
                             </div>
-                            <div
+                           <!-- <div
                                 class="slds-text-heading_small slds-text-align_center slds-p-bottom_medium emcFont p_bottom font-style">
                                 {firstName}, we just sent your link to <br />
                                 get started to Review &amp; Sign
-                            </div>
+                            </div>-->
                             <div class="flex-container  slds-p-bottom_medium">
                                 <h2 class="step-count">1</h2>
                             </div>
@@ -295,7 +295,7 @@
                                                     </a>
                                                 </li>
                                                 <li>
-                                                    <template if:true={allowRedirect}>
+                                                    <template lwc:if={allowRedirect}>
                                                             <button
                                                                 class="slds-btn bc-outline waves-effect bc-blue waves-light account-btn"
                                                                 onclick={takeMeToDashboard}>
@@ -374,7 +374,7 @@
                                                     </a>
                                                 </li>
                                                 <li>
-                                                    <template if:true={allowRedirect}>
+                                                    <template lwc:if={allowRedirect}>
                                                             <button
                                                                 class="slds-btn bc-outline waves-effect bc-blue waves-light account-btn"
                                                                 onclick={takeMeToDashboard}>
@@ -395,12 +395,12 @@
     </div>
 
 
-    <!-- <div class="transition" if:true={isDownloadNow}>
+    <!-- <div class="transition" lwc:if={isDownloadNow}>
         <div class="flex-container">
             <c-m-burse-header-text head-text="Step 4 - Get mLog"></c-m-burse-header-text>
             <div class="carousel-holder">
                 <button class="tips-button" onclick={popOut}><i class="fa-solid fa-info"></i></button>
-                <template if:true={carousel}>
+                <template lwc:if={carousel}>
                     <c-carousel-popover onpop={handlePopover} total-contacts={carouselLists}
                         style-carousel="slds-popover slds-nubbin_left-top  slds-popover_large c_popover"
                         style-header="slds-popover__header bg-dark-blue" style-body="slds-popover__body border"
@@ -422,7 +422,7 @@
         <div class="slds-align_absolute-center video-flow">
             <div class="mright">
                 <div class="video-container">
-                    <template if:false={isPlay}>
+                    <template lwc:else={isPlay}>
                         <div class="apple_icon_box">
                             <img class="apple_icon slds-m-left_xx-small" src={appleUrl} />
                         </div>
@@ -432,7 +432,7 @@
                             <img src={videoLogoUrl} class="img-logo" onclick={playVideo} />
                         </div>
                     </template>
-                    <template if:true={isPlay}>
+                    <template lwc:if={isPlay}>
                         <iframe width={videoWidth} height={videoHeight} src={iosVideoUrl} title="YouTube video player"
                             frameborder="0"
                             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
@@ -442,7 +442,7 @@
             </div>
             <div class="mleft">
                 <div class="video-container">
-                    <template if:false={isPlayAndroid}>
+                    <template lwc:else={isPlayAndroid}>
                         <div class="android_icon_box">
                             <img class="android_icon slds-m-left_xx-small" src={androidUrl} />
                         </div>
@@ -452,7 +452,7 @@
                             <img src={videoLogoUrl} class="img-logo" onclick={playVideoAndroid} />
                         </div>
                     </template>
-                    <template if:true={isPlayAndroid}>
+                    <template lwc:if={isPlayAndroid}>
                         <iframe width={videoWidth} height={videoHeight} src={androidVideoUrl}
                             title="YouTube video player" frameborder="0"
                             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
@@ -472,20 +472,20 @@
                 </div>
             </div> 
             <div class="footer-button slds-p-bottom_large p_top">
-                <div class="watch-meet slds-align_absolute-center slds-p-bottom_medium" if:false={afterRegister}>
+                <div class="watch-meet slds-align_absolute-center slds-p-bottom_medium" lwc:else={afterRegister}>
                     <button class="slds-btn slds-btn-primary slds-btn-sm waves-effect bc-blue waves-light"
                         onclick={nextDriverMeeting}>
                         {buttonRender}
                     </button>
                 </div>
-                <template if:true={allowRedirect}>
-                    <div class="watch-meet slds-align_absolute-center" if:true={afterRegister}>
+                <template lwc:if={allowRedirect}>
+                    <div class="watch-meet slds-align_absolute-center" lwc:if={afterRegister}>
                         <button class="slds-btn slds-btn-primary slds-btn-sm waves-effect bc-blue waves-light"
                             onclick={takeMeToDashboard}>
                             Go To My Account
                         </button>
                     </div>
-                    <div class="watch-meet slds-align_absolute-center"  if:true={showWatchBtn}>
+                    <div class="watch-meet slds-align_absolute-center"  lwc:if={showWatchBtn}>
                         <button class="slds-btn slds-btn-primary slds-btn-sm waves-effect bc-blue waves-light"
                             onclick={takeMeToDashboard}>
                             Take me to the dashboard
@@ -504,12 +504,12 @@
         </div>
     </div>
 
-    <div class="transition" if:true={isDownloadLater}>
+    <div class="transition" lwc:if={isDownloadLater}>
         <div class="flex-container">
             <c-m-burse-header-text head-text="Step 4 - Get mLog Later"></c-m-burse-header-text>
             <div class="carousel-holder">
                 <button class="tips-button" onclick={popOut}><i class="fa-solid fa-info"></i></button>
-                <template if:true={carousel}>
+                <template lwc:if={carousel}>
                     <c-carousel-popover onpop={handlePopover} total-contacts={carouselLists}
                         style-carousel="slds-popover slds-nubbin_left-top  slds-popover_large c_popover"
                         style-header="slds-popover__header bg-dark-blue" style-body="slds-popover__body border"
@@ -529,7 +529,7 @@
         <div class="slds-align_absolute-center video-flow">
             <div class="mright">
                 <div class="video-container">
-                    <template if:false={isPlay}>
+                    <template lwc:else={isPlay}>
                         <div class="apple_icon_box">
                             <img class="apple_icon slds-m-left_xx-small" src={appleUrl} />
                         </div>
@@ -539,7 +539,7 @@
                             <img src={videoLogoUrl} class="img-logo" onclick={playVideo} />
                         </div>
                     </template>
-                    <template if:true={isPlay}>
+                    <template lwc:if={isPlay}>
                         <iframe width={videoWidth} height={videoHeight} src={iosVideoUrl} title="YouTube video player"
                             frameborder="0"
                             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
@@ -549,7 +549,7 @@
             </div>
             <div class="mleft">
                 <div class="video-container">
-                    <template if:false={isPlayAndroid}>
+                    <template lwc:else={isPlayAndroid}>
                         <div class="android_icon_box">
                             <img class="android_icon slds-m-left_xx-small" src={androidUrl} />
                         </div>
@@ -559,7 +559,7 @@
                             <img src={videoLogoUrl} class="img-logo" onclick={playVideoAndroid} />
                         </div>
                     </template>
-                    <template if:true={isPlayAndroid}>
+                    <template lwc:if={isPlayAndroid}>
                         <iframe width={videoWidth} height={videoHeight} src={androidVideoUrl}
                             title="YouTube video player" frameborder="0"
                             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
@@ -580,20 +580,20 @@
             </div>
             <div class="footer-button slds-p-bottom_large p_top">
                 <div>
-                    <div class="watch-meet slds-align_absolute-center slds-p-bottom_medium" if:false={afterRegister}>
+                    <div class="watch-meet slds-align_absolute-center slds-p-bottom_medium" lwc:else={afterRegister}>
                         <button class="slds-btn slds-btn-primary slds-btn-sm waves-effect bc-blue waves-light"
                             onclick={nextDriverMeeting}>
                             {buttonRender}
                         </button>
                     </div>
-                    <template if:true={allowRedirect}>
-                        <div class="watch-meet slds-align_absolute-center" if:true={afterRegister}>
+                    <template lwc:if={allowRedirect}>
+                        <div class="watch-meet slds-align_absolute-center" lwc:if={afterRegister}>
                             <button class="slds-btn slds-btn-primary slds-btn-sm waves-effect bc-blue waves-light"
                                 onclick={takeMeToDashboard}>
                                 Go To My Account
                             </button>
                         </div>
-                        <div class="watch-meet slds-align_absolute-center" if:true={showWatchBtn}>
+                        <div class="watch-meet slds-align_absolute-center" lwc:if={showWatchBtn}>
                             <button class="slds-btn slds-btn-primary slds-btn-sm waves-effect bc-blue waves-light"
                                 onclick={takeMeToDashboard}>
                                 Take me to the dashboard
@@ -608,12 +608,12 @@
         </div>
     </div>
 
-    <div class="transition" if:true={isDownloadAlready}>
+    <div class="transition" lwc:if={isDownloadAlready}>
         <div class="flex-container">
             <c-m-burse-header-text head-text="mLog"></c-m-burse-header-text>
             <div class="carousel-holder">
                 <button class="tips-button" onclick={popOut}><i class="fa-solid fa-info"></i></button>
-                <template if:true={carousel}>
+                <template lwc:if={carousel}>
                     <c-carousel-popover onpop={handlePopover} total-contacts={carouselLists}
                         style-carousel="slds-popover slds-nubbin_left-top  slds-popover_large c_popover"
                         style-header="slds-popover__header bg-dark-blue" style-body="slds-popover__body border"
@@ -641,7 +641,7 @@
         <div class="slds-align_absolute-center video-flow">
             <div class="mright">
                 <div class="video-container">
-                    <template if:false={isPlay}>
+                    <template lwc:else={isPlay}>
                         <div class="apple_icon_box">
                             <img class="apple_icon slds-m-left_xx-small" src={appleUrl} />
                         </div>
@@ -651,7 +651,7 @@
                             <img src={videoLogoUrl} class="img-logo" onclick={playVideo} />
                         </div>
                     </template>
-                    <template if:true={isPlay}>
+                    <template lwc:if={isPlay}>
                         <iframe width={videoWidth} height={videoHeight} src={iosVideoUrl} title="YouTube video player"
                             frameborder="0"
                             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
@@ -661,7 +661,7 @@
             </div>
             <div class="mleft">
                 <div class="video-container">
-                    <template if:false={isPlayAndroid}>
+                    <template lwc:else={isPlayAndroid}>
                         <div class="android_icon_box">
                             <img class="android_icon slds-m-left_xx-small" src={androidUrl} />
                         </div>
@@ -671,7 +671,7 @@
                             <img src={videoLogoUrl} class="img-logo" onclick={playVideoAndroid} />
                         </div>
                     </template>
-                    <template if:true={isPlayAndroid}>
+                    <template lwc:if={isPlayAndroid}>
                         <iframe width={videoWidth} height={videoHeight} src={androidVideoUrl}
                             title="YouTube video player" frameborder="0"
                             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
@@ -695,20 +695,20 @@
             </div> 
             <div class="footer-button slds-p-bottom_large p_top">
                 <div>
-                    <div class="watch-meet slds-align_absolute-center slds-p-bottom_medium" if:false={afterRegister}>
+                    <div class="watch-meet slds-align_absolute-center slds-p-bottom_medium" lwc:else={afterRegister}>
                         <button class="slds-btn slds-btn-primary slds-btn-sm waves-effect bc-blue waves-light"
                             onclick={nextDriverMeeting}>
                             {buttonRender}
                         </button>
                     </div>
-                    <template if:true={allowRedirect}>
-                        <div class="watch-meet slds-align_absolute-center" if:true={afterRegister}>
+                    <template lwc:if={allowRedirect}>
+                        <div class="watch-meet slds-align_absolute-center" lwc:if={afterRegister}>
                             <button class="slds-btn slds-btn-primary slds-btn-sm waves-effect bc-blue waves-light"
                                 onclick={takeMeToDashboard}>
                                 Go To My Account
                             </button>
                         </div>
-                        <div class="watch-meet slds-align_absolute-center"  if:true={showWatchBtn}>
+                        <div class="watch-meet slds-align_absolute-center"  lwc:if={showWatchBtn}>
                             <button class="slds-btn slds-btn-primary slds-btn-sm waves-effect bc-blue waves-light"
                                 onclick={takeMeToDashboard}>
                                 Take me to the dashboard
@@ -723,7 +723,7 @@
         </div>
     </div> -->
 
-    <div class="mburse-support" if:true={isChatBot}>
+    <div class="mburse-support" lwc:if={isChatBot}>
         <c-m-burse-support></c-m-burse-support>
     </div>
 </template>

@@ -26,11 +26,11 @@
                     aria-selected="false" aria-controls="tab-default-6" id="tab-default-6__item">MVR Check</a>
             </li> -->
         </ul>
-        <div if:true={driverPacket} class="slds-tabs_default__content" role="tabpanel"
+        <div lwc:if={driverPacket} class="slds-tabs_default__content" role="tabpanel"
             aria-labelledby="tab-default-1__item">
             <div class="slds-grid">
                 <div class="">
-                    <template if:true={packetStatus1}>
+                    <template lwc:if={packetStatus1}>
                         <div class="plan-info-main">
                             <svg width="171" height="184" viewBox="0 0 171 184" fill="none"
                                 xmlns="http://www.w3.org/2000/svg">
@@ -65,7 +65,7 @@
                             </div>
                         </div>
                     </template>
-                    <template if:false={packetStatus1}>
+                    <template lwc:else>
                         <div class="plan-info-main">
                             <svg width="171" height="184" viewBox="0 0 171 184" fill="none"
                                 xmlns="http://www.w3.org/2000/svg">
@@ -98,7 +98,7 @@
                     </template>
                 </div>
                 <div class="slds-p-horizontal_small">
-                    <template if:true={packetStatus2}>
+                    <template lwc:if={packetStatus2}>
                         <div class="plan-info-main">
                             <svg width="171" height="184" viewBox="0 0 171 184" fill="none"
                                 xmlns="http://www.w3.org/2000/svg">
@@ -138,7 +138,7 @@
                             </div>
                         </div>
                     </template>
-                    <template if:false={packetStatus2}>
+                    <template lwc:else>
                         <div class="plan-info-main">
                             <svg width="171" height="184" viewBox="0 0 171 184" fill="none"
                                 xmlns="http://www.w3.org/2000/svg">
@@ -176,7 +176,7 @@
                     </template>
                 </div>
                 <div class="">
-                    <template if:true={packetStatus3}>
+                    <template lwc:if={packetStatus3}>
                         <div class="plan-info-main">
                             <svg width="171" height="184" viewBox="0 0 171 184" fill="none"
                                 xmlns="http://www.w3.org/2000/svg">
@@ -209,7 +209,7 @@
                             </div>
                         </div>
                     </template>
-                    <template if:false={packetStatus3}>
+                    <template lwc:else>
                         <div class="plan-info-main">
                             <svg width="171" height="184" viewBox="0 0 171 184" fill="none"
                                 xmlns="http://www.w3.org/2000/svg">
@@ -241,7 +241,7 @@
                 </div>
                 <div>
                     <div class="slds-p-horizontal_small">
-                        <template if:true={packetStatus4}>
+                        <template lwc:if={packetStatus4}>
                             <div class="plan-info-main">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="171.506" height="184"
                                     viewBox="0 0 171.506 184" fill="#F1F8EC">
@@ -277,7 +277,7 @@
                                 </div>
                             </div>
                         </template>
-                        <template if:false={packetStatus4}>
+                        <template lwc:else>
                             <div class="plan-info-main">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="171.506" height="184"
                                     viewBox="0 0 171.506 184" fill="none">
@@ -310,7 +310,7 @@
                             </div>
                         </template>
                     </div>
-                    <div class="insurance-download" if:true={isPacketDownload}>
+                    <div class="insurance-download" lwc:if={isPacketDownload}>
                         <a class="slds-btn slds-btn-primary slds-btn-sm waves-effect bc-green waves-light mleft-0 btn-trip"
                             target="_blank" href={urlToPacket}><svg xmlns="http://www.w3.org/2000/svg" width="25"
                                 height="25" viewBox="0 0 25 25" fill="none" style="margin-right: 3px;">
@@ -323,11 +323,11 @@
             </div>
         </div>
 
-        <div if:true={driverMeeting} class="slds-tabs_default__content" role="tabpanel"
+        <div lwc:elseif={driverMeeting} class="slds-tabs_default__content" role="tabpanel"
             aria-labelledby="tab-default-2__item">
             <div class="slds-grid">
                 <div class="">
-                    <template if:true={meetingStatus1}>
+                    <template lwc:if={meetingStatus1}>
                         <div class="plan-info-main">
                             <svg width="171" height="184" viewBox="0 0 171 184" fill="none"
                                 xmlns="http://www.w3.org/2000/svg">
@@ -362,7 +362,7 @@
                             </div>
                         </div>
                     </template>
-                    <template if:false={meetingStatus1}>
+                    <template lwc:else>
                         <div class="plan-info-main">
                             <svg width="171" height="184" viewBox="0 0 171 184" fill="none"
                                 xmlns="http://www.w3.org/2000/svg">
@@ -395,7 +395,7 @@
                     </template>
                 </div>
                 <div class="slds-p-horizontal_small">
-                    <template if:true={meetingStatus2}>
+                    <template lwc:if={meetingStatus2}>
                         <div class="plan-info-main">
                             <svg width="171" height="184" viewBox="0 0 171 184" fill="none"
                                 xmlns="http://www.w3.org/2000/svg">
@@ -435,7 +435,7 @@
                             </div>
                         </div>
                     </template>
-                    <template if:false={meetingStatus2}>
+                    <template lwc:else>
                         <div class="plan-info-main">
                             <svg width="171" height="184" viewBox="0 0 171 184" fill="none"
                                 xmlns="http://www.w3.org/2000/svg">
@@ -473,7 +473,7 @@
                     </template>
                 </div>
                 <div class="">
-                    <template if:true={meetingStatus3}>
+                    <template lwc:if={meetingStatus3}>
                         <div class="plan-info-main">
                             <svg xmlns="http://www.w3.org/2000/svg" width="171.506" height="184"
                             viewBox="0 0 171.506 184" fill="#F1F8EC">
@@ -513,7 +513,7 @@
                             </div>
                         </div>
                     </template>
-                    <template if:false={meetingStatus3}>
+                    <template lwc:else>
                         <div class="plan-info-main">
                             <svg xmlns="http://www.w3.org/2000/svg" width="171.506" height="184"
                                 viewBox="0 0 171.506 184" fill="none">
@@ -553,7 +553,7 @@
             </div>
         </div>
 
-        <div if:true={driverInsurance} class="slds-tabs_default__content" role="tabpanel"
+        <div lwc:elseif={driverInsurance} class="slds-tabs_default__content" role="tabpanel"
             aria-labelledby="tab-default-3__item">
             <div class="slds-grid">
                 <div class="">
@@ -589,7 +589,7 @@
                 </div>
                 <div>
                     <div class="slds-p-horizontal_small">
-                        <template if:true={insuranceAttachmentId}>
+                        <template lwc:if={insuranceAttachmentId}>
                             <div class="plan-info-main">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="171.506" height="184"
                                     viewBox="0 0 171.506 184" fill="none">
@@ -624,7 +624,7 @@
                                 </div>
                             </div>
                         </template>
-                        <template if:false={insuranceAttachmentId}>
+                        <template lwc:else>
                             <div class="plan-info-main">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="171.506" height="184"
                                     viewBox="0 0 171.506 184" fill="none">
@@ -666,7 +666,7 @@
                             </div>
                         </template>
                     </div>
-                    <div class="insurance-download" if:true={insuranceAttachmentId}>
+                    <div class="insurance-download" lwc:if={insuranceAttachmentId}>
                         <a class="slds-btn slds-btn-primary slds-btn-sm waves-effect bc-green waves-light mleft-0 btn-trip"
                             target="_blank" href={urlToInsurance}><svg xmlns="http://www.w3.org/2000/svg" width="23"
                                 height="23" viewBox="0 0 23 23" fill="none" style="margin-right: 3px;">
@@ -680,7 +680,7 @@
             </div>
         </div>
 
-        <div if:true={driverCompliance} class="slds-tabs_default__content" role="tabpanel"
+        <div lwc:if={driverCompliance} class="slds-tabs_default__content" role="tabpanel"
             aria-labelledby="tab-default-4__item">
             <div class="compliance-text">
                 <div class="status-holder slds-p-horizontal_large slds-p-vertical_medium">
@@ -738,7 +738,7 @@
                             </div>
                         </div>
                     </template>
-                    <template if:true={lengthS}>
+                    <template lwc:if={lengthS}>
                         <div style="flex-basis: 265px;margin: 0 25px 30px 0;">
                             <div class="plan-info-compliance slds-p-around_large" style="height: 100%">
                                 <div class="compliance-header">Annual Tax Analysis</div>
@@ -837,7 +837,7 @@
                     </template>
                 </div>
 
-                <!--<template if:true={lengthS}>
+                <!--<template lwc:if={lengthS}>
                      <div class="slds-grid slds-p-top_x-large">
                         <div class="slds-col slds-size_1-of-4 slds-m-right_small">
                             <div class="plan-info-compliance slds-p-around_large">
@@ -914,7 +914,7 @@
 
         </div>
 
-        <div if:true={driverReimbursement} class="slds-tabs_default__content" role="tabpanel"
+        <div lwc:if={driverReimbursement} class="slds-tabs_default__content" role="tabpanel"
             aria-labelledby="tab-default-5__item">
             <div class="complaince-detail">
                 <div class="slds-grid">
@@ -985,7 +985,7 @@
                                 </div>
                             </div>
 
-                            <div class="slds-m-top_large" if:true={fixedcostadjustment}>
+                            <div class="slds-m-top_large" lwc:if={fixedcostadjustment}>
                                 <div class="slds-grid slds-grid_vertical">
                                     <div class="total-amount">
                                         <lightning-formatted-number value={fixedcostadjustment} format-style="currency"
@@ -996,7 +996,7 @@
                                 </div>
                             </div>
 
-                            <div class="slds-m-top_large" if:true={totalMonthlyFixedCost}>
+                            <div class="slds-m-top_large" lwc:if={totalMonthlyFixedCost}>
                                 <div class="slds-grid slds-grid_vertical">
                                     <div class="total-amount">
                                         <lightning-formatted-number value={totalMonthlyFixedCost}
@@ -1014,7 +1014,7 @@
                             <div class="slds-m-top_medium">
                                 <table
                                     class="slds-table slds-table_cell-buffer slds-table_header-hidden bordered-table">
-                                    <tr if:true={variablefuelprice}>
+                                    <tr lwc:if={variablefuelprice}>
                                         <td>Gas Rate</td>
                                         <td>
                                             <lightning-formatted-number value={variablefuelprice}
@@ -1043,10 +1043,10 @@
                             <div class="slds-m-top_large">
                                 <div class="slds-grid slds-grid_vertical">
                                     <div class="total-amount">
-                                        <template if:true={milesZero}>
+                                        <template lwc:if={milesZero}>
                                            <div> {milesZero} </div>
                                         </template>
-                                        <template if:false={milesZero}>
+                                        <template lwc:else>
                                             <lightning-formatted-number value={miles} format-style="currency"
                                                 currency-code="USD" minimum-fraction-digits="4">
                                             </lightning-formatted-number>

@@ -1,5 +1,5 @@
 <template>
-    <template if:true={promiseError}>
+    <template lwc:if={promiseError}>
         <c-m-burse-error message={errorMessage}></c-m-burse-error>
     </template>
     <div class="transition">
@@ -28,7 +28,7 @@
             <div class="footer-button mright-0 mleft-0">
                 <div>
                     <ul class="slds-list_horizontal  slds-has-block-links_space border-radius">
-                        <li class="slds-item navigate" style="margin: 0.375rem 8.375rem 0.375rem 0;"  if:true={isShow}>
+                        <li class="slds-item navigate" style="margin: 0.375rem 8.375rem 0.375rem 0;"  lwc:if={isShow}>
                             <a 
                             name="buttonBackwards"
                             label="Previous" 
@@ -38,22 +38,26 @@
                             </a>
                         </li>
                         <li>
-                            <button if:false={render} class="slds-btn slds-btn-primary slds-btn-sm waves-effect bc-blue waves-light" onclick={mLogDownload}>
-                                Go to Download mLog
-                            </button>
-                            <button if:true={render} class="slds-btn slds-btn-primary slds-btn-sm waves-effect bc-blue waves-light" onclick={mLogDownload}>
-                                Go to Sign in to mLog
-                            </button>
+                            <template lwc:if={render}>
+                                <button  class="slds-btn slds-btn-primary slds-btn-sm waves-effect bc-blue waves-light" onclick={mLogDownload}>
+                                    Go to Sign in to mLog
+                                </button>
+                            </template>
+                            <template lwc:else>
+                                <button class="slds-btn slds-btn-primary slds-btn-sm waves-effect bc-blue waves-light" onclick={mLogDownload}>
+                                    Go to Download mLog
+                                </button>
+                            </template>
                         </li>
                     </ul>
                 </div>
-                <!-- <button if:false={render} class="slds-btn slds-btn-primary slds-btn-sm waves-effect bc-blue waves-light" onclick={mLogDownload}>
+                <!-- <button lwc:else={render} class="slds-btn slds-btn-primary slds-btn-sm waves-effect bc-blue waves-light" onclick={mLogDownload}>
                     Go to download mLog
                 </button>
-                <button if:true={render} class="slds-btn slds-btn-primary slds-btn-sm waves-effect bc-blue waves-light" onclick={mLogDownload}>
+                <button lwc:if={render} class="slds-btn slds-btn-primary slds-btn-sm waves-effect bc-blue waves-light" onclick={mLogDownload}>
                     Go to sign in to mLog
                 </button>
-                <div if:true={isShow}>
+                <div lwc:if={isShow}>
                     <div class="back_to_previous slds-float_left">
                         <ul class="slds-list_horizontal  slds-has-block-links_space border-radius">
                             <li class="slds-item navigate">

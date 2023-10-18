@@ -1,8 +1,8 @@
 <template>
-    <template if:true={promiseError}>
+    <template lwc:if={promiseError}>
         <c-m-burse-error message={errorMessage}></c-m-burse-error>
     </template>
-    <div class="transition" if:true={packetAlreadySent}>
+    <div class="transition" lwc:if={packetAlreadySent}>
         <div>
             <c-m-burse-header-text head-text="Step 3">
                 <div slot="subHeading" class="slds-text-heading_small slds-text-align_center font-style slds-p-bottom_small emc-font">Your
@@ -36,12 +36,16 @@
         <div class="slds-clearfix slds-p-top_large slds-align_absolute-center">
             <div class="footer-button slds-float_right mright-0 mleft-0">
                 <div>
-                    <button if:false={isPacket}
-                        class="slds-btn slds-btn-primary slds-btn-sm waves-effect bc-blue waves-light"
-                        onclick={sendDriverPacket}>
-                        Resend driver packet
-                    </button>
-                    <div class="back_to_previous back-position slds-float_left m-right" if:true={isShowUpload}>
+                    <template lwc:if={isPacket}>
+                    </template>
+                    <template lwc:else>
+                        <button 
+                            class="slds-btn slds-btn-primary slds-btn-sm waves-effect bc-blue waves-light"
+                            onclick={sendDriverPacket}>
+                            Resend driver packet
+                        </button>
+                    </template>
+                    <div class="back_to_previous back-position slds-float_left m-right" lwc:if={isShowUpload}>
                         <ul class="slds-list_horizontal  slds-has-block-links_space border-radius">
                             <li class="slds-item navigate">
                                 <a title="Back"
@@ -53,22 +57,26 @@
                             </li>
                         </ul>
                     </div>
-                    <div class="back_to_previous back-position slds-float_right m-left" if:false={isShow}>
-                        <ul class="slds-list_horizontal  slds-has-block-links_space border-radius">
-                            <li class="slds-item navigate">
-                                <a title="Skip this step"
-                                name="buttonBackwards"
-                                label="Previous"  
-                                onclick={skipToPage}  >
-                                <i class="fa-solid fa-arrow-right fa-lg navigate-icon"></i>
-                                </a>
-                            </li>
-                        </ul>
-                    </div>
-                    <!-- <div class="back_to_previous back-position slds-float_left" if:true={isShowUpload}>
+                    <template lwc:if={isShow}>
+                    </template>
+                    <template lwc:else>
+                        <div class="back_to_previous back-position slds-float_right m-left">
+                            <ul class="slds-list_horizontal  slds-has-block-links_space border-radius">
+                                <li class="slds-item navigate">
+                                    <a title="Skip this step"
+                                    name="buttonBackwards"
+                                    label="Previous"  
+                                    onclick={skipToPage}  >
+                                    <i class="fa-solid fa-arrow-right fa-lg navigate-icon"></i>
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </template>
+                    <!-- <div class="back_to_previous back-position slds-float_left" lwc:if={isShowUpload}>
                         <a class="font-s" onclick={backToPage}><i class="fa-solid fa-angle-left"></i> Back</a>
                     </div>
-                    <div class="back_to_previous  back-position slds-float_right" if:false={isShow}>
+                    <div class="back_to_previous  back-position slds-float_right" lwc:else={isShow}>
                         <a class="font-s" onclick={skipToPage}>Skip<i class="fa-solid fa-angle-right"></i></a>
                     </div> -->
                 </div>
@@ -77,7 +85,7 @@
         </div>
     </div>
 
-    <div class="transition" if:true={packetIntial}>
+    <div class="transition" lwc:if={packetIntial}>
         <div>
             <c-m-burse-header-text head-text="Step 3">
                 <div slot="subHeading" class="slds-text-heading_small slds-text-align_center font-style slds-p-bottom_small emc-font">Request and Sign Driver Packet</div>
@@ -127,12 +135,16 @@
         <div class="slds-clearfix slds-p-top_large slds-align_absolute-center">
             <div class="footer-button slds-float_right mright-0 mleft-0">
                 <div>
-                    <button if:false={isPacket}
-                        class="slds-btn slds-btn-primary slds-btn-sm waves-effect bc-blue waves-light"
-                        onclick={sendDriverPacket}>
-                        Send driver packet
-                    </button>
-                    <div class="back_to_previous back-position slds-float_left m-right" if:true={isShowUpload}>
+                    <template lwc:if={isPacket}>
+                    </template>
+                    <template lwc:else>
+                        <button 
+                            class="slds-btn slds-btn-primary slds-btn-sm waves-effect bc-blue waves-light"
+                            onclick={sendDriverPacket}>
+                            Send driver packet
+                        </button>
+                    </template>
+                    <div class="back_to_previous back-position slds-float_left m-right" lwc:if={isShowUpload}>
                         <ul class="slds-list_horizontal  slds-has-block-links_space border-radius">
                             <li class="slds-item navigate">
                                 <a title="Back"
@@ -145,26 +157,30 @@
                         </ul>
                         <!-- <a class="font-s" onclick={backToPage}><i class="fa-solid fa-angle-left"></i> Back</a> -->
                     </div>
-                    <div class="back_to_previous back-position slds-float_right m-left" if:false={isShow}>
-                        <ul class="slds-list_horizontal  slds-has-block-links_space border-radius">
-                            <li class="slds-item navigate">
-                                <a title="Skip this step"
-                                name="buttonBackwards"
-                                label="Previous"  
-                                onclick={skipToPage}  >
-                                <i class="fa-solid fa-arrow-right fa-lg navigate-icon"></i>
-                                </a>
-                            </li>
-                        </ul>
-                        <!-- <a class="font-s" onclick={skipToPage}>Skip<i class="fa-solid fa-angle-right"></i></a> -->
-                    </div>
+                    <template lwc:if={isShow}>
+                    </template>
+                    <template lwc:else>
+                        <div class="back_to_previous back-position slds-float_right m-left">
+                            <ul class="slds-list_horizontal  slds-has-block-links_space border-radius">
+                                <li class="slds-item navigate">
+                                    <a title="Skip this step"
+                                    name="buttonBackwards"
+                                    label="Previous"  
+                                    onclick={skipToPage}  >
+                                    <i class="fa-solid fa-arrow-right fa-lg navigate-icon"></i>
+                                    </a>
+                                </li>
+                            </ul>
+                            <!-- <a class="font-s" onclick={skipToPage}>Skip<i class="fa-solid fa-angle-right"></i></a> -->
+                        </div>
+                    </template>
                 </div>
             </div>
 
         </div>
     </div>
 
-    <div class="transition" if:true={packetSent}>
+    <div class="transition" lwc:if={packetSent}>
         <div>
             <c-m-burse-header-text head-text="Step 3">
                 <div slot="subHeading" class="slds-text-heading_small slds-text-align_center font-style slds-p-bottom_small emc-font">Driver Packet Sent</div>
@@ -181,25 +197,25 @@
         </div>
         <div class="slds-clearfix slds-p-top_large slds-align_absolute-center"> <!--m-top m-right-->
             <div class="footer-button slds-float_right">
-                <template if:true={isAppDone}>
+                <template lwc:if={isAppDone}>
                     <!-- <button class="slds-btn slds-btn-primary slds-btn-sm waves-effect bc-blue waves-light"
-                        onclick={goToDashboard} if:false={afterRegister}>
+                        onclick={goToDashboard} lwc:else={afterRegister}>
                         {renderBtnText}
                     </button> -->
-                    <template if:true={allowRedirect}>
+                    <template lwc:if={allowRedirect}>
                         <button class="slds-btn bc-outline slds-btn-sm waves-effect bc-blue waves-light"
                         onclick={redirectToDashboard}>
                             Go to Dashboard
                         </button>
                     </template>
                 </template>
-                <template if:false={isAppDone}>
+                <template lwc:else>
                     <button class="slds-btn slds-btn-primary slds-btn-sm waves-effect bc-blue waves-light"
                         onclick={nextmLogPreview}>
                         {renderText}
                     </button>
                 </template>
-                <div class="back_to_previous  m-right slds-float_left" if:true={isShowUpload}>
+                <div class="back_to_previous  m-right slds-float_left" lwc:if={isShowUpload}>
                     <ul class="slds-list_horizontal  slds-has-block-links_space border-radius">
                         <li class="slds-item navigate">
                             <a title="Back"

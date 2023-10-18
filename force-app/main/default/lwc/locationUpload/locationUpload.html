@@ -22,21 +22,21 @@
                                 d="M283.44,38.12c-4.82,.18-10.41,2.19-13.91,5.48l-114.67,107.93c-6.56,7.32-9.27,21.34-1.69,29.51,7.48,8.06,22,7.8,29.51-.21l80.53-75.89V394.14c0,11.17,9.06,20.24,20.24,20.24s20.24-9.06,20.24-20.24V104.94l80.53,75.89c6.93,6.9,21.95,8.19,29.51,.21,7.56-7.96,5.14-22.5-1.69-29.51l-114.67-107.93c-3.93-3.69-8.54-5.48-13.91-5.48h0Z">
                             </path>
                         </svg> -->
-                        <div class="box__container slds-btn slds-btn-primary slds-btn-sm waves-effect bc-blue waves-light" if:false={isVisible}>
-                            <span style="font-family: 'Proxima Nova Bold' !important;">Choose file to upload</span>
-                            <input accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel, .csv"
-                            class="box__file" id="file" name="file" type="file" onchange={fileChanged}/>
-                        </div>
-                        <div class="box__upload"  if:true={isVisible}>
+                        <div class="box__upload"  lwc:if={isVisible}>
                             <button class="slds-btn slds-btn-primary slds-btn-md waves-effect bc-blue waves-light" onclick={uploadFileInChunk}>
                                 Upload
                             </button>
+                        </div>
+                        <div class="box__container slds-btn slds-btn-primary slds-btn-sm waves-effect bc-blue waves-light" lwc:else>
+                            <span style="font-family: 'Proxima Nova Bold' !important;">Choose file to upload</span>
+                            <input accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel, .csv"
+                            class="box__file" id="file" name="file" type="file" onchange={fileChanged}/>
                         </div>
                         <div>
                             <label class="w-100 text-center pd-10 file-message" for="file">{fileName}
                                 <span style="color: #6C6C6C; margin-left: 14px;">{fSize}</span>
                             </label>
-                            <label class="w-100 text-center error-text" for="file-error" if:true={isError}>
+                            <label class="w-100 text-center error-text" for="file-error" lwc:if={isError}>
                                 <i class="fa-solid fa-circle-exclamation"></i>  {errorUploading}
                             </label>
                         </div>
@@ -46,19 +46,4 @@
             </div>
         </div>
     </div>
-    <!-- <div class="transition modal-content" if:true={isUploaded}>
-        <div class="thanksImg"><img  src={thanksUploading} /></div>
-        <div class="slds-text-heading_large slds-text-align_center slds-p-top_large slds-p-bottom_x-large font-style">
-            Thank you for uploading <br/> your insurance.
-        </div>
-        <div class="slds-text-heading_medium slds-text-align_center slds-p-bottom_x-large font-style font-width">
-           A team member will review your insurance shortly and contact you with any questions.
-        </div>
-        <div class="footer-button slds-text-align_center">
-            <button class="slds-btn slds-btn-primary slds-btn-done waves-effect bc-blue waves-light"
-                        onclick={nextDoneUpload}>
-                        Done
-            </button>
-        </div>
-    </div> -->
 </template>

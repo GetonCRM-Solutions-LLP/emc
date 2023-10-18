@@ -3,7 +3,7 @@
         <div class="slds-align_absolute-center">
             <h2 class="slds-text-heading_large text-header">Tax Liability</h2>
         </div>
-        <div  class="slds-p-top_medium" if:true={reimbursementValue}>
+        <div  class="slds-p-top_medium" lwc:if={reimbursementValue}>
             <iframe  loading="lazy" src={vfHost} height="340px" width="100%" style="border: 0;width:100%;overflow:hidden;margin: 0 auto" class="vf-iframe" onload={initializeChart}></iframe>
             <!-- <div id="container" class="chart" lwc:dom="manual" style="width: 700px;height:300px; margin: 0 auto"></div> -->
         </div>
@@ -64,7 +64,7 @@
                             </div>
                         </div>
                     </template>
-                    <template if:true={lengthS}>
+                    <template lwc:if={lengthS}>
                         <div style="flex-basis: 265px;margin: 0 30px 30px 0;">
                             <div class="plan-info-compliance slds-p-around_large" style="height: 100%">
                                 <div class="compliance-header">Annual Tax Analysis</div>
@@ -218,7 +218,7 @@
                             </div>
                         </div>
                     </template>
-                    <template if:true={lengthS}>
+                    <template lwc:if={lengthS}>
                         <div class="slds-col slds-m-bottom_large">
                             <div class="plan-info-compliance slds-p-around_large" style="height: 100%">
                                 <div class="compliance-header">Annual Tax Analysis</div>

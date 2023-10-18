@@ -312,6 +312,7 @@
     <apex:includeLightning />
     <body oncontextmenu="return false;">
         <div id="mBursePlan" />
+        <c:mBurseChatBot />
     </body>
     <script>
         /* Toaster Option */

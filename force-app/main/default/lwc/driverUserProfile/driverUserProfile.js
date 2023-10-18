@@ -49,6 +49,10 @@ export default class DriverUserProfile extends LightningElement {
     biweekYtd = false;
     modalLength = false;
     multipleMap = false;
+    startNumber = 0;
+    endNumber = 100;
+    progress = 0;
+    progressPercent = 0;
     modalStyle = '';
     headerText = '';
     monthText = '';
@@ -502,6 +506,10 @@ export default class DriverUserProfile extends LightningElement {
     //     this.template.querySelector(`.notify-text[data-id="${eId}"]`).classList.add('slds-hide');
     // }
 
+    get progressStyle() {
+        return `width: ${this.progressPercent}`;
+    }
+    
 
     getLastMonthMileage(){
        // this.viewAllNotification = false;
@@ -794,6 +802,19 @@ export default class DriverUserProfile extends LightningElement {
         this.planMileage =   (this.isValid) ?  true : false;
         this.biweekly = (contactList[0].Reimbursement_Frequency__c === 'Bi-Weekly Reimbursement') ? true : false;
         this.typeMap = this.mapCountry;
+        this.progressBar(parseFloat(this.annualMileage), parseFloat(this.complianceMileage))
+    }
+
+    progressBar(numVal, compareVal) {
+        if (numVal >= 1) {
+            this.progress = (numVal / compareVal) * 100;
+            this.progress = (this.progress > 100) ? 100 : this.progress
+            this.progressPercent = this.progress + '%'
+        }
+        else {
+            this.progress = 0;
+            this.progressPercent = this.progress + '%';
+        }
     }
 
     @wire(getDriverDetails, {

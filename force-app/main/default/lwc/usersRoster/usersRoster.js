@@ -65,6 +65,8 @@ export default class UsersRoster extends LightningElement {
 	vehicleTypeList;
 	driverTypeList;
 	@api accid;
+	@api frequency;
+	@api cellphone;
 	@api contactid;
     isFalse = false;
 	@api tags = [];
@@ -101,7 +103,7 @@ export default class UsersRoster extends LightningElement {
 	@api exportFields = [];
 	isLoginAsVisible = false;
 	redirectPageName;
-	isClearIconEnable = false;
+	isClearIconEnable = true;
     
     dynamicBinding(data, keyFields) {
         data.forEach(element => {

@@ -9,33 +9,35 @@
                         </div>
                 </div>
             </div> -->
-        <template if:true={isRegister}>
-            <div class="step background-blurry">
-                <div class="plan-info-top">
-                    <h2 class="step-count opaque">1</h2>
-                    <h2 class="step-complete">Completed<span class="info-check"><i
-                                class="fa-solid fa-lg fa-check"></i></span></h2>
-                </div>
+        <div>
+            <template lwc:if={isRegister}>
+                <div class="step background-blurry">
+                    <div class="plan-info-top">
+                        <h2 class="step-count opaque">1</h2>
+                        <h2 class="step-complete">Completed<span class="info-check"><i
+                                    class="fa-solid fa-lg fa-check"></i></span></h2>
+                    </div>
 
-                <div class="opacity">
-                    <div class="step-inner step-margin-2">
-                        <img class="i-size" src={step1Url} loading="eager">
-                        <div class="step-info step-padding">Watch your <br /> <strong>Driver Meeting</strong></div>
+                    <div class="opacity">
+                        <div class="step-inner step-margin-2">
+                            <img class="i-size" src={step1Url} loading="eager">
+                            <div class="step-info">Watch your <br /> <strong>Driver Meeting</strong></div>
+                        </div>
                     </div>
                 </div>
-            </div>
-        </template>
-        <template if:false={isRegister}>
-            <div class="step">
-                <h2 class="step-count">1</h2>
-                <div class="step-inner step-margin-2">
-                    <img class="i-size" src={step1Url} loading="eager">
-                    <div class="step-info">Watch your <br /> <strong>Driver Meeting</strong></div>
+            </template>
+            <template lwc:else>
+                <div class="step">
+                    <h2 class="step-count">1</h2>
+                    <div class="step-inner step-margin-2">
+                        <img class="i-size" src={step1Url} loading="eager">
+                        <div class="step-info">Watch your <br /> <strong>Driver Meeting</strong></div>
+                    </div>
                 </div>
-            </div>
-        </template>
+            </template>
+        </div>
         <div>
-            <template if:true={isInsuranceDone}>
+            <template lwc:if={isInsuranceDone}>
                 <div class="step background-blurry">
                     <div class="plan-info-top">
                         <h2 class="step-count opaque">2</h2>
@@ -51,7 +53,7 @@
                     </div>
                 </div>
             </template>
-            <template if:false={isInsuranceDone}>
+            <template lwc:else>
                 <div class="step">
                     <h2 class="step-count">2</h2>
                     <div class="step-inner step-margin-2">
@@ -62,7 +64,7 @@
             </template>
         </div>
         <div>
-            <template if:true={isdriverPacketDone}>
+            <template lwc:if={isdriverPacketDone}>
                 <div class="step background-blurry">
                     <div class="plan-info-top">
                         <h2 class="step-count opaque">3</h2>
@@ -79,7 +81,7 @@
                     </div>
                 </div>
             </template>
-            <template if:false={isdriverPacketDone}>
+            <template lwc:else>
                 <div class="step">
                     <h2 class="step-count">3</h2>
                     <div class="step-inner step-margin-3">
@@ -91,7 +93,7 @@
             </template>
         </div>
         <div>
-            <template if:true={isAppDone}>
+            <template lwc:if={isAppDone}>
                 <div class="step background-blurry">
                     <div class="plan-info-top">
                         <h2 class="step-count opaque">4</h2>
@@ -101,28 +103,36 @@
                     <div class="opacity">
                         <div class="step-inner step-margin-2">
                             <img class="i-size" src={step4Url} loading="eager">
-                            <div class="step-info" if:true={phone}>Sign into the <br /><strong>mLog app</strong></div>
-                            <div class="step-info" if:false={phone}>Download &amp; Install <br /><strong>the mLog
+                            <template lwc:if={phone}>
+                                <div class="step-info">Sign into the <br /><strong>mLog app</strong></div>
+                            </template>
+                            <template lwc:else>
+                                <div class="step-info">Download &amp; Install <br /><strong>the mLog
                                     app</strong></div>
+                            </template>
                         </div>
                     </div>
                 </div>
             </template>
-            <template if:false={isAppDone}>
+            <template lwc:else>
                 <div class="step">
                     <h2 class="step-count">4</h2>
                     <div class="step-inner step-margin-2">
                         <img class="i-size" src={step4Url} loading="eager">
-                        <div class="step-info" if:true={phone}>Sign into the <br /><strong>mLog app</strong></div>
-                        <div class="step-info" if:false={phone}>Download &amp; Install <br /><strong>the mLog
+                        <template lwc:if={phone}>
+                            <div class="step-info">Sign into the <br /><strong>mLog app</strong></div>
+                        </template>
+                        <template lwc:else>
+                            <div class="step-info">Download &amp; Install <br /><strong>the mLog
                                 app</strong></div>
+                        </template>
                     </div>
                 </div>
             </template>
         </div>
         <!-- <div class="slds-col" padding="around-small" style="flex: 0 0 20% !important">
-                    <template if:true={isSchedule}>
-                        <div class="step background-blurry"  if:true={accountType}>
+                    <template lwc:if={isSchedule}>
+                        <div class="step background-blurry"  lwc:if={accountType}>
                             <div class="plan-info-top">
                                 <h2 class="step-count opaque">5</h2>
                                 <h2 class="step-complete">Completed<span class="info-check"><i
@@ -136,8 +146,8 @@
                             </div>
                         </div>
                     </template>
-                    <template if:false={isSchedule}>
-                        <div class="step"  if:true={accountType}>
+                    <template lwc:else={isSchedule}>
+                        <div class="step"  lwc:if={accountType}>
                             <h2 class="step-count">5</h2>
                             <div class="step-inner step-margin-2">
                                 <img class="i-size" src={step5Url}  loading="eager">
@@ -147,8 +157,8 @@
                     </template>
 
 
-                    <template if:true={isRegister}>
-                        <div class="step background-blurry"  if:false={accountType}>
+                    <template lwc:if={isRegister}>
+                        <div class="step background-blurry"  lwc:else={accountType}>
                                 <h2 class="step-count opaque">5</h2>
                                 <div class="opacity">
                                     <div class="step-inner step-margin-2">
@@ -158,8 +168,8 @@
                                 </div>
                         </div>
                     </template>
-                    <template if:false={isRegister}>
-                        <div class="step"  if:false={accountType}>
+                    <template lwc:else={isRegister}>
+                        <div class="step"  lwc:else={accountType}>
                             <h2 class="step-count">5</h2>
                             <div class="step-inner step-margin-2">
                                 <img class="i-size" src={step1Url}  loading="eager">

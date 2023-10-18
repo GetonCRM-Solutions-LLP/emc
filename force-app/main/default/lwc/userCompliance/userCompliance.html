@@ -29,7 +29,7 @@
                             </div>
                             <div
                                 class="slds-grid slds-wrap slds-align_absolute-center slds-p-top_medium slds-p-bottom_large">
-                                <template if:true={planInsurance}>
+                                <template lwc:if={planInsurance}>
                                     <div class="slds-col slds-size_1-of-1 slds-medium-size_6-of-12 slds-large-size_12-of-12  slds-m-around_xx-small in-complete"
                                         style="
                                     border: 1px solid #E4E4E4;width: 300px;
@@ -53,7 +53,7 @@
                                         </div>
                                     </div>
                                 </template>
-                                <template if:false={planInsurance}>
+                                <template lwc:else>
                                     <div class="slds-col slds-size_1-of-1 slds-medium-size_6-of-12 slds-large-size_12-of-12  slds-m-around_xx-small not-in-complete"
                                         style="
                                     border: 1px solid #E4E4E4;width: 300px;
@@ -73,7 +73,7 @@
                                         </div>
                                     </div>
                                 </template>
-                                <template if:true={planMileage}>
+                                <template lwc:if={planMileage}>
                                     <div class="slds-col slds-size_1-of-1 slds-medium-size_6-of-12 slds-large-size_12-of-12  slds-m-around_xx-small in-complete"
                                         style="
                                     border: 1px solid #E4E4E4;width: 300px;
@@ -98,7 +98,7 @@
                                         </div>
                                     </div>
                                 </template>
-                                <template if:false={planMileage}>
+                                <template lwc:else>
                                     <div class="slds-col slds-size_1-of-1 slds-medium-size_6-of-12 slds-large-size_12-of-12  slds-m-around_xx-small not-in-complete"
                                         style="
                                     border: 1px solid #E4E4E4;width: 300px;
@@ -119,7 +119,7 @@
                                         </div>
                                     </div>
                                 </template>
-                                <template if:true={planVehicleAge}>
+                                <template lwc:if={planVehicleAge}>
                                     <div class="slds-col slds-size_1-of-1 slds-medium-size_6-of-12 slds-large-size_12-of-12  slds-m-around_xx-small in-complete"
                                         style="
                                     border: 1px solid #E4E4E4;width: 300px;
@@ -144,7 +144,7 @@
                                         </div>
                                     </div>
                                 </template>
-                                <template if:false={planVehicleAge}>
+                                <template lwc:else>
                                     <div class="slds-col slds-size_1-of-1 slds-medium-size_6-of-12 slds-large-size_12-of-12  slds-m-around_xx-small not-in-complete"
                                         style="
                                     border: 1px solid #E4E4E4;width: 300px;
@@ -165,7 +165,7 @@
                                         </div>
                                     </div>
                                 </template>
-                                <template if:true={planVehicleValue}>
+                                <template lwc:if={planVehicleValue}>
                                     <div class="slds-col slds-size_1-of-1 slds-medium-size_6-of-12 slds-large-size_12-of-12  slds-m-around_xx-small in-complete"
                                         style="
                                     border: 1px solid #E4E4E4;width: 300px;
@@ -191,7 +191,7 @@
                                         </div>
                                     </div>
                                 </template>
-                                <template if:false={planVehicleValue}>
+                                <template lwc:else>
                                     <div class="slds-col slds-size_1-of-1 slds-medium-size_6-of-12 slds-large-size_12-of-12  slds-m-around_xx-small not-in-complete"
                                         style="
                                     border: 1px solid #E4E4E4;width: 300px;
@@ -213,7 +213,7 @@
                                         </div>
                                     </div>
                                 </template>
-                                <template if:true={planCompliance}>
+                                <template lwc:if={planCompliance}>
                                     <div class="slds-col slds-size_1-of-1 slds-medium-size_6-of-12 slds-large-size_12-of-12  slds-m-around_xx-small in-complete"
                                         style="
                                 border: 1px solid #E4E4E4;width: 300px;
@@ -238,7 +238,7 @@
                                         </div>
                                     </div>
                                 </template>
-                                <template if:false={planCompliance}>
+                                <template lwc:else>
                                     <div class="slds-col slds-size_1-of-1 slds-medium-size_6-of-12 slds-large-size_12-of-12  slds-m-around_xx-small not-in-complete"
                                         style="
                                 border: 1px solid #E4E4E4;width: 300px;
@@ -294,7 +294,7 @@
                             </div>
                             <div
                                 class="slds-grid slds-wrap slds-align_absolute-center slds-p-top_medium slds-p-bottom_large">
-                                <template if:true={planInsurance}>
+                                <template lwc:if={planInsurance}>
                                     <div class="slds-col slds-size_1-of-1 slds-medium-size_6-of-12 slds-large-size_12-of-12  slds-m-around_xx-small in-complete"
                                         style="
                                                     border: 1px solid #D7D7D7;width: 300px;
@@ -314,7 +314,7 @@
                                         </div>
                                     </div>
                                 </template>
-                                <template if:false={planInsurance}>
+                                <template lwc:else={planInsurance}>
                                     <div class="slds-col slds-size_1-of-1 slds-medium-size_6-of-12 slds-large-size_12-of-12  slds-m-around_xx-small not-in-complete"
                                         style="
                                                     border: 1px solid #D7D7D7;width: 300px;
@@ -334,7 +334,7 @@
                                         </div>
                                     </div>
                                 </template>
-                                <template if:true={planMileage}>
+                                <template lwc:if={planMileage}>
                                     <div class="slds-col slds-size_1-of-1 slds-medium-size_6-of-12 slds-large-size_12-of-12  slds-m-around_xx-small in-complete"
                                         style="
                                                     border: 1px solid #D7D7D7;width: 300px;
@@ -354,7 +354,7 @@
                                         </div>
                                     </div>
                                 </template>
-                                <template if:false={planMileage}>
+                                <template lwc:else={planMileage}>
                                     <div class="slds-col slds-size_1-of-1 slds-medium-size_6-of-12 slds-large-size_12-of-12  slds-m-around_xx-small not-in-complete"
                                         style="
                                                     border: 1px solid #D7D7D7;width: 300px;
@@ -374,7 +374,7 @@
                                         </div>
                                     </div>
                                 </template>
-                                <template if:true={planVehicleAge}>
+                                <template lwc:if={planVehicleAge}>
                                     <div class="slds-col slds-size_1-of-1 slds-medium-size_6-of-12 slds-large-size_12-of-12  slds-m-around_xx-small in-complete"
                                         style="
                                                     border: 1px solid #D7D7D7;width: 300px;
@@ -394,7 +394,7 @@
                                         </div>
                                     </div>
                                 </template>
-                                <template if:false={planVehicleAge}>
+                                <template lwc:else={planVehicleAge}>
                                     <div class="slds-col slds-size_1-of-1 slds-medium-size_6-of-12 slds-large-size_12-of-12  slds-m-around_xx-small not-in-complete"
                                         style="
                                                     border: 1px solid #D7D7D7;width: 300px;
@@ -414,7 +414,7 @@
                                         </div>
                                     </div>
                                 </template>
-                                <template if:true={planVehicleValue}>
+                                <template lwc:if={planVehicleValue}>
                                     <div class="slds-col slds-size_1-of-1 slds-medium-size_6-of-12 slds-large-size_12-of-12  slds-m-around_xx-small in-complete"
                                         style="
                                                     border: 1px solid #D7D7D7;width: 300px;
@@ -434,7 +434,7 @@
                                         </div>
                                     </div>
                                 </template>
-                                <template if:false={planVehicleValue}>
+                                <template lwc:else={planVehicleValue}>
                                     <div class="slds-col slds-size_1-of-1 slds-medium-size_6-of-12 slds-large-size_12-of-12  slds-m-around_xx-small not-in-complete"
                                         style="
                                                     border: 1px solid #D7D7D7;width: 300px;
@@ -454,7 +454,7 @@
                                         </div>
                                     </div>
                                 </template>
-                                <template if:true={planCompliance}>
+                                <template lwc:if={planCompliance}>
                                     <div class="slds-col slds-size_1-of-1 slds-medium-size_6-of-12 slds-large-size_12-of-12  slds-m-around_xx-small in-complete"
                                         style="
                                                 border: 1px solid #D7D7D7;width: 300px;
@@ -474,7 +474,7 @@
                                         </div>
                                     </div>
                                 </template>
-                                <template if:false={planCompliance}>
+                                <template lwc:else={planCompliance}>
                                     <div class="slds-col slds-size_1-of-1 slds-medium-size_6-of-12 slds-large-size_12-of-12  slds-m-around_xx-small not-in-complete"
                                         style="
                                                 border: 1px solid #D7D7D7;width: 300px;

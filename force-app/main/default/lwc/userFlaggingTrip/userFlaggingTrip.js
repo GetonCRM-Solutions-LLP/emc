@@ -430,7 +430,7 @@ export default class UserFlaggingTrip extends LightningElement {
                 accID: this.accountId
             }).then((result) => {
                 if(result){
-                let toast = { type: "success", message: 'Please wait for few minutes. mileage sync process is running in background.' };
+                let toast = { type: "success", message: 'The mileage is syncing in background. It could take up to a minute for sync to mileage.' };
                 syncEvents(this, '')
                 toastEvents(this, toast);
                 }
@@ -442,7 +442,7 @@ export default class UserFlaggingTrip extends LightningElement {
                 reimbursements: JSON.stringify(this.allReimbursementList)
             }).then((result) => {
                 if(result){
-                let toast = { type: "success", message: 'Please wait for few minutes. mileage sync process is running in background.' };
+                let toast = { type: "success", message: 'The mileage is syncing in background. It could take up to a minute for sync to mileage.' };
                 syncEvents(this, '')
                 toastEvents(this, toast);
                 }

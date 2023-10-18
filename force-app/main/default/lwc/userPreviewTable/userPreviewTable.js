@@ -61,6 +61,7 @@ export default class UserPreviewTable extends LightningElement {
     @track maxPage = 10;
     @api isDefaultSort = false;
     @track isCheckBoxVisible = false;
+    @track visibility = true;
     sortedData = [];
     // Current page of results on display
     currentPage = 1;
@@ -664,12 +665,12 @@ export default class UserPreviewTable extends LightningElement {
                     return a > b ? 1 * isReverse : -1 * isReverse;
                 }
                 if (colType === "Date") {
-                    a = (a[colName] == null) ? '' : new Date(a[colName].toLowerCase())
-                    b = (b[colName] == null) ? '' : new Date(b[colName].toLowerCase())
+                    a = (a[colName] == null || a[colName] === '') ? null : new Date(a[colName].toLowerCase())
+                    b = (b[colName] == null || b[colName] === '') ? null : new Date(b[colName].toLowerCase())
                     return a > b ? 1 * isReverse : -1 * isReverse;
                 }
-                a = (a[colName] == null || a[colName] === '') ? '' : a[colName].toLowerCase();
-                b = (b[colName] == null || b[colName] === '') ? '' : b[colName].toLowerCase();
+                a = (a[colName] == null || a[colName] === '') ? '' : (typeof a[colName] === 'object') ? a[colName].join(',').toLowerCase() : a[colName].toLowerCase();
+                b = (b[colName] == null || b[colName] === '') ? '' : (typeof b[colName] === 'object') ? b[colName].join(',').toLowerCase() : b[colName].toLowerCase();
                 return a > b ? 1 * isReverse : -1 * isReverse;
 
             });
@@ -1161,6 +1162,30 @@ export default class UserPreviewTable extends LightningElement {
         if (!toogle) {
             this.disableAll();
         }
+    }
+
+    @api
+    hidden() {
+        let dataList = (this.search) ? this.proxyToObj(this.searchData) : this.proxyToObj(this.modelData);
+        let updatedList = [];
+        for (let i = 0; i < dataList.length; i++) {
+            if (dataList[i]) {
+                if (!dataList[i].resendDriverPacket) {
+                    dataList[i].showCheckbox = false;
+                }else{
+                    dataList[i].showCheckbox = true;
+                }
+            }
+        }
+        updatedList = dataList;
+        if (this.search) {
+            this.modelData = updatedList;
+            this.searchData = updatedList;
+        } else {
+            this.modelData = updatedList;
+        }
+        this.pagedData = updatedList;
+        this.gotoPage(this.currentPage, this.pagedData)
     }
 
     disableAll() {

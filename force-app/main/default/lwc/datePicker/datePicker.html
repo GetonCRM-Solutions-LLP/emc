@@ -1,5 +1,5 @@
 <template>
-    <template if:true={isDisable}>
+    <template lwc:if={isDisable}>
     <div class={cmpClass}>
             <input class="flat-input  disabled-input" disabled={isDisable}  value={date} data-id="from_date"  lwc:dom="manual"  readonly="readonly" data-language='en'/>
             <a class="input-button" data-toggle="true">
@@ -9,7 +9,7 @@
             </a>
     </div>
     </template>
-    <template if:false={isDisable}>
+    <template lwc:else>
         <div class={cmpClass}>
             <input class="flat-input  date-selector"   value={date} data-id="from_date"  lwc:dom="manual"  readonly="readonly" data-language='en'/>
             <a class="input-button" data-toggle="true">

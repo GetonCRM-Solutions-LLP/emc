@@ -2,30 +2,34 @@
 	<header>
 		<div class="header-inner">
 			<div class="welcome-msg enclose">
-				<div class="welcome-text" if:false={pageSource}>Hi {userName}, where do you want to go today?</div>
-				<div class="welcome-text" if:true={pageSource}>{fullName}</div>
-				<div class="welcome-picture" if:true={companyLogo}>
+				<template lwc:if={pageSource}>
+					<div class="welcome-text">{fullName}</div>
+				</template>
+				<template lwc:else>
+					<div class="welcome-text">Hi {userName}, where do you want to go today?</div>	
+				</template>
+				<div class="welcome-picture" lwc:if={companyLogo}>
 					<img src={companyLogo} loading="lazy"/>
 				</div>
 			</div>
 			<div class="navigation-link"> 
-				<template if:true={isNavigate}>
-					<template if:true={driverMenu}>
-						<template if:true={pageSource}>
+				<template lwc:if={isNavigate}>
+					<template lwc:if={driverMenu}>
+						<template lwc:if={pageSource}>
 							<ul>
 								<li><a href="#Insurance-Upload" onclick={redirectToInsurance} name="Insurance-Upload">Insurance</a></li>
 								<li><a href="#Videos"  name="Videos" onclick={redirectToResource}>Resources</a></li>
 							</ul>
 						</template>
-						<div class="text-alert" if:false={pageSource}>
-							<template if:true={expirationDate}>
+						<div class="text-alert" lwc:else>
+							<template lwc:if={expirationDate}>
 								Your insurance expires <strong><lightning-formatted-date-time value={expirationDate}
 										year="2-digit" month="2-digit" day="2-digit">
 									</lightning-formatted-date-time></strong>
 							</template>
 						</div>
 					</template>
-					<template if:false={driverMenu}>
+					<template lwc:else>
 						<slot name="buttons"></slot>
 					</template>
 					<div class="notify" onclick={notificationRedirect}>
@@ -35,7 +39,7 @@
 							</svg>
 							<!-- <img class="notification-size" src={notificationlogo} /> -->
 						</div>
-						<div class="notify-count" if:true={unread}>
+						<div class="notify-count" lwc:if={unread}>
 							{unread}
 						</div>
 					</div>

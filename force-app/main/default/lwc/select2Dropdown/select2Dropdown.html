@@ -15,12 +15,16 @@
                                         <span class="selection__rendered" role="textbox"
                                         aria-readonly="true">{title}</span>
                                     </template>
-                                    <i if:false={isOpen} class="fa-solid fa-sort-down sort_icon" style="position: absolute;
-                                    right: 8px;
-                                    top: 8px;"></i>
-                                    <i if:true={isOpen} class="fa-solid fa-sort-up sort_icon" style="position: absolute;
-                                    right: 8px;
-                                    top: 14px;"></i>
+                                    <template lwc:if={isOpen}>
+                                        <i  class="fa-solid fa-sort-up sort_icon" style="position: absolute;
+                                        right: 8px;
+                                        top: 14px;"></i>
+                                    </template>
+                                    <template lwc:else>
+                                        <i class="fa-solid fa-sort-down sort_icon" style="position: absolute;
+                                        right: 8px;
+                                        top: 8px;"></i>
+                                    </template>
                                 </div>
                             </div>
                         </div>
@@ -56,7 +60,13 @@
                         </span>
                         <span class="dropdown--results slds-dropdown_length-10">
                             <ul class="slds-listbox slds-listbox_vertical" role="presentation">
-                                <template if:false={message}>
+                                <template lwc:if={message}>
+                                    <li class="slds-listbox__item">
+                                        <span
+                                            class="no-message">{message}</span>
+                                    </li>
+                                </template>
+                                <template lwc:else>
                                     <li for:each={tempOptions} for:item="option" key={option.value} role="presentation"
                                         class={option.listclass}>
                                         <div onclick={handleSelect} data-label={option.label} data-id={option.id} class={option.classes}
@@ -65,13 +75,6 @@
                                                 <span class="slds-truncate" title={option.label}>{option.label}</span>
                                             </span>
                                         </div>
-                                    </li>
-                                </template>
-
-                                <template if:true={message}>
-                                    <li class="slds-listbox__item">
-                                        <span
-                                            class="no-message">{message}</span>
                                     </li>
                                 </template>
                             </ul>

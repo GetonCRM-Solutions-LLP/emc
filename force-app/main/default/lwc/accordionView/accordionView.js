@@ -110,7 +110,7 @@ export default class AccordionView extends LightningElement {
             key === 'totalFixedAmount' || key === "totalReimbursements") ? element[key].replace(/\$/g, "").replace(/\s/g, "") : element[key];
           singleValue.icon = (!this.isTandA) ? (key === "month" || key === "startDate") ? true : false : false;
           singleValue.bold = (key === "totalReimbursements" || key === "totalReim") ? true : false;
-          singleValue.twoDecimal = (key === "mileage") ? true : false;
+          singleValue.twoDecimal = (key === "mileage" || key === "totalMileage") ? true : false;
           singleValue.isDate = (key === "startDate" || key === "endDate" || key === "approvalDate") && (element[key] !== null) ? true : false;
           singleValue.isfourDecimalCurrency = (key === 'variableRate' || key === 'VariableRate')  && (element[key] !== null) ? true : false;
           singleValue.istwoDecimalCurrency = (key === "fuel" ||
@@ -128,7 +128,7 @@ export default class AccordionView extends LightningElement {
             key === "variableRate" ||
             key === "varibleAmount" ||
             key === "totalReim" ||
-            key === "variable" || key === "mileage" ||
+            key === "variable" || key === "mileage" || key === "totalMileage" ||
             key === "fixed1" || key === "fixed2" ||
             key === "fixed3") && ((element[key] !== "null" || element[key] !== null) && (singleValue.value !== '0.00') && (singleValue.value !== '0.0000')) && (/^0+/).test(singleValue.value) === true) ? (singleValue.value).replace(/^0+/, '') : null;
           model.push(singleValue);
@@ -771,7 +771,8 @@ export default class AccordionView extends LightningElement {
         "totaldrivingTime",
         "totalStayTime",
         "totalTime",
-        "approvalDate"
+        "approvalDate",
+        "totalMileage"
       ];
       this._Rcolumn = [
         {
@@ -803,6 +804,10 @@ export default class AccordionView extends LightningElement {
           id: 6,
           name: "Approval Date",
           colName: "approvalDate"
+        },{
+          id: 7,
+          name: "Mileage",
+          colName: "totalMileage"
         }
       ];
 
@@ -849,7 +854,8 @@ export default class AccordionView extends LightningElement {
         "totaldrivingTime",
         "totalStayTime",
         "totalTime",
-        "approvalDate"
+        "approvalDate",
+        "totalMileage"
       ];
       this._Rcolumn = [
         {
@@ -881,6 +887,11 @@ export default class AccordionView extends LightningElement {
           id: 6,
           name: "Approval Date",
           colName: "approvalDate"
+        },
+        {
+          id: 7,
+          name: "Mileage",
+          colName: "totalMileage"
         }
       ];
 

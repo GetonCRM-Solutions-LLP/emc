@@ -255,11 +255,11 @@
                                     innerSize: '70%',
                                     colorByPoint: true,
                                     data: [{
-                                        name: 'Non Complaint',
+                                        name: 'Non Compliant',
                                         //y:100
                                         y: chartData.NonCompliant
                                     }, {
-                                        name: 'Complaint',
+                                        name: 'Compliant',
                                         //y: 0
                                         y: chartData.Compliant
                                     }],

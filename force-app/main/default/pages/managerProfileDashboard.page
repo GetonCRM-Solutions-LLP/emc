@@ -369,6 +369,8 @@
                                                             toastr.error(e.detail.message)
                                                         }else if(e.detail.type === 'success'){
                                                             toastr.success(e.detail.message)
+                                                        }else if (e.detail.type === 'info') {
+                                                            toastr.info(e.detail.message)
                                                         }
                                                     })
                                     }

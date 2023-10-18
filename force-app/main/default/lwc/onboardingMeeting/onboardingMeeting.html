@@ -1,5 +1,5 @@
 <template>
-    <template if:true={promiseError}>
+    <template lwc:if={promiseError}>
         <c-m-burse-error message={errorMessage}></c-m-burse-error>
     </template>
     <div class="transition">

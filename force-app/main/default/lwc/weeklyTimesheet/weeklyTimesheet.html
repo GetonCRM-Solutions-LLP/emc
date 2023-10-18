@@ -12,7 +12,7 @@
                     <table class="slds-table slds-table_cell-buffer slds-table_col-bordered slds-table_bordered mileage">
                         <thead class="">
                             <tr class="slds-line-height_reset">
-                                <template if:true={columns}>
+                                <template lwc:if={columns}>
                                     <template for:each={columns} for:item="head">
                                         <th class="header-title" scope="col" key={head.id}>
                                             {head.name}

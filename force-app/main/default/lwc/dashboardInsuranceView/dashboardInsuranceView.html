@@ -1,11 +1,11 @@
 <template>
     <div  class="transition">
         <div>
-            <template if:true={expired}>
+            <template lwc:if={expired}>
                 <div class="slds-text-heading_medium slds-p-top_medium slds-p-bottom_large slds-text-align_center slds-p-bottom_medium expiredError">YOUR INSURANCE HAS EXPIRED</div>
                 <div class="slds-text-heading_medium slds-text-align_center slds-p-bottom_large sub-header">Upload your Insurance to ensure you receive your reimbursement </div>
             </template>
-            <template if:false={expired}>
+            <template lwc:else>
                 <div class="slds-text-heading_medium slds-text-align_center slds-p-bottom_medium font-bold main-header">Insurance preview</div>
             </template>
         </div>

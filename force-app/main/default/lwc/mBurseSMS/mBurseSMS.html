@@ -1,5 +1,5 @@
 <template>
-    <div role="dialog" class="doc-container" if:true={nameOfDriver}>
+    <div role="dialog" class="doc-container" lwc:if={nameOfDriver}>
         <div class="embedded-chat">
             <header class="sidebarHeader">
                 <div class="header_main">
@@ -21,97 +21,51 @@
                     <div class="stateBody">
                         <div class="messageArea">
                             <div tabindex="0" class="messageContent">
-                                <template if:true={filterMessage}>
+                                <template lwc:if={filterMessage}>
                                     <template for:each={filterMessage} for:item="list">
                                         <div class="conversation-start" key={list.aId}>
-                                            <span if:true={list.isString}>{list.Title}</span>
-                                            <span if:false={list.isString}>
+                                            <span lwc:if={list.isString}>{list.Title}</span>
+                                            <span lwc:else>
                                                 <lightning-formatted-date-time value={list.Title} year="numeric"
                                                     day="2-digit" month="long"></lightning-formatted-date-time>
                                             </span>
                                         </div>
                                         <ul class="messageWrapper" key={list.aId}>
-                                            <template if:true={list.Messages}>
+                                            <template lwc:if={list.Messages}>
                                                 <template for:each={list.Messages} for:item="record">
                                                     <li class="chatMessage" key={record.Id}>
-                                                        <div if:false={record.Incoming_Message__c}
+                                                        <div lwc:if={record.Incoming_Message__c}
                                                             class="chat_container">
-                                                            <template if:true={record.Media_Link__c}>
-                                                                <div class="chat__message-truedialog chat__sender padding-none">
-                                                                       <template if:false={record.Message__c}>
-                                                                            <img class="image-record" src={record.Media_Link__c} loading="eager"/>
-                                                                       </template>
-                                                                       <template if:true={record.Message__c}>
-                                                                           <img class="image-record" src={record.Media_Link__c} loading="eager"/>
-                                                                           <div class="media-text">
-                                                                             <p class="word-style">{record.Message__c}</p>
-                                                                           </div>
-                                                                       </template>
-                                                                      <div class="slds-grid slds-grid_align-end chat_message-time time_sender media-padding slds-p-top_x-small">
-                                                                        <lightning-formatted-date-time value={record.parseValue}
-                                                                            hour="2-digit" minute="2-digit"
-                                                                            time-zone="America/Panama">
-                                                                        </lightning-formatted-date-time>
-                                                                      </div>
-                                                                </div>
-                                                            </template>
-                                                            <template if:false={record.Media_Link__c}>
-                                                                <div class="chat__message-truedialog chat__sender">
-                                                                    <div>
-                                                                        <p class="word-style">{record.Message__c}</p>
-                                                                    </div>
-                                                                    <!-- <div if:true={record.Media_Link__c}>
-                                                                        <div if:false={record.Message__c}>
-                                                                            <img class="image-record" src={record.Media_Link__c} loading="lazy"/>
-                                                                       </div>
-                                                                       <div if:true={record.Message__c}>
-                                                                           <img class="image-record" src={record.Media_Link__c} loading="lazy"/>
-                                                                           <p class="word-style">{record.Message__c}</p>
-                                                                      </div>
-                                                                    </div> -->
-                                                                    <div class="slds-grid slds-grid_align-end chat_message-time time_sender slds-p-top_x-small">
-                                                                        <lightning-formatted-date-time value={record.parseValue}
-                                                                            hour="2-digit" minute="2-digit"
-                                                                            time-zone="America/Panama">
-                                                                        </lightning-formatted-date-time>
-                                                                    </div>
-                                                            </div>
-                                                            </template>
-                                                           
-                                                        </div>
-
-                                                        <div if:true={record.Incoming_Message__c}
-                                                            class="chat_container">
-                                                            <template if:true={record.Media_Link__c}>
+                                                            <template lwc:if={record.Media_Link__c}>
                                                                 <div class="chat__message-truedialog chat__receiver padding-none">
-                                                                       <template if:false={record.Message__c}>
-                                                                            <img class="image-record" src={record.Media_Link__c} loading="eager"/>
-                                                                       </template>
-                                                                       <template if:true={record.Message__c}>
+                                                                       <template lwc:if={record.Message__c}>
                                                                                 <img class="image-record" src={record.Media_Link__c} loading="eager"/>
                                                                                 <div class="media-text">
                                                                                     <p class="word-style">{record.Message__c}</p>
                                                                                 </div>
                                                                        </template>
-                                                                      <div class="slds-grid slds-grid_align-end chat_message-time time_receiver media-padding slds-p-top_x-small">
-                                                                        <lightning-formatted-date-time value={record.parseValue}
-                                                                            hour="2-digit" minute="2-digit"
-                                                                            time-zone="America/Panama">
-                                                                        </lightning-formatted-date-time>
-                                                                      </div>
+                                                                       <template lwc:else>
+                                                                        <img class="image-record" src={record.Media_Link__c} loading="eager"/>
+                                                                       </template>
+                                                                       <div class="slds-grid slds-grid_align-end chat_message-time time_receiver media-padding slds-p-top_x-small">
+                                                                            <lightning-formatted-date-time value={record.parseValue}
+                                                                                hour="2-digit" minute="2-digit"
+                                                                                time-zone="America/Panama">
+                                                                            </lightning-formatted-date-time>
+                                                                       </div>
                                                                 </div>
                                                             </template>
-                                                            <template if:false={record.Media_Link__c}>
+                                                            <template lwc:else>
                                                                 <div
                                                                     class="chat__message-truedialog chat__receiver">
                                                                     <div>
                                                                         <p class="word-style">{record.Message__c}</p>
                                                                     </div>
-                                                                    <!-- <div if:true={record.Media_Link__c}>
-                                                                        <div if:false={record.Message__c}>
+                                                                    <!-- <div lwc:if={record.Media_Link__c}>
+                                                                        <div lwc:else={record.Message__c}>
                                                                             <img class="image-record" src={record.Media_Link__c} loading="lazy"/>
                                                                         </div>
-                                                                        <div if:true={record.Message__c}>
+                                                                        <div lwc:if={record.Message__c}>
                                                                             <img class="image-record" src={record.Media_Link__c} loading="lazy"/>
                                                                             <p class="word-style">{record.Message__c}</p>
                                                                         </div>
@@ -126,9 +80,53 @@
                                                                 </div>
                                                             </template>
                                                         </div>
+                                                        <div class="chat_container" lwc:else>
+                                                            <template lwc:if={record.Media_Link__c}>
+                                                                <div class="chat__message-truedialog chat__sender padding-none">
+                                                                       <template lwc:if={record.Message__c}>
+                                                                           <img class="image-record" src={record.Media_Link__c} loading="eager"/>
+                                                                           <div class="media-text">
+                                                                             <p class="word-style">{record.Message__c}</p>
+                                                                           </div>
+                                                                       </template>
+                                                                       <template lwc:else>
+                                                                        <img class="image-record" src={record.Media_Link__c} loading="eager"/>
+                                                                       </template>
+                                                                       <div class="slds-grid slds-grid_align-end chat_message-time time_sender media-padding slds-p-top_x-small">
+                                                                            <lightning-formatted-date-time value={record.parseValue}
+                                                                                hour="2-digit" minute="2-digit"
+                                                                                time-zone="America/Panama">
+                                                                            </lightning-formatted-date-time>
+                                                                       </div>
+                                                                </div>
+                                                            </template>
+                                                            <template lwc:else>
+                                                                <div class="chat__message-truedialog chat__sender">
+                                                                    <div>
+                                                                        <p class="word-style">{record.Message__c}</p>
+                                                                    </div>
+                                                                    <!-- <div lwc:if={record.Media_Link__c}>
+                                                                        <div lwc:else={record.Message__c}>
+                                                                            <img class="image-record" src={record.Media_Link__c} loading="lazy"/>
+                                                                       </div>
+                                                                       <div lwc:if={record.Message__c}>
+                                                                           <img class="image-record" src={record.Media_Link__c} loading="lazy"/>
+                                                                           <p class="word-style">{record.Message__c}</p>
+                                                                      </div>
+                                                                    </div> -->
+                                                                    <div class="slds-grid slds-grid_align-end chat_message-time time_sender slds-p-top_x-small">
+                                                                        <lightning-formatted-date-time value={record.parseValue}
+                                                                            hour="2-digit" minute="2-digit"
+                                                                            time-zone="America/Panama">
+                                                                        </lightning-formatted-date-time>
+                                                                    </div>
+                                                            </div>
+                                                            </template>
+                                                           
+                                                        </div>
                                                         <!--{record.Contacts__r.Time_Zone__c}-->
                                                         <!-- <section aria-describedby="dialog-body-id-109" aria-label="Dialog Title"
-                                                                class="slds-popover slds-nubbin_right-top slds-popover_small slds-popover_admin" role="dialog" if:false={record.Incoming_Message__c}>
+                                                                class="slds-popover slds-nubbin_right-top slds-popover_small slds-popover_admin" role="dialog" lwc:else={record.Incoming_Message__c}>
                                                                 <div class="slds-popover__body">
                                                                     <div class="slds-media">
                                                                         <div class="slds-media__body">
@@ -146,7 +144,7 @@
                                                                 </footer>
                                                             </section> -->
                                                         <!-- <section aria-describedby="dialog-body-id-109" aria-label="Dialog Title"
-                                                                class="slds-popover slds-nubbin_left-top  slds-popover_small slds-popover_driver" role="dialog" if:true={record.Incoming_Message__c}>
+                                                                class="slds-popover slds-nubbin_left-top  slds-popover_small slds-popover_driver" role="dialog" lwc:if={record.Incoming_Message__c}>
                                                                 <div class="slds-popover__body">
                                                                     <div class="slds-media">
                                                                         <div class="slds-media__body">
@@ -166,21 +164,23 @@
                                                     </li>
                                                 </template>
                                             </template>
-                                            <template if:false={messageRecords}>
+                                            <template lwc:if={messageRecords}>
+                                            </template>
+                                            <template lwc:else>
                                                 <li class="chatMessage">
                                                 </li>
                                             </template>
                                         </ul>
                                     </template>
                                 </template>
-                                <template if:false={filterMessage}>
+                                <template lwc:else>
                                     <div class='spinner'>
                                         <div class='bounce1'></div>
                                         <div class='bounce2'></div>
                                         <div class='bounce3'></div>      
                                     </div>
                                 </template>
-                                <template if:true={messageLoading}>
+                                <template lwc:if={messageLoading}>
                                     <div class="spinner_wrapper">
                                         <div class="chat_container">
                                             <div class="chat__message-truedialog chat__sender">
@@ -202,7 +202,7 @@
                                     placeholder="Type your message..." onkeypress={onKeyPress} oninput={onCreateSMS} ></textarea>
                                 </div>
                                 <div class={imageHolderStyle}>
-                                    <div class="close-image" if:true={imageUploaded}>
+                                    <div class="close-image" lwc:if={imageUploaded}>
                                         <button class="slds-button slds-button_brand btn-brand-padding slds-modal__close" onclick={removeSelection}>
                                             <i class="fa-solid fa-xmark"></i>
                                         </button>

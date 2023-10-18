@@ -755,7 +755,8 @@ export default class ManagerDashboardFrame extends LightningElement {
     })
       .then((data) => {
         let objList = JSON.parse(data)
-        let monthName = data ? ((objList.length > 1) ? ((objList[0] === this.defaultMonth) ? objList[1] : objList[0]): objList[0]) : "";
+        let monthName = this.lastMonthSelected;
+        //let monthName = data ? ((objList.length > 1) ? ((objList[0] === this.defaultMonth) ? objList[1] : objList[0]): objList[0]) : "";
         let mileageMonth = data ? this.removeDuplicateValue(this.proxyToObject(data)) : [];
         this.mileageMonthList = this.review(mileageMonth);
         this.monthSelected = monthName ? monthName : "";
@@ -803,7 +804,8 @@ export default class ManagerDashboardFrame extends LightningElement {
     })
       .then((data) => {
         let objList = JSON.parse(data)
-        let monthName = data ? ((objList.length > 1) ? ((objList[0] === this.defaultMonth) ? objList[1] : objList[0]): objList[0]) : "";
+        let monthName = this.lastMonthSelected;
+       // let monthName = data ? ((objList.length > 1) ? ((objList[0] === this.defaultMonth) ? objList[1] : objList[0]): objList[0]) : "";
         let mileageMonth = data ? this.removeDuplicateValue(this.proxyToObject(data)) : [];
         this.mileageMonthList = this.review(mileageMonth);
         this.monthSelected = monthName ? monthName : "";
@@ -1162,7 +1164,8 @@ export default class ManagerDashboardFrame extends LightningElement {
     })
       .then((data) => {
         let objList = JSON.parse(data)
-        let monthName = data ? ((objList.length > 1) ? ((objList[0] === this.defaultMonth) ? objList[1] : objList[0]): objList[0]) : "";
+        let monthName = this.lastMonthSelected;
+       // let monthName = data ? ((objList.length > 1) ? ((objList[0] === this.defaultMonth) ? objList[1] : objList[0]): objList[0]) : "";
         let mileageMonth = data ? this.removeDuplicateValue(this.proxyToObject(data)) : [];
         this.mileageMonthList = this.review(mileageMonth);
         this.monthSelected = monthName ? monthName : "";

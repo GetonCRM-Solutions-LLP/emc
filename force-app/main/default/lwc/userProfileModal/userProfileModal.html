@@ -1,5 +1,5 @@
 <template>
-    <template if:true={showModal}>
+    <template lwc:if={showModal}>
         <section
             role="dialog"
             tabindex="-1"
@@ -12,13 +12,13 @@
                 <header class={headerClass}>
                     <button type="button" class="close popup-close-btn" data-dismiss="modal" aria-label="Close" onclick={handleDialogClose}><span class={closeBtnClass} aria-hidden="true">×</span></button>
                     <slot name="header"></slot>
-                    <template if:true={hasHeaderString}>
+                    <template lwc:if={hasHeaderString}>
                         <h2 class={subheaderClass}>
                             {header}
                             <sub>{month}</sub>
                         </h2>
                     </template>
-                    <template if:false={hasHeaderString}>
+                    <template lwc:else>
                         <!-- If you don't set the header public property, make sure to 
                             pass in some content into the header slot, so that the component
                             is accessible, as empty headings are considered not accessible. -->
@@ -42,13 +42,13 @@
                 >
                     <slot></slot>
                 </div>
-                <template if:true={showFooter}>
+                <template lwc:if={showFooter}>
                     <footer class="slds-modal__footer modal-hidden">
                         <slot
                             name="footer"
                             onslotchange={handleSlotFooterChange}
                         ></slot>
-                        <template if:true={showBtn}>
+                        <template lwc:if={showBtn}>
                             <div class="slds-m-right_small">
                                 <button class="btn slds-button_success footer_button" onclick={handleDownload}>Download
                                     <i class="fa fa-download slds-p-left_xx-small"></i>
@@ -64,12 +64,12 @@
             <div class="slds-backdrop slds-backdrop_open dark-background animate__animated animate__fadeInTopLeft animate__faster"></div>
         </template>
         <template lwc:else>
-            <template if:false={isDisabledBG}>
-                <div class="slds-backdrop slds-backdrop_open light-background animate__animated animate__fadeInTopLeft animate__faster"></div>
-            </template>
-            <div if:true={isDisabledBG} class="modal-inside-modal">
+            <div lwc:if={isDisabledBG} class="modal-inside-modal">
                 <div class="slds-backdrop slds-backdrop_open light-background animate__animated animate__fadeInTopLeft animate__faster"></div>
             </div>
+            <template lwc:else>
+                <div class="slds-backdrop slds-backdrop_open light-background animate__animated animate__fadeInTopLeft animate__faster"></div>
+            </template>
         </template>
        
     </template>

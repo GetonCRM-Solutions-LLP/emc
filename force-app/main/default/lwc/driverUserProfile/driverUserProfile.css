@@ -754,3 +754,19 @@
     right: 7px;
     top: 9px;
 }
+
+.center-align{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.slds-progress-bar__value{
+    background: var(--green-color) !important;
+}
+
+.grid-block{
+    display: grid;
+    grid-template-columns: auto auto 1fr auto auto;
+    column-gap: 10px;
+}
