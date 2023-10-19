@@ -1,5 +1,5 @@
 <template>   
-    <c-file-upload-spinner show-spinner={isSpinner}></c-file-upload-spinner>
+    <c-file-upload-spinner show-spinner={isSpinner} is-not-custom-setting-message={isNotCustomSettingMessage}></c-file-upload-spinner>
         <template lwc:if={isdataLoaded}> 
             <div class="animate__animated animate__slideInLeft animate__faster">
                 <template lwc:if={data}>

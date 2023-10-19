@@ -1019,8 +1019,8 @@ export default class DriverDashboardFrame extends LightningElement {
         } else if (address === '#Notifications') {
             // this.myProfile = (this.myProfile) ? false : true;
             // console.log("Profile", this.myProfile)
-            this.notificationViewClicked = true;
-            this.notificationModal = true;
+            this.notificationViewClicked = !this.notificationViewClicked;
+            this.notificationModal = !this.notificationModal;
             this.isTrip = true;
             this.isAttendance = false;
             setTimeout(()=>{

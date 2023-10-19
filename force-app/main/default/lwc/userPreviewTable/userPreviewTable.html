@@ -673,12 +673,22 @@
                                                             <td class="modal-content" key={mapKey.key}>
                                                                 <template for:each={mapKey.multipleIcon}
                                                                     for:item="icon">
-                                                                    <svg style="margin-right: 14px;" height="20"
-                                                                        data-id={trip.id} key={icon.key}
-                                                                        data-key={icon.key} onclick={handleMultipleIcon}
-                                                                        width="20" xmlns="http://www.w3.org/2000/svg">
-                                                                        <use xlink:href={icon.iconUrl}></use>
-                                                                    </svg>
+                                                                    <template lwc:if={icon.renderAsLink}>
+                                                                        <a href={icon.url} key={icon.key} download={icon.fileName}><svg style="margin-right: 14px;" height="20"
+                                                                            data-id={trip.id} 
+                                                                            data-key={icon.key} onclick={handleMultipleIcon}
+                                                                            width="20" xmlns="http://www.w3.org/2000/svg">
+                                                                            <use xlink:href={icon.iconUrl}></use>
+                                                                        </svg></a>
+                                                                    </template>
+                                                                    <template lwc:else>
+                                                                        <svg style="margin-right: 14px;" height="20"
+                                                                            data-id={trip.id} key={icon.key}
+                                                                            data-key={icon.key} onclick={handleMultipleIcon}
+                                                                            width="20" xmlns="http://www.w3.org/2000/svg">
+                                                                            <use xlink:href={icon.iconUrl}></use>
+                                                                        </svg>
+                                                                    </template>
                                                                 </template>
                                                             </td>
                                                         </template>

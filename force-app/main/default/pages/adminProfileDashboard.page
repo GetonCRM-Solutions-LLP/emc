@@ -413,9 +413,6 @@
                     performanceProfile = window.performance.getEntriesByType("navigation")[0].type;
                     Role = (ProfileId === '00e31000001FRDWAA4' || ProfileId === '00e31000001FRDXAA4') ? 'Manager' : (ProfileId === '00e31000001FRDZAA4' || ProfileId === '00e31000001FRDYAA4') ? 'Admin' : 'Driver'
                     console.log("Profile", ProfileId, '{!$Profile.Name}');
-                    if(Role === 'Admin'){
-                        this.updateTriplogId();
-                    }
                     console.log("PErformance profile--", performanceProfile, window.performance.getEntriesByType("navigation")[0].type, location.hash)
                     if (performanceProfile === 'navigate' || performanceProfile === 'back_forward') {
                         if (location.hash != '') {

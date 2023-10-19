@@ -1,6 +1,7 @@
 import { LightningElement, api, track, wire } from 'lwc';
 import manageNotificationController from '@salesforce/apex/ManageNotificationController.manageNotificationController';
 import FILE_ICON from '@salesforce/resourceUrl/fileUploadIcon';
+import DOWNLOAD_ICON from '@salesforce/resourceUrl/downloadIcon';
 import TEXT_ICON from '@salesforce/resourceUrl/textIcon';
 import DELETE_ICON from '@salesforce/resourceUrl/deleteIcon';
 import NOTIFICATION_ICON from '@salesforce/resourceUrl/notificationIcon';
@@ -43,6 +44,7 @@ export default class UserTools extends LightningElement {
   modalKeyFields;
   modalListColumn;
   isScrollable = false;
+  isNotCustomSettingMessage = true;
   isSort = true;
   isRowDn = true;
   isScrollable = false;
@@ -56,7 +58,8 @@ export default class UserTools extends LightningElement {
   isdataLoaded = false;
   @api accordionKeyFields = ["fullname", "insurance", "insuranceFile", "expirationDate", "locationFile", "notiMessage", "messageHolder"];
   accordionList = [];
-  fileIconUrl = `${FILE_ICON}#file`;
+  @api fileIconUrl = `${FILE_ICON}#file`;
+  @api downloadIconUrl = `${DOWNLOAD_ICON}#download`;
   @api textIconUrl = `${TEXT_ICON}#text`;
   @api notificationIconUrl = `${NOTIFICATION_ICON}#notification`;
   @api deleteIconUrl = `${DELETE_ICON}#delete`;
@@ -314,7 +317,12 @@ export default class UserTools extends LightningElement {
       } else if(key === 'notification'){
         this.msgIndex = id;
         this.isNotification = true;
-      } else {
+      } else if (key == 'insuranceUpload') {
+        this.fileKey = key;
+        this.fileId = id;
+        const fileInput = this.template.querySelector('input[type="file"]');
+        fileInput.click();
+      }else {
         this.textMessaging = false;
         this.isNotification = false;
       }
@@ -688,7 +696,7 @@ export default class UserTools extends LightningElement {
       this.locationFileChange(event.target);
       this.uploadLocationInChunk(event,this.fileRow[0]);
       event.target.value = '';
-    } else if (this.fileKey == 'insuranceFile') {
+    } else if (this.fileKey == 'insuranceFile' || this.fileKey == 'insuranceUpload') {
         this.uploadInsurance();
     }
   }
@@ -825,6 +833,7 @@ export default class UserTools extends LightningElement {
                 this.isSpinner = false; 
             } else {
               this.isSpinner = true;
+              this.template.querySelector('c-file-upload-spinner').messageUrl(this.fileKey);
               this.locationAttachment = JSON.stringify(newArray);
               UploadLocation({ location: this.locationAttachment, accId: this.accountId})
                   .then(response => {
@@ -905,6 +914,7 @@ export default class UserTools extends LightningElement {
   uploadAttachment(fileId) {
     var attachmentBody = "";
     this.isSpinner = true;
+    this.template.querySelector('c-file-upload-spinner').messageUrl(this.fileKey);
     if (this.fileSize <= this.positionIndex + this.chunkSize) {
         attachmentBody = this.attachment.substring(this.positionIndex);
         this.doneUploading = true;
@@ -957,7 +967,6 @@ export default class UserTools extends LightningElement {
   }
   //Dynamically binds data to the DataTable component.
   dynamicBinding(data, keyFields) {
-    let count = 0;
     data.forEach(element => {
       let model = [];
       for (const key in element) {
@@ -977,23 +986,46 @@ export default class UserTools extends LightningElement {
               singleValue.infoText = 'Delete Notification';
               singleValue.onlyIcon = (key === "messageHolder" || key === "locationFile" || key === "insuranceFile") ? true : false;
               /*Added by Megha */
-              if(element.role === "Manager"){
-                if(element.trueDialogId){
-                  singleValue.multipleIcon = (key === "messageHolder") ? [{ "key": "textMessage", "iconUrl": this.textIconUrl }, { "key": "notification", "iconUrl": this.notificationIconUrl }] : null;
-                  singleValue.iconUrl = (key === "messageHolder") ? this.notificationIconUrl : '';
-                }else{
-                  singleValue.multipleIcon = (key === "messageHolder") ? [{ "key": "", "iconUrl": "" }, { "key": "notification", "iconUrl": this.notificationIconUrl }] : null;
-                  singleValue.iconUrl = (key === "messageHolder") ? this.notificationIconUrl : '';
+
+              if (element.role === "Manager") {
+                if (element.trueDialogId) {
+                  if (element.insuranceId !== null) {
+                    singleValue.multipleIcon =  (key === "messageHolder") ? [{ "key": "textMessage", "iconUrl": this.textIconUrl }, { "key": "notification", "iconUrl": this.notificationIconUrl }] : (key === "insuranceFile") ? [{ "key": "insuranceUpload", "iconUrl": this.fileIconUrl }, { "key": "downloadInsurance", "iconUrl": this.downloadIconUrl, "renderAsLink": true, "fileName": "Insurance", "url": `/app/servlet/servlet.FileDownload?file=${element.insuranceId}` }] : null;
+                    singleValue.iconUrl = (key === "messageHolder") ? this.notificationIconUrl : (key === "locationFile" || key === 'insuranceFile') ? this.fileIconUrl : '';
+                  }else{
+                    singleValue.multipleIcon = (key === "messageHolder") ? [{ "key": "textMessage", "iconUrl": this.textIconUrl }, { "key": "notification", "iconUrl": this.notificationIconUrl }] : (key === "insuranceFile") ? [{ "key": "insuranceUpload", "iconUrl": this.fileIconUrl }, { "key": "", "iconUrl": "" }] :null;
+                    singleValue.iconUrl = (key === "messageHolder") ? this.notificationIconUrl : (key === "locationFile" || key === 'insuranceFile') ? this.fileIconUrl : '';
+                  }
+                } else {
+                  if (element.insuranceId !== null) {
+                    singleValue.multipleIcon =  (key === "messageHolder") ? [{ "key": "", "iconUrl": "" }, { "key": "notification", "iconUrl": this.notificationIconUrl }] : (key === "insuranceFile") ? [{ "key": "insuranceUpload", "iconUrl": this.fileIconUrl }, { "key": "downloadInsurance", "iconUrl": this.downloadIconUrl, "renderAsLink": true, "fileName": "Insurance", "url": `/app/servlet/servlet.FileDownload?file=${element.insuranceId}` }] : null;
+                    singleValue.iconUrl = (key === "messageHolder") ? this.notificationIconUrl : (key === "locationFile" || key === 'insuranceFile') ? this.fileIconUrl : '';
+                  }else{
+                    singleValue.multipleIcon = (key === "messageHolder") ? [{ "key": "", "iconUrl": "" }, { "key": "notification", "iconUrl": this.notificationIconUrl }] : (key === "insuranceFile") ? [{ "key": "insuranceUpload", "iconUrl": this.fileIconUrl }, { "key": "", "iconUrl": "" }] : null;
+                    singleValue.iconUrl = (key === "messageHolder") ? this.notificationIconUrl : (key === "locationFile" || key === 'insuranceFile') ? this.fileIconUrl : '';
+                  }
                 }
-              }else{
-                if(element.trueDialogId){
-                  singleValue.multipleIcon = (key === "messageHolder") ? [{ "key": "textMessage", "iconUrl": this.textIconUrl }, { "key": "notification", "iconUrl": this.notificationIconUrl }] : null;
-                singleValue.iconUrl = (key === "messageHolder") ? this.notificationIconUrl : (key === "locationFile" || key === 'insuranceFile') ? this.fileIconUrl : '';
-                }else{
-                  singleValue.multipleIcon = (key === "messageHolder") ? [{ "key": "", "iconUrl": "" }, { "key": "notification", "iconUrl": this.notificationIconUrl }] : null;
-                singleValue.iconUrl = (key === "messageHolder") ? this.notificationIconUrl : (key === "locationFile" || key === 'insuranceFile') ? this.fileIconUrl : '';
+              } else {
+                if (element.trueDialogId) {
+                  if (element.insuranceId !== null) {
+                    singleValue.multipleIcon =  (key === "messageHolder") ? [{ "key": "textMessage", "iconUrl": this.textIconUrl }, { "key": "notification", "iconUrl": this.notificationIconUrl }] : (key === "insuranceFile") ? [{ "key": "insuranceUpload", "iconUrl": this.fileIconUrl }, { "key": "downloadInsurance", "iconUrl": this.downloadIconUrl, "renderAsLink": true, "fileName": "Insurance", "url": `/app/servlet/servlet.FileDownload?file=${element.insuranceId}` }] : null;
+                    singleValue.iconUrl = (key === "messageHolder") ? this.notificationIconUrl : (key === "locationFile" || key === 'insuranceFile') ? this.fileIconUrl : '';
+                  }else{
+                    singleValue.multipleIcon = (key === "messageHolder") ? [{ "key": "textMessage", "iconUrl": this.textIconUrl }, { "key": "notification", "iconUrl": this.notificationIconUrl }] : (key === "insuranceFile") ? [{ "key": "insuranceUpload", "iconUrl": this.fileIconUrl }, { "key": "", "iconUrl": "" }] :null;
+                    singleValue.iconUrl = (key === "messageHolder") ? this.notificationIconUrl : (key === "locationFile" || key === 'insuranceFile') ? this.fileIconUrl : '';
+                  }
+                } else {
+                  if (element.insuranceId !== null) {
+                    singleValue.multipleIcon =  (key === "messageHolder") ? [{ "key": "", "iconUrl": "" }, { "key": "notification", "iconUrl": this.notificationIconUrl }] : (key === "insuranceFile") ? [{ "key": "insuranceUpload", "iconUrl": this.fileIconUrl }, { "key": "downloadInsurance", "iconUrl": this.downloadIconUrl, "renderAsLink": true, "fileName": "Insurance", "url": `/app/servlet/servlet.FileDownload?file=${element.insuranceId}` }] : null;
+                    singleValue.iconUrl = (key === "messageHolder") ? this.notificationIconUrl : (key === "locationFile" || key === 'insuranceFile') ? this.fileIconUrl : '';
+                  }else{
+                    singleValue.multipleIcon = (key === "messageHolder") ? [{ "key": "", "iconUrl": "" }, { "key": "notification", "iconUrl": this.notificationIconUrl }]: (key === "insuranceFile") ? [{ "key": "insuranceUpload", "iconUrl": this.fileIconUrl }, { "key": "", "iconUrl": "" }] : null;
+                    singleValue.iconUrl = (key === "messageHolder") ? this.notificationIconUrl : (key === "locationFile" || key === 'insuranceFile') ? this.fileIconUrl : '';
+                  }
                 }
               }
+
+              
               singleValue.onlyLink = (key === "driverName" || key === "fullname") ? true : false;
               singleValue.isLink = (key === "driverName" || key === "fullname") ? true : false;
   
@@ -1039,8 +1071,8 @@ export default class UserTools extends LightningElement {
       .then(response => {
         this.data = JSON.parse(response);
         this.dataList = this.data;
-        console.log('configData', this.data);
         this.dynamicBinding(this.data, this.accordionKeyFields);
+        console.log('configData', JSON.stringify(this.data));
         this.isdataLoaded = true;
       }).catch(error => {
         console.log('configData-Error', error);

@@ -1775,8 +1775,8 @@ export default class ManagerDashboardFrame extends LightningElement {
       } else if (address === '#Notifications') {
           // this.myProfile = (this.myProfile) ? false : true;
           // console.log("Profile", this.myProfile)
-          this.notificationViewClicked = true;
-          this.notificationModal = true;
+          this.notificationViewClicked = !this.notificationViewClicked;
+          this.notificationModal = !this.notificationModal;
           this.isHomePage = (this.isHomePage) ? true : false;
           this.mileageApproval = (this.mileageApproval) ? true : false;
           setTimeout(()=>{

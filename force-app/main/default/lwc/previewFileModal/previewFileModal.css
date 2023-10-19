@@ -18,7 +18,7 @@
 }
 
 .add-index{
-    z-index: 0;
+    z-index: 1000;
 }
 
 .index{

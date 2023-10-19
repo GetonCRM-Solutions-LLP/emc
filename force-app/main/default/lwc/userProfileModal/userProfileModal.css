@@ -186,7 +186,7 @@ button.close {
 
 sub {
     bottom: -0.1em !important;
-    font-size: 60% !important;
+    font-size: 25px !important;
     padding-left: 7px !important;
     font-family: 'Proxima Nova Bold' !important;
 }
