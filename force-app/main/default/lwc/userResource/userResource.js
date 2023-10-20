@@ -106,7 +106,7 @@ export default class UserResource extends LightningElement {
             description: 'What You Need To Know',
             iconUrl: this.mLogFAQIcon + '#mLogFAQ'
         }, {
-            title: 'mLog Instructions',
+            title: 'mLog Protips',
             description: 'How To Use mLog',
             iconUrl: this.instructionIcon + '#Instruction'
         }]
@@ -246,7 +246,7 @@ export default class UserResource extends LightningElement {
             description: 'What You Need To Know',
             iconUrl: this.mLogFAQIcon + '#mLogFAQ'
         }, {
-            title: 'mDash Instructions',
+            title: 'mDash Protips',
             description: 'How To Use mDash',
             iconUrl: this.instructionIcon + '#Instruction'
         }]
@@ -542,7 +542,7 @@ export default class UserResource extends LightningElement {
                         this.documentedPreview("mLog FAQ's");
                     }
                 }
-            } else if(idOfResource === 'mLog Instructions'){
+            } else if(idOfResource === 'mLog Protips'){
                this.mLogInstructionView();
                 // if(this.settings.mLog_Instruction__c){
                 //     if(this.isValidDocument(this.settings.mLog_Instruction__c)){
@@ -645,14 +645,14 @@ export default class UserResource extends LightningElement {
                         this.documentedPreview("mDash FAQ's");
                     }
                 }
-            } else if(idOfResource === 'mDash Instructions'){
+            } else if(idOfResource === 'mDash Protips'){
                 if(this.settings.mLog_Instruction__c){
                     if(this.isValidDocument(this.settings.mLog_Instruction__c)){
                         this.fileDocumentUrl = this.settings.mLog_Instruction__c
-                        this.filePreview(this.fileDocumentUrl,  "mDash Instructions");
+                        this.filePreview(this.fileDocumentUrl,  "mDash Protips");
                     }else{
                         this.videoDocumentedUrl = this.settings.mLog_Instruction__c;
-                        this.documentedPreview('mDash Instructions');
+                        this.documentedPreview('mDash Protips');
                     }
                 }
             } else if(idOfResource === 'Adding Users'){
@@ -706,7 +706,7 @@ export default class UserResource extends LightningElement {
     mLogResource(event) {
         let id = event.currentTarget.dataset.id;
         this.videoPlayUrl = (id === 'Android') ? this.settings.Download_mLog_Link_For_Android__c : this.settings.Download_mLog_Link_For_IOS__c;
-        this.modalText = (id === 'Android') ? 'Android - Getting Started' : 'IOS - Getting Started';
+        this.modalText = (id === 'Android') ? 'Android - Getting Started' : 'iOS - Getting Started';
         this.documentedVideoPreview = false;
         this.planPreview = false;
         this.fileResourcePreview = false;
@@ -717,7 +717,7 @@ export default class UserResource extends LightningElement {
     mLogTroubleshoot(event) {
         let id = event.currentTarget.dataset.id;
         this.videoPlayUrl = (id === 'Android') ? this.settings.Troubleshooting_Android_video__c : this.settings.Troubleshooting_IOS_video__c;
-        this.modalText = (id === 'Android') ? 'Android - Debug Logs' : 'IOS - Debug Logs';
+        this.modalText = (id === 'Android') ? 'Android - Debug Logs' : 'iOS - Debug Logs';
         this.documentedVideoPreview = false;
         this.planPreview = false;
         this.fileResourcePreview = false;
@@ -728,7 +728,7 @@ export default class UserResource extends LightningElement {
     mLogOptimize(event) {
         let id = event.currentTarget.dataset.id;
         this.videoPlayUrl = (id === 'Android') ? this.settings.Optimize_Android__c : this.settings.Optimize_IOS__c;
-        this.modalText = (id === 'Android') ? 'Android - Optimizing mLog' : 'IOS - Optimizing mLog';
+        this.modalText = (id === 'Android') ? 'Android - Optimizing mLog' : 'iOS - Optimizing mLog';
         this.documentedVideoPreview = false;
         this.planPreview = false;
         this.fileResourcePreview = false;
@@ -739,7 +739,7 @@ export default class UserResource extends LightningElement {
     mLogInstruction(event) {
         let id = event.currentTarget.dataset.id;
         this.videoPlayUrl = (id === 'Android') ? this.settings.mLog_Instruction_Android_Video__c : this.settings.mLog_Instruction_IOS_Video__c;
-        this.modalText = (id === 'Android') ? 'Android - Instruction' : 'IOS - Instruction';
+        this.modalText = (id === 'Android') ? 'Android - Protips' : 'iOS - Protips';
         this.documentedVideoPreview = false;
         this.planPreview = false;
         this.fileResourcePreview = false;
@@ -750,7 +750,7 @@ export default class UserResource extends LightningElement {
     mLogPreview(event){
         let id = event.currentTarget.dataset.id;
         this.videoPlayUrl = (id === 'Android') ? this.settings.mLog_Preview_Android_Video__c : this.settings.mLog_Preview_IOS_Video__c;
-        this.modalText = (id === 'Android') ? 'Android - Preview' : 'IOS - Preview';
+        this.modalText = (id === 'Android') ? 'Android - Preview' : 'iOS - Preview';
         this.documentedVideoPreview = false;
         this.planPreview = false;
         this.fileResourcePreview = false;
