@@ -83,10 +83,10 @@
 
 @media only screen and (min-width: 1440px) and (max-width: 2880px) {
         .p_bottom{
-            padding-bottom: 4vw !important;
+            padding-bottom: 2vw !important;
         }
         .p_top{
-            padding-top: 7vw !important;
+            padding-top: 2vw !important;
         }
 }
 
@@ -95,10 +95,10 @@
         padding-top: 200px;
     }
     .p_bottom{
-        padding-bottom: 4vw !important;
+        padding-bottom: 2vw !important;
     }
     .p_top{
-        padding-top: 7vw !important;
+        padding-top: 2vw !important;
     }
 }
 
@@ -259,4 +259,8 @@ a{
 
  .fa-lg{
     line-height: 1.05em !important;
+}
+
+.footer-button{
+    width: 100%;
 }
