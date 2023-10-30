@@ -73,7 +73,7 @@
             </video>
         </template>
         <template lwc:if={planParameter}>
-            <div class="slds-p-horizontal_x-large slds-p-bottom_small slds-p-top_large">
+            <div class="slds-p-left_x-large slds-p-right_medium slds-p-bottom_small slds-p-top_large resource-content-header">
                 <div style="font-family: 'Proxima Nova Bold' !important;
             font-style: normal;
             font-size: 16px;
@@ -129,56 +129,114 @@
                             </td>
                         </tr>
                     </table>
-                    <div style="display: flex;">
-                        <div class="slds-p-vertical_large slds-p-right_large" lwc:if={minimums.Vehicle_Value__c}>
-                            <div class="vehicle-value"> <lightning-formatted-number value={minimums.Vehicle_Value__c}
-                                    format-style="currency" currency-code="USD" minimum-fraction-digits="0">
-                                </lightning-formatted-number></div>
-                            <div style="font-family: 'Proxima Nova';
-                        font-size: 14px;
-                        line-height: 17px;
-                        letter-spacing: 0em;
-                        text-align: left;
-                        color: #6C6C6C;
-                        ">Vehicle Value</div>
+                    <template lwc:if={isAdmin}>
+                        <template lwc:if={vehicleMinimums}>
+                            <template for:each={vehicleMinimums} for:item="model">
+                                <div key={model.Id} class="vehicle-type slds-p-top_small">Company Reimbursement Vehicle - {model.Vehicle_URL_Mapping__r.vehicle__c} </div>
+                                <div key={model.Id} style="display: flex;">
+                                    <div style="width: 30%" class="slds-p-vertical_small slds-col" lwc:if={model.Value__c}>
+                                        <div class="vehicle-value"> <lightning-formatted-number value={model.Value__c}
+                                                format-style="currency" currency-code="USD" minimum-fraction-digits="0">
+                                            </lightning-formatted-number></div>
+                                        <div style="font-family: 'Proxima Nova';
+                                    font-size: 14px;
+                                    line-height: 17px;
+                                    letter-spacing: 0em;
+                                    text-align: left;
+                                    color: #6C6C6C;
+                                    ">Vehicle Value</div>
+                                    </div>
+                                    <div style="width: 30%" class="slds-p-vertical_small slds-col" 
+                                        lwc:if={model.Plan_Years__c}>
+                                        <div style="font-family: 'Proxima Nova Bold' !important;
+                                    font-size: 32px;
+                                    line-height: 39px;
+                                    letter-spacing: 0em;
+                                    text-align: left;
+                                    color: #1D1D1D;
+                                    ">{model.Plan_Years__c} Years </div>
+                                        <div style="font-family: 'Proxima Nova';
+                                    font-size: 14px;
+                                    line-height: 17px;
+                                    letter-spacing: 0em;
+                                    text-align: left;
+                                    color: #6C6C6C;
+                                    ">Vehicle Age</div>
+                                    </div>
+                                    <div class="slds-p-vertical_small slds-col"
+                                  >
+                                    <div style="font-family: 'Proxima Nova Bold' !important;
+                                font-size: 32px;
+                                line-height: 39px;
+                                letter-spacing: 0em;
+                                text-align: left;
+                                color: #1D1D1D;
+                                ">5,000 Miles</div>
+                                    <div style="font-family: 'Proxima Nova';
+                                font-size: 14px;
+                                line-height: 17px;
+                                letter-spacing: 0em;
+                                text-align: left;
+                                color: #6C6C6C;
+                                ">Annual Compliance Mileage</div>
+                                </div>
+                                </div>
+                            </template>
+                        </template>
+                    </template>
+                    <template lwc:else>
+                        <div class="vehicle-type slds-p-top_small">Company Reimbursement Vehicle - {minimums.Vehicle_Type__c} </div>
+                        <div style="display: flex;">
+                            <div class="slds-p-vertical_large slds-p-right_large" lwc:if={minimums.Vehicle_Value__c}>
+                                <div class="vehicle-value"> <lightning-formatted-number value={minimums.Vehicle_Value__c}
+                                        format-style="currency" currency-code="USD" minimum-fraction-digits="0">
+                                    </lightning-formatted-number></div>
+                                <div style="font-family: 'Proxima Nova';
+                            font-size: 14px;
+                            line-height: 17px;
+                            letter-spacing: 0em;
+                            text-align: left;
+                            color: #6C6C6C;
+                            ">Vehicle Value</div>
+                            </div>
+                            <div class="slds-p-vertical_large slds-p-left_x-large slds-p-right_small"
+                                lwc:if={minimums.Plan_Years__c}>
+                                <div style="font-family: 'Proxima Nova Bold' !important;
+                            font-size: 32px;
+                            line-height: 39px;
+                            letter-spacing: 0em;
+                            text-align: left;
+                            color: #1D1D1D;
+                            ">{minimums.Plan_Years__c} Years </div>
+                                <div style="font-family: 'Proxima Nova';
+                            font-size: 14px;
+                            line-height: 17px;
+                            letter-spacing: 0em;
+                            text-align: left;
+                            color: #6C6C6C;
+                            ">Vehicle Age</div>
+                            </div>
+                            <div class="slds-p-vertical_large slds-p-left_xx-large"
+                                lwc:if={minimums.Compliance_Mileage__c}>
+                                <div style="font-family: 'Proxima Nova Bold' !important;
+                            font-size: 32px;
+                            line-height: 39px;
+                            letter-spacing: 0em;
+                            text-align: left;
+                            color: #1D1D1D;
+                            "><lightning-formatted-number style="font-family: 'Proxima Nova Bold' !important"
+                                        value={minimums.Compliance_Mileage__c} maximum-fraction-digits="2">
+                                    </lightning-formatted-number> Miles</div>
+                                <div style="font-family: 'Proxima Nova';
+                            font-size: 14px;
+                            line-height: 17px;
+                            letter-spacing: 0em;
+                            text-align: left;
+                            color: #6C6C6C;
+                            ">Annual Compliance Mileage</div>
+                            </div>
                         </div>
-                        <div class="slds-p-vertical_large slds-p-left_x-large slds-p-right_small"
-                            lwc:if={minimums.Plan_Years__c}>
-                            <div style="font-family: 'Proxima Nova Bold' !important;
-                        font-size: 32px;
-                        line-height: 39px;
-                        letter-spacing: 0em;
-                        text-align: left;
-                        color: #1D1D1D;
-                        ">{minimums.Plan_Years__c} Years </div>
-                            <div style="font-family: 'Proxima Nova';
-                        font-size: 14px;
-                        line-height: 17px;
-                        letter-spacing: 0em;
-                        text-align: left;
-                        color: #6C6C6C;
-                        ">Vehicle Age</div>
-                        </div>
-                        <div class="slds-p-vertical_large slds-p-left_xx-large"
-                            lwc:if={minimums.Compliance_Mileage__c}>
-                            <div style="font-family: 'Proxima Nova Bold' !important;
-                        font-size: 32px;
-                        line-height: 39px;
-                        letter-spacing: 0em;
-                        text-align: left;
-                        color: #1D1D1D;
-                        "><lightning-formatted-number style="font-family: 'Proxima Nova Bold' !important"
-                                    value={minimums.Compliance_Mileage__c} maximum-fraction-digits="2">
-                                </lightning-formatted-number> Miles</div>
-                            <div style="font-family: 'Proxima Nova';
-                        font-size: 14px;
-                        line-height: 17px;
-                        letter-spacing: 0em;
-                        text-align: left;
-                        color: #6C6C6C;
-                        ">Annual Compliance Mileage</div>
-                        </div>
-                    </div>
+                    </template>
                 </div>
             </div>
         </template>

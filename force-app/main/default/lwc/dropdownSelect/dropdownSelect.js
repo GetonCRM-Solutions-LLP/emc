@@ -79,9 +79,11 @@ export default class DropdownSelect extends LightningElement {
     if(boolean){
       this.template.querySelector('.slds-dropdown_fluid').classList.add('dropdown_width');
       this.template.querySelector('.slds-listbox_vertical').classList.add('listbox_css');
+      this.template.querySelector('.dropdown--results').classList.add('listoption_css');
     }else{
       this.template.querySelector('.slds-dropdown_fluid').classList.remove('dropdown_width');
       this.template.querySelector('.slds-listbox_vertical').classList.remove('listbox_css');
+      this.template.querySelector('.dropdown--results').classList.remove('listoption_css');
     }
   }
 

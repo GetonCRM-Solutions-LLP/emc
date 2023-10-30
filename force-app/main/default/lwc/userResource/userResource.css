@@ -342,6 +342,22 @@ header {
                         
 }
 
+.vehicle-type{
+    color: #1D1D1D;
+    font-family: 'Proxima Nova Bold' !important;
+    font-size: 16px;
+}
+
+.resource-content-header{
+    overflow: hidden;
+    overflow-y: auto;
+    height: 100%;
+    margin-right: 14px;
+    margin-top: 5px;
+    /* margin-bottom: 50px; */
+    padding-bottom: 28px;
+ }
+
 a{
     color: #7abb4a !important;
     font-family: 'Proxima Nova Bold' !important;

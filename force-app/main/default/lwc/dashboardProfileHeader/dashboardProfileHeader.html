@@ -21,13 +21,16 @@
 								<li><a href="#Videos"  name="Videos" onclick={redirectToResource}>Resources</a></li>
 							</ul>
 						</template>
-						<div class="text-alert" lwc:else>
+						<template lwc:else>
 							<template lwc:if={expirationDate}>
-								Your insurance expires <strong><lightning-formatted-date-time value={expirationDate}
-										year="2-digit" month="2-digit" day="2-digit">
-									</lightning-formatted-date-time></strong>
+								<div class="text-alert" style={expirationToggle}>
+										Your insurance expires <strong><lightning-formatted-date-time value={expirationDate}
+												year="2-digit" month="2-digit" day="2-digit">
+											</lightning-formatted-date-time></strong>
+								</div>
 							</template>
-						</div>
+						</template>
+						
 					</template>
 					<template lwc:else>
 						<slot name="buttons"></slot>

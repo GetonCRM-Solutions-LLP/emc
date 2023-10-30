@@ -346,6 +346,30 @@ export default class DriverUserProfile extends LightningElement {
       //  }
     }
 
+    getMonthFromString(mon){
+        var d = Date.parse(mon + "1, 2012");
+        if(!isNaN(d)){
+           return new Date(d).getMonth() + 1;
+        }
+        return -1;
+    }
+
+    isToday(){
+        const date = new Date();
+        var day = date.getDate();
+        const formatter = new Intl.DateTimeFormat("default", {
+            month: "long"
+          });
+        let prevMonth = formatter.format(
+            new Date(date.getFullYear(), date.getMonth() - 1)
+        );
+
+        if(day >= 1 && day < 4 ){
+            return prevMonth;
+        }
+        return 'none'
+    }
+
     getMonthName(monthIndex){
         const months = Array.from({length: 12}, (item, i) => {
             return new Date(0, i).toLocaleString('en-US', {month: 'long'})
@@ -461,6 +485,16 @@ export default class DriverUserProfile extends LightningElement {
                         element[key] = (element[key] === "null" || element[key] === null) ? "" : (key === "variableRate" || key === "varibleAmount" || key === 'fixed1' || key === 'fixed2' || 
                         key === 'fixed3' || 
                         key === 'totalFixedAmount' || key === "totalReimbursements") ? element[key].replace(/\$/g, "").replace(/\s/g, "") : element[key];
+                        /* Display 10/4 Update or 1/4 Update based on month from 1st until 3rd of month until mileage and gas prices are available */
+                        if(key === 'fuelPrice' || key === 'VariableRate'){
+                            const monthValue =  (element['ReimMonth'] === "null" || element['ReimMonth'] === null || element['ReimMonth'] === "") ? -1 : this.getMonthFromString(element['ReimMonth']);
+                            const nextUpdate = (monthValue !== -1) ? (monthValue === 12) ? '1/4 Update' : (monthValue + 1) + '/4 Update' : ''
+                            if(element['ReimMonth'] === this.isToday()){
+                                singleValue.istwoDecimalCurrency = false
+                                singleValue.isfourDecimalCurrency = false
+                                singleValue.value = nextUpdate
+                            }
+                        }
                         model.push(singleValue);
                     }
                 }

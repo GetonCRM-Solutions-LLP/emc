@@ -19,6 +19,18 @@ export default class DashboardProfileHeader extends LightningElement {
         console.log("source", this.pageSource)
     }
 
+    get expirationToggle(){
+        var expirationDate, monthOfExpiration, previousMonth, currentMonth, date;
+        date = new Date();
+        expirationDate = new Date(this.expirationDate);
+        monthOfExpiration = expirationDate.getMonth();
+       // previousMonth = new Date(expirationDate.getFullYear(), expirationDate.getMonth() - 1).getMonth();
+        currentMonth = date.getMonth();
+        const styledText = (currentMonth === monthOfExpiration) ? 'color: #ff0000' : 'color: #909090';
+        // : (previousMonth === currentMonth) ? 'color: #FFBF00'
+        return styledText
+    }
+
     @api styleHeader(value){
         if(value === 'sidebar'){
               this.template.querySelector('.welcome-msg').classList.add('extend');
@@ -72,7 +84,6 @@ export default class DashboardProfileHeader extends LightningElement {
 
     renderedCallback(){
             const buttonItem = this.template.querySelectorAll("a");
-
             buttonItem.forEach((el) =>
                 el.addEventListener("click", () => {
                     buttonItem.forEach((el2) => el2.classList.remove("is-active"));

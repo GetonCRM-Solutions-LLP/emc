@@ -29,7 +29,7 @@ export default class AccordionView extends LightningElement {
   isReimbursementView = false;
   isScrollable = false;
   listOfRecord = false;
-  noMessage = 'There is no data available';
+  noMessage = 'Retreiving Data...';
  @track listVisible = false;
   isRowDn = true;
   sortable =  false;
@@ -260,7 +260,7 @@ export default class AccordionView extends LightningElement {
     }
   }
 
-  getReimbursementFromApex(viewList, yearTo) {
+  async getReimbursementFromApex(viewList, yearTo) {
     if (viewList) {
       // this.dispatchEvent(
       //   new CustomEvent("show", {
@@ -429,12 +429,15 @@ export default class AccordionView extends LightningElement {
     }
 
     if (this.keyFields !== undefined && this.column !== undefined) {
-      getAllReimbursements({
-        year: yearTo,
-        contactId: this.contactId,
-        accountId: this.accountId
-      })
-        .then((result) => {
+      return new Promise(async (resolve, reject) =>{
+        var result = await getAllReimbursements({
+          year: yearTo,
+          contactId: this.contactId,
+          accountId: this.accountId
+        });
+        resolve(result)
+				console.log("REsult", result)
+        if(result){
           let reimbursementList = this.proxyToObject(result[0]);
           this.accordionList = this.sortByMonthDesc(reimbursementList, "month");
           this.isDownloadAll = this.accordionList.length > 0 ? true : false;
@@ -453,7 +456,7 @@ export default class AccordionView extends LightningElement {
                     this.isDownloadAll = false;
                     this.listVisible = false;
                   }
-             
+            
                 } else {
                   accordionItem.forEach((el2) =>  {
                     if(this.showArrowIcon){
@@ -475,10 +478,11 @@ export default class AccordionView extends LightningElement {
               detail: "isHide"
             })
           );
-        })
-        .catch((error) => {
+        }else{
           console.log("getAllReimbursements error", error);
-        });
+        }
+      })
+      
     }
   }
 
@@ -562,7 +566,7 @@ export default class AccordionView extends LightningElement {
     }
   }
 
-  getReimbursement(viewList, yearTo) {
+ async getReimbursement(viewList, yearTo) {
     this.defaultYear = yearTo;
     // this.dispatchEvent(
     //   new CustomEvent("show", {
@@ -730,12 +734,15 @@ export default class AccordionView extends LightningElement {
     }
 
     if (this.keyFields !== undefined && this.column !== undefined) {
-      getAllReimbursements({
+      return new Promise(async (resolve, reject) =>{
+      var result = await getAllReimbursements({
         year: yearTo,
         contactId: this.contactId,
         accountId: this.accountId
       })
-        .then((result) => {
+      resolve(result)
+			console.log("REsult", result)
+      if(result){
           let reimbursementList = this.proxyToObject(result[0]);
           this.accordionList = this.sortByMonthDesc(reimbursementList, "month");
           this.isDownloadAll = this.accordionList.length > 0 ? true : false;
@@ -749,10 +756,10 @@ export default class AccordionView extends LightningElement {
             })
           );
           console.log("getAllReimbursements ----", result);
-        })
-        .catch((error) => {
+        }else {
           console.log("getAllReimbursements error", error);
-        });
+        }
+      });
     }
   }
 

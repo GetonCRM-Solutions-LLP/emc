@@ -47,7 +47,7 @@
 			<c-manager-driver-profile account-id={_accountId} contact-id={idContact} ontoast={showToast} onback={redirectToMyTeam} redirect-dashboard={isDashboard}></c-manager-driver-profile>
         </template>
 		<template  lwc:elseif={resources}>
-			<c-user-resource minimums={contactInformation} role={userRole} settings={customSetting} driver-meeting={driverMeeting} onback={backToDashboard} onsend={emailSent}></c-user-resource>
+			<c-user-resource minimums={contactInformation} vehicle-minimums={contactVehicle} role={userRole} settings={customSetting} driver-meeting={driverMeeting} onback={backToDashboard} onsend={emailSent}></c-user-resource>
 		</template>
 		<template  lwc:elseif={showReports}>
 			<c-report-list onviewreport={redirectToReportDetail} ontoastmessage={handleToastMessage}  onshow={showSpinner} onhide={hideSpinner} ></c-report-list>

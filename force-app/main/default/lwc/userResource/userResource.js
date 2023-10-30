@@ -19,6 +19,7 @@ export default class UserResource extends LightningElement {
     contentText = ""
     modalContainer = ""
     arrayObject;
+    vehicleObject;
     planPreview = false;
     planParameter = false;
     isDownloadmLog = false;
@@ -30,6 +31,7 @@ export default class UserResource extends LightningElement {
     isTroubleshoot = false;
     isOptimize = false;
     toggleResource = false;
+    isAdmin = false;
     isManager = false;
     previewIcon = svgFile + '/planPreview.svg';
     parameterIcon = svgFile + '/planParameter.svg';
@@ -291,6 +293,23 @@ export default class UserResource extends LightningElement {
         if (value) {
             let tempObject = this.proxyToObject(value)
             this.arrayObject = tempObject[0];
+            if(this.arrayObject.Vehicle_Type__c){
+                let vehicle = this.arrayObject.Vehicle_Type__c;
+                let digit = vehicle.substring(0,5)
+                let isNumber = parseInt(digit)
+                this.arrayObject.Vehicle_Type__c = (isNaN(isNumber)) ? this.arrayObject.Vehicle_Type__c : (vehicle.split(digit))[1];
+            }
+        }
+    }
+
+    @api
+    get vehicleMinimums() {
+        return this.vehicleObject;
+    }
+    set vehicleMinimums(value) {
+        if (value) {
+            let object = this.proxyToObject(value)
+            this.vehicleObject = object;
         }
     }
 
@@ -317,13 +336,13 @@ export default class UserResource extends LightningElement {
 
     /* event handler for plan parameters*/
     OnPlanparameter() {
-        this.contentText = "slds-modal__content content";
+        this.contentText = "slds-modal__content content hidden-content";
         this.modalContainer = "slds-modal__container slds-m-top_medium"
         this.planPreview = false;
         this.fileResourcePreview = false;
         this.documentedVideoPreview = false;
         this.planParameter = true;
-        this.resourceText = "Your Plan Guidelines";
+        this.resourceText = this.driverResource[0].content[1].description;
         if (this.template.querySelector('c-user-profile-modal')) {
             this.template.querySelector('c-user-profile-modal').show();
         }
@@ -828,6 +847,8 @@ export default class UserResource extends LightningElement {
         this.resource = (this.role === 'Admin' || this.role === 'Manager') ? this.adminResource : this.driverResource;
         this.carouselLists = JSON.stringify(this.carouselLists);
         this.isManager = (this.role === 'Manager') ? true : false;
+        this.isAdmin = (this.role === 'Admin' || this.role === 'Manager') ? true : false;
+        this.driverResource[0].content[1].description = (this.role === 'Admin' || this.role === 'Manager') ? 'Your Plan Guidelines' : 'Your Reimbursement Guidelines'
         console.log("this.file", this.file, this.settings, this.driverMeeting)
     }
 }

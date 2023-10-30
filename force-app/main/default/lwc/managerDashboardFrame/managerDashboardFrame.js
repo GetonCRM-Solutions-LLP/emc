@@ -14,6 +14,7 @@ import datepicker from '@salesforce/resourceUrl/calendar';
 import customMinifiedDP  from '@salesforce/resourceUrl/modalCalDp';
 import myTeamDetails from "@salesforce/apex/ManagerDashboardController.myTeamDetails";
 import getDriverDetails from "@salesforce/apex/ManagerDashboardController.getDriverDetails";
+import getVehicleValue from "@salesforce/apex/ManagerDashboardController.getVehicleValue";
 import getLastMonthReimbursements from "@salesforce/apex/ManagerDashboardController.getLastMonthReimbursements";
 import getAllDriversLastMonthUnapprovedReimbursementsclone from "@salesforce/apex/ManagerDashboardController.getAllDriversLastMonthUnapprovedReimbursementsclone";
 import getUnapprovedMileages from "@salesforce/apex/ManagerDashboardController.getUnapprovedMileages";
@@ -41,6 +42,7 @@ export default class ManagerDashboardFrame extends LightningElement {
   contactInformation;
 
   contactTitle;
+  contactVehicle;
   lastMonth;
   viewTag;
   lastMonthSelected;
@@ -491,6 +493,17 @@ export default class ManagerDashboardFrame extends LightningElement {
         console.log("getDriverDetails###", JSON.parse(data))
       }else if(error){
           console.log("getDriverDetails error", error.message)
+      }
+  }
+
+  @wire(getVehicleValue, {
+    accountId:'$_accountId'
+  })vehicleValue({data,error}) {
+      if (data) {
+        this.contactVehicle = data;
+        console.log("vehicleValue###", data)
+      }else if(error){
+          console.log("vehicleValue error", error.message)
       }
   }
 

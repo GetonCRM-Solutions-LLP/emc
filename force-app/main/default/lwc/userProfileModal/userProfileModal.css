@@ -254,3 +254,7 @@ sub {
  .modal-inside-modal .slds-backdrop_open{
     background: rgba(0,0,0,0.07) !important;
  }
+
+ .hidden-content{
+    overflow-y: hidden !important;
+ }

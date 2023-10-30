@@ -17,6 +17,12 @@
 
 /* Media Queries Start -- */
 /* Portrait and landscape Kindle Fire HD 7" */
+@media only screen and (min-width: 1200px) and (max-width: 1550px){
+    [data-customtooltip]{
+        left: 74% !important;
+    }
+}
+
 @media only screen and (min-device-width: 1024px) and (max-device-width: 1280px) and (-webkit-min-device-pixel-ratio: 1.5) {
     /* .vehicle-info {
         flex: 1 1 30% !important;
@@ -148,6 +154,46 @@ and (max-device-width: 1024px) {
         flex-direction: row !important;
         width: 176px;
     }
+		
+	[data-customtooltip]{
+      left: 8px !important;
+      top: 66px !important;
+    }
+}
+
+[data-customtooltip] {
+    cursor: pointer;
+    position: absolute;
+    left: 94%;
+    top: 10px;
+}
+
+[data-customtooltip]::after {
+    background-color: #F7F7F7;
+    font-family: 'Proxima Nova SemiBold' !important;
+    color: #1D1D1D;
+    width: 180px;
+    white-space: normal;
+    font-size: 12px;
+    padding: 8px 12px;
+    height: fit-content;
+    z-index: 1;
+    border-radius: 2px;
+    border: 1px solid #4DBFFF;
+    position: absolute;
+    bottom: 0px;
+    left: 100%;
+    top: 14px;
+    content: attr(data-customTooltip);
+    transform: translate(4%, -45%) scale(0); /*translate(-50%, 110%) scale(0)*/;
+    transform-origin: right;
+    transition: 0.14s;
+    box-shadow: 0 4px 14px 0 rgba(0, 0, 0, 0.2), 0 0 0 1px rgba(0, 0, 0, 0.05);
+}
+
+[data-customtooltip]:hover:after {
+    display: block;
+    transform: translate(4%, -45%) scale(1);
 }
 
 .flex-row {
@@ -162,7 +208,7 @@ and (max-device-width: 1024px) {
 
 .map-config {
     position: absolute;
-    width: 180px;
+    width: 186px;
     height: 93px;
     top: 20px;
     left: 40%
@@ -178,7 +224,7 @@ and (max-device-width: 1024px) {
     flex-wrap: wrap;
     flex-direction: row;
     position: relative;
-    flex-basis: 280px; /*248*/
+    flex-basis: 248px;
     flex-grow: 1;
     /* margin: 0 0px 35px 0px; */
 }
@@ -198,6 +244,7 @@ and (max-device-width: 1024px) {
 .vehicle_1-1{
     display: flex;
     flex-direction: column;
+		position: relative;
 }
 
 .map-state_1{
