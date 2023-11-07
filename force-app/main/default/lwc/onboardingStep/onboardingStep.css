@@ -221,10 +221,6 @@
     font-family: 'Proxima Nova' !important;
 }
 
-.opaque{
-    background: #FFFFFF !important;
-}
-
 .plan-info-top{
     display: flex;
 }
@@ -234,11 +230,29 @@
 }
 
 .step-complete{
-    color: var(--green-color);
+    display: flex;
+    width: 79px;
+    padding: 1px 6px;
+    justify-content: center;
+    align-items: center;
+    gap: 3px;
+    border-radius: 100px;
+    background: #00AFE8;
+    position: absolute;
+    top: 17px;
+    right: 15px;
+}
+
+.complete-text{
+    color: #FFF;
+    font-family: 'Proxima Nova Semibold' !important;
     font-size: 12px;
-    padding-top: 16px;
-    margin-left: 82px;
-    font-family: 'Proxima Nova Bold' !important;
+    line-height: 16px;
+    text-transform: capitalize
+}
+
+.opaque{
+    background: rgba(0, 175, 232, 0.08) !important;
 }
 
 .step-inner{

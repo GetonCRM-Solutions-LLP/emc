@@ -42,7 +42,7 @@
 .slds-listbox__option {
     font-size: 12px !important;
     color: var(--color-white) !important;
-    line-height: 10px;
+    line-height: 14px;
 }
 
 .slds-combobox_container{

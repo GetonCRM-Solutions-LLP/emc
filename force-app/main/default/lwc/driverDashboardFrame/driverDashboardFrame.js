@@ -1322,73 +1322,6 @@ export default class DriverDashboardFrame extends LightningElement {
         menuList = this.driverProfileMenu;
         this.yearList = this.getLastYear();
         this.isArchive = (this.last2Year) ? (JSON.parse(this.last2Year).length > 1) ? true : false : false;
-        if(!this.isArchive){
-           this.driverProfileMenu =  [{
-            "id": 1,
-            "label": "Mileage",
-            "menuItem": [{
-                "menuId": 101,
-                "menu": "Mileage",
-                "menuLabel" : "Plan Info / Mileage",
-                "menuClass": "active",
-                "logo": logo + '/emc-design/assets/images/Icons/SVG/Green/Mileage.svg#mileage',
-                "logoHov": logo + '/emc-design/assets/images/Icons/SVG/White/Mileage.svg#mileage'
-            }]
-        },
-         {
-            "id": 2,
-            "label": "Plan management",
-            "menuItem": [{
-                "menuId": 201,
-                "menu": "Insurance-Upload",
-                "menuLabel" : "Insurance Upload",
-                "menuClass": "",
-                "logo": logo + '/emc-design/assets/images/Icons/SVG/Green/Insurance_Upload.svg#insurance',
-                "logoHov": logo + '/emc-design/assets/images/Icons/SVG/White/Insurance_Upload.svg#insurance'
-            }, {
-                "menuId": 202,
-                "menu": "Locations",
-                "menuLabel" : "Locations",
-                "menuClass": "",
-                "logo": logo + '/emc-design/assets/images/Icons/SVG/Green/Locations.svg#location',
-                "logoHov": logo + '/emc-design/assets/images/Icons/SVG/White/Locations.svg#location'
-            }, {
-                "menuId": 203,
-                "menu": "Compliance",
-                "menuLabel" : "Compliance",
-                "menuClass": "",
-                "logo": logo + '/emc-design/assets/images/Icons/SVG/Green/Compliance.svg#compliance',
-                "logoHov": logo + '/emc-design/assets/images/Icons/SVG/White/Compliance.svg#compliance'
-            }, {
-                "menuId": 204,
-                "menu": "Tax-Liability",
-                "menuLabel" : "Tax Liability",
-                "menuClass": "",
-                "logo": logo + '/emc-design/assets/images/Icons/SVG/Green/Tax_Liability.svg#tax',
-                "logoHov": logo + '/emc-design/assets/images/Icons/SVG/White/Tax_Liability.svg#tax'
-            }]
-        }, {
-            "id": 3,
-            "label": "Help & info",
-            "menuItem": [{
-                "menuId": 301,
-                "menu": "Notifications",
-                "menuLabel" : "Notifications",
-                "menuClass": "",
-                "logo": logo + '/emc-design/assets/images/Icons/SVG/Green/Notifications.svg#notification',
-                "logoHov": logo + '/emc-design/assets/images/Icons/SVG/White/Notifications.svg#notification'
-            },{
-                "menuId": 302,
-                "menu": "Videos",
-                "menuLabel" : "Videos/Training",
-                "menuClass": "",
-                "logo": logo + '/emc-design/assets/images/Icons/SVG/Green/Driver_Videos_Training.svg#videos',
-                "logoHov": logo + '/emc-design/assets/images/Icons/SVG/White/Driver_Videos_Training.svg#videos'
-            }]
-           }]
-        }else{
-            this.driverProfileMenu = menuList
-        }
         this.archive = this.isArchive;
         this.insuranceVideo = this.customSetting.Insurance_Link__c;
         window.addEventListener('click', this._handler = this.handleOutsideClick.bind(this));
@@ -1406,6 +1339,7 @@ export default class DriverDashboardFrame extends LightningElement {
                 contactId: this._contactId
             }).then((data) => {
                 if (data) {
+                    var planVehicleAge, planInsurance, planVehicleValue, planCompliance, planYear, complianceMileage, annualMileage, isValid, planMileage
                     let contactList = this.proxyToObject(data);
                     this.contactInformation = data;
                     // console.log("contact--->", this.contactInformation);
@@ -1414,7 +1348,208 @@ export default class DriverDashboardFrame extends LightningElement {
                     this.userName = contactList[0].Name;
                     this.firstName = contactList[0].FirstName;
                     this.dateOfExpiration = contactList[0].Expiration_Date__c;
-                    // console.log("Name", this.userName, this.userEmail)
+                    planInsurance = (contactList[0].Insurance__c !== undefined) ? (contactList[0].Insurance__c === 'Yes') ? true : false : false;
+                    planVehicleAge =  (contactList[0].Vehicle_Age__c !== undefined) ?  (contactList[0].Vehicle_Age__c === 'Yes') ? true : false : false;
+                    planVehicleValue = (contactList[0].Vehicle_Value_Check__c !== undefined) ?   (contactList[0].Vehicle_Value_Check__c === 'Yes') ? true : false : false;
+                    planCompliance =  (contactList[0].compliancestatus__c !== undefined) ?  (contactList[0].compliancestatus__c === 'Yes') ? true : false : false;
+                    planYear = (contactList[0].Plan_Years__c !== undefined) ?  contactList[0].Plan_Years__c : 0;
+                    complianceMileage = (contactList[0].Compliance_Mileage__c !== undefined) ? contactList[0].Compliance_Mileage__c : 0;
+                    annualMileage = (contactList[0].Total_Approved_Mileages__c !== undefined) ? contactList[0].Total_Approved_Mileages__c : '0';
+                    isValid = parseFloat(annualMileage) >= parseFloat(complianceMileage) ? true : false;
+                    planMileage =  (isValid) ? true : false;
+                    if(!this.isArchive){
+                        if (planInsurance === true && planVehicleAge === true && planVehicleValue === true && planCompliance === true && planMileage === true){
+                            this.driverProfileMenu =  [{
+                                "id": 1,
+                                "label": "Mileage",
+                                "menuItem": [{
+                                    "menuId": 101,
+                                    "menu": "Mileage",
+                                    "menuLabel" : "Plan Info / Mileage",
+                                    "menuClass": "active",
+                                    "logo": logo + '/emc-design/assets/images/Icons/SVG/Green/Mileage.svg#mileage',
+                                    "logoHov": logo + '/emc-design/assets/images/Icons/SVG/White/Mileage.svg#mileage'
+                                }]
+                            },
+                             {
+                                "id": 2,
+                                "label": "Plan management",
+                                "menuItem": [{
+                                    "menuId": 201,
+                                    "menu": "Insurance-Upload",
+                                    "menuLabel" : "Insurance Upload",
+                                    "menuClass": "",
+                                    "logo": logo + '/emc-design/assets/images/Icons/SVG/Green/Insurance_Upload.svg#insurance',
+                                    "logoHov": logo + '/emc-design/assets/images/Icons/SVG/White/Insurance_Upload.svg#insurance'
+                                }, {
+                                    "menuId": 202,
+                                    "menu": "Locations",
+                                    "menuLabel" : "Locations",
+                                    "menuClass": "",
+                                    "logo": logo + '/emc-design/assets/images/Icons/SVG/Green/Locations.svg#location',
+                                    "logoHov": logo + '/emc-design/assets/images/Icons/SVG/White/Locations.svg#location'
+                                }, {
+                                    "menuId": 203,
+                                    "menu": "Compliance",
+                                    "menuLabel" : "Compliance",
+                                    "menuClass": "",
+                                    "logo": logo + '/emc-design/assets/images/Icons/SVG/Green/Compliance.svg#compliance',
+                                    "logoHov": logo + '/emc-design/assets/images/Icons/SVG/White/Compliance.svg#compliance'
+                                }]
+                            }, {
+                                "id": 3,
+                                "label": "Help & info",
+                                "menuItem": [{
+                                    "menuId": 301,
+                                    "menu": "Notifications",
+                                    "menuLabel" : "Notifications",
+                                    "menuClass": "",
+                                    "logo": logo + '/emc-design/assets/images/Icons/SVG/Green/Notifications.svg#notification',
+                                    "logoHov": logo + '/emc-design/assets/images/Icons/SVG/White/Notifications.svg#notification'
+                                },{
+                                    "menuId": 302,
+                                    "menu": "Videos",
+                                    "menuLabel" : "Videos/Training",
+                                    "menuClass": "",
+                                    "logo": logo + '/emc-design/assets/images/Icons/SVG/Green/Driver_Videos_Training.svg#videos',
+                                    "logoHov": logo + '/emc-design/assets/images/Icons/SVG/White/Driver_Videos_Training.svg#videos'
+                                }]
+                            }]
+                        }else{
+                            this.driverProfileMenu =  [{
+                            "id": 1,
+                            "label": "Mileage",
+                            "menuItem": [{
+                                "menuId": 101,
+                                "menu": "Mileage",
+                                "menuLabel" : "Plan Info / Mileage",
+                                "menuClass": "active",
+                                "logo": logo + '/emc-design/assets/images/Icons/SVG/Green/Mileage.svg#mileage',
+                                "logoHov": logo + '/emc-design/assets/images/Icons/SVG/White/Mileage.svg#mileage'
+                            }]
+                        },
+                        {
+                            "id": 2,
+                            "label": "Plan management",
+                            "menuItem": [{
+                                "menuId": 201,
+                                "menu": "Insurance-Upload",
+                                "menuLabel" : "Insurance Upload",
+                                "menuClass": "",
+                                "logo": logo + '/emc-design/assets/images/Icons/SVG/Green/Insurance_Upload.svg#insurance',
+                                "logoHov": logo + '/emc-design/assets/images/Icons/SVG/White/Insurance_Upload.svg#insurance'
+                            }, {
+                                "menuId": 202,
+                                "menu": "Locations",
+                                "menuLabel" : "Locations",
+                                "menuClass": "",
+                                "logo": logo + '/emc-design/assets/images/Icons/SVG/Green/Locations.svg#location',
+                                "logoHov": logo + '/emc-design/assets/images/Icons/SVG/White/Locations.svg#location'
+                            }, {
+                                "menuId": 203,
+                                "menu": "Compliance",
+                                "menuLabel" : "Compliance",
+                                "menuClass": "",
+                                "logo": logo + '/emc-design/assets/images/Icons/SVG/Green/Compliance.svg#compliance',
+                                "logoHov": logo + '/emc-design/assets/images/Icons/SVG/White/Compliance.svg#compliance'
+                            }, {
+                                "menuId": 204,
+                                "menu": "Tax-Liability",
+                                "menuLabel" : "Tax Liability",
+                                "menuClass": "",
+                                "logo": logo + '/emc-design/assets/images/Icons/SVG/Green/Tax_Liability.svg#tax',
+                                "logoHov": logo + '/emc-design/assets/images/Icons/SVG/White/Tax_Liability.svg#tax'
+                            }]
+                        }, {
+                            "id": 3,
+                            "label": "Help & info",
+                            "menuItem": [{
+                                "menuId": 301,
+                                "menu": "Notifications",
+                                "menuLabel" : "Notifications",
+                                "menuClass": "",
+                                "logo": logo + '/emc-design/assets/images/Icons/SVG/Green/Notifications.svg#notification',
+                                "logoHov": logo + '/emc-design/assets/images/Icons/SVG/White/Notifications.svg#notification'
+                            },{
+                                "menuId": 302,
+                                "menu": "Videos",
+                                "menuLabel" : "Videos/Training",
+                                "menuClass": "",
+                                "logo": logo + '/emc-design/assets/images/Icons/SVG/Green/Driver_Videos_Training.svg#videos',
+                                "logoHov": logo + '/emc-design/assets/images/Icons/SVG/White/Driver_Videos_Training.svg#videos'
+                            }]
+                            }]
+                        }
+                     }else{
+                        if(planInsurance === true && planVehicleAge === true && planVehicleValue === true && planCompliance === true && planMileage === true){
+                            this.driverProfileMenu = [{
+                                "id": 1,
+                                "label": "Mileage",
+                                "menuItem": [{
+                                    "menuId": 101,
+                                    "menu": "Mileage",
+                                    "menuLabel" : "Plan Info / Mileage",
+                                    "menuClass": "active",
+                                    "logo": logo + '/emc-design/assets/images/Icons/SVG/Green/Mileage.svg#mileage',
+                                    "logoHov": logo + '/emc-design/assets/images/Icons/SVG/White/Mileage.svg#mileage'
+                                }, {
+                                    "menuId": 102,
+                                    "menu": "Archive",
+                                    "menuLabel" : "Archive",
+                                    "menuClass": "",
+                                    "logo": logo + '/emc-design/assets/images/Icons/SVG/Green/Archive.svg#archive',
+                                    "logoHov": logo + '/emc-design/assets/images/Icons/SVG/White/Archive.svg#archive'
+                                  }
+                            ]
+                            },
+                             {
+                                "id": 2,
+                                "label": "Plan management",
+                                "menuItem": [{
+                                    "menuId": 201,
+                                    "menu": "Insurance-Upload",
+                                    "menuLabel" : "Insurance Upload",
+                                    "menuClass": "",
+                                    "logo": logo + '/emc-design/assets/images/Icons/SVG/Green/Insurance_Upload.svg#insurance',
+                                    "logoHov": logo + '/emc-design/assets/images/Icons/SVG/White/Insurance_Upload.svg#insurance'
+                                }, {
+                                    "menuId": 202,
+                                    "menu": "Locations",
+                                    "menuLabel" : "Locations",
+                                    "menuClass": "",
+                                    "logo": logo + '/emc-design/assets/images/Icons/SVG/Green/Locations.svg#location',
+                                    "logoHov": logo + '/emc-design/assets/images/Icons/SVG/White/Locations.svg#location'
+                                }, {
+                                    "menuId": 203,
+                                    "menu": "Compliance",
+                                    "menuLabel" : "Compliance",
+                                    "menuClass": "",
+                                    "logo": logo + '/emc-design/assets/images/Icons/SVG/Green/Compliance.svg#compliance',
+                                    "logoHov": logo + '/emc-design/assets/images/Icons/SVG/White/Compliance.svg#compliance'
+                                }]
+                            }, {
+                                "id": 3,
+                                "label": "Help & info",
+                                "menuItem": [{
+                                    "menuId": 301,
+                                    "menu": "Notifications",
+                                    "menuLabel" : "Notifications",
+                                    "menuClass": "",
+                                    "logo": logo + '/emc-design/assets/images/Icons/SVG/Green/Notifications.svg#notification',
+                                    "logoHov": logo + '/emc-design/assets/images/Icons/SVG/White/Notifications.svg#notification'
+                                },{
+                                    "menuId": 302,
+                                    "menu": "Videos",
+                                    "menuLabel" : "Videos/Training",
+                                    "menuClass": "",
+                                    "logo": logo + '/emc-design/assets/images/Icons/SVG/Green/Driver_Videos_Training.svg#videos',
+                                    "logoHov": logo + '/emc-design/assets/images/Icons/SVG/White/Driver_Videos_Training.svg#videos'
+                                }]
+                            }]
+                        }else{
+                            this.driverProfileMenu = menuList
+                        }
+                     }
                     getAllReimbursements({
                         year: selectedYear,
                         contactId: this._contactId,

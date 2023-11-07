@@ -29,7 +29,7 @@ export default class AccordionView extends LightningElement {
   isReimbursementView = false;
   isScrollable = false;
   listOfRecord = false;
-  noMessage = 'Retreiving Data...';
+  noMessage = 'There is no data available';
  @track listVisible = false;
   isRowDn = true;
   sortable =  false;
@@ -91,6 +91,37 @@ export default class AccordionView extends LightningElement {
     return data;
   }
 
+  currentMonth(){
+    const date = new Date();
+    var day = date.getDate();
+    const formatter = new Intl.DateTimeFormat("default", {
+        month: "short"
+      });
+    let month = formatter.format(
+        new Date(date.getFullYear(), date.getMonth())
+    );
+
+    if(day >= 1 && day < 4 ){
+        return month;
+    }
+  }
+
+  isToday(){
+      const date = new Date();
+      var day = date.getDate();
+      const formatter = new Intl.DateTimeFormat("default", {
+          month: "long"
+        });
+      let prevMonth = formatter.format(
+          new Date(date.getFullYear(), date.getMonth() - 1)
+      );
+
+      if(day >= 1 && day < 4 ){
+          return prevMonth;
+      }
+      return 'none'
+  }
+
   dynamicBinding(data, keyFields) {
     data.forEach((element) => {
       let model = [];
@@ -131,6 +162,18 @@ export default class AccordionView extends LightningElement {
             key === "variable" || key === "mileage" || key === "totalMileage" ||
             key === "fixed1" || key === "fixed2" ||
             key === "fixed3") && ((element[key] !== "null" || element[key] !== null) && (singleValue.value !== '0.00') && (singleValue.value !== '0.0000')) && (/^0+/).test(singleValue.value) === true) ? (singleValue.value).replace(/^0+/, '') : null;
+            if(key === 'fuel' || key === 'variableRate'){
+              if(parseInt(this.defaultYear) === (new Date()).getFullYear()){
+                const nextUpdate = (this.currentMonth()) ? 'Updated ' + this.currentMonth() + '. 4' : false;
+                if(nextUpdate){
+                  if(element['month'] === this.isToday()){
+                      singleValue.istwoDecimalCurrency = false
+                      singleValue.isfourDecimalCurrency = false
+                      singleValue.value = nextUpdate
+                  }
+                }
+              }
+            }
           model.push(singleValue);
         }
         //use key and value here
@@ -748,6 +791,7 @@ export default class AccordionView extends LightningElement {
           this.isDownloadAll = this.accordionList.length > 0 ? true : false;
           this.accordionListColumn = this.column;
           this.accordionKeyFields = this.keyFields;
+          console.log("Default--", this.defaultYear)
           this.dynamicBinding(this.accordionList, this.accordionKeyFields);
           this.listOfRecord = this.accordionList.length > 0 ? true : false;
           this.dispatchEvent(

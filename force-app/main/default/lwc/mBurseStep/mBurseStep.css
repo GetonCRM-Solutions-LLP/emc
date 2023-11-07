@@ -226,12 +226,34 @@
     padding-top: 4px;
     margin-left: 9px;
     margin-top: 10px;
-    color: var(--green-color);
+    color: var(--text-color);
     font-family: 'Proxima Nova' !important;
 }
 
+.step-complete{
+    display: flex;
+    width: 79px;
+    padding: 1px 6px;
+    justify-content: center;
+    align-items: center;
+    gap: 3px;
+    border-radius: 100px;
+    background: #00AFE8;
+    position: absolute;
+    top: 17px;
+    right: 15px;
+}
+
+.complete-text{
+    color: #FFF;
+    font-family: 'Proxima Nova Semibold' !important;
+    font-size: 12px;
+    line-height: 16px;
+    text-transform: capitalize
+}
+
 .opaque{
-    background: #FFFFFF !important;
+    background: rgba(0, 175, 232, 0.08) !important;
 }
 
 .plan-info-top{
@@ -240,15 +262,6 @@
 
 .background-blurry{
     background: #F1F8EC !important;
-}
-
-.step-complete{
-    color: var(--green-color);
-    font-weight: 700;
-    font-size: 12px;
-    padding-top: 16px;
-    margin-left: 82px;
-    font-family: 'Proxima Nova' !important;
 }
 
 .step-inner{

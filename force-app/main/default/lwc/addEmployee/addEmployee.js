@@ -30,7 +30,8 @@ export default class AddEmployee extends LightningElement {
 	@api tags = [];
 	@api managerId;
 	validStateList = [];
-	@api ListOfCity = []
+	@api ListOfCity = [];
+	@api listOfVehicles = [];
 	newTag = '';
     @api requiredFields = {
         driver : ['firstName', 'activationDate', 'lastName', 'email', 'role', 'managerName', 'cellphone', 'department', 'deptDesign', 'company', 'vehicalType', 'zipCode', 'city', 'jobtitle', 'costCode', 'bpCode','am', 'an','ReimbursementFrequency','CellPhoneProvider'],
@@ -195,6 +196,7 @@ export default class AddEmployee extends LightningElement {
         });
 		if(fieldName === "role") {
 			this.updateRequiredField(value);
+			this.updateVehicleTypeList(value);
 		}
 		if(fieldName === "city") {
 			let id = event.detail.key;
@@ -573,6 +575,16 @@ export default class AddEmployee extends LightningElement {
 		}
 	}
 
+	updateVehicleTypeList(role){
+		if(role.includes('Driver')) {
+			if(this.listOfVehicles.length === 2){
+				this.setValue('vehicalType', this.listOfVehicles[1]?.value);
+			}
+		}else{
+			this.setValue('vehicalType', '');
+		}
+	}
+
 	getCityList(zip) {
 		if(zip && (zip.length >= 3 && zip.length <= 6)) {
 			getCountryStateCity({zipcode: zip})
@@ -808,6 +820,7 @@ export default class AddEmployee extends LightningElement {
 				let vehicleTypeList = this.formatArray(vehicles[1].split(";"));
 				vehicleTypeList.unshift({id: '---', label: '---', value: '---' });
 				this.setDependentDropDown("vehicalType", vehicleTypeList);
+				this.listOfVehicles = vehicleTypeList;
 			}
 		})
 		.catch(err => {

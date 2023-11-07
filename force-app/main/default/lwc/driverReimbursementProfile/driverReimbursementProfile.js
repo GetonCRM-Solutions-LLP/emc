@@ -63,6 +63,7 @@ export default class DriverReimbursementProfile extends LightningElement {
   accordionList;
   hrBorder;
   titleOfAccordion = "2022 Reimbursement Data";
+  messageForNextBatch = "";
   isSortable = false;
   isScrollable = true;
   isValid = false;
@@ -544,6 +545,21 @@ export default class DriverReimbursementProfile extends LightningElement {
     return -1;
   }
 
+  currentMonth(){
+    const date = new Date();
+    var day = date.getDate();
+    const formatter = new Intl.DateTimeFormat("default", {
+        month: "short"
+      });
+    let month = formatter.format(
+        new Date(date.getFullYear(), date.getMonth())
+    );
+
+    if(day >= 1 && day < 4 ){
+        return month;
+    }
+  }
+
   isToday(){
       const date = new Date();
       var day = date.getDate();
@@ -1018,7 +1034,7 @@ export default class DriverReimbursementProfile extends LightningElement {
       let downloadList = [];
       // let clickedPeriod = "Pay Period " + this.startDate + " - " + this.endDate;
       let fileName =
-        this.contactName + "'s Mileage Report " + this.dateTime(new Date());
+        this.contactName + "'s Mileage & Gas Price Report " + this.dateTime(new Date());
       let sheetName = "Mileage Report";
       downloadList.push(["Month", "Gas Prices", "Mileage Rate"]);
       this.lastModelList.forEach((item) => {
@@ -1299,6 +1315,7 @@ export default class DriverReimbursementProfile extends LightningElement {
     let previousMonthNo = currentDate.getMonth() - 1;
     this.year = currentDate.getFullYear();
     this.thisMonth = this.getMonthName(monthNo);
+    this.messageForNextBatch = (this.currentMonth()) ? 'Updated ' + this.currentMonth() + '. 4' : false;
     this.lastMonth =
       previousMonthNo > 0
         ? this.getMonthName(previousMonthNo)

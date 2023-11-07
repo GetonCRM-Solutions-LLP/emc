@@ -53,6 +53,7 @@ export default class DriverUserProfile extends LightningElement {
     endNumber = 100;
     progress = 0;
     progressPercent = 0;
+    messageForNextBatch = "";
     modalStyle = '';
     headerText = '';
     monthText = '';
@@ -352,6 +353,21 @@ export default class DriverUserProfile extends LightningElement {
            return new Date(d).getMonth() + 1;
         }
         return -1;
+    }
+
+    currentMonth(){
+        const date = new Date();
+        var day = date.getDate();
+        const formatter = new Intl.DateTimeFormat("default", {
+            month: "short"
+          });
+        let month = formatter.format(
+            new Date(date.getFullYear(), date.getMonth())
+        );
+    
+        if(day >= 1 && day < 4 ){
+            return month;
+        }
     }
 
     isToday(){
@@ -748,7 +764,7 @@ export default class DriverUserProfile extends LightningElement {
         if(this.templateName === 'Gas Price'){
             let downloadList = [];
             // let clickedPeriod = "Pay Period " + this.startDate + " - " + this.endDate;
-            let fileName = this.contactName + '\'s Mileage Report ' + this.dateTime(new Date());
+            let fileName = this.contactName + '\'s Mileage & Gas Price Report ' + this.dateTime(new Date());
             let sheetName = 'Mileage Report';
             downloadList.push(["Month", "Gas Prices", "Mileage Rate"])
             this.lastModelList.forEach((item)=>{
@@ -882,6 +898,7 @@ export default class DriverUserProfile extends LightningElement {
         this.year = currDate.getFullYear();
         this.thisMonth = this.getMonthName(monthNo);
         this.lastMonth = (previousMonthNo > 0) ? this.getMonthName(previousMonthNo) : this.getMonthName(11);
+        this.messageForNextBatch = (this.currentMonth()) ? 'Updated ' + this.currentMonth() + '. 4' : false;
        // console.log(this.thisMonth, this.lastMonth)
         if(this.chartInfo){
           //  console.log("chart",this.chartInfo[0])

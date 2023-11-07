@@ -138,7 +138,7 @@
                                         <tr key={trip.id} class="edit-mode" data-id={trip.id} onclick={handleEditMode}>
                                             <template lwc:if={isCheckBoxVisible}>
                                                 <td class="modal-content" onclick={preventEdit}>
-                                                    <template lwc:if={trip.showCheckbox}>
+                                                   <!-- <template lwc:if={trip.showCheckbox}> -->
                                                         <div class="checkbox-toggle">
                                                             <div class="slds-checkbox">
                                                                 <input type="checkbox" id={trip.id}
@@ -150,7 +150,7 @@
                                                                 </label>
                                                             </div>
                                                         </div>
-                                                    </template>
+                                                   <!--</template> -->
                                                 </td>
                                             </template>
                                             <template for:each={trip.keyFields} for:item="mapKey">

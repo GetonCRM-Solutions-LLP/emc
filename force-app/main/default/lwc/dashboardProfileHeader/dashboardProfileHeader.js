@@ -20,13 +20,15 @@ export default class DashboardProfileHeader extends LightningElement {
     }
 
     get expirationToggle(){
-        var expirationDate, monthOfExpiration, previousMonth, currentMonth, date;
+        var expirationDate, monthOfExpiration, yearOfExpiration,currentYear, currentMonth, date;
         date = new Date();
         expirationDate = new Date(this.expirationDate);
         monthOfExpiration = expirationDate.getMonth();
+        yearOfExpiration = expirationDate.getFullYear();
+        currentYear = date.getFullYear();
        // previousMonth = new Date(expirationDate.getFullYear(), expirationDate.getMonth() - 1).getMonth();
         currentMonth = date.getMonth();
-        const styledText = (currentMonth === monthOfExpiration) ? 'color: #ff0000' : 'color: #909090';
+        const styledText = (currentMonth === monthOfExpiration && currentYear === yearOfExpiration) ? 'color: #ff0000' : 'color: #909090';
         // : (previousMonth === currentMonth) ? 'color: #FFBF00'
         return styledText
     }

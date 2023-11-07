@@ -67,6 +67,13 @@ export default class Select2Dropdown extends LightningElement {
 		this._selected = val;
 	}
 
+	@api toggleSelected() {
+		this._value = "";
+		this._selected = this._value;
+		this.removeHighlighted();
+		this._element = undefined
+	}
+
 	@api label = "Subject";
 
 	_options = [
@@ -204,10 +211,11 @@ export default class Select2Dropdown extends LightningElement {
 		let highlightedList = this.template.querySelectorAll('.slds-listbox__option');
 		highlightedList.forEach((option) => {
 		//if(option.dataset.label === this._selected){
-			//console.log('inside remove', this._selected)
 				option.classList.remove('active');
+				console.log('inside remove', option)
 		//}
 		})
+		console.log("high=---", highlightedList)
 	}
 
 	addHighlighted(selectedVal){

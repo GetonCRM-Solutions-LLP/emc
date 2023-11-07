@@ -67,7 +67,7 @@
     padding-top: 4px;
     margin-left: 9px;
     margin-top: 10px;
-    color: var(--green-color);
+    color: var(--text-color);
 }
 
 .step-count-not-uploaded{
@@ -86,7 +86,7 @@
 }
 
 .step-count-active{
-    background: var(--even-row-color);
+    background: rgba(0, 175, 232, 0.08);
     width: 34px;
     height: 34px;
     font-size: 16px;
@@ -97,7 +97,7 @@
     padding-top: 4px;
     margin-left: 9px;
     margin-top: 10px;
-    color: var(--green-color);
+    color: var(--text-color);
 }
 
 .step-content {
@@ -124,6 +124,11 @@
     justify-self: center;
     text-align: center;
     margin-top: 10px;
+    opacity: 1;
+}
+
+.plan-info-inner.complete{
+ opacity: 0.4;
 }
 
 .plan-info-main svg {
@@ -249,12 +254,25 @@
 }
 
 .step-complete{
-    color: var(--green-color);
-    font-family: 'Proxima Nova Bold' !important;
-    font-size: 11px;
-    padding-top: 6px;
-    margin-left: 34px;
-    margin-top: 12px;
+    display: flex;
+    width: 79px;
+    padding: 1px 6px;
+    justify-content: center;
+    align-items: center;
+    gap: 3px;
+    border-radius: 100px;
+    background: #00AFE8;
+    position: absolute;
+    top: 17px;
+    right: 29px;
+}
+
+.complete-text{
+    color: #FFF;
+    font-family: 'Proxima Nova Semibold' !important;
+    font-size: 12px;
+    line-height: 16px;
+    text-transform: capitalize
 }
 
 .fa-check{
