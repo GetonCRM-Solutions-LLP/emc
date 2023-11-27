@@ -10,8 +10,8 @@ import redirectionURL from '@salesforce/apex/NewAccountDriverController.loginRed
 import getAllReimbursements from "@salesforce/apex/DriverDashboardLWCController.getAllReimbursements";
 import getDriverDetails from '@salesforce/apex/DriverDashboardLWCController.getDriverDetailsClone';
 import getCompanyLogoUrl from '@salesforce/apex/DriverDashboardLWCController.getCompanyLogoUrl';
-import getNotificationMessageList from '@salesforce/apex/NewdriverdashboardController.getNotificationMessageList';
-import updateNotificationMessage from '@salesforce/apex/NewdriverdashboardController.updateNotificationMessage';
+import getNotificationMessageList from '@salesforce/apex/ManagerDashboardController.getNotificationMessageList';
+import updateNotificationMessage from '@salesforce/apex/ManagerDashboardController.updateNotificationMessage';
 import sendMlogWelcomeEmail from '@salesforce/apex/ResourceController.sendMlogWelcomeEmail';
 import {validateDate} from 'c/commonLib';
 export default class DriverDashboardFrame extends LightningElement {
@@ -22,6 +22,8 @@ export default class DriverDashboardFrame extends LightningElement {
     @api customSetting;
     @api driverMeeting;
     @api last2Year;
+    @api systemNotification;
+    @api activationDate;
     section = 'content-wrapper main';
     unreadCount;
     insuranceVideo;
@@ -35,10 +37,12 @@ export default class DriverDashboardFrame extends LightningElement {
     @track isAttendance = false;
     notificationViewClicked = false;
     managerRole = false;
+    checkAll = false;
     isArchive = false;
     notificationModal = false;
     isFalse = false;
     archive = true;
+    isGeneral = true;
     dateOfExpiration = '';
     defaultYear = '';
     defaultMonth = '';
@@ -159,7 +163,7 @@ export default class DriverDashboardFrame extends LightningElement {
 
     yearList = [];
     
-    monthList = [
+    listOfMonth = [
         {
           id: 1,
           label: "January",
@@ -221,6 +225,8 @@ export default class DriverDashboardFrame extends LightningElement {
           value: "December"
         }
     ]
+    
+    monthList  = []
 
     @wire(getCompanyLogoUrl, {
         accountId: '$_accountId'
@@ -253,6 +259,13 @@ export default class DriverDashboardFrame extends LightningElement {
         if(!this.notificationViewClicked){
             this.closeNotification();
         }   
+    }
+
+    
+    handleToggle(event){
+        this.checkAll = event.target.checked;
+        this.isGeneral = (!this.checkAll) ? true : false;
+        this.getContactNotification();
     }
 
     handleKeyDown = (event) =>{
@@ -480,6 +493,7 @@ export default class DriverDashboardFrame extends LightningElement {
             result = data
             notification = this.proxyToObject(result);
             this.notifyList = notification;
+            this.notifyList = (this.isGeneral) ? notification.filter(e => e.createdBy != 'Tom Honkus') : notification.filter(e => e.createdBy === 'Tom Honkus')
             this.notificationList = this.notifyList.slice(0, 1);
             for (let i = 0; i < this.notifyList.length; i++) {
                 if (this.notifyList[i].unread === true) {
@@ -502,7 +516,7 @@ export default class DriverDashboardFrame extends LightningElement {
 
     handleNotification(event) {
         // eslint-disable-next-line radix
-        var rd = event.detail;
+        var rd = event.detail, notification;
       //  this.unreadCount = 0
         for (let i = 0; i < this.notifyList.length; i++) {
             if(this)
@@ -515,6 +529,9 @@ export default class DriverDashboardFrame extends LightningElement {
         this.isNotify = (this.notifyList.length > 0) ? true : false;
         updateNotificationMessage({msgId: rd, year: this.defaultYear, month: this.defaultMonth}).then((data) => { 
             let  result = data
+            notification = this.proxyToObject(result);
+            this.notifyList = notification;
+            this.notifyList = (this.isGeneral) ? notification.filter(e => e.createdBy != 'Tom Honkus') : notification.filter(e => e.createdBy === 'Tom Honkus')
         //     let notification = this.proxyToObject(result);
         //     this.notifyList = notification;
         //     this.notificationList = this.notifyList.slice(0, 1);
@@ -539,7 +556,7 @@ export default class DriverDashboardFrame extends LightningElement {
     handleClose(event) {
         // console.log("id", event.target.dataset.id)
         // eslint-disable-next-line radix
-        var eId = event.currentTarget.dataset.id;
+        var eId = event.currentTarget.dataset.id, notification;
         console.log("MEssage id", eId)
       //  this.unreadCount = 0
           for (let i = 0; i < this.notifyList.length; i++) {
@@ -553,6 +570,9 @@ export default class DriverDashboardFrame extends LightningElement {
         this.isNotify = (this.notifyList.length > 0) ? true : false;
         updateNotificationMessage({msgId: eId, year: this.defaultYear, month: this.defaultMonth}).then((data) => { 
             let  result = data
+            notification = this.proxyToObject(result);
+            this.notifyList = notification;
+            this.notifyList = (this.isGeneral) ? notification.filter(e => e.createdBy != 'Tom Honkus') : notification.filter(e => e.createdBy === 'Tom Honkus')
         //     let notification = this.proxyToObject(result);
         //     this.notifyList = notification;
         //     this.notificationList = this.notifyList.slice(0, 2);
@@ -1301,6 +1321,91 @@ export default class DriverDashboardFrame extends LightningElement {
         }
     }
 
+    getUpdatedYear() {
+        var activated, i, list = [], month = [], monthCount, compareCount, compareYear, year, yearCurrent, systemNotification, now;
+        systemNotification = this.systemNotification; // Contact's System notification
+        let activationDate = this.activationDate; // Contact's activation date
+        const getMonths = (fromDate, toDate) => {
+            const fromYear = fromDate.getFullYear();
+            const fromMonth = fromDate.getMonth();
+            const toYear = toDate.getFullYear();
+            const toMonth = toDate.getMonth();
+            const months = [];
+            if(fromDate > toDate){
+              //for(let year = fromYear; year <= toYear; year++) {
+                let monthNum = year === fromYear ? fromMonth : 0;
+                let month = monthNum;
+                let name = this.listOfMonth[month]
+                months.push(name);
+              //}
+            }else{
+              for(let year = fromYear; year <= toYear; year++) {
+                  let monthNum = year === fromYear ? fromMonth : 0;
+                  const monthLimit = year === toYear ? toMonth : 11;
+                  for(; monthNum <= monthLimit; monthNum++) {
+                      let month = monthNum;
+                      let name = this.listOfMonth[month]
+                      months.push(name);
+                  }
+              }
+          }
+            return months;
+        }
+        activated = (activationDate) ? new Date(activationDate) : new Date();
+        year = activated.getFullYear();
+        now = new Date().getFullYear();
+        yearCurrent = 2023;
+        compareYear = new Date(2023, 9, 0);
+        compareCount = new Date();
+        if (systemNotification === 'New') {
+          this.defaultYear = (activated.getFullYear()).toString();
+          this.defaultMonth = activated.toLocaleString('default', {
+              month: 'long'
+          })
+          monthCount = activated
+          month = getMonths(monthCount, compareCount);
+          if(monthCount > compareCount){
+            let obj = {}
+            obj.id = year;
+            obj.label = (year).toString();
+            obj.value = (year).toString();
+            list.push(obj);
+          }else{
+            for (i = year; i <= now; i++) {
+              let obj = {}
+              obj.id = i;
+              obj.label = (i).toString();
+              obj.value = (i).toString();
+              list.push(obj);
+            }
+          }
+        } else {
+          this.defaultYear = (yearCurrent).toString();
+          this.defaultMonth = compareYear.toLocaleString('default', {
+              month: 'long'
+          })
+          monthCount = compareYear
+          month = getMonths(monthCount, compareCount);
+          if(monthCount > compareCount){
+            let obj = {}
+            obj.id = yearCurrent;
+            obj.label = (yearCurrent).toString();
+            obj.value = (yearCurrent).toString();
+            list.push(obj);
+          }else{
+            for (i = yearCurrent; i <= now; i++) {
+              let obj = {}
+              obj.id = i;
+              obj.label = (i).toString();
+              obj.value = (i).toString();
+              list.push(obj);
+            }
+          }
+        }
+        this.monthList = month
+        return list
+      }
+
     constructor() {
         super();
         this.handleKeyDown = this.handleKeyDown.bind(this);
@@ -1320,7 +1425,7 @@ export default class DriverDashboardFrame extends LightningElement {
         this._accountId = aidParamValue;
         this.isHomePage = false;
         menuList = this.driverProfileMenu;
-        this.yearList = this.getLastYear();
+        this.yearList = this.getUpdatedYear();
         this.isArchive = (this.last2Year) ? (JSON.parse(this.last2Year).length > 1) ? true : false : false;
         this.archive = this.isArchive;
         this.insuranceVideo = this.customSetting.Insurance_Link__c;

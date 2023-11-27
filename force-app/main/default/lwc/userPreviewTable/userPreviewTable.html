@@ -926,16 +926,15 @@
                                                                                                 <td class="modal-content"
                                                                                                     key={mapKey.key}>
                                                                                                     <input
-                                                                                                        class="content-input"
+                                                                                                        class={mapKey.inputClass}
                                                                                                         data-input-type="input"
                                                                                                         data-id={trip.id}
                                                                                                         data-tripid={trip.Id}
                                                                                                         data-name={mapKey.keyType}
                                                                                                         data-key={mapKey.key}
                                                                                                         value={mapKey.value}
-                                                                                                        onchange={handleProratedInput}
-                                                                                                        oninput={validateInputField}
-                                                                                                        onkeypress={keyPressInput}
+                                                                                                        oninput={handleProratedInput}
+                                                                                                        onkeydown={keyPressInput}
                                                                                                         placeholder="" />
                                                                                                 </td>
                                                                                             </template>

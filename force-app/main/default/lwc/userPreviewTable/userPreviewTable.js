@@ -801,22 +801,58 @@ export default class UserPreviewTable extends LightningElement {
 
     handleProratedInput(event){
         console.log("Inside Prorated Input")
-        let id = event.currentTarget.dataset.id ;
+        this.validateInputField(event);
+        //let id = event.currentTarget.dataset.id ;
         let tripid = event.currentTarget.dataset.tripid;
-        let data = this.modelData;
-        var object = {};
-        for (let i = 0; i < data.length; i++) {
-            if(id === undefined){
-                if (data[i].Id === tripid) {
-                    object = data[i];
-                }
-            }else{
-             if (data[i].id === id) {
-                object = data[i];
-            }
-           }
+        let inputType = event.currentTarget.dataset.inputType;
+        let keyName = event.currentTarget.dataset.key;
+        let input;
+        if (inputType === "input") {
+            input = event.target.value;
         }
-        const eventD = new CustomEvent('update', { detail: {list : JSON.stringify(object) , inputValue: event.target.value, key: event.currentTarget.dataset.key}});
+        let dataList = (this.search) ? this.proxyToObj(this.searchData) : this.proxyToObj(this.modelData);
+        let updatedList = [];
+        // let element = dataList.find(ele  => ele.id === this.rowId);
+        for (let i = 0; i < dataList.length; i++) {
+            if (dataList[i].Id === tripid) {
+                let keyList = dataList[i].keyFields;
+                dataList[i][keyName] = (input !== null) ? input : input;
+                for (let j = 0; j < keyList.length; j++) {
+                    if (keyList[j].key === keyName) {
+                        keyList[j].value = input;
+                    }
+                }
+            }
+        }
+        updatedList = dataList;
+        if (this.search) {
+            this.modelData = dataList;
+            this.searchData = dataList;
+        } else {
+            this.modelData = dataList;
+        }
+        this.pagedData = dataList;
+        this.gotoPage(this.currentPage, this.pagedData)
+        const eventD = new CustomEvent("update", {
+                detail: { 
+                    list: JSON.stringify(updatedList), 
+                    id: tripid
+                }
+            })
+
+        // var object = {};
+        // for (let i = 0; i < data.length; i++) {
+        //     if(id === undefined){
+        //         if (data[i].Id === tripid) {
+        //             object = data[i];
+        //         }
+        //     }else{
+        //      if (data[i].id === id) {
+        //         object = data[i];
+        //     }
+        //    }
+        // }
+        // const eventD = new CustomEvent('update', { detail: {list : JSON.stringify(object) , inputValue: event.target.value, key: event.currentTarget.dataset.key}});
         this.dispatchEvent(eventD);
     }
 

@@ -770,3 +770,71 @@
     grid-template-columns: auto auto 1fr auto auto;
     column-gap: 10px;
 }
+
+[data-customtooltip] {
+    cursor: pointer;
+    position: absolute;
+    left: 200px;
+    top: 19px;
+}
+
+[data-customtooltip]::after {
+    background-color: #F7F7F7;
+    font-family: 'Proxima Nova SemiBold' !important;
+    color: #1D1D1D;
+    width: 180px;
+    white-space: normal;
+    font-size: 12px;
+    padding: 8px 12px;
+    height: fit-content;
+    z-index: 1;
+    border-radius: 2px;
+    border: 1px solid #4DBFFF;
+    position: absolute;
+    bottom: 0px;
+    left: 100%;
+    top: 14px;
+    content: attr(data-customTooltip);
+    transform: translate(4%, -45%) scale(0); /*translate(-50%, 110%) scale(0)*/;
+    transform-origin: right;
+    transition: 0.14s;
+    box-shadow: 0 4px 14px 0 rgba(0, 0, 0, 0.2), 0 0 0 1px rgba(0, 0, 0, 0.05);
+}
+
+[data-customtooltip]:hover:after {
+    display: block;
+    transform: translate(4%, -45%) scale(1);
+}
+
+.slds-checkbox_toggle .slds-checkbox_faux::before{
+    content: 'USA';
+    font-size: 14px;
+    color: #FFFFFF;
+    font-family: 'Proxima Nova' !important;
+    position: absolute;
+    top: 0px;
+    right: 17px;
+}
+
+.slds-checkbox_toggle [type=checkbox]:checked+.slds-checkbox_faux_container .slds-checkbox_faux:after{
+    border-bottom-style: none !important;
+    border-right-style: none !important;
+    content: 'Canada';
+    color: #FFFFFF;
+    font-family: 'Proxima Nova' !important;
+    font-size: 14px;
+    position: absolute;
+    top: 0px;
+    left: 14px;
+    width: 0 !important;
+    height: 0 !important;
+    transform: none !important;
+}
+
+.slds-checkbox_toggle [type=checkbox]:checked+.slds-checkbox_faux_container .slds-checkbox_faux{
+    width: 92px;
+}
+
+.slds-checkbox_toggle .slds-checkbox_faux_container .slds-checkbox_faux{
+    width: 77px;
+}

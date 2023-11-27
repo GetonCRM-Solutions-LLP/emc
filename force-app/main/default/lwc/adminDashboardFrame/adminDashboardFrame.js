@@ -86,6 +86,8 @@ export default class AdminDashboardFrame extends LightningElement {
   reportId = "";
   _value = "";
   isSearchEnable = true;
+  checkAll = false;
+  isGeneral = true;
   biweekAccount = false;
   singleUser = false;
   isProfile = false;
@@ -270,6 +272,8 @@ export default class AdminDashboardFrame extends LightningElement {
   @api customSetting;
   @api addEmpFormField = [];
   @api redirectUserId;
+  @api systemNotification;
+  @api activationDate;
   monthoption = [];
  
  
@@ -455,68 +459,70 @@ export default class AdminDashboardFrame extends LightningElement {
 
   yearList = [];
     
-  monthList = [
-      {
-        id: 1,
-        label: "January",
-        value: "January"
-      },
-      {
-        id: 2,
-        label: "February",
-        value: "February"
-      },
-      {
-        id: 3,
-        label: "March",
-        value: "March"
-      },
-      {
-        id: 4,
-        label: "April",
-        value: "April"
-      },
-      {
-        id: 5,
-        label: "May",
-        value: "May"
-      },
-      {
-        id: 6,
-        label: "June",
-        value: "June"
-      },
-      {
-        id: 7,
-        label: "July",
-        value: "July"
-      },
-      {
-        id: 8,
-        label: "August",
-        value: "August"
-      },
-      {
-        id: 9,
-        label: "September",
-        value: "September"
-      },
-      {
-        id: 10,
-        label: "October",
-        value: "October"
-      },
-      {
-        id: 11,
-        label: "November",
-        value: "November"
-      },
-      {
-        id: 12,
-        label: "December",
-        value: "December"
-      }
+  listOfMonth = [
+    {
+      id: 1,
+      label: "January",
+      value: "January"
+    },
+    {
+      id: 2,
+      label: "February",
+      value: "February"
+    },
+    {
+      id: 3,
+      label: "March",
+      value: "March"
+    },
+    {
+      id: 4,
+      label: "April",
+      value: "April"
+    },
+    {
+      id: 5,
+      label: "May",
+      value: "May"
+    },
+    {
+      id: 6,
+      label: "June",
+      value: "June"
+    },
+    {
+      id: 7,
+      label: "July",
+      value: "July"
+    },
+    {
+      id: 8,
+      label: "August",
+      value: "August"
+    },
+    {
+      id: 9,
+      label: "September",
+      value: "September"
+    },
+    {
+      id: 10,
+      label: "October",
+      value: "October"
+    },
+    {
+      id: 11,
+      label: "November",
+      value: "November"
+    },
+    {
+      id: 12,
+      label: "December",
+      value: "December"
+    }
   ]
+
+  monthList  = []
 
   /*Return json to array data */
   proxyToObject(e) {
@@ -603,7 +609,7 @@ export default class AdminDashboardFrame extends LightningElement {
   handleClose(event) {
       // console.log("id", event.target.dataset.id)
       // eslint-disable-next-line radix
-      var eId = event.currentTarget.dataset.id;
+      var eId = event.currentTarget.dataset.id, notification;
       console.log("MEssage id", eId)
     //  this.unreadCount = 0
         for (let i = 0; i < this.notifyList.length; i++) {
@@ -616,6 +622,9 @@ export default class AdminDashboardFrame extends LightningElement {
       this.isNotify = (this.notifyList.length > 0) ? true : false;
       updateNotificationMessage({msgId: eId, year: this.defaultYear, month: this.defaultMonth}).then((data) => { 
           let  result = data
+          notification = this.proxyToObject(result);
+          this.notifyList = notification;
+          this.notifyList = (this.isGeneral) ? notification.filter(e => e.createdBy != 'Tom Honkus') : notification.filter(e => e.createdBy === 'Tom Honkus')
           console.log("Notification", result, this.unreadCount)
       }).catch(error=>{console.log(error)})
   }
@@ -653,6 +662,8 @@ export default class AdminDashboardFrame extends LightningElement {
         result = data
         notification = this.proxyToObject(result);
         this.notifyList = notification;
+        this.notifyList = (this.isGeneral) ? notification.filter(e => e.createdBy != 'Tom Honkus') : notification.filter(e => e.createdBy === 'Tom Honkus')
+        console.log("Notification--", this.notifyList, notification)
         this.notificationList = this.notifyList.slice(0, 1);
         for (let i = 0; i < this.notifyList.length; i++) {
             if (this.notifyList[i].unread === true) {
@@ -2015,6 +2026,7 @@ export default class AdminDashboardFrame extends LightningElement {
         this.mileageSummaryView = false;
         this.mileageView = true;
         this.showDriverView = false;
+        this.getAccountMonthList();
         this.getDriverList();
         this.getStatus();
         if (this.template.querySelector('c-user-profile-modal')) {
@@ -2403,6 +2415,97 @@ export default class AdminDashboardFrame extends LightningElement {
     this.handleKeyDown = this.handleKeyDown.bind(this);
   }
 
+  // removeMonth(){
+  //   this.defaultMonth = new Date().toLocaleString('default', {
+  //     month: 'long'
+  //   })
+  // }
+
+  getUpdatedYear() {
+    var activated, i, list = [], month = [], monthCount, compareCount, compareYear, year, yearCurrent, systemNotification, now;
+    systemNotification = this.systemNotification; // Contact's System notification
+    let activationDate = this.activationDate; // Contact's activation date
+    const getMonths = (fromDate, toDate) => {
+        const fromYear = fromDate.getFullYear();
+        const fromMonth = fromDate.getMonth();
+        const toYear = toDate.getFullYear();
+        const toMonth = toDate.getMonth();
+        const months = [];
+        if(fromDate > toDate){
+          //for(let year = fromYear; year <= toYear; year++) {
+            let monthNum = year === fromYear ? fromMonth : 0;
+            let month = monthNum;
+            let name = this.listOfMonth[month]
+            months.push(name);
+          //}
+        }else{
+          for(let year = fromYear; year <= toYear; year++) {
+              let monthNum = year === fromYear ? fromMonth : 0;
+              const monthLimit = year === toYear ? toMonth : 11;
+              for(; monthNum <= monthLimit; monthNum++) {
+                  let month = monthNum;
+                  let name = this.listOfMonth[month]
+                  months.push(name);
+              }
+          }
+      }
+        return months;
+    }
+    activated = (activationDate) ? new Date(activationDate) : new Date();
+    year = activated.getFullYear();
+    now = new Date().getFullYear();
+    yearCurrent = 2023;
+    compareYear = new Date(2023, 9, 0);
+    compareCount = new Date();
+    if (systemNotification === 'New') {
+      this.defaultYear = (activated.getFullYear()).toString();
+      this.defaultMonth = activated.toLocaleString('default', {
+          month: 'long'
+      })
+      monthCount = activated
+      month = getMonths(monthCount, compareCount);
+      if(monthCount > compareCount){
+        let obj = {}
+        obj.id = year;
+        obj.label = (year).toString();
+        obj.value = (year).toString();
+        list.push(obj);
+      }else{
+        for (i = year; i <= now; i++) {
+          let obj = {}
+          obj.id = i;
+          obj.label = (i).toString();
+          obj.value = (i).toString();
+          list.push(obj);
+        }
+      }
+    } else {
+      this.defaultYear = (yearCurrent).toString();
+      this.defaultMonth = compareYear.toLocaleString('default', {
+          month: 'long'
+      })
+      monthCount = compareYear
+      month = getMonths(monthCount, compareCount);
+      if(monthCount > compareCount){
+        let obj = {}
+        obj.id = yearCurrent;
+        obj.label = (yearCurrent).toString();
+        obj.value = (yearCurrent).toString();
+        list.push(obj);
+      }else{
+        for (i = yearCurrent; i <= now; i++) {
+          let obj = {}
+          obj.id = i;
+          obj.label = (i).toString();
+          obj.value = (i).toString();
+          list.push(obj);
+        }
+      }
+    }
+    this.monthList = month
+    return list
+  }
+
   connectedCallback() {
     /*Get logged in user id */
     const idParamValue = this.getUrlParamValue(window.location.href, "id");
@@ -2411,11 +2514,7 @@ export default class AdminDashboardFrame extends LightningElement {
     const showIsTeam = this.getUrlParamValue(window.location.href, "showteam");
    // const manager = this.getUrlParamValue(window.location.href, 'managerid');
     const current = new Date();
-    this.defaultYear = (current.getFullYear()).toString();
-    this.defaultMonth = current.toLocaleString('default', {
-        month: 'long'
-    })
-    this.yearList = this.getLastYear();
+    this.yearList = this.getUpdatedYear();
     current.setMonth(current.getMonth()-1);
     const previousMonth = current.toLocaleString('default', { month: 'long' });
     this.lastMonth = previousMonth;
@@ -2486,6 +2585,12 @@ export default class AdminDashboardFrame extends LightningElement {
     document.title = "Users";
     this.redirectUserId = event.detail;
     window.location.href = location.origin + location.pathname + location.search + '#Users'
+  }
+
+  handleToggle(event){
+    this.checkAll = event.target.checked;
+    this.isGeneral = (!this.checkAll) ? true : false;
+    this.getContactNotification();
   }
 
   refreshEmpData(){

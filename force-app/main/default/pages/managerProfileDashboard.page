@@ -306,7 +306,7 @@
 
             this.setOptions();
             function init(){
-                    var resultdata, url , path, team, nameOfUser, videoWrapper, performanceProfile, meeting, ProfileId, Role, userLogin;
+                    var resultdata, url , path, team, nameOfUser, videoWrapper, performanceProfile, meeting, ProfileId, Role, userLogin, activationDate, systemNotification;
                     url =   location;
                     path =  location.origin + location.pathname + location.search
                     team = {!showMyTeam};
@@ -314,6 +314,8 @@
                     meeting = '{!ScheduleGotoMeeting}';
                     userLogin = '{!userLoginCount}';
                     ProfileId = "{!$User.ProfileId}";
+                    activationDate = '{!activationDate}';
+                    systemNotification = '{!systemNotification}';
                     videoWrapper = {!videoCustom};
                     performanceProfile = window.performance.getEntriesByType("navigation")[0].type;
                     Role = (ProfileId === '00e31000001FRDWAA4' || ProfileId === '00e31000001FRDXAA4') ? 'Manager' : (ProfileId === '00e31000001FRDZAA4' || ProfileId === '00e31000001FRDYAA4') ? 'Admin' : 'Driver'
@@ -346,6 +348,8 @@
                                     userRole: Role,
                                     customSetting: videoWrapper,
                                     driverMeeting: meeting,
+                                    activationDate: activationDate,
+                                    systemNotification : systemNotification,
                                     mileageRecord: JSON.stringify(mileageResult)
                                 }, "managerLwc", function (cmp) {
                                                     console.log("Component created Successfully");

@@ -80,6 +80,14 @@
     flex-direction: row;
 }
 
+.notify-text-read {
+    width: 100%;
+    height: auto;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: row;
+}
+
 .notify-message-tab {
     font-family: 'Proxima Nova Bold' !important;
     font-size: 14px;
@@ -95,6 +103,13 @@
     font-size: 12px;
     line-height: 12px;
     color: #FA7800;
+}
+
+.notify-message-date-read {
+    font-family: 'Proxima Nova Semibold' !important;
+    font-size: 12px;
+    line-height: 12px;
+    color: #6C6C6C;
 }
 
 .close-btn {
@@ -127,7 +142,6 @@
 
 .header-content{
     margin-top: 15px;
-    margin-bottom: 30px;
 }
 
 .main {
@@ -352,4 +366,69 @@
 .filter-input:focus{
     --slds-c-input-shadow: none !important;
     box-shadow: none !important;
+}
+
+.slds-checkbox_toggle [type=checkbox]:checked+.slds-checkbox_faux_container .slds-checkbox_faux{
+    border-color: var(--active-color) !important;
+    background-color: var(--active-color) !important;
+}
+
+.slds-checkbox_toggle .slds-checkbox_faux.toogle-input{
+    border-color: var(--active-color) !important;
+    background-color: var(--active-color) !important;
+    width: auto;
+}
+
+.slds-checkbox_toggle [type=checkbox]:checked+.slds-checkbox_faux_container+.input-label .map--canada{
+    color: #1D1D1D;
+    font-family: 'Proxima Nova Bold' !important;
+}
+
+.slds-checkbox_toggle [type=checkbox]:checked+.slds-checkbox_faux_container+.input-label .map--us{
+    color: rgba(29, 29, 29, 0.50);
+    font-family: 'Proxima Nova' !important;
+}
+
+.slds-checkbox_toggle [type=checkbox]+.slds-checkbox_faux_container+.input-label .map--canada{
+    color: rgba(29, 29, 29, 0.50);
+    font-family: 'Proxima Nova' !important;
+}
+
+.slds-checkbox_toggle [type=checkbox]+.slds-checkbox_faux_container+.input-label .map--us{
+    color: #1D1D1D;
+    font-family: 'Proxima Nova Bold' !important;
+}
+
+.slds-checkbox_toggle .slds-checkbox_faux{
+    box-shadow: none !important;
+}
+
+
+.slds-checkbox_toggle .slds-checkbox_faux::before{
+    content: 'Admin';
+    font-size: 14px;
+    color: #FFFFFF;
+    font-family: 'Proxima Nova' !important;
+    position: absolute;
+    top: 0px;
+    right: 17px;
+}
+
+.slds-checkbox_toggle [type=checkbox]:checked+.slds-checkbox_faux_container .slds-checkbox_faux:after{
+    border-bottom-style: none !important;
+    border-right-style: none !important;
+    content: 'Auto';
+    color: #FFFFFF;
+    font-family: 'Proxima Nova' !important;
+    font-size: 14px;
+    position: absolute;
+    top: 0px;
+    left: 14px;
+    width: 0 !important;
+    height: 0 !important;
+    transform: none !important;
+}
+
+.wrapper-filter{
+    width: 120px;
 }

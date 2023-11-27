@@ -116,22 +116,36 @@
 				<div class="vue-sidebar-content">
 					<div class="custom-app-tabs-wrapper">
 						<div class="header-content">
-							<div class="slds-p-left_x-large slds-p-bottom_large filter-wrapper">
-								<div class="filter-view-1">
-									<div class="filter-label">Year</div>
-									<div>
-										<c-dropdown-select data-id="yearSelect" options={yearList} value={value} 
-										onchange={handleYearChange} main-class="default-box-input slds-truncate" selected-value={defaultYear}></c-dropdown-select>
-									</div>
-								</div>
-								<div  class="filter-view-2">
-									<div class="filter-label" style="padding-left: 16px;">Month</div>
-									<div>
-										<c-dropdown-select data-id="monthSelect" options={monthList} value={value} 
-										onchange={handleMonthChange} main-class="default-box-input slds-truncate" selected-value={defaultMonth}></c-dropdown-select>
-									</div>
+							<div class="slds-p-left_x-large slds-p-bottom_large wrapper-filter">
+								<div class="slds-form-element">
+								  <label class="slds-checkbox_toggle slds-grid_vertical">
+									<input type="checkbox" name="checkbox-toggle-16" value="checkbox-toggle-16" aria-describedby="checkbox-toggle-16" onchange={handleToggle} checked={checkAll}/>
+									<span id="checkbox-toggle-16" class="slds-checkbox_faux_container" aria-live="assertive">
+										<span class="slds-checkbox_faux toogle-input"></span>
+										<span class="slds-checkbox_on"></span>
+										<span class="slds-checkbox_off"></span>
+									</span>
+								  </label>
 								</div>
 							</div>
+							<template lwc:if={isGeneral}>
+								<div class="slds-p-left_x-large slds-p-bottom_large filter-wrapper">
+									<div class="filter-view-1">
+										<div class="filter-label">Year</div>
+										<div>
+											<c-dropdown-select data-id="yearSelect" options={yearList} value={value} 
+											onchange={handleYearChange} main-class="default-box-input slds-truncate" selected-value={defaultYear}></c-dropdown-select>
+										</div>
+									</div>
+									<div  class="filter-view-2">
+										<div class="filter-label" style="padding-left: 16px;">Month</div>
+										<div>
+											<c-dropdown-select data-id="monthSelect" options={monthList} value={value} 
+											onchange={handleMonthChange} main-class="default-box-input slds-truncate" selected-value={defaultMonth}></c-dropdown-select>
+										</div>
+									</div>
+								</div>
+							</template>
 							<div class="close-btn">
 								<svg class="close-icon" xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 22 22" fill="none"  onclick={closeNotification}>
 									<path d="M5.29688 15.9062L15.9035 5.29965" stroke="#D9D9D9" stroke-width="1.5" stroke-linecap="round"/>
@@ -143,28 +157,47 @@
 								<div class="slds-p-left_x-large slds-p-right_medium notification-wrapper">
 									<template lwc:if={isNotify}>
 										<template for:each={notifyList} for:item="notify" for:index="index">
-											<div data-id={notify.id} key={notify.id}
+											<template lwc:if={notify.unread}>
+												<div data-id={notify.id} key={notify.id}
 												class="slds-col slds-size_1-of-1 slds-medium-size_6-of-12 slds-large-size_12-of-12 slds-m-around_xx-small slds-p-horizontal_x-small slds-p-vertical_small notify-text">
-												<div class="slds-p-top_xx-small slds-p-left_xx-small slds-p-right_x-small">
-													<svg xmlns="http://www.w3.org/2000/svg" width="9" height="9" viewBox="0 0 9 9" fill="none">
-														<circle cx="4.5" cy="4.5" r="4.5" fill="#FA7800" />
-													</svg>
-													<!-- <img style="width: 12px;" src={circle} /> -->
+													<div class="slds-p-top_xx-small slds-p-left_xx-small slds-p-right_x-small">
+														<svg xmlns="http://www.w3.org/2000/svg" width="9" height="9" viewBox="0 0 9 9" fill="none">
+															<circle cx="4.5" cy="4.5" r="4.5" fill="#FA7800" />
+														</svg>
+														<!-- <img style="width: 12px;" src={circle} /> -->
+													</div>
+													<div class="slds-p-right_small notify-message-tab">{notify.notificationMessage}
+														<div class="slds-p-top_x-small notify-message-date"> <lightning-formatted-date-time value={notify.modifiedDate} year="numeric"
+																day="2-digit" month="long" hour="2-digit" minute="2-digit" time-zone="America/Panama">
+															</lightning-formatted-date-time></div>
+													</div>
+													<div class="slds-p-right_xx-small close-notify-icon" data-id={notify.id} onclick={handleClose}>
+														<svg xmlns="http://www.w3.org/2000/svg" width="19" height="19" viewBox="0 0 19 19" fill="none">
+															<path d="M4.53906 13.6328L13.6303 4.54161" stroke="#FA7800" stroke-width="1.7"
+																stroke-linecap="round" />
+															<path d="M4.53906 4.55469L13.6303 13.6459" stroke="#FA7800" stroke-width="1.7"
+																stroke-linecap="round" />
+														</svg>
+													</div>
 												</div>
-												<div class="slds-p-right_small notify-message-tab">{notify.notificationMessage}
-													<div class="slds-p-top_x-small notify-message-date"> <lightning-formatted-date-time value={notify.modifiedDate} year="numeric"
-															day="2-digit" month="long" hour="2-digit" minute="2-digit" time-zone="America/Panama">
-														</lightning-formatted-date-time></div>
+											</template>
+											<template lwc:else>
+												<div data-id={notify.id} key={notify.id}
+												class="slds-col slds-size_1-of-1 slds-medium-size_6-of-12 slds-large-size_12-of-12 slds-m-around_xx-small slds-p-horizontal_x-small slds-p-vertical_small notify-text-read">
+													<div class="slds-p-top_xx-small slds-p-left_xx-small slds-p-right_x-small">
+														<svg xmlns="http://www.w3.org/2000/svg" width="9" height="9" viewBox="0 0 9 9" fill="none">
+															<circle cx="4.5" cy="4.5" r="4.5" fill="#FFF" />
+														</svg>
+														<!-- <img style="width: 12px;" src={circle} /> -->
+													</div>
+													<div class="slds-p-right_small notify-message-tab">{notify.notificationMessage}
+														<div class="slds-p-top_x-small notify-message-date-read"> <lightning-formatted-date-time value={notify.modifiedDate} year="numeric"
+																day="2-digit" month="long" hour="2-digit" minute="2-digit" time-zone="America/Panama">
+															</lightning-formatted-date-time></div>
+													</div>
 												</div>
-												<div class="slds-p-right_xx-small close-notify-icon" data-id={notify.id} onclick={handleClose}>
-													<svg xmlns="http://www.w3.org/2000/svg" width="19" height="19" viewBox="0 0 19 19" fill="none">
-														<path d="M4.53906 13.6328L13.6303 4.54161" stroke="#FA7800" stroke-width="1.7"
-															stroke-linecap="round" />
-														<path d="M4.53906 4.55469L13.6303 13.6459" stroke="#FA7800" stroke-width="1.7"
-															stroke-linecap="round" />
-													</svg>
-												</div>
-											</div>
+											</template>
+											
 										</template>
 									</template>
 								

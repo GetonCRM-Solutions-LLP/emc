@@ -279,7 +279,7 @@
  
 
     <script>
-          var nameOfUser, ProfileId, videoWrapper, performanceProfile, url , path, meeting, userLogin;
+          var nameOfUser, ProfileId, videoWrapper, performanceProfile, url , path, meeting, userLogin, activationDate, systemNotification;
           url = location;
           path = url.origin + url.pathname + url.search;
           videoWrapper = {!videoCustom};
@@ -287,9 +287,10 @@
           nameOfUser = '{!contactName}';
           userLogin = '{!userLoginCount}';
           ProfileId = "{!$User.ProfileId}";
+          activationDate = '{!activationDate}';
+          systemNotification = '{!systemNotification}';
           meeting = '{!ScheduleGotoMeeting}';
           last2Year = '{!last2Month}';
-          console.log("Yr", last2Year);
           //console.log("Profile", ProfileId, '{!$Profile.Name}', userLogin, meeting);
             // if(window.performance.navigation.type === 1){
             //     //location.replace(path);
@@ -424,6 +425,8 @@
                      profile: ProfileId,
                      driverMeeting: meeting,
                      last2Year: last2Year,
+                     activationDate: activationDate,
+                     systemNotification : systemNotification,
                      customSetting: videoWrapper
                     }, "mainLwc", function (cmp) {
                             console.log("Component Created Successfully");

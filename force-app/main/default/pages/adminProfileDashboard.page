@@ -422,7 +422,7 @@
           
 
           function init(){
-                var resultdata, url, path, team, nameOfUser, videoWrapper, performanceProfile, ProfileId, Role, userLogin, meeting, activationDate, accountCreatedDate;
+                var resultdata, url, path, team, nameOfUser, videoWrapper, performanceProfile, ProfileId, Role, userLogin, meeting, activationDate, systemNotification;
                         url = location;
                         path = location.origin + location.pathname + location.search
                         team = {!showMyTeam
@@ -432,7 +432,7 @@
                     userLogin = '{!userLoginCount}';
                     ProfileId = "{!$User.ProfileId}";
                     activationDate = '{!activationDate}';
-                    accountCreatedDate = '{!accountCreatedDate}';
+                    systemNotification = '{!systemNotification}';
                     videoWrapper = {!videoCustom};
                     performanceProfile = window.performance.getEntriesByType("navigation")[0].type;
                     Role = (ProfileId === '00e31000001FRDWAA4' || ProfileId === '00e31000001FRDXAA4') ? 'Manager' : (ProfileId === '00e31000001FRDZAA4' || ProfileId === '00e31000001FRDYAA4') ? 'Admin' : 'Driver'
@@ -452,7 +452,7 @@
                     // window.addEventListener("load", (event) => {
 
                     // });
-                    console.log("Team-->", team, nameOfUser);
+                    console.log("Team-->", team, nameOfUser, systemNotification);
                     const idParamValue = new URL(window.location.href).searchParams.get('id');
                     /*Get logged in user's account id */
                     const aidParamValue = new URL(window.location.href).searchParams.get('accid');
@@ -476,7 +476,7 @@
                             customSetting: videoWrapper,
                             driverMeeting: meeting,
                             activationDate: activationDate,
-                            accountCreatedDate: accountCreatedDate,
+                            systemNotification : systemNotification,
                             mileageRecord: JSON.stringify(mileageResult)
                         }, "adminLwc", function (cmp) {
                             console.log("Component created Successfully");

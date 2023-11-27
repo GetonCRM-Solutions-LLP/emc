@@ -262,7 +262,7 @@ export default class UserFlaggingTrip extends LightningElement {
             }
         };
         this.template.querySelector('c-user-preview-table').resetPageView(data, 'id');
-      //  this.template.querySelector('c-user-preview-table').defaultSort('tripdate', 'Date', 'desc');
+        this.template.querySelector('c-user-preview-table').defaultSort('tripdate', 'Date', 'desc');
 
         for (let i = 0; i < data.length; i++) {
             if (data[i].isChecked) {

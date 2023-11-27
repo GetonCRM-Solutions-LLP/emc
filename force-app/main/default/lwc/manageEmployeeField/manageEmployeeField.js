@@ -71,7 +71,7 @@ export default class ManageEmployeeField extends LightningElement {
     @api SurfacePrep_Account_table;
     @api GPSAccount_table;
     customSetting;
-		accountName;
+	accountName;
     @api viewAllEmploye
     @api keyFields
     @api addEmpKeyFields
@@ -155,6 +155,7 @@ export default class ManageEmployeeField extends LightningElement {
                 name : f,
                 label :  this.getFieldLable(f)
             }
+            expFiled.label = (expFiled.label === 'Freeze') ? 'Frozen Date' : (expFiled.label === 'Driver Type') ? 'Status' : (expFiled.label === 'Vehicle Type') ? 'Standard Vehicle' : expFiled.label
             exportFields.push(expFiled)
         });
         return exportFields;
